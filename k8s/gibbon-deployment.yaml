@@ -1,5 +1,5 @@
 # -----------------
-# PersistentVoume
+# PersistentVolume (uploads) — DEV
 # -----------------
 apiVersion: v1
 kind: PersistentVolume
@@ -13,16 +13,16 @@ spec:
   storageClassName: ""         # static PV as per demo
   nfs:
     server: 10.1.0.5
-    path: /mnt/k8s-database-and-storage/gibbon-dev-files
+    path: /mnt/k8s-database-and-storage/gibbon-dev-files  # <— dev-specific dir
 ---
 # ---------------------------
-# PersistentVolumeClaim
+# PersistentVolumeClaim (uploads) — DEV
 # ---------------------------
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: gibbon-dev-uploads-pvc
-  namespace: gibbon-dev-deploy  
+  namespace: gibbon-dev-deploy
 spec:
   volumeName: gibbon-dev-uploads-pv
   accessModes:
@@ -30,16 +30,16 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: ""  
+  storageClassName: ""
 ---
 # ---------------------------
-# ClusterIP Service for Gibbon Web App
+# ClusterIP Service for Gibbon Web App — DEV
 # ---------------------------
 apiVersion: v1
 kind: Service
 metadata:
   name: gibbon-dev-service
-  namespace: gibbon-dev-deploy  
+  namespace: gibbon-dev-deploy
 spec:
   selector:
     app: gibbon-dev
@@ -49,28 +49,28 @@ spec:
       targetPort: 80
   type: ClusterIP
 ---
-# gibbon-deployment.yaml
+# gibbon-deployment.yaml — DEV
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gibbon-dev-app
   namespace: gibbon-dev-deploy
   labels:
-    app: gibbon-dev    
+    app: gibbon-dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gibbon-dev      
+      app: gibbon-dev
   template:
     metadata:
       labels:
-        app: gibbon-dev        
+        app: gibbon-dev
     spec:
       nodeSelector:
-          role: app-demo-1 # Change this if need to use another node
+        role: app-demo-1            # keep as-is; change if you want a different node
       securityContext:
-        fsGroup: 33    #www-data
+        fsGroup: 33                 # www-data
       initContainers:
         - name: init-gibbon-perms
           image: busybox
@@ -85,8 +85,8 @@ spec:
               chmod -R 0777 /var/www/html/gibbon/uploads
           volumeMounts:
             - name: uploads
-              mountPath: /var/www/html/gibbon/uploads     
-              readOnly: false         
+              mountPath: /var/www/html/gibbon/uploads
+              readOnly: false
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fixed-path
@@ -95,11 +95,11 @@ spec:
           args: ["apache2ctl -D FOREGROUND"]
           startupProbe:
             httpGet:
-                path: /
-                port: 80
+              path: /
+              port: 80
             periodSeconds: 10
             failureThreshold: 30
-          readinessProbe:            # belongs under the container
+          readinessProbe:
             httpGet:
               path: /
               port: 80
@@ -111,13 +111,13 @@ spec:
             - containerPort: 80
           volumeMounts:
             - name: uploads
-              mountPath: /var/www/html/gibbon/uploads       
-              readOnly: false       
+              mountPath: /var/www/html/gibbon/uploads
+              readOnly: false
           env:
             - name: DB_HOST
               value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
             - name: DB_NAME
-              value: gibbon 
+              value: gibbon
             - name: DB_USER
               valueFrom:
                 secretKeyRef:

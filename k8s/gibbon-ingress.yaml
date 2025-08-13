@@ -1,9 +1,8 @@
-#gibbon-ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gibbon-ingress
-  namespace: gibbon-dev
+  name: gibbon-dev-ingress
+  namespace: gibbon-dev-deploy
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging   # keep staging for test
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -16,7 +15,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: gibbon-dev.vanhoa.edu.vn 
+    - host: gibbon-dev.vanhoa.edu.vn     # <— CHANGE HERE if you prefer another host
       http:
         paths:
           - path: /
@@ -28,7 +27,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - gibbon-dev.vanhoa.edu.vn
+        - gibbon-dev.vanhoa.edu.vn        # <— CHANGE HERE to match the host above
       secretName: gibbon-dev-tls
-
-
