@@ -33,7 +33,7 @@ spec:
 stages {
     stage('Checkout') {
       steps {
-        git branch: 'demo-main', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
+        git branch: 'gibbon-dev', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
       }
     }
 
@@ -63,21 +63,21 @@ EOF
 
               echo "[INFO] Staging ClusterIssuer ready."
 
-              kubectl delete certificate gibbon-demo-tls -n demo-app-deployment --ignore-not-found=true
-              kubectl delete secret gibbon-demo-tls -n demo-app-deployment --ignore-not-found=true
+              kubectl delete certificate gibbon-dev-tls  -n gibbon-dev  --ignore-not-found=true
+              kubectl delete secret gibbon-dev-tls -n gibbon-dev  --ignore-not-found=true
             '''
           }
         }
       }
     }
 
-    stage('Deploy Gibbon Demo') {
+    stage('Deploy Gibbon Development') {
       steps {
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''#!/usr/bin/env bash
 set -euo pipefail
-NS=demo-app-deployment            
+NS=gibbon-dev            
               echo "Applying Kubernetes manifests..."
 
               echo "[1] Secret for DB creds"
@@ -97,14 +97,14 @@ NS=demo-app-deployment
               # 5) (Optional but nice) Wait a bit for the uploads PVC to bind in fresh envs
               echo "[info] waiting for gibbon-uploads-pvc to be Bound..."
               for i in $(seq 1 60); do
-                phase=$(kubectl get pvc gibbon-uploads-pvc -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
+                phase=$(kubectl get pvc gibbon-dev-uploads-pvc -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
                 [ "$phase" = "Bound" ] && break
                 sleep 2
               done
-              kubectl get pvc gibbon-uploads-pvc -n "$NS"
+              kubectl get pvc gibbon-dev-uploads-pvc -n "$NS"
 
-              # 6) Wait for gibbon-app rollout
-              kubectl rollout status deployment gibbon-app -n "$NS" --timeout=300s
+              # 6) Wait for gibbon-app-dev rollout
+              kubectl rollout status deployment gibbon-app-dev -n "$NS" --timeout=300s
 
               # 7) Ingress (fresh env so no patching; just apply)
               kubectl apply -f k8s/gibbon-ingress.yaml
