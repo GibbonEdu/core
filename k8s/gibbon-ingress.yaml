@@ -1,10 +1,25 @@
+# Certificate - production
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gibbon-dev-tls
+  namespace: gibbon-dev-deploy
+spec:
+  secretName: gibbon-dev-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  dnsNames:
+    - gibbon-dev.vanhoa.edu.vn
+---
+# Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gibbon-dev-ingress
   namespace: gibbon-dev-deploy
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging   # keep staging for test
+    cert-manager.io/cluster-issuer: letsencrypt-prod   # keep staging for test
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     acme.cert-manager.io/http01-edit-in-place: "true"
