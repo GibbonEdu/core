@@ -134,12 +134,12 @@ spec:
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-db-secret
+                  name: gibbon-dev-db-secret
                   key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-db-secret
+                  name: gibbon-dev-db-secret
                   key: password
       volumes:
         - name: uploads

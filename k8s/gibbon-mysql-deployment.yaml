@@ -45,7 +45,7 @@ spec:
               mountPath: /var/lib/mysql
           readinessProbe:            #  belongs under the container
             exec:
-              command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
+              command: ["/bin/sh","-lc","mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
             initialDelaySeconds: 20
             periodSeconds: 10
       volumes:
