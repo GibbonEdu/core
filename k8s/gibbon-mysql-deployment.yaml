@@ -1,3 +1,22 @@
+# ---------------------------
+# PersistentVolumeClaim (MySQL) — Dynamic
+# ---------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gibbon-dev-mysql-pvc
+  namespace: gibbon-dev-deploy
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: nfs
+---
+# ---------------------------
+# Deployment — MySQL (DEV)
+# ---------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -45,14 +64,16 @@ spec:
           readinessProbe:
             exec:
               command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
-            initialDelaySeconds: 20
+            initialDelaySeconds: 30
             periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
             claimName: gibbon-dev-mysql-pvc
-      terminationGracePeriodSeconds: 30
 ---
+# ---------------------------
+# Service — MySQL (DEV)
+# ---------------------------
 apiVersion: v1
 kind: Service
 metadata:
@@ -66,36 +87,9 @@ spec:
       port: 3306
       targetPort: 3306
 ---
-# PV for MySQL — DEV
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: gibbon-dev-mysql-pv
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: nfs
-  nfs:
-    server: 10.1.0.5
-    path: /mnt/k8s-database-and-storage/gibbon-dev-mysql   # <— dev-specific dir
----
-# PVC for MySQL — DEV
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gibbon-dev-mysql-pvc
-  namespace: gibbon-dev-deploy
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: nfs
----
-# Job: grant privileges — DEV
+# -------------------------
+# Job: Grant Privileges to Gibbon User — DEV
+# -------------------------
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -112,7 +106,7 @@ spec:
             - /bin/sh
             - -c
             - |
-              echo "Granting privileges to gibbonuser (dev)..."
+              echo "Granting privileges to gibbonuser..."
               mysql -h gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local \
                 -u root -p"$MYSQL_ROOT_PASSWORD" -e "\
                 GRANT ALL PRIVILEGES ON gibbon.* TO '$MYSQL_USER'@'%'; \

@@ -1,22 +1,5 @@
-# -----------------
-# PersistentVolume (uploads) — DEV
-# -----------------
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: gibbon-dev-uploads-pv
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteMany
-  storageClassName: ""         # static PV as per demo
-  nfs:
-    server: 10.1.0.5
-    path: /mnt/k8s-database-and-storage/gibbon-dev-files  # <— dev-specific dir
----
 # ---------------------------
-# PersistentVolumeClaim (uploads) — DEV
+# PersistentVolumeClaim (Uploads) — Dynamic
 # ---------------------------
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -24,13 +7,12 @@ metadata:
   name: gibbon-dev-uploads-pvc
   namespace: gibbon-dev-deploy
 spec:
-  volumeName: gibbon-dev-uploads-pv
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 5Gi
-  storageClassName: ""
+  storageClassName: nfs
 ---
 # ---------------------------
 # ClusterIP Service for Gibbon Web App — DEV
@@ -49,7 +31,9 @@ spec:
       targetPort: 80
   type: ClusterIP
 ---
-# gibbon-deployment.yaml — DEV
+# ---------------------------
+# Deployment — Gibbon App (DEV)
+# ---------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -68,9 +52,9 @@ spec:
         app: gibbon-dev
     spec:
       nodeSelector:
-        role: app-demo-1            # keep as-is; change if you want a different node
+        role: app-demo-1
       securityContext:
-        fsGroup: 33                 # www-data
+        fsGroup: 33    # www-data
       initContainers:
         - name: init-gibbon-perms
           image: busybox
