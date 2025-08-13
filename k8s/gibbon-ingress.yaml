@@ -3,12 +3,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gibbon-ingress
-  namespace: demo-app-deployment
+  namespace: gibbon-dev
   annotations:
 #    cert-manager.io/cluster-issuer: letsencrypt-prod
     cert-manager.io/cluster-issuer: letsencrypt-staging ##temporay use this for testing
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"  # fix mismatch
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  # fix mismatch
     acme.cert-manager.io/http01-edit-in-place: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
@@ -17,7 +17,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: banthach-demo.vanhoa.edu.vn
+    - host: gibbon-dev.vanhoa.edu.vn 
       http:
         paths:
           - path: /
@@ -29,7 +29,7 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - banthach-demo.vanhoa.edu.vn
-      secretName: gibbon-demo-tls
+        - gibbon-dev.vanhoa.edu.vn
+      secretName: gibbon-dev-tls
 
 

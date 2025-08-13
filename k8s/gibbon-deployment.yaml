@@ -4,16 +4,19 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: gibbon-uploads-pv
+  name: gibbon-dev-uploads-pv
+  labels:
+    app: gibbon
+    env: dev
 spec:
   capacity:
     storage: 5Gi
   accessModes:
     - ReadWriteMany
-  storageClassName: ""
+  persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 10.1.0.5
-    path: /mnt/k8s-database-and-storage/gibbon-files
+    path: /mnt/k8s-database-and-storage/gibbon-dev-files
 ---
 # ---------------------------
 # PersistentVolumeClaim
@@ -22,7 +25,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: gibbon-uploads-pvc
-  namespace: demo-app-deployment
+  namespace: gibbon-dev
+  labels:
+    app: gibbon
+    env: dev
 spec:
   volumeName: gibbon-uploads-pv
   accessModes:
@@ -30,7 +36,10 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: ""
+  selector:
+    matchLabels:
+      app: gibbon
+      env: dev
 ---
 # ---------------------------
 # ClusterIP Service for Gibbon Web App
@@ -39,10 +48,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: gibbon-service
-  namespace: demo-app-deployment
+  namespace: gibbon-dev
+  labels:
+    app: gibbon
+    env: dev
 spec:
   selector:
     app: gibbon
+    env: dev
   ports:
     - protocol: TCP
       port: 80
@@ -54,21 +67,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gibbon-app
-  namespace: demo-app-deployment
+  namespace: gibbon-dev
   labels:
     app: gibbon
+    env: dev
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: gibbon
+      env: dev
   template:
     metadata:
       labels:
         app: gibbon
+        env: dev
     spec:
       nodeSelector:
-          role: app-demo-1
+          role: app-demo-1 # Change this if need to use another node
       securityContext:
         fsGroup: 33    #www-data
       initContainers:
@@ -78,16 +94,13 @@ spec:
           args:
             - |
               echo "[Init] Ensure config.php exists and uploads perms..."
-              mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
-              # make/empty config.php for installer to write into
-              : > /var/www/html/gibbon/config.php
+              mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache              
               chown -R 33:33 /var/www/html/gibbon /var/www/html/gibbon/uploads
               chmod 664 /var/www/html/gibbon/config.php
               chmod -R 0777 /var/www/html/gibbon/uploads
           volumeMounts:
             - name: uploads
-              mountPath: /var/www/html/gibbon/uploads
-              readOnly: false
+              mountPath: /var/www/html/gibbon/uploads              
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fixed-path
@@ -112,13 +125,12 @@ spec:
             - containerPort: 80
           volumeMounts:
             - name: uploads
-              mountPath: /var/www/html/gibbon/uploads
-              readOnly: false
+              mountPath: /var/www/html/gibbon/uploads              
           env:
             - name: DB_HOST
-              value: gibbon-mysql.demo-app-deployment.svc.cluster.local
+              value: gibbon-mysql.gibbon-dev.svc.cluster.local
             - name: DB_NAME
-              value: gibbon
+              value: gibbon_dev gibbon_dev 
             - name: DB_USER
               valueFrom:
                 secretKeyRef:

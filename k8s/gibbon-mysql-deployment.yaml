@@ -110,7 +110,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: gibbon-mysql-grant-job
-  namespace: demo-app-deployment
+  namespace: gibbon-dev
 spec:
   template:
     spec:
