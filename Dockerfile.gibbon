@@ -33,10 +33,10 @@ RUN printf '%s\n' \
 
 
 # Download and extract Gibbon v29
-RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v29.0.00.zip && \
-    unzip v29.0.00.zip && \
-    mv core-29.0.00/* . && \
-    rm -rf core-29.0.00 v29.0.00.zip
+RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v30.0.00.zip && \
+    unzip v30.0.00.zip && \
+    mv core-30.0.00/* . && \
+    rm -rf core-30.0.00 v30.0.00.zip
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
