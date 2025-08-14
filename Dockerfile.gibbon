@@ -49,16 +49,33 @@ RUN mkdir -p /var/www/html/gibbon/uploads/tmp \
     && chmod -R 0777 /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
 
 # Language set up vietnamese
-RUN apt-get update && apt-get install -y locales \
- && echo "vi_VN.UTF-8 UTF-8" >> /etc/locale.gen \
+# Locales for gettext
+RUN apt-get update && apt-get install -y --no-install-recommends locales \
+ && sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen \
  && locale-gen vi_VN.UTF-8
-ENV LANG vi_VN.UTF-8
-ENV LANGUAGE vi_VN:vi
-ENV LC_ALL vi_VN.UTF-8
+
+ENV LANG=vi_VN.UTF-8 \
+    LC_ALL=vi_VN.UTF-8 \
+    LANGUAGE=vi_VN:vi
 
 # Sessions -> tmp inside uploads
 RUN echo 'session.save_path = /var/www/html/gibbon/uploads/tmp' > /usr/local/etc/php/conf.d/session.ini
 
+# --- Add Vietnamese translation from Gibbon i18n repo ---
+# Pin to a specific commit for reproducible builds. Replace with a real commit SHA from:
+# https://github.com/GibbonEdu/i18n/commits/main
+ARG I18N_COMMIT=refs/heads/main
+RUN set -eux; \
+    mkdir -p /tmp/i18n /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES; \
+    # Download the i18n repo tarball (commit or branch)
+    curl -L -o /tmp/i18n.tar.gz "https://github.com/GibbonEdu/i18n/archive/${I18N_COMMIT}.tar.gz"; \
+    tar -xzf /tmp/i18n.tar.gz -C /tmp; \
+    # Find extracted dir (works for both commit or branch tarballs)
+    I18N_DIR="$(find /tmp -maxdepth 1 -type d -name 'i18n-*' | head -n1)"; \
+    cp -v "${I18N_DIR}/vi_VN/LC_MESSAGES/gibbon.mo" \
+          /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo; \
+    chown -R www-data:www-data /var/www/html/gibbon/resources/locale; \
+    rm -rf /tmp/i18n /tmp/i18n.tar.gz "${I18N_DIR}"
 
 # Keep Apache running in foreground
 CMD ["apache2-foreground"]
