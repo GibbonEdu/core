@@ -1,5 +1,5 @@
 # ---------------------------
-# PersistentVolumeClaim (Uploads) — Dynamic
+# PersistentVolumeClaim (Uploads) - Dynamic
 # ---------------------------
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -15,7 +15,7 @@ spec:
   storageClassName: nfs
 ---
 # ---------------------------
-# ClusterIP Service for Gibbon Web App — DEV
+# ClusterIP Service for Gibbon Web App - DEV
 # ---------------------------
 apiVersion: v1
 kind: Service
@@ -32,7 +32,10 @@ spec:
   type: ClusterIP
 ---
 # ---------------------------
-# Deployment — Gibbon App (DEV)
+# Deployment - Gibbon App (DEV)
+# ---------------------------
+# ---------------------------
+# Deployment - Gibbon App (DEV)
 # ---------------------------
 apiVersion: apps/v1
 kind: Deployment
@@ -54,28 +57,66 @@ spec:
       nodeSelector:
         role: app-demo-1
       securityContext:
-        fsGroup: 33    # www-data
+        fsGroup: 33
       initContainers:
         - name: init-gibbon-perms
-          image: busybox
+          image: busybox:1.36
           command: ["/bin/sh","-c"]
           args:
-            - |
-              echo "[Init] Ensure config.php exists and uploads perms..."
-              mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
-              [ -s /var/www/html/gibbon/config.php ] || : > /var/www/html/gibbon/config.php
-              chown -R 33:33 /var/www/html/gibbon /var/www/html/gibbon/uploads
-              chmod 664 /var/www/html/gibbon/config.php
-              chmod -R 0777 /var/www/html/gibbon/uploads
+            - >
+              set -ex;
+              echo "[Init] Prepare uploads + config on PVC";
+              mkdir -p /var/www/html/gibbon/uploads/config /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache /pvc/config;
+              [ -s /pvc/.gibbon_guid ] || (cat /proc/sys/kernel/random/uuid 2>/dev/null || date +%s%N) > /pvc/.gibbon_guid;
+              if [ ! -s /pvc/config/config.php ]; then
+                printf '%s\n' \
+                  '<?php' \
+                  '$databaseServer   = getenv("DB_HOST");' \
+                  '$databaseUsername = getenv("DB_USER");' \
+                  '$databasePassword = getenv("DB_PASSWORD");' \
+                  '$databaseName     = getenv("DB_NAME");' \
+                  '$guid = getenv("GIBBON_GUID");' \
+                  'if (!$guid) {' \
+                  '  $guidFile = __DIR__ . "/../.gibbon_guid";' \
+                  '  if (is_readable($guidFile)) { $guid = trim(file_get_contents($guidFile)); }' \
+                  '}' \
+                  '$caching     = 10;' \
+                  '$absoluteURL = getenv("ABSOLUTE_URL");' \
+                > /pvc/config/config.php;
+                chown 33:33 /pvc/config/config.php || true; chmod 0660 /pvc/config/config.php;
+                echo "[Init] Wrote /pvc/config/config.php";
+              else
+                echo "[Init] Using existing /pvc/config/config.php";
+              fi;
+              chown -R 33:33 /var/www/html/gibbon/uploads || true; chmod -R 0777 /var/www/html/gibbon/uploads;
+          env:
+            - name: DB_HOST
+              value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
+            - name: DB_NAME
+              value: gibbon
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: password
+            - name: ABSOLUTE_URL
+              value: "https://gibbon-dev.vanhoa.edu.vn"
           volumeMounts:
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
-              readOnly: false
+            - name: uploads
+              mountPath: /pvc
+
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fixed-path
           imagePullPolicy: Always
-          command: ["/bin/sh","-lc"]
+          command: ["/bin/sh","-c"]
           args: ["apache2ctl -D FOREGROUND"]
           startupProbe:
             httpGet:
@@ -93,10 +134,6 @@ spec:
             failureThreshold: 12
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name: uploads
-              mountPath: /var/www/html/gibbon/uploads
-              readOnly: false
           env:
             - name: DB_HOST
               value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
@@ -112,6 +149,15 @@ spec:
                 secretKeyRef:
                   name: gibbon-dev-db-secret
                   key: password
+            - name: ABSOLUTE_URL
+              value: "https://gibbon-dev.vanhoa.edu.vn"
+          volumeMounts:
+            - name: uploads
+              mountPath: /var/www/html/gibbon/uploads
+            - name: uploads
+              mountPath: /var/www/html/gibbon/config.php
+              subPath: config/config.php
+              readOnly: true
       volumes:
         - name: uploads
           persistentVolumeClaim:
