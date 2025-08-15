@@ -85,6 +85,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
             $row->addLabel('schoolYear', __('School Year'));
             $row->addTextField('schoolYear')->required()->readonly()->setValue($schoolYearName);
 
+        //Van Hoa
+        $row = $form->addRow();
+            $row->addLabel('teacherFormGroup', __('Giáo viên và lớp học'));
+            $row->addSelectTeacher('teacher')->selected($_GET['teacher'] ?? '');
+        //Van Hoa
+
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeIDs', __('Invoicees'))->append(sprintf(__('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>'));
             $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID, ["byClass" => true])->required()->selectMultiple();
