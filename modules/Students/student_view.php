@@ -1,5 +1,4 @@
 <?php
-
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -24,30 +23,31 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Students\StudentVanHoaGateway; // Van Hoa 
+use Gibbon\Domain\Students\StudentVanHoaGateway; //Van Hoa
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
+    // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+    //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('View Student Profiles'));
+
         $studentGateway = $container->get(StudentGateway::class);
-        $studentVanHoaGateway = $container->get(StudentVanHoaGateway::class); // Van Hoa
+
+        $studentVanHoaGateway = $container->get(StudentVanHoaGateway::class); //Van Hoa
 
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
         $gibbonPersonID = $session->get('gibbonPersonID');
 
-        $canViewFullProfile = (
-          $highestAction == 'View Student Profile_full' or 
-          $highestAction == 'View Student Profile_fullNoNotes' or 
-          $highestAction == 'View Student Profile_fullEditAllNotes');
-          
+        $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes');
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
 
         if ($highestAction == 'View Student Profile_myChildren' or $highestAction == 'View Student Profile_my') {
+            
             if ($highestAction == 'View Student Profile_myChildren') {
                 $title = __('My Children');                
                 $result = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID);
@@ -71,25 +71,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID')
                     ->format(function ($row, $actions) {
-                        $actions->addAction('view', __('View Details'))
+                        $actions->addAction('profile', __('View'))
                             ->setURL('/modules/Students/student_view_details.php');
                     });
 
                 echo $table->render($result->toDataSet());
             }
         }
-
+      
         if ($canViewBriefProfile || $canViewFullProfile) {
+            //Proceed!
             $search = $_GET['search'] ?? '';
-            $searchVH = $_GET['searchVH'] ?? ''; // Van Hoa
+            $searchVH = $_GET['searchVH'] ?? ''; //Van Hoa
             $sort = $_GET['sort'] ?? 'surname,preferredName';
             $allStudents = $_GET['allStudents'] ?? '';
+            
+            $studentGateway = $container->get(StudentGateway::class);
 
             $searchColumns = $canViewFullProfile
-                ? array_merge(
-                  $studentGateway->getSearchableColumns(), 
-                  [ 'parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate'])
-                  : $studentGateway->getSearchableColumns();
+                ? array_merge($studentGateway->getSearchableColumns(), ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate'])
+                : $studentGateway->getSearchableColumns();
 
             $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($searchColumns, $search)
@@ -97,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->filterBy('all', $canViewFullProfile ? $allStudents : '')
                 ->fromPOST();
 
-            // Van Hoa
+            //Van Hoa
             $criteriaVanHoa = $studentVanHoaGateway->newQueryCriteria(true)
                 ->searchBy('fullName', $searchVH)
                 ->sortBy(array_filter(explode(',', $sort)))
@@ -105,17 +106,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->fromPOST();
             //Van Hoa
 
-            $sortOptions = [
+            $sortOptions = array(
                 'surname,preferredName' => __('Surname'),
+                'preferredName' => __('Given Name'),
                 'formGroup' => __('Form Group'),
                 'yearGroup' => __('Year Group'),
-            ];
+            );
 
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Filter'));
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
             $form->addHiddenValue('q', '/modules/'.$session->get('module').'/student_view.php');
-
+        
             $searchDescription = $canViewFullProfile 
                 ? __('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.') 
                 : __('Preferred, surname, username.');
@@ -125,11 +127,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     ->description($searchDescription);
                 $row->addTextField('search')->setValue($criteria->getSearchText());
 
-            // Van Hoa
+            //Van Hoa
             $row = $form->addRow();
                 $row->addLabel('searchVH', __('Tìm kiếm Văn Hoa'))
                     ->description(__('Tìm kiếm theo họ và tên'));
-                $row->addTextField('searchVH')->setValue($criteriaVanHoa->getSearchText());
+              $row->addTextField('searchVH')->setValue($criteriaVanHoa->getSearchText());
             //Van Hoa
 
             $row = $form->addRow();
@@ -144,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $row = $form->addRow();
                 $row->addSearchSubmit($session, __('Clear Search'));
-
+            
             echo $form->getOutput();
 
             //Van Hoa
@@ -154,27 +156,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             } else {
                 $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID, $canViewFullProfile);
                 $tableCriteria = $criteria;
-            } //Van Hoa
+            }
+            //Van Hoa
 
-            $table = DataTable::createPaginated('students', $tableCriteria);
+            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID, $canViewFullProfile);
+
+            // DATA TABLE
+            $table = DataTable::createPaginated('students', $criteria);
             $table->setTitle(__('Choose A Student'));
             $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
             if ($canViewFullProfile) {
                 $table->addMetaData('filterOptions', [
-                    'all:on' => __('All Students')
+                    'all:on'        => __('All Students')
                 ]);
-
+        
                 if ($criteria->hasFilter('all')) {
                     $table->addMetaData('filterOptions', [
-                        'status:full' => __('Status').': '.__('Full'),
+                        'status:full'     => __('Status').': '.__('Full'),
                         'status:expected' => __('Status').': '.__('Expected'),
-                        'date:starting' => __('Before Start Date'),
-                        'date:ended' => __('After End Date'),
+                        'date:starting'   => __('Before Start Date'),
+                        'date:ended'      => __('After End Date'),
                     ]);
                 }
             }
-
+    
+            // COLUMNS
             $table->addColumn('student', __('Student'))
                 ->sortable(['surname', 'preferredName'])
                 ->format(function ($person) use ($canViewFullProfile) {
@@ -184,22 +191,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                     return $output;
                 });
-
             $table->addColumn('yearGroup', __('Year Group'));
             $table->addColumn('formGroup', __('Form Group'));
-
+    
             $table->addActionColumn()
                 ->addParam('gibbonPersonID')
                 ->addParam('search', $criteria->getSearchText(true))
-                ->addParam('searchVH', $criteriaVanHoa->getSearchText(true)) // Van Hoa
+                ->addParam('searchVH', $criteriaVanHoa->getSearchText(true)) //Van Hoa
                 ->addParam('sort', $sort)
                 ->addParam('allStudents', $canViewFullProfile ? $allStudents : '')
                 ->format(function ($row, $actions) {
-                    $actions->addAction('view', __('View Details'))
+                    $actions->addAction('profile', __('View'))
                         ->setURL('/modules/Students/student_view_details.php');
                 });
-
+    
             echo $table->render($students);
         }
     }
 }
+
