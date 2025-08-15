@@ -195,6 +195,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $table->addColumn('formGroup', __('Form Group'));
 
+        //Van Hoa
+        $table->addColumn('teacher', __('Teacher'))
+            ->format(function ($invoice) {
+                return $invoice['teacherName'] ?? '';
+            });
+        //Van Hoa
+
         $table->addColumn('status', __('Status'))
             ->format(function ($invoice) {
                 if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) {

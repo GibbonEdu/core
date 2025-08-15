@@ -59,6 +59,7 @@ class InvoiceGateway extends QueryableGateway
                 'gibbonFinanceInvoice.notes',
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
+                'CONCAT(teacher.surname, " ", teacher.preferredName) AS teacherName',
                 'gibbonFormGroup.name AS formGroup',
                 "(CASE 
                     WHEN gibbonFinanceInvoice.status = 'Pending' AND billingScheduleType='Scheduled' THEN gibbonFinanceBillingSchedule.invoiceDueDate 
@@ -76,6 +77,7 @@ class InvoiceGateway extends QueryableGateway
             ->leftJoin('gibbonFinanceBillingSchedule', 'gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID')
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID')
             ->leftJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
+            ->leftJoin('gibbonPerson AS teacher', 'gibbonFormGroup.gibbonPersonIDTutor = teacher.gibbonPersonID')
             ->where('gibbonFinanceInvoice.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->groupBy(['gibbonFinanceInvoice.gibbonFinanceInvoiceID']);
