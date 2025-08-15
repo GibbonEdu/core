@@ -54,11 +54,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
     } else {
 
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-            $sql = "SELECT gibbonFinanceInvoice.*, companyName, companyContact, companyEmail, companyCCFamily, gibbonSchoolYear.name as schoolYear, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFinanceBillingSchedule.name as billingScheduleName
+            $sql = "SELECT gibbonFinanceInvoice.*, companyName, companyContact, companyEmail, companyCCFamily, gibbonSchoolYear.name as schoolYear, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFinanceBillingSchedule.name as billingScheduleName,
+                        gibbonFormGroup.name AS formGroupName, 
+                        CONCAT(teacher.surname, ' ', teacher.preferredName) AS teacherName
                     FROM gibbonFinanceInvoice
                     JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID)
                     LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID)
                     LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID=gibbonFinanceInvoice.gibbonFinanceBillingScheduleID)
+                    LEFT JOIN gibbonPerson 
+                        ON (gibbonPerson.gibbonPersonID=gibbonFinanceInvoicee.gibbonPersonID)
+                    LEFT JOIN gibbonStudentEnrolment 
+                        ON gibbonStudentEnrolment.gibbonPersonID = gibbonFinanceInvoicee.gibbonPersonID 
+                        AND gibbonStudentEnrolment.gibbonSchoolYearID = gibbonFinanceInvoice.gibbonSchoolYearID
+                    LEFT JOIN gibbonFormGroup 
+                        ON gibbonFormGroup.gibbonFormGroupID = gibbonStudentEnrolment.gibbonFormGroupID
+                    LEFT JOIN gibbonPerson AS teacher 
+                        ON teacher.gibbonPersonID = gibbonFormGroup.gibbonPersonIDTutor
                     LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonFinanceInvoicee.gibbonPersonID)
                     WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID
                     AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
@@ -91,6 +102,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
             $row = $form->addRow();
                 $row->addLabel('personName', __('Invoicee'));
                 $row->addTextField('personName')->required()->readonly()->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student', true));
+
+            //Van Hoa
+            $row = $form->addRow();
+                $row->addLabel('formGroupName', __('Class'));
+                $row->addTextField('formGroupName')->readonly()->setValue($values['formGroupName'] ?? '');
+            
+            $row = $form->addRow();
+                $row->addLabel('teacherName', __('Homeroom Teacher'));
+                $row->addTextField('teacherName')->readonly()->setValue($values['teacherName'] ?? '');
+            //Van Hoa
 
             $row = $form->addRow();
                 $row->addLabel('billingScheduleTypeText', __('Scheduling'));
