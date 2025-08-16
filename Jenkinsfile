@@ -107,5 +107,61 @@ kubectl get pvc -n "$NS"
         }
       }
     }
+    stage('Persist Gibbon locales (DEV)') {
+  steps {
+    container('kubectl') {
+      withKubeConfig([credentialsId: "${KUBECONFIG_CRED}"]) {
+        sh '''
+          set -euo pipefail
+          NS="gibbon-dev-deploy"
+          DEPLOY="gibbon-dev-app"
+
+          # Grab the current app image so the init can copy from the image filesystem
+          APP_IMAGE=$(kubectl -n "$NS" get deploy "$DEPLOY" -o jsonpath='{.spec.template.spec.containers[?(@.name=="gibbon")].image}')
+
+          # Strategic-merge apply: add/refresh an initContainer to seed the PVC once,
+          # and mount the PVC "uploads" subPath=locale onto resources/locale.
+          cat <<YAML | kubectl -n "$NS" apply -f -
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: ${DEPLOY}
+          spec:
+            template:
+              spec:
+                initContainers:
+                - name: init-gibbon-locale
+                  image: ${APP_IMAGE}
+                  command: ["/bin/sh","-lc"]
+                  args:
+                    - |
+                      set -e
+                      mkdir -p /pvc/locale
+                      # Seed once: if core en_GB mo is missing, copy all shipped locales
+                      if [ ! -f /pvc/locale/en_GB/LC_MESSAGES/gibbon.mo ]; then
+                        cp -a /var/www/html/gibbon/resources/locale/. /pvc/locale/
+                      fi
+                      chown -R www-data:www-data /pvc/locale
+                  volumeMounts:
+                    # Reuse the existing uploads PVC but mount it at /pvc for seeding
+                    - name: uploads
+                      mountPath: /pvc
+
+                containers:
+                - name: gibbon
+                  volumeMounts:
+                    # Persist the whole resources/locale from PVC subPath "locale"
+                    - name: uploads
+                      mountPath: /var/www/html/gibbon/resources/locale
+                      subPath: locale
+          YAML
+
+          # Rollout wait for visibility
+          kubectl -n "$NS" rollout status deploy/"$DEPLOY" --timeout=5m
+        '''
+      }
+    }
+  }
+}
   }
 }
