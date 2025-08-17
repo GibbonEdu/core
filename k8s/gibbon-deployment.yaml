@@ -120,20 +120,20 @@ spec:
               mkdir -p /pvc/config /pvc/locale /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
 
               if [ ! -s /pvc/config/config.php ]; then
-                cat >/pvc/config/config.php <<'PHP'
-<?php
-$databaseServer   = getenv("DB_HOST");
-$databaseUsername = getenv("DB_USER");
-$databasePassword = getenv("DB_PASSWORD");
-$databaseName     = getenv("DB_NAME");
-$guid = getenv("GIBBON_GUID");
-if (!$guid) {
-  $guidFile = __DIR__ . "/../.gibbon_guid";
-  if (is_readable($guidFile)) { $guid = trim(file_get_contents($guidFile)); }
-}
-$caching     = 10;
-$absoluteURL = getenv("ABSOLUTE_URL");
-PHP
+                printf '%s\n' \
+                  '<?php' \
+                  '$databaseServer   = getenv("DB_HOST");' \
+                  '$databaseUsername = getenv("DB_USER");' \
+                  '$databasePassword = getenv("DB_PASSWORD");' \
+                  '$databaseName     = getenv("DB_NAME");' \
+                  '$guid = getenv("GIBBON_GUID");' \
+                  'if (!$guid) {' \
+                  '  $guidFile = __DIR__ . "/../.gibbon_guid";' \
+                  '  if (is_readable($guidFile)) { $guid = trim(file_get_contents($guidFile)); }' \
+                  '}' \
+                  '$caching     = 10;' \
+                  '$absoluteURL = getenv("ABSOLUTE_URL");' \
+                > /pvc/config/config.php
                 chmod 660 /pvc/config/config.php || true
               fi
 
