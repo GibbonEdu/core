@@ -115,10 +115,11 @@ spec:
           command: ["/bin/sh","-c"]
           args:
             - |
-              set -eu              
+              set -eu
               set -o pipefail 2>/dev/null || true
               echo "[Init] Prepare config/uploads/locale on PVC"
-              mkdir -p /pvc/config /pvc/locale /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+              mkdir -p /pvc/config /pvc/locale \
+                /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
 
               if [ ! -s /pvc/config/config.php ]; then
                 printf '%s\n' \
@@ -144,7 +145,7 @@ spec:
               if [ -z "$(ls -A "$DST" 2>/dev/null)" ]; then
                 echo "[Init] Seeding ALL locales into PVC..."
                 if [ -d "$SRC" ]; then
-                  cp -a "$SRC/." "$DST/" || true
+                  cp -r "$SRC"/. "$DST"/ 2>/dev/null || true
                 else
                   echo "[WARN] $SRC not found in image; skipping seed"
                 fi
@@ -153,17 +154,18 @@ spec:
                 if [ -d "$SRC" ]; then
                   for d in "$SRC"/*; do
                     n="$(basename "$d")"
-                    [ -e "$DST/$n" ] || cp -a "$d" "$DST/$n"
+                    [ -e "$DST/$n" ] || cp -r "$d" "$DST/$n" 2>/dev/null || true
                   done
                   if [ -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" ]; then
-                    cp -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" "$DST/vi_VN/LC_MESSAGES/gibbon.mo" || true
+                    mkdir -p "$DST/vi_VN/LC_MESSAGES"
+                    cp -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" "$DST/vi_VN/LC_MESSAGES/gibbon.mo" 2>/dev/null || true
                   fi
                 fi
               fi
 
-              chown -R 33:33 "$DST" || true
-              chmod -R u+rwX,g+rwX "$DST" || true
-              chmod -R 0777 /var/www/html/gibbon/uploads || true
+              chown -R 33:33 "$DST" 2>/dev/null || true
+              chmod -R u+rwX,g+rwX "$DST" 2>/dev/null || true
+              chmod -R 0777 /var/www/html/gibbon/uploads 2>/dev/null || true
           env:
             - name: DB_HOST
               value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
