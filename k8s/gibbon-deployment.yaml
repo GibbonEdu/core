@@ -63,11 +63,11 @@ spec:
           image: busybox:1.36
           command: ["/bin/sh","-c"]
           args:
-            - >
-              set -ex;
-              echo "[Init] Prepare uploads + config on PVC";
-              mkdir -p /var/www/html/gibbon/uploads/config /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache /pvc/config;
-              [ -s /pvc/.gibbon_guid ] || (cat /proc/sys/kernel/random/uuid 2>/dev/null || date +%s%N) > /pvc/.gibbon_guid;
+            - |
+              set -ex
+              echo "[Init] Prepare uploads + config on PVC"
+              mkdir -p /var/www/html/gibbon/uploads/config /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache /pvc/config
+              [ -s /pvc/.gibbon_guid ] || (cat /proc/sys/kernel/random/uuid 2>/dev/null || date +%s%N) > /pvc/.gibbon_guid
               if [ ! -s /pvc/config/config.php ]; then
                 printf '%s\n' \
                   '<?php' \
@@ -82,13 +82,15 @@ spec:
                   '}' \
                   '$caching     = 10;' \
                   '$absoluteURL = getenv("ABSOLUTE_URL");' \
-                > /pvc/config/config.php;
-                chown 33:33 /pvc/config/config.php || true; chmod 0660 /pvc/config/config.php;
-                echo "[Init] Wrote /pvc/config/config.php";
+                > /pvc/config/config.php
+                chown 33:33 /pvc/config/config.php || true
+                chmod 0660 /pvc/config/config.php || true
+                echo "[Init] Wrote /pvc/config/config.php"
               else
-                echo "[Init] Using existing /pvc/config/config.php";
-              fi;
-              chown -R 33:33 /var/www/html/gibbon/uploads || true; chmod -R 0777 /var/www/html/gibbon/uploads;
+                echo "[Init] Using existing /pvc/config/config.php"
+              fi
+              chown -R 33:33 /var/www/html/gibbon/uploads || true
+              chmod -R 0777 /var/www/html/gibbon/uploads || true
           env:
             - name: DB_HOST
               value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
@@ -115,39 +117,55 @@ spec:
           image: ntony3419/gibbon:v29-fixed-path
           command: ["/bin/sh","-lc"]
           args:
-            - >
-              set -e;
-              echo "[Init] Prepare config/uploads/locale on PVC";
-              mkdir -p /pvc/config /pvc/locale /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache;
+            - |
+              set -Eeuo pipefail
+              echo "[Init] Prepare config/uploads/locale on PVC"
+              mkdir -p /pvc/config /pvc/locale /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+
               if [ ! -s /pvc/config/config.php ]; then
-                cat > /pvc/config/config.php <<"PHP"
-                <?php
-                $databaseServer   = getenv("DB_HOST");
-                $databaseUsername = getenv("DB_USER");
-                $databasePassword = getenv("DB_PASSWORD");
-                $databaseName     = getenv("DB_NAME");
-                $guid = getenv("GIBBON_GUID");
-                if (!$guid) {
-                  $guidFile = __DIR__ . "/../.gibbon_guid";
-                  if (is_readable($guidFile)) { $guid = trim(file_get_contents($guidFile)); }
-                }
-                $caching     = 10;
-                $absoluteURL = getenv("ABSOLUTE_URL");
-                PHP
-                chmod 660 /pvc/config/config.php || true;
-              fi;
-              if [ -z "$(ls -A /pvc/locale 2>/dev/null)" ]; then
-                echo "[Init] Seeding ALL locales into PVC...";
-                cp -a /var/www/html/gibbon/resources/locale/. /pvc/locale/;                
+                cat >/pvc/config/config.php <<'PHP'
+<?php
+$databaseServer   = getenv("DB_HOST");
+$databaseUsername = getenv("DB_USER");
+$databasePassword = getenv("DB_PASSWORD");
+$databaseName     = getenv("DB_NAME");
+$guid = getenv("GIBBON_GUID");
+if (!$guid) {
+  $guidFile = __DIR__ . "/../.gibbon_guid";
+  if (is_readable($guidFile)) { $guid = trim(file_get_contents($guidFile)); }
+}
+$caching     = 10;
+$absoluteURL = getenv("ABSOLUTE_URL");
+PHP
+                chmod 660 /pvc/config/config.php || true
+              fi
+
+              SRC="/var/www/html/gibbon/resources/locale"
+              DST="/pvc/locale"
+
+              if [ -z "$(ls -A "$DST" 2>/dev/null)" ]; then
+                echo "[Init] Seeding ALL locales into PVC..."
+                if [ -d "$SRC" ]; then
+                  cp -a "$SRC/." "$DST/" || true
+                else
+                  echo "[WARN] $SRC not found in image; skipping seed"
+                fi
               else
-                echo "[Init] Syncing any new locales...";
-                for d in /var/www/html/gibbon/resources/locale/*; do
-                  n=$(basename "$d"); [ -e "/pvc/locale/$n" ] || cp -a "$d" "/pvc/locale/$n";
-                done;
-                cp -f /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo /pvc/locale/vi_VN/LC_MESSAGES/gibbon.mo || true;
-              fi;
-              chown -R 33:33 /pvc/locale || true;   # <-- NEW
-              chmod -R 0777 /var/www/html/gibbon/uploads || true;
+                echo "[Init] Syncing any new locales..."
+                if [ -d "$SRC" ]; then
+                  for d in "$SRC"/*; do
+                    n="$(basename "$d")"
+                    [ -e "$DST/$n" ] || cp -a "$d" "$DST/$n"
+                  done
+                  # Make sure vi_VN .mo is refreshed if present in image
+                  [ -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" ] && \
+                    cp -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" "$DST/vi_VN/LC_MESSAGES/gibbon.mo" || true
+                fi
+              fi
+
+              chown -R 33:33 "$DST" || true
+              chmod -R u+rwX,g+rwX "$DST" || true
+              chmod -R 0777 /var/www/html/gibbon/uploads || true
           env:
             - name: DB_HOST
               value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local  # FIX: literal instead of secret key 'host'
