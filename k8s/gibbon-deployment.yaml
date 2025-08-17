@@ -138,7 +138,7 @@ spec:
               fi;
               if [ -z "$(ls -A /pvc/locale 2>/dev/null)" ]; then
                 echo "[Init] Seeding ALL locales into PVC...";
-                cp -a /var/www/html/gibbon/resources/locale/. /pvc/locale/;
+                cp -a /var/www/html/gibbon/resources/locale/. /pvc/locale/;                
               else
                 echo "[Init] Syncing any new locales...";
                 for d in /var/www/html/gibbon/resources/locale/*; do
@@ -146,6 +146,7 @@ spec:
                 done;
                 cp -f /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo /pvc/locale/vi_VN/LC_MESSAGES/gibbon.mo || true;
               fi;
+              chown -R 33:33 /pvc/locale || true;   # <-- NEW
               chmod -R 0777 /var/www/html/gibbon/uploads || true;
           env:
             - name: DB_HOST
@@ -215,6 +216,9 @@ spec:
               mountPath: /var/www/html/gibbon/config.php
               subPath: config/config.php
               readOnly: true
+            - name: uploads
+              mountPath: /var/www/html/gibbon/resources/locale
+              subPath: locale
       volumes:
         - name: uploads
           persistentVolumeClaim:
