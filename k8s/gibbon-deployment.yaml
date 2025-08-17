@@ -111,7 +111,64 @@ spec:
               mountPath: /var/www/html/gibbon/uploads
             - name: uploads
               mountPath: /pvc
-
+        - name: init-gibbon
+          image: ntony3419/gibbon:v29-fixed-path
+          command: ["/bin/sh","-lc"]
+          args:
+            - >
+              set -e;
+              echo "[Init] Prepare config/uploads/locale on PVC";
+              mkdir -p /pvc/config /pvc/locale /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache;
+              if [ ! -s /pvc/config/config.php ]; then
+                cat > /pvc/config/config.php <<"PHP"
+                <?php
+                $databaseServer   = getenv("DB_HOST");
+                $databaseUsername = getenv("DB_USER");
+                $databasePassword = getenv("DB_PASSWORD");
+                $databaseName     = getenv("DB_NAME");
+                $guid = getenv("GIBBON_GUID");
+                if (!$guid) {
+                  $guidFile = __DIR__ . "/../.gibbon_guid";
+                  if (is_readable($guidFile)) { $guid = trim(file_get_contents($guidFile)); }
+                }
+                $caching     = 10;
+                $absoluteURL = getenv("ABSOLUTE_URL");
+                PHP
+                chmod 660 /pvc/config/config.php || true;
+              fi;
+              if [ -z "$(ls -A /pvc/locale 2>/dev/null)" ]; then
+                echo "[Init] Seeding ALL locales into PVC...";
+                cp -a /var/www/html/gibbon/resources/locale/. /pvc/locale/;
+              else
+                echo "[Init] Syncing any new locales...";
+                for d in /var/www/html/gibbon/resources/locale/*; do
+                  n=$(basename "$d"); [ -e "/pvc/locale/$n" ] || cp -a "$d" "/pvc/locale/$n";
+                done;
+                cp -f /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo /pvc/locale/vi_VN/LC_MESSAGES/gibbon.mo || true;
+              fi;
+              chmod -R 0777 /var/www/html/gibbon/uploads || true;
+          env:
+            - name: DB_HOST
+              value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local  # FIX: literal instead of secret key 'host'
+            - name: DB_NAME
+              value: gibbon                                               # FIX: literal instead of secret key 'database'
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: password
+            - name: ABSOLUTE_URL
+              value: "https://gibbon-dev.vanhoa.edu.vn"
+          volumeMounts:
+            - name: uploads
+              mountPath: /pvc
+            - name: uploads
+              mountPath: /var/www/html/gibbon/uploads    
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fixed-path
