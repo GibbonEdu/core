@@ -139,6 +139,7 @@ kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc '
   php -r "putenv(\"LANG=vi_VN.UTF-8\"); setlocale(LC_ALL,\"vi_VN.UTF-8\"); bindtextdomain(\"gibbon\",\"/var/www/html/gibbon/resources/locale\"); textdomain(\"gibbon\"); echo gettext(\"Home\"), PHP_EOL;"
 '
 
+
 echo "[5] Ingress (DEV)"
 kubectl apply -f k8s/gibbon-ingress.yaml
 
