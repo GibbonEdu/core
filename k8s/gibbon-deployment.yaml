@@ -112,7 +112,7 @@ spec:
               mountPath: /pvc
         - name: init-gibbon
           image: ntony3419/gibbon:v29-fixed-path
-          command: ["/bin/sh","-lc"]
+          command: ["/bin/sh","-c"]
           args:
             - |
               set -eu              
