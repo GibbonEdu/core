@@ -115,7 +115,8 @@ spec:
           command: ["/bin/sh","-lc"]
           args:
             - |
-              set -Eeuo pipefail
+              set -eu              
+              set -o pipefail 2>/dev/null || true
               echo "[Init] Prepare config/uploads/locale on PVC"
               mkdir -p /pvc/config /pvc/locale /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
 
