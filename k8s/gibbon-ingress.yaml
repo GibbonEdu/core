@@ -19,7 +19,7 @@ metadata:
   name: gibbon-dev-ingress
   namespace: gibbon-dev-deploy
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod   # keep staging for test
+    cert-manager.io/cluster-issuer: letsencrypt-staging   # keep staging for test
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     acme.cert-manager.io/http01-edit-in-place: "true"
