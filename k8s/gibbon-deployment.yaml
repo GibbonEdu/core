@@ -34,9 +34,6 @@ spec:
 # ---------------------------
 # Deployment - Gibbon App (DEV)
 # ---------------------------
-# ---------------------------
-# Deployment - Gibbon App (DEV)
-# ---------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -157,9 +154,9 @@ PHP
                     n="$(basename "$d")"
                     [ -e "$DST/$n" ] || cp -a "$d" "$DST/$n"
                   done
-                  # Make sure vi_VN .mo is refreshed if present in image
-                  [ -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" ] && \
+                  if [ -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" ]; then
                     cp -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" "$DST/vi_VN/LC_MESSAGES/gibbon.mo" || true
+                  fi
                 fi
               fi
 
@@ -168,9 +165,9 @@ PHP
               chmod -R 0777 /var/www/html/gibbon/uploads || true
           env:
             - name: DB_HOST
-              value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local  # FIX: literal instead of secret key 'host'
+              value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
             - name: DB_NAME
-              value: gibbon                                               # FIX: literal instead of secret key 'database'
+              value: gibbon
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
@@ -187,7 +184,7 @@ PHP
             - name: uploads
               mountPath: /pvc
             - name: uploads
-              mountPath: /var/www/html/gibbon/uploads    
+              mountPath: /var/www/html/gibbon/uploads
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fixed-path
