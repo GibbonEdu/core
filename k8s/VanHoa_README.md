@@ -1,0 +1,1 @@
+- Always use Staging for deployment. after all is ready then swithc to production SSL
