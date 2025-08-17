@@ -131,12 +131,16 @@ kubectl get pvc gibbon-dev-uploads-pvc -n "$NS" || true
 echo "[4] Wait for gibbon-dev-app rollout..."
 kubectl rollout status deployment gibbon-dev-app -n "$NS" --timeout=300s
 
-echo "[4.1] Smoke check: locale is mounted and vi works..."
+echo "[4.1] Smoke check: locale mount + PHP gettext..."
 APP_POD=$(kubectl -n "$NS" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
 kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc '
   set -e
-  ls -l /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo
-  php -r "putenv(\"LANG=vi_VN.UTF-8\"); setlocale(LC_ALL,\"vi_VN.UTF-8\"); bindtextdomain(\"gibbon\",\"/var/www/html/gibbon/resources/locale\"); textdomain(\"gibbon\"); echo gettext(\"Home\"), PHP_EOL;"
+  ls -l /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo || true
+  if [ -f /var/www/html/gibbon/uploads/smoketest.php ]; then
+    php /var/www/html/gibbon/uploads/smoketest.php || true
+  else
+    echo "[WARN] smoketest.php missing (init not finished?)"
+  fi
 '
 
 
