@@ -115,11 +115,19 @@ spec:
           command: ["/bin/sh","-c"]
           args:
             - |
+              # Log everything to the PVC so we can read it from the app pod later
+              LOG=/var/www/html/gibbon/uploads/init-gibbon.log
+              mkdir -p /var/www/html/gibbon/uploads || true
+
+              exec >"$LOG" 2>&1
               set -eu
-              set -o pipefail 2>/dev/null || true
+              echo "[Init] $(date -Iseconds) starting"
               echo "[Init] Prepare config/uploads/locale on PVC"
-              mkdir -p /pvc/config /pvc/locale \
-                /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+              SRC="/var/www/html/gibbon/resources/locale"
+              DST="/pvc/locale"
+              # Ensure dirs exist
+              mkdir -p /pvc/config "$DST" \
+                       /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
 
               if [ ! -s /pvc/config/config.php ]; then
                 printf '%s\n' \
@@ -138,16 +146,14 @@ spec:
                 > /pvc/config/config.php
                 chmod 660 /pvc/config/config.php || true
               fi
+              # Seed/sync locales using a marker file to avoid 'ls' with set -e
 
-              SRC="/var/www/html/gibbon/resources/locale"
-              DST="/pvc/locale"
-
-              if [ -z "$(ls -A "$DST" 2>/dev/null)" ]; then
-                echo "[Init] Seeding ALL locales into PVC..."
+              if [ ! -f "$DST/.seeded" ]; then
+                echo "[Init] seeding locales -> $DST"
                 if [ -d "$SRC" ]; then
                   cp -r "$SRC"/. "$DST"/ 2>/dev/null || true
                 else
-                  echo "[WARN] $SRC not found in image; skipping seed"
+                  echo "[WARN] $SRC not found; skipping seed"
                 fi
               else
                 echo "[Init] Syncing any new locales..."
