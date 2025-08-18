@@ -2,14 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: text/html; charset=utf-8');
-require_once __DIR__.'/vendor/autoload.php';
 
-$pdo = new PDO(
-    "mysql:host=m.vanhoa.edu.vn;dbname=Gibbon_Intern;port=3306;charset=utf8mb4",
-    "gibbon_intern",
-    "vanhoa123@",
-    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-);
+require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/db.php'; // <-- Dùng kết nối chung qua .env (tạo $pdo)
 
 function safe($str) {
     return htmlspecialchars((string)($str ?? ''), ENT_QUOTES, 'UTF-8');
@@ -80,18 +75,18 @@ $APP_SETTINGS = loadSettings($settingsPath);
 
 // Handle save from Settings modal
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
-    $teacherRaw = $_POST['teacherNames'] ?? '';
-    $teacherLines = array_values(array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", (string)$teacherRaw))));
+    $teacherRaw    = $_POST['teacherNames'] ?? '';
+    $teacherLines  = array_values(array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", (string)$teacherRaw))));
     $centerPercent = max(0, min(100, (int)($_POST['centerFeePercent'] ?? 20)));
-    $detectP = trim($_POST['prompt_detectTeacher'] ?? '');
+    $detectP  = trim($_POST['prompt_detectTeacher'] ?? '');
     $advanceP = trim($_POST['prompt_advance'] ?? '');
-    $heldP   = trim($_POST['prompt_held'] ?? '');
+    $heldP    = trim($_POST['prompt_held'] ?? '');
 
-    $APP_SETTINGS['teacherNames'] = $teacherLines;
-    $APP_SETTINGS['centerFeePercent'] = $centerPercent;
-    if ($detectP !== '') $APP_SETTINGS['prompts']['detectTeacher'] = $detectP;
-    if ($advanceP !== '') $APP_SETTINGS['prompts']['advance'] = $advanceP;
-    if ($heldP   !== '') $APP_SETTINGS['prompts']['held']    = $heldP;
+    $APP_SETTINGS['teacherNames']      = $teacherLines;
+    $APP_SETTINGS['centerFeePercent']  = $centerPercent;
+    if ($detectP  !== '') $APP_SETTINGS['prompts']['detectTeacher'] = $detectP;
+    if ($advanceP !== '') $APP_SETTINGS['prompts']['advance']       = $advanceP;
+    if ($heldP    !== '') $APP_SETTINGS['prompts']['held']          = $heldP;
 
     if (saveSettings($settingsPath, $APP_SETTINGS)) {
         header("Location: " . strtok($_SERVER['REQUEST_URI'],'?') . '?' . http_build_query($_GET + ['saved'=>'1']));
@@ -427,9 +422,9 @@ if ($from && $to) {
     $totalPages = max(1, (int)ceil($totalRows / $perPage));
 
     if ($teacher && (!empty($data1))) {
-        $tongThu = 0.0;
-        $thuVaGiu = 0.0;
-        $ungLuong = 0.0;
+        $tongThu   = 0.0;
+        $thuVaGiu  = 0.0;
+        $ungLuong  = 0.0;
 
         $selectedTeacherName = '';
         foreach ($teacherList as $t) {
@@ -470,10 +465,10 @@ if ($from && $to) {
 
         $phiTrungTam = $tongThu * ((float)($APP_SETTINGS['centerFeePercent'] ?? 20) / 100.0);
         $ketToan = [
-            'tongThu' => $tongThu,
+            'tongThu'     => $tongThu,
             'phiTrungTam' => $phiTrungTam,
-            'thuVaGiu' => $thuVaGiu,
-            'ungLuong' => $ungLuong
+            'thuVaGiu'    => $thuVaGiu,
+            'ungLuong'    => $ungLuong
         ];
     }
 }
@@ -727,7 +722,7 @@ function resetFilters() {
 
 <?php
 $teacherNamesText = implode("\n", $APP_SETTINGS['teacherNames'] ?? []);
-$detectTpl = $APP_SETTINGS['prompts']['detectTeacher'] ?? '';
+$detectTpl  = $APP_SETTINGS['prompts']['detectTeacher'] ?? '';
 $advanceTpl = $APP_SETTINGS['prompts']['advance'] ?? '';
 $heldTpl    = $APP_SETTINGS['prompts']['held'] ?? '';
 $centerPct  = (int)($APP_SETTINGS['centerFeePercent'] ?? 20);
