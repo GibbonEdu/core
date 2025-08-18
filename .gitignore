@@ -40,3 +40,9 @@ var/*
 node_modules
 
 .env
+finance_settings.json
+chatgpt_api_token.json
+*.xlsx
+vendor/
+.idea/
+.vscode/
