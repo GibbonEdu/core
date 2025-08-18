@@ -122,13 +122,21 @@ spec:
               exec >"$LOG" 2>&1
               set -eu
               echo "[Init] $(date -Iseconds) starting"
-              echo "[Init] Prepare config/uploads/locale on PVC"
+              echo "[Init] Prepare config/uploads/i18n on PVC"
               SRC="/var/www/html/gibbon/resources/locale"
-              DST="/pvc/locale"
+              DST="/pvc/i18n"
               # Ensure dirs exist
               mkdir -p /pvc/config "$DST" \
                        /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
 
+              # Migrate any older PVC contents from /pvc/locale -> /pvc/i18n (one-time)
+              if [ -d /pvc/locale ] && [ ! -e "$DST/.migrated" ]; then
+                echo "[Init] Migrating /pvc/locale -> $DST"
+                mkdir -p "$DST"
+                cp -a /pvc/locale/. "$DST/" || true
+                touch "$DST/.migrated"
+              fi
+              # Ensure config.php exists
               if [ ! -s /pvc/config/config.php ]; then
                 printf '%s\n' \
                   '<?php' \
@@ -146,12 +154,11 @@ spec:
                 > /pvc/config/config.php
                 chmod 660 /pvc/config/config.php || true
               fi
-              # Seed/sync locales using a marker file to avoid 'ls' with set -e
-
-              if [ ! -f "$DST/.seeded" ]; then
+              # Seed new languages into PVC (if empty)
+              if [ -z "$(ls -A "$DST" 2>/dev/null)" ]; then
                 echo "[Init] seeding locales -> $DST"
                 if [ -d "$SRC" ]; then
-                  cp -r "$SRC"/. "$DST"/ 2>/dev/null || true
+                  cp -a "$SRC"/. "$DST"/ 2>/dev/null || true
                 else
                   echo "[WARN] $SRC not found; skipping seed"
                 fi
@@ -160,7 +167,7 @@ spec:
                 if [ -d "$SRC" ]; then
                   for d in "$SRC"/*; do
                     n="$(basename "$d")"
-                    [ -e "$DST/$n" ] || cp -r "$d" "$DST/$n" 2>/dev/null || true
+                    [ -e "$DST/$n" ] || cp -a "$d" "$DST/$n" 2>/dev/null || true
                   done
                   if [ -f "$SRC/vi_VN/LC_MESSAGES/gibbon.mo" ]; then
                     mkdir -p "$DST/vi_VN/LC_MESSAGES"
@@ -172,6 +179,15 @@ spec:
               chown -R 33:33 "$DST" 2>/dev/null || true
               chmod -R u+rwX,g+rwX "$DST" 2>/dev/null || true
               chmod -R 0777 /var/www/html/gibbon/uploads 2>/dev/null || true
+              # (Optional) Point old path to new persistent path to cover both codepaths
+
+              if [ -d /var/www/html/gibbon/resources/locale ]; then
+
+                rm -rf /var/www/html/gibbon/resources/locale
+
+              fi
+
+              ln -s /var/www/html/gibbon/i18n /var/www/html/gibbon/resources/locale || true
           env:
             - name: DB_HOST
               value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
@@ -241,8 +257,8 @@ spec:
               subPath: config/config.php
               readOnly: true
             - name: uploads
-              mountPath: /var/www/html/gibbon/resources/locale
-              subPath: locale
+              mountPath: /var/www/html/gibbon/i18n
+              subPath: i18n
       volumes:
         - name: uploads
           persistentVolumeClaim:
