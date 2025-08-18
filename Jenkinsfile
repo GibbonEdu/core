@@ -1,12 +1,12 @@
-// Jenkinsfile — DEV
+// Jenkinsfile — DEV (Option A: image build + rollout)
 
-// This parameters and enviroment can be used later for demo and production rollout
 parameters {
   choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
   string(name: 'NAMESPACE', defaultValue: 'gibbon-dev-deploy', description: 'K8s namespace')
 }
 environment {
   NS = "${params.NAMESPACE}"
+  IMAGE_REPO = "hub.docker.com/repository/docker/ntony3419/gibbon"   
 }
 
 pipeline {
@@ -31,14 +31,49 @@ spec:
       command: ["/bin/bash","-c"]
       args: ["sleep infinity"]
       tty: true
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:latest
+      imagePullPolicy: Always
+      args: ["sleep","infinity"]
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
+  volumes:
+    - name: docker-config
+      secret:
+        secretName: dockerhub-json
 """
     }
   }
 
   stages {
+
     stage('Checkout') {
       steps {
         git branch: 'gibbon-dev', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
+      }
+    }
+
+    stage('Build & Push Image') {
+      steps {
+        container('kaniko') {
+          sh '''
+            set -euo pipefail
+            GIT_SHA="$(git rev-parse --short HEAD)"
+            TAG="git-${GIT_SHA}-b${BUILD_NUMBER}"
+
+            echo "[Build] ${IMAGE_REPO}:${TAG}"
+            /kaniko/executor \
+              --context="${WORKSPACE}" \
+              --dockerfile="Dockerfile.gibbon" \
+              --destination="${IMAGE_REPO}:${TAG}" \
+              --destination="${IMAGE_REPO}:dev-latest" \
+              --build-arg GIT_COMMIT="$(git rev-parse HEAD)" \
+              --build-arg I18N_COMMIT=refs/heads/main
+
+            echo "${TAG}" > image-tag.txt
+          '''
+        }
       }
     }
 
@@ -47,8 +82,7 @@ spec:
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-              echo "==== ⚙️ Ensure Let's Encrypt Staging ClusterIssuer ===="
-              cat <<EOF | kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -76,80 +110,49 @@ EOF
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''#!/usr/bin/env bash
 set -euo pipefail
-NS=gibbon-dev-deploy
+NS="${NS}"
 
+TAG="$(cat image-tag.txt)"
 echo "[0] Ensure namespace exists..."
 kubectl create ns "$NS" --dry-run=client -o yaml | kubectl apply -f -
 
 echo "[1] Secret for DB creds (DEV)"
 kubectl apply -n "$NS" -f k8s/gibbon-mysql-secret.yaml
 
-echo "[2] MySQL stack (Deployment + PV + PVC + Service + GRANT Job)..."
+echo "[2] MySQL stack..."
 kubectl apply -f k8s/gibbon-mysql-deployment.yaml
 
-echo "[2.0] Wait for MySQL PVC to be Bound..."
+echo "[2.0] Wait for MySQL PVC..."
 for i in $(seq 1 90); do
   phase=$(kubectl get pvc gibbon-dev-mysql-pvc -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
   [ "$phase" = "Bound" ] && break
   sleep 2
 done
 kubectl get pvc gibbon-dev-mysql-pvc -n "$NS"
-if [ "$(kubectl get pvc gibbon-dev-mysql-pvc -n "$NS" -o jsonpath='{.status.phase}')" != "Bound" ]; then
-  echo "[ERR] MySQL PVC did not bind in time"; kubectl -n "$NS" describe pvc gibbon-dev-mysql-pvc; exit 1
-fi
+[ "$(kubectl get pvc gibbon-dev-mysql-pvc -n "$NS" -o jsonpath='{.status.phase}')" = "Bound" ]
 
 echo "[2.1] Wait for MySQL rollout..."
-if ! kubectl rollout status deployment gibbon-dev-mysql -n "$NS" --timeout=240s; then
-  echo "[ERR] MySQL deployment not ready. Showing events:"
-  kubectl -n "$NS" describe deploy gibbon-dev-mysql || true
-  kubectl -n "$NS" get pods -l app=gibbon-dev-mysql -o wide || true
-  kubectl -n "$NS" describe pods -l app=gibbon-dev-mysql || true
-  exit 1
-fi
+kubectl rollout status deployment gibbon-dev-mysql -n "$NS" --timeout=240s
 
-
-echo "[2.2] Extra wait to accept connections..."
-kubectl -n "$NS" exec deploy/gibbon-dev-mysql -- sh -lc '
-  for i in $(seq 1 60); do
-    mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" ping >/dev/null 2>&1 && exit 0
-    sleep 2
-  done
-  echo "mysql not answering" >&2; exit 1
-'
-
-echo "[3] Gibbon app stack (Deployment + PV + PVC + Service)..."
+echo "[3] App stack..."
 kubectl apply -f k8s/gibbon-deployment.yaml
 
-echo "[info] waiting for gibbon-dev-uploads-pvc to be Bound..."
-for i in $(seq 1 60); do
-  phase=$(kubectl get pvc gibbon-dev-uploads-pvc -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
-  [ "$phase" = "Bound" ] && break
-  sleep 2
-done
-kubectl get pvc gibbon-dev-uploads-pvc -n "$NS" || true
+echo "[3.1] Set freshly built image tag..."
+kubectl -n "$NS" set image deploy/gibbon-dev-app gibbon="${IMAGE_REPO}:${TAG}"
 
-echo "[4] Wait for gibbon-dev-app rollout..."
+echo "[4] Wait for app rollout..."
 kubectl rollout status deployment gibbon-dev-app -n "$NS" --timeout=300s
 
-echo "[4.1] Smoke check: locale mount + PHP gettext..."
+echo "[4.1] Smoke: i18n + custom file..."
 APP_POD=$(kubectl -n "$NS" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
-kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc '
-  set -e
-  ls -l /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo || true
-  if [ -f /var/www/html/gibbon/uploads/smoketest.php ]; then
-    php /var/www/html/gibbon/uploads/smoketest.php || true
-  else
-    echo "[WARN] smoketest.php missing (init not finished?)"
-  fi
-'
+kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc 'ls -l /var/www/html/gibbon/i18n || true'
+kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc 'ls -l /var/www/html/gibbon/finance_report.php || echo "finance_report.php missing"'
 
-
-echo "[5] Ingress (DEV)"
+echo "[5] Ingress"
 kubectl apply -f k8s/gibbon-ingress.yaml
 
-echo "==== DEV Deployed ===="
+echo "==== DEV Deployed with ${IMAGE_REPO}:${TAG} ===="
 kubectl get all -n "$NS"
-kubectl get pv
 kubectl get pvc -n "$NS"
 '''
           }

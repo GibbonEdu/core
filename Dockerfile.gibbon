@@ -1,26 +1,24 @@
 # Dockerfile.gibbon
 FROM php:8.2-apache
 
-# Install required extensions and Composer
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    unzip zip git curl wget pkg-config \
-    libicu-dev libgettextpo-dev \
-    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
-    libzip-dev zlib1g-dev libxml2-dev\
-    libonig-dev \
-    netcat-openbsd default-mysql-client \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml \
- && a2enmod rewrite 
+# OS deps + PHP extensions
+RUN set -eux; \
+    apt-get update && apt-get install -y --no-install-recommends \
+      unzip zip git curl wget pkg-config locales \
+      libicu-dev libgettextpo-dev \
+      libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+      libzip-dev zlib1g-dev libxml2-dev libonig-dev \
+      netcat-openbsd default-mysql-client \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
-# Composer (allow running as root in container)
+# Composer (root allowed inside container)
 ENV COMPOSER_ALLOW_SUPERUSER=1
-
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
-# Set working dir and Apache root
-WORKDIR /var/www/html/gibbon
-#RUN sed -i 's|/var/www/html|/var/www/gibbon|g' /etc/apache2/sites-available/000-default.conf
+# Apache vhost -> /var/www/html/gibbon
 RUN printf '%s\n' \
   '<VirtualHost *:80>' \
   '  DocumentRoot /var/www/html/gibbon' \
@@ -31,51 +29,45 @@ RUN printf '%s\n' \
   '</VirtualHost>' \
   > /etc/apache2/sites-available/000-default.conf
 
+# Copy full repository
+WORKDIR /var/www/html/gibbon
+COPY . /var/www/html/gibbon
 
-# Download and extract Gibbon v29
-RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v29.0.00.zip && \
-    unzip v29.0.00.zip && \
-    mv core-29.0.00/* . && \
-    rm -rf core-29.0.00 v29.0.00.zip
+# Install PHP deps if composer.json exists
+RUN set -eux; \
+    if [ -f composer.json ]; then \
+      composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist; \
+    fi
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# Ensure writable runtime dirs
+RUN mkdir -p uploads/tmp uploads/cache \
+ && chown -R www-data:www-data /var/www/html/gibbon \
+ && chmod -R 0777 uploads uploads/tmp uploads/cache
 
-# Ensure session and cache folders exist and are writable
-RUN mkdir -p /var/www/html/gibbon/uploads/tmp \
-    && mkdir -p /var/www/html/gibbon/uploads/cache \
-    && chown -R www-data:www-data /var/www/html/gibbon \
-    && chmod -R 0777 /var/www/html/gibbon/uploads \
-    && chmod -R 0777 /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+# Generate vi_VN locale for gettext
+RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
+ENV LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
 
-# Language set up vietnamese
-# Locales for gettext
-RUN apt-get update && apt-get install -y --no-install-recommends locales \
- && sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen \
- && locale-gen vi_VN.UTF-8
-
-ENV LANG=vi_VN.UTF-8 \
-    LC_ALL=vi_VN.UTF-8 \
-    LANGUAGE=vi_VN:vi
-
-# Sessions -> tmp inside uploads
+# Store sessions under uploads (persistent PVC)
 RUN echo 'session.save_path = /var/www/html/gibbon/uploads/tmp' > /usr/local/etc/php/conf.d/session.ini
 
-# --- Add Vietnamese translation from Gibbon i18n repo ---
-# Pin to a specific commit for reproducible builds. Replace with a real commit SHA from:
-# https://github.com/GibbonEdu/i18n/commits/main
+# Seed Vietnamese MO from the official i18n repo (optional but nice to have)
+# Pin to a commit/branch via build-arg
 ARG I18N_COMMIT=refs/heads/main
 RUN set -eux; \
     mkdir -p /tmp/i18n /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES; \
-    # Download the i18n repo tarball (commit or branch)
     curl -L -o /tmp/i18n.tar.gz "https://github.com/GibbonEdu/i18n/archive/${I18N_COMMIT}.tar.gz"; \
     tar -xzf /tmp/i18n.tar.gz -C /tmp; \
-    # Find extracted dir (works for both commit or branch tarballs)
     I18N_DIR="$(find /tmp -maxdepth 1 -type d -name 'i18n-*' | head -n1)"; \
-    cp -v "${I18N_DIR}/vi_VN/LC_MESSAGES/gibbon.mo" \
-          /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo; \
-    chown -R www-data:www-data /var/www/html/gibbon/resources/locale; \
+    if [ -f "${I18N_DIR}/vi_VN/LC_MESSAGES/gibbon.mo" ]; then \
+      cp -v "${I18N_DIR}/vi_VN/LC_MESSAGES/gibbon.mo" resources/locale/vi_VN/LC_MESSAGES/gibbon.mo; \
+    fi; \
+    chown -R www-data:www-data resources/locale || true; \
     rm -rf /tmp/i18n /tmp/i18n.tar.gz "${I18N_DIR}"
 
-# Keep Apache running in foreground
+# Labels (helpful for traceability)
+ARG GIT_COMMIT=unknown
+LABEL org.opencontainers.image.source="https://github.com/ntony3419/GibbonEdu-core" \
+      org.opencontainers.image.revision="${GIT_COMMIT}"
+
 CMD ["apache2-foreground"]

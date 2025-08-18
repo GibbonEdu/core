@@ -1,0 +1,10 @@
+.git
+.gitignore
+k8s/
+Jenkinsfile
+*.md
+*.yml
+*.yaml
+*.log
+vendor/cache/
+node_modules/
