@@ -43,6 +43,7 @@ metadata:
     app: gibbon-dev
 spec:
   replicas: 1
+  progressDeadlineSeconds: 600
   selector:
     matchLabels:
       app: gibbon-dev
@@ -63,7 +64,7 @@ spec:
             - |
               set -ex
               mkdir -p /pvc/config /pvc/i18n \
-                       /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+                       /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
               [ -s /pvc/.gibbon_guid ] || (cat /proc/sys/kernel/random/uuid 2>/dev/null || date +%s%N) > /pvc/.gibbon_guid
               if [ ! -s /pvc/config/config.php ]; then
                 printf '%s\n' \
@@ -82,7 +83,7 @@ spec:
                 > /pvc/config/config.php
                 chown 33:33 /pvc/config/config.php || true
                 chmod 0660 /pvc/config/config.php || true
-              fi            
+              fi
               chown -R 33:33 /var/www/html/gibbon/uploads || true
               chmod -R 0777 /var/www/html/gibbon/uploads || true
           env:
@@ -103,13 +104,15 @@ spec:
             - name: ABSOLUTE_URL
               value: "https://gibbon-dev.vanhoa.edu.vn"
           volumeMounts:
-            - name: uploads              
+            - name: uploads
               mountPath: /pvc
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
+
+        # Seed/refresh vi_VN MO into PVC from the SAME app image
         - name: init-seed-i18n
-          # IMPORTANT: this must be the SAME image as the app container (Jenkins will set it below)
-          image: docker.io/ntony3419/gibbon:dev-latest
+          image: docker.io/ntony3419/gibbon:dev-latest   # Jenkins updates this to the build tag
+          imagePullPolicy: Always
           command: ["/bin/sh","-c"]
           args:
             - |
@@ -123,12 +126,15 @@ spec:
               fi
           volumeMounts:
             - { name: uploads, mountPath: /pvc }
+
       containers:
         - name: gibbon
-          image: docker.io/ntony3419/gibbon:dev-latest
+          image: docker.io/ntony3419/gibbon:dev-latest      # Jenkins updates this to the build tag
           imagePullPolicy: Always
           command: ["/bin/sh","-c"]
           args: ["apache2ctl -D FOREGROUND"]
+          ports:
+            - containerPort: 80
           startupProbe:
             httpGet: { path: "/", port: 80 }
             periodSeconds: 10
@@ -141,7 +147,6 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 12
-          
           env:
             - name: DB_HOST
               value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
@@ -169,6 +174,7 @@ spec:
             - name: uploads
               mountPath: /var/www/html/gibbon/i18n
               subPath: i18n
+
       volumes:
         - name: uploads
           persistentVolumeClaim:

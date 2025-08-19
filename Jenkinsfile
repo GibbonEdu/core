@@ -1,4 +1,4 @@
-// Jenkinsfile — DEV (Option A: image build + rollout)
+// Jenkinsfile — DEV (image build + rollout)
 
 pipeline {
   agent {
@@ -25,11 +25,14 @@ spec:
       volumeMounts:
         - name: workspace-volume
           mountPath: /home/jenkins/agent
+
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
+      # Ensure /bin/sh exists for Jenkins 'sh' steps
       command: ["/busybox/sh","-c"]
-      args: ["sleep infinity"]   # keep container alive for steps
+      args: ["ln -sf /busybox/sh /bin/sh; sleep infinity"]
+      tty: true
       env:
         - name: DOCKER_CONFIG
           value: /kaniko/.docker/
@@ -38,6 +41,7 @@ spec:
           mountPath: /kaniko/.docker
         - name: workspace-volume
           mountPath: /home/jenkins/agent
+
   volumes:
     - name: docker-config
       secret:
@@ -58,7 +62,6 @@ spec:
 
   environment {
     NS = "${params.NAMESPACE}"
-    // Use a real registry path; Docker Hub default is docker.io/<user>/<repo>
     IMAGE_REPO = "docker.io/ntony3419/gibbon"
   }
 
@@ -73,13 +76,14 @@ spec:
     stage('Build & Push Image') {
       steps {
         container('kaniko') {
-           sh '''#!/usr/bin/env bash
+          sh '''#!/usr/bin/env sh
 set -eu
 
 : "${IMAGE_REPO:?IMAGE_REPO env is not set}"
 
-# Prefer Jenkins' GIT_COMMIT env (available after Checkout), avoid calling `git` in this container
+# Use Jenkins-provided commit (from the prior Checkout stage)
 GIT_SHA="${GIT_COMMIT:-unknown}"
+GIT_SHA="${GIT_SHA%% *}"
 GIT_SHA="${GIT_SHA:0:7}"
 TAG="git-${GIT_SHA}-b${BUILD_NUMBER}"
 
@@ -94,8 +98,8 @@ echo "[Build] $IMAGE_REPO:$TAG"
   --cache=true \
   --cache-repo="${IMAGE_REPO}-cache"
 
-            echo "$TAG" > image-tag.txt
-          '''
+echo "$TAG" > image-tag.txt
+'''
         }
       }
     }
@@ -133,9 +137,11 @@ EOF
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''#!/usr/bin/env bash
 set -euo pipefail
+
 NS="${NS}"
 TAG="$(cat image-tag.txt)"
 IMG="$IMAGE_REPO:$TAG"
+
 echo "[0] Ensure namespace exists..."
 kubectl create ns "$NS" --dry-run=client -o yaml | kubectl apply -f -
 
@@ -155,16 +161,18 @@ kubectl -n "$NS" get pvc gibbon-dev-mysql-pvc
 [ "$(kubectl -n "$NS" get pvc gibbon-dev-mysql-pvc -o jsonpath='{.status.phase}')" = "Bound" ]
 
 echo "[2.1] Wait for MySQL rollout..."
-kubectl rollout status deployment gibbon-dev-mysql -n "$NS" --timeout=240s
+kubectl -n "$NS" rollout status deploy/gibbon-dev-mysql --timeout=240s
 
 echo "[3] App stack..."
 kubectl -n "$NS" apply -f k8s/gibbon-deployment.yaml
-# Give the deployment a bit more time to progress
+
+# Be generous on first rollout
 kubectl -n "$NS" patch deploy gibbon-dev-app -p '{"spec":{"progressDeadlineSeconds":600}}' >/dev/null 2>&1 || true
 
 echo "[3.1] Set freshly built image tag..."
 kubectl -n "$NS" set image deploy/gibbon-dev-app gibbon="$IMG"
-# If the init container 'init-seed-i18n' exists (new manifest), update it to the SAME image.
+
+# Keep init container in lock-step with app image if present
 if kubectl -n "$NS" get deploy gibbon-dev-app -o jsonpath='{..initContainers[*].name}' 2>/dev/null | grep -q 'init-seed-i18n'; then
   kubectl -n "$NS" set image deploy/gibbon-dev-app init-seed-i18n="$IMG"
 fi
@@ -172,7 +180,7 @@ fi
 echo "[4] Wait for app rollout..."
 kubectl -n "$NS" rollout status deploy/gibbon-dev-app --timeout=600s
 
-echo "[4.1] Smoke: i18n + custom file..."
+echo "[4.1] Smoke: i18n + custom file (newest pod)..."
 APP_POD=$(kubectl -n "$NS" get pod -l app=gibbon-dev -o jsonpath='{range .items[*]}{.metadata.creationTimestamp}{"\\t"}{.metadata.name}{"\\n"}{end}' | sort | tail -n1 | cut -f2)
 kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc 'ls -ld /var/www/html/gibbon/i18n || true'
 kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc 'ls -l /var/www/html/gibbon/finance_report.php || echo "finance_report.php missing"'
