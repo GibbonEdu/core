@@ -8,6 +8,24 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  securityContext:
+    fsGroup: 10000
+    fsGroupChangePolicy: OnRootMismatch
+  # Make sure the jnlp user (uid 10000) owns the workspace volume
+  initContainers:
+    - name: fix-workspace-perms
+      image: busybox:1.36
+      command: ["/bin/sh","-c"]
+      args:
+        - >
+          set -eux;
+          mkdir -p /home/jenkins/agent;
+          chown -R 10000:10000 /home/jenkins/agent;
+          chmod -R g+rwX /home/jenkins/agent
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
+
   nodeSelector:
     kubernetes.io/hostname: k8s-jenkin
   tolerations:
@@ -15,6 +33,7 @@ spec:
       operator: "Equal"
       value: "jenkin"
       effect: "NoSchedule"
+
   containers:
     - name: kubectl
       image: ntony3419/k8s-agent:1.3
@@ -29,9 +48,9 @@ spec:
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
-      # keep alive and ensure /bin/sh exists
       command: ["/busybox/sh","-c"]
-      args: ["ln -sf /busybox/sh /bin/sh || true; mkdir -p /home/jenkins/agent/workspace; sleep infinity"]
+      # Ensure /bin/sh exists and keep container alive
+      args: ["ln -sf /busybox/sh /bin/sh || true; sleep infinity"]
       tty: true
       env:
         - name: DOCKER_CONFIG
@@ -39,6 +58,16 @@ spec:
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
+
+    - name: jnlp
+      image: jenkins/inbound-agent:3309.v27b_9314fd1a_4-1
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "256Mi"
+      volumeMounts:
         - name: workspace-volume
           mountPath: /home/jenkins/agent
 
@@ -69,52 +98,54 @@ spec:
 
     stage('Checkout') {
       steps {
+        // normal repo checkout (Jenkinsfile was already checked out earlier)
         git branch: 'gibbon-dev', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
       }
     }
 
     stage('Build & Push Image') {
       steps {
-        // Run the build from the kubectl container and exec into the Kaniko container
+        // Run from kubectl container; exec into the Kaniko container to build
         container('kubectl') {
           sh '''#!/usr/bin/env bash
 set -euo pipefail
 
 : "${IMAGE_REPO:?IMAGE_REPO env is not set}"
 
-# Jenkins puts this pod in the "jenkins" namespace by default
 KANIKO_NS="jenkins"
 KANIKO_POD="${HOSTNAME}"
 KANIKO_CTR="kaniko"
 
-# Compute tag using Jenkins-provided commit hash from the prior Checkout stage
+# Tag from Jenkins-provided commit hash (from Checkout stage)
 GIT_SHORT="${GIT_COMMIT:-unknown}"
 GIT_SHORT="${GIT_SHORT:0:7}"
 TAG="git-${GIT_SHORT}-b${BUILD_NUMBER}"
 IMG="$IMAGE_REPO:$TAG"
 
-echo "[Build] $IMG"
+# Absolute workspace path that is shared into all containers
+CTX="${WORKSPACE}"
 
-# Ensure /bin/sh is available inside the kaniko container (paranoid, but safe)
+echo "[Build] $IMG (context: $CTX)"
+
+# Make sure /bin/sh is present in Kaniko
 kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc 'ln -sf /busybox/sh /bin/sh || true'
 
-# Run Kaniko inside the kaniko container
-kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc '
+# Execute Kaniko inside its container; pass the real context path
+kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc "
   set -eu
   /kaniko/executor \
-    --context="$WORKSPACE" \
-    --dockerfile="Dockerfile.gibbon" \
-    --destination="'"$IMG"'" \
-    --destination="'"$IMAGE_REPO:dev-latest"'" \
-    --build-arg GIT_COMMIT="'"${GIT_COMMIT:-$GIT_SHORT}"'" \
+    --context='${CTX}' \
+    --dockerfile='Dockerfile.gibbon' \
+    --destination='${IMG}' \
+    --destination='${IMAGE_REPO}:dev-latest' \
+    --build-arg GIT_COMMIT='${GIT_COMMIT:-$GIT_SHORT}' \
     --build-arg I18N_COMMIT=refs/heads/main \
     --cache=true \
-    --cache-repo="'"$IMAGE_REPO-cache"'"
-'
+    --cache-repo='${IMAGE_REPO}-cache'
+"
 
 echo "$TAG" > image-tag.txt
-"""
-          '''
+'''
         }
       }
     }
@@ -180,13 +211,13 @@ kubectl -n "$NS" rollout status deploy/gibbon-dev-mysql --timeout=240s
 echo "[3] App stack..."
 kubectl -n "$NS" apply -f k8s/gibbon-deployment.yaml
 
-# Be generous on first rollout
+# Give the deployment more time to progress
 kubectl -n "$NS" patch deploy gibbon-dev-app -p '{"spec":{"progressDeadlineSeconds":600}}' >/dev/null 2>&1 || true
 
 echo "[3.1] Set freshly built image tag..."
 kubectl -n "$NS" set image deploy/gibbon-dev-app gibbon="$IMG"
 
-# Keep init container in lock-step with app image if present
+# Keep init container image in lockstep if present
 if kubectl -n "$NS" get deploy gibbon-dev-app -o jsonpath='{..initContainers[*].name}' 2>/dev/null | grep -q 'init-seed-i18n'; then
   kubectl -n "$NS" set image deploy/gibbon-dev-app init-seed-i18n="$IMG"
 fi
