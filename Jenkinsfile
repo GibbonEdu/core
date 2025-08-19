@@ -6,7 +6,7 @@ parameters {
 }
 environment {
   NS = "${params.NAMESPACE}"
-  IMAGE_REPO = "docker.io/ntony3419/gibbon"   // <-- registry path
+  IMAGE_REPO = "hub.docker.com/repository/docker/ntony3419/gibbon"   // <-- registry path
 }
 
 pipeline {
