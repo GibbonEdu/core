@@ -1,14 +1,5 @@
 // Jenkinsfile — DEV (Option A: image build + rollout)
 
-parameters {
-  choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
-  string(name: 'NAMESPACE', defaultValue: 'gibbon-dev-deploy', description: 'K8s namespace')
-}
-environment {
-  NS = "${params.NAMESPACE}"
-  IMAGE_REPO = "hub.docker.com/repository/docker/ntony3419/gibbon"   // <-- registry path
-}
-
 pipeline {
   agent {
     kubernetes {
@@ -31,17 +22,22 @@ spec:
       command: ["/bin/bash","-c"]
       args: ["sleep infinity"]
       tty: true
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
       command: ["/busybox/sh","-c"]
-      args: ["sleep infinity"]   # keep container alive
+      args: ["sleep infinity"]   # keep container alive for steps
       env:
         - name: DOCKER_CONFIG
           value: /kaniko/.docker/
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
   volumes:
     - name: docker-config
       secret:
@@ -49,8 +45,21 @@ spec:
         items:
           - key: .dockerconfigjson
             path: config.json
+    - name: workspace-volume
+      emptyDir: {}
 """
     }
+  }
+
+  parameters {
+    choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
+    string(name: 'NAMESPACE', defaultValue: 'gibbon-dev-deploy', description: 'K8s namespace')
+  }
+
+  environment {
+    NS = "${params.NAMESPACE}"
+    // Use a real registry path; Docker Hub default is docker.io/<user>/<repo>
+    IMAGE_REPO = "docker.io/ntony3419/gibbon"
   }
 
   stages {
@@ -66,21 +75,23 @@ spec:
         container('kaniko') {
           sh '''
             set -eu
-            GIT_SHA="$(echo "${GIT_COMMIT:-unknown}" | cut -c1-7)"
+            : "${IMAGE_REPO:?IMAGE_REPO env is not set}"
+
+            GIT_SHA="$(git rev-parse --short HEAD || echo unknown)"
             TAG="git-${GIT_SHA}-b${BUILD_NUMBER}"
 
-            echo "[Build] ${IMAGE_REPO}:${TAG}"
+            echo "[Build] $IMAGE_REPO:$TAG"
             /kaniko/executor \
-              --context="${WORKSPACE}" \
+              --context="$WORKSPACE" \
               --dockerfile="Dockerfile.gibbon" \
-              --destination="${IMAGE_REPO}:${TAG}" \
-              --destination="${IMAGE_REPO}:dev-latest" \
-              --build-arg GIT_COMMIT="${GIT_COMMIT:-unknown}" \
+              --destination="$IMAGE_REPO:$TAG" \
+              --destination="$IMAGE_REPO:dev-latest" \
+              --build-arg GIT_COMMIT="${GIT_COMMIT:-$GIT_SHA}" \
               --build-arg I18N_COMMIT=refs/heads/main \
               --cache=true \
               --cache-repo="${IMAGE_REPO}-cache"
 
-            echo "${TAG}" > image-tag.txt
+            echo "$TAG" > image-tag.txt
           '''
         }
       }
@@ -120,8 +131,8 @@ EOF
             sh '''#!/usr/bin/env bash
 set -euo pipefail
 NS="${NS}"
-
 TAG="$(cat image-tag.txt)"
+
 echo "[0] Ensure namespace exists..."
 kubectl create ns "$NS" --dry-run=client -o yaml | kubectl apply -f -
 
@@ -147,7 +158,7 @@ echo "[3] App stack..."
 kubectl apply -f k8s/gibbon-deployment.yaml
 
 echo "[3.1] Set freshly built image tag..."
-kubectl -n "$NS" set image deploy/gibbon-dev-app gibbon="${IMAGE_REPO}:${TAG}"
+kubectl -n "$NS" set image deploy/gibbon-dev-app gibbon="$IMAGE_REPO:$TAG"
 
 echo "[4] Wait for app rollout..."
 kubectl rollout status deployment gibbon-dev-app -n "$NS" --timeout=300s
@@ -160,7 +171,7 @@ kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc 'ls -l /var/www/html/gibbon
 echo "[5] Ingress"
 kubectl apply -f k8s/gibbon-ingress.yaml
 
-echo "==== DEV Deployed with ${IMAGE_REPO}:${TAG} ===="
+echo "==== DEV Deployed with $IMAGE_REPO:$TAG ===="
 kubectl get all -n "$NS"
 kubectl get pvc -n "$NS"
 '''
