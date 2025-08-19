@@ -10,7 +10,7 @@ RUN set -eux; \
       libzip-dev zlib1g-dev libxml2-dev libonig-dev \
       netcat-openbsd default-mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml opcache \
+    && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml bcmath opcache \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
