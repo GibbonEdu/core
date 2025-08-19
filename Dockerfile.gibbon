@@ -10,7 +10,7 @@ RUN set -eux; \
       libzip-dev zlib1g-dev libxml2-dev libonig-dev \
       netcat-openbsd default-mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml \
+    && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml opcache \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
@@ -29,7 +29,7 @@ RUN printf '%s\n' \
   '</VirtualHost>' \
   > /etc/apache2/sites-available/000-default.conf
 
-# Copy full repository
+# Copy full repository (finance_report.php + all customizations)
 WORKDIR /var/www/html/gibbon
 COPY . /var/www/html/gibbon
 
@@ -39,7 +39,7 @@ RUN set -eux; \
       composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist; \
     fi
 
-# Ensure writable runtime dirs
+# Ensure writable runtime dirs (PVC should mount over uploads/ in K8s)
 RUN mkdir -p uploads/tmp uploads/cache \
  && chown -R www-data:www-data /var/www/html/gibbon \
  && chmod -R 0777 uploads uploads/tmp uploads/cache
@@ -50,6 +50,16 @@ ENV LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
 
 # Store sessions under uploads (persistent PVC)
 RUN echo 'session.save_path = /var/www/html/gibbon/uploads/tmp' > /usr/local/etc/php/conf.d/session.ini
+
+# PHP opcache for production
+RUN printf '%s\n' \
+  'opcache.enable=1' \
+  'opcache.enable_cli=0' \
+  'opcache.validate_timestamps=0' \
+  'opcache.max_accelerated_files=20000' \
+  'opcache.memory_consumption=128' \
+  'opcache.interned_strings_buffer=16' \
+  > /usr/local/etc/php/conf.d/opcache.ini
 
 # Seed Vietnamese MO from the official i18n repo (optional but nice to have)
 # Pin to a commit/branch via build-arg
