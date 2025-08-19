@@ -29,9 +29,9 @@ spec:
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
-      # Ensure /bin/sh exists for Jenkins 'sh' steps
+      # keep alive and ensure /bin/sh exists
       command: ["/busybox/sh","-c"]
-      args: ["ln -sf /busybox/sh /bin/sh; sleep infinity"]
+      args: ["ln -sf /busybox/sh /bin/sh || true; mkdir -p /home/jenkins/agent/workspace; sleep infinity"]
       tty: true
       env:
         - name: DOCKER_CONFIG
@@ -75,31 +75,46 @@ spec:
 
     stage('Build & Push Image') {
       steps {
-        container('kaniko') {
-          sh '''#!/usr/bin/env sh
-set -eu
+        // Run the build from the kubectl container and exec into the Kaniko container
+        container('kubectl') {
+          sh '''#!/usr/bin/env bash
+set -euo pipefail
 
 : "${IMAGE_REPO:?IMAGE_REPO env is not set}"
 
-# Use Jenkins-provided commit (from the prior Checkout stage)
-GIT_SHA="${GIT_COMMIT:-unknown}"
-GIT_SHA="${GIT_SHA%% *}"
-GIT_SHA="${GIT_SHA:0:7}"
-TAG="git-${GIT_SHA}-b${BUILD_NUMBER}"
+# Jenkins puts this pod in the "jenkins" namespace by default
+KANIKO_NS="jenkins"
+KANIKO_POD="${HOSTNAME}"
+KANIKO_CTR="kaniko"
 
-echo "[Build] $IMAGE_REPO:$TAG"
-/kaniko/executor \
-  --context="$WORKSPACE" \
-  --dockerfile="Dockerfile.gibbon" \
-  --destination="$IMAGE_REPO:$TAG" \
-  --destination="$IMAGE_REPO:dev-latest" \
-  --build-arg GIT_COMMIT="${GIT_COMMIT:-$GIT_SHA}" \
-  --build-arg I18N_COMMIT=refs/heads/main \
-  --cache=true \
-  --cache-repo="${IMAGE_REPO}-cache"
+# Compute tag using Jenkins-provided commit hash from the prior Checkout stage
+GIT_SHORT="${GIT_COMMIT:-unknown}"
+GIT_SHORT="${GIT_SHORT:0:7}"
+TAG="git-${GIT_SHORT}-b${BUILD_NUMBER}"
+IMG="$IMAGE_REPO:$TAG"
+
+echo "[Build] $IMG"
+
+# Ensure /bin/sh is available inside the kaniko container (paranoid, but safe)
+kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc 'ln -sf /busybox/sh /bin/sh || true'
+
+# Run Kaniko inside the kaniko container
+kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc '
+  set -eu
+  /kaniko/executor \
+    --context="$WORKSPACE" \
+    --dockerfile="Dockerfile.gibbon" \
+    --destination="'"$IMG"'" \
+    --destination="'"$IMAGE_REPO:dev-latest"'" \
+    --build-arg GIT_COMMIT="'"${GIT_COMMIT:-$GIT_SHORT}"'" \
+    --build-arg I18N_COMMIT=refs/heads/main \
+    --cache=true \
+    --cache-repo="'"$IMAGE_REPO-cache"'"
+'
 
 echo "$TAG" > image-tag.txt
-'''
+"""
+          '''
         }
       }
     }
@@ -137,7 +152,6 @@ EOF
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''#!/usr/bin/env bash
 set -euo pipefail
-
 NS="${NS}"
 TAG="$(cat image-tag.txt)"
 IMG="$IMAGE_REPO:$TAG"
