@@ -1,4 +1,4 @@
-// Jenkinsfile — DEV (image build + rollout)
+// Jenkinsfile — DEV (build inside Kaniko container, then rollout)
 
 pipeline {
   agent {
@@ -12,7 +12,7 @@ spec:
     fsGroup: 10000
     fsGroupChangePolicy: OnRootMismatch
 
-  # Ensure the workspace is writable by the jnlp user (uid 10000)
+  # Ensure workspace perms so checkout succeeds
   initContainers:
     - name: fix-workspace-perms
       image: busybox:1.36
@@ -43,42 +43,41 @@ spec:
       args: ["sleep infinity"]
       tty: true
       volumeMounts:
-        - name: workspace-volume
-          mountPath: /home/jenkins/agent
+        - { name: workspace-volume, mountPath: /home/jenkins/agent }
 
+    # Kaniko runs the build directly (no kubectl exec). We ensure /bin/sh exists.
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
       command: ["/busybox/sh","-c"]
-      # Ensure /bin/sh exists, then idle
       args: ["ln -sf /busybox/sh /bin/sh || true; sleep infinity"]
       tty: true
       env:
-        - name: DOCKER_CONFIG
-          value: /kaniko/.docker/
+        - { name: DOCKER_CONFIG, value: /kaniko/.docker/ }
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "2"
+          memory: "3Gi"
       volumeMounts:
-        - name: docker-config
-          mountPath: /kaniko/.docker
-        - name: workspace-volume
-          mountPath: /home/jenkins/agent
+        - { name: docker-config, mountPath: /kaniko/.docker }
+        - { name: workspace-volume, mountPath: /home/jenkins/agent }
 
     - name: jnlp
       image: jenkins/inbound-agent:3309.v27b_9314fd1a_4-1
       resources:
-        requests:
-          cpu: "100m"
-          memory: "256Mi"
+        requests: { cpu: "100m", memory: "256Mi" }
       volumeMounts:
-        - name: workspace-volume
-          mountPath: /home/jenkins/agent
+        - { name: workspace-volume, mountPath: /home/jenkins/agent }
 
   volumes:
     - name: docker-config
       secret:
         secretName: dockerhub-json
         items:
-          - key: .dockerconfigjson
-            path: config.json
+          - { key: .dockerconfigjson, path: config.json }
     - name: workspace-volume
       emptyDir: {}
 """
@@ -103,87 +102,33 @@ spec:
       }
     }
 
-    stage('Bootstrap RBAC for Kaniko exec (jenkins ns)') {
-      steps {
-        container('kubectl') {
-          // Use cluster creds to grant the SA the minimal rights we need
-          withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''#!/usr/bin/env bash
-set -euo pipefail
-kubectl -n jenkins apply -f - <<'EOF'
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: jenkins-pod-exec
-  namespace: jenkins
-rules:
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get","list","watch"]
-  - apiGroups: [""]
-    resources: ["pods/exec"]
-    verbs: ["create","get"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: jenkins-pod-exec-binding
-  namespace: jenkins
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: jenkins
-roleRef:
-  kind: Role
-  name: jenkins-pod-exec
-  apiGroup: rbac.authorization.k8s.io
-EOF
-'''
-          }
-        }
-      }
-    }
-
     stage('Build & Push Image') {
+      options { retry(2) }  // transient hiccups -> auto retry
       steps {
-        // Drive Kaniko from the kubectl container via exec (reliable & avoids shell quirks)
-        container('kubectl') {
-          sh '''#!/usr/bin/env bash
-set -euo pipefail
+        container('kaniko') {
+          // Busybox sh is the shell, keep it POSIX (no bash-isms)
+          sh '''#!/bin/sh
+set -eu
 
 : "${IMAGE_REPO:?IMAGE_REPO env is not set}"
 
-KANIKO_NS="jenkins"
-KANIKO_POD="${HOSTNAME}"
-KANIKO_CTR="kaniko"
-
-# Tag from the commit Jenkins checked out
-GIT_SHORT="${GIT_COMMIT:-unknown}"
-GIT_SHORT="${GIT_SHORT:0:7}"
+# Short git SHA from Jenkins env (no `git` call inside this container)
+GIT_SHORT="$(echo "${GIT_COMMIT:-unknown}" | cut -c1-7)"
 TAG="git-${GIT_SHORT}-b${BUILD_NUMBER}"
-IMG="$IMAGE_REPO:$TAG"
+IMG="${IMAGE_REPO}:${TAG}"
 
-CTX="${WORKSPACE}"
-echo "[Build] $IMG (context: $CTX)"
+echo "[Build] ${IMG} (context: ${WORKSPACE})"
+/kaniko/executor \
+  --context="${WORKSPACE}" \
+  --dockerfile="Dockerfile.gibbon" \
+  --destination="${IMG}" \
+  --destination="${IMAGE_REPO}:dev-latest" \
+  --build-arg GIT_COMMIT="${GIT_COMMIT:-${GIT_SHORT}}" \
+  --build-arg I18N_COMMIT=refs/heads/main \
+  --cache=true \
+  --cache-repo="${IMAGE_REPO}-cache"
 
-# Make sure /bin/sh exists inside the Kaniko container
-kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc 'ln -sf /busybox/sh /bin/sh || true'
-
-# Run Kaniko
-kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc "
-  set -eu
-  /kaniko/executor \
-    --context='${CTX}' \
-    --dockerfile='Dockerfile.gibbon' \
-    --destination='${IMG}' \
-    --destination='${IMAGE_REPO}:dev-latest' \
-    --build-arg GIT_COMMIT='${GIT_COMMIT:-$GIT_SHORT}' \
-    --build-arg I18N_COMMIT=refs/heads/main \
-    --cache=true \
-    --cache-repo='${IMAGE_REPO}-cache'
-"
-
-echo "$TAG" > image-tag.txt
+echo "${TAG}" > image-tag.txt
 '''
         }
       }
@@ -220,57 +165,57 @@ EOF
       steps {
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''#!/usr/bin/env bash
-set -euo pipefail
+            sh '''#!/bin/sh
+set -eu
 NS="${NS}"
 TAG="$(cat image-tag.txt)"
-IMG="$IMAGE_REPO:$TAG"
+IMG="${IMAGE_REPO}:${TAG}"
 
 echo "[0] Ensure namespace exists..."
-kubectl create ns "$NS" --dry-run=client -o yaml | kubectl apply -f -
+kubectl create ns "${NS}" --dry-run=client -o yaml | kubectl apply -f -
 
 echo "[1] Secret for DB creds (DEV)"
-kubectl apply -n "$NS" -f k8s/gibbon-mysql-secret.yaml
+kubectl apply -n "${NS}" -f k8s/gibbon-mysql-secret.yaml
 
 echo "[2] MySQL stack..."
-kubectl apply -n "$NS" -f k8s/gibbon-mysql-deployment.yaml
+kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml
 
 echo "[2.0] Wait for MySQL PVC..."
 for i in $(seq 1 90); do
-  phase=$(kubectl -n "$NS" get pvc gibbon-dev-mysql-pvc -o jsonpath='{.status.phase}' 2>/dev/null || true)
-  [ "$phase" = "Bound" ] && break
+  phase="$(kubectl -n "${NS}" get pvc gibbon-dev-mysql-pvc -o jsonpath='{.status.phase}' 2>/dev/null || true)"
+  [ "${phase}" = "Bound" ] && break
   sleep 2
 done
-kubectl -n "$NS" get pvc gibbon-dev-mysql-pvc
-[ "$(kubectl -n "$NS" get pvc gibbon-dev-mysql-pvc -o jsonpath='{.status.phase}')" = "Bound" ]
+kubectl -n "${NS}" get pvc gibbon-dev-mysql-pvc
+[ "$(kubectl -n "${NS}" get pvc gibbon-dev-mysql-pvc -o jsonpath='{.status.phase}')" = "Bound" ]
 
 echo "[2.1] Wait for MySQL rollout..."
-kubectl -n "$NS" rollout status deploy/gibbon-dev-mysql --timeout=240s
+kubectl -n "${NS}" rollout status deploy/gibbon-dev-mysql --timeout=240s
 
 echo "[3] App stack..."
-kubectl -n "$NS" apply -f k8s/gibbon-deployment.yaml
-kubectl -n "$NS" patch deploy gibbon-dev-app -p '{"spec":{"progressDeadlineSeconds":600}}' >/dev/null 2>&1 || true
+kubectl -n "${NS}" apply -f k8s/gibbon-deployment.yaml
+kubectl -n "${NS}" patch deploy gibbon-dev-app -p '{"spec":{"progressDeadlineSeconds":600}}' >/dev/null 2>&1 || true
 
 echo "[3.1] Set freshly built image tag..."
-kubectl -n "$NS" set image deploy/gibbon-dev-app gibbon="$IMG"
-if kubectl -n "$NS" get deploy gibbon-dev-app -o jsonpath='{..initContainers[*].name}' 2>/dev/null | grep -q 'init-seed-i18n'; then
-  kubectl -n "$NS" set image deploy/gibbon-dev-app init-seed-i18n="$IMG"
+kubectl -n "${NS}" set image deploy/gibbon-dev-app gibbon="${IMG}"
+if kubectl -n "${NS}" get deploy gibbon-dev-app -o jsonpath='{..initContainers[*].name}' 2>/dev/null | grep -q 'init-seed-i18n'; then
+  kubectl -n "${NS}" set image deploy/gibbon-dev-app init-seed-i18n="${IMG}"
 fi
 
 echo "[4] Wait for app rollout..."
-kubectl -n "$NS" rollout status deploy/gibbon-dev-app --timeout=600s
+kubectl -n "${NS}" rollout status deploy/gibbon-dev-app --timeout=600s
 
 echo "[4.1] Smoke: i18n + custom file (newest pod)..."
-APP_POD=$(kubectl -n "$NS" get pod -l app=gibbon-dev -o jsonpath='{range .items[*]}{.metadata.creationTimestamp}{"\\t"}{.metadata.name}{"\\n"}{end}' | sort | tail -n1 | cut -f2)
-kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc 'ls -ld /var/www/html/gibbon/i18n || true'
-kubectl -n "$NS" exec "$APP_POD" -c gibbon -- sh -lc 'ls -l /var/www/html/gibbon/finance_report.php || echo "finance_report.php missing"'
+APP_POD="$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{range .items[*]}{.metadata.creationTimestamp}{"\\t"}{.metadata.name}{"\\n"}{end}' | sort | tail -n1 | cut -f2)"
+kubectl -n "${NS}" exec "${APP_POD}" -c gibbon -- sh -lc 'ls -ld /var/www/html/gibbon/i18n || true'
+kubectl -n "${NS}" exec "${APP_POD}" -c gibbon -- sh -lc 'ls -l /var/www/html/gibbon/finance_report.php || echo "finance_report.php missing"'
 
 echo "[5] Ingress"
-kubectl -n "$NS" apply -f k8s/gibbon-ingress.yaml
+kubectl -n "${NS}" apply -f k8s/gibbon-ingress.yaml
 
-echo "==== DEV Deployed with $IMG ===="
-kubectl -n "$NS" get all
-kubectl -n "$NS" get pvc
+echo "==== DEV Deployed with ${IMG} ===="
+kubectl -n "${NS}" get all
+kubectl -n "${NS}" get pvc
 '''
           }
         }
