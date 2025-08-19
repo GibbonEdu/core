@@ -82,18 +82,7 @@ spec:
                 > /pvc/config/config.php
                 chown 33:33 /pvc/config/config.php || true
                 chmod 0660 /pvc/config/config.php || true
-              fi
-
-              # Optional: seed vi_VN into persistent i18n if missing
-
-              if [ ! -f /pvc/i18n/vi_VN/LC_MESSAGES/gibbon.mo ] \
-
-                 && [ -f /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo ]; then
-
-                mkdir -p /pvc/i18n/vi_VN/LC_MESSAGES
-
-                cp /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo /pvc/i18n/vi_VN/LC_MESSAGES/
-              fi
+              fi            
               chown -R 33:33 /var/www/html/gibbon/uploads || true
               chmod -R 0777 /var/www/html/gibbon/uploads || true
           env:
@@ -118,6 +107,22 @@ spec:
               mountPath: /pvc
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
+        - name: init-seed-i18n
+          # IMPORTANT: this must be the SAME image as the app container (Jenkins will set it below)
+          image: docker.io/ntony3419/gibbon:dev-latest
+          command: ["/bin/sh","-c"]
+          args:
+            - |
+              set -eu
+              SRC="/var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo"
+              DST="/pvc/i18n/vi_VN/LC_MESSAGES/gibbon.mo"
+              if [ ! -f "$DST" ] && [ -f "$SRC" ]; then
+                mkdir -p "$(dirname "$DST")"
+                cp -v "$SRC" "$DST"
+                chown 33:33 "$DST" || true
+              fi
+          volumeMounts:
+            - { name: uploads, mountPath: /pvc }
       containers:
         - name: gibbon
           image: docker.io/ntony3419/gibbon:dev-latest
