@@ -11,7 +11,8 @@ spec:
   securityContext:
     fsGroup: 10000
     fsGroupChangePolicy: OnRootMismatch
-  # Make sure the jnlp user (uid 10000) owns the workspace volume
+
+  # Ensure the workspace is writable by the jnlp user (uid 10000)
   initContainers:
     - name: fix-workspace-perms
       image: busybox:1.36
@@ -49,7 +50,7 @@ spec:
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
       command: ["/busybox/sh","-c"]
-      # Ensure /bin/sh exists and keep container alive
+      # Ensure /bin/sh exists, then idle
       args: ["ln -sf /busybox/sh /bin/sh || true; sleep infinity"]
       tty: true
       env:
@@ -98,14 +99,54 @@ spec:
 
     stage('Checkout') {
       steps {
-        // normal repo checkout (Jenkinsfile was already checked out earlier)
         git branch: 'gibbon-dev', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
+      }
+    }
+
+    stage('Bootstrap RBAC for Kaniko exec (jenkins ns)') {
+      steps {
+        container('kubectl') {
+          // Use cluster creds to grant the SA the minimal rights we need
+          withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
+            sh '''#!/usr/bin/env bash
+set -euo pipefail
+kubectl -n jenkins apply -f - <<'EOF'
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jenkins-pod-exec
+  namespace: jenkins
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get","list","watch"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create","get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-pod-exec-binding
+  namespace: jenkins
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: jenkins
+roleRef:
+  kind: Role
+  name: jenkins-pod-exec
+  apiGroup: rbac.authorization.k8s.io
+EOF
+'''
+          }
+        }
       }
     }
 
     stage('Build & Push Image') {
       steps {
-        // Run from kubectl container; exec into the Kaniko container to build
+        // Drive Kaniko from the kubectl container via exec (reliable & avoids shell quirks)
         container('kubectl') {
           sh '''#!/usr/bin/env bash
 set -euo pipefail
@@ -116,21 +157,19 @@ KANIKO_NS="jenkins"
 KANIKO_POD="${HOSTNAME}"
 KANIKO_CTR="kaniko"
 
-# Tag from Jenkins-provided commit hash (from Checkout stage)
+# Tag from the commit Jenkins checked out
 GIT_SHORT="${GIT_COMMIT:-unknown}"
 GIT_SHORT="${GIT_SHORT:0:7}"
 TAG="git-${GIT_SHORT}-b${BUILD_NUMBER}"
 IMG="$IMAGE_REPO:$TAG"
 
-# Absolute workspace path that is shared into all containers
 CTX="${WORKSPACE}"
-
 echo "[Build] $IMG (context: $CTX)"
 
-# Make sure /bin/sh is present in Kaniko
+# Make sure /bin/sh exists inside the Kaniko container
 kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc 'ln -sf /busybox/sh /bin/sh || true'
 
-# Execute Kaniko inside its container; pass the real context path
+# Run Kaniko
 kubectl -n "$KANIKO_NS" exec "$KANIKO_POD" -c "$KANIKO_CTR" -- /busybox/sh -lc "
   set -eu
   /kaniko/executor \
@@ -210,14 +249,10 @@ kubectl -n "$NS" rollout status deploy/gibbon-dev-mysql --timeout=240s
 
 echo "[3] App stack..."
 kubectl -n "$NS" apply -f k8s/gibbon-deployment.yaml
-
-# Give the deployment more time to progress
 kubectl -n "$NS" patch deploy gibbon-dev-app -p '{"spec":{"progressDeadlineSeconds":600}}' >/dev/null 2>&1 || true
 
 echo "[3.1] Set freshly built image tag..."
 kubectl -n "$NS" set image deploy/gibbon-dev-app gibbon="$IMG"
-
-# Keep init container image in lockstep if present
 if kubectl -n "$NS" get deploy gibbon-dev-app -o jsonpath='{..initContainers[*].name}' 2>/dev/null | grep -q 'init-seed-i18n'; then
   kubectl -n "$NS" set image deploy/gibbon-dev-app init-seed-i18n="$IMG"
 fi
