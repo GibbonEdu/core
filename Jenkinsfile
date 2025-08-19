@@ -6,7 +6,7 @@ parameters {
 }
 environment {
   NS = "${params.NAMESPACE}"
-  IMAGE_REPO = "hub.docker.com/repository/docker/ntony3419/gibbon"   
+  IMAGE_REPO = "docker.io/ntony3419/gibbon"   // <-- registry path
 }
 
 pipeline {
@@ -32,23 +32,23 @@ spec:
       args: ["sleep infinity"]
       tty: true
     - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
-        imagePullPolicy: Always
-        command: ["/busybox/sh","-c"]
-        args: ["sleep infinity"]           # keep the container alive for steps
-        env:
-          - name: DOCKER_CONFIG
-            value: /kaniko/.docker/
-        volumeMounts:
-          - name: docker-config
-            mountPath: /kaniko/.docker
+      image: gcr.io/kaniko-project/executor:debug
+      imagePullPolicy: Always
+      command: ["/busybox/sh","-c"]
+      args: ["sleep infinity"]   # keep container alive
+      env:
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker/
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
   volumes:
     - name: docker-config
       secret:
         secretName: dockerhub-json
-      items:
-        - key: .dockerconfigjson
-          path: config.json
+        items:
+          - key: .dockerconfigjson
+            path: config.json
 """
     }
   }
@@ -65,8 +65,8 @@ spec:
       steps {
         container('kaniko') {
           sh '''
-            set -euo pipefail
-            GIT_SHA="$(git rev-parse --short HEAD)"
+            set -eu
+            GIT_SHA="$(echo "${GIT_COMMIT:-unknown}" | cut -c1-7)"
             TAG="git-${GIT_SHA}-b${BUILD_NUMBER}"
 
             echo "[Build] ${IMAGE_REPO}:${TAG}"
@@ -75,16 +75,16 @@ spec:
               --dockerfile="Dockerfile.gibbon" \
               --destination="${IMAGE_REPO}:${TAG}" \
               --destination="${IMAGE_REPO}:dev-latest" \
-              --build-arg GIT_COMMIT="$(git rev-parse HEAD)" \
+              --build-arg GIT_COMMIT="${GIT_COMMIT:-unknown}" \
               --build-arg I18N_COMMIT=refs/heads/main \
-              --cache=true --cache-repo="${IMAGE_REPO}-cache"
+              --cache=true \
+              --cache-repo="${IMAGE_REPO}-cache"
 
             echo "${TAG}" > image-tag.txt
           '''
         }
       }
     }
-
 
     stage('Setup Staging Certificate') {
       steps {
