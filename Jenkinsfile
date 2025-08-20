@@ -82,11 +82,12 @@ spec:
         container('scm') {
           sh '''
             set -eu
-            rm -rf .git || true
-            git init
-            git remote add origin https://github.com/ntony3419/GibbonEdu-core.git
-            git fetch --depth 1 origin "${GIT_BRANCH}"
-            git checkout -qf FETCH_HEAD
+            git --version
+            git ls-remote --heads https://github.com/ntony3419/GibbonEdu-core.git "${GIT_BRANCH}" >/dev/null
+            # Let git operate on a repo created by jnlp in the shared workspace
+            git config --global --add safe.directory "${WORKSPACE}"
+    
+            # Jenkins Git plugin does the checkout (in jnlp); we just read the hash
             git rev-parse --short=12 HEAD > .gitshort
           '''
           checkout([
