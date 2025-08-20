@@ -1,18 +1,19 @@
-// Jenkinsfile — DEV with Kaniko
+// Jenkinsfile — DEV with Kaniko (single checkout inside pod)
 
 parameters {
   choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
-  string(name: 'NAMESPACE', defaultValue: 'gibbon-dev-deploy', description: 'K8s namespace')
-  string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev', description: 'Git branch to build')
-  string(name: 'REGISTRY', defaultValue: 'index.docker.io', description: 'Docker registry server')
-  string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon', description: 'Image repo (e.g., dockerhub_user/repo)')
-  string(name: 'I18N_COMMIT', defaultValue: 'refs/heads/main', description: 'Gibbon i18n commit/branch for VI')
+  string(name: 'NAMESPACE',  defaultValue: 'gibbon-dev-deploy',  description: 'K8s namespace')
+  string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev',         description: 'Git branch to build')
+  string(name: 'REGISTRY',   defaultValue: 'index.docker.io',    description: 'Docker registry')
+  string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
+  string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
 }
 
 options {
-  // stop Jenkins from doing implicit declarative : checkout scm
+  // 🔴 important: stop Jenkins from doing the implicit "Declarative: Checkout SCM"
   skipDefaultCheckout(true)
 }
+
 environment {
   NS = "${params.NAMESPACE}"
 }
@@ -33,9 +34,15 @@ spec:
       value: "jenkin"
       effect: "NoSchedule"
   volumes:
+    # Project regcred-kaniko's .dockerconfigjson as config.json (what Kaniko expects)
     - name: docker-config
-      secret:
-        secretName: regcred-kaniko
+      projected:
+        sources:
+          - secret:
+              name: regcred-kaniko
+              items:
+                - key: .dockerconfigjson
+                  path: config.json
   containers:
     - name: kubectl
       image: ntony3419/k8s-agent:1.3
@@ -56,10 +63,20 @@ spec:
   }
 
   stages {
-    stage('Checkout') {
+
+    stage('Checkout (single)') {
       steps {
         container('kubectl') {
-          git branch: "${params.GIT_BRANCH}", url: 'https://github.com/ntony3419/GibbonEdu-core.git'
+          // Fail fast if branch name is wrong
+          sh '''
+            set -euo pipefail
+            git ls-remote --heads https://github.com/ntony3419/GibbonEdu-core.git "${GIT_BRANCH}" >/dev/null
+          '''
+          checkout([
+            $class: 'GitSCM',
+            branches: [[name: "*/${params.GIT_BRANCH}"]],
+            userRemoteConfigs: [[url: 'https://github.com/ntony3419/GibbonEdu-core.git']]
+          ])
           sh 'git rev-parse --short=12 HEAD > .gitshort'
         }
       }
@@ -96,23 +113,22 @@ EOF
     stage('Build & Push (Kaniko)') {
       steps {
         container('kaniko') {
-          // REGISTRY auth is provided via /kaniko/.docker/config.json from regcred-kaniko
-          sh """
+          sh '''
             set -euo pipefail
-            COMMIT=\$(cat .gitshort)
-            IMAGE="${params.REGISTRY}/${params.IMAGE_REPO}:${params.ENV}-\${COMMIT}"
-            echo "Building: \$IMAGE"
+            COMMIT=$(cat .gitshort)
+            IMAGE="${REGISTRY}/${IMAGE_REPO}:${ENV}-${COMMIT}"
+            echo "Building: ${IMAGE}"
 
             /kaniko/executor \
               --context="${WORKSPACE}" \
               --dockerfile="${WORKSPACE}/Dockerfile.gibbon" \
-              --destination="\$IMAGE" \
+              --destination="${IMAGE}" \
               --snapshotMode=redo \
               --reproducible \
-              --build-arg I18N_COMMIT="${params.I18N_COMMIT}"
+              --build-arg I18N_COMMIT="${I18N_COMMIT}"
 
-            echo -n "\$IMAGE" > image.txt
-          """
+            echo -n "${IMAGE}" > image.txt
+          '''
         }
       }
     }
@@ -123,22 +139,17 @@ EOF
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
               set -euo pipefail
-              NS='"'"'${NS}'"'"'
               IMG="$(cat image.txt)"
 
-              echo "[Apply base manifests if needed]"
-              kubectl apply -n "$NS" -f k8s/gibbon-mysql-deployment.yaml || true
-              kubectl apply -n "$NS" -f k8s/gibbon-deployment.yaml
-              kubectl apply -n "$NS" -f k8s/gibbon-ingress.yaml
+              # Apply manifests (idempotent)
+              kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true
+              kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
+              kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
 
-              echo "[Patch Deployment images: app + init]"
-              # Update both the main container and the init-gibbon initContainer to the same image
-              kubectl -n "$NS" set image deployment/gibbon-dev-app gibbon="$IMG" init-gibbon="$IMG"
+              # Patch both the main container and the initContainer image
+              kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}" init-gibbon="${IMG}"
 
-              echo "[Rollout]"
-              kubectl rollout status deployment gibbon-dev-app -n "$NS" --timeout=300s
-
-              echo "Deployed image: $IMG"
+              kubectl rollout status deployment gibbon-dev-app -n "${NS}" --timeout=300s
             '''
           }
         }
@@ -150,7 +161,6 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-              set -euo pipefail
               APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
               kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- php -v || true
               kubectl -n "${NS}" get deploy,svc,ing,pvc
