@@ -82,8 +82,12 @@ spec:
         container('scm') {
           sh '''
             set -eu
-            git --version
-            git ls-remote --heads https://github.com/ntony3419/GibbonEdu-core.git "${GIT_BRANCH}" >/dev/null
+            rm -rf .git || true
+            git init
+            git remote add origin https://github.com/ntony3419/GibbonEdu-core.git
+            git fetch --depth 1 origin "${GIT_BRANCH}"
+            git checkout -qf FETCH_HEAD
+            git rev-parse --short=12 HEAD > .gitshort
           '''
           checkout([
             $class: 'GitSCM',
