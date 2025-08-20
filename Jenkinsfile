@@ -9,6 +9,10 @@ parameters {
   string(name: 'I18N_COMMIT', defaultValue: 'refs/heads/main', description: 'Gibbon i18n commit/branch for VI')
 }
 
+options {
+  // stop Jenkins from doing implicit declarative : checkout scm
+  skipDefaultCheckout(true)
+}
 environment {
   NS = "${params.NAMESPACE}"
 }
