@@ -47,6 +47,9 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      env:
+        - name: HOME
+          value: /home/jenkins/agent
       volumeMounts:
         - name: workspace-volume
           mountPath: /home/jenkins/agent
@@ -92,18 +95,19 @@ spec:
         container('scm') {
           sh '''
             set -eu
+            export HOME=/home/jenkins/agent
+    
             git --version
-
-            # Whitelist the JNLP-created workspace for git (handles mixed UIDs)
-            git config --global --add safe.directory "${WORKSPACE}"
-
-            # Clean & checkout from your branch via CLI (no Jenkins Git plugin)
+            # Whitelist the workspace in case ownership is mixed
+            git config --global --add safe.directory "${WORKSPACE}" || true
+    
+            # Fresh checkout (no Jenkins Git plugin here)
             rm -rf .git || true
             git init
             git remote add origin https://github.com/ntony3419/GibbonEdu-core.git
             git fetch --depth 1 origin "${GIT_BRANCH}"
             git checkout -qf FETCH_HEAD
-
+    
             git rev-parse --short=12 HEAD > .gitshort
           '''
         }
