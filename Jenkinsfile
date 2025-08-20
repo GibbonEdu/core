@@ -1,4 +1,4 @@
-// Jenkinsfile — DEV with Kaniko (POSIX-safe; no pipefail)
+// Jenkinsfile — DEV with Kaniko (CLI checkout + safe.directory)
 
 pipeline {
   agent {
@@ -24,6 +24,8 @@ spec:
               items:
                 - key: .dockerconfigjson
                   path: config.json
+    - name: workspace-volume
+      emptyDir: {}
   containers:
     - name: kubectl
       image: ntony3419/k8s-agent:1.3
@@ -32,16 +34,23 @@ spec:
       args: ["sleep infinity"]
       tty: true
       volumeMounts:
-        - mountPath: "/home/jenkins/agent"
-          name: "workspace-volume"
-    - name: scm                     
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
+
+    - name: scm
       image: alpine/git:latest
       imagePullPolicy: Always
       command: ["/bin/sh","-c"]
       args: ["sleep 9999999"]
+      # Optional: match JNLP uid/gid to avoid ownership checks entirely
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       volumeMounts:
-        - mountPath: "/home/jenkins/agent"
-          name: "workspace-volume"
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
+
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
@@ -50,154 +59,20 @@ spec:
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
-        - mountPath: "/home/jenkins/agent"
-          name: "workspace-volume"
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
 """
     }
   }
 
   options {
+    // We do our own CLI checkout; don’t let Jenkins do an implicit checkout.
     skipDefaultCheckout(true)
-    // timestamps()        // optional
-    // disableConcurrentBuilds() // optional
+    // timestamps()
+    // disableConcurrentBuilds()
   }
 
   parameters {
     choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
     string(name: 'NAMESPACE',  defaultValue: 'gibbon-dev-deploy',  description: 'K8s namespace')
-    string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev',         description: 'Git branch to build')
-    string(name: 'REGISTRY',   defaultValue: 'index.docker.io',    description: 'Docker registry')
-    string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
-    string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
-  }
-
-  environment {
-    NS = "${params.NAMESPACE}"
-  }
-
-  stages {
-
-    stage('Checkout (single)') {
-      steps {
-        container('scm') {
-          sh '''
-            set -eu
-            rm -rf .git || true
-            git init
-            git remote add origin https://github.com/ntony3419/GibbonEdu-core.git
-            git fetch --depth 1 origin "${GIT_BRANCH}"
-            git checkout -qf FETCH_HEAD
-            git rev-parse --short=12 HEAD > .gitshort
-          '''
-          checkout([
-            $class: 'GitSCM',
-            branches: [[name: "*/${params.GIT_BRANCH}"]],
-            userRemoteConfigs: [[url: 'https://github.com/ntony3419/GibbonEdu-core.git']]
-          ])
-          sh 'set -eu; git rev-parse --short=12 HEAD > .gitshort'
-        }
-      }
-    }
-
-    stage('Ensure Namespace & Staging ClusterIssuer') {
-      steps {
-        container('kubectl') {
-          withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh """
-              set -eu
-              kubectl create ns "${NS}" --dry-run=client -o yaml | kubectl apply -f -
-              cat <<EOF | kubectl apply -f -
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-staging
-spec:
-  acme:
-    email: ntony3419@email.com
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      name: letsencrypt-staging
-    solvers:
-      - http01:
-          ingress:
-            class: nginx
-EOF
-            """
-          }
-        }
-      }
-    }
-
-    stage('Build & Push (Kaniko)') {
-      steps {
-        container('kaniko') {
-          sh '''
-            set -eu
-            COMMIT=$(cat .gitshort)
-            IMAGE="${REGISTRY}/${IMAGE_REPO}:${ENV}-${COMMIT}"
-            echo "Building: ${IMAGE}"
-
-            /kaniko/executor \
-              --context="${WORKSPACE}" \
-              --dockerfile="${WORKSPACE}/Dockerfile.gibbon" \
-              --destination="${IMAGE}" \
-              --snapshotMode=redo \
-              --reproducible \
-              --build-arg I18N_COMMIT="${I18N_COMMIT}"
-
-            echo -n "${IMAGE}" > image.txt
-          '''
-        }
-      }
-    }
-
-    stage('Deploy / Update Image') {
-      steps {
-        container('kubectl') {
-          withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''
-              set -eu
-              IMG="$(cat image.txt)"
-
-              # Apply manifests (idempotent)
-              kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true
-              kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
-              kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
-
-              # Update main app container
-              kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}"
-
-              # Update init-gibbon (initContainer) via strategic merge patch
-              cat <<EOF >/tmp/initpatch.yaml
-spec:
-  template:
-    spec:
-      initContainers:
-      - name: init-gibbon
-        image: ${IMG}
-EOF
-              kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
-
-              kubectl rollout status deployment gibbon-dev-app -n "${NS}" --timeout=300s
-            '''
-          }
-        }
-      }
-    }
-
-    stage('Post-Deploy Smoke') {
-      steps {
-        container('kubectl') {
-          withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''
-              set -eu
-              APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
-              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- php -v || true
-              kubectl -n "${NS}" get deploy,svc,ing,pvc
-            '''
-          }
-        }
-      }
-    }
-  }
-}
+    s
