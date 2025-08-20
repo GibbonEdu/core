@@ -31,6 +31,17 @@ spec:
       command: ["/bin/bash","-c"]
       args: ["sleep infinity"]
       tty: true
+      volumeMounts:
+        - mountPath: "/home/jenkins/agent"
+          name: "workspace-volume"
+    - name: scm                     
+      image: alpine/git:2.47.0      
+      imagePullPolicy: Always
+      command: ["/bin/sh","-c"]
+      args: ["sleep 9999999"]
+      volumeMounts:
+        - mountPath: "/home/jenkins/agent"
+          name: "workspace-volume"
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
@@ -39,6 +50,8 @@ spec:
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
+        - mountPath: "/home/jenkins/agent"
+          name: "workspace-volume"
 """
     }
   }
@@ -66,9 +79,10 @@ spec:
 
     stage('Checkout (single)') {
       steps {
-        container('kubectl') {
+        container('scm') {
           sh '''
             set -eu
+            git --version
             git ls-remote --heads https://github.com/ntony3419/GibbonEdu-core.git "${GIT_BRANCH}" >/dev/null
           '''
           checkout([
