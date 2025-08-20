@@ -1,4 +1,4 @@
-// Jenkinsfile — DEV with Kaniko (fixed declarative placement + init patch)
+// Jenkinsfile — DEV with Kaniko (POSIX-safe; no pipefail)
 
 pipeline {
   agent {
@@ -16,7 +16,6 @@ spec:
       value: "jenkin"
       effect: "NoSchedule"
   volumes:
-    # Project regcred-kaniko's .dockerconfigjson as config.json for Kaniko
     - name: docker-config
       projected:
         sources:
@@ -45,10 +44,9 @@ spec:
   }
 
   options {
-    // prevent implicit "Declarative: Checkout SCM" on controller
     skipDefaultCheckout(true)
-    // optional: disableConcurrentBuilds()
-    // optional: timestamps()
+    // timestamps()        // optional
+    // disableConcurrentBuilds() // optional
   }
 
   parameters {
@@ -69,9 +67,8 @@ spec:
     stage('Checkout (single)') {
       steps {
         container('kubectl') {
-          // Validate branch exists
           sh '''
-            set -euo pipefail
+            set -eu
             git ls-remote --heads https://github.com/ntony3419/GibbonEdu-core.git "${GIT_BRANCH}" >/dev/null
           '''
           checkout([
@@ -79,7 +76,7 @@ spec:
             branches: [[name: "*/${params.GIT_BRANCH}"]],
             userRemoteConfigs: [[url: 'https://github.com/ntony3419/GibbonEdu-core.git']]
           ])
-          sh 'git rev-parse --short=12 HEAD > .gitshort'
+          sh 'set -eu; git rev-parse --short=12 HEAD > .gitshort'
         }
       }
     }
@@ -89,6 +86,7 @@ spec:
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh """
+              set -eu
               kubectl create ns "${NS}" --dry-run=client -o yaml | kubectl apply -f -
               cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1
@@ -116,7 +114,7 @@ EOF
       steps {
         container('kaniko') {
           sh '''
-            set -euo pipefail
+            set -eu
             COMMIT=$(cat .gitshort)
             IMAGE="${REGISTRY}/${IMAGE_REPO}:${ENV}-${COMMIT}"
             echo "Building: ${IMAGE}"
@@ -140,7 +138,7 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-              set -euo pipefail
+              set -eu
               IMG="$(cat image.txt)"
 
               # Apply manifests (idempotent)
@@ -162,7 +160,6 @@ spec:
 EOF
               kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
 
-              # Rollout
               kubectl rollout status deployment gibbon-dev-app -n "${NS}" --timeout=300s
             '''
           }
@@ -175,6 +172,7 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
+              set -eu
               APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
               kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- php -v || true
               kubectl -n "${NS}" get deploy,svc,ing,pvc
