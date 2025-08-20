@@ -1,9 +1,10 @@
+# .dockerignore
 .git
 .github
 .gitlab*
-node_modules
-vendor/
+Jenkinsfile
 k8s/
+docs/
 *.md
-*.log
-.DS_Store
+**/.DS_Store
+**/tests/
