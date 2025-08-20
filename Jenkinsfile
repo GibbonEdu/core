@@ -35,7 +35,7 @@ spec:
         - mountPath: "/home/jenkins/agent"
           name: "workspace-volume"
     - name: scm                     
-      image: alpine/git:2.47.0      
+      image: alpine/git:latest
       imagePullPolicy: Always
       command: ["/bin/sh","-c"]
       args: ["sleep 9999999"]
