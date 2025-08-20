@@ -1,10 +1,9 @@
 .git
-.gitignore
+.github
+.gitlab*
+node_modules
+vendor/
 k8s/
-Jenkinsfile
 *.md
-*.yml
-*.yaml
 *.log
-vendor/cache/
-node_modules/
+.DS_Store
