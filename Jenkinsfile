@@ -80,6 +80,10 @@ spec:
 
   options {
     // We do our own CLI checkout; don’t let Jenkins do an implicit checkout.
+
+    disableConcurrentBuilds(abortPrevious: true)
+    buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30'))
+    timeout(time: 60, unit: 'MINUTES')
     skipDefaultCheckout(true)
     // timestamps()
     // disableConcurrentBuilds()
