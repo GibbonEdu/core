@@ -59,6 +59,9 @@ spec:
       imagePullPolicy: Always
       command: ["/busybox/sh","-c"]
       args: ["sleep 9999999"]
+      env:
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
@@ -79,7 +82,7 @@ spec:
     choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
     string(name: 'NAMESPACE',  defaultValue: 'gibbon-dev-deploy',  description: 'K8s namespace')
     string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev',         description: 'Git branch to build')
-    string(name: 'REGISTRY',   defaultValue: 'index.docker.io',    description: 'Docker registry')
+    string(name: 'REGISTRY',   defaultValue: 'docker.io',          description: 'Docker registry')
     string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
     string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
   }
