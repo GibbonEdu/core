@@ -1,22 +1,4 @@
-// Jenkinsfile — DEV with Kaniko (single checkout inside pod)
-
-parameters {
-  choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
-  string(name: 'NAMESPACE',  defaultValue: 'gibbon-dev-deploy',  description: 'K8s namespace')
-  string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev',         description: 'Git branch to build')
-  string(name: 'REGISTRY',   defaultValue: 'index.docker.io',    description: 'Docker registry')
-  string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
-  string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
-}
-
-options {
-  // 🔴 important: stop Jenkins from doing the implicit "Declarative: Checkout SCM"
-  skipDefaultCheckout(true)
-}
-
-environment {
-  NS = "${params.NAMESPACE}"
-}
+// Jenkinsfile — DEV with Kaniko (fixed declarative placement + init patch)
 
 pipeline {
   agent {
@@ -34,7 +16,7 @@ spec:
       value: "jenkin"
       effect: "NoSchedule"
   volumes:
-    # Project regcred-kaniko's .dockerconfigjson as config.json (what Kaniko expects)
+    # Project regcred-kaniko's .dockerconfigjson as config.json for Kaniko
     - name: docker-config
       projected:
         sources:
@@ -62,12 +44,32 @@ spec:
     }
   }
 
+  options {
+    // prevent implicit "Declarative: Checkout SCM" on controller
+    skipDefaultCheckout(true)
+    // optional: disableConcurrentBuilds()
+    // optional: timestamps()
+  }
+
+  parameters {
+    choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
+    string(name: 'NAMESPACE',  defaultValue: 'gibbon-dev-deploy',  description: 'K8s namespace')
+    string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev',         description: 'Git branch to build')
+    string(name: 'REGISTRY',   defaultValue: 'index.docker.io',    description: 'Docker registry')
+    string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
+    string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
+  }
+
+  environment {
+    NS = "${params.NAMESPACE}"
+  }
+
   stages {
 
     stage('Checkout (single)') {
       steps {
         container('kubectl') {
-          // Fail fast if branch name is wrong
+          // Validate branch exists
           sh '''
             set -euo pipefail
             git ls-remote --heads https://github.com/ntony3419/GibbonEdu-core.git "${GIT_BRANCH}" >/dev/null
@@ -146,9 +148,21 @@ EOF
               kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
               kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
 
-              # Patch both the main container and the initContainer image
-              kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}" init-gibbon="${IMG}"
+              # Update main app container
+              kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}"
 
+              # Update init-gibbon (initContainer) via strategic merge patch
+              cat <<EOF >/tmp/initpatch.yaml
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: init-gibbon
+        image: ${IMG}
+EOF
+              kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
+
+              # Rollout
               kubectl rollout status deployment gibbon-dev-app -n "${NS}" --timeout=300s
             '''
           }
