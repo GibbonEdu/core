@@ -62,6 +62,13 @@ spec:
       env:
         - name: DOCKER_CONFIG
           value: /kaniko/.docker
+      resources:
+        requests:
+          cpu: "1500m"
+          memory: "2Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
@@ -159,11 +166,13 @@ EOF
               --context="${WORKSPACE}" \
               --dockerfile="${WORKSPACE}/Dockerfile.gibbon" \
               --destination="${IMAGE}" \
-              --snapshotMode=redo \
+              --snapshot-mode=redo \
+              --use-new-run \
+              --compression=gzip \
+              --compression-level=1 \
+              --push-retry=3 \
               --reproducible \
               --build-arg I18N_COMMIT="${I18N_COMMIT}"
-
-            echo -n "${IMAGE}" > image.txt
           '''
         }
       }
