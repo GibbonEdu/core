@@ -53,7 +53,10 @@ spec:
       volumeMounts:
         - name: workspace-volume
           mountPath: /home/jenkins/agent
-
+    - name: jnlp
+      resources:
+        requests: { cpu: "100m", memory: "256Mi" }
+        limits:   { memory: "512Mi" }
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
@@ -181,7 +184,7 @@ EOF
             --compression-level=1 \
             --push-retry=3 \
             --reproducible \
-            --cache=false \
+            --cache=true \
             --cache-repo="${REGISTRY}/${IMAGE_REPO}-cache" \
             --build-arg I18N_COMMIT="${I18N_COMMIT}"
 

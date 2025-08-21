@@ -1,6 +1,6 @@
 # ---- Builder stage: install deps & composer vendors -------------------------
 FROM php:8.2-apache AS builder
-ENV MAKEFLAGS="-j2"
+ENV MAKEFLAGS="-j1"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip zip git curl wget pkg-config \
     libicu-dev libgettextpo-dev \
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev zlib1g-dev libxml2-dev libonig-dev \
     default-mysql-client locales netcat-openbsd \
   && docker-php-ext-configure gd --with-freetype --with-jpeg \
-  && docker-php-ext-install -j2 intl gettext gd zip pdo_mysql mbstring xml bcmath \
+  && docker-php-ext-install -j1 intl gettext gd zip pdo_mysql mbstring xml bcmath \
   && a2enmod rewrite \
   && rm -rf /var/lib/apt/lists/*
 
