@@ -1,21 +1,4 @@
-// Jenkinsfile — DEV with Kaniko
-
-parameters {
-  choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
-  string(name: 'NAMESPACE', defaultValue: 'gibbon-dev-deploy', description: 'K8s namespace')
-  string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev', description: 'Git branch to build')
-  string(name: 'REGISTRY', defaultValue: 'index.docker.io', description: 'Docker registry server')
-  string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon', description: 'Image repo (e.g., dockerhub_user/repo)')
-  string(name: 'I18N_COMMIT', defaultValue: 'refs/heads/main', description: 'Gibbon i18n commit/branch for VI')
-}
-
-options {
-  // stop Jenkins from doing implicit declarative : checkout scm
-  skipDefaultCheckout(true)
-}
-environment {
-  NS = "${params.NAMESPACE}"
-}
+// Jenkinsfile — DEV with Kaniko (CLI checkout + safe.directory)
 
 pipeline {
   agent {
@@ -34,8 +17,15 @@ spec:
       effect: "NoSchedule"
   volumes:
     - name: docker-config
-      secret:
-        secretName: regcred-kaniko
+      projected:
+        sources:
+          - secret:
+              name: regcred-kaniko
+              items:
+                - key: .dockerconfigjson
+                  path: config.json
+    - name: workspace-volume
+      emptyDir: {}
   containers:
     - name: kubectl
       image: ntony3419/k8s-agent:1.3
@@ -43,24 +33,97 @@ spec:
       command: ["/bin/bash","-c"]
       args: ["sleep infinity"]
       tty: true
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
+
+    - name: scm
+      image: alpine/git:latest
+      imagePullPolicy: Always
+      command: ["/bin/sh","-c"]
+      args: ["sleep 9999999"]
+      # Optional: match JNLP uid/gid to avoid ownership checks entirely
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      env:
+        - name: HOME
+          value: /home/jenkins/agent
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
+
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
       command: ["/busybox/sh","-c"]
       args: ["sleep 9999999"]
+      env:
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker
+      resources:
+        requests:
+          cpu: "1500m"
+          memory: "2Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
 """
     }
   }
 
+  options {
+    // We do our own CLI checkout; don’t let Jenkins do an implicit checkout.
+
+    disableConcurrentBuilds(abortPrevious: true)
+    buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30'))
+    timeout(time: 60, unit: 'MINUTES')
+    skipDefaultCheckout(true)
+    // timestamps()
+    // disableConcurrentBuilds()
+  }
+
+  parameters {
+    choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
+    string(name: 'NAMESPACE',  defaultValue: 'gibbon-dev-deploy',  description: 'K8s namespace')
+    string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev',         description: 'Git branch to build')
+    string(name: 'REGISTRY',   defaultValue: 'docker.io',          description: 'Docker registry')
+    string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
+    string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
+  }
+
+  environment {
+    NS = "${params.NAMESPACE}"
+  }
+
   stages {
-    stage('Checkout') {
+
+    stage('Checkout (CLI in scm)') {
       steps {
-        container('kubectl') {
-          git branch: "${params.GIT_BRANCH}", url: 'https://github.com/ntony3419/GibbonEdu-core.git'
-          sh 'git rev-parse --short=12 HEAD > .gitshort'
+        container('scm') {
+          sh '''
+            set -eu
+            export HOME=/home/jenkins/agent
+    
+            git --version
+            # Whitelist the workspace in case ownership is mixed
+            git config --global --add safe.directory "${WORKSPACE}" || true
+    
+            # Fresh checkout (no Jenkins Git plugin here)
+            rm -rf .git || true
+            git init
+            git remote add origin https://github.com/ntony3419/GibbonEdu-core.git
+            git fetch --depth 1 origin "${GIT_BRANCH}"
+            git checkout -qf FETCH_HEAD
+    
+            git rev-parse --short=12 HEAD > .gitshort
+          '''
         }
       }
     }
@@ -70,6 +133,7 @@ spec:
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh """
+              set -eu
               kubectl create ns "${NS}" --dry-run=client -o yaml | kubectl apply -f -
               cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1
@@ -126,23 +190,29 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-              set -euo pipefail
-              NS='"'"'${NS}'"'"'
+              set -eu
               IMG="$(cat image.txt)"
 
-              echo "[Apply base manifests if needed]"
-              kubectl apply -n "$NS" -f k8s/gibbon-mysql-deployment.yaml || true
-              kubectl apply -n "$NS" -f k8s/gibbon-deployment.yaml
-              kubectl apply -n "$NS" -f k8s/gibbon-ingress.yaml
+              # Apply manifests (idempotent)
+              kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true
+              kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
+              kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
 
-              echo "[Patch Deployment images: app + init]"
-              # Update both the main container and the init-gibbon initContainer to the same image
-              kubectl -n "$NS" set image deployment/gibbon-dev-app gibbon="$IMG" init-gibbon="$IMG"
+              # Update main app container
+              kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}"
 
-              echo "[Rollout]"
-              kubectl rollout status deployment gibbon-dev-app -n "$NS" --timeout=300s
+              # Update init-gibbon (initContainer) via strategic merge patch
+              cat <<EOF >/tmp/initpatch.yaml
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: init-gibbon
+        image: ${IMG}
+EOF
+              kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
 
-              echo "Deployed image: $IMG"
+              kubectl rollout status deployment gibbon-dev-app -n "${NS}" --timeout=300s
             '''
           }
         }
@@ -154,7 +224,7 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-              set -euo pipefail
+              set -eu
               APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
               kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- php -v || true
               kubectl -n "${NS}" get deploy,svc,ing,pvc
