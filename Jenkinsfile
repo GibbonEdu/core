@@ -68,7 +68,7 @@ spec:
           memory: "512Mi"
         limits:
           cpu: "2"
-          memory: "4Gi"
+          memory: "3Gi"
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
