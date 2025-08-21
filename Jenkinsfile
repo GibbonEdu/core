@@ -97,22 +97,26 @@ EOF
       steps {
         container('kaniko') {
           // REGISTRY auth is provided via /kaniko/.docker/config.json from regcred-kaniko
-          sh """
-            set -euo pipefail
-            COMMIT=\$(cat .gitshort)
-            IMAGE="${params.REGISTRY}/${params.IMAGE_REPO}:${params.ENV}-\${COMMIT}"
-            echo "Building: \$IMAGE"
+          sh '''
+          set -eu
+          COMMIT=$(cat .gitshort)
+          IMAGE="${REGISTRY}/${IMAGE_REPO}:${ENV}-${COMMIT}"
+          echo "Building: ${IMAGE}"
 
-            /kaniko/executor \
-              --context="${WORKSPACE}" \
-              --dockerfile="${WORKSPACE}/Dockerfile.gibbon" \
-              --destination="\$IMAGE" \
-              --snapshotMode=redo \
-              --reproducible \
-              --build-arg I18N_COMMIT="${params.I18N_COMMIT}"
+          /kaniko/executor \
+            --context="${WORKSPACE}" \
+            --dockerfile="${WORKSPACE}/Dockerfile.gibbon" \
+            --destination="${IMAGE}" \
+            --snapshot-mode=redo \
+            --use-new-run \
+            --compression=gzip \
+            --compression-level=1 \
+            --push-retry=3 \
+            --reproducible \
+            --build-arg I18N_COMMIT="${I18N_COMMIT}"
 
-            echo -n "\$IMAGE" > image.txt
-          """
+          echo -n "${IMAGE}" > image.txt     # ← put this back
+        '''
         }
       }
     }

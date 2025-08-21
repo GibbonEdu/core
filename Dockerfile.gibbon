@@ -1,79 +1,79 @@
 # ---- Builder stage: install deps & composer vendors -------------------------
-    FROM php:8.2-apache AS builder
+FROM php:8.2-apache AS builder
+ENV MAKEFLAGS="-j2"
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    unzip zip git curl wget pkg-config \
+    libicu-dev libgettextpo-dev \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libzip-dev zlib1g-dev libxml2-dev libonig-dev \
+    default-mysql-client locales netcat-openbsd \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml \
+    && a2enmod rewrite
 
-    RUN apt-get update && apt-get install -y --no-install-recommends \
-        unzip zip git curl wget pkg-config \
-        libicu-dev libgettextpo-dev \
-        libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
-        libzip-dev zlib1g-dev libxml2-dev libonig-dev \
-        default-mysql-client locales netcat-openbsd \
-     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-     && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml \
-     && a2enmod rewrite
-    
-    # Enable Vietnamese locale
-    RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
-    
-    ENV COMPOSER_ALLOW_SUPERUSER=1 \
-        LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
-    
-    # Install Composer
-    RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
-    
-    WORKDIR /src
-    # Copy your branch source into the image
-    COPY . /src
-    
-    # Install PHP vendors
-    RUN cd /src && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-    
-    # ---- Runtime stage: minimal image ------------------------------------------
-    FROM php:8.2-apache
-    
-    # System libs needed at runtime (much smaller set)
-    RUN apt-get update && apt-get install -y --no-install-recommends \
-        locales default-mysql-client \
-     && rm -rf /var/lib/apt/lists/*
-    
-    # Apache vhost
-    RUN printf '%s\n' \
-      '<VirtualHost *:80>' \
-      '  DocumentRoot /var/www/html/gibbon' \
-      '  <Directory /var/www/html/gibbon>' \
-      '    AllowOverride All' \
-      '    Require all granted' \
-      '  </Directory>' \
-      '</VirtualHost>' \
-      > /etc/apache2/sites-available/000-default.conf \
-      && a2enmod rewrite
-    
-    # Locale
-    RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
-    ENV LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
-    
-    # Copy app from builder
-    WORKDIR /var/www/html/gibbon
-    COPY --from=builder /src /var/www/html/gibbon
-    
-    # Session path into uploads (PVC)
-    RUN echo 'session.save_path = /var/www/html/gibbon/uploads/tmp' > /usr/local/etc/php/conf.d/session.ini
-    
-    # Ensure writeable paths
-    RUN mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache \
-     && chown -R www-data:www-data /var/www/html/gibbon \
-     && chmod -R 0777 /var/www/html/gibbon/uploads /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
-    
-    # --- Vietnamese translation from i18n repo (pin if you want reproducibility) ---
-    ARG I18N_COMMIT=refs/heads/main
-    RUN set -eux; \
-        mkdir -p /tmp/i18n /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES; \
-        curl -L -o /tmp/i18n.tar.gz "https://github.com/GibbonEdu/i18n/archive/${I18N_COMMIT}.tar.gz"; \
-        tar -xzf /tmp/i18n.tar.gz -C /tmp; \
-        I18N_DIR="$(find /tmp -maxdepth 1 -type d -name 'i18n-*' | head -n1)"; \
-        cp -v "${I18N_DIR}/vi_VN/LC_MESSAGES/gibbon.mo" \
-              /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo; \
-        chown -R www-data:www-data /var/www/html/gibbon/resources/locale; \
-        rm -rf /tmp/i18n /tmp/i18n.tar.gz "${I18N_DIR}"
-    
-    CMD ["apache2-foreground"]
+# Enable Vietnamese locale
+RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
+
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+
+WORKDIR /src
+# Copy your branch source into the image
+COPY . /src
+
+# Install PHP vendors
+RUN cd /src && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+# ---- Runtime stage: minimal image ------------------------------------------
+FROM php:8.2-apache
+
+# System libs needed at runtime (much smaller set)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    locales default-mysql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Apache vhost
+RUN printf '%s\n' \
+    '<VirtualHost *:80>' \
+    '  DocumentRoot /var/www/html/gibbon' \
+    '  <Directory /var/www/html/gibbon>' \
+    '    AllowOverride All' \
+    '    Require all granted' \
+    '  </Directory>' \
+    '</VirtualHost>' \
+    > /etc/apache2/sites-available/000-default.conf \
+    && a2enmod rewrite
+
+# Locale
+RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
+ENV LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
+
+# Copy app from builder
+WORKDIR /var/www/html/gibbon
+COPY --from=builder /src /var/www/html/gibbon
+
+# Session path into uploads (PVC)
+RUN echo 'session.save_path = /var/www/html/gibbon/uploads/tmp' > /usr/local/etc/php/conf.d/session.ini
+
+# Ensure writeable paths
+RUN mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache \
+    && chown -R www-data:www-data /var/www/html/gibbon \
+    && chmod -R 0777 /var/www/html/gibbon/uploads /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+
+# --- Vietnamese translation from i18n repo (pin if you want reproducibility) ---
+ARG I18N_COMMIT=refs/heads/main
+RUN set -eux; \
+    mkdir -p /tmp/i18n /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES; \
+    curl -L -o /tmp/i18n.tar.gz "https://github.com/GibbonEdu/i18n/archive/${I18N_COMMIT}.tar.gz"; \
+    tar -xzf /tmp/i18n.tar.gz -C /tmp; \
+    I18N_DIR="$(find /tmp -maxdepth 1 -type d -name 'i18n-*' | head -n1)"; \
+    cp -v "${I18N_DIR}/vi_VN/LC_MESSAGES/gibbon.mo" \
+            /var/www/html/gibbon/resources/locale/vi_VN/LC_MESSAGES/gibbon.mo; \
+    chown -R www-data:www-data /var/www/html/gibbon/resources/locale; \
+    rm -rf /tmp/i18n /tmp/i18n.tar.gz "${I18N_DIR}"
+
+CMD ["apache2-foreground"]
     
