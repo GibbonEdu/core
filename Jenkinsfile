@@ -199,30 +199,45 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-              set -eu
-              IMG="$(cat image.txt)"
+          set -eu
+          IMG="$(cat image.txt)"
 
-              # Apply manifests (idempotent)
-              kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true
-              kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
-              kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
+          # Apply DB bits and wait for MySQL to be Ready
+          kubectl apply -n "${NS}" -f k8s/gibbon-mysql-secret.yaml
+          kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true
+          kubectl -n "${NS}" rollout status deployment gibbon-dev-mysql --timeout=300s
+          kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev-mysql --timeout=300s
 
-              # Update main app container
-              kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}"
+          # Recreate the grant job so it runs with current secret/state
+          kubectl -n "${NS}" delete job gibbon-dev-mysql-grant-job --ignore-not-found=true || true
+          kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml
+          kubectl -n "${NS}" wait --for=condition=complete job/gibbon-dev-mysql-grant-job --timeout=180s || true
 
-              # Update init-gibbon (initContainer) via strategic merge patch
-              cat <<EOF >/tmp/initpatch.yaml
+          # App manifests
+          kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
+          kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
+
+          # Update main app container image
+          kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}"
+
+          # Make init-gibbon exit immediately and align seed image
+          cat <<EOF >/tmp/initpatch.yaml
 spec:
   template:
     spec:
       initContainers:
       - name: init-gibbon
         image: ${IMG}
+        command: ["/bin/sh","-c"]
+        args: ["echo warmup; exit 0"]
+      - name: init-seed-i18n
+        image: ${IMG}
 EOF
-              kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
+          kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
 
-              kubectl rollout status deployment gibbon-dev-app -n "${NS}" --timeout=300s
-            '''
+          # Rollout app
+          kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
+        '''
           }
         }
       }
