@@ -34,21 +34,21 @@ FROM php:8.2-apache
 # System libs needed at runtime (much smaller set)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales default-mysql-client \
-    libicu72 libpng16-16 libjpeg62-turbo libfreetype6 \
-    libzip4 zlib1g libxml2 libonig5 libgettextpo0 \
-  && rm -rf /var/lib/apt/lists/*
+    libicu-dev libpng16-16 libjpeg62-turbo libfreetype6 \
+    libzip-dev zlib1g libxml2 libonig5 libgettextpo0 \
+ && rm -rf /var/lib/apt/lists/*
 
 # Apache vhost
 RUN printf '%s\n' \
-    '<VirtualHost *:80>' \
-    '  DocumentRoot /var/www/html/gibbon' \
-    '  <Directory /var/www/html/gibbon>' \
-    '    AllowOverride All' \
-    '    Require all granted' \
-    '  </Directory>' \
-    '</VirtualHost>' \
-    > /etc/apache2/sites-available/000-default.conf \
-    && a2enmod rewrite
+  '<VirtualHost *:80>' \
+  '  DocumentRoot /var/www/html/gibbon' \
+  '  <Directory /var/www/html/gibbon>' \
+  '    AllowOverride All' \
+  '    Require all granted' \
+  '  </Directory>' \
+  '</VirtualHost>' \
+  > /etc/apache2/sites-available/000-default.conf \
+  && a2enmod rewrite
 
 # Locale
 RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
