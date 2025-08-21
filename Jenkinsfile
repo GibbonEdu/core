@@ -64,8 +64,8 @@ spec:
           value: /kaniko/.docker
       resources:
         requests:
-          cpu: "1500m"
-          memory: "2Gi"
+          cpu: "250m"
+          memory: "512Mi"
         limits:
           cpu: "2"
           memory: "4Gi"
@@ -75,6 +75,9 @@ spec:
         - name: workspace-volume
           mountPath: /home/jenkins/agent
 """
+    podRetention never()
+    idleMinutes 0
+    activeDeadlineSeconds 3600
     }
   }
 
@@ -177,6 +180,8 @@ EOF
             --compression-level=1 \
             --push-retry=3 \
             --reproducible \
+            --cache=true \
+            --cache-repo="${REGISTRY}/${IMAGE_REPO}-cache" \
             --build-arg I18N_COMMIT="${I18N_COMMIT}"
 
           echo -n "${IMAGE}" > image.txt     # ← put this back
