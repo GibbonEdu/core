@@ -48,6 +48,7 @@ v30.0.00
     Bug Fixes
         System: fixed toggle field direction for right-to-left languages
         Staff: fixed coverage longer than one week not including staff duty and activity cover
+        Staff: fixed the order of departments displayed in the staff directory
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
 

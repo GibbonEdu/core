@@ -951,5 +951,5 @@ UPDATE gibbonSetting SET nameDisplay='Catalyst License Organisation Name', descr
 UPDATE gibbonSetting SET nameDisplay='Catalyst License Key', description='Organisation\'s private key, as registered on your Catalyst License' WHERE nameDisplay='gibbonedu.com Organisation Key';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Staff', 'staffDutyTypes', 'Staff Duty Types', 'A comma-separated list.', 'Supervision,Other');end
 ALTER TABLE `gibbonStaffDuty` ADD `type` VARCHAR(40) NOT NULL DEFAULT 'Other' AFTER `nameShort`;end
-
+UPDATE `gibbonSetting` SET value='Leadership Team,English,Humanities,Human Technologies,Languages,Mathematics,Performing & Visual Arts,Physical Education,Science,Learning Support,Outdoor Education,School Office,Library,Finance,IT Services,Maintenance' WHERE scope='Staff' AND name='biographicalGroupingOrder' AND nameDisplay='Biographical Grouping Order';end
 ";
