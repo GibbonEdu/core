@@ -180,7 +180,7 @@ EOF
             --compression-level=1 \
             --push-retry=3 \
             --reproducible \
-            --cache=true \
+            --cache=false \
             --cache-repo="${REGISTRY}/${IMAGE_REPO}-cache" \
             --build-arg I18N_COMMIT="${I18N_COMMIT}"
 
