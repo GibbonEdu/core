@@ -7,9 +7,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     libzip-dev zlib1g-dev libxml2-dev libonig-dev \
     default-mysql-client locales netcat-openbsd \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml \
-    && a2enmod rewrite
+  && docker-php-ext-configure gd --with-freetype --with-jpeg \
+  && docker-php-ext-install -j2 intl gettext gd zip pdo_mysql mbstring xml bcmath \
+  && a2enmod rewrite \
+  && rm -rf /var/lib/apt/lists/*
 
 # Enable Vietnamese locale
 RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
@@ -33,7 +34,9 @@ FROM php:8.2-apache
 # System libs needed at runtime (much smaller set)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales default-mysql-client \
-    && rm -rf /var/lib/apt/lists/*
+    libicu72 libpng16-16 libjpeg62-turbo libfreetype6 \
+    libzip4 zlib1g libxml2 libonig5 libgettextpo0 \
+  && rm -rf /var/lib/apt/lists/*
 
 # Apache vhost
 RUN printf '%s\n' \
@@ -51,6 +54,9 @@ RUN printf '%s\n' \
 RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
 ENV LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
 
+# Bring PHP extensions compiled in the builder
+COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+COPY --from=builder /usr/local/etc/php/conf.d/     /usr/local/etc/php/conf.d/
 # Copy app from builder
 WORKDIR /var/www/html/gibbon
 COPY --from=builder /src /var/www/html/gibbon
