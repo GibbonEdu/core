@@ -175,6 +175,7 @@ EOF
             --dockerfile="${WORKSPACE}/Dockerfile.gibbon" \
             --destination="${IMAGE}" \
             --snapshot-mode=redo \
+            --single-snapshot \
             --use-new-run \
             --compression=gzip \
             --compression-level=1 \
