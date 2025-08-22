@@ -208,10 +208,9 @@ EOF
           kubectl -n "${NS}" rollout status deployment gibbon-dev-mysql --timeout=300s
           kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev-mysql --timeout=300s
 
-          # Recreate the grant job so it runs with current secret/state
-          kubectl -n "${NS}" delete job gibbon-dev-mysql-grant-job --ignore-not-found=true || true
+          
           kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml
-          kubectl -n "${NS}" wait --for=condition=complete job/gibbon-dev-mysql-grant-job --timeout=180s || true
+         
 
           # App manifests
           kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
