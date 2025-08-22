@@ -106,6 +106,22 @@ spec:
             - /bin/sh
             - -c
             - |
+              set -eu
+              HOST="gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local"
+              echo "Waiting for MySQL at ${HOST}..."
+              ok=0
+              for i in $(seq 1 60); do
+                if mysqladmin ping -h "${HOST}" -u root -p"$MYSQL_ROOT_PASSWORD" >/dev/null 2>&1; then
+                  ok=1
+                  break
+                fi
+                sleep 2
+              done
+              if [ "$ok" -ne 1 ]; then
+                echo "ERROR: MySQL not reachable after timeout" >&2
+                exit 1
+              fi
+
               echo "Granting privileges to gibbonuser..."
               mysql -h gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local \
                 -u root -p"$MYSQL_ROOT_PASSWORD" -e "\
