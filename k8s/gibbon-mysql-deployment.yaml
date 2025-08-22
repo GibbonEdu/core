@@ -66,6 +66,48 @@ spec:
               command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
             initialDelaySeconds: 30
             periodSeconds: 10
+        - name: mysql-granter
+          image: mysql:5.7
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_DATABASE
+              value: gibbon
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: password
+          command: ["/bin/sh","-lc"]
+          args:
+            - |
+              set -eu
+              echo "Waiting for mysqld on 127.0.0.1:3306..."
+              for i in $(seq 1 120); do
+                if mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" >/dev/null 2>&1; then
+                  break
+                fi
+                sleep 2
+              done
+              echo "Ensuring DB/user/grants..."
+              mysql -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
+                CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+                CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+                ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+                GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%';
+                FLUSH PRIVILEGES;
+              "
+              echo "Done. Sleeping to stay healthy."
+              sleep infinity
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
