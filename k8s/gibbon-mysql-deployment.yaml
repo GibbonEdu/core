@@ -102,31 +102,37 @@ spec:
       containers:
         - name: mysql-grant
           image: mysql:5.7
-          command:
-            - /bin/sh
-            - -c
+          command: ["/bin/sh","-c"]
+          args:
             - |
               set -eu
+
               HOST="gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local"
               echo "Waiting for MySQL at ${HOST}..."
-              ok=0
               for i in $(seq 1 60); do
-                if mysqladmin ping -h "${HOST}" -u root -p"$MYSQL_ROOT_PASSWORD" >/dev/null 2>&1; then
-                  ok=1
+                if mysqladmin ping -h "${HOST}" -uroot -p"$MYSQL_ROOT_PASSWORD" >/dev/null 2>&1; then
                   break
                 fi
                 sleep 2
               done
-              if [ "$ok" -ne 1 ]; then
-                echo "ERROR: MySQL not reachable after timeout" >&2
-                exit 1
+
+              echo "Ensuring DB and user exist..."
+              # Detect major version to choose proper ALTER USER syntax
+              MAJOR="$(mysql -h "$HOST" -uroot -p"$MYSQL_ROOT_PASSWORD" -Nse "SELECT SUBSTRING_INDEX(VERSION(),'.',1)")"
+              if [ "${MAJOR}" -ge 8 ]; then
+                ALTER_STMT="ALTER USER '${MYSQL_USER}'@'%' IDENTIFIED WITH mysql_native_password BY '${MYSQL_PASSWORD}'"
+              else
+                ALTER_STMT="ALTER USER '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}'"
               fi
 
-              echo "Granting privileges to gibbonuser..."
-              mysql -h gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local \
-                -u root -p"$MYSQL_ROOT_PASSWORD" -e "\
-                GRANT ALL PRIVILEGES ON gibbon.* TO '$MYSQL_USER'@'%'; \
-                FLUSH PRIVILEGES;"
+              mysql -h "$HOST" -uroot -p"$MYSQL_ROOT_PASSWORD" <<SQL
+CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+${ALTER_STMT};
+GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
+FLUSH PRIVILEGES;
+SELECT user,host FROM mysql.user WHERE user='${MYSQL_USER}';
+SQL
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -138,3 +144,10 @@ spec:
                 secretKeyRef:
                   name: gibbon-dev-db-secret
                   key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-db-secret
+                  key: password
+            - name: MYSQL_DATABASE
+              value: gibbon
