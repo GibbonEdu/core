@@ -42,6 +42,7 @@ v30.0.00
         Staff: limited Add Staff list to users who are not already staff but have a staff role
         Staff: added an option to separate the Staff Duty page into tabs by duty type
         Students: fixed error on student profile related to a typo in studentMenuCategory variable
+        System Admin: added the option to upload user photos in jpeg format
         Timetable: added coverage details for staff duty and activities on the timetable
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
