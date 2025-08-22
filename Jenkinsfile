@@ -71,7 +71,7 @@ spec:
           memory: "512Mi"
         limits:
           cpu: "2"
-          memory: "3Gi"
+          memory: "4Gi"
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
@@ -185,7 +185,7 @@ EOF
             --push-retry=3 \
             --reproducible \
             --cache=true \
-            --cache-repo="${REGISTRY}/${IMAGE_REPO}-cache" \
+            --cache-repo="${REGISTRY}/${IMAGE}-cache" \
             --build-arg I18N_COMMIT="${I18N_COMMIT}"
 
           echo -n "${IMAGE}" > image.txt     # ← put this back
