@@ -19,11 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
-use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\Staff\StaffDutyGateway;
 use Gibbon\Domain\Staff\StaffDutyPersonGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty.php') == false) {
     // Access denied
@@ -46,27 +44,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty.php') == 
     }
     
     $staffDutyGateway = $container->get(StaffDutyGateway::class);
-    $duty = $staffDutyGateway->selectDutyTimeSlots()->fetchGrouped();
+    $duty = $staffDutyGateway->selectDutyTimeSlots()->fetchAll();
 
     $staffDutyPersonGateway = $container->get(StaffDutyPersonGateway::class);
     $dutyRoster = $staffDutyPersonGateway->selectDutyRoster()->fetchGrouped();
 
-    $maxCount = 0;
-    foreach ($duty as $weekday => $dutyList) {
+    $settingGateway = $container->get(SettingGateway::class);
+    $types = $settingGateway->getSettingByScope('Staff', 'staffDutyTypes');
+    $types = array_filter(array_map('trim', explode(',', $types)));
 
-        $duty[$weekday] = array_map(function ($item) use (&$weekday, &$dutyRoster) {
-            $item['roster'] = array_filter($dutyRoster[$item['gibbonStaffDutyID']] ?? [], function ($staff) use (&$weekday) {
-                return $weekday == $staff['weekdayName'];
-            });
-            return $item;
-        }, $dutyList);
+    // TABS
+    $tabs = array_combine($types, array_fill(0, count($types), []));
 
-        $maxCount = max($maxCount, count($dutyList));
+    $dutyByType = array_reduce($duty, function ($group, $item) {
+        $item['type'] = empty($item['type']) ? __('Staff Duty') : $item['type'];
+        $group[$item['type']][$item['weekdayName']][] = $item;
+        return $group;
+    }, $tabs);
+
+    foreach ($dutyByType as $dutyType => $dutyByWeekday) {
+
+        if (empty($dutyByWeekday)) {
+            unset($tabs[$dutyType]);
+            continue;
+        }
+
+        $maxCount = 0;
+        foreach ($dutyByWeekday as $weekday => $dutyList) {
+
+            $dutyByWeekday[$weekday] = array_map(function ($item) use (&$weekday, &$dutyRoster) {
+                $item['roster'] = array_filter($dutyRoster[$item['gibbonStaffDutyID']] ?? [], function ($staff) use (&$weekday) {
+                    return $weekday == $staff['weekdayName'];
+                });
+                return $item;
+            }, $dutyList);
+
+            $maxCount = max($maxCount, count($dutyList));
+        }
+
+        $tabs[$dutyType] = [
+            'label'   => __($dutyType),
+            'content' => $page->fetchFromTemplate('dutySchedule.twig.html', [
+                'canEdit'   => $highestAction == 'Duty Schedule_edit',
+                'duty'      => $dutyByWeekday,
+                'maxCount'  => $maxCount,
+            ])
+        ];
     }
 
-    $page->writeFromTemplate('dutySchedule.twig.html', [
-        'canEdit'   => $highestAction == 'Duty Schedule_edit',
-        'duty'      => $duty,
-        'maxCount'  => $maxCount,
+    $page->writeFromTemplate('ui/tabs.twig.html', [
+        'selected' => $defaultTab ?? 1,
+        'tabs'     => $tabs,
+        'outset'   => false,
+        'icons'    => false,
     ]);
 }

@@ -40,8 +40,11 @@ v30.0.00
         Planner: added a button to access Linked Markbook from Edit Lesson Plan page
         Planner: added a highlight for Off Timetable Lessons in the "Year Overview" mode
         Staff: limited Add Staff list to users who are not already staff but have a staff role
+        Staff: added an option to separate the Staff Duty page into tabs by duty type
+        Students: fixed error on student profile related to a typo in studentMenuCategory variable
         Timetable: added coverage details for staff duty and activities on the timetable
         User Admin: added Sibling as option to Emergency Relationship select
+        User Admin: added Prof. as an option in Title select
 
     Bug Fixes
         System: fixed toggle field direction for right-to-left languages

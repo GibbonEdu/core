@@ -949,4 +949,7 @@ ALTER TABLE `gibbonReportPrototypeSection` ADD `gibbonPersonIDLastEdit` INT(10) 
 ALTER TABLE `gibbonReportPrototypeSection` ADD `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;end
 UPDATE gibbonSetting SET nameDisplay='Catalyst License Organisation Name', description='Name of organisation on your Catalyst License' WHERE nameDisplay='gibbonedu.com Organisation Name';end
 UPDATE gibbonSetting SET nameDisplay='Catalyst License Key', description='Organisation\'s private key, as registered on your Catalyst License' WHERE nameDisplay='gibbonedu.com Organisation Key';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Staff', 'staffDutyTypes', 'Staff Duty Types', 'A comma-separated list.', 'Supervision,Other');end
+ALTER TABLE `gibbonStaffDuty` ADD `type` VARCHAR(40) NOT NULL DEFAULT 'Other' AFTER `nameShort`;end
+
 ";
