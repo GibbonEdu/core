@@ -173,6 +173,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $alertLevelGateway = $this->getContainer()->get(AlertLevelGateway::class);
         $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
         $entryCount = 0;
+		
+		//INITIALISE OUTPUT VARIABLES (to silence warnings in Apache error log)
+		$plannerOutput   = '';
+		$gradesOutput    = '';
+		$deadlinesOutput = '';
 
         //PREPARE PLANNER SUMMARY
         $classes = false;

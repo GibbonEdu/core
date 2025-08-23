@@ -51,6 +51,7 @@ v30.0.00
         Staff: fixed coverage longer than one week not including staff duty and activity cover
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
+		Parent Dashboard: Initialize output variables before use to avoid 'Undefined variable' warnings in error logs.
 
     Deprecations
         Removed all functions in functions.php flagged for deprecation since v25
