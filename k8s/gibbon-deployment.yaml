@@ -164,6 +164,11 @@ spec:
                   key: password
             - name: ABSOLUTE_URL
               value: "https://gibbon-dev.vanhoa.edu.vn"
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-dev-openai
+                  key: OPENAI_API_KEY
           volumeMounts:
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
