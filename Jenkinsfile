@@ -203,7 +203,8 @@ EOF
           IMG="$(cat image.txt)"
 
           # Apply DB bits and wait for MySQL to be Ready
-          kubectl apply -n "${NS}" -f k8s/gibbon-mysql-secret.yaml
+          echo "gibbon-mysql-secret.yaml file must be created and apply separately in cluster before continueing. If gibbon is deployed in standalone server create a .env file, check gibbon deploy operation for further detail"  
+          
           
           kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true
           
