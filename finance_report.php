@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: text/html; charset=utf-8');
 
+require_once __DIR__ . '/lib/openai.php';
 require_once __DIR__.'/vendor/autoload.php';
 require_once __DIR__.'/db.php'; // <-- Dùng kết nối chung qua .env (tạo $pdo)
 
