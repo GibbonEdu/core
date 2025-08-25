@@ -11,10 +11,12 @@ function safe($str) {
 }
 
 function getApiKey(): string {
-    $filePath = __DIR__ . '/chatgpt_api_token.json';
-    if (file_exists($filePath)) {
-        $data = json_decode(file_get_contents($filePath), true);
-        return trim($data['api_key'] ?? '');
+    $v = $_ENV['OPENAI_API_KEY'] ?? getenv('OPENAI_API_KEY');
+    if ($v !== false && $v !== null && $v !== '') {
+        return trim((string)$v);
+    }
+    if ($required) {
+        throw new RuntimeException('OPENAI_API_KEY not set (nor OPENAI_API_KEY_FILE).');
     }
     return '';
 }
