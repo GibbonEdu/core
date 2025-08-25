@@ -19,7 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 use Gibbon\FileUploader;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -62,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-
+    
     // Open the zip archive
     $zip = new ZipArchive();
     if ($zip->open($tempFile['tmp_name']) === false) {
@@ -128,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
                 $userData['exists'] = !empty($userData['image_240']);
             }
 
-            if ($type == 'userPhotos' && ($extension != 'jpg' && $extension != 'png')) {
+            if ($type == 'userPhotos' && ($extension != 'jpg' && $extension != 'png' && $extension != 'jpeg')) {
                 $userData['statusText'] = __('Invalid File Type');
             } else {
                 $validFiles++;

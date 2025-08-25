@@ -42,6 +42,7 @@ v30.0.00
         Staff: limited Add Staff list to users who are not already staff but have a staff role
         Staff: added an option to separate the Staff Duty page into tabs by duty type
         Students: fixed error on student profile related to a typo in studentMenuCategory variable
+        System Admin: added the option to upload user photos in jpeg format
         Timetable: added coverage details for staff duty and activities on the timetable
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
@@ -51,6 +52,7 @@ v30.0.00
         Staff: fixed coverage longer than one week not including staff duty and activity cover
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
+		Parent Dashboard: Initialize output variables before use to avoid 'Undefined variable' warnings in error logs.
 
     Deprecations
         Removed all functions in functions.php flagged for deprecation since v25
