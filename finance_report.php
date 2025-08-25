@@ -10,13 +10,13 @@ function safe($str) {
     return htmlspecialchars((string)($str ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
-function getApiKey(): string {
+function getApiKey(bool $required = true): string {
     $v = $_ENV['OPENAI_API_KEY'] ?? getenv('OPENAI_API_KEY');
     if ($v !== false && $v !== null && $v !== '') {
         return trim((string)$v);
     }
     if ($required) {
-        throw new RuntimeException('OPENAI_API_KEY not set (nor OPENAI_API_KEY_FILE).');
+        throw new RuntimeException('OPENAI_API_KEY not set');
     }
     return '';
 }
