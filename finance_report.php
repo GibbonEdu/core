@@ -4,13 +4,13 @@ ini_set('display_errors', 1);
 header('Content-Type: text/html; charset=utf-8');
 
 require_once __DIR__.'/vendor/autoload.php';
-require_once __DIR__.'/db.php'; // <-- Dùng k?t n?i chung qua .env (t?o $pdo)
+require_once __DIR__.'/db.php'; // <-- Dùng kết nối chung qua .env (tạo $pdo)
 
 function safe($str) {
     return htmlspecialchars((string)($str ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
-/*function getApiKey(): string {
+function getApiKey(): string {
     $filePath = __DIR__ . '/chatgpt_api_token.json';
     if (file_exists($filePath)) {
         $data = json_decode(file_get_contents($filePath), true);
@@ -111,11 +111,7 @@ function renderPrompt(string $tpl, array $vars): string {
    ============== */
 function detectTeacherNameFromNote($note, array $teacherList): string {
     global $APP_SETTINGS;
-    $api_key = getenv('OPENAI_API_KEY') ?: ($_ENV['OPENAI_API_KEY'] ?? null);
-        if (!$api_key) {
-        http_response_code(500);
-        die('OPENAI_API_KEY not set');
-    }
+    $api_key = getApiKey();
     if ($api_key === '') return 'Unknown';
 
     $teacherLines = implode("\n- ", $teacherList);
@@ -154,11 +150,7 @@ function detectTeacherNameFromNote($note, array $teacherList): string {
 
 function checkSalaryNote($note, $teacherFullName = '') {
     global $APP_SETTINGS;
-    $api_key = getenv('OPENAI_API_KEY') ?: ($_ENV['OPENAI_API_KEY'] ?? null);
-        if (!$api_key) {
-        http_response_code(500);
-        die('OPENAI_API_KEY not set');
-    }
+    $api_key = getApiKey();
     if ($api_key === '') return 'No';
 
     $tpl = $APP_SETTINGS['prompts']['advance'] ?? '';
@@ -196,11 +188,7 @@ function checkSalaryNote($note, $teacherFullName = '') {
 
 function checkHeldMoney($note) {
     global $APP_SETTINGS;
-    $api_key = getenv('OPENAI_API_KEY') ?: ($_ENV['OPENAI_API_KEY'] ?? null);
-        if (!$api_key) {
-        http_response_code(500);
-        die('OPENAI_API_KEY not set');
-    }
+    $api_key = getApiKey();
     if ($api_key === '') return 'No';
 
     $tpl = $APP_SETTINGS['prompts']['held'] ?? '';
