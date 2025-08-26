@@ -1,0 +1,46 @@
+details:
+    type: professionalDevelopmentPortfolio
+    category: Staff PD Portfolio
+    name: PD Portfolio Records
+    table: professionalDevelopmentPortfolio
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Professional Development
+    action: Manage Portfolio_full
+primaryKey:
+    professionalDevelopmentPortfolioID
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: string, required: true}
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name }
+    gibbonPersonID:
+        name: "Person"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }
+    status:
+        name: "Status"
+        desc: "Approval Status"
+        args: {filter: string}
+    role:
+        name: "Role"
+        desc: "Role of the participant"
+        args: {filter: string, required: true }
+    type:
+        name: "PD Type"
+        desc: "Type of PD activity"
+        args: {filter: string, required: true }
+    title:
+        name: "Title"
+        desc: "Title of PD activity"
+        args: { filter: string, required: true }
+    completionDate:
+      name: "Completion Date"
+      desc: "Date Completed"
+      args: { filter: date, required: true }
+    timeSpent:
+        name: "Time Spent"
+        desc: "Time Spent in hours"
+        args: { filter: decimal, required: true }

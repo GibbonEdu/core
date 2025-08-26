@@ -39,6 +39,7 @@ v30.0.00
         Planner: added a highlight for Off Timetable students in View Lesson Plan attendance list
         Planner: added a button to access Linked Markbook from Edit Lesson Plan page
         Planner: added a highlight for Off Timetable Lessons in the "Year Overview" mode
+        Professional Development: added a new yml file for importing previous PD records into the staff PD portfolio
         Staff: limited Add Staff list to users who are not already staff but have a staff role
         Staff: added an option to separate the Staff Duty page into tabs by duty type
         Students: fixed error on student profile related to a typo in studentMenuCategory variable
