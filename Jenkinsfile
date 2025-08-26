@@ -204,10 +204,8 @@ EOF
       steps {
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh (
-          label: 'Deploy to K8s',
-          shell: '/bin/bash',
-          script: '''
+            sh '''
+          
           set -u
           IMG="$(cat image.txt)"
 
@@ -269,9 +267,8 @@ EOF
                 --type=strategic --patch-file /tmp/openai-secret-patch.yaml
               # Rollout app
               kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
-            BASH
+            
             '''
-            )
           }
         }
       }
