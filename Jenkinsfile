@@ -78,21 +78,21 @@ spec:
         - name: workspace-volume
           mountPath: /home/jenkins/agent
 """
-    podRetention never()
-    idleMinutes 0
-    activeDeadlineSeconds 3600
+      podRetention never()
+      idleMinutes 0
+      activeDeadlineSeconds 3600
     }
   }
 
   options {
-    // We do our own CLI checkout; don’t let Jenkins do an implicit checkout.
+
 
     disableConcurrentBuilds(abortPrevious: true)
     buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30'))
     timeout(time: 60, unit: 'MINUTES')
     skipDefaultCheckout(true)
-    // timestamps()
-    // disableConcurrentBuilds()
+
+
   }
 
   parameters {
@@ -107,7 +107,7 @@ spec:
 
   environment {
     NS = "${params.NAMESPACE}"
-    OPENAI_SECRET_NAME = 'gibbon-dev-openai'
+    OPENAI_SECRET_NAME = "${params.OPENAI_SECRET_NAME}"
   }
 
   stages {
@@ -172,7 +172,11 @@ EOF
           sh '''
           set -eu
           COMMIT=$(cat .gitshort)
-          IMAGE="${REGISTRY}/${IMAGE_REPO}:${ENV}-${COMMIT}"
+          TAG="${ENV}-${COMMIT}"
+          IMAGE_REPO_FULL="${REGISTRY}/${IMAGE_REPO}"
+          IMAGE="${IMAGE_REPO_FULL}:${TAG}"
+          CACHE_REPO="${IMAGE_REPO_FULL}-cache"
+
           echo "Building: ${IMAGE}"
 
           /kaniko/executor \
@@ -201,7 +205,7 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-          set -eu
+          set -euo pipefail
           IMG="$(cat image.txt)"
 
           # Apply DB bits and wait for MySQL to be Ready
@@ -243,29 +247,27 @@ spec:
 EOF
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
           SEC="${OPENAI_SECRET_NAME}"
-          # Ensure the Deployment contains the volume/mount & OPENAI_API_KEY_FILE (from YAML). Now just switch the secretName each rotation:
-# (Find the correct index for the 'openai-secret' volume if it's not the second item; adjust [*] path accordingly.)
-kubectl -n "${NS}" patch deploy gibbon-dev-app --type=json -p="$(cat <<JSON
-[
-  { "op": "replace",
-    "path": "/spec/template/spec/volumes/$(kubectl -n "${NS}" get deploy gibbon-dev-app -o json | jq -r '
-        .spec.template.spec.volumes
-        | to_entries
-        | map(select(.value.name=="openai-secret"))[0].key
-      ')/secret/secretName",
-    "value": "${SEC}"
-  },
-  { "op": "add",
-    "path": "/spec/template/metadata/annotations/secret.openai.rev",
-    "value": "${SEC}-$(date +%s)"
-  }
-]
-JSON
-)"
+          REV="${SEC}-$(date +%s)"
+              cat > /tmp/openai-secret-patch.yaml <<'EOF'
+spec:
+  template:
+    metadata:
+      annotations:
+        secret.openai.rev: "__REV__"
+    spec:
+      volumes:
+      - name: openai-secret
+        secret:
+          secretName: "__SEC__"
+EOF
+              sed -i "s/__SEC__/${SEC}/g" /tmp/openai-secret-patch.yaml
 
-          # Rollout app
-          kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
-        '''
+              kubectl -n "${NS}" patch deploy gibbon-dev-app \
+                --type=strategic --patch-file /tmp/openai-secret-patch.yaml
+              # Rollout app
+              kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
+
+            '''
           }
         }
       }
