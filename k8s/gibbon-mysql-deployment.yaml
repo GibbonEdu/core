@@ -123,13 +123,12 @@ spec:
                 ALTER_STMT="ALTER USER '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}'"
               fi
 
-              MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" mysql -h "${HOST}" -uroot <<SQL
-CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-${ALTER_STMT};
-GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-FLUSH PRIVILEGES;
-SQL
+              MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" mysql -h "${HOST}" -uroot -e "
+              CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+              CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+              ${ALTER_STMT};
+              GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
+              FLUSH PRIVILEGES;
 
               echo "Grants applied."
           env:
