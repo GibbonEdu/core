@@ -205,7 +205,8 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-          set -euo pipefail
+          bash -eo pipefail <<'BASH'
+          set -u
           IMG="$(cat image.txt)"
 
           # Apply DB bits and wait for MySQL to be Ready
@@ -266,7 +267,7 @@ EOF
                 --type=strategic --patch-file /tmp/openai-secret-patch.yaml
               # Rollout app
               kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
-
+            BASH
             '''
           }
         }
