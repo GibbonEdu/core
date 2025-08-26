@@ -107,6 +107,7 @@ spec:
 
   environment {
     NS = "${params.NAMESPACE}"
+    OPENAI_SECRET_NAME = 'gibbon-dev-openai'
   }
 
   stages {
