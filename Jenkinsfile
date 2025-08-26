@@ -263,9 +263,12 @@ spec:
           secretName: "__SEC__"
 EOF
               sed -i "s/__SEC__/${SEC}/g" /tmp/openai-secret-patch.yaml
+              sed -i "s/__REV__/${REV}/g" /tmp/openai-secret-patch.yaml
 
               kubectl -n "${NS}" patch deploy gibbon-dev-app \
                 --type=strategic --patch-file /tmp/openai-secret-patch.yaml
+
+              kubectl -n "${NS}" set env deploy/gibbon-dev-app OPENAI_API_KEY- || true
               # Rollout app
               kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
             BASH
