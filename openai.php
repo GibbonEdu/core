@@ -2,8 +2,14 @@
 declare(strict_types=1);
 
 function getApiKey(bool $required = true): string {
+    // will read from file first
+    $file = $_ENV['OPENAI_API_KEY_FILE'] ?? getenv('OPENAI_API_KEY_FILE');
+    if ($file && is_readable($file)) {
+        $k = trim((string)file_get_contents($file));
+        if ($k !== '') return $k;
+    }
     // Read from env (K8s environment file)
-    $v = getenv('OPENAI_API_KEY');
+    $v =$_ENV['OPENAI_API_KEY'] ?? getenv('OPENAI_API_KEY');
     if ($v !== false && $v !== '') {
         return trim((string)$v);
     }
