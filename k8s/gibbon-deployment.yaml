@@ -132,7 +132,7 @@ spec:
           image: docker.io/ntony3419/gibbon:dev-latest      # Jenkins updates this to the build tag
           imagePullPolicy: Always
           command: ["/bin/sh","-c"]
-          args: ["apache2ctl -D FOREGROUND"]
+          args: ["exec env -u OPENAI_API_KEY apache2ctl -D FOREGROUND"]
           ports:
             - containerPort: 80
           startupProbe:
@@ -164,11 +164,10 @@ spec:
                   key: password
             - name: ABSOLUTE_URL
               value: "https://gibbon-dev.vanhoa.edu.vn"
-            - name: OPENAI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: gibbon-dev-openai
-                  key: OPENAI_API_KEY
+              # Point PHP to the secret file
+            - name: OPENAI_API_KEY_FILE
+              value: /run/secrets/openai/OPENAI_API_KEY
+
           volumeMounts:
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
@@ -179,8 +178,15 @@ spec:
             - name: uploads
               mountPath: /var/www/html/gibbon/i18n
               subPath: i18n
-
+            # Mount the OpenAI secret (the Secret name will be patched by Jenkins)
+            - name: openai-secret
+              mountPath: /run/secrets/openai
+              readOnly: true
       volumes:
         - name: uploads
           persistentVolumeClaim:
             claimName: gibbon-dev-uploads-pvc
+        # Secret volume; secretName will be patched to the current version by Jenkins
+        - name: openai-secret
+          secret:
+            secretName: gibbon-dev-openai

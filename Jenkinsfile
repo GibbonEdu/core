@@ -102,6 +102,7 @@ spec:
     string(name: 'REGISTRY',   defaultValue: 'docker.io',          description: 'Docker registry')
     string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
     string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
+    string(name: 'OPENAI_SECRET_NAME', defaultValue: 'gibbon-dev-openai', description: 'K8s Secret name that holds OPENAI_API_KEY')
   }
 
   environment {
@@ -240,6 +241,26 @@ spec:
         image: ${IMG}
 EOF
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
+          SEC="${OPENAI_SECRET_NAME}"
+          # Ensure the Deployment contains the volume/mount & OPENAI_API_KEY_FILE (from YAML). Now just switch the secretName each rotation:
+# (Find the correct index for the 'openai-secret' volume if it's not the second item; adjust [*] path accordingly.)
+kubectl -n "${NS}" patch deploy gibbon-dev-app --type=json -p="$(cat <<JSON
+[
+  { "op": "replace",
+    "path": "/spec/template/spec/volumes/$(kubectl -n "${NS}" get deploy gibbon-dev-app -o json | jq -r '
+        .spec.template.spec.volumes
+        | to_entries
+        | map(select(.value.name=="openai-secret"))[0].key
+      ')/secret/secretName",
+    "value": "${SEC}"
+  },
+  { "op": "add",
+    "path": "/spec/template/metadata/annotations/secret.openai.rev",
+    "value": "${SEC}-$(date +%s)"
+  }
+]
+JSON
+)"
 
           # Rollout app
           kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
