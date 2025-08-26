@@ -204,8 +204,10 @@ EOF
       steps {
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''
-          bash -eo pipefail <<'BASH'
+            sh (
+          label: 'Deploy to K8s',
+          shell: '/bin/bash',
+          script: '''
           set -u
           IMG="$(cat image.txt)"
 
@@ -269,6 +271,7 @@ EOF
               kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
             BASH
             '''
+            )
           }
         }
       }
