@@ -206,7 +206,7 @@ EOF
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
           
-             bash -eo pipefail <<'BASH'
+             
           set -u
           IMG="$(cat image.txt)"
 
@@ -271,7 +271,7 @@ EOF
               kubectl -n "${NS}" set env deploy/gibbon-dev-app OPENAI_API_KEY- || true
               # Rollout app
               kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
-            BASH
+            
             '''
           }
         }
