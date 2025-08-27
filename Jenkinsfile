@@ -293,6 +293,17 @@ EOF
                   rm -f /var/www/html/gibbon/_whichkey.php || true
                 ' || true
               done
+              # Hard check: fail the build if any last4 does not match f8oA
+            EXPECT="f8oA"
+            STATUS=0
+            [ "${SEC_LAST4:-}" = "${EXPECT}" ] || { echo "API Secret mismatch"; STATUS=1; }
+            for p in ${PODS}; do
+              POD_LAST4="$(kubectl -n "${NS}" exec "${p}" -c gibbon -- sh -lc 'tail -c 4 /run/secrets/openai/OPENAI_API_KEY 2>/dev/null || true')"
+              [ "${POD_LAST4:-}" = "${EXPECT}" ] || { echo "Pod ${p} file last4 mismatch (${POD_LAST4})"; STATUS=1; }
+              PHP_LAST4="$(kubectl -n "${NS}" exec "${p}" -c gibbon -- sh -lc 'php -r "require \"/var/www/html/gibbon/openai.php\"; echo substr(getApiKey(false),-4);" 2>/dev/null || true')"
+              [ "${PHP_LAST4:-}" = "${EXPECT}" ] || { echo "Pod ${p} PHP getApiKey() last4 mismatch (${PHP_LAST4})"; STATUS=1; }
+            done
+            exit ${STATUS}
             '''
           }
         }
