@@ -269,7 +269,7 @@ EOF
               for p in ${PODS}; do
                 echo " - ${p}:"
                 kubectl -n "${NS}" exec "${p}" -c gibbon -- sh -lc '
-                  set -Eeuo pipefail
+                  set -eu
                   PID=$(pgrep -xo apache2 || pgrep -xo httpd || true)
                   if [ -n "${PID:-}" ]; then
                     tr "\\0" "\\n" < /proc/$PID/environ | grep "^OPENAI_API_KEY=" || echo "(none)"
@@ -283,13 +283,13 @@ EOF
               for p in ${PODS}; do
                 echo " - ${p}:"
                 kubectl -n "${NS}" exec "${p}" -c gibbon -- sh -lc '
-                  set -Eeuo pipefail
+                  set -eu
                   cat >/var/www/html/gibbon/_whichkey.php <<'\''PHP'\''
                   <?php
                   require __DIR__ . "/openai.php";
-                  $k = getApiKey(false);
+                  \$k = getApiKey(false);
                   header("Content-Type: text/plain; charset=UTF-8");
-                  echo $k ? substr($k,0,6)."…".substr($k,-4)." (len:".strlen($k).")\\n" : "MISSING\\n";
+                  echo \$k ? substr(\$k,0,6)."…".substr(\$k,-4)." (len:".strlen(\$k).")\\n" : "MISSING\\n";
                   PHP
                   php -d display_errors=1 /var/www/html/gibbon/_whichkey.php || true
                   rm -f /var/www/html/gibbon/_whichkey.php || true
@@ -306,9 +306,9 @@ EOF
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
-              set -Eeuo pipefail
+              set -eu
               APP_POD="$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')"
-              kubectl -n "${NS}" exec "${APP_POD}" -c gibbon -- php -v || true
+              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- php -v || true
               kubectl -n "${NS}" get deploy,svc,ing,pvc -o wide
             '''
           }
