@@ -245,7 +245,7 @@ EOF
           SEC="gibbon-dev-openai"
           REV=$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')
           
-          cat > /tmp/openai-secret-patch.yaml <<'EOF'
+          cat > /tmp/openai-secret-patch.yaml <<EOF
 spec:
   template:
     metadata:
