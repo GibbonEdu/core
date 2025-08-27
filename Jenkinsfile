@@ -228,27 +228,27 @@ EOF
           # Update main app container image
           kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}"
 
-          # Make init-gibbon exit immediately and align seed image
-          cat <<EOF >/tmp/initpatch.yaml
+          # Patch the init container correctly and stamp the pod template with Secret RV
+
+          SEC="${OPENAI_SECRET_NAME}"
+
+          RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
+          cat <<EOF >/tmp/patch.yaml
 spec:
   template:
+    metadata:
+      annotations:
+        secret.openai.rv: "${RV}"
     spec:
       initContainers:
-      - name: init-gibbon
-        image: ${IMG}
+      - name: init-gibbon-data        
         command: ["/bin/sh","-c"]
         args: ["echo warmup; exit 0"]
       - name: init-seed-i18n
         image: ${IMG}
 EOF
 
-          kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
-          SEC="${OPENAI_SECRET_NAME}"
-          RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
-          
-          # Stamp pod-template with the Secret resourceVersion and restart
-          kubectl -n "${NS}" annotate deploy gibbon-dev-app secret.openai.rv="${RV}" --overwrite
-          kubectl -n "${NS}" rollout restart deploy/gibbon-dev-app
+          kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/patch.yaml
           kubectl -n "${NS}" rollout status deploy/gibbon-dev-app --timeout=300s
 
           # Verify
@@ -259,7 +259,7 @@ EOF
           APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
           echo "[Verify] Mounted file tail in pod:"
           kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
-            'head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo'
+            'ls -l /run || true; ls -l /run/openai.key || true; head -c 6 /run/openai.key; echo -n "…"; tail -c 4 /run/openai.key; echo'
 
           echo "[Verify] Apache env (should NOT contain OPENAI_API_KEY):"
           kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
