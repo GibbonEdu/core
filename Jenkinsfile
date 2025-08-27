@@ -247,33 +247,42 @@ EOF
 
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/patch.yaml
           kubectl -n "${NS}" rollout status deploy/gibbon-dev-app --timeout=300s
+          kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev --timeout=300s
 
           # Verify
           echo "[Verify] Secret tail from API:"
           kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | \
             awk '{print substr($0,1,6)"…"(length>4?substr($0,length-3):$0)}'; echo
 
-          APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}')
+          
+          for p in $(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+            echo " - $p:"
+                kubectl -n "${NS}" exec "$p" -c gibbon -- sh -lc \
           echo "[Verify] Mounted file tail in pod:"
           kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
-            'ls -l /run/secrets/openai || true; head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo'
+            'ls -l /run/secrets/openai || true; head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo' || true
 
           echo "[Verify] Apache env (should NOT contain OPENAI_API_KEY):"
-          kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
-            'PID=$(pgrep -xo apache2 || pgrep -xo httpd || true); [ -n "$PID" ] && tr "\\0" "\\n" < /proc/$PID/environ | grep "^OPENAI_API_KEY=" || echo "(none)"'
-
+          for p in $(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+                echo " - $p:"
+                kubectl -n "${NS}" exec "$p" -c gibbon -- sh -lc \
+                  'PID=$(pgrep -xo apache2 || pgrep -xo httpd || true); [ -n "$PID" ] && tr "\\0" "\\n" < /proc/$PID/environ | grep "^OPENAI_API_KEY=" || echo "(none)"' || true
+              done
           echo "[Verify] PHP getApiKey():"
-          kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc '
-            cat >/var/www/html/gibbon/_whichkey.php <<PHP
-            <?php
-            require __DIR__ . "/openai.php";
-            \$k = getApiKey(false);
-            header("Content-Type: text/plain; charset=UTF-8");
-            echo \$k ? substr(\$k,0,6)."…".substr(\$k,-4)." (len:".strlen(\$k).")\\n" "MISSING\\n";
-            PHP
-            php -d display_errors=1 /var/www/html/gibbon/_whichkey.php
-            rm -f /var/www/html/gibbon/_whichkey.php
-          '
+          for p in $(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+                echo " - $p:"
+            kubectl -n "${NS}" exec "$p" -c gibbon -- sh -lc '
+                  cat >/var/www/html/gibbon/_whichkey.php <<PHP
+                  <?php
+                  require __DIR__ . "/openai.php";
+                  \$k = getApiKey(false);
+                  header("Content-Type: text/plain; charset=UTF-8");
+                  echo \$k ? substr(\$k,0,6)."…".substr(\$k,-4)." (len:".strlen(\$k).")\\n" : "MISSING\\n";
+                  PHP
+                  php -d display_errors=1 /var/www/html/gibbon/_whichkey.php
+                  rm -f /var/www/html/gibbon/_whichkey.php
+                ' || true
+              done
         '''
           }
         }
