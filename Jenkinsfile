@@ -212,17 +212,11 @@ EOF
 
           # Apply DB bits and wait for MySQL to be Ready
           echo "gibbon-mysql-secret.yaml file must be created and apply separately in cluster before continueing. If gibbon is deployed in standalone server create a .env file, check gibbon deploy operation for further detail"  
-          
-          
-          kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true
-          
-          
-          
+                    
+          kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true                            
           kubectl -n "${NS}" rollout status deployment gibbon-dev-mysql --timeout=300s
           kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev-mysql --timeout=300s
           
-          
-          # Recreate the grant job so it runs with current secret/state
           
           
           
@@ -248,30 +242,36 @@ spec:
         image: ${IMG}
 EOF
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
-          SEC="${OPENAI_SECRET_NAME}"
-          REV="${SEC}-$(date +%s)"
-              cat > /tmp/openai-secret-patch.yaml <<'EOF'
+          SEC="gibbon-dev-openai"
+          REV=$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')
+          
+          cat > /tmp/openai-secret-patch.yaml <<'EOF'
 spec:
   template:
     metadata:
       annotations:
-        secret.openai.rev: "__REV__"
+        secret.openai.rev: "${REV}"
     spec:
+      containers:
+        - name: gibbon
+          args: ["exec env -u OPENAI_API_KEY apache2ctl -D FOREGROUND"]
       volumes:
       - name: openai-secret
         secret:
-          secretName: "__SEC__"
+          secretName: "${SEC}"
 EOF
-              sed -i "s/__SEC__/${SEC}/g" /tmp/openai-secret-patch.yaml
-              sed -i "s/__REV__/${REV}/g" /tmp/openai-secret-patch.yaml
-
+             
               kubectl -n "${NS}" patch deploy gibbon-dev-app \
                 --type=strategic --patch-file /tmp/openai-secret-patch.yaml
-
+              #hard-remove any env OPENAI_API_KEY if added by someone else
               kubectl -n "${NS}" set env deploy/gibbon-dev-app OPENAI_API_KEY- || true
               # Rollout app
               kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
-            
+              APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
+              echo "[VERIFY] Key file in pod (should be NEW):"
+              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc 'head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo'
+              echo "[VERIFY] Apache env (should NOT contain OPENAI_API_KEY):"
+              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc 'PID=$(pgrep -xo apache2 || pgrep -xo httpd || true); [ -n "$PID" ] && tr "\\0" "\\n" < /proc/$PID/environ | grep "^OPENAI_API_KEY=" || echo "(none)"'
             '''
           }
         }
