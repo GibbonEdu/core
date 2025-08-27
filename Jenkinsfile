@@ -238,9 +238,6 @@ spec:
         secret.openai.sum: "${SUM}"
     spec:
       initContainers:
-      - name: init-gibbon-data        
-        command: ["/bin/sh","-c"]
-        args: ["echo warmup; exit 0"]
       - name: init-seed-i18n
         image: ${IMG}
 EOF
@@ -251,11 +248,12 @@ EOF
 
           # Verify
           echo "[Verify] Secret tail from API:"
+          kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | awk '{print substr($0,1,6)"…"(length>4?substr($0,length-3):$0)}'; echo
           PODS="$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}')"
               for p in ${PODS}; do
                 echo " - ${p}:"
                 kubectl -n "${NS}" exec "${p}" -c gibbon -- sh -lc '
-                  set -Eeuo pipefail
+                  set -eu
                   ls -l /run/secrets/openai || true
                   if [ -f /run/secrets/openai/OPENAI_API_KEY ]; then
                     head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo
@@ -287,9 +285,9 @@ EOF
                   cat >/var/www/html/gibbon/_whichkey.php <<'\''PHP'\''
                   <?php
                   require __DIR__ . "/openai.php";
-                  \$k = getApiKey(false);
+                  $k = getApiKey(false);
                   header("Content-Type: text/plain; charset=UTF-8");
-                  echo \$k ? substr(\$k,0,6)."…".substr(\$k,-4)." (len:".strlen(\$k).")\\n" : "MISSING\\n";
+                  echo $k ? substr(\$k,0,6)."…".substr(\$k,-4)." (len:".strlen($k).")\\n" : "MISSING\\n";
                   PHP
                   php -d display_errors=1 /var/www/html/gibbon/_whichkey.php || true
                   rm -f /var/www/html/gibbon/_whichkey.php || true
