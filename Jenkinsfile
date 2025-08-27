@@ -244,7 +244,7 @@ EOF
 
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
           SEC="${OPENAI_SECRET_NAME}"
-          RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
+          REV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
           
           cat > /tmp/openai-secret-patch.yaml <<EOF
 spec:
