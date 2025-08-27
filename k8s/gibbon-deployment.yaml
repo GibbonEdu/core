@@ -182,7 +182,7 @@ spec:
               subPath: i18n
             # Mount the OpenAI secret (the Secret name will be patched by Jenkins)
             - name: openai-secret
-              mountPath: /run/secrets/openai.key              
+              mountPath: /run/secrets/openai              
               readOnly: true
       volumes:
         - name: uploads
