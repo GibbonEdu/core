@@ -191,10 +191,10 @@ EOF
             --push-retry=3 \
             --reproducible \
             --cache=true \
-            --cache-repo="${REGISTRY}/${IMAGE}-cache" \
+            --cache-repo="${CACHE_REPO}" \
             --build-arg I18N_COMMIT="${I18N_COMMIT}"
 
-          echo -n "${IMAGE}" > image.txt     # ← put this back
+          echo -n "${IMAGE}" > image.txt    
         '''
         }
       }
@@ -241,9 +241,10 @@ spec:
       - name: init-seed-i18n
         image: ${IMG}
 EOF
+
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
-          SEC="gibbon-dev-openai"
-          REV=$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')
+          SEC="${OPENAI_SECRET_NAME}"
+          RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
           
           cat > /tmp/openai-secret-patch.yaml <<EOF
 spec:
@@ -255,21 +256,33 @@ spec:
       containers:
         - name: gibbon
           args: ["exec env -u OPENAI_API_KEY apache2ctl -D FOREGROUND"]
+          env:
+          - name: OPENAI_API_KEY_FILE
+            value: "/run/secrets/openai/OPENAI_API_KEY.${RV}"
       volumes:
       - name: openai-secret
         secret:
           secretName: "${SEC}"
+          items:
+          - key: OPENAI_API_KEY
+            path: "OPENAI_API_KEY.${RV}"
 EOF
              
               kubectl -n "${NS}" patch deploy gibbon-dev-app \
                 --type=strategic --patch-file /tmp/openai-secret-patch.yaml
+
               #hard-remove any env OPENAI_API_KEY if added by someone else
               kubectl -n "${NS}" set env deploy/gibbon-dev-app OPENAI_API_KEY- || true
+
               # Rollout app
               kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
-              APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
+              echo "[Verify] Show Secret tail from API (for comparison)"
+              kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | \
+                awk '{print substr($0,1,6)"…"(length>4?substr($0,length-3):$0)}'; echo
+              
               echo "[VERIFY] Key file in pod (should be NEW):"
-              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc 'head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo'
+              APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')              
+              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc 'head -c 6 /run/secrets/openai/OPENAI_API_KEY.*; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY.*; echo'
               echo "[VERIFY] Apache env (should NOT contain OPENAI_API_KEY):"
               kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc 'PID=$(pgrep -xo apache2 || pgrep -xo httpd || true); [ -n "$PID" ] && tr "\\0" "\\n" < /proc/$PID/environ | grep "^OPENAI_API_KEY=" || echo "(none)"'
             '''
