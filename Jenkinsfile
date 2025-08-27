@@ -258,14 +258,14 @@ spec:
           args: ["exec env -u OPENAI_API_KEY apache2ctl -D FOREGROUND"]
           env:
           - name: OPENAI_API_KEY_FILE
-            value: "/run/secrets/openai/OPENAI_API_KEY.${RV}"
+            value: "/run/secrets/openai/OPENAI_API_KEY.${REV}"
       volumes:
       - name: openai-secret
         secret:
           secretName: "${SEC}"
           items:
           - key: OPENAI_API_KEY
-            path: "OPENAI_API_KEY.${RV}"
+            path: "OPENAI_API_KEY.${REV}"
 EOF
              
               kubectl -n "${NS}" patch deploy gibbon-dev-app \
