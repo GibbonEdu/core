@@ -51,6 +51,8 @@ spec:
     metadata:
       labels:
         app: gibbon-dev
+      annotations:  # Jenkins will overwrite/refresh this annotation to force rollout on secret changes
+        secret.openai.rv: "bootstrap"
     spec:
       nodeSelector:
         role: app-demo-1

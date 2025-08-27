@@ -244,48 +244,40 @@ EOF
 
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/initpatch.yaml
           SEC="${OPENAI_SECRET_NAME}"
-          REV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
+          RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
           
-          cat > /tmp/openai-secret-patch.yaml <<EOF
-spec:
-  template:
-    metadata:
-      annotations:
-        secret.openai.rev: "${REV}"
-    spec:
-      containers:
-        - name: gibbon
-          args: ["exec env -u OPENAI_API_KEY apache2ctl -D FOREGROUND"]
-          env:
-          - name: OPENAI_API_KEY_FILE
-            value: "/run/secrets/openai/OPENAI_API_KEY.${REV}"
-      volumes:
-      - name: openai-secret
-        secret:
-          secretName: "${SEC}"
-          items:
-          - key: OPENAI_API_KEY
-            path: "OPENAI_API_KEY.${REV}"
-EOF
-             
-              kubectl -n "${NS}" patch deploy gibbon-dev-app \
-                --type=strategic --patch-file /tmp/openai-secret-patch.yaml
+          # Stamp pod-template with the Secret resourceVersion and restart
+          kubectl -n "${NS}" annotate deploy gibbon-dev-app secret.openai.rv="${RV}" --overwrite
+          kubectl -n "${NS}" rollout restart deploy/gibbon-dev-app
+          kubectl -n "${NS}" rollout status deploy/gibbon-dev-app --timeout=300s
 
-              #hard-remove any env OPENAI_API_KEY if added by someone else
-              kubectl -n "${NS}" set env deploy/gibbon-dev-app OPENAI_API_KEY- || true
+          # Verify
+          echo "[Verify] Secret tail from API:"
+          kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | \
+            awk '{print substr($0,1,6)"…"(length>4?substr($0,length-3):$0)}'; echo
 
-              # Rollout app
-              kubectl -n "${NS}" rollout status deployment gibbon-dev-app --timeout=300s
-              echo "[Verify] Show Secret tail from API (for comparison)"
-              kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | \
-                awk '{print substr($0,1,6)"…"(length>4?substr($0,length-3):$0)}'; echo
-              
-              echo "[VERIFY] Key file in pod (should be NEW):"
-              APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')              
-              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc 'head -c 6 /run/secrets/openai/OPENAI_API_KEY.*; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY.*; echo'
-              echo "[VERIFY] Apache env (should NOT contain OPENAI_API_KEY):"
-              kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc 'PID=$(pgrep -xo apache2 || pgrep -xo httpd || true); [ -n "$PID" ] && tr "\\0" "\\n" < /proc/$PID/environ | grep "^OPENAI_API_KEY=" || echo "(none)"'
-            '''
+          APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
+          echo "[Verify] Mounted file tail in pod:"
+          kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
+            'head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo'
+
+          echo "[Verify] Apache env (should NOT contain OPENAI_API_KEY):"
+          kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
+            'PID=$(pgrep -xo apache2 || pgrep -xo httpd || true); [ -n "$PID" ] && tr "\\0" "\\n" < /proc/$PID/environ | grep "^OPENAI_API_KEY=" || echo "(none)"'
+
+          echo "[Verify] PHP getApiKey():"
+          kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc '
+            cat >/var/www/html/gibbon/_whichkey.php <<PHP
+            <?php
+            require __DIR__ . "/openai.php";
+            \$k = getApiKey(false);
+            header("Content-Type: text/plain; charset=UTF-8");
+            echo \$k ? substr(\$k,0,6)."…".substr(\$k,-4)."\\n" : "MISSING\\n";
+            PHP
+            php -d display_errors=1 /var/www/html/gibbon/_whichkey.php
+            rm -f /var/www/html/gibbon/_whichkey.php
+          '
+        '''
           }
         }
       }
