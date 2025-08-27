@@ -23,7 +23,7 @@ table:
     status:
         name: "Status"
         desc: "Approval Status"
-        args: {filter: string}
+        args: {filter: string }
     role:
         name: "Role"
         desc: "Role of the participant"
@@ -44,3 +44,15 @@ table:
         name: "Time Spent"
         desc: "Time Spent in hours"
         args: { filter: decimal, required: true }
+    keyFocus:
+        name: "Key Focus"
+        desc: "Key focus of the PD event"
+        args: { filter: string, required: false }
+    resourcesLinks:
+        name: "resources Links"
+        desc: "Link to resources relevant to the PD event"
+        args: { filter: string, required: false }
+    keyTakeaways:
+        name: "Key Takeaways"
+        desc: "Key Takeaways from the PD event"
+        args: { filter: string, required: false }
