@@ -207,20 +207,16 @@ EOF
             sh '''
           
              
-          set -u
-          IMG="$(cat image.txt)"
+            set -eu
+            IMG="$(cat image.txt)"
+            SEC="${OPENAI_SECRET_NAME}"
 
           # Apply DB bits and wait for MySQL to be Ready
-          echo "gibbon-mysql-secret.yaml file must be created and apply separately in cluster before continueing. If gibbon is deployed in standalone server create a .env file, check gibbon deploy operation for further detail"  
-                    
+                              
           kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true                            
           kubectl -n "${NS}" rollout status deployment gibbon-dev-mysql --timeout=300s
           kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev-mysql --timeout=300s
           
-          
-          
-          
-
           # App manifests
           kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
           kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
@@ -230,15 +226,16 @@ EOF
 
           # Patch the init container correctly and stamp the pod template with Secret RV
 
-          SEC="${OPENAI_SECRET_NAME}"
-
           RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
+          SUM="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | sha256sum | awk '{print $1}')"
+          
           cat <<EOF >/tmp/patch.yaml
 spec:
   template:
     metadata:
       annotations:
         secret.openai.rv: "${RV}"
+        secret.openai.sum: "${SUM}"
     spec:
       initContainers:
       - name: init-gibbon-data        
@@ -256,10 +253,10 @@ EOF
           kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | \
             awk '{print substr($0,1,6)"…"(length>4?substr($0,length-3):$0)}'; echo
 
-          APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')
+          APP_POD=$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}')
           echo "[Verify] Mounted file tail in pod:"
           kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
-            'ls -l /run || true; ls -l /run/openai.key || true; head -c 6 /run/openai.key; echo -n "…"; tail -c 4 /run/openai.key; echo'
+            'ls -l /run/secrets/openai || true; head -c 6 /run/secrets/openai/OPENAI_API_KEY; echo -n "…"; tail -c 4 /run/secrets/openai/OPENAI_API_KEY; echo'
 
           echo "[Verify] Apache env (should NOT contain OPENAI_API_KEY):"
           kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- sh -lc \
@@ -272,7 +269,7 @@ EOF
             require __DIR__ . "/openai.php";
             \$k = getApiKey(false);
             header("Content-Type: text/plain; charset=UTF-8");
-            echo \$k ? substr(\$k,0,6)."…".substr(\$k,-4)."\\n" : "MISSING\\n";
+            echo \$k ? substr(\$k,0,6)."…".substr(\$k,-4)." (len:".strlen(\$k).")\\n" "MISSING\\n";
             PHP
             php -d display_errors=1 /var/www/html/gibbon/_whichkey.php
             rm -f /var/www/html/gibbon/_whichkey.php

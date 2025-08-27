@@ -168,7 +168,7 @@ spec:
               value: "https://gibbon-dev.vanhoa.edu.vn"
               # Point PHP to the secret file
             - name: OPENAI_API_KEY_FILE
-              value: /run/openai.key
+              value: /run/secrets/openai/OPENAI_API_KEY
 
           volumeMounts:
             - name: uploads
@@ -182,8 +182,7 @@ spec:
               subPath: i18n
             # Mount the OpenAI secret (the Secret name will be patched by Jenkins)
             - name: openai-secret
-              mountPath: /run/openai.key
-              subPath: OPENAI_API_KEY
+              mountPath: /run/secrets/openai.key              
               readOnly: true
       volumes:
         - name: uploads
