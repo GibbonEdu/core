@@ -228,7 +228,7 @@ EOF
 
           RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
           SUM="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | sha256sum | awk '{print $1}')"
-          
+          OLD_SUM="$(kubectl -n "${NS}" get deploy gibbon-dev-app -o jsonpath='{.spec.template.metadata.annotations.secret\\.openai\\.sum}' 2>/dev/null || true)"
           cat > /tmp/patch.yaml <<EOF
 spec:
   template:
@@ -243,6 +243,17 @@ spec:
 EOF
 
           kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/patch.yaml
+
+          # rescale if needed to reload new secret
+          if [ "${OLD_SUM:-}" != "${SUM}" ]; then
+                echo "Secret changed -> performing hard bounce to force fresh mount"
+                kubectl -n "${NS}" scale deploy/gibbon-dev-app --replicas=0
+                kubectl -n "${NS}" wait --for=delete pod -l app=gibbon-dev --timeout=180s || true
+                kubectl -n "${NS}" scale deploy/gibbon-dev-app --replicas=1
+              else
+                echo "Secret unchanged -> normal rolling restart"
+                kubectl -n "${NS}" rollout restart deploy/gibbon-dev-app
+              fi
           kubectl -n "${NS}" rollout status deploy/gibbon-dev-app --timeout=300s
           kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev --timeout=300s
 
