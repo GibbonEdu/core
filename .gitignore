@@ -46,3 +46,7 @@ chatgpt_api_token.json
 vendor/
 .idea/
 .vscode/
+
+# Ignore deployment files - different branch will have different deployment files data
+Jenkinfile
+k8s/*
