@@ -113,7 +113,7 @@ spec:
 
         # Seed/refresh vi_VN MO into PVC from the SAME app image
         - name: init-seed-i18n
-          image: docker.io/ntony3419/gibbon:dev-latest   # Jenkins updates this to the build tag
+          image: docker.io/ntony3419/gibbon:demo-latest   # Jenkins updates this to the build tag
           imagePullPolicy: Always
           command: ["/bin/sh","-c"]
           args:
@@ -131,7 +131,7 @@ spec:
 
       containers:
         - name: gibbon
-          image: docker.io/ntony3419/gibbon:dev-latest      # Jenkins updates this to the build tag
+          image: docker.io/ntony3419/gibbon:demo-latest      # Jenkins updates this to the build tag
           imagePullPolicy: Always
           command: ["/bin/sh","-c"]
           args: ["exec env -u OPENAI_API_KEY apache2ctl -D FOREGROUND"]
