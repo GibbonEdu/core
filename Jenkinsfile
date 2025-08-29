@@ -97,12 +97,12 @@ spec:
 
   parameters {
     choice(name: 'ENV', choices: ['dev','demo','prod'], description: 'Target env')
-    string(name: 'NAMESPACE',  defaultValue: 'gibbon-dev-deploy',  description: 'K8s namespace')
-    string(name: 'GIT_BRANCH', defaultValue: 'gibbon-dev',         description: 'Git branch to build')
+    string(name: 'NAMESPACE',  defaultValue: 'gibbon-demo-deploy',  description: 'K8s namespace')
+    string(name: 'GIT_BRANCH', defaultValue: 'gibbon-demo',         description: 'Git branch to build')
     string(name: 'REGISTRY',   defaultValue: 'docker.io',          description: 'Docker registry')
     string(name: 'IMAGE_REPO', defaultValue: 'ntony3419/gibbon',   description: 'Image repo (e.g. user/repo)')
     string(name: 'I18N_COMMIT',defaultValue: 'refs/heads/main',    description: 'Gibbon i18n commit/branch for VI')
-    string(name: 'OPENAI_SECRET_NAME', defaultValue: 'gibbon-dev-openai', description: 'K8s Secret name that holds OPENAI_API_KEY')
+    string(name: 'OPENAI_SECRET_NAME', defaultValue: 'gibbon-demo-openai', description: 'K8s Secret name that holds OPENAI_API_KEY')
   }
 
   environment {
@@ -214,21 +214,21 @@ EOF
           # Apply DB bits and wait for MySQL to be Ready
                               
           kubectl apply -n "${NS}" -f k8s/gibbon-mysql-deployment.yaml || true                            
-          kubectl -n "${NS}" rollout status deployment gibbon-dev-mysql --timeout=300s
-          kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev-mysql --timeout=300s
+          kubectl -n "${NS}" rollout status deployment gibbon-demo-mysql --timeout=300s
+          kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-demo-mysql --timeout=300s
           
           # App manifests
           kubectl apply -n "${NS}" -f k8s/gibbon-deployment.yaml
           kubectl apply -n "${NS}" -f k8s/gibbon-ingress.yaml
 
           # Update main app container image
-          kubectl -n "${NS}" set image deployment/gibbon-dev-app gibbon="${IMG}"
+          kubectl -n "${NS}" set image deployment/gibbon-demo-app gibbon="${IMG}"
 
           # Patch the init container correctly and stamp the pod template with Secret RV
 
           RV="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.metadata.resourceVersion}')"
           SUM="$(kubectl -n "${NS}" get secret "${SEC}" -o jsonpath='{.data.OPENAI_API_KEY}' | base64 -d | sha256sum | awk '{print $1}')"
-          OLD_SUM="$(kubectl -n "${NS}" get deploy gibbon-dev-app -o jsonpath='{.spec.template.metadata.annotations.secret\\.openai\\.sum}' 2>/dev/null || true)"
+          OLD_SUM="$(kubectl -n "${NS}" get deploy gibbon-demo-app -o jsonpath='{.spec.template.metadata.annotations.secret\\.openai\\.sum}' 2>/dev/null || true)"
           cat > /tmp/patch.yaml <<EOF
 spec:
   template:
@@ -242,20 +242,20 @@ spec:
         image: ${IMG}
 EOF
 
-          kubectl -n "${NS}" patch deployment gibbon-dev-app --type=strategic --patch-file /tmp/patch.yaml
+          kubectl -n "${NS}" patch deployment gibbon-demo-app --type=strategic --patch-file /tmp/patch.yaml
 
           # rescale if needed to reload new secret
           if [ "${OLD_SUM:-}" != "${SUM}" ]; then
                 echo "Secret changed -> performing hard bounce to force fresh mount"
-                kubectl -n "${NS}" scale deploy/gibbon-dev-app --replicas=0
-                kubectl -n "${NS}" wait --for=delete pod -l app=gibbon-dev --timeout=180s || true
-                kubectl -n "${NS}" scale deploy/gibbon-dev-app --replicas=1
+                kubectl -n "${NS}" scale deploy/gibbon-demo-app --replicas=0
+                kubectl -n "${NS}" wait --for=delete pod -l app=gibbon-demo --timeout=180s || true
+                kubectl -n "${NS}" scale deploy/gibbon-demo-app --replicas=1
               else
                 echo "Secret unchanged -> normal rolling restart"
-                kubectl -n "${NS}" rollout restart deploy/gibbon-dev-app
+                kubectl -n "${NS}" rollout restart deploy/gibbon-demo-app
               fi
-          kubectl -n "${NS}" rollout status deploy/gibbon-dev-app --timeout=300s
-          kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-dev --timeout=300s
+          kubectl -n "${NS}" rollout status deploy/gibbon-demo-app --timeout=300s
+          kubectl -n "${NS}" wait --for=condition=ready pod -l app=gibbon-demo --timeout=300s
 
           
             '''
@@ -270,7 +270,7 @@ EOF
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
             sh '''
               set -eu
-              APP_POD="$(kubectl -n "${NS}" get pod -l app=gibbon-dev -o jsonpath='{.items[0].metadata.name}')"
+              APP_POD="$(kubectl -n "${NS}" get pod -l app=gibbon-demo -o jsonpath='{.items[0].metadata.name}')"
               kubectl -n "${NS}" exec "$APP_POD" -c gibbon -- php -v || true
               kubectl -n "${NS}" get deploy,svc,ing,pvc -o wide
             '''

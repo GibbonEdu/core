@@ -2,22 +2,22 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: gibbon-dev-tls
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-tls
+  namespace: gibbon-demo-deploy
 spec:
-  secretName: gibbon-dev-tls
+  secretName: gibbon-demo-tls
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-prod
   dnsNames:
-    - gibbon-dev.vanhoa.edu.vn
+    - gibbon-demo.vanhoa.edu.vn
 ---
 # Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gibbon-dev-ingress
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-ingress
+  namespace: gibbon-demo-deploy
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging   # keep staging for test
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -30,17 +30,17 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: gibbon-dev.vanhoa.edu.vn     # <— CHANGE HERE if you prefer another host
+    - host: gibbon-demo.vanhoa.edu.vn     # <— CHANGE HERE if you prefer another host
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: gibbon-dev-service
+                name: gibbon-demo-service
                 port:
                   number: 80
   tls:
     - hosts:
-        - gibbon-dev.vanhoa.edu.vn        # <— CHANGE HERE to match the host above
-      secretName: gibbon-dev-tls
+        - gibbon-demo.vanhoa.edu.vn        # <— CHANGE HERE to match the host above
+      secretName: gibbon-demo-tls

@@ -4,8 +4,8 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: gibbon-dev-uploads-pvc
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-uploads-pvc
+  namespace: gibbon-demo-deploy
 spec:
   accessModes:
     - ReadWriteMany
@@ -20,11 +20,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gibbon-dev-service
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-service
+  namespace: gibbon-demo-deploy
 spec:
   selector:
-    app: gibbon-dev
+    app: gibbon-demo
   ports:
     - protocol: TCP
       port: 80
@@ -37,20 +37,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gibbon-dev-app
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-app
+  namespace: gibbon-demo-deploy
   labels:
-    app: gibbon-dev
+    app: gibbon-demo
 spec:
   replicas: 1
   progressDeadlineSeconds: 600
   selector:
     matchLabels:
-      app: gibbon-dev
+      app: gibbon-demo
   template:
     metadata:
       labels:
-        app: gibbon-dev
+        app: gibbon-demo
       annotations:  # Jenkins will overwrite/refresh this annotation to force rollout on secret changes
         secret.openai.rv: "bootstrap"
     spec:
@@ -90,21 +90,21 @@ spec:
               chmod -R 0777 /var/www/html/gibbon/uploads || true
           env:
             - name: DB_HOST
-              value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
+              value: gibbon-demo-mysql.gibbon-demo-deploy.svc.cluster.local
             - name: DB_NAME
               value: gibbon
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: password
             - name: ABSOLUTE_URL
-              value: "https://gibbon-dev.vanhoa.edu.vn"
+              value: "https://gibbon-demo.vanhoa.edu.vn"
           volumeMounts:
             - name: uploads
               mountPath: /pvc
@@ -151,21 +151,21 @@ spec:
             failureThreshold: 12
           env:
             - name: DB_HOST
-              value: gibbon-dev-mysql.gibbon-dev-deploy.svc.cluster.local
+              value: gibbon-demo-mysql.gibbon-demo-deploy.svc.cluster.local
             - name: DB_NAME
               value: gibbon
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: password
             - name: ABSOLUTE_URL
-              value: "https://gibbon-dev.vanhoa.edu.vn"
+              value: "https://gibbon-demo.vanhoa.edu.vn"
               # Point PHP to the secret file
             - name: OPENAI_API_KEY_FILE
               value: /run/secrets/openai/OPENAI_API_KEY
@@ -187,11 +187,11 @@ spec:
       volumes:
         - name: uploads
           persistentVolumeClaim:
-            claimName: gibbon-dev-uploads-pvc
+            claimName: gibbon-demo-uploads-pvc
         # Secret volume; secretName will be patched to the current version by Jenkins
         - name: openai-secret
           secret:
-            secretName: gibbon-dev-openai
+            secretName: gibbon-demo-openai
             optional: false
             items:
               - key: OPENAI_API_KEY

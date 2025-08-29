@@ -4,8 +4,8 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: gibbon-dev-mysql-pvc
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-mysql-pvc
+  namespace: gibbon-demo-deploy
 spec:
   accessModes:
     - ReadWriteOnce
@@ -20,19 +20,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gibbon-dev-mysql
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-mysql
+  namespace: gibbon-demo-deploy
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: gibbon-dev-mysql
+      app: gibbon-demo-mysql
   template:
     metadata:
       labels:
-        app: gibbon-dev-mysql
+        app: gibbon-demo-mysql
     spec:
       terminationGracePeriodSeconds: 30
       containers:
@@ -44,17 +44,17 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: password
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: username
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: password
           ports:
             - containerPort: 3306
@@ -69,7 +69,7 @@ spec:
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
-            claimName: gibbon-dev-mysql-pvc
+            claimName: gibbon-demo-mysql-pvc
 ---
 # ---------------------------
 # Service — MySQL (DEV)
@@ -77,11 +77,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gibbon-dev-mysql
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-mysql
+  namespace: gibbon-demo-deploy
 spec:
   selector:
-    app: gibbon-dev-mysql
+    app: gibbon-demo-mysql
   ports:
     - protocol: TCP
       port: 3306
@@ -93,8 +93,8 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: gibbon-dev-mysql-grant-job
-  namespace: gibbon-dev-deploy
+  name: gibbon-demo-mysql-grant-job
+  namespace: gibbon-demo-deploy
 spec:
   template:
     spec:
@@ -135,17 +135,17 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: password
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: username
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gibbon-dev-db-secret
+                  name: gibbon-demo-db-secret
                   key: password
             - name: MYSQL_DATABASE
               value: gibbon
