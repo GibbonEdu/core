@@ -3,7 +3,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: text/html; charset=utf-8');
 
-require_once __DIR__ . '/openai.php';
 require_once __DIR__.'/vendor/autoload.php';
 require_once __DIR__.'/db.php'; // <-- Dùng kết nối chung qua .env (tạo $pdo)
 
@@ -11,10 +10,19 @@ function safe($str) {
     return htmlspecialchars((string)($str ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
+function getApiKey(): string {
+    $filePath = __DIR__ . '/chatgpt_api_token.json';
+    if (file_exists($filePath)) {
+        $data = json_decode(file_get_contents($filePath), true);
+        return trim($data['api_key'] ?? '');
+    }
+    return '';
+}
+
 /* =========================
    Settings (JSON, no-code)
    ========================= */
-$settingsPath = __DIR__ . '/finance_settings.json';
+$settingsPath = __DIR__ . '/finance_settings.json'; //tự động khởi tạo
 
 function loadSettings(string $path): array {
     if (is_file($path)) {
@@ -22,10 +30,9 @@ function loadSettings(string $path): array {
         $data = json_decode($json, true);
         if (is_array($data)) return $data;
     }
-    // defaults
     return [
-        'centerFeePercent' => 20, // %
-        'teacherNames' => [],     // one per line in UI
+        'centerFeePercent' => 20, 
+        'teacherNames' => [],     
         'prompts' => [
             'detectTeacher' =>
 "You are an assistant analyzing a payment note to determine which teacher is being referred to.
@@ -65,7 +72,6 @@ function saveSettings(string $path, array $data): bool {
 
 $APP_SETTINGS = loadSettings($settingsPath);
 
-// Handle save from Settings modal
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     $teacherRaw    = $_POST['teacherNames'] ?? '';
     $teacherLines  = array_values(array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", (string)$teacherRaw))));
@@ -143,7 +149,7 @@ function detectTeacherNameFromNote($note, array $teacherList): string {
 function checkSalaryNote($note, $teacherFullName = '') {
     global $APP_SETTINGS;
     $api_key = getApiKey();
-    if ($api_key === '') return 'No';
+    if ($api_key === '') return 'Unknown';
 
     $tpl = $APP_SETTINGS['prompts']['advance'] ?? '';
     $prompt = renderPrompt($tpl, [
@@ -181,7 +187,7 @@ function checkSalaryNote($note, $teacherFullName = '') {
 function checkHeldMoney($note) {
     global $APP_SETTINGS;
     $api_key = getApiKey();
-    if ($api_key === '') return 'No';
+    if ($api_key === '') return 'Unknown';
 
     $tpl = $APP_SETTINGS['prompts']['held'] ?? '';
     $prompt = renderPrompt($tpl, [
@@ -269,85 +275,118 @@ $noteToTeacherMap = [];
 $cacheAdvance = [];
 $cacheHeld = [];
 
+/* ---- Teacher Mismatch: kiểm tra trên TẤT CẢ các năm ---- */
 $teacherMismatch = false;
-if ($selectedSchoolYear && $class && $teacher) {
+if ($class && $teacher) {
     $chk = $pdo->prepare("
-        SELECT COUNT(*) 
-        FROM gibbonFormGroup 
-        WHERE gibbonSchoolYearID = :y AND name = :c AND gibbonPersonIDTutor = :t
+        SELECT COUNT(*)
+        FROM gibbonFormGroup
+        WHERE name = :c AND gibbonPersonIDTutor = :t
     ");
-    $chk->execute([':y' => $selectedSchoolYear, ':c' => $class, ':t' => $teacher]);
+    $chk->execute([':c' => $class, ':t' => $teacher]);
     $teacherMismatch = ($chk->fetchColumn() == 0);
 }
 
 if ($from && $to) {
-    // ------- INCOME -------
-    if ($feeType || $class || $teacher || (!$feeType && !$expenseType && !$class && !$teacher)) {
-        $sql1 = "
-            SELECT 
-                'Income' AS type,
-                student.officialName AS name,
-                gibbonFinanceInvoice.gibbonFinanceInvoiceID AS recordID,
-                gibbonFinanceInvoice.paidAmount AS amount,
-                gibbonFinanceInvoice.invoiceIssueDate AS issueDate,
-                gibbonFinanceInvoice.paidDate AS date,
-                gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList AS feeCategoryIDs,
-                gibbonFinanceInvoice.notes AS note,
-                '' AS category
-            FROM gibbonFinanceInvoice
-            LEFT JOIN gibbonFinanceInvoicee 
-                ON gibbonFinanceInvoice.gibbonFinanceInvoiceeID = gibbonFinanceInvoicee.gibbonFinanceInvoiceeID
-            LEFT JOIN gibbonPerson AS student 
-                ON gibbonFinanceInvoicee.gibbonPersonID = student.gibbonPersonID
-            LEFT JOIN gibbonStudentEnrolment se
-                ON student.gibbonPersonID = se.gibbonPersonID
-            LEFT JOIN gibbonFormGroup 
-                ON se.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID
-            LEFT JOIN gibbonPerson AS tutor 
-                ON gibbonFormGroup.gibbonPersonIDTutor = tutor.gibbonPersonID
-            WHERE gibbonFinanceInvoice.status = 'Paid'
-              AND DATE(gibbonFinanceInvoice.paidDate) BETWEEN :from AND :to
-        ";
-        $params1 = [':from' => $from, ':to' => $to];
+    // ------- INCOME (gom tất cả năm nếu đã chọn Teacher) -------
+    // Base SELECT không join enrolment/lớp trực tiếp để tránh nhân bản.
+    $sql1 = "
+        SELECT 
+            'Income' AS type,
+            student.officialName AS name,
+            gibbonFinanceInvoice.gibbonFinanceInvoiceID AS recordID,
+            gibbonFinanceInvoice.paidAmount AS amount,
+            gibbonFinanceInvoice.invoiceIssueDate AS issueDate,
+            gibbonFinanceInvoice.paidDate AS date,
+            gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList AS feeCategoryIDs,
+            gibbonFinanceInvoice.notes AS note,
+            '' AS category
+        FROM gibbonFinanceInvoice
+        LEFT JOIN gibbonFinanceInvoicee 
+            ON gibbonFinanceInvoice.gibbonFinanceInvoiceeID = gibbonFinanceInvoicee.gibbonFinanceInvoiceeID
+        LEFT JOIN gibbonPerson AS student 
+            ON gibbonFinanceInvoicee.gibbonPersonID = student.gibbonPersonID
+        WHERE gibbonFinanceInvoice.status = 'Paid'
+          AND DATE(gibbonFinanceInvoice.paidDate) BETWEEN :from AND :to
+    ";
+    $params1 = [':from' => $from, ':to' => $to];
 
-        if ($selectedSchoolYear) {
-            $sql1 .= " AND se.gibbonSchoolYearID = :sy";
+    // Nếu KHÔNG chọn Teacher: vẫn lọc theo schoolYear (và class nếu có) như cũ, nhưng dùng EXISTS để tránh trùng
+    if ($selectedSchoolYear && empty($teacher)) {
+        if (!empty($class)) {
+            $sql1 .= "
+              AND EXISTS (
+                  SELECT 1
+                  FROM gibbonStudentEnrolment se
+                  JOIN gibbonFormGroup fg ON se.gibbonFormGroupID = fg.gibbonFormGroupID
+                  WHERE se.gibbonPersonID = student.gibbonPersonID
+                    AND se.gibbonSchoolYearID = :sy
+                    AND fg.name = :class
+              )
+            ";
             $params1[':sy'] = $selectedSchoolYear;
-        }
-        if ($class) {
-            $sql1 .= " AND gibbonFormGroup.name = :class";
             $params1[':class'] = $class;
-        }
-        if ($teacher) {
-            $sql1 .= " AND tutor.gibbonPersonID = :teacher";
-            $params1[':teacher'] = $teacher;
-        }
-        if ($feeType && $feeType !== '*all') {
-            $sql1 .= " AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList IS NOT NULL 
-                       AND FIND_IN_SET(:feeType, gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList)";
-            $params1[':feeType'] = $feeType;
-        }
-
-        $sql1 .= " ORDER BY gibbonFinanceInvoice.paidDate ASC, gibbonFinanceInvoice.gibbonFinanceInvoiceID ASC";
-        $stmt1 = $pdo->prepare($sql1);
-        $stmt1->execute($params1);
-        $data1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-
-        // resolve fee category names
-        if (!empty($data1)) {
-            $feeCategoryMap = [];
-            foreach ($feeCategories as $fc) $feeCategoryMap[$fc['id']] = $fc['name'];
-            foreach ($data1 as &$row) {
-                $ids = array_filter(array_map('trim', explode(',', $row['feeCategoryIDs'] ?? '')));
-                $names = [];
-                foreach ($ids as $id) if (isset($feeCategoryMap[$id])) $names[] = $feeCategoryMap[$id];
-                $row['category'] = implode(', ', $names);
-            }
-            unset($row);
+        } else {
+            $sql1 .= "
+              AND EXISTS (
+                  SELECT 1
+                  FROM gibbonStudentEnrolment se
+                  WHERE se.gibbonPersonID = student.gibbonPersonID
+                    AND se.gibbonSchoolYearID = :sy
+              )
+            ";
+            $params1[':sy'] = $selectedSchoolYear;
         }
     }
 
-    // ------- EXPENSE -------
+    // Nếu CHỌN Teacher: bỏ lọc schoolYear, map học sinh theo mọi enrolment từng học với lớp/teacher này (bất kỳ năm)
+    if (!empty($teacher)) {
+        $conds = [];
+        if (!empty($class)) {
+            $conds[] = "fg.name = :class";
+            $params1[':class'] = $class;
+        }
+        $conds[] = "tutor.gibbonPersonID = :teacher";
+        $params1[':teacher'] = $teacher;
+
+        $sql1 .= "
+          AND EXISTS (
+            SELECT 1
+            FROM gibbonStudentEnrolment se2
+            JOIN gibbonFormGroup fg ON se2.gibbonFormGroupID = fg.gibbonFormGroupID
+            JOIN gibbonPerson tutor ON fg.gibbonPersonIDTutor = tutor.gibbonPersonID
+            WHERE se2.gibbonPersonID = student.gibbonPersonID
+              AND ".implode(' AND ', $conds)."
+          )
+        ";
+    }
+
+    // FEE CATEGORY
+    if ($feeType && $feeType !== '*all') {
+        $sql1 .= " AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList IS NOT NULL 
+                   AND FIND_IN_SET(:feeType, gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList)";
+        $params1[':feeType'] = $feeType;
+    }
+
+    $sql1 .= " ORDER BY gibbonFinanceInvoice.paidDate ASC, gibbonFinanceInvoice.gibbonFinanceInvoiceID ASC";
+    $stmt1 = $pdo->prepare($sql1);
+    $stmt1->execute($params1);
+    $data1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+
+    // resolve fee category names
+    if (!empty($data1)) {
+        $feeCategoryMap = [];
+        foreach ($feeCategories as $fc) $feeCategoryMap[$fc['id']] = $fc['name'];
+        foreach ($data1 as &$row) {
+            $ids = array_filter(array_map('trim', explode(',', $row['feeCategoryIDs'] ?? '')));
+            $names = [];
+            foreach ($ids as $id) if (isset($feeCategoryMap[$id])) $names[] = $feeCategoryMap[$id];
+            $row['category'] = implode(', ', $names);
+        }
+        unset($row);
+    }
+
+    // ------- EXPENSE (giữ nguyên) -------
     if ($expenseType || (!$feeType && !$expenseType && !$class && !$teacher) || $teacher) {
         $sql2 = "
             SELECT 
@@ -375,7 +414,7 @@ if ($from && $to) {
         $stmt2->execute($params2);
         $data2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
-        // if filtering by teacher: keep expenses matched to teacher AND identified as advance
+        // nếu lọc theo teacher: chỉ giữ các expense matched teacher và là ứng lương
         if ($teacher && !empty($data2) && !empty($teacherList)) {
             $filtered = [];
             $selectedTeacherName = '';
@@ -602,7 +641,7 @@ function resetFilters() {
 
 <?php if (!empty($teacherMismatch)): ?>
   <div class="alert alert-danger mt-4">
-    The selected teacher does not teach this class in the chosen school year.
+    The selected teacher does not teach this class (across all school years).
   </div>
 <?php endif; ?>
 
