@@ -58,6 +58,8 @@ spec:
         role: app-demo-1
       securityContext:
         fsGroup: 33
+      imagePullSecrets:
+        - name: dockerhub-cred
       initContainers:
         - name: init-gibbon-data
           image: busybox:1.36

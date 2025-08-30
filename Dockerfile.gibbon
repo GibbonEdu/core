@@ -22,8 +22,20 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
 WORKDIR /src
+
+# ---------------- Cache-friendly Composer install ----------------
+# 1) Copy only composer files first to maximize cache hits
+COPY composer.json composer.lock /src/
+# 2) Install vendors (will not alter composer.lock)
+RUN composer install \
+      --no-dev --prefer-dist --no-interaction \
+      --optimize-autoloader --classmap-authoritative \
+      --no-ansi
+
 # Copy your branch source into the image
 COPY . /src
+# (Optional) If your repo includes a vendor/ dir, make sure it doesn't overwrite:
+# RUN rm -rf /src/vendor && ln -s /src/vendor /src/vendor
 
 # Install PHP vendors
 RUN cd /src && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
@@ -60,6 +72,8 @@ COPY --from=builder /usr/local/etc/php/conf.d/     /usr/local/etc/php/conf.d/
 # Copy app from builder
 WORKDIR /var/www/html/gibbon
 COPY --from=builder /src /var/www/html/gibbon
+# Ensure www-data owns the tree
+RUN chown -R www-data:www-data /var/www/html/gibbon
 
 # Session path into uploads (PVC)
 RUN echo 'session.save_path = /var/www/html/gibbon/uploads/tmp' > /usr/local/etc/php/conf.d/session.ini
