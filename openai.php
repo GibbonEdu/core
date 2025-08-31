@@ -2,23 +2,31 @@
 declare(strict_types=1);
 
 function getApiKey(bool $required = true): string {
-    // will read from file first
-    $file = $_ENV['OPENAI_API_KEY_FILE'] ?? getenv('OPENAI_API_KEY_FILE');
-    if ($file && is_readable($file)) {
-        $v = trim((string)file_get_contents($file));
-        if ($v !== '') return $v;
+    static $cache = null;
+    if ($cache !== null) {
+        return $cache;
     }
-    // Read from env (K8s environment file)
-    $v =$_ENV['OPENAI_API_KEY'] ?? getenv('OPENAI_API_KEY');
-    if ($v !== false && $v !== '') {
-        return trim((string)$v);
+    // get key from k8s secrete file first
+    $path = getenv('OPENAI_API_KEY_FILE');
+    if (!$path || !is_readable($path)) {        
+        $path = '/run/secrets/openai/OPENAI_API_KEY';
     }
-    // Fallback to $_ENV (e.g., loaded by Dotenv) only if getenv() was empty
-    if (!empty($_ENV['OPENAI_API_KEY'])) {
-        return trim((string)$_ENV['OPENAI_API_KEY']);
+    if (is_readable($path)) {
+        $k = trim((string) @file_get_contents($path));
+        if ($k !== '') {
+            return $cache = $k;
+        }
+    }
+    // environment variables (may be unset by design)
+    foreach (['OPENAI_API_KEY', 'GIBBON_OPENAI_API_KEY'] as $name) {
+        $v = getenv($name);
+        if ($v !== false && $v !== '') {
+            return $cache = trim($v);
+        }
     }
     if ($required) {
-        throw new RuntimeException("OPENAI_API_KEY not set");
+        throw new \RuntimeException('Missing OpenAI API key (file/env not found).');
     }
-    return "";
+    return $cache = '';
+    
 }
