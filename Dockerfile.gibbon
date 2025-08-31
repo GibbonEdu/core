@@ -62,6 +62,12 @@ RUN printf '%s\n' \
   > /etc/apache2/sites-available/000-default.conf \
   && a2enmod rewrite
 
+RUN a2enmod headers && \
+    printf '%s\n' \
+'SetEnvIfNoCase X-Forwarded-Proto "^https$" HTTPS=on' \
+> /etc/apache2/conf-available/forwarded-https.conf && \
+    a2enconf forwarded-https
+
 # Locale
 RUN sed -i 's/^# *\(vi_VN.UTF-8\)/\1/' /etc/locale.gen && locale-gen vi_VN.UTF-8
 ENV LANG=vi_VN.UTF-8 LC_ALL=vi_VN.UTF-8 LANGUAGE=vi_VN:vi
