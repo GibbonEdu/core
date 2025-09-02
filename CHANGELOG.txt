@@ -58,6 +58,7 @@ v30.0.00
         Planner: fixed access to class list in Edit Unit when viewing past and upcoming years
         Staff: fixed coverage longer than one week not including staff duty and activity cover
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
+        Timetable Admin: fixed the issue of setting white as the default color for both background and font
 
     Deprecations
         Removed all functions in functions.php flagged for deprecation since v25
