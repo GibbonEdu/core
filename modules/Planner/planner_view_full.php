@@ -97,6 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         //Check existence of and access to this class.
         else {
             $data = array();
+            $teacher = false; // define variable early to avoid undefined variable $teacher error later
             $gibbonPersonID = null;
             if (isset($_GET['search'])) {
                 $gibbonPersonID = $_GET['search'] ?? '';
@@ -1217,15 +1218,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             if (empty($classLogs)) {
                                 $form->setDescription(Format::alert(__('Attendance has not been taken. The entries below are a best-guess, not actual data.')));
                             } else {
-                                $logText = '<ul class="ml-4">';
-                                foreach ($classLogs as $log) {
-                                    $linkText = Format::time($log['timestampTaken']).' '.Format::date($log['date']).' '.__('by').' '.Format::name('', $log['preferredName'], $log['surname'], 'Student', true);
+                                if ($teacherViewOnlyAccess) {
+                                    $logText = '<ul class="ml-4">';
+                                    foreach ($classLogs as $log) {
+                                        $linkText = Format::time($log['timestampTaken']).' '.Format::date($log['date']).' '.__('by').' '.Format::name('', $log['preferredName'], $log['surname'], 'Student', true);
 
-                                    $logText .= '<li>'.Format::link('./index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.Format::date($log['date']), $linkText, ['style' => 'color: inherit']).'</li>';
+                                        $logText .= '<li>'.Format::link('./index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.Format::date($log['date']), $linkText, ['style' => 'color: inherit']).'</li>';
 
+                                    }
+                                    $logText .= '</ul>';
+                                    $form->setDescription(Format::alert(__('Attendance has been taken at the following times for this lesson:').$logText, 'success'));
+                                } else {
+                                    // GDPR: no student names for restricted viewers
+                                    $form->setDescription(Format::alert(__('Attendance records exist for this lesson.'), 'success'));
                                 }
-                                $logText .= '</ul>';
-                                $form->setDescription(Format::alert(__('Attendance has been taken at the following times for this lesson:').$logText, 'success'));
                             }
                         }
 
@@ -1235,9 +1241,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $count = 0;
 
                         $canViewConfidential = ($highestProfileAction == 'View Student Profile_full' || $highestProfileAction == 'View Student Profile_fullNoNotes' || $highestProfileAction == 'View Student Profile_fullEditAllNotes');
+                        // Only users with full planner permissions can see students in this panel
                         $teacherViewOnlyAccess = $highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses";
 
                         foreach ($participants as $person) {
+                            // GDPR: hide ALL student rows unless full planner permissions
+                            if (!$teacherViewOnlyAccess && ($person['role'] ?? '') === 'Student') {
+                                continue;
+                            }
+
                             $form->addHiddenValue($count . '-gibbonPersonID', $person['gibbonPersonID']);
                             $form->addHiddenValue($count . '-prefilled', $person['log']['prefilled'] ?? '');
 
@@ -1254,11 +1266,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }
 
-                            // Display a photo per user
-                            $cell->addContent(Format::userPhoto($person['image_240'], 75, ''))
-                                ->setClass('relative')
-                                ->prepend($alert ?? '')
-                                ->append($icon ?? '');
+                            // Display a photo per user (never for students unless permitted)
+                            if (($person['role'] ?? '') !== 'Student' || $teacherViewOnlyAccess) {
+                                $cell->addContent(Format::userPhoto($person['image_240'], 75, ''))
+                                    ->setClass('relative')
+                                    ->prepend($alert ?? '')
+                                    ->append($icon ?? '');
+                            }
 
                             if ($person['role'] == 'Student') {
                                 // Add attendance fields, teacher only
@@ -1325,8 +1339,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $form->setTitle(__('Guests'));
 
                             $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');
-
+                            
+                            $shown = false;
                             foreach ($guests as $guest) {
+                                // GDPR: never render Student guests unless full permissions
+                                if (!$teacherViewOnlyAccess && (
+                                        (($guest['role'] ?? '') === 'Student') ||
+                                        (($guest['type'] ?? '') === 'Student')
+                                    )) {
+                                    continue; // this skips just this guest item
+                                }
+                                $shown = true;
                                 $cell = $grid->addCell()->setClass('text-center py-4 px-1 -mr-px -mb-px flex flex-col justify-start');
 
                                 $cell->addContent(Format::userPhoto($guest['image_240'], 75, ''));
@@ -1334,7 +1357,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $cell->addContent($guest['role']);
                             }
 
-                            $page->addSidebarExtra($form->getOutput());
+                            if ($shown) {
+                                $page->addSidebarExtra($form->getOutput());
+                            }
                         }
 
                     }
