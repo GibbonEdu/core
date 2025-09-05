@@ -92,17 +92,25 @@ class PersonalDocumentHandler
                     $file = $_FILES[$prefix.'document'.$document['gibbonPersonalDocumentTypeID'].$field] ?? null;
                     $attachment = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
 
+                    
                     if (!empty($file['tmp_name'])) {
                         $this->fileUploader->setFileSuffixType(FileUploader::FILE_SUFFIX_ALPHANUMERIC);
                         $data[$field] = $this->fileUploader->uploadFromPost($file, $foreignTable.$foreignTableID);
 
-                        if (empty($value)) {
+                        if (empty($data[$field])) {
                             $personalDocumentFail = true;
                         }
-                    } else if (empty($attachment)) {
+                    } else {
+                        $documentID = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
+
                         // Remove the attachment if it has been deleted, otherwise retain the original value
-                        $data[$field] = null;
-                    }
+                        if (!empty($attachment) && !empty($documentID)) {
+                            $documentData = $this->personalDocumentGateway->getByID($documentID, ['filePath']);
+                            $data[$field] = $documentData['filePath'] ?? null;
+                        } else {
+                            $data[$field] = null;
+                        }
+                    } 
                 } else {
                     // Handle all other data
                     $data[$field] = !empty($value) ? $value : null;
@@ -113,7 +121,7 @@ class PersonalDocumentHandler
             $exists = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
 
             // Skip any documents that are entirely empty
-            if (count(array_filter($data)) == 0 && $omit != 'Y' && !$exists) continue;
+            if (count(array_filter($data)) == 0 && $omit != 'Y' && empty($exists)) continue;
 
             $data['gibbonPersonalDocumentTypeID'] = $document['gibbonPersonalDocumentTypeID'];
             $data['document'] = $document['document'];

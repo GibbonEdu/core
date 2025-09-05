@@ -2546,9 +2546,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     while ($rowMenu = $resultMenu->fetch()) {
                         $mainMenu[$rowMenu['name']] = $rowMenu['category'];
                     }
-                    $studentMenuCateogry = array();
-                    $studentMenuName = array();
-                    $studentMenuLink = array();
+                    $studentMenuCategory = [];
+                    $studentMenuName = [];
+                    $studentMenuLink = [];
                     $studentMenuCount = 0;
 
                     //Store items in an array

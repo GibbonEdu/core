@@ -152,6 +152,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->required()->onlyInteger(false)->setValue($setting['value']);
 
+    $form->addRow()->addHeading('Staff Duty', __('Staff Duty'));
+
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffDutyTypes', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setRows(3)->required()->setValue($setting['value']);
+
     $form->addRow()->addHeading('Notifications', __('Notifications'));
 
     $setting = $settingGateway->getSettingByScope('Staff', 'absenceNotificationGroups', true);

@@ -857,7 +857,7 @@ table.smallIntBorder td.noPadding {
     height: 1.2rem;
     position: absolute;
     top: 30%;
-    right: 6px;
+    right: 0;
 }
 
 .dataTable .sortable:not(.sorting):hover:after,

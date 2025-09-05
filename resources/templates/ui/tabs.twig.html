@@ -21,7 +21,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             return this.tabSelected == tabContent.id.replace(this.tabId + '-content-', '');
         }
     }"
-    x-init="tabSelected = {{ selected|default(1) }}" class="relative w-full max-w-full {{ class }}">
+    x-init="tabSelected = {{ selected|default(1) }}" class="relative w-full max-w-full {{ class }}"
+    id="{{ id|default('tabs') }}">
     
     <div class="overflow-y-hidden w-full">
         <div x-ref="tabButtons" @keydown.right.prevent="$focus.wrap().next()" @keydown.left.prevent="$focus.wrap().previous()" class="flex flex-wrap justify-start items-end" role="tablist" aria-label="tab options">

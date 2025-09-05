@@ -173,6 +173,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $alertLevelGateway = $this->getContainer()->get(AlertLevelGateway::class);
         $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
         $entryCount = 0;
+		
+		//INITIALISE OUTPUT VARIABLES (to silence warnings in Apache error log)
+		$plannerOutput   = '';
+		$gradesOutput    = '';
+		$deadlinesOutput = '';
 
         //PREPARE PLANNER SUMMARY
         $classes = false;
@@ -518,17 +523,17 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         //PREPARE ACTIVITIES
         $activities = false;
         $activitiesOutput = false;
-        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php'))) {
-            $activitiesOutput .= "<div class='error'>";
-            $activitiesOutput .= __('Your request failed because you do not have access to this action.');
-            $activitiesOutput .= '</div>';
+        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php') || isActionAccessible($guid, $connection2, '/modules/Activities/explore.php'))) {
+            $activitiesOutput .= Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
         } else {
             $activities = true;
 
-            $activitiesOutput .= "<div class='linkTop'>";
-            $activitiesOutput .= "<a href='".Url::fromModuleRoute('Activities', 'activities_view')->withQueryParam('gibbonPersonID', $gibbonPersonID).
-                "'>".__('View Available Activities').'</a>';
-            $activitiesOutput .= '</div>';
+            if (isActionAccessible($guid, $connection2, '/modules/Activities/explore.php')) {
+                $activitiesOutput .= "<div class='linkTop'>";
+                $activitiesOutput .= "<a href='".Url::fromModuleRoute('Activities', 'explore')->withQueryParam('gibbonPersonID', $gibbonPersonID).
+                    "'>".__('Explore Activities').'</a>';
+                $activitiesOutput .= '</div>';
+            }
 
             $dateType = $this->settingGateway->getSettingByScope('Activities', 'dateType');
             if ($dateType == 'Term') {
@@ -543,9 +548,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             }
 
             if ($resultYears->rowCount() < 1) {
-                $activitiesOutput .= "<div class='error'>";
-                $activitiesOutput .= __('There are no records to display.');
-                $activitiesOutput .= '</div>';
+                $activitiesOutput .= Format::alert(__('There are no records to display.'), 'empty');
             } else {
                 $yearCount = 0;
                 while ($rowYears = $resultYears->fetch()) {
@@ -559,9 +562,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     }
 
                     if ($result->rowCount() < 1) {
-                        $activitiesOutput .= "<div class='error'>";
-                        $activitiesOutput .= __('There are no records to display.');
-                        $activitiesOutput .= '</div>';
+                        $activitiesOutput .= Format::alert(__('Activities will display here when students have been fully enrolled in an activity.'), 'empty');
                     } else {
                         $activitiesOutput .= "<table cellspacing='0' style='width: 100%'>";
                         $activitiesOutput .= "<tr class='head'>";

@@ -561,7 +561,7 @@ class MessageForm extends Form
             $selected = $this->getSelectedTargets($targets, 'Applicants', $selectedByRole);
 
             $row = $form->addRow();
-                $row->addLabel('applicants', __('Applicants'))->description(__('Applicants from a given year.'))->description(__('Does not apply to the message wall.'));
+                $row->addLabel('applicants', __('Applicants'))->description(__('Only includes Accepted applications from a given year.'))->description(__('Does not apply to the message wall.'));
                 $row->addYesNoRadio('applicants')->checked(!empty($selected)? 'Y' : 'N')->required();
 
             $form->toggleVisibilityByClass('applicants')->onRadio('applicants')->when('Y');

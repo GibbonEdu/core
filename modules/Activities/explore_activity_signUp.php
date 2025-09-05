@@ -22,14 +22,18 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 use Gibbon\Domain\Activities\ActivityChoiceGateway;
+use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity_signUp.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+
     $gibbonActivityCategoryID = $_REQUEST['gibbonActivityCategoryID'] ?? '';
     $gibbonActivityID = $_REQUEST['gibbonActivityID'] ?? '';
+    $gibbonPersonID = $session->get('gibbonPersonID');
 
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
@@ -49,6 +53,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         return;
     }
 
+    // Can register for family children
+    if ($highestAction == 'Explore Activities_registerByParent') {
+        $categoryYearGroups = explode(',', $category['gibbonYearGroupIDParentRegister'] ?? ''); 
+        $children = $container->get(StudentGateway::class)
+            ->selectAnyStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
+            ->fetchGroupedUnique();
+
+        $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? '';
+        $child = $children[$gibbonPersonID] ?? [];
+        if (empty($child) || !in_array($child['gibbonYearGroupID'], $categoryYearGroups)) {
+            $page->addError(__m('Sign up is currently not available for this activity.'));
+            return;
+        }
+    }
+
     // Check that sign up is open based on the date
     $signUpIsOpen = false;
     if (!empty($category['accessOpenDate']) && !empty($category['accessCloseDate'])) {
@@ -65,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     }
     
     // Check the student's sign up access based on their year group
-    $signUpCategory = $categoryGateway->getCategorySignUpAccess($gibbonActivityCategoryID, $session->get('gibbonPersonID'));
-    $signUpActivity = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
+    $signUpCategory = $categoryGateway->getCategorySignUpAccess($gibbonActivityCategoryID, $gibbonPersonID);
+    $signUpActivity = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $gibbonPersonID);
 
     if (!$signUpCategory || (!empty($activity) && !$signUpActivity)) {
         $page->addError(__m('Sign up is currently not available for this activity.'));
@@ -74,8 +93,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     }
 
     // Get experiences
-    $activities = $activityGateway->selectActivitiesByCategoryAndPerson($gibbonActivityCategoryID, $session->get('gibbonPersonID'))->fetchKeyPair();
-    $choicesSelected = $choiceGateway->selectChoicesByPerson($gibbonActivityCategoryID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
+    $activities = $activityGateway->selectActivitiesByCategoryAndPerson($gibbonActivityCategoryID, $gibbonPersonID)->fetchKeyPair();
+    $choicesSelected = $choiceGateway->selectChoicesByPerson($gibbonActivityCategoryID, $gibbonPersonID)->fetchGroupedUnique();
 
     $category = $categoryGateway->getByID($gibbonActivityCategoryID);
     $signUpChoices = $category['signUpChoices'] ?? 3;
@@ -99,9 +118,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     $form->setDescription($signUpText);
 
     $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
+    $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     $form->addHiddenValue('gibbonActivityCategoryID', $gibbonActivityCategoryID);
     $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
+
+    if (!empty($child)) {
+        $row = $form->addRow();
+        $row->addLabel('nameLabel', __('Child'));
+        $row->addTextField('name')->readOnly()->setValue($child['preferredName'].' '.$child['surname']);
+    }
 
     for ($i = 1; $i <= $signUpChoices; $i++) {
         $row = $form->addRow();

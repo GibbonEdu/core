@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             'gibbonPersonID' => $_POST['gibbonPersonID'] ?? $session->get('gibbonPersonID'),
         ];
         
-        $dates = $_POST['dates'] ?? '';
+        $dates = $_POST['dates'] ?? [];
         $repeat = $_POST['repeat'] ?? '';
         $override = $_POST['override'] ?? 'N';
         $repeatDaily = $repeat == 'Daily' ? $_POST['repeatDaily'] : null;

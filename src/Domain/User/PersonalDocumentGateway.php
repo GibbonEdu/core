@@ -120,7 +120,8 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
 
         if (!empty($foreignTable) && !empty($foreignTableID)) {
             $query
-                ->cols(['gibbonPersonalDocument.gibbonPersonalDocumentID', 'gibbonPersonalDocument.foreignTable', 'gibbonPersonalDocument.foreignTableID', 'gibbonPersonalDocument.documentName', 'gibbonPersonalDocument.documentNumber', 'gibbonPersonalDocument.documentType', 'gibbonPersonalDocument.country', 'gibbonPersonalDocument.dateIssue', 'gibbonPersonalDocument.dateExpiry', 'gibbonPersonalDocument.filePath'])
+                ->cols(['gibbonPersonalDocument.gibbonPersonalDocumentID', 
+                'gibbonPersonalDocument.gibbonPersonalDocumentTypeID', 'gibbonPersonalDocument.foreignTable', 'gibbonPersonalDocument.foreignTableID', 'gibbonPersonalDocument.documentName', 'gibbonPersonalDocument.documentNumber', 'gibbonPersonalDocument.documentType', 'gibbonPersonalDocument.country', 'gibbonPersonalDocument.dateIssue', 'gibbonPersonalDocument.dateExpiry', 'gibbonPersonalDocument.filePath'])
                 ->leftJoin('gibbonPersonalDocument', 'gibbonPersonalDocument.gibbonPersonalDocumentTypeID=gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID AND gibbonPersonalDocument.foreignTable=:foreignTable AND gibbonPersonalDocument.foreignTableID=:foreignTableID')
                 ->bindValue('foreignTable', $foreignTable)
                 ->bindValue('foreignTableID', $foreignTableID);
@@ -177,10 +178,10 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
         return $this->db()->delete($sql, $data);
     }
 
-    public function getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $gibbonPersonID)
+    public function getPersonalDocumentDataByID($gibbonPersonalDocumentTypeID, $foreignTable, $foreignTableID)
     {
-        $data = ['gibbonPersonalDocumentTypeID' => $gibbonPersonalDocumentTypeID, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT gibbonPersonalDocumentID, filePath FROM gibbonPersonalDocument WHERE gibbonPersonalDocumentTypeID=:gibbonPersonalDocumentTypeID AND  foreignTable='gibbonPerson' AND foreignTableID=:gibbonPersonID";
+        $data = ['gibbonPersonalDocumentTypeID' => $gibbonPersonalDocumentTypeID, 'foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID];
+        $sql = "SELECT gibbonPersonalDocumentID, filePath FROM gibbonPersonalDocument WHERE gibbonPersonalDocumentTypeID=:gibbonPersonalDocumentTypeID AND  foreignTable=:foreignTable AND foreignTableID=:foreignTableID";
 
         return $this->db()->select($sql, $data)->fetch();
     }

@@ -131,7 +131,7 @@ class ActivityGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->cols([
-                'gibbonActivity.gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.name', 'gibbonActivity.type', 'gibbonActivityStudent.status', 'NULL AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', 'NULL AS choices', 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate'
+                'gibbonActivity.gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.name', 'gibbonActivity.type', 'gibbonActivityStudent.status', 'NULL AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', 'NULL AS choices', 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate', 'gibbonActivityCategory.gibbonYearGroupIDParentRegister'
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
@@ -145,7 +145,7 @@ class ActivityGateway extends QueryableGateway
 
         $query->unionAll()
             ->cols([
-                'gibbonActivity.gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.name', 'gibbonActivity.type', 'NULL AS status', 'gibbonActivityStaff.role AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', 'NULL AS choices', 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate'
+                'gibbonActivity.gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.name', 'gibbonActivity.type', 'NULL AS status', 'gibbonActivityStaff.role AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', 'NULL AS choices', 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate', 'gibbonActivityCategory.gibbonYearGroupIDParentRegister'
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonActivityStaff', 'gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID')
@@ -160,7 +160,7 @@ class ActivityGateway extends QueryableGateway
 
         $query->unionAll()
             ->cols([
-                'NULL as gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', "NULL as name", 'NULL as type', '"Pending" as status', 'NULL AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', "GROUP_CONCAT(gibbonActivity.name ORDER BY gibbonActivityChoice.choice SEPARATOR ',') AS choices", 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate'
+                'NULL as gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', "NULL as name", 'NULL as type', '"Pending" as status', 'NULL AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', "GROUP_CONCAT(gibbonActivity.name ORDER BY gibbonActivityChoice.choice SEPARATOR ',') AS choices", 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate', 'gibbonActivityCategory.gibbonYearGroupIDParentRegister'
             ])
             ->from('gibbonActivityCategory')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID')

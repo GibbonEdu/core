@@ -78,9 +78,20 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% if signUpIsOpen and signUpAccess and canSignUp %}
         <div class="mb-6 rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ activity.headerImage }}'); background-size: 150%; background-position: center;">
             <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/Activities/explore_activity_signUp.php&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}&width=750&height=440" class="thickbox block px-10 py-4 rounded outline-inset bg-blue-500 bg-blur hover:bg-blur transition-all duration-300 text-center text-white text-xl font-light">
-                {{ __m('Sign Up') }}
+                {{ __('Sign Up') }}
             </a>
         </div>
+
+        {% elseif signUpIsOpen and signUpParentAccess and canSignUp %}
+
+            {% for child in signUpChildren %}
+            <div class="mb-6 rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ activity.headerImage }}'); background-size: 150%; background-position: center;">
+                <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/Activities/explore_activity_signUp.php&gibbonPersonID={{ child.gibbonPersonID}}&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}&width=750&height=440" class="thickbox block px-10 py-4 rounded outline-inset bg-blue-500 bg-blur hover:bg-blur transition-all duration-300 text-center text-white text-xl font-light">
+                    {{ __('Sign Up for {name}', {name: child.preferredName}) }}
+                </a>
+            </div>
+            {% endfor %}
+
         {% else %}
         <div class="mb-6 px-10 py-4 rounded bg-gray-300 text-center text-gray-600 text-lg font-thin italic">
             {% if signUpIsOpen and (not signUpAccess or not canSignUp) %}

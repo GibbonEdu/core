@@ -22,6 +22,7 @@ use Gibbon\Domain\Activities\ActivityCategoryGateway;
 use Gibbon\Domain\Activities\ActivityPhotoGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivityStudentGateway;
+use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity.php') == false) {
     // Access denied
@@ -30,6 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     // Proceed!
     $gibbonActivityCategoryID = $_REQUEST['gibbonActivityCategoryID'] ?? '';
     $gibbonActivityID = $_REQUEST['gibbonActivityID'] ?? '';
+    $gibbonPersonID = $session->get('gibbonPersonID');
 
     $page->breadcrumbs
         ->add(__('Explore Activities'), 'explore.php')
@@ -51,7 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     $canViewInactive = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php');
 
     // Check records exist and are available
-
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
     $enrolmentGateway = $container->get(ActivityStudentGateway::class);
@@ -81,6 +82,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         return;
     }
 
+    // Can register for family children
+    if ($highestAction == 'Explore Activities_registerByParent') {
+        $categoryYearGroups = explode(',', $category['gibbonYearGroupIDParentRegister'] ?? ''); 
+        $children = $container->get(StudentGateway::class)
+            ->selectAnyStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
+            ->fetchAll();
+
+        $signUpChildren = [];
+        $canSignUp = true;
+        foreach ($children as $child) {
+            if ($category['gibbonSchoolYearID'] != $session->get('gibbonSchoolYearID')) continue;
+
+            if (in_array($child['gibbonYearGroupID'], $categoryYearGroups)) {
+                $child['signUpCategory'] = $categoryGateway->getCategorySignUpAccess($activity['gibbonActivityCategoryID'], $child['gibbonPersonID']);
+                $child['signUpActivity'] = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $child['gibbonPersonID']);
+                
+                if ($child['signUpCategory'] && $child['signUpActivity']) {
+                    $signUpChildren[] = $child;
+                }
+            }
+        }
+    }
+
     // Get photos & blocks
     $activity['photos'] = $activityPhotoGateway->selectPhotosByActivity($gibbonActivityID)->fetchAll();
     // $activity['blocks'] = $unitBlockGateway->selectBlocksByUnit($activity['deepLearningUnitID'])->fetchAll();
@@ -106,11 +130,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     $signUpActivity = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
 
     // echo '<pre>';
-    // print_r("canSignUp = ".$canSignUp);
-    // print_r("signUpIsOpen = ".$signUpIsOpen);
-    // print_r("signUpCategory = ".$signUpCategory);
-    // print_r("signUpActivity = ".$signUpActivity);
-    // print_r("signUpAccess = ".(!empty($signUpCategory) && !empty($signUpActivity)) );
+    // print_r("highestAction = ".$highestAction.'<br/>');
+    // print_r("canSignUp = ".$canSignUp.'<br/>');
+    // print_r("signUpIsOpen = ".$signUpIsOpen.'<br/>');
+    // print_r("signUpCategory = ".$signUpCategory.'<br/>');
+    // print_r("signUpActivity = ".$signUpActivity.'<br/>');
+    // print_r("signUpAccess = ".(!empty($signUpCategory) && !empty($signUpActivity)) .'<br/>');
+    // print_r("signUpParentAccess = ".(!empty($signUpChildren)).'<br/>');
     // echo '</pre>';
 
     // $enrolment = $enrolmentGateway->getActivityDetailsByEnrolment($activity['gibbonActivityCategoryID'], $session->get('gibbonPersonID'), $gibbonActivityID);
@@ -129,6 +155,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         'canSignUp'  => $canSignUp,
         'signUpIsOpen' => $signUpIsOpen,
         'signUpAccess' => $signUpCategory && $signUpActivity,
+
+        'signUpParentAccess' => !empty($signUpChildren),
+        'signUpChildren' => $signUpChildren,
 
         'isPastEvent' => $isPastEvent,
         'isEnrolled' => !empty($enrolment) && $enrolment['gibbonActivityID'] == $gibbonActivityID,

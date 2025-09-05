@@ -60,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
         'accessEnrolmentDate'   => !empty($_POST['accessEnrolmentDate'])
                                 ? Format::dateConvert($_POST['accessEnrolmentDate']).' '.($_POST['accessEnrolmentTime'] ?? '00:00')
                                 : null,
+        'gibbonYearGroupIDParentRegister' => implode(',', $_POST['gibbonYearGroupIDParentRegister'] ?? []),
     ];
 
     // Validate the required values are present

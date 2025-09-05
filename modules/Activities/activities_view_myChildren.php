@@ -50,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         return;
     }
 
+    $canSignUp = isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity_signUp.php', 'Explore Activities_registerByParent');
     $canExplore = isActionAccessible($guid, $connection2, '/modules/Activities/explore.php');
 
     foreach ($children as $child) {
@@ -99,12 +100,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         $table->addActionColumn()
             ->addParam('gibbonActivityCategoryID')
             ->addParam('gibbonActivityID')
-            ->format(function ($activity, $actions) use ($canExplore) {
+            ->format(function ($activity, $actions) use ($child, $canExplore, $canSignUp) {
                 if ($canExplore && !empty($activity['gibbonActivityID'])) {
                     $actions->addAction('view', __('View Details'))
                         // ->isModal(1000, 650)
                         ->addParam('sidebar', 'false')
                         ->setURL('/modules/Activities/explore_activity.php');
+                }
+
+                if (empty($activity['gibbonActivityID'])) {
+                    // Check that sign up is open based on the date
+                    $signUpIsOpen = false;
+
+                    $categoryYearGroups = explode(',', $activity['gibbonYearGroupIDParentRegister'] ?? ''); 
+                    if (!in_array($child['gibbonYearGroupID'], $categoryYearGroups)) {
+                        return;
+                    }
+    
+                    if (!empty($activity['accessOpenDate']) && !empty($activity['accessCloseDate'])) {
+                        $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $activity['accessOpenDate'])->format('U');
+                        $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $activity['accessCloseDate'])->format('U');
+                        $now = (new DateTime('now'))->format('U');
+    
+                        $signUpIsOpen = $accessOpenDate <= $now && $accessCloseDate >= $now;
+                    }
+    
+                    if ($signUpIsOpen && $canSignUp) {
+                        $actions->addAction('add', __('Sign Up'))
+                                ->setURL('/modules/Activities/explore_activity_signUp.php')
+                                ->addParam('gibbonActivityCategoryID', $activity['gibbonActivityCategoryID'])
+                                ->addParam('gibbonPersonID', $child['gibbonPersonID'])
+                                ->setIcon('attendance')
+                                ->modalWindow(750, 440);
+                    }
+    
+                    return;
                 }
             });
 

@@ -120,7 +120,7 @@ class Core
     }
 
     /**
-     * Is Gibbon Installed? Based on existance of config.php file
+     * Is Gibbon Installed? Based on existence of config.php file
      *
      * @return   bool
      */

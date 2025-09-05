@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID']);
             $existingFile = $fields[$gibbonCustomFieldID] ?? '';
         } elseif ($type == 'personalDocuments') {
-            $document = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);;
+            $document = $personalDocumentGateway->getPersonalDocumentDataByID($gibbonPersonalDocumentTypeID, 'gibbonPerson', $userData['gibbonPersonID']);
             $existingFile = $document['filePath'] ?? '';
         } else {
             $existingFile = $userData['image_240'];
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $updated = $customFieldGateway->updateCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID'], $fields);
 
         } elseif ($type == 'personalDocuments') {
-            $documentData = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);
+            $documentData = $personalDocumentGateway->getPersonalDocumentDataByID($gibbonPersonalDocumentTypeID, 'gibbonPerson', $userData['gibbonPersonID']);
             $updated = $personalDocumentGateway->update($documentData['gibbonPersonalDocumentID'], [
                 'filePath'              => $file['relativePath'],
                 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),

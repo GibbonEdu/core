@@ -31,7 +31,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
 
     {% if teachersNotes and roleCategory == 'Staff' and gibbonPersonID is not empty %}
-        <div class="teachersNotes hidden border bg-red-200 rounded p-4 mt-4">
+        <div class="teachersNotes border bg-red-200 rounded p-4 mt-4" x-cloak x-show="globalShowHide">
             <h4 class="mt-0 mb-2 uppercase font-sans text-base leading-snug text-gray-800 p-1">
                 {{ __("Teacher's Notes") }}
             </h4>
