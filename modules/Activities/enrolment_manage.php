@@ -22,6 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\MultiPartForm;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Module\Activities\EnrolmentGenerator;
 use Gibbon\Domain\Activities\ActivityChoiceGateway;
@@ -83,6 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     $unenrolled = $activityStudentGateway->queryUnenrolledStudentsByCategory($criteria, $params['gibbonActivityCategoryID'])->toArray();
 
     $enrolments = array_merge($enrolments, $unenrolled);
+  
+    $totalEnrolments = [];
+
+    foreach ($enrolments as $alertPerson) {
+        $gibbonPersonID = $alertPerson['gibbonPersonID'] ?? '';
+        $medicalAlert = $container->get(MedicalGateway::class)->getHighestMedicalRisk($gibbonPersonID);
+        $alertPerson['medicalAlert'] = $medicalAlert['name'] ?? '';
+        $totalEnrolments[] = $alertPerson;
+    }
     
     $groups = [];
 
