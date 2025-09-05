@@ -135,7 +135,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             if (substr($session->get('currency'), 4) != '') {
                                 echo substr($session->get('currency'), 4);
                             }
-                            echo $row['payment'];
+                            echo "{$row['payment']}<br/>";
+                            echo "<span style='font-size: 115%; font-weight: bold'>Cost Description</span><br/>";
+                            echo "<span style='font-size: 95%; color: #444;'>{$row['paymentDescription']}</span>";
                         }
                     }
                     echo '</td>';

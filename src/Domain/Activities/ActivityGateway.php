@@ -351,6 +351,7 @@ class ActivityGateway extends QueryableGateway
                 gibbonActivity.payment as cost,
                 gibbonActivity.paymentType as costType,
                 gibbonActivity.paymentFirmness as costStatus,
+                gibbonActivity.paymentDescription as costDescription,
                 gibbonActivityType.access,
                 gibbonActivityType.maxPerStudent,
                 gibbonActivityType.enrolmentType,

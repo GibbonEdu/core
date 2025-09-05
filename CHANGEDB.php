@@ -953,5 +953,5 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonStaffDuty` ADD `type` VARCHAR(40) NOT NULL DEFAULT 'Other' AFTER `nameShort`;end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities'), 'Explore Activities_registerByParent', 2, 'Activities', 'Allows parents to view activities and register for their children', NULL, 'explore.php,explore_category.php,explore_activity.php,explore_activity_signUp.php', 'explore.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N');end
 ALTER TABLE `gibbonActivityCategory` ADD `gibbonYearGroupIDParentRegister` VARCHAR(255) NULL AFTER `accessEnrolmentDate`;end
-
+ALTER TABLE `gibbonActivity` ADD `paymentDescription` TEXT NULL AFTER `paymentFirmness`;end
 ";
