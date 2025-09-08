@@ -114,7 +114,7 @@ class EnrolmentGenerator
             if (!empty($this->enrolments[$gibbonPersonID])) continue;
             
             for ($i = 1; $i <= $this->signUpChoices; $i++) {
-                $person["choice{$i}"] = str_pad($person["choice{$i}"], 8, '0', STR_PAD_LEFT);
+                $person["choice{$i}"] = str_pad($person["choice{$i}"] ?? '', 8, '0', STR_PAD_LEFT);
                 $person["choice{$i}Name"] = $this->activities[$person["choice{$i}"]]['name'] ?? '';
             }
 

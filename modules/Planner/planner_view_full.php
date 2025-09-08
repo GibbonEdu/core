@@ -19,21 +19,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
-use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
-use Gibbon\Tables\DataTable;
-use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\Timetable\TimetableDayDateGateway;
-use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -1169,7 +1170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form = Form::createBlank('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
                         $form->setClass('w-full font-sans text-xs text-gray-700');
                         $form->setAutocomplete('off');
-                        $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
+                        $form->setTitle($attendanceEnabled && $canTakeAttendance ? __('Participants & Attendance') : __('Participants'));
 
                         // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {
@@ -1258,10 +1259,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 ->addClass($person['cellHighlight'] ?? '');
 
                             // Display alerts and birthdays, teacher only
+                            $alert = '';
                             if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && ($teacher || $teacherViewOnlyAccess)) {
-                                $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "x-cloak x-show='globalShowHide'");
+                                $alert = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], $person['privacy'], "x-cloak x-show='globalShowHide'");
                             }
-
+                                                        
                             if ($person['role'] == 'Student' && $canViewConfidential) {
                                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }

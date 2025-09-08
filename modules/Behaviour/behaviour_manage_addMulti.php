@@ -93,7 +93,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ->addSortableAttribute('Form', $students['form'])
                 ->required();
 
+            if (!empty($gibbonPersonID)) {
+                $multiSelect->destination()->fromArray([$students['students'][$gibbonPersonID]]);
+                unset($students['students'][$gibbonPersonID]);
+            }
+
             $multiSelect->source()->fromArray($students['students']);
+            
 
     //Date
     $row = $form->addRow();

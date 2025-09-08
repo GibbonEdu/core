@@ -148,7 +148,7 @@ else {
                     $row->addLabel('confirmationMode', __('Confirmation Required By'));
                     $row->addSelect('confirmationMode')->fromArray($confirmationOptions)->selected($confirmationMode);
 
-                if ($values['enableSharingLink'] == 'Y'  && $values['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+                if ($values['enableSharingLink'] == 'Y'  && ($values['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all')) {
                     $linkURL = Url::fromModuleRoute('Messenger', 'messenger_manage_report')->withQueryParams(['gibbonMessengerID' => $gibbonMessengerID])->withAbsoluteUrl(true);
                     $row = $form->addRow();
                         $row->addLabel('sharingLink', __('Shareable Send Report'))->description(__('You can copy this link to share it with other users.'));

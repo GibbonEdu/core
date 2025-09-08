@@ -19,18 +19,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Forms\Form;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\System\HookGateway;
 use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
-use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
+use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
-use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_byStudent.php') == false) {
     // Access denied
@@ -125,8 +126,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $scopeDetails = $reportingAccessGateway->selectReportingDetailsByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetch();
     $relatedReports = $container->get(ReportingScopeGateway::class)->selectRelatedReportingScopesByID($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetchAll();
     $reportingProgress = $container->get(ReportingProgressGateway::class)->selectBy(['gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID'], $scopeIdentifier => $urlParams['scopeTypeID'], 'gibbonPersonIDStudent' => $gibbonPersonIDStudent])->fetch();
-    $student['alerts'] = getAlertBar($guid, $connection2, $gibbonPersonIDStudent, $student['privacy'], '', false, false, "_blank");
-
+    // $student['alerts'] = getAlertBar($guid, $connection2, $gibbonPersonIDStudent, $student['privacy'], '', false, false, "_blank");
+    $student['alerts'] = $container->get(Alert::class)->getAlertBar($gibbonPersonIDStudent, $student['privacy'], '', false, false, "_blank");
+    
     $progress = $reportingAccessGateway->selectReportingProgressByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $urlParams['allStudents'] == 'Y')->fetchGroupedUnique();
     $progressComplete = array_reduce($progress, function ($group, $item) {
         return $item['progress'] == 'Complete' ? $group + 1 : $group;

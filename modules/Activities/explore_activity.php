@@ -83,13 +83,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     }
 
     // Can register for family children
+    $signUpChildren = [];
     if ($highestAction == 'Explore Activities_registerByParent') {
         $categoryYearGroups = explode(',', $category['gibbonYearGroupIDParentRegister'] ?? ''); 
         $children = $container->get(StudentGateway::class)
             ->selectAnyStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
             ->fetchAll();
 
-        $signUpChildren = [];
         $canSignUp = true;
         foreach ($children as $child) {
             if ($category['gibbonSchoolYearID'] != $session->get('gibbonSchoolYearID')) continue;

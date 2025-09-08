@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -32,6 +33,7 @@ $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+$lessonNameReplace = $_POST['lessonNameReplace'] ?? 'N';
 $orders = $_POST['order'] ?? [];
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
@@ -52,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             header("Location: {$URL}");
         } else {
             $courseGateway = $container->get(CourseGateway::class);
+            $plannerGateway = $container->get(PlannerEntryGateway::class);
 
             // Check access to specified course
             if ($highestAction == 'Unit Planner_all') {
@@ -108,6 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                             $lessonDescriptions[$AI][0] = $AI;
                             $lessonDescriptions[$AI][1] = '';
+                            $lessonDescriptions[$AI][2] = '';
 
                             ++$lessonCount;
                         }
@@ -120,6 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                             $contents = $_POST['contents'.$order] ?? '';
                             $teachersNotes = $_POST['teachersNotes'.$order] ?? '';
                             $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order] ?? '';
+
+                            if (empty($lessonDescriptions[$AI][2])) {
+                                $lessonDescriptions[$AI][2] = $titles;
+                            }
 
                             try {
                                 $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
@@ -146,6 +154,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $partialFail = true;
+                        }
+                        
+                        if ($lessonNameReplace == 'Y' && !empty($lessonDescription[2])) {
+                            $plannerGateway->update($lessonDescription[0], ['name' => $lessonDescription[2]]);
                         }
                     }
 
