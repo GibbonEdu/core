@@ -90,20 +90,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
 
     foreach ($enrolments as $alertPerson) {
         $gibbonPersonID = $alertPerson['gibbonPersonID'] ?? '';
-        $medicalAlert = $container->get(MedicalGateway::class)->getHighestMedicalRisk($gibbonPersonID);
-        $alertPerson['medicalAlert'] = $medicalAlert['name'] ?? '';
-
-        $INAlert = $container->get(INPersonDescriptorGateway::class)->selectINPersonDescriptorsandAlertLevelsByPersonID($gibbonPersonID)->fetch();
-        if (!empty($INAlert)) {
-                $INAlertDescription = $resultAlert->rowCount() == 1 ? $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name']) : $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
-        }
-   
         
-        $alertPerson['INAlert'] = $INAlert['name'] ?? '';
-        $alertPerson['INdescription'] = $INAlert['description'] ?? '';
+        $medicalAlert = $container->get(MedicalGateway::class)->getHighestMedicalRisk($gibbonPersonID);
+        if ($medicalAlert) {
+            $medicalAlertDescription = sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $medicalAlert['name']);
+            $alertPerson['medicalAlertDescription'] = $medicalAlertDescription;
+        }
 
-         
-               
+        $INAlert = $container->get(INPersonDescriptorGateway::class)->selectINPersonDescriptorsandAlertLevelsByPersonID($gibbonPersonID);
+        if ($highestINAlert = $INAlert->fetch()) {
+                $INAlertDescription = $INAlert->rowCount() == 1 ? $INAlert->rowCount() . ' ' . sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $highestINAlert['name']) : $INAlert->rowCount() . ' ' . sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $highestINAlert['name']);
+                $alertPerson['INAlertDescription'] = $INAlertDescription;
+        }
+
         $totalEnrolments[] = $alertPerson;
     }
 
