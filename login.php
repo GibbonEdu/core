@@ -112,13 +112,9 @@ try {
     ]);
 
     // Enable passing URL params to pages after logging in
-   if (isset($_GET['q']) && ($_GET['q'] == 'publicRegistration.php' || $_GET['q'] == 'passwordReset.php')) {
-        $URL = $session->get('absoluteURL') . '/index.php';
-    } elseif (isset($_GET['q'])) {
+    if (isset($_GET['q']) && $_GET['q'] != 'publicRegistration.php' && $_GET['q'] != 'passwordReset.php') {
         unset($_GET['return']);
         $URL = Url::fromRoute()->withQueryParams($_GET);
-    } else {
-        $URL = $session->get('absoluteURL') . '/index.php';
     }
     
     // Double-check the auth status
