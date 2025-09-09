@@ -28,6 +28,7 @@ use Gibbon\Module\Activities\EnrolmentGenerator;
 use Gibbon\Domain\Activities\ActivityChoiceGateway;
 use Gibbon\Domain\Activities\ActivityStudentGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
+use Gibbon\Domain\IndividualNeeds\INPersonDescriptorGateway;
 
 
 
@@ -91,12 +92,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
         $gibbonPersonID = $alertPerson['gibbonPersonID'] ?? '';
         $medicalAlert = $container->get(MedicalGateway::class)->getHighestMedicalRisk($gibbonPersonID);
         $alertPerson['medicalAlert'] = $medicalAlert['name'] ?? '';
+
+        $INAlert = $container->get(INPersonDescriptorGateway::class)->selectINPersonDescriptorsandAlertLevelsByPersonID($gibbonPersonID)->fetch();
+        if (!empty($INAlert)) {
+                $INAlertDescription = $resultAlert->rowCount() == 1 ? $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name']) : $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
+        }
+   
+        
+        $alertPerson['INAlert'] = $INAlert['name'] ?? '';
+        $alertPerson['INdescription'] = $INAlert['description'] ?? '';
+
+         
+               
         $totalEnrolments[] = $alertPerson;
     }
-    
+
     $groups = [];
 
-    foreach ($enrolments as $person) {
+    foreach ($totalEnrolments as $person) {
         for ($i = 1; $i <= $signUpChoices; $i++) {
             if (empty($person["choice{$i}"])) continue;
             $person["choice{$i}"] = str_pad($person["choice{$i}"], 8, '0', STR_PAD_LEFT);

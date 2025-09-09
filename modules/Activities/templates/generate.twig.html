@@ -108,8 +108,16 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <div>{{ person.preferredName }} {{ person.surname }} {{ person.formGroup ? " ("~person.formGroup~")" }}</div>
 
+    {% if person.medicalAlert %}
+        <span class="tag dull text-xxs ml-2" style="background-color: #f87171; color: white; border-radius: 4px; padding: 2px 6px;">{{ __('M') }}</span>
+    {% endif %}
+    
+    {% if person.INAlert %}
+        <span class="tag dull text-xxs ml-2" style="background-color: #fad58b; color: white; border-radius: 4px; padding: 2px 6px;">{{ __('IN') }}</span>
+    {% endif %}
+
     {% if person.enrolled %}
-    <span class="tag dull text-xxs ml-2">{{ __('Enrolled') }}</span>
+        <span class="tag dull text-xxs ml-2">{{ __('Enrolled') }}</span>
     {% endif %}
 
     <span class="choiceTag tag dull text-xxs ml-2" title="
