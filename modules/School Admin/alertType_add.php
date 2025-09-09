@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
 
     $row = $form->addRow();
         $row->addLabel('tag', __('Tag'));
-        $row->addTextField('tag')->maxLength(5);
+        $row->addTextField('tag')->maxLength(2);
 
     $row = $form->addRow();
         $row->addLabel('color', __('Font/Border Colour'))->description(__('Click to select a colour.'));

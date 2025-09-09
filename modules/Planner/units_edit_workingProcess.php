@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 require_once '../../gibbon.php';
 
@@ -31,6 +32,7 @@ $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+$lessonNameReplace = $_POST['lessonNameReplace'] ?? 'N';
 $orders = $_POST['order'] ?? [];
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
@@ -51,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             header("Location: {$URL}");
         } else {
             $courseGateway = $container->get(CourseGateway::class);
+            $plannerGateway = $container->get(PlannerEntryGateway::class);
 
             // Check access to specified course
             if ($highestAction == 'Unit Planner_all') {
@@ -104,6 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             $AI = $_POST["gibbonPlannerEntryID$lessonCount"] ?? '';
                             $lessonDescriptions[$_POST['gibbonPlannerEntryID'.$lessonCount]][0] = $_POST['gibbonPlannerEntryID'.$lessonCount];
                             $lessonDescriptions[$_POST['gibbonPlannerEntryID'.$lessonCount]][1] = '';
+                            $lessonDescriptions[$_POST['gibbonPlannerEntryID'.$lessonCount]][2] = '';
                             ++$lessonCount;
                         }
                         //It is a block, so add it to the last added lesson
@@ -121,6 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             $contents = $_POST['contents'.$order] ?? '';
                             $teachersNotes = $_POST['teachersNotes'.$order] ?? '';
                             $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order] ?? '';
+
+                            if (empty($lessonDescriptions[$AI][2])) {
+                                $lessonDescriptions[$AI][2] = $titles;
+                            }
 
                             try {
                                 $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'complete' => $completes, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
@@ -147,6 +155,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $partialFail = true;
+                        }
+
+                        if ($lessonNameReplace == 'Y' && !empty($lessonDescription[2])) {
+                            $plannerGateway->update($lessonDescription[0], ['name' => $lessonDescription[2]]);
                         }
                     }
 

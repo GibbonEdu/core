@@ -29,6 +29,7 @@ use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Markbook\MarkbookEntryGateway;
 use Gibbon\Domain\IndividualNeeds\INPersonDescriptorGateway;
+use Gibbon\View\Component;
 
 /**
  * Alert class to calculate and get Alerts for Students
@@ -44,7 +45,7 @@ class Alert
     protected $settingGateway;
     protected $alertLevelGateway;
     protected $medicalGateway;
-    protected $iNPersonDescriptorGateway;
+    protected $inPersonDescriptorGateway;
     protected $markbookEntryGateway;
     protected $behaviourGateway;
     protected $alertGateway;
@@ -56,7 +57,7 @@ class Alert
         SettingGateway $settingGateway,
         AlertLevelGateway $alertLevelGateway,
         MedicalGateway $medicalGateway,
-        INPersonDescriptorGateway $iNPersonDescriptorGateway,
+        INPersonDescriptorGateway $inPersonDescriptorGateway,
         MarkbookEntryGateway $markbookEntryGateway,
         BehaviourGateway $behaviourGateway,
         AlertGateway $alertGateway
@@ -66,7 +67,7 @@ class Alert
         $this->settingGateway = $settingGateway;
         $this->alertLevelGateway = $alertLevelGateway;
         $this->medicalGateway = $medicalGateway;
-        $this->iNPersonDescriptorGateway = $iNPersonDescriptorGateway;
+        $this->inPersonDescriptorGateway = $inPersonDescriptorGateway;
         $this->markbookEntryGateway = $markbookEntryGateway;
         $this->behaviourGateway = $behaviourGateway;
         $this->alertGateway = $alertGateway;
@@ -90,19 +91,9 @@ class Alert
                 return '';
             }
 
-            // Output alerts
-            $classDefault = 'block align-middle text-center font-bold border-0 border-t-2 ';
-            $classDefault .= $large
-            ? 'text-4xl w-10 pt-1 mr-2 leading-none'
-            : 'text-xs w-4 pt-px mr-1 leading-none';
-
             foreach ($this->alerts as $alert) {
-                $style = "color: {$alert['highestColour']}; border-color: {$alert['highestColour']}; background-color: {$alert['highestColourBG']};";
-                $class = $classDefault . ' ' . ($alert['class'] ?? 'float-left');
-                $output .= Format::link($alert['link'], $alert['tag'], [
-                    'title' => $alert['title'],
-                    'class' => $class,
-                    'style' => $style,
+                $output .= Component::render(Alert::class, $alert + [
+                    'large' => $large,
                     'target' => $target,
                 ]);
             }
@@ -133,8 +124,8 @@ class Alert
         // Privacy
         $this->calculatePrivacyAlerts($gibbonPersonID, $privacy);
 
-        // Wellbeing
-        $this->calculateWellbeingAlerts($gibbonPersonID);
+        // Custom
+        $this->calculateCustomAlerts($gibbonPersonID);
 
         return $this;
     }
@@ -143,19 +134,19 @@ class Alert
     // Individual Needs Alert
     protected function calculateIndividualNeedsAlerts($gibbonPersonID)
     {
-        $resultAlert = $this->iNPersonDescriptorGateway->selectINPersonDescriptorsandAlertLevelsByPersonID($gibbonPersonID);
+        $resultAlert = $this->inPersonDescriptorGateway->selectINPersonDescriptorsandAlertLevelsByPersonID($gibbonPersonID);
 
         if ($alert = $resultAlert->fetch()) {
             $title = $resultAlert->rowCount() == 1 ? $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name']) : $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
 
             $this->alerts[] = [
                 'highestLevel'    => __($alert['name']),
-                'highestColour'   => $alert['color'],
-                'highestColourBG' => $alert['colorBG'],
+                'color'   => $alert['color'],
+                'colorBG' => $alert['colorBG'],
                 'tag'             => __('IN'),
                 'title'           => $title,
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Individual Needs']),
+                    ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Individual Needs']),
             ];
         }
     }
@@ -176,8 +167,8 @@ class Alert
             if ($alert = $this->alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $this->alerts[] = [
                     'highestLevel'    => __($alert['name']),
-                    'highestColour'   => $alert['color'],
-                    'highestColourBG' => $alert['colorBG'],
+                    'color'   => $alert['color'],
+                    'colorBG' => $alert['colorBG'],
                     'tag'             => __('A'),
                     'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
@@ -207,8 +198,8 @@ class Alert
             if ($alert = $this->alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $this->alerts[] = [
                     'highestLevel'    => __($alert['name']),
-                    'highestColour'   => $alert['color'],
-                    'highestColourBG' => $alert['colorBG'],
+                    'color'   => $alert['color'],
+                    'colorBG' => $alert['colorBG'],
                     'tag'             => __('B'),
                     'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
@@ -224,8 +215,8 @@ class Alert
         if ($alert = $this->medicalGateway->getHighestMedicalRisk($gibbonPersonID)) {
             $this->alerts[] = [
                 'highestLevel'    => __($alert['name']),
-                'highestColour'   => $alert['color'],
-                'highestColourBG' => $alert['colorBG'],
+                'color'   => $alert['color'],
+                'colorBG' => $alert['colorBG'],
                 'tag'             => __('M'),
                 'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert['name']),
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
@@ -243,8 +234,8 @@ class Alert
             if ($alert = $this->alertLevelGateway->getByID(AlertLevelGateway::LEVEL_HIGH)) {
                 $this->alerts[] = [
                     'highestLevel'    => __($alert['name']),
-                    'highestColour'   => $alert['color'],
-                    'highestColourBG' => $alert['colorBG'],
+                    'color'   => $alert['color'],
+                    'colorBG' => $alert['colorBG'],
                     'tag'             => __('P'),
                     'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
@@ -254,20 +245,25 @@ class Alert
         }
     }
 
-    // Wellbeing Alert
-    protected function calculateWellbeingAlerts($gibbonPersonID)
+    // Custom Alert
+    protected function calculateCustomAlerts($gibbonPersonID)
     {
-       if ($alert = $this->alertGateway->getHighestWellbeingAlert($gibbonPersonID, $this->session->get('gibbonSchoolYearID'))) {
-            $this->alerts[] = [
-                'highestLevel'    => __($alert['name']),
-                'highestColour'   => '#BF40BF',
-                'highestColourBG' => $alert['colorBG'],
-                'tag'             => __('W'),
-                'title'           => sprintf(__('Wellbeing alerts are set, up to a maximum of %1$s'), $alert['name']),
-                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID]),
-            ];
+        $customTypes = $this->alertGateway->selectCustomAlertTypes()->fetchAll();
+
+        foreach ($customTypes as $type) {
+            if ($alert = $this->alertGateway->getHighestCustomAlert($gibbonPersonID, $this->session->get('gibbonSchoolYearID'), $type['name'])) {
+                $this->alerts[] = [
+                    'highestLevel'    => __($alert['name']),
+                    'color'   => $alert['color'],
+                    'colorBG' => $alert['colorBG'],
+                    'tag'             => $alert['tag'],
+                    'title'           => $alert['description'],
+                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                            ->withQueryParams(['gibbonPersonID' => $gibbonPersonID]),
+                ];
+            }
         }
+        
     }
 
     private function getAlertThresholds($type)

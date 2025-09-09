@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         $table->addClass('bulkActionForm colorOddEven');
 
         $header = $table->addHeaderRow();
-            $header->addTableCell(__('Include'));
+            $header->addCheckbox('checkall')->setClass('checkall')->alignLeft();
             $header->addTableCell(__('Activity'));
             $header->addTableCell(__('Maximum Enrolment'));
             for ($i = 1; $i <= $signUpChoices; $i++) {

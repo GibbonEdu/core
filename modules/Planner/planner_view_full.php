@@ -1170,7 +1170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form = Form::createBlank('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
                         $form->setClass('w-full font-sans text-xs text-gray-700');
                         $form->setAutocomplete('off');
-                        $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
+                        $form->setTitle($attendanceEnabled && $canTakeAttendance ? __('Participants & Attendance') : __('Participants'));
 
                         // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {

@@ -51,7 +51,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
 
     $row = $form->addRow();
         $row->addLabel('tag', __('Tag'));
-        $row->addTextField('tag')->maxLength(5);
+        $row->addTextField('tag')->maxLength(2);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));

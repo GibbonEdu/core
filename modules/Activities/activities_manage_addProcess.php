@@ -65,11 +65,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $payment = null;
         $paymentType = null;
         $paymentFirmness = null;
+        $paymentDescription = null;
     } else {
         $paymentOn = true;
         $payment = $_POST['payment'] ?? '';
         $paymentType = $_POST['paymentType'] ?? '';
         $paymentFirmness = $_POST['paymentFirmness'] ?? '';
+        $paymentDescription = $_POST['paymentDescription'] ?? '';
     }
     $description = $_POST['description'] ?? '';
 
@@ -95,6 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             'payment'                  => $payment,
             'paymentType'              => $paymentType,
             'paymentFirmness'          => $paymentFirmness,
+            'paymentDescription'       => $paymentDescription,
             'description'              => $description
         ];
 

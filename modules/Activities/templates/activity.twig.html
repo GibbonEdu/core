@@ -128,10 +128,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 
                 {%- if activity.costType -%}
                     <div class="mt-0 text-sm font-normal text-gray-600 ">
-                    {{ activity.costType }}
-                    {% if activity.costStatus %}
-                    &nbsp;({{ activity.costStatus }})
-                    {% endif %}
+                        {{ activity.costType }}
+                        {% if activity.costStatus %}
+                            &nbsp;({{ activity.costStatus }})
+                        {% endif %}
+                        {% if activity.costDescription %}
+                            <br>{{ activity.costDescription }}
+                        {% endif %}
                     </div>
                 {% endif %}
             {% else %}
