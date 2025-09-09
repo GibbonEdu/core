@@ -60,6 +60,7 @@ v30.0.00
         System: fixed toggle field direction for right-to-left languages
         System: fixed uninitialized variable PHP warnings on Parent Dashboard
         System: fixed login options not working when using SSO button
+        System: fixed login issue after public registration
         Data Updater: fixed attachments being cleared when new data updates are submitted
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Planner: fixed Teacher Notes in smart blocks not visible when using the Show Confidential Data toggle
