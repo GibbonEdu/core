@@ -1,0 +1,55 @@
+details:
+    type: libraryItemEvent
+    name: Library Item Event
+    table: gibbonLibraryItemEvent
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Library
+    action: Manage Catalog
+fields:
+    id: 
+        name: "Item ID"
+        desc: "Item ID"
+    gibbonLibraryItemID: 
+        name: "LibItem ID"
+        desc: "LibItem ID"
+        args: { filter: string, required: true, linked: id, readonly: [ gibbonLibraryItem ] } 
+        relationship: { table: gibbonLibraryItem, key: gibbonLibraryItemID, field: id }
+    gibbonPersonIDStatusResponsible:
+        name: "Student Username/Email"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|email  }
+    returnExpected: 
+        name: "Return Date"
+        desc: "Expected return date for the loan"
+        args: { filter: date, custom: true }
+    type:
+        name: "Type"
+        desc: "Type of event"
+        value: "Loan"
+        args: { filter: string, hidden: true }
+    status:
+        name: "Status"
+        desc: "Status of the event"
+        value: "On Loan"
+        args: { filter: string, hidden: true }
+tables:
+    gibbonLibraryItem:
+        primaryKey:
+            gibbonLibraryItemID
+        uniqueKeys:
+            - [ id ]
+        fields:
+            - id
+            - status
+    gibbonLibraryItemEvent:
+        primaryKey:
+            gibbonLibraryItemEventID
+        fields:
+            - gibbonLibraryItemID
+            - gibbonPersonIDStatusResponsible
+            - returnExpected
+            - type
+            - status
+    
