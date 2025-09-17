@@ -18,9 +18,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% for gibbonActivityID, activity in activities %}
         <div class="bg-gray-100 border p-3 mb-4 mr-4 rounded-md">
             <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
-                <div class="flex-1 font-bold text-base text-gray-800">
+                <a class="flex-1 font-bold text-base text-gray-800 no-underline hover:underline" href="{{ absoluteURL}}/index.php?q=/modules/Activities/choices_manage.php&search={{ activity.name|url_encode }}" target="_blank">
                     {{ activity.name }}
-                </div>
+                </a>
 
                 {% if mode == 'student' %}
                     <div class="w-24">
@@ -98,7 +98,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 </section>
 
 {% macro enrolment(person, signUpChoices) %}
-<div class="enrolmentPerson flex items-center justify-between bg-white shadow rounded-md mb-2 p-3 text-sm border hover:bg-blue-100 hover:border-blue-500 cursor-move group"
+<div class="enrolmentPerson flex items-center content-center justify-between bg-white shadow rounded-md mb-2 p-3 text-sm border hover:bg-blue-100 hover:border-blue-500 cursor-move group"
     style="max-width: 18rem;" data-person="{{ person.gibbonPersonID }}" data-choice1="{{ person.choice1 }}"
     data-choice2="{{ person.choice2 }}" data-choice3="{{ person.choice3 }}" data-choice4="{{ person.choice4 }}"
     data-choice5="{{ person.choice5 }}" data-preferredName="{{ person.preferredName }}"
@@ -106,17 +106,25 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <input type="hidden" name="person[{{ person.gibbonPersonID }}]" value="{{ person.gibbonActivityID ?? 0 }}">
 
-    <div>{{ person.preferredName }} {{ person.surname }} {{ person.formGroup ? " ("~person.formGroup~")" }}</div>
+    <div title="{{ __('Age') }}: {{ person.age }}"><a href="{{ person.link }}" class="no-underline hover:underline text-gray-700">{{ person.preferredName }} {{ person.surname }}</a> {{ person.formGroup ? " ("~person.formGroup~")" }}</div>
 
-    {% if person.enrolled %}
-    <span class="tag dull text-xxs ml-2">{{ __('Enrolled') }}</span>
-    {% endif %}
+    <div class="flex justify-end items-center">
+        {% if person.alerts %}
+            {{ person.alerts|raw }}
+        {% endif %}
+    
+        {% if person.enrolled %}
+            <span class="tag dull text-xxs ml-2">{{ __('Enrolled') }}</span>
+        {% endif %}
 
-    <span class="choiceTag tag dull text-xxs ml-2" title="
-        {%- for i in range(1, signUpChoices ) -%}
-            {{ i }}: {{ person[ ('choice' ~ i ~ 'Name') ] |default('None') }}<br/>
-        {%- endfor -%}
-        ">N/A</span>
+        <span class="choiceTag tag dull text-xxs ml-2" title="
+            {%- for i in range(1, signUpChoices ) -%}
+                {{ i }}: {{ person[ ('choice' ~ i ~ 'Name') ] |default('None') }}<br/>
+            {%- endfor -%}">
+            {{ __('N/A') }}
+        </span>
+
+    </div>
 </div>
 {% endmacro enrolment %}
 

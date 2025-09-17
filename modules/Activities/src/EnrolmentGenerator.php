@@ -19,7 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Activities;
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityChoiceGateway;
 use Gibbon\Domain\Activities\ActivityStudentGateway;
@@ -35,6 +37,7 @@ class EnrolmentGenerator
     protected $activityStudentGateway;
     protected $activityChoiceGateway;
     protected $activityCategoryGateway;
+    protected $alert;
 
     protected $newStudentPriority = true;
     protected $yearGroupPriority = true;
@@ -47,12 +50,13 @@ class EnrolmentGenerator
     protected $choices;
     protected $groups;
 
-    public function __construct(ActivityGateway $activityGateway, ActivityStudentGateway $activityStudentGateway, ActivityChoiceGateway $activityChoiceGateway, ActivityCategoryGateway $activityCategoryGateway)
+    public function __construct(ActivityGateway $activityGateway, ActivityStudentGateway $activityStudentGateway, ActivityChoiceGateway $activityChoiceGateway, ActivityCategoryGateway $activityCategoryGateway, Alert $alert)
     {
         $this->activityGateway = $activityGateway;
         $this->activityStudentGateway = $activityStudentGateway;
         $this->activityChoiceGateway = $activityChoiceGateway;
         $this->activityCategoryGateway = $activityCategoryGateway;
+        $this->alert = $alert;
     }
 
     public function getActivities()
@@ -130,12 +134,15 @@ class EnrolmentGenerator
     {
         // Preload any existing enrolments
         foreach ($this->enrolments as $gibbonPersonID => $person) {
+            $person = $this->getAlertData($person);
             $person['enrolled'] = true;
+
             $this->groups[$person['gibbonActivityID']][$gibbonPersonID] = $person;
         }
 
         // Assign choices to groups until the groups fill up
         foreach ($this->choices as $gibbonPersonID => $person) {
+            $person = $this->getAlertData($person);
             $enrolmentGroup = 0;
 
             for ($i = 1; $i <= 3; $i++) {
@@ -262,5 +269,13 @@ class EnrolmentGenerator
             return $b['weight'] <=> $a['weight'];
         });
     }
-    
+
+    protected function getAlertData(array $person) : array 
+    {
+        $person['age'] = !empty($person['dob']) ? Format::age($person['dob']) : '';
+        $person['link'] = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
+        $person['alerts'] = $this->alert->getAlertBar($person['gibbonPersonID'], '', false);
+
+        return $person;
+    }
 }

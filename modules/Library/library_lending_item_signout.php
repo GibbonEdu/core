@@ -177,6 +177,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addLabel('returnExpected', __('Expected Return Date'))->description(sprintf(__('Default renew length is today plus %1$s day(s)'), $loanLength));
                 $row->addDate('returnExpected')->setValue(date($session->get('i18n')['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->required();
 
+            $row = $form->addRow();
+                $row->addLabel('notifyParents', __('Notify Parents'));
+                $row->addYesNo('notifyParents')->selected('N');
+
             $row = $form->addRow()->addHeading('On Return', __('On Return'));
 
             $actions = array(
