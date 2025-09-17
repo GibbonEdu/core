@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                 $page->breadcrumbs->add($row['name']);
 
                 $userGateway = $container->get(UserGateway::class);
-                $primaryTutor240 = $userGateway->getByID($row['gibbonPersonIDTutor'])['image_240'];
+                $primaryTutor240 = $userGateway->getByID($row['gibbonPersonIDTutor'])['image_240'] ?? '';
 
                 //Set up for foramtting
                 $linkStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');

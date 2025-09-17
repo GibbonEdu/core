@@ -49,7 +49,7 @@ class TimetableAccess
 
     public function checkAccess($context)
     {
-        $action = Access::inspect('Timetable', 'tt');
+        $action = Access::get('Timetable', 'tt');
 
         if ($action->allows('View Timetable by Person_allYears')) return true;
         

@@ -27,6 +27,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -322,6 +323,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
                             $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                         }
+
+                        // ALERTS: possible change to Privacy alert status, recalculate alerts
+                        $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
 
                         //Deal with change to privacy settings
                         if ($student && $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {

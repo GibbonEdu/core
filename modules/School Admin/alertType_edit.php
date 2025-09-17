@@ -20,7 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Domain\Alerts\AlertTypeGateway;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
+use Gibbon\Services\Format;
 
 if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSettings.php')) {
     // Access denied
@@ -28,7 +29,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
 } else {
     // Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Alert Types and Level'), 'alertLevelSettings.php')
+        ->add(__('Student Alert Settings'), 'alertLevelSettings.php')
         ->add(__('Edit Type'));
 
     $alertTypeGateway = $container->get(AlertTypeGateway::class);
@@ -47,27 +48,48 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->required()->readOnly();
+        $row->addTextField('name')->required()->readonly();
 
     $row = $form->addRow();
         $row->addLabel('tag', __('Tag'));
         $row->addTextField('tag')->maxLength(2);
 
     $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextArea('description');
+
+    $row = $form->addRow();
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
     $row = $form->addRow();
-        $row->addLabel('color', __('Font/Border Colour'))->description(__('Click to select a colour.'));
-    	$row->addColor('color');
+        $row->addLabel('useLevels', __('Alert Levels'))->description(__('Use low/medium/high alert levels?'));
+        $row->addYesNo('useLevels')->readonly();
 
-    $row = $form->addRow();
-        $row->addLabel('colorBG', __('Background Colour'))->description(__('Click to select a colour.'));
-        $row->addColor('colorBG');
+    if ($values['useLevels'] == 'N') {
+        $row = $form->addRow();
+            $row->addLabel('color', __('Font/Border Colour'))->description(__('Click to select a colour.'));
+            $row->addColor('color');
 
-    $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
-        $row->addTextArea('description');
+        $row = $form->addRow();
+            $row->addLabel('colorBG', __('Background Colour'))->description(__('Click to select a colour.'));
+            $row->addColor('colorBG');
+    }
+
+    if ($values['name'] == 'Academic' || $values['name'] == 'Behaviour') {
+        $row = $form->addRow();
+            $row->addLabel('thresholdLow', __('Low Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('Low')]));
+            $row->addNumber('thresholdLow')->onlyInteger(true)->maxLength(3)->required();
+
+        $row = $form->addRow();
+            $row->addLabel('thresholdMed', __('Medium Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('Medium')]));
+            $row->addNumber('thresholdMed')->onlyInteger(true)->maxLength(3)->required();
+
+        $row = $form->addRow();
+            $row->addLabel('thresholdHigh', __('High Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('High')]));
+            $row->addNumber('thresholdHigh')->onlyInteger(true)->maxLength(3)->required();
+    }
+
 
     $row = $form->addRow();
         $row->addFooter();

@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Alerts\AlertTypeGateway;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 
 require_once '../../gibbon.php';
 
@@ -37,9 +37,12 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
     $data = [
         'description'   => $_POST['description'] ?? '',
         'tag'           => $_POST['tag'] ?? '',
-        'color'         => $_POST['color'] ?? '',
-        'colorBG'       => $_POST['colorBG'] ?? 0,
+        'color'         => $_POST['color'] ?? null,
+        'colorBG'       => $_POST['colorBG'] ?? null,
         'active'        => $_POST['active'] ?? 'Y',
+        'thresholdLow'  => $_POST['thresholdLow'] ?? null,
+        'thresholdMed'  => $_POST['thresholdMed'] ?? null,
+        'thresholdHigh' => $_POST['thresholdHigh'] ?? null,
     ];
 
     $alertTypeGateway = $container->get(AlertTypeGateway::class);

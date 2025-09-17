@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\UI\Components\Alert;
+
 include '../../gibbon.php';
 
 $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? '';
@@ -72,6 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     header("Location: {$URL}");
                     exit();
                 }
+
+                // ALERTS: possible change to Behaviour alert status, recalculate alerts
+                $container->get(Alert::class)->recalculateAlerts($row['gibbonPersonID']);
 
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");

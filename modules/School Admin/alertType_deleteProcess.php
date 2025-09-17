@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Alerts\AlertTypeGateway;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 
 require_once '../../gibbon.php';
 
@@ -46,6 +46,12 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
     $values = $alertTypeGateway->getByID($gibbonAlertTypeID);
 
     if (empty($values)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if ($values['type'] == 'Core') {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;

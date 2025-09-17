@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Alerts\AlertGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
 
 require_once '../../gibbon.php';
 
@@ -27,10 +27,10 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonAlertID = $_POST['gibbonAlertID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Alerts/studentAlerts_manage_approval.php&gibbonAlertID='.$gibbonAlertID;
-$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Alerts/studentAlerts_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Student Alerts/studentAlerts_manage_approval.php&gibbonAlertID='.$gibbonAlertID;
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Student Alerts/studentAlerts_manage.php';
 
-if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_manage_approval.php')) {
+if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_manage_approval.php')) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 }  else {

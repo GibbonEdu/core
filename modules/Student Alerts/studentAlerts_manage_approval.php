@@ -20,20 +20,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Alerts\AlertGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
 
-if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_manage_view.php')) {
+if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_manage_approval.php')) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if ($highestAction != 'Manage Student Alerts_all') {
+        $page->addError(__('You do not have access to this action.'));
+        return;
+    }
     
     $page->breadcrumbs
         ->add(__('Manage Alerts'), 'studentAlerts_manage.php')
-        ->add(__('View Alert'));
+        ->add(__('Approve Alert'));
 
     $gibbonAlertID = $_GET['gibbonAlertID'] ?? '';
+    $status = $_GET['status'] ?? '';
     $alertGateway = $container->get(AlertGateway::class);
 
     if (empty($gibbonAlertID)) {
@@ -67,12 +72,6 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_mana
         $row->addTextField('level')
             ->setValue($alert['level'])
             ->readonly();
-
-    $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addTextField('status')
-            ->setValue($alert['status'])
-            ->readonly();
     
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description(__('If the alert is for a specified period'));
@@ -89,11 +88,37 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_mana
     $row = $form->addRow();
             $col = $row->addColumn();
             $col->addLabel('comment', __('Comment'));
-            $col->addTextArea('comment')
+            $col->addEditor('comment')
                 ->setValue($alert['comment'])
-                ->readonly()
-                ->setRows(3);
-                
+                ->readonly();
+
+    echo $form->getOutput();
+
+    $form = Form::create('alertApproval', $session->get('absoluteURL').'/modules/Student Alerts/studentAlerts_manage_approvalProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('gibbonAlertID', $gibbonAlertID);
+    
+    $form->addRow()->addHeading('Approval', __('Approval'));
+
+    $options = [
+        'Approved' => __('Approved'),
+        'Declined' => __('Declined'),
+    ];
+
+    $row = $form->addRow();
+        $row->addLabel('status', __('Status'));
+        $row->addSelect('status')->fromArray($options)->selected($status)->required();
+
+    $row = $form->addRow();
+        $row->addLabel('notesApproval', __('Reply'));
+        $row->addTextArea('notesApproval')->setRows(3);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
     echo $form->getOutput();
 }
 

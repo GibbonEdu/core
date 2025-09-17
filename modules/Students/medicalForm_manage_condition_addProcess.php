@@ -25,6 +25,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\UI\Components\Alert;
 
 include '../../gibbon.php';
 
@@ -113,8 +114,11 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID() , 12, '0', STR_PAD_LEFT);
 
-                    $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
+                    // ALERTS: possible change to Medical alert status, recalculate alerts
+                    $container->get(Alert::class)->recalculateAlerts($values['gibbonPersonID']);
 
+                    $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
+                    
                     /**
                      * @var AlertLevelGateway
                      */

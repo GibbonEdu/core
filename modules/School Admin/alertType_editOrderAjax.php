@@ -19,26 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Support\Facades;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 
-use Gibbon\Auth\Access\Access as AccessContract;
+require_once '../../gibbon.php';
 
-/**
- * @method static bool allows(string $module, string $routePath, string $actionName = '')
- * @method static bool denies(string $module, string $routePath, string $actionName = '')
- * @method static Action get(string $module, string $routePath, string $actionName = '')
- *
- * @see \Gibbon\Auth\Access\Access
- */
-class Access extends Facade
-{
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
-    {
-        return AccessContract::class;
-    }
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSettings.php') == false) {
+    exit;
+} else {
+    // Proceed!
+    $alertTypeGateway = $container->get(AlertTypeGateway::class)->updateSequenceNumbers($_POST['order'] ?? []);
 }

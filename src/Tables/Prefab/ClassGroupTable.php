@@ -80,7 +80,23 @@ class ClassGroupTable extends DataTable
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-50 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
 
-        if ($canEditEnrolment && $participants->rowCount() > 0) {
+        if ($canViewConfidential) {
+            $checkbox = (new Checkbox('confidential'.$gibbonCourseClassID))
+                ->description(__('Show Confidential Data'))
+                ->setAttribute('x-model', 'globalShowHide')
+                ->setLabelClass('text-xs italic')
+                ->setClass('mr-2');
+
+            $this->addHeaderContent($checkbox->getOutput());
+
+            $alert = $container->get(Alert::class);
+            $this->addColumn('alerts')
+                ->format(function ($person) use ($alert) {
+                    return $alert->getAlertBar($person['gibbonPersonID'], "x-cloak x-transition.opacity x-show='globalShowHide'");
+                });
+        }
+
+        if ($canEditEnrolment && count($participants) > 0) {
             $this->addHeaderAction('edit', __('Edit Enrolment'))
                 ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
@@ -97,27 +113,6 @@ class ClassGroupTable extends DataTable
                 ->setIcon('download')
                 ->directLink()
                 ->displayLabel();
-        }
-
-        if ($canViewConfidential) {
-            $checkbox = (new Checkbox('confidential'.$gibbonCourseClassID))
-                ->description(__('Show Confidential Data'))
-                ->checked(true)
-                ->inline()
-                ->wrap('<div class="mt-2 text-right text-xxs text-gray-700 italic">', '</div>');
-
-            $this->addMetaData('gridHeader', $checkbox->getOutput());
-            $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonCourseClassID));
-
-            $this->addColumn('alerts')
-                ->format(function ($person) use ($gibbonCourseClassID, $container) {
-                    $output = '';
-                    $divExtras = ' data-conf="confidential'.$gibbonCourseClassID.'"';
-                    // $output = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
-                    $output = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], $person['privacy'], $divExtras);
-
-                    return $output;
-                });
         }
 
         $this->addColumn('image_240')
@@ -174,17 +169,5 @@ class ClassGroupTable extends DataTable
             });
         }
             
-    }
-
-    private function getCheckboxScript($id)
-    {
-        return '
-        <script type="text/javascript">
-        $(function () {
-            $("#confidential'.$id.'").click(function () {
-                $("[data-conf=\'confidential'.$id.'\']").slideToggle(!$(this).is(":checked"));
-            });
-        });
-        </script>';
     }
 }

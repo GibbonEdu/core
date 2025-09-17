@@ -62,9 +62,8 @@ class Access
      * Check if an action is allowed for the current session.
      *
      * A short hand of:
-     * ```php
-     * Access::getAction($resource)->allows();
-     * ```
+     * `Access::getAction($resource)->allows();`
+     * 
      * @param string $module
      * @param string $routePath
      * @param string $actionName
@@ -96,7 +95,7 @@ class Access
      * @param string $actionName
      * @return Action
      */
-    public function inspect(string $module, string $routePath, string $actionName = ''): Action
+    public function get(string $module, string $routePath, string $actionName = ''): Action
     {
         return $this->getAction(Resource::fromRoute($module, $routePath, $actionName));
     }

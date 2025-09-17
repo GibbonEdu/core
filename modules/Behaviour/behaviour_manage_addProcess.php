@@ -30,6 +30,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\UI\Components\Alert;
 
 include '../../gibbon.php';
 
@@ -102,6 +103,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 $gibbonBehaviourID = $connection2->lastInsertID();
 
+                // ALERTS: possible change to Behaviour alert status, recalculate alerts
+                $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
                 
                 // Add a follow up log
                 if (!empty($followUp)) {

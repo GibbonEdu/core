@@ -21,12 +21,15 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Alerts\AlertGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
+use Gibbon\View\Component;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Domain\School\YearGroupGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_manage.php')) {
+if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_manage.php')) {
 	// Access denied
 	$page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,6 +42,14 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_mana
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+
+        $alertGateway = $container->get(AlertGateway::class);
+
+        $yearGroup = $container->get(YearGroupGateway::class)->getYearGroupByPerson($session->get('gibbonPersonID'));
+        if ($highestAction == 'Manage Student Alerts_headOfYear' && !empty($yearGroup) && empty($gibbonYearGroupID)) {
+            $gibbonYearGroupIDHOY = $yearGroup['gibbonYearGroupID'];
+            $gibbonYearGroupID = $yearGroup['gibbonYearGroupID'];
+        }
 
         // SEARCH
         $form = Form::createSearch();
@@ -61,8 +72,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_mana
             $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
-
-        $alertGateway = $container->get(AlertGateway::class);
+        
 
          // CRITERIA
         $criteria = $alertGateway->newQueryCriteria(true)
@@ -72,7 +82,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_mana
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->fromPOST();
 
-        if ($highestAction == 'Manage Student Alerts_all') {
+        if ($highestAction == 'Manage Student Alerts_all' || $highestAction == 'Manage Student Alerts_headOfYear') {
             $alerts = $alertGateway->queryAlertsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
         } else if ($highestAction == 'Manage Student Alerts_my') {
             $alerts = $alertGateway->queryAlertsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
@@ -85,27 +95,38 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_mana
         $table->setTitle(__('Alerts'));
 
         $table->addHeaderAction('add', __('Add Alert'))
-            ->setURL('/modules/Alerts/studentAlerts_add.php')
+            ->setURL('/modules/Student Alerts/studentAlerts_add.php')
             ->addParam('gibbonPersonID', $gibbonPersonID)
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->displayLabel();
 
         $table->modifyRows(function($alert, $row) {
-            if ($alert['status'] == 'Approved') $row->addClass('success');
-            elseif ($alert['status'] == 'Pending') $row->addClass('warning');
+            // if ($alert['status'] == 'Approved') $row->addClass('success');
+            if ($alert['status'] == 'Pending') $row->addClass('warning');
             elseif ($alert['status'] == 'Declined') $row->addClass('dull');
             return $row;
         });
 
-        $table->addExpandableColumn('comment')
-            ->format(function($alert) {
-                $output = '';
-                if (!empty($alert['comment'])) {
-                    $output .= Format::bold(__('Incident')).'<br/>';
-                    $output .= nl2br($alert['comment']).'<br/>';
-                }
-                return $output;
+        // $table->addExpandableColumn('comment')
+        //     ->format(function($alert) {
+        //         $output = '';
+        //         if (!empty($alert['comment'])) {
+        //             $output .= Format::bold(__('Incident')).'<br/>';
+        //             $output .= nl2br($alert['comment']).'<br/>';
+        //         }
+        //         return $output;
+        //     });
+
+        $table->addColumn('tag', __('Tag'))
+            ->width('8%')
+            ->format(function($values) {
+                return Component::render(Alert::class, [
+                    'color'   => $values['levelColor'] ?? $values['color'],
+                    'colorBG' => $values['levelColorBG'] ?? $values['colorBG'],
+                    'title' => $values['type'] ?? '',
+                    'large' => true,
+                ] + $values);
             });
 
         $table->addColumn('student', __('Student'))
@@ -157,22 +178,22 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_mana
             ->addParam('gibbonAlertID')
             ->format(function ($alert, $actions) use ($highestAction) {
                 $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Alerts/studentAlerts_edit.php');
+                    ->setURL('/modules/Student Alerts/studentAlerts_edit.php');
 
                 $actions->addAction('view', __('View'))
-                    ->setURL('/modules/Alerts/studentAlerts_manage_view.php');
+                    ->setURL('/modules/Student Alerts/studentAlerts_manage_view.php');
                 
                 if ($highestAction == 'Manage Student Alerts_all') {
                     if ($alert['status'] == 'Pending') {
                         $actions->addAction('approve', __('Approve'))
                             ->setIcon('iconTick')
                             ->addParam('status', 'Approved')
-                            ->setURL('/modules/Alerts/studentAlerts_manage_approval.php');
+                            ->setURL('/modules/Student Alerts/studentAlerts_manage_approval.php');
 
                         $actions->addAction('decline', __('Decline'))
                             ->setIcon('iconCross')
                             ->addParam('status', 'Declined')
-                            ->setURL('/modules/Alerts/studentAlerts_manage_approval.php');
+                            ->setURL('/modules/Student Alerts/studentAlerts_manage_approval.php');
                     }
                 }
             });

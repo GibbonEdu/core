@@ -1261,7 +1261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             // Display alerts and birthdays, teacher only
                             $alert = '';
                             if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && ($teacher || $teacherViewOnlyAccess)) {
-                                $alert = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], $person['privacy'], "x-cloak x-show='globalShowHide'");
+                                $alert = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], "x-cloak x-transition.opacity x-show='globalShowHide'");
                             }
                                                         
                             if ($person['role'] == 'Student' && $canViewConfidential) {

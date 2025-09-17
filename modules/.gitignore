@@ -9,8 +9,6 @@
 !/Activities/**
 !/Admissions
 !/Admissions/**
-!/Alerts/**
-!/Alerts
 !/Attendance
 !/Attendance/**
 !/Behaviour
@@ -47,6 +45,8 @@
 !/Staff/**
 !/Students
 !/Students/**
+!/Student Alerts/**
+!/Student Alerts
 !/System Admin
 !/System Admin/**
 !/Timetable

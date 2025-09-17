@@ -23,7 +23,7 @@ v30.0.00
 --------
 
     Headlines
-        Added a new Alerts module to manage automatic and manual student alerts
+        Added a new Student Alerts module to manage automatic and manual alerts
 
     Security
 

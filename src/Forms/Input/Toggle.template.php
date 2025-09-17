@@ -1,4 +1,4 @@
-<div x-data="{ 'toggle': '<?= $value; ?>', 'disabled': '<?= $disabled; ?>', 'onValue': '<?= $onValue; ?>', toggleSwitch() { if (this.disabled == true) return; this.toggle == this.onValue ? this.toggle = '<?= $offValue; ?>' :  this.toggle = '<?= $onValue; ?>'; } }" class="<?= $class; ?> flex items-center justify-end mx-1 <?= $toggleSize == 'sm' ? 'gap-2' : 'gap-4'; ?>" x-id="['toggle-label']" @click="<?= $_click ?? ''; ?>" >
+<div x-data="{ 'toggle': '<?= $value; ?>', 'disabled': '<?= $disabled || $readonly; ?>', 'onValue': '<?= $onValue; ?>', toggleSwitch() { if (this.disabled == true) return; this.toggle == this.onValue ? this.toggle = '<?= $offValue; ?>' :  this.toggle = '<?= $onValue; ?>'; } }" class="<?= $class; ?> flex items-center justify-end mx-1 <?= $toggleSize == 'sm' ? 'gap-2' : 'gap-4'; ?>" x-id="['toggle-label']" @click="<?= $_click ?? ''; ?>" >
 
     <input id="<?= $id; ?>" type="hidden" name="<?= $name; ?>" :value="toggle" value="<?= $value ?? $offValue; ?>" x-model="toggle; $dispatch('change')">
     
@@ -8,7 +8,7 @@
         </span>
     </label>
 
-    <?php $disabledClass = $disabled ? 'border-dashed cursor-not-allowed' : ''; ?>
+    <?php $disabledClass = $disabled || $readonly ? 'border-dashed cursor-not-allowed' : ''; ?>
     <?php $flip = $rtl ? '-1' : '1'; ?>
     
     <?php if ($toggleSize == 'sm') { ?>

@@ -20,10 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Alerts\AlertGateway;
-use Gibbon\Domain\Alerts\AlertTypeGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 
-if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_edit.php')) {
+if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_edit.php')) {
 	// Access denied
 	$page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,6 +39,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_edit
         ->add(__('Edit'));
 
     $alertGateway = $container->get(AlertGateway::class);
+    $alertTypeGateway = $container->get(AlertTypeGateway::class);
 
     $gibbonAlertID = $_GET['gibbonAlertID'] ?? '';
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -51,6 +52,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_edit
     }
 
     $values = $alertGateway->getByID($gibbonAlertID);
+    
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
@@ -63,7 +65,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_edit
         return;
     }
 
-    $form = Form::create('editAlert', $session->get('absoluteURL').'/modules/Alerts/studentAlerts_editProcess.php?gibbonAlertID='.$gibbonAlertID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
+    $form = Form::create('editAlert', $session->get('absoluteURL').'/modules/Student Alerts/studentAlerts_editProcess.php?gibbonAlertID='.$gibbonAlertID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));
@@ -71,7 +73,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_edit
 
     if (!empty($gibbonPersonID) or !empty($gibbonFormGroupID) or !empty($gibbonYearGroupID)) {
         $form->addHeaderAction('back', __('Back to Search Results'))
-            ->setURL('/modules/Alerts/studentAlerts_manage.php')
+            ->setURL('/modules/Student Alerts/studentAlerts_manage.php')
             ->setIcon('search')
             ->displayLabel()
             ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
@@ -86,39 +88,48 @@ if (!isActionAccessible($guid, $connection2, '/modules/Alerts/studentAlerts_edit
         $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->selected($values['gibbonPersonID'])->readonly();
         $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
-    $alertTypes = $container->get(AlertTypeGateway::class)->selectAllAlertTypes()->fetchAll();
-    $alertTypes = array_column($alertTypes, 'name');
+    $alertType = $alertTypeGateway->getByID($values['gibbonAlertTypeID']);
 
     $row = $form->addRow();
-        $row->addLabel('type', __('Type'));
-        $row->addSelect('type')
-            ->fromArray($alertTypes)
-            ->required()
-            ->selected($values['type']);
+        $row->addLabel('typeLabel', __('Type'));
+        $row->addTextField('typeLabel')->readonly()->setValue($alertType['name']);
 
-    $row = $form->addRow();
-        $row->addLabel('level', __('Level'));
-        $row->addSelect('level')
-            ->fromArray(['High' => __('High'), 'Medium' => __('Medium'), 'Low' => __('Low')])->required()
-            ->selected($values['level']);
-    
+    if ($highestAction == 'Manage Student Alerts_all' || $highestAction == 'Manage Student Alerts_headOfYear') {
+        $row = $form->addRow();
+        $row->addLabel('status', __('Status'));
+        $row->addSelect('status')->fromArray(['Pending' => __('Pending'), 'Approved' => __('Approved')])->required();
+    } else {
+        $row = $form->addRow();
+        $row->addLabel('statusLabel', __('Status'));
+        $row->addTextField('statusLabel')->readOnly();
+        $form->addHiddenValue('status', $values['status']);
+    }
+
+    if ($alertType['useLevels'] == 'Y') {
+        $row = $form->addRow();
+            $row->addLabel('level', __('Level'));
+            $row->addSelect('level')
+                ->fromArray(['High' => __('High'), 'Medium' => __('Medium'), 'Low' => __('Low')])->required();
+    }
+
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description(__('If the alert is for a specified period'));
-        $row->addDate('dateStart')->setValue(Format::date($values['dateStart']));
+        $row->addDate('dateStart');
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description(__('If the alert is for a specified period')); 
-        $row->addDate('dateEnd')->setValue(Format::date($values['dateEnd']));
+        $row->addDate('dateEnd');
 
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('comment', __('Comment'));
-        $col->addEditor('comment', $guid)
-            ->setValue($values['comment']);
+        $col->addEditor('comment', $guid)->setRows(5);
 
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
+
+    $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();
 }

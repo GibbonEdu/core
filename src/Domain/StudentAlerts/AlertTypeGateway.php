@@ -19,11 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\Alerts;
+namespace Gibbon\Domain\StudentAlerts;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\SequenceAware;
 
 /**
  * AlertTypeGateway
@@ -35,9 +36,11 @@ use Gibbon\Domain\QueryableGateway;
 class AlertTypeGateway extends QueryableGateway
 {
     use TableAware;
+    use SequenceAware;
 
     private static $tableName = 'gibbonAlertType';
     private static $primaryKey = 'gibbonAlertTypeID';
+    private static $sequenceField = 'sequenceNumber';
     private static $searchableColumns = [];
 
     public function queryAlertTypes(QueryCriteria $criteria)
@@ -46,7 +49,7 @@ class AlertTypeGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonAlertTypeID', 'name', 'tag', 'color', 'active', 'colorBG', 'description',
+                'gibbonAlertTypeID', 'name', 'tag', 'type', 'color', 'active', 'colorBG', 'description', 'sequenceNumber',
             ]);
 
         return $this->runQuery($query, $criteria);
@@ -54,7 +57,7 @@ class AlertTypeGateway extends QueryableGateway
 
     public function selectAllAlertTypes()
     {
-        $sql = "SELECT * FROM gibbonAlertType ORDER BY name";
+        $sql = "SELECT * FROM gibbonAlertType ORDER BY sequenceNumber, name";
 
         return $this->db()->select($sql);
     }

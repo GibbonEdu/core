@@ -41,12 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
             'enableStudentNotes',
             'noteCreationNotification',
             'emergencyFollowUpGroup',
-            'academicAlertLowThreshold',
-            'academicAlertMediumThreshold',
-            'academicAlertHighThreshold',
-            'behaviourAlertLowThreshold',
-            'behaviourAlertMediumThreshold',
-            'behaviourAlertHighThreshold',
             'firstAidDescriptionTemplate',
         ],
         'School Admin' => [

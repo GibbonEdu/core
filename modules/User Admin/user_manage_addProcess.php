@@ -27,6 +27,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Data\Validator;
+use Gibbon\UI\Components\Alert;
 
 include '../../gibbon.php';
 
@@ -201,6 +202,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                     // Create the status log
                     $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
+
+                    // ALERTS: possible change to Privacy alert status, recalculate alerts
+                    $container->get(Alert::class)->recalculateAlerts($AI);
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';

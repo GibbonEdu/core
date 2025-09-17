@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
 } else {
     // Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Alert Types and Levels'), 'alertLevelSettings.php')
+        ->add(__('Student Alert Settings'), 'alertLevelSettings.php')
         ->add(__('Add Type'));
 
     $editLink = '';
@@ -49,17 +49,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
         $row->addLabel('tag', __('Tag'));
         $row->addTextField('tag')->maxLength(2);
 
+     $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextArea('description')->setRows(4);
+
     $row = $form->addRow();
+        $row->addLabel('useLevels', __('Alert Levels'))->description(__('Use low/medium/high alert levels?'));
+        $row->addYesNo('useLevels')->selected('N');
+
+    $form->toggleVisibilityByClass('noLevels')->onRadio('useLevels')->whenNot('Y');
+
+    $row = $form->addRow()->addClass('noLevels');
         $row->addLabel('color', __('Font/Border Colour'))->description(__('Click to select a colour.'));
     	$row->addColor('color');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('noLevels');
         $row->addLabel('colorBG', __('Background Colour'))->description(__('Click to select a colour.'));
         $row->addColor('colorBG');
-
-    $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
-        $row->addTextArea('description')->setRows(4);
 
     $row = $form->addRow();
         $row->addFooter();

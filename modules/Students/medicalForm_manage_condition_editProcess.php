@@ -26,6 +26,7 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -102,6 +103,9 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                         exit();
                     }
 
+                    // ALERTS: possible change to Medical alert status, recalculate alerts
+                    $container->get(Alert::class)->recalculateAlerts($values['gibbonPersonID']);
+                    
                     /**
                      * @var AlertLevelGateway
                      */

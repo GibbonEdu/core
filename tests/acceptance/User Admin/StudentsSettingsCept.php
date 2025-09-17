@@ -14,12 +14,6 @@ $I->seeInFormFields('#content form', $originalFormValues);
 $newFormValues = array(
     'enableStudentNotes'            => 'Y',
     'noteCreationNotification'      => 'Tutors',
-    'academicAlertLowThreshold'     => '3',
-    'academicAlertMediumThreshold'  => '5',
-    'academicAlertHighThreshold'    => '9',
-    'behaviourAlertLowThreshold'    => '2',
-    'behaviourAlertMediumThreshold' => '4',
-    'behaviourAlertHighThreshold'   => '8',
     'studentAgreementOptions'       => 'Option1,Option2,Option3',
     'dayTypeOptions'                => 'Day,Type,Option,Test',
     'dayTypeText'                   => 'Day-Type Test',

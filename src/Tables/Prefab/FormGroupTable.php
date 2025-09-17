@@ -84,6 +84,23 @@ class FormGroupTable extends DataTable
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-50 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
 
+        if ($canViewConfidential) {
+            $checkbox = (new Checkbox('confidential'.$gibbonFormGroupID))
+                ->description(__('Show Confidential Data'))
+                ->setAttribute('x-model', 'globalShowHide')
+                ->setAttribute('x-init', 'globalShowHide = true')
+                ->setLabelClass('text-xs italic')
+                ->setClass('mr-2')
+                ->checked(true);
+
+            $this->addHeaderContent($checkbox->getOutput());
+
+            $this->addColumn('alerts')
+                ->format(function ($person) use ($gibbonFormGroupID, $container) {
+                    return $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], "x-transition.opacity x-show='globalShowHide'");
+                });
+        }
+
         if ($canPrint) {
             $this->addHeaderAction('print', __('Print'))
                 ->setURL('/report.php')
@@ -96,26 +113,6 @@ class FormGroupTable extends DataTable
                 ->setTarget('_blank')
                 ->directLink()
                 ->displayLabel();
-        }
-
-        if ($canViewConfidential) {
-            $checkbox = (new Checkbox('confidential'.$gibbonFormGroupID))
-                ->description(__('Show Confidential Data'))
-                ->checked(true)
-                ->inline()
-                ->wrap('<div class="mt-2 text-right text-xxs text-gray-700 italic">', '</div>');
-
-            $this->addMetaData('gridHeader', $checkbox->getOutput());
-            $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonFormGroupID));
-
-            $this->addColumn('alerts')
-                ->format(function ($person) use ($gibbonFormGroupID, $container) {
-                    $divExtras = ' data-conf="confidential'.$gibbonFormGroupID.'"';
-                    // $output = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
-                    $output = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], $person['privacy'], $divExtras);
-
-                    return $output;
-                });
         }
 
         $this->addColumn('image_240')
@@ -144,17 +141,5 @@ class FormGroupTable extends DataTable
         $this->addColumn('role')
             ->setClass('text-xs text-gray-600 italic leading-snug')
             ->translatable();
-    }
-
-    private function getCheckboxScript($id)
-    {
-        return '
-        <script type="text/javascript">
-        $(function () {
-            $("#confidential'.$id.'").click(function () {
-                $("[data-conf=\'confidential'.$id.'\']").slideToggle(!$(this).is(":checked"));
-            });
-        });
-        </script>';
     }
 }

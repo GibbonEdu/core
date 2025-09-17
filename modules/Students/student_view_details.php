@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
                         if (!empty($alert)) {
                             echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
+                            echo '<b>'.__('This student has one or more {level} risk medical conditions.', ['level' => __($alert['name'])]).'</b>';
                             echo '</div>';
                         }
 
@@ -992,7 +992,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo '<tr>';
                                         echo "<td $class style='width: 33%; vertical-align: top' colspan=3>";
                                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Comment').'</span><br/>';
-                                        echo $rowMember['comment'];
+                                        echo Format::alert($rowMember['comment'], 'message');
                                         echo '</td>';
                                         echo '</tr>';
                                     }
@@ -1239,7 +1239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
                         if (!empty($alert)) {
                             echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
+                            echo '<b>'.__('This student has one or more {level} risk medical conditions.', ['level' => __($alert['name'])]).'</b>';
                             echo '</div>';
                         }
 
@@ -2471,16 +2471,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $alert = '';
                     //Show alerts
                     if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
-                        // $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-                        $alert = $container->get(Alert::class)->getAlertBar($gibbonPersonID, $row['privacy'], '', false, true);
-                        
-                        $sidebarExtra .= '<div class="w-48 sm:w-64 h-10 mb-2">';
-                        if (empty($alert)) {
-                             $sidebarExtra .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
-                        } else {
-                             $sidebarExtra .= $alert;
-                        }
-                         $sidebarExtra .= '</div>';
+                        $alert = $container->get(Alert::class)->getAlertBar($gibbonPersonID, '', false, true);
+                        $sidebarExtra .= '<div class="w-48 sm:w-64 h-10 mb-2">'.$alert.'</div>';
                     }
                     
                     $sidebarExtra .= Format::userPhoto($studentImage, 240);

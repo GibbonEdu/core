@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Alerts\AlertTypeGateway;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSettings.php')) {

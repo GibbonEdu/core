@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Alerts\AlertTypeGateway;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 
 include '../../gibbon.php';
 
@@ -37,13 +37,15 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
     $data = [
         'name'                   => $_POST['name'] ?? '',
         'tag'                    => $_POST['tag'] ?? '',
-        'color'                  => $_POST['color'] ?? '',
-        'colorBG'                => $_POST['colorBG'] ?? '',
+        'useLevels'              => $_POST['useLevels'] ?? '',
+        'color'                  => $_POST['color'] ?? null,
+        'colorBG'                => $_POST['colorBG'] ?? null,
         'description'            => $_POST['description'] ?? '',
         'gibbonPersonIDCreator'  => $session->get('gibbonPersonID') ?? '',
+        'sequenceNumber'         => $alertTypeGateway->getNextSequenceNumber(),
     ];
 
-     if (empty($data['name'])) {
+    if (empty($data['name'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
