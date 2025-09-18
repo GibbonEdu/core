@@ -126,7 +126,7 @@ class Importer
      *
      * @var bool
      */
-    private $debug = false;
+    private $debug = true;
 
     /**
      * Constructor
@@ -535,6 +535,7 @@ class Importer
             $uniqueKeyDiff = array_diff($importType->getUniqueKeyFields(), array_keys($row));
             if (!empty($importType->getUniqueKeyFields()) && $uniqueKeyDiff != false) {
                 $this->log($rowNum, Importer::ERROR_REQUIRED_FIELD_MISSING, implode(', ', $uniqueKeyDiff));
+                $this->debugLog($rowNum, $sqlKeyQueryString, $uniqueKeyDiff, 'requiredField');
                 $partialFail = true;
                 continue;
             }

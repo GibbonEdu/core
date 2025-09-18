@@ -661,17 +661,42 @@ function isModuleAccessible($guid, $connection2, $address = '')
 function getModuleName($address)
 {
     $pos = stripos($address, 'modules/');
-    $dir = substr($address, $pos+8);
-    return $pos !== false ? substr($dir, 0, stripos($dir, '/')) : '';
+    if ($pos !== false) {
+        $dir = substr($address, $pos + 8);
+        $nextSlash = stripos($dir, '/');
+        return $nextSlash !== false ? substr($dir, 0, $nextSlash) : $dir;
+    }
+    //$dir = substr($address, $pos+8);
+    //return $pos !== false ? substr($dir, 0, stripos($dir, '/')) : '';
+
+    $pos = stripos($address, 'module');
+    if ($pos !== false) {
+        $dir = substr($address, $pos + 6);
+
+        $nextSlash = stripos($dir, '/');
+        return $nextSlash !== false ? trim(substr($dir, 0, $nextSlash)) : trim($dir);
+    }
+
+    return '';
 }
 
 //Get the action name from the address
 function getActionName($address)
 {
     $module = getModuleName($address);
-    return !empty($module) 
-        ? substr($address, (10 + strlen($module)))
-        : basename($address);
+
+     if (!empty($module)) {
+        $pos = stripos($address, 'modules/');
+        if ($pos !== false) {
+           return substr($address, (10 + strlen($module)));
+        } else {
+            $pos = stripos($address, 'module');
+            $actionStart = stripos($address, '/', $pos + 6) + 1;
+            return basename(substr($address, $actionStart));
+        }
+    }
+    
+    return basename($address);
 }
 
 //Using the current address, checks to see that a module exists and is ready to use, returning the ID if it is
