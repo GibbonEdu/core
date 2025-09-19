@@ -1,0 +1,58 @@
+details:
+    type: libraryItemEventReturn
+    name: Library Item Event Return
+    table: gibbonLibraryItemEvent
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Library
+    action: Manage Catalog
+fields:
+    id: 
+        name: "Item ID"
+        desc: "Item ID"
+    gibbonLibraryItemID: 
+        name: "LibItem ID"
+        desc: "LibItem ID"
+        args: { filter: string, required: true, linked: id, readonly: [ gibbonLibraryItem ] } 
+        relationship: { table: gibbonLibraryItem, key: gibbonLibraryItemID, field: id }
+    gibbonPersonIDStatusResponsible:
+        name: "Student Username/Email"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|email  }
+    type:
+        name: "Type"
+        desc: "Type of event"
+        value: "Loan"
+        args: { filter: string, hidden: true }
+    status:
+        name: "Status"
+        desc: "Status of the item"
+        value: "On Loan"
+        args: { filter: string, hidden: true }
+    status2:
+        name: "Status2"
+        desc: "Status of the event"
+        value: "Returned"
+        args: { filter: string, hidden: true }
+    gibbonLibraryItemEventID: 
+        name: "Event ID"
+        desc: "Event ID"
+        args: { filter: string, required: true, linked: status } 
+        relationship: { table: gibbonLibraryItemEvent, key: gibbonLibraryItemEventID, field: [ status, gibbonLibraryItemID, gibbonPersonIDStatusResponsible, type ] }
+tables:
+    gibbonLibraryItem:
+        primaryKey:
+            gibbonLibraryItemID
+        uniqueKeys:
+            - [ id ]
+        fields:
+            - id
+            - status
+    gibbonLibraryItemEvent:
+        primaryKey:
+            gibbonLibraryItemEventID
+        uniqueKeys:
+            - [ gibbonLibraryItemEventID ]
+        fields:
+            - status
