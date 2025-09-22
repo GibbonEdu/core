@@ -941,8 +941,10 @@ class Format
     public static function nameListArray($list, $roleCategory = 'Staff', $reverse = false, $informal = false, $id = 'gibbonPersonID')
     {
         $listFormatted = array_reduce($list, function ($group, $person) use ($roleCategory, $reverse, $informal, $id) {
-            $group[$person[$id]] = static::name($person['title'] ?? '', $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
-
+                $group[$person[$id]] = static::name($person['title'] ?? '', $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal); 
+                if ($roleCategory == 'Student' && !empty($person['formGroup'])) {
+                    $group[$person[$id]] = $group[$person[$id]].' ('.$person['formGroup'].')';
+                }
             return $group;
         }, []);
 
