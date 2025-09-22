@@ -22,8 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 require_once '../../gibbon.php';
 
@@ -115,6 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $existingFile = $document['filePath'] ?? '';
         } else {
             $existingFile = $userData['image_240'];
+            $updateBackupPhoto = true;
         }
 
         // Optionally overwrite and delete exiting files
@@ -125,6 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         // Skip uploading files if the file exists and overwrite is not on
         if (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
             unlink($file['absolutePath']);
+            $updateBackupPhoto = false;
             continue;
         }
 
@@ -155,6 +158,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
 
         if ($updated) {
             $count++;
+
+            if ($updateBackupPhoto && !empty($file['relativePath'])) {
+                $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+                // Check if the person photo already exists for the current school year
+                $existingPhoto = $personPhotoGateway->selectBy(['gibbonPersonID' => $userData['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')])->fetch();
+
+                if ($existingPhoto) {
+                    $personPhotoGateway->update($existingPhoto['gibbonPersonPhotoID'], ['personImage' => $file['relativePath'], 'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                } else {
+                    // Insert a new photo record in case no previous record exists
+                    $personPhotoGateway->insert(['gibbonPersonID' => $userData['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'personImage' => $file['relativePath'], 'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                }
+            }
         }
     }
 

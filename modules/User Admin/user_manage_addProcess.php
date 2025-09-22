@@ -19,15 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\PasswordPolicy;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
-use Gibbon\Data\Validator;
-use Gibbon\UI\Components\Alert;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 include '../../gibbon.php';
 
@@ -201,7 +202,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     // Create the status log
-                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
+                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'gibbonSchoolYearID' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
+
+                    // Insert the image into GibbonPersonPhoto to keep a backup record
+                    if (!empty($attachment1)) {
+                        $container->get(PersonPhotoGateway::class)->insert(['gibbonPersonID' => $AI, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'personImage' => $attachment1,'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                    }
 
                     // ALERTS: possible change to Privacy alert status, recalculate alerts
                     $container->get(Alert::class)->recalculateAlerts($AI);

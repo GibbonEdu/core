@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide includes
 
 use Gibbon\Http\Url;
+use Gibbon\Domain\User\PersonPhotoGateway;
 
 include './gibbon.php';
 
@@ -89,6 +90,19 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
             } catch (PDOException $e) {
                 header("Location: {$URL->withReturn('error2')}");
                 exit();
+            }
+
+            if (!empty($attachment1)) {
+                $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+                // Check if a photo already exists for the current school year
+                $existingPhoto = $personPhotoGateway->selectBy(['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')])->fetch();
+
+                if ($existingPhoto) {
+                    $personPhotoGateway->update($existingPhoto['gibbonPersonPhotoID'], ['personImage' => $attachment1, 'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                } else {
+                    // Insert a new photo record in case no previous record exists
+                    $personPhotoGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'personImage' => $attachment1, 'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                }
             }
 
             //Update session variables

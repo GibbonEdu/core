@@ -56,6 +56,7 @@ v30.0.00
         Students: fixed error on student profile related to a typo in studentMenuCategory variable
         System Admin: added the option to upload user photos in jpeg format
         System Admin: added new loaned items import for Library
+        System: added a backup table to store person images from previous years
         Timetable: added coverage details for staff duty and activities on the timetable
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
