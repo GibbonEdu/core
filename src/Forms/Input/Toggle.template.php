@@ -9,6 +9,7 @@
     </label>
 
     <?php $disabledClass = $disabled || $readonly ? 'border-dashed cursor-not-allowed' : ''; ?>
+    <?php $rtl = $rtl ?? false; // During installer, $rtl may not be defined; default it to false ?>
     <?php $flip = $rtl ? '-1' : '1'; ?>
     
     <?php if ($toggleSize == 'sm') { ?>
