@@ -54,6 +54,7 @@ v30.0.00
         Reports: added a way for tracking and displaying who last edited an asset
         Staff: limited Add Staff list to users who are not already staff but have a staff role
         Staff: added an option to separate the Staff Duty page into tabs by duty type
+        Staff: added an option to accept a Staff Application without creating an account
         Students: fixed error on student profile related to a typo in studentMenuCategory variable
         System Admin: added the option to upload user photos in jpeg format
         System Admin: added new loaned items import for Library
