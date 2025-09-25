@@ -158,18 +158,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
 
         if ($updated) {
             $count++;
-
+            // For user photos, also update/insert into the backup photo table
             if ($updateBackupPhoto && !empty($file['relativePath'])) {
                 $personPhotoGateway = $container->get(PersonPhotoGateway::class);
-                // Check if the person photo already exists for the current school year
-                $existingPhoto = $personPhotoGateway->selectBy(['gibbonPersonID' => $userData['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')])->fetch();
-
-                if ($existingPhoto) {
-                    $personPhotoGateway->update($existingPhoto['gibbonPersonPhotoID'], ['personImage' => $file['relativePath'], 'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
-                } else {
-                    // Insert a new photo record in case no previous record exists
-                    $personPhotoGateway->insert(['gibbonPersonID' => $userData['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'personImage' => $file['relativePath'], 'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
-                }
+                $photoUpdated = $personPhotoGateway->insertAndUpdate([
+                    'gibbonPersonID' => $userData['gibbonPersonID'],
+                    'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                    'personImage' => $file['relativePath'],
+                    'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                ], [
+                    'personImage' => $file['relativePath'],
+                    'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                ]);
+                
+                $partialFail = !$photoUpdated;
             }
         }
     }
