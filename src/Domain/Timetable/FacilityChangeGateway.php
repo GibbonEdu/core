@@ -36,7 +36,7 @@ class FacilityChangeGateway extends QueryableGateway
     private static $tableName = 'gibbonTTSpaceChange';
     private static $primaryKey = 'gibbonTTSpaceChangeID';
 
-    private static $searchableColumns = ['spaceOld.name', 'spaceNew.name'];
+    private static $searchableColumns = ['spaceOld.name', 'spaceNew.name', 'gibbonCourse.nameShort', 'gibbonCourseClass.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName'];
     
     /**
      * @param QueryCriteria $criteria

@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Timetable\FacilityChangeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage.php') == false) {
@@ -43,11 +44,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             echo '<p>'.__('This page allows you to create and manage one-off location changes within any of your classes in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';
         }
 
+         $search = isset($_GET['search']) ? $_GET['search'] : '';
+
         $facilityChangeGateway = $container->get(FacilityChangeGateway::class);
 
         $criteria = $facilityChangeGateway->newQueryCriteria(true)
+            ->searchBy($facilityChangeGateway->getSearchableColumns(), $search)
             ->sortBy(['date', 'courseName', 'className'])
             ->fromPOST();
+
+        // SEARCH FORM
+        $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+
+        $form->setTitle(__('Search'));
+        $form->setClass('noIntBorder w-full');
+
+        $form->addHiddenValue('q', '/modules/Timetable/spaceChange_manage.php');
+
+        $row = $form->addRow();
+            $row->addLabel('search', __('Search For'))->description(__('Class, original facility, new facility, person'));
+            $row->addTextField('search')->setValue($criteria->getSearchText());
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($session, 'Clear Search');
+
+        echo $form->getOutput();
 
         if ($highestAction == 'Manage Facility Changes_allClasses') {
             $facilityChanges = $facilityChangeGateway->queryFacilityChanges($criteria);

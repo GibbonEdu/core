@@ -59,6 +59,7 @@ v30.0.00
         System Admin: added new loaned items import for Library
         System: added a backup table to store person images from previous years
         Timetable: added coverage details for staff duty and activities on the timetable
+        Timetable: added a search field in 'Manage Bookings' and 'Mange Facility Changes'
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
 

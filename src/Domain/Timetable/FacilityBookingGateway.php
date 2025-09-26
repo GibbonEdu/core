@@ -36,7 +36,7 @@ class FacilityBookingGateway extends QueryableGateway
     private static $tableName = 'gibbonTTSpaceBooking';
     private static $primaryKey = 'gibbonTTSpaceBookingID';
 
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['name', 'gibbonPerson.surname', 'gibbonPerson.preferredName'];
 
     /**
      * @param QueryCriteria $criteria
@@ -61,7 +61,7 @@ class FacilityBookingGateway extends QueryableGateway
                   ->bindValue('gibbonPersonID', $gibbonPersonID);
         }
 
-        $query->unionAll()
+        $this->unionAllWithCriteria($query, $criteria)
             ->from($this->getTableName())
             ->cols([
                 'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'reason', 'gibbonLibraryItem.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'

@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage.php') == false) {
@@ -41,11 +42,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             echo '<p>'.__('This page allows you to create and manage facility and library bookings. Only current and future changes are shown: past bookings are hidden.').'</p>';
         }
 
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+
         $facilityBookingGateway = $container->get(FacilityBookingGateway::class);
 
         $criteria = $facilityBookingGateway->newQueryCriteria(true)
+            ->searchBy($facilityBookingGateway->getSearchableColumns(), $search)
             ->sortBy(['date', 'name'])
             ->fromPOST();
+
+        // SEARCH FORM
+        $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+
+        $form->setTitle(__('Search'));
+        $form->setClass('noIntBorder w-full');
+
+        $form->addHiddenValue('q', '/modules/Timetable/spaceBooking_manage.php');
+
+        $row = $form->addRow();
+            $row->addLabel('search', __('Search For'))->description(__('Facility, preferred name, surname'));
+            $row->addTextField('search')->setValue($criteria->getSearchText());
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($session, 'Clear Search');
+
+        echo $form->getOutput();
 
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
             $facilityBookings = $facilityBookingGateway->queryFacilityBookings($criteria);
