@@ -130,12 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '</h3>';
 
 
-                $createStaffAccount = false;
-                if (isset($_POST['createStaffAccount'])) {
-                    if ($_POST['createStaffAccount'] == 'on') {
-                        $createStaffAccount = true;
-                    }
-                }
+                $createStaffAccount = !empty($_POST['createStaffAccount']);
 
                 if ($createStaffAccount) {
                     if ($values['gibbonPersonID'] == '') { // USER IS NEW TO THE SYSTEM
