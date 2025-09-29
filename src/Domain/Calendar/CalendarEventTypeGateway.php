@@ -38,22 +38,15 @@ class CalendarEventTypeGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-    public function selectEventTypes()
+     public function queryEventTypes(QueryCriteria $criteria)
     {
-        $sql = "SELECT *
-                FROM gibbonCalendarEventType
-                ORDER BY sequenceNumber";
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonCalendarEventTypeID', 'type', 'sequenceNumber', 'color'
+            ]);
 
-        return $this->db()->select($sql);
-    }
-
-    public function deleteTypesNotInList($typeList)
-    {
-        $typeList = is_array($typeList) ? implode(',', $typeList) : $typeList;
-
-        $data = ['typeList' => $typeList];
-        $sql = "DELETE FROM gibbonCalendarEventType WHERE NOT FIND_IN_SET(gibbonCalendarEventTypeID, :typeList)";
-
-        return $this->db()->delete($sql, $data);
+        return $this->runQuery($query, $criteria);
     }
 }

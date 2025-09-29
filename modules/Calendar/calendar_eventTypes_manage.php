@@ -19,44 +19,35 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $page->breadcrumbs->add(__('Manage Calendars'));
+    $page->breadcrumbs
+        ->add(__('Manage Calendars'), 'calendar_manage.php')
+        ->add(__('Manage Event Types'));
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+    
+    $calendarEventTypeGateway = $container->get(CalendarEventTypeGateway::class);
 
-    $calendarGateway = $container->get(CalendarGateway::class);
-
-    $criteria = $calendarGateway->newQueryCriteria()
+    $criteria = $calendarEventTypeGateway->newQueryCriteria()
         ->sortBy('sequenceNumber')
         ->fromPOST();
 
-    $calendars = $calendarGateway->queryCalendars($criteria, $gibbonSchoolYearID);
+    $eventTypes = $calendarEventTypeGateway->queryEventTypes($criteria);
 
     // DATA TABLE
-    $table = DataTable::createPaginated('calendars', $criteria);
+    $table = DataTable::createPaginated('eventTypes', $criteria);
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/Calendar/calendar_manage_addEdit.php')
-        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->setURL('/modules/Calendar/calendar_eventTypes_manage_addEdit.php')
         ->displayLabel();
-
-    $table->addHeaderAction('editTypes', __('Event Types'))
-        ->setURL('/modules/Calendar/calendar_eventTypes_manage.php')
-        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-        ->setIcon('squares-plus')
-        ->displayLabel();
-
-    // COLUMNS
-    $table->addDraggableColumn('gibbonCalendarID', $session->get('absoluteURL').'/modules/Calendar/calendar_manage_orderAjax.php');
 
     $table->addColumn('color', __('Colour'))
         ->width('8%')
@@ -64,20 +55,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.p
             return !empty($values['color'])? Format::colorSwatch($values['color']) : '';
         });
 
-    $table->addColumn('name', __('Name'));
-
-    $table->addColumn('description', __('Description'));
-
+    $table->addColumn('type', __('Type'));
+    
     $table->addActionColumn()
-        ->addParam('gibbonCalendarID')
-        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->addParam('gibbonCalendarEventTypeID')
         ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Calendar/calendar_manage_addEdit.php');
+                ->setURL('/modules/Calendar/calendar_eventTypes_manage_addEdit.php');
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Calendar/calendar_manage_delete.php');
+                ->setURL('/modules/Calendar/calendar_eventTypes_manage_delete.php');
         });
 
-    echo $table->render($calendars);
+    echo $table->render($eventTypes);
 }
