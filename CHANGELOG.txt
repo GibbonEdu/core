@@ -75,6 +75,7 @@ v30.0.00
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Planner: fixed Teacher Notes in smart blocks not visible when using the Show Confidential Data toggle
         Planner: fixed access to class list in Edit Unit when viewing past and upcoming years
+        Rubrics: fixed the bug preventing to view ATL Rubrics table on mobile devices
         Staff: fixed coverage longer than one week not including staff duty and activity cover
         Staff: fixed order of Staff Directory to honour the biographicalGroupingOrder setting
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
