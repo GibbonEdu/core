@@ -55,4 +55,11 @@ class CalendarGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+     public function selectAllCalendars()
+    {
+        $sql = "SELECT * FROM gibbonCalendar ORDER BY sequenceNumber, name";
+
+        return $this->db()->select($sql);
+    }
 }
