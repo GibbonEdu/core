@@ -80,6 +80,7 @@ v30.0.00
         Staff: fixed order of Staff Directory to honour the biographicalGroupingOrder setting
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
         Timetable Admin: fixed the issue of setting white as the default color for both background and font
+        Timetable Admin: fixed bug to allow timetable deletion
         User Admin: fixed uneditable fields for new Personal Documents in Manage Users
 
     Deprecations
