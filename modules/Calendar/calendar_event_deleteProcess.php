@@ -18,36 +18,40 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Calendar\CalendarGateway;
+use Gibbon\Domain\Calendar\CalendarEventGateway;
+use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonCalendarID = $_POST['gibbonCalendarID'] ?? '';
+$gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
-} elseif (empty($gibbonCalendarID)) {
+} elseif (empty($gibbonCalendarEventID)) {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit;
   } else {
     // Proceed!
-    $calendarGateway = $container->get(CalendarGateway::class);
+    $calendarEventGateway = $container->get(CalendarEventGateway::class);
+    $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
 
     // Validate the database relationships exist
-    if (!$calendarGateway->exists($gibbonCalendarID)) {
+    if (!$calendarEventGateway->exists($gibbonCalendarEventID)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
-    $deleted = $calendarGateway->delete($gibbonCalendarID);
+    $deleted = $calendarEventGateway->delete($gibbonCalendarEventID);
+
+    $calendarEventPersonGateway ->deleteWhere(['gibbonCalendarEventID' => $gibbonCalendarEventID]);
 
     $URL .= !$deleted
         ? '&return=error2'

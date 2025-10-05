@@ -35,15 +35,57 @@ class CalendarEventGateway extends QueryableGateway
 
     private static $tableName = 'gibbonCalendarEvent';
     private static $primaryKey = 'gibbonCalendarEventID';
+    private static $searchableColumns = ['gibbonCalendarEvent.name', 'gibbonCalendarEvent.description', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonCalendar.name', 'gibbonCalendarEventType.type',];
 
-    private static $searchableColumns = [];
+
+     public function queryEvents(QueryCriteria $criteria, $gibbonPersonID = null)
+    {
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->cols([
+                'gibbonCalendarEvent.gibbonCalendarEventID',
+                'gibbonCalendarEvent.gibbonCalendarID',
+                'gibbonCalendarEvent.gibbonCalendarEventTypeID',
+                'gibbonCalendarEvent.name as eventName',
+                'gibbonCalendarEvent.status',
+                'gibbonCalendarEvent.description',
+                'gibbonCalendarEvent.dateStart',
+                'gibbonCalendarEvent.dateEnd',
+                'gibbonCalendarEvent.locationType',
+                'gibbonCalendarEvent.gibbonPersonIDOrganiser',
+                'gibbonCalendar.name as calendarName',
+                'gibbonCalendarEventType.type',
+                'gibbonPerson.preferredName', 
+                'gibbonPerson.surname',
+            ])
+            ->from($this->getTableName())
+            ->leftJoin('gibbonCalendar', 'gibbonCalendar.gibbonCalendarID=gibbonCalendarEvent.gibbonCalendarID')
+            ->leftJoin('gibbonCalendarEventType', 'gibbonCalendarEventType.gibbonCalendarEventTypeID=gibbonCalendarEvent.gibbonCalendarEventTypeID')
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEvent.gibbonPersonIDOrganiser')
+            ->groupBy(['gibbonCalendarEvent.gibbonCalendarEventID']);
+
+        if (!empty($gibbonPersonID)) {
+            $query->leftJoin('gibbonCalendarEventPerson as participant', 'participant.gibbonCalendarEventID=gibbonCalendarEvent.gibbonCalendarEventID')
+                ->where('(participant.gibbonPersonID=:gibbonPersonID OR gibbonCalendarEvent.gibbonPersonIDOrganiser=:gibbonPersonID OR gibbonCalendarEvent.gibbonPersonIDCreated=:gibbonPersonID)')
+                ->bindValue('gibbonPersonID', $gibbonPersonID);
+        }
+
+        $criteria->addFilterRules([
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonCalendarEvent.status = :status')
+                    ->bindValue('status', ucfirst($status));
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 
     public function selectCalendarEvents()
     {
 
-        $sql = "SELECT 
-                    gibbonCalendarEventID as id,
-                    name as title,
+        $sql = "SELECT gibbonCalendarEventID as id, name as title,
                     (CASE WHEN allDay='N' THEN CONCAT(dateStart, 'T', timeStart) ELSE dateStart END) as start,
                     (CASE WHEN allDay='N' THEN CONCAT(dateEnd, 'T', timeEnd) ELSE dateEnd END) as end
                 FROM gibbonCalendarEvent
