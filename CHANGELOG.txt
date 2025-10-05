@@ -31,6 +31,7 @@ v30.0.00
         Added a Pastoral heading to the main menu and moved Behaviour, Attendance and Individual Needs
 
     Tweaks & Additions
+        System: added the option for administrators to impersonate other user accounts
         System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
         System: switched interface strings from Value Added License to Catalyst License
         System: changed intl PHP extension from required to recommended
@@ -60,9 +61,9 @@ v30.0.00
         Students: fixed error on student profile related to a typo in studentMenuCategory variable
         System Admin: added the option to upload user photos in jpeg format
         System Admin: added new loaned items import for Library
-        System: added a backup table to store person images from previous years
         Timetable: added coverage details for staff duty and activities on the timetable
         Timetable: added a search field in 'Manage Bookings' and 'Mange Facility Changes'
+        User Admin: added a backup table to store person images from previous years
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
 
