@@ -50,9 +50,9 @@ class CalendarEventTypeGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectAllTypes()
+    public function selectAllEventTypes()
     {
-        $sql = "SELECT * FROM gibbonCalendarEventType ORDER BY type";
+        $sql = "SELECT gibbonCalendarEventType.gibbonCalendarEventTypeID AS value, type FROM gibbonCalendarEventType ORDER BY type, sequenceNumber";
 
         return $this->db()->select($sql);
     }

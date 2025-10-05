@@ -56,10 +56,14 @@ class CalendarGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-     public function selectAllCalendars()
+     public function selectCalendarsBySchoolYear($gibbonSchoolYearID)
     {
-        $sql = "SELECT * FROM gibbonCalendar ORDER BY sequenceNumber, name";
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonCalendar.gibbonCalendarID as value, gibbonCalendar.name 
+                FROM gibbonCalendar
+                WHERE gibbonCalendar.gibbonSchoolYearID=:gibbonSchoolYearID
+                ORDER BY gibbonCalendar.sequenceNumber, gibbonCalendar.name";
 
-        return $this->db()->select($sql);
+        return $this->db()->select($sql, $data);
     }
 }

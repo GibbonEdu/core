@@ -40,9 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.p
     $eventGateway = $container->get(CalendarEventGateway::class);
     $values = $eventGateway->getByID($gibbonCalendarEventID);
 
-    // echo '<pre>';
-    // print_r($_POST);
-    // echo '</pre>';
+    echo '<pre>';
+    print_r($_POST);
+    echo '</pre>';
 
     if (empty($_POST['start']) || empty($_POST['end'])) return;
 
