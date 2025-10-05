@@ -27,20 +27,20 @@ use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_addEdit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $gibbonCalendarEventID = $_GET['gibbonCalendarEventID'] ?? '';
-    $action = !empty($gibbonCalendarEventID) ? 'edit' : 'add';
+    $action = !empty($gibbonCalendarEventID) ? 'edit' : '';
 
     $page->breadcrumbs
         ->add(__('Manage Events'), 'calendar_event_manage.php')
-        ->add($action == 'edit' ? __('Edit Event') : __('Add Event'));
+        ->add(__('Edit Event'));
 
     if (empty($gibbonCalendarEventID) && isset($_GET['editID'])) {
-        $page->return->setEditLink($session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_addEdit.php&gibbonCalendarEventID='.$_GET['editID']);
+        $page->return->setEditLink($session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_edit.php&gibbonCalendarEventID='.$_GET['editID']);
     }
     
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
@@ -61,7 +61,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
     $form->enableQuickSave($action == 'edit');
 
     $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('action', $action);
     $form->addHiddenValue('gibbonCalendarEventID', $gibbonCalendarEventID);
 
     $form->addRow()->addHeading(__('Basic Information'));
@@ -72,6 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         $row->addLabel('gibbonCalendarID', __('Calendar'));
         $row->addSelect('gibbonCalendarID')
             ->fromArray($calendars)
+            ->selected($values['gibbonCalendarID'])
             ->placeholder()
             ->required();
 
@@ -81,13 +81,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         $row->addLabel('gibbonCalendarEventTypeID', __('Event Type'));
         $row->addSelect('gibbonCalendarEventTypeID')
             ->fromArray($types)
+            ->selected($values['gibbonCalendarEventTypeID'])
             ->placeholder()
             ->required();
 
-    $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDOrganiser', __('Organiser'));
-        $row->addSelectStaff('gibbonPersonIDOrganiser')->placeholder()->required()->selected($gibbonPersonID);
+        $row->addSelectStaff('gibbonPersonIDOrganiser')->placeholder()->required()->selected($values['gibbonPersonIDOrganiser']);
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
@@ -97,11 +97,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
     $statusList = [
         'Confirmed' => __('Confirmed'),
         'Tentative' => __('Tentative'),
+        'Cancelled' => __('Cancelled'),
     ];
-
-    if ($action == 'edit') {
-        $statusList[] = ['Cancelled' => __('Cancelled')];
-    }
 
     $row = $form->addRow();
         $row->addLabel('status', __('Event Status'));

@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     $table->setTitle($highestAction == 'Manage Events_all' ? __('All Events') : __('My Events'));
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/Calendar/calendar_event_addEdit.php')
+        ->setURL('/modules/Calendar/calendar_event_add.php')
         ->displayLabel();
 
     $table->modifyRows(function($values, $row) {
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
         ->addParam('gibbonCalendarEventID')
         ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Calendar/calendar_event_addEdit.php');
+                ->setURL('/modules/Calendar/calendar_event_edit.php');
 
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/Calendar/calendar_event_delete.php');
