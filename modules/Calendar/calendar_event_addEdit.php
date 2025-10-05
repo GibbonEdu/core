@@ -18,10 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Calendar\CalendarGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
-use Gibbon\Domain\Calendar\CalendarEditorGateway;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_addEdit.php') == false) {
@@ -44,33 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
     $calendarGateway = $container->get(CalendarGateway::class);
     $calendarEventTypeGateway = $container->get(CalendarEventTypeGateway::class);
     
-    // If editing an existing record
+    // Editing an event
     $values = $calendarEventGateway->getByID($gibbonCalendarEventID);
     if (!empty($gibbonCalendarEventID) && empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
-
-    $calendars = $calendarGateway->selectAllCalendars()->fetchAll();
-    $types = $calendarEventTypeGateway->selectAllTypes()->fetchAll();
-
-    $calendars = array_reduce($calendars, function ($group, $item) {
-        $id = $item['gibbonCalendarID'];
-        $group[$id] = $item['name'];
-        return $group;
-    }, []);
-
-    $types = array_reduce($types, function ($group, $item) {
-        $id = $item['gibbonCalendarEventTypeID'];
-        $group[$id] = $item['type'];
-        return $group;
-    }, []);
-
-    $statusList = [
-        'Confirmed' => __('Confirmed'),
-        'Tentative' => __('Tentative'),
-        'Cancelled' => __('Cancelled'),
-    ];
 
     // FORM
     $form = Form::create('event', $session->get('absoluteURL').'/modules/Calendar/calendar_event_addEditProcess.php');
@@ -79,10 +61,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
     $form->enableQuickSave($action == 'edit');
 
     $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('action', $action);
     $form->addHiddenValue('gibbonCalendarEventID', $gibbonCalendarEventID);
 
-    $form->addRow()->addHeading(__('Basic Details'));
+    $form->addRow()->addHeading(__('Basic Information'));
 
+    // Get Calendars of the current school year
+    $calendars = $calendarGateway->selectCalendarsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
     $row = $form->addRow();
         $row->addLabel('gibbonCalendarID', __('Calendar'));
         $row->addSelect('gibbonCalendarID')
@@ -90,83 +75,183 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
             ->placeholder()
             ->required();
 
-     $row = $form->addRow();
-        $row->addLabel('gibbonCalendarEventTypeID', __('Type'));
+    // Get all event types
+    $types = $calendarEventTypeGateway->selectAllEventTypes()->fetchKeyPair();
+    $row = $form->addRow();
+        $row->addLabel('gibbonCalendarEventTypeID', __('Event Type'));
         $row->addSelect('gibbonCalendarEventTypeID')
             ->fromArray($types)
             ->placeholder()
             ->required();
 
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonIDOrganiser', __('Organiser'));
+        $row->addSelectStaff('gibbonPersonIDOrganiser')->placeholder()->required()->selected($gibbonPersonID);
+
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')->required()->maxLength(120);
 
-    $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
-        $row->addTextArea('description');
+    // Status can be changed to cancelled only during Edit
+    $statusList = [
+        'Confirmed' => __('Confirmed'),
+        'Tentative' => __('Tentative'),
+    ];
+
+    if ($action == 'edit') {
+        $statusList[] = ['Cancelled' => __('Cancelled')];
+    }
 
     $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
+        $row->addLabel('status', __('Event Status'));
         $row->addSelect('status')
             ->fromArray($statusList)
             ->required();
 
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('description', __('Description'));
+        $col->addEditor('description', $guid);
+
     $form->addRow()->addHeading(__('Event Details'));
 
-    
-        
+    // Event Location
+    $row = $form->addRow();
+        $row->addLabel('locationType', __('Location Type'));
+        $row->addSelect('locationType')->fromArray(['Internal' => __('Internal'), 'External' => __('External')])->required()->placeholder();
 
-    // DISPLAY
-    $form->addRow()->addHeading(__('Display'));
+    $form->toggleVisibilityByClass('internal')->onSelect('locationType')->when('Internal');
+
+    $row = $form->addRow()->addClass('internal');
+        $row->addLabel('location', __('Location'));
+        $row->addSelectSpace('gibbonSpaceID')->placeholder();
+
+    $form->toggleVisibilityByClass('external')->onSelect('locationType')->when('External');
+
+    $row = $form->addRow()->addClass('external');
+        $row->addLabel('locationDetail', __('Location Details'));
+        $row->addTextField('locationDetail');
+
+    $row = $form->addRow()->addClass('external');
+        $row->addLabel('locationURL', __('Location URL'));
+        $row->addTextField('locationURL')->maxLength(255);
+
+    // Event Dates
+    $date = $_GET['date'] ?? '';
+    $row = $form->addRow();
+        $row->addLabel('dateStart', __('Start Date'));
+        $row->addDate('dateStart')->chainedTo('dateEnd')->required()->setValue($date);
 
     $row = $form->addRow();
-        $row->addLabel('color', __('Colour'));
-        $row->addColor('color');
-    
-    $col = $form->addRow()->addColumn();
-        $col->addLabel('summary', __('Summary'));
-        $col->addEditor('summary', $guid)->showMedia(true);
-
-    // ACCESS
-    $form->addRow()->addHeading(__('Access'));
+        $row->addLabel('dateEnd', __('End Date'));
+        $row->addDate('dateEnd')->chainedFrom('dateStart')->required()->setValue($date);
 
     $row = $form->addRow();
-        $row->addLabel('public', __('Public'))->description(__('If yes, members of the public can see events on this calendar without logging in.'));
-        $row->addYesNo('public')->selected('N');
+        $row->addLabel('allDay', __('When'));
+        $row->addCheckbox('allDay')
+            ->description(__('All Day'))
+            ->inline()
+            ->setValue('Y')
+            ->checked('Y')
+            ->wrap('<div class="standardWidth floatRight">', '</div>');
+
+    $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
+
+    $row = $form->addRow()->addClass('timeOptions');
+        $row->addLabel('timeStart', __('Time'));
+        $col = $row->addColumn('timeStart')->addClass('right inline gap-2');
+        $col->addTime('timeStart')
+            ->required();
+        $col->addTime('timeEnd')
+            ->chainedTo('timeStart')
+            ->required();
+
+    $col = $form->addRow()->addClass('schoolClosedOverride hidden')->addColumn();
+        $col->addAlert(__('One or more selected dates are not a school day. Check here to confirm if you would like to include these dates.'), 'warning');
+        $col->addCheckbox('schoolClosedOverride')
+            ->description(__('Confirm'))
+            ->setClass('text-right pr-1')
+            ->setValue('Y');
+
+    // PARTICIPANTS (Students and Staff)
+
+    $form->addRow()->addHeading(__('Participants'));
+
 
     $row = $form->addRow();
-        $row->addLabel('viewableStaff', __('Viewable to Staff'));
-        $row->addYesNo('viewableStaff')->selected('N');
-
-
-    // EDITORS
-    $form->addRow()->addHeading(__('Editors'));
-
-    // Custom Block Template
-    $addBlockButton = $form->getFactory()->createButton(__m('Add'))->addClass('addBlock');
-
-    $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
-    $row = $blockTemplate->addRow()->addClass('w-full flex justify-between items-center mt-1 ml-2');
-        $row->addSelectStaff('gibbonPersonID')->photo(false)->setClass('flex-1 mr-1')->required()->placeholder();
-        $row->addCheckbox('editAllEvents')->setLabelClass('w-32')->alignLeft()->setValue('Y')->description(__('Edit All Events?'))
-            ->append("<input type='hidden' id='gibbonCalendarEditorID' name='gibbonCalendarEditorID' value=''/>");
-
-    // Custom Blocks
+        $row->addLabel('staff', __('Staff'));
+        $row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), ['includeStaff' => true])->selectMultiple();
+            
     $row = $form->addRow();
-    $customBlocks = $row->addCustomBlocks('editors', $session)
-        ->fromTemplate($blockTemplate)
-        ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click'))
-        ->placeholder(__('Add a person...'))
-        ->addToolInput($addBlockButton);
+        $row->addLabel('role', __('Role'));
+        $row->addSelect('role')
+            ->fromArray([
+                'Organiser' => __('Organiser'),
+                'Coach'     => __('Coach'),
+                'Assistant' => __('Assistant'),
+                'Other'     => __('Other')
+            ]);
 
-    $editors = $container->get(CalendarEditorGateway::class)->selectEditorsByCalendar($gibbonCalendarID);
-    while ($person = $editors->fetch()) {
-        $customBlocks->addBlock($person['gibbonCalendarEditorID'], [
-            'gibbonCalendarEditorID' => $person['gibbonCalendarEditorID'],
-            'gibbonPersonID'         => $person['gibbonPersonID'],
-            'editAllEvents'          => $person['editAllEvents'] ?? 'N',
-        ]);
-    }
+    $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
+    $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
+    $gibbonPersonIDList = $_GET['gibbonPersonIDList'] ?? [];
+    $targetStudents = $_GET['targetStudents'] ?? '';
+
+    // $form = Form::create('filter', $session->get('absoluteURL') . '/index.php', 'get');
+    // $form->setFactory(DatabaseFormFactory::create($pdo));
+    // $form->setTitle(__('Choose targetStudents'));
+    // $form->setClass('noIntBorder fullWidth');
+
+    // $form->addHiddenValue('q', '/modules/Calendar/calendar_event_addEditAjax.php');
+
+     $targetOptions = [
+        'Messenger'    => __('Messenger Group'),
+        'Activity' => __('Activity Enrolment'),
+        'Select'   => __('Select Students'),
+    ];
+
+    $row = $form->addRow();
+        $row->addLabel('targetStudents', __('Students'));
+        $row->addSelect('targetStudents')->fromArray($targetOptions)->required()->placeholder();
+
+    $form->toggleVisibilityByClass('targetActivity')->onSelect('targetStudents')->when('Activity');
+    $form->toggleVisibilityByClass('targetMessenger')->onSelect('targetStudents')->when('Messenger');
+    $form->toggleVisibilityByClass('targetSelect')->onSelect('targetStudents')->when('Select');
+
+    // Activity
+    $activities = $container->get(ActivityGateway::class)->selectActivitiesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+    $row = $form->addRow()->addClass('targetActivity');
+        $row->addLabel('gibbonActivityID', __('Activity'));
+        $row->addSelect('gibbonActivityID')->fromArray($activities)->selected($gibbonActivityID)->required()->placeholder();
+
+    // Messenger Groups
+    $groups = $container->get(GroupGateway::class)->selectGroupsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+    $row = $form->addRow()->addClass('targetMessenger');
+        $row->addLabel('gibbonGroupID', __('Messenger Group'));
+        $row->addSelect('gibbonGroupID')->fromArray($groups)->selected($gibbonGroupID)->required()->placeholder();
+
+    // Select Students
+    $studentGateway = $container->get(StudentGateway::class);
+    $studentCriteria = $studentGateway->newQueryCriteria()
+        ->sortBy(['surname', 'preferredName']);
+
+    $studentList = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'));
+    $studentList = array_reduce($studentList->toArray(), function ($group, $student) use ($gibbonPersonIDList) {
+        $list = in_array($student['gibbonPersonID'], $gibbonPersonIDList) ? 'destination' : 'source';
+        $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup']; 
+        $group['form'][$student['gibbonPersonID']] = $student['formGroup'];
+        return $group;
+    });
+
+    $col = $form->addRow()->addClass('targetSelect')->addColumn();
+        $col->addLabel('gibbonPersonIDList', __('Students'));
+        $select = $col->addMultiSelect('gibbonPersonIDList')->isRequired();
+        $select->addSortableAttribute(__('Form Group'), $studentList['form']);
+        $select->source()->fromArray($studentList['students']['source'] ?? []);
+        $select->destination()->fromArray($studentList['students']['destination'] ?? []);
+
+  
+ 
 
     $row = $form->addRow();
         $row->addSubmit();
@@ -175,3 +260,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
 
     echo $form->getOutput();
 }
+?>
+
+<script>
+$(document).ready(function() {
+    // Check if the event falls on a school day
+    $('#dateStart, #dateEnd').on('change', function() {
+        $.ajax({
+            url: "./modules/Calendar/calendar_event_addEditAjax.php",
+            data: {
+                'dateStart': $('#dateStart').val(),
+                'dateEnd': $('#dateEnd').val(),
+            },
+            type: 'POST',
+            success: function(data) {
+                if (data === '0') {
+                    $('.schoolClosedOverride').removeClass('hidden');
+                    $('#schoolClosedOverride').prop('disabled', false);
+                } else {
+                    $('.schoolClosedOverride').addClass('hidden');
+                    $('#schoolClosedOverride').prop('disabled', true);
+                }
+            }
+        });
+    });
+});
+</script>
