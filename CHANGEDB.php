@@ -1012,5 +1012,5 @@ ALTER TABLE `gibbonAlertType` ADD `automatic` enum('Y','N') NOT NULL DEFAULT 'N'
 UPDATE `gibbonAlertType` SET `automatic`='Y' WHERE type='Core';end
 UPDATE `gibbonNotificationEvent` SET event='New Global Alert' WHERE event='New Student Alert' AND moduleName='Student Alerts';end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Class Alert', 'Student Alerts', 'Manage Student Alerts', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
-INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Balochi');end
+INSERT IGNORE INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Balochi');end
 ";
