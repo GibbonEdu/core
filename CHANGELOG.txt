@@ -60,6 +60,7 @@ v30.0.00
         System Admin: added the option to upload user photos in jpeg format
         System Admin: added new loaned items import for Library
         System: added a backup table to store person images from previous years
+        System: added Balochi to the gibbonLanguage table
         Timetable: added coverage details for staff duty and activities on the timetable
         Timetable: added a search field in 'Manage Bookings' and 'Mange Facility Changes'
         User Admin: added Sibling as option to Emergency Relationship select
