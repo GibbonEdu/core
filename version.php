@@ -28,12 +28,11 @@ $version = '30.0.00';
  * System Requirements
  */
 $systemRequirements = [
-    'php'         => '8.0',
-    'mysql'       => '8.0',
-    'apache'      => ['mod_rewrite'],
-    'extensions'  => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd'],
-    'recommended' => ['intl'],
-    'settings'    => [
+    'php'        => '8.0',
+    'mysql'      => '8.0',
+    'apache'     => ['mod_rewrite'],
+    'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd', 'intl'],
+    'settings'   => [
         'max_input_vars'         => ['max_input_vars', '>=', 8000],
         'max_file_uploads'       => ['max_file_uploads', '>=', 20],
         'allow_url_fopen'        => ['allow_url_fopen', '==', 1],

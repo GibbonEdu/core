@@ -34,7 +34,7 @@ v30.0.00
         System: added the option for administrators to impersonate other user accounts
         System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
         System: switched interface strings from Value Added License to Catalyst License
-        System: changed intl PHP extension from required to recommended
+        System: added Balochi as a spoken language option for user data
         Activities: added the option for parents to register their children in activities
         Activities: added student tags on the Manage Enrolment page
         Activities: added a description field to the cost section for activities
