@@ -1016,3 +1016,6 @@ INSERT IGNORE INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, '
 UPDATE `gibboni18n` SET `active` = 'Y',`version` = '30.0.00',`installed` = 'Y'  WHERE `code` = 'ja_JP';end
 UPDATE `gibboni18n` SET `active` = 'Y',`version` = '30.0.00',`installed` = 'Y'  WHERE `code` = 'pt_PT';end
 ";
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Impersonate User', 0, 'Utilities', '', 'impersonateUser.php', 'impersonateUser.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Impersonate User'));end
+";
