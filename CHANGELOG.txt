@@ -33,6 +33,9 @@ v30.0.00
     Tweaks & Additions
         System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
         System: switched interface strings from Value Added License to Catalyst License
+        System: added a backup table to store person images from previous years
+        System: added Balochi as a language option in dropdown menus
+        System: set Japanese and Portugese as an active language
         Activities: added the option for parents to register their children in activities
         Activities: added student tags on the Manage Enrolment page
         Activities: added a description field to the cost section for activities
@@ -59,8 +62,6 @@ v30.0.00
         Students: fixed error on student profile related to a typo in studentMenuCategory variable
         System Admin: added the option to upload user photos in jpeg format
         System Admin: added new loaned items import for Library
-        System: added a backup table to store person images from previous years
-        System: added Balochi to the gibbonLanguage table
         Timetable: added coverage details for staff duty and activities on the timetable
         Timetable: added a search field in 'Manage Bookings' and 'Mange Facility Changes'
         User Admin: added Sibling as option to Emergency Relationship select

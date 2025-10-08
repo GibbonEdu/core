@@ -1013,4 +1013,6 @@ UPDATE `gibbonAlertType` SET `automatic`='Y' WHERE type='Core';end
 UPDATE `gibbonNotificationEvent` SET event='New Global Alert' WHERE event='New Student Alert' AND moduleName='Student Alerts';end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Class Alert', 'Student Alerts', 'Manage Student Alerts', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 INSERT IGNORE INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Balochi');end
+UPDATE `gibboni18n` SET `active` = 'Y',`version` = '30.0.00',`installed` = 'Y'  WHERE `code` = 'ja_JP';end
+UPDATE `gibboni18n` SET `active` = 'Y',`version` = '30.0.00',`installed` = 'Y'  WHERE `code` = 'pt_PT';end
 ";
