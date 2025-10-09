@@ -1017,4 +1017,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Impersonate User'));end
 UPDATE `gibboni18n` SET `active` = 'Y',`version` = '30.0.00',`installed` = 'Y'  WHERE `code` = 'ja_JP';end
 UPDATE `gibboni18n` SET `active` = 'Y',`version` = '30.0.00',`installed` = 'Y'  WHERE `code` = 'pt_PT';end
+UPDATE `gibbonSetting` SET value=REPLACE(value,',Pastoral,Pastoral,',',Pastoral,') WHERE name='mainMenuCategoryOrder';end
 ";
