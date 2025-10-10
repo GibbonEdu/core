@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
 
     $row = $form->addRow()->addClass('internal');
         $row->addLabel('location', __('Location'));
-        $row->addSelectSpace('gibbonSpaceID')->placeholder();
+        $row->addSelectSpace('gibbonSpaceID');
 
     $form->toggleVisibilityByClass('external')->onSelect('locationType')->when('External');
 
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
 
     $row = $form->addRow();
         $row->addLabel('staff', __('Staff'));
-        $row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), ['includeStaff' => true])->selectMultiple();
+        $row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), ['includeStaff' => true, 'includeAllUsers' => false])->selectMultiple();
 
     $row = $form->addRow();
         $row->addLabel('role', 'Role');

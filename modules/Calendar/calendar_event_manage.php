@@ -93,27 +93,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
 
     // COLUMNS
 
-    $table->addExpandableColumn('description')
-        ->format(function ($values) {
-            return formatExpandableSection(__('Description'), $values['description']);
-        });
+    if (!empty($values['description'])) {
+        $table->addExpandableColumn('description')
+            ->format(function ($values) {
+                if (!empty($values['description'])) {
+                    return formatExpandableSection(__('Description'), $values['description']);
+                }
+                return '';
+            });
+    }
 
     $table->addColumn('eventName', __('Event Name'))
-        ->context('primary')
-        ->format(function ($values) {
-            $output = $values['eventName'];
-            if ($values['status'] == 'Tentative') {
-                $output .= Format::tag(__('Tentative'), 'message ml-2');
-            } elseif ($values['status'] == 'Cancelled') {
-                $output .= Format::tag(__('Cancelled'), 'dull ml-2');
-            } elseif ($values['status'] == 'Confirmed') {
-                $output .= Format::tag(__('Confirmed'), 'success ml-2');
-            }
-        
-            return $output;
-        });
+        ->context('primary');
 
-    
+    $table->addColumn('status', __('Status'));
+
     $table->addColumn('calendarName', __('Calendar'))->context('primary');
 
     $table->addColumn('type', __('Event Type'))->context('primary');

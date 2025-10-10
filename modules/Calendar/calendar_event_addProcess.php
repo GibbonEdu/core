@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
+use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
 require_once '../../gibbon.php';
 
@@ -35,18 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
     $partialFail = false;
 
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
-
-    echo '<pre>';
-    print_r($_POST);
-    echo '</pre>';
-    exit();
-
+    
     if (empty($_POST['dateStart']) || empty($_POST['dateEnd'])) return;
 
     $dateStart = new DateTime(trim($_POST['dateStart'], '"'));
     $dateEnd = new DateTime(trim($_POST['dateEnd'], '"'));
 
-    if (empty($dateStart) || empty($dateEnd)) return;
+    $gibbonPersonIDOrganiser = $_POST['gibbonPersonIDOrganiser'] ?? '';
 
     $data = [
         'gibbonCalendarID'        => $_POST['gibbonCalendarID'] ?? '',
@@ -56,13 +52,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         'status'                  => $_POST['status'] ?? 'Tentative',
         'dateStart'               => $dateStart->format('Y-m-d'),
         'dateEnd'                 => $dateEnd->format('Y-m-d'),
-        'allDay'                  => !empty($_POST['allDay']) ? ($_POST['allDay'] == 'true' ? 'Y' : 'N') :  'Y',
-        'locationType'            => $_POST['locationType'] ?? 'Internal',
+        'allDay'                  => !empty($_POST['allDay']) ? $_POST['allDay'] : 'N',
+        'locationType'            => $_POST['locationType'] ?? 'External',
+        'gibbonPersonIDOrganiser' => $gibbonPersonIDOrganiser,
         'timestampCreated'        => date('Y-m-d H:i:s'),
-        'gibbonPersonIDCreated'   => $session->get('gibbonPersonID'),
+        'gibbonPersonIDCreated'   => $session->get('gibbonPersonID') ?? '',
         'timestampModified'       => date('Y-m-d H:i:s'),
-        'gibbonPersonIDModified'  => $session->get('gibbonPersonID'),
-        'gibbonPersonIDOrganiser' => $_POST['gibbonPersonIDOrganiser'] ?? '',
+        'gibbonPersonIDModified'  => $session->get('gibbonPersonID') ?? '',
     ];
 
     if ($data['allDay'] == 'N') {
@@ -79,9 +75,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
 
     // Validate the required values are present
     if (empty($data['name']) || empty($data['dateStart']) || empty($data['dateEnd'])) {
-        return;
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
     }
 
     // Create the record
     $gibbonCalendarEventID = $calendarEventGateway->insert($data);
+
+    if (!$gibbonCalendarEventID) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit();
+    }
+
+    // Scan through staff
+    $staff = $_POST['staff'] ?? [];
+    $role = $_POST['role'] ?? 'Other';
+
+    if (!is_array($staff)) {
+        $staff = [strval($staff)];
+    }
+
+    $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
+
+    foreach ($staff as $staffPersonID) {
+        $personData = [
+            'gibbonCalendarEventID' => $gibbonCalendarEventID,
+            'gibbonPersonID'   => $staffPersonID,
+            'role'    => $role,
+            'gibbonPersonIDCreated' => $session->get('gibbonPersonID') ?? '',
+            'timestampCreated' => date('Y-m-d H:i:s'),
+            'gibbonPersonIDModified' => $session->get('gibbonPersonID') ?? '',
+            'timestampModified' => date('Y-m-d H:i:s'),
+        ];
+
+        $gibbonCalendarEventPersonID = $calendarEventPersonGateway->insert($personData);
+        $partialFail &= !$gibbonCalendarEventPersonID;
+    }
+
+    // Add the organiser to the particapants list
+    $organiserData = [
+            'gibbonCalendarEventID' => $gibbonCalendarEventID,
+            'gibbonPersonID'   => $gibbonPersonIDOrganiser,
+            'role'    => 'Organiser',
+            'gibbonPersonIDCreated' => $session->get('gibbonPersonID') ?? '',
+            'timestampCreated' => date('Y-m-d H:i:s'),
+            'gibbonPersonIDModified' => $session->get('gibbonPersonID') ?? '',
+            'timestampModified' => date('Y-m-d H:i:s'),
+        ];
+
+    $gibbonCalendarEventPersonID = $calendarEventPersonGateway->insert($organiserData);
+    $partialFail &= !$gibbonCalendarEventPersonID;
+
+     $URL .= $partialFail
+        ? "&return=warning1"
+        : "&return=success0&editID=$gibbonCalendarEventID";
+    header("Location: {$URL}");
 }

@@ -37,4 +37,18 @@ class CalendarEventPersonGateway extends QueryableGateway
     private static $primaryKey = 'gibbonCalendarEventPersonID';
 
     private static $searchableColumns = [];
+
+     public function selectEventStaff($gibbonCalendarEventID) {
+        $select = $this
+            ->newSelect()
+            ->cols(['preferredName, surname, gibbonCalendarEventPerson.*'])
+            ->from($this->getTableName())
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEventPerson.gibbonPersonID')
+            ->where('gibbonCalendarEventPerson.gibbonCalendarEventID = :gibbonCalendarEventID')
+            ->bindValue('gibbonCalendarEventID', $gibbonCalendarEventID)
+            ->where('gibbonPerson.status="Full"')
+            ->orderBy(['surname', 'preferredName']);
+
+        return $this->runSelect($select);
+    }
 }
