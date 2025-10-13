@@ -24,24 +24,13 @@ namespace Gibbon\Forms\Input;
 use Gibbon\View\Component;
 
 /**
- * Person
+ * SearchSelect (Combobox)
  *
  * @version v30
- * @since   v18
+ * @since   v30
  */
-class Person extends SearchSelect
+class SearchSelect extends Select
 {
-    protected $displayPhoto = true;
-    protected $size = 'large';
-
-    public function photo($value, $size = 'large')
-    {
-        $this->displayPhoto = $value;
-        $this->size = $size;
-
-        return $this;
-    }
-
     /**
      * Gets the HTML output for this form element.
      * @return  string
@@ -49,7 +38,7 @@ class Person extends SearchSelect
     protected function getElement()
     {
         $this->processOutput();
-
+        
         $this->setValue($this->selected);
 
         $options = [];
@@ -70,7 +59,7 @@ class Person extends SearchSelect
         // TODO: support opt groups (as a dropdown?)
         // TODO: support select multiple?
 
-        return Component::render(Person::class, $this->getAttributeArray() + [
+        return Component::render(SearchSelect::class, $this->getAttributeArray() + [
             'groupClass'  => $this->getGroupClass(),
             'placeholder' => $this->placeholder,
             'options'     => array_values($options),

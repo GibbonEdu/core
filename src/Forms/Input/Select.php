@@ -173,10 +173,11 @@ class Select extends Input
     }
 
     /**
-     * Gets the HTML output for this form element.
-     * @return  string
+     * Check and adjust attributes before generating output.
+     *
+     * @return void
      */
-    protected function getElement()
+    protected function processOutput()
     {
         if ($this->getReadonly()) {
             $options = [];
@@ -216,6 +217,15 @@ class Select extends Input
         if ($this->getRequired() && !empty($this->placeholder) && $this->getAttribute('multiple') == false) {
             $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
         }
+    }
+
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
+    protected function getElement()
+    {
+        $this->processOutput();
 
         $options = [];
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {

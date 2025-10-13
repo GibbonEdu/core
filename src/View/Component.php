@@ -61,7 +61,9 @@ class Component
         $i18n = $session->get('i18n');
 
         static::setup([
-            'rtl' => $i18n['rtl'] == 'Y',
+            'absolutePath' => $session->get('absolutePath'),
+            'absoluteURL'  => $session->get('absoluteURL'),
+            'rtl'          => $i18n['rtl'] == 'Y',
         ]);
     }
 
