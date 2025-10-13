@@ -13,6 +13,8 @@
             this.search = ''
             this.openedWithKeyboard = false
             this.$refs.hiddenTextField.value = option.value
+            this.$refs.hiddenTextField.dispatchEvent(new Event('change', { bubbles: true }))
+            
             $focus.focus(this.$refs.searchSelect)
         },
         clearSelectedOption() {

@@ -14,6 +14,7 @@
             this.search = ''
             this.openedWithKeyboard = false
             this.$refs.hiddenTextField.value = option.value
+            this.$refs.hiddenTextField.dispatchEvent(new Event('change', { bubbles: true }))
 
             htmx.ajax('POST', '<?= $absoluteURL ?>/modules/User Admin/user_manage_userPhotoAjax.php', {target:'#<?= $id ?>Photo', values:{fieldName: '<?= $id ?>', gibbonPersonID: option.value}, swap:'outerHTML'}).then(() => {});
 
