@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
         }
         $row = $form->addRow();
             $row->addLabel('gibbonFamilyID', __('Family'));
-            $row->addSelect('gibbonFamilyID')
+            $row->addSearchSelect('gibbonFamilyID')
                 ->fromQuery($pdo, $sql, $data)
                 ->required()
                 ->selected($gibbonFamilyID)

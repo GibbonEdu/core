@@ -112,9 +112,9 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql);
 
         if (!$all)
-            return $this->createSelect($name)->fromResults($results)->placeholder();
+            return $this->createSearchSelect($name)->fromResults($results)->placeholder();
         else
-            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
+            return $this->createSearchSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
     /*
@@ -127,9 +127,9 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql, $data);
 
         if (!$all)
-            return $this->createSelect($name)->fromResults($results)->placeholder();
+            return $this->createSearchSelect($name)->fromResults($results)->placeholder();
         else
-            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
+            return $this->createSearchSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
     public function createSelectHouse($name)
@@ -153,7 +153,7 @@ class DatabaseFormFactory extends FormFactory
                 ORDER BY gibbonCourse.nameShort";
         $results = $this->pdo->select($sql, $data);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSearchSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectClass($name, $gibbonSchoolYearID, $gibbonPersonID = null, $params = array())
@@ -284,7 +284,7 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
-        return $this->createSelect($name)->fromArray($departments)->placeholder();
+        return $this->createSearchSelect($name)->fromArray($departments)->placeholder();
     }
 
     public function createSelectSchoolYearTerm($name, $gibbonSchoolYearID)
@@ -325,7 +325,7 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql)->fetchKeyPair();
         $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromArray($results)->placeholder();
+        return $this->createSearchSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectCountry($name)
@@ -334,7 +334,7 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql)->fetchKeyPair();
         $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromArray($results)->placeholder();
+        return $this->createSearchSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectRole($name)
@@ -342,7 +342,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole ORDER BY name";
         $results = $this->pdo->select($sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSearchSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectStatus($name)
@@ -663,7 +663,7 @@ class DatabaseFormFactory extends FormFactory
                 GROUP BY gibbonRubric.gibbonRubricID
                 ORDER BY scope, category, name";
 
-        return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
+        return $this->createSearchSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
     }
 
     public function createSelectReportingCycle($name)
