@@ -13,15 +13,17 @@
             this.selectedOption = option
             this.search = ''
             this.openedWithKeyboard = false
-            this.$refs.hiddenTextField.value = option.value
-            this.$refs.hiddenTextField.dispatchEvent(new Event('change', { bubbles: true }))
+
+            this.$refs.hiddenInput.options[0].value = option.value;
+            this.$refs.hiddenInput.value = option.value;
+            this.$refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
 
             htmx.ajax('POST', '<?= $absoluteURL ?>/modules/User Admin/user_manage_userPhotoAjax.php', {target:'#<?= $id ?>Photo', values:{fieldName: '<?= $id ?>', gibbonPersonID: option.value}, swap:'outerHTML'}).then(() => {});
 
         },
         clearSelectedOption() {
             this.selectedOption = null;
-            this.$refs.hiddenTextField.value = null;
+            this.$refs.hiddenInput.value = null;
             this.$refs.searchSelect.blur();
             this.$refs.personPhoto.src = '';
         },
@@ -78,7 +80,9 @@
         </button>
 
         <!-- Hidden Input To Grab The Selected Value  -->
-        <input type="hidden" <?= $attributes; ?> x-ref="hiddenTextField" hidden=""/>
+        <select class="hidden invisible" <?= $attributes; ?> x-ref="hiddenInput">
+            <option value="<?= $selected ?>"></option>
+        </select>
 
         <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition.opacity.duration.100ms x-trap="openedWithKeyboard"
         style="display:none;">

@@ -8,18 +8,20 @@
         selectedOption: null,
         setSelectedOption(option) {
             if (option == null) return;
-            this.isOpen = false
-            this.selectedOption = option
-            this.search = ''
-            this.openedWithKeyboard = false
-            this.$refs.hiddenTextField.value = option.value
-            this.$refs.hiddenTextField.dispatchEvent(new Event('change', { bubbles: true }))
+            this.isOpen = false;
+            this.selectedOption = option;
+            this.search = '';
+            this.openedWithKeyboard = false;
+
+            this.$refs.hiddenInput.options[0].value = option.value;
+            this.$refs.hiddenInput.value = option.value;
+            this.$refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
             
             $focus.focus(this.$refs.searchSelect)
         },
         clearSelectedOption() {
             this.selectedOption = null;
-            this.$refs.hiddenTextField.value = null;
+            this.$refs.hiddenInput.value = null;
             this.$refs.searchSelect.blur();
         },
         getFilteredOptions(query) {
@@ -67,7 +69,10 @@
         </button>
 
         <!-- Hidden Input To Grab The Selected Value  -->
-        <input type="hidden" <?= $attributes; ?> x-ref="hiddenTextField" hidden=""/>
+        <select class="hidden invisible" <?= $attributes; ?> x-ref="hiddenInput">
+            <option value="<?= $selected ?>"></option>
+        </select>
+        
         <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition.opacity.duration.100ms x-trap="openedWithKeyboard"
         style="display:none;">
 
