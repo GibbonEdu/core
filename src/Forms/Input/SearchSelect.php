@@ -58,12 +58,14 @@ class SearchSelect extends Select
 
         // TODO: support opt groups (as a dropdown?)
         // TODO: support select multiple?
+        // TODO: validation
 
         return Component::render(SearchSelect::class, $this->getAttributeArray() + [
-            'groupClass'  => $this->getGroupClass(),
-            'placeholder' => $this->placeholder,
-            'options'     => array_values($options),
-            'selected'    => $this->selected,
+            'groupClass'    => $this->getGroupClass(),
+            'placeholder'   => $this->placeholder,
+            'options'       => array_values($options),
+            'selected'      => $this->selected,
+            'selectedLabel' => $options[$this->selected]['label'] ?? '',
         ]);
     }
 }

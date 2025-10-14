@@ -1,11 +1,16 @@
 <div x-data="{
-        allOptions: <?= str_replace(["'", '"'], ["\'", '\''], json_encode($options, JSON_INVALID_UTF8_IGNORE | JSON_UNESCAPED_UNICODE)); ?>,
+        allOptions: [],
         options: [],
         search: '',
         isOpen: false,
         openedWithKeyboard: false,
         selectedValue: '<?= $selected ?>',
         selectedOption: null,
+        getOptions() {
+            Array.from(this.$refs.hiddenInput.options).forEach((option) => { if (option.value != '')this.allOptions.push(option) });
+            this.setSelectedOption(this.allOptions.find(element => element.value == this.selectedValue));
+            this.options = this.allOptions;
+        },
         setSelectedOption(option) {
             if (option == null) return;
 
@@ -14,7 +19,6 @@
             this.search = ''
             this.openedWithKeyboard = false
 
-            this.$refs.hiddenInput.options[0].value = option.value;
             this.$refs.hiddenInput.value = option.value;
             this.$refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
 
@@ -53,7 +57,7 @@
                 this.$focus.focus(this.$refs.searchField);
             }
         },
-    }" class="flex w-full flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-init="options = allOptions; setSelectedOption(allOptions.find(element => element.value == selectedValue));">
+    }" class="flex w-full flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-init="getOptions()">
 
     <div class="relative">
 
@@ -67,7 +71,7 @@
                 <div id="<?= $id ?>Count" class="hidden badge"></div>
             </div>
 
-            <span class="block flex-1 text-sm font-normal text-left" x-text="selectedOption ? selectedOption.label : '<?= __($placeholder); ?>'"></span>
+            <span class="block flex-1 text-sm font-normal text-left" x-text="selectedOption ? selectedOption.label : ''"><?= $options[$selected] ?? __($placeholder); ?></span>
 
             <!-- Chevron  -->
             <svg x-cloak x-show="selectedOption == null" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 text-gray-500" aria-hidden="true">
@@ -81,7 +85,10 @@
 
         <!-- Hidden Input To Grab The Selected Value  -->
         <select class="hidden invisible" <?= $attributes; ?> x-ref="hiddenInput">
-            <option value="<?= $selected ?>"></option>
+            <option value=""></option>
+            <?php foreach ($options as $option)  { ?>
+                <option value="<?= $option['value'] ?>" <?= $option['value'] == $selected? 'selected' : '' ?>><?= $option['label'] ?></option>
+            <?php } ?>
         </select>
 
         <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition.opacity.duration.100ms x-trap="openedWithKeyboard"

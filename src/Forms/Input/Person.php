@@ -69,6 +69,7 @@ class Person extends SearchSelect
 
         // TODO: support opt groups (as a dropdown?)
         // TODO: support select multiple?
+        // TODO: validation
 
         return Component::render(Person::class, $this->getAttributeArray() + [
             'groupClass'  => $this->getGroupClass(),
