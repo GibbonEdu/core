@@ -80,7 +80,7 @@
             <?php } ?>
         </select>
         
-        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition.opacity.duration.100ms x-trap="openedWithKeyboard"
+        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.100ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
         style="display:none;">
 
             <!-- Search  -->
