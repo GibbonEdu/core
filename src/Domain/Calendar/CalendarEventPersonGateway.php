@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain\Calendar;
 
 use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
@@ -38,7 +37,26 @@ class CalendarEventPersonGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-     public function selectEventStaff($gibbonCalendarEventID) {
+    public function queryEnrolledStudents($criteria, $gibbonCalendarEventID, $gibbonSchoolYearID) {
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonCalendarEventPerson.*', 'surname', 'preferredName', 'gibbonFormGroup.nameShort as formGroup'])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonCalendarEvent', 'gibbonCalendarEvent.gibbonCalendarEventID=gibbonCalendarEventPerson.gibbonCalendarEventID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEventPerson.gibbonPersonID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
+            ->where('gibbonCalendarEventPerson.gibbonCalendarEventID = :gibbonCalendarEventID')
+            ->bindValue('gibbonCalendarEventID', $gibbonCalendarEventID)
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonPerson.status="Full"')
+            ->where('gibbonCalendarEventPerson.role = :role')
+            ->bindValue('role', 'Attendee');
+
+        return $this->runQuery($query, $criteria);
+    }
+    public function selectEventStaff($gibbonCalendarEventID) {
         $select = $this
             ->newSelect()
             ->cols(['preferredName, surname, gibbonCalendarEventPerson.*'])
@@ -46,9 +64,64 @@ class CalendarEventPersonGateway extends QueryableGateway
             ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEventPerson.gibbonPersonID')
             ->where('gibbonCalendarEventPerson.gibbonCalendarEventID = :gibbonCalendarEventID')
             ->bindValue('gibbonCalendarEventID', $gibbonCalendarEventID)
-            ->where('gibbonPerson.status="Full"')
+            ->where('gibbonCalendarEventPerson.role != :role')
+            ->bindValue('role', 'Attendee')
             ->orderBy(['surname', 'preferredName']);
 
         return $this->runSelect($select);
+    }
+
+     public function selectAllParticipants($gibbonCalendarEventID) {
+        $select = $this
+            ->newSelect()
+            ->cols(['preferredName, surname, gibbonCalendarEventPerson.*'])
+            ->from($this->getTableName())
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEventPerson.gibbonPersonID')
+            ->where('gibbonCalendarEventPerson.gibbonCalendarEventID = :gibbonCalendarEventID')
+            ->bindValue('gibbonCalendarEventID', $gibbonCalendarEventID)
+            ->orderBy(['role','surname', 'preferredName']);
+
+        return $this->runSelect($select);
+    }
+
+    public function selectTargetStudentsForEnrolment($gibbonSchoolYearID, $targetStudents, $targetID)
+    {
+        switch ($targetStudents) {
+            case 'Activity':
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonActivityID' => $targetID];
+                $sql = "SELECT gibbonPerson.gibbonPersonID
+                        FROM gibbonStudentEnrolment
+                        JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonActivityStudent.gibbonActivityID=:gibbonActivityID
+                        AND gibbonActivityStudent.status='Accepted'
+                        AND gibbonPerson.status='Full'
+                        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                    break;
+            case 'Messenger':
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonGroupID' => $targetID];
+                $sql = "SELECT gibbonPerson.gibbonPersonID
+                        FROM gibbonStudentEnrolment 
+                        JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonGroupPerson.gibbonGroupID=:gibbonGroupID
+                        AND gibbonPerson.status='Full' 
+                        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                    break;
+            case 'manualSelect':
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDList' => implode(',', $targetID)];
+                $sql = "SELECT gibbonPerson.gibbonPersonID
+                        FROM gibbonStudentEnrolment
+                        JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)
+                        AND gibbonPerson.status='Full' 
+                        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                break;
+        }
+
+        return $this->db()->select($sql, $data);
     }
 }
