@@ -37,22 +37,38 @@ class CalendarEventPersonGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-    public function queryEnrolledStudents($criteria, $gibbonCalendarEventID, $gibbonSchoolYearID) {
+    public function queryEnrolledAttendees($criteria, $gibbonCalendarEventID) {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonCalendarEventPerson.*', 'surname', 'preferredName', 'gibbonFormGroup.nameShort as formGroup'])
+            ->cols(['gibbonCalendarEventPerson.*', 'surname', 'preferredName', 'gibbonRole.category', 'gibbonFormGroup.nameShort as formGroup'])
             ->from($this->getTableName())
             ->innerJoin('gibbonCalendarEvent', 'gibbonCalendarEvent.gibbonCalendarEventID=gibbonCalendarEventPerson.gibbonCalendarEventID')
+            ->innerJoin('gibbonCalendar', 'gibbonCalendarEvent.gibbonCalendarID=gibbonCalendar.gibbonCalendarID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEventPerson.gibbonPersonID')
-            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCalendar.gibbonSchoolYearID')
             ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->where('gibbonCalendarEventPerson.gibbonCalendarEventID = :gibbonCalendarEventID')
             ->bindValue('gibbonCalendarEventID', $gibbonCalendarEventID)
-            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->where('gibbonPerson.status="Full"')
             ->where('gibbonCalendarEventPerson.role = :role')
             ->bindValue('role', 'Attendee');
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryEventEnrolment($criteria, $gibbonCalendarEventID) {
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonCalendarEventPerson.*', 'surname', 'preferredName', 'gibbonRole.category', 'gibbonFormGroup.nameShort as formGroup'])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonCalendarEvent', 'gibbonCalendarEventPerson.gibbonCalendarEventID=gibbonCalendarEvent.gibbonCalendarEventID')
+            ->innerJoin('gibbonCalendar', 'gibbonCalendarEvent.gibbonCalendarID=gibbonCalendar.gibbonCalendarID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEventPerson.gibbonPersonID')
+            ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCalendar.gibbonSchoolYearID')
+            ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
+            ->where('gibbonCalendarEventPerson.gibbonCalendarEventID = :gibbonCalendarEventID')
+            ->bindValue('gibbonCalendarEventID', $gibbonCalendarEventID);
 
         return $this->runQuery($query, $criteria);
     }
@@ -70,20 +86,6 @@ class CalendarEventPersonGateway extends QueryableGateway
 
         return $this->runSelect($select);
     }
-
-     public function selectAllParticipants($gibbonCalendarEventID) {
-        $select = $this
-            ->newSelect()
-            ->cols(['preferredName, surname, gibbonCalendarEventPerson.*'])
-            ->from($this->getTableName())
-            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEventPerson.gibbonPersonID')
-            ->where('gibbonCalendarEventPerson.gibbonCalendarEventID = :gibbonCalendarEventID')
-            ->bindValue('gibbonCalendarEventID', $gibbonCalendarEventID)
-            ->orderBy(['role','surname', 'preferredName']);
-
-        return $this->runSelect($select);
-    }
-
     public function selectTargetStudentsForEnrolment($gibbonSchoolYearID, $targetStudents, $targetID)
     {
         switch ($targetStudents) {
@@ -110,13 +112,25 @@ class CalendarEventPersonGateway extends QueryableGateway
                         AND gibbonPerson.status='Full' 
                         ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
                     break;
-            case 'manualSelect':
-                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDList' => implode(',', $targetID)];
-                $sql = "SELECT gibbonPerson.gibbonPersonID
-                        FROM gibbonStudentEnrolment
-                        JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+             case 'Class':
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseClassID' => $targetID];
+                $sql = "SELECT gibbonCourseClassPerson.gibbonPersonID
+                        FROM gibbonCourseClassPerson
+                        JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                        JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                        AND FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)
+                        AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
+                        AND gibbonPerson.status='Full'
+                        AND gibbonCourseClassPerson.role='Student'
+                        GROUP BY gibbonCourseClassPerson.gibbonPersonID
+                        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                    break;
+            case 'manualSelect':
+                $data = ['gibbonPersonIDList' => implode(',', $targetID)];
+                $sql = "SELECT gibbonPersonID
+                        FROM gibbonPerson
+                        WHERE FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)
                         AND gibbonPerson.status='Full' 
                         ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
                 break;

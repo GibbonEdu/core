@@ -65,7 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
      $targetOptions = [
         'Messenger'    => __('Messenger Group'),
         'Activity' => __('Activity Enrolment'),
-        'manualSelect'   => __('Select Students'),
+        'Class'   => __('Class Enrolment'),
+        'manualSelect'   => __('Select Manually'),
     ];
 
     $row = $form->addRow();
@@ -74,6 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
 
     $form->toggleVisibilityByClass('targetActivity')->onSelect('targetStudents')->when('Activity');
     $form->toggleVisibilityByClass('targetMessenger')->onSelect('targetStudents')->when('Messenger');
+    $form->toggleVisibilityByClass('targetClass')->onSelect('targetStudents')->when('Class');
     $form->toggleVisibilityByClass('targetSelect')->onSelect('targetStudents')->when('manualSelect');
 
     // Activity
@@ -88,26 +90,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         $row->addLabel('gibbonGroupID', __('Messenger Group'));
         $row->addSelect('gibbonGroupID')->fromArray($groups)->required()->placeholder();
 
-    // Select Students
-    $studentGateway = $container->get(StudentGateway::class);
-    $studentCriteria = $studentGateway->newQueryCriteria()
-        ->sortBy(['surname', 'preferredName']);
+    // Class Enrolments
+    $row = $form->addRow()->addClass('targetClass');
+        $row->addLabel('gibbonCourseClassID', __('Class'));
+        $row->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
+        ->required()
+        ->placeholder();
 
-    $gibbonPersonIDList = [];
-    $studentList = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'));
-    $studentList = array_reduce($studentList->toArray(), function ($group, $student) use ($gibbonPersonIDList) {
-        $list = in_array($student['gibbonPersonID'], $gibbonPersonIDList) ? 'destination' : 'source';
-        $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup']; 
-        $group['form'][$student['gibbonPersonID']] = $student['formGroup'];
-        return $group;
-    });
-
-    $col = $form->addRow()->addClass('targetSelect')->addColumn();
-        $col->addLabel('gibbonPersonIDList', __('Students'));
-        $multiSelect = $col->addMultiSelect('gibbonPersonIDList')->required();
-        $multiSelect->addSortableAttribute(__('Form Group'), $studentList['form']);
-        $multiSelect->source()->fromArray($studentList['students']['source'] ?? []);
-        $multiSelect->destination()->fromArray($studentList['students']['destination'] ?? []);
+    // Select Attendees
+    $row = $form->addRow();
+        $col = $row->addColumn()->addClass('targetSelect')->addColumn();
+            $col->addLabel('participants', __('Attendees'));
+            $col->addSelectUsers('participants', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'useMultiSelect' => true])
+                ->required()
+                ->mergeGroupings();
 
     $row = $form->addRow();
         $row->addFooter();

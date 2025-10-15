@@ -74,10 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         'timestampModified'       => date('Y-m-d H:i:s'),
         'gibbonPersonIDModified'  => $session->get('gibbonPersonID') ?? '',
     ];
-
+    
     if ($data['allDay'] == 'N') {
-        $data['timeStart'] = $dateStart->format('H:i:s');
-        $data['timeEnd'] = $dateEnd->format('H:i:s');
+        $data['timeStart'] = $_POST['timeStart'] ?? '';
+        $data['timeEnd'] = $_POST['timeEnd'] ?? '';
     }
 
     if ($data['locationType'] == 'Internal') {

@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
 
-    $students = $_POST['gibbonCalendarEventPersonID'] ?? [];
+    $attendees = $_POST['gibbonCalendarEventPersonID'] ?? [];
 
     if (empty($action) || ($action != 'Delete')) {
         $URL .= '&return=error1';
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
     }
     
     // Check if person specified
-    if (empty($students)) {
+    if (empty($attendees)) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
         exit;
@@ -62,21 +62,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
     } 
 
     $partialFail = false;
-    $studentsDeleted = [];
     
-    foreach ($students AS $gibbonCalendarEventPersonID) {
-        $studentEvent = $calendarEventPersonGateway->getByID($gibbonCalendarEventPersonID);
+    foreach ($attendees AS $gibbonCalendarEventPersonID) {
+        $eventAttendee = $calendarEventPersonGateway->getByID($gibbonCalendarEventPersonID);
        
-        if (empty($studentEvent)) {
+        if (empty($eventAttendee)) {
             $partialFail = true;
             continue;
         }
 
-        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, false).' ('.$student['formGroup'].')';
-        $students[] = $studentName;
-
         if ($action == 'Delete') {
-            $calendarEventPersonGateway->delete($studentEvent['gibbonCalendarEventPersonID']);
+            $calendarEventPersonGateway->delete($gibbonCalendarEventPersonID);
         }
     }
 
