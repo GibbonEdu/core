@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 
@@ -70,8 +71,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     $gibbonPersonID = $highestAction == 'Manage Events_my' ? $session->get('gibbonPersonID') : null;
     $events = $calendarEventGateway->queryEvents($criteria, $gibbonPersonID);
 
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/calendar_event_manageProcessBulk.php');
+
+    $bulkActions = [
+        'Duplicate' => __('Duplicate'),
+        'DuplicateParticipants' => __('Duplicate With Participants'),
+    ];
+
+    $col = $form->createBulkActionColumn($bulkActions);
+    $col->addSubmit(__('Go'));
+
     // DATA TABLE
-    $table = DataTable::createPaginated('events', $criteria);
+    $table = $form->addRow()->addDataTable('events', $criteria)->withData($events);
 
     $table->setTitle($highestAction == 'Manage Events_all' ? __('All Events') : __('My Events'));
 
@@ -91,8 +103,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
         'status:cancelled'  => __('Status').': '.__('Cancelled'),
     ]);
 
-    // COLUMNS
+    $table->addMetaData('bulkActions', $col);
 
+    // COLUMNS
     if (!empty($values['description'])) {
         $table->addExpandableColumn('description')
             ->format(function ($values) {
@@ -124,15 +137,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
         ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]))
         ->sortable('surname');
 
+     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonCalendarEventID')
         ->format(function ($row, $actions) {
+            $actions->addAction('view', __('View'))
+                ->setURL('/modules/Calendar/calendar_event_view.php');
+
+            $actions->addAction('enrolment', __('Enrolment'))
+                ->setURL('/modules/Calendar/calendar_event_enrolment.php')
+                ->setIcon('attendance');
+
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Calendar/calendar_event_edit.php');
-
+                
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/Calendar/calendar_event_delete.php');
         });
 
-    echo $table->render($events);
+    $table->addCheckboxColumn('gibbonCalendarEventID');
+    echo $form->getOutput();
 }

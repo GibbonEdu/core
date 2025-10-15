@@ -20,27 +20,35 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
-use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_edit.php') == false) {
-    //Acess denied
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_enrolment_delete.php') == false) {
+    // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+    // Proceed!
+
+    // Check if gibbonCalendarEventID and gibbonPersonID specified
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     $gibbonCalendarEventID = $_GET['gibbonCalendarEventID'] ?? '';
     $gibbonCalendarEventPersonID = $_GET['gibbonCalendarEventPersonID'] ?? '';
-
-    $calendarEventGateway = $container->get(CalendarEventGateway::class);
-    $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
-    
-    if (!$calendarEventGateway->exists($gibbonCalendarEventID) || !$calendarEventPersonGateway->exists($gibbonCalendarEventPersonID)) {
+    if ($gibbonCalendarEventPersonID == '' or $gibbonCalendarEventID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $form = DeleteForm::createForm($session->get('absoluteURL') . '/modules/' . $session->get('module') . "/calendar_event_editStaff_deleteProcess.php");
-        $form->addHiddenValue('address', $session->get('address'));
-        $form->addHiddenValue('gibbonCalendarEventID', $gibbonCalendarEventID);
-        $form->addHiddenValue('gibbonCalendarEventPersonID', $gibbonCalendarEventPersonID);
+        // Let's go!
+        $participant = $container->get(CalendarEventPersonGateway::class)->getByID($gibbonCalendarEventPersonID);
+
+        if (empty($participant)) {
+            $page->addError(__('The specified record cannot be found.'));
+            return;
+        }
         
+        $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Calendar/calendar_event_enrolment_deleteProcess.php', true, false);
+        $form->addHiddenValue('gibbonCalendarEventPersonID', $gibbonCalendarEventPersonID);
+        $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+        $form->addHiddenValue('gibbonCalendarEventID', $gibbonCalendarEventID);
+
+        $form->addRow()->addConfirmSubmit();
         echo $form->getOutput();
     }
 }

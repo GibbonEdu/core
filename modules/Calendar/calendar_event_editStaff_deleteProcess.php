@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -20,6 +18,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
 include '../../gibbon.php';
 

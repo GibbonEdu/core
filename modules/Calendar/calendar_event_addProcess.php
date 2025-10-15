@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
     $gibbonCalendarEventPersonID = $calendarEventPersonGateway->insert($organiserData);
     $partialFail &= !$gibbonCalendarEventPersonID;
 
-     $URL .= $partialFail
+    $URL .= $partialFail
         ? "&return=warning1"
         : "&return=success0&editID=$gibbonCalendarEventID";
     header("Location: {$URL}");

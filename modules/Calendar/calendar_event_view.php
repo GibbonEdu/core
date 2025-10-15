@@ -1,13 +1,4 @@
 <?php
-
-use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Calendar\CalendarGateway;
-use Gibbon\Domain\Calendar\CalendarEventGateway;
-use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
-use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -28,11 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Domain\DataSet;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Calendar\CalendarGateway;
+use Gibbon\Domain\Calendar\CalendarEventGateway;
+use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
+use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
+
 if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_view.php')) {
 	$page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-
     $page->breadcrumbs
         ->add(__('Manage Events'), 'calendar_event_manage.php')
         ->add(__('View Event'));
@@ -54,6 +54,12 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
 
     $form = Form::create('viewEvent', '');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHeaderAction('enrolment', __('Enrolment'))
+    ->setURL('/modules/Calendar/calendar_event_enrolment.php')
+    ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
+      ->setIcon('attendance')
+    ->displayLabel();
 
     $form->addRow()->addHeading(__('Basic Information'));
 
@@ -78,7 +84,6 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         $row->addContent(Format::nameLinked($values['gibbonPersonIDOrganiser'], '', $organiser['preferredName'], $organiser['surname'], 'Staff', false, true))
             ->wrap('<div class="text-left w-full text-sm">', '</div>');
 
-    
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')->readonly();
@@ -87,13 +92,27 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         $row->addLabel('status', __('Status'));
         $row->addTextField('status')->readonly();
 
-     $row = $form->addRow();
-        $col = $row->addColumn();
-        $col->addLabel('description', __('Description'));
-        $col->addContent($values['description']);
-
+    $row = $form->addRow();
+        $row->addLabel('dateStart', __('Start Date'));
+        $row->addDate('dateStart')
+            ->readonly();
 
     $row = $form->addRow();
+        $row->addLabel('dateEnd', __('End Date'));
+        $row->addDate('dateEnd')
+            ->readonly();
+
+    if ($values['allDay'] == 'N') {
+        $row =  $form->addRow();
+            $row->addLabel('timeStart', __('Start Time'));
+            $row->addTime('timeStart')->readonly();
+
+        $row =  $form->addRow();
+            $row->addLabel('timeEnd', __('End Time'));
+            $row->addTime('timeEnd')->readonly();
+    }
+
+     $row = $form->addRow();
         $row->addLabel('locationType', __('Location Type'));
         $row->addTextField('locationType')
             ->readonly();
@@ -107,21 +126,42 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
             $row->addLabel('locationDetail', __('Location Details'));
             $row->addTextField('locationDetail')->readonly();
 
-        $row = $form->addRow();
-                $row->addLabel('locationDetail', __('Location Details'));
-                $row->addTextField('locationDetail')->readonly();
-                
-        $row = $form->addRow();
-                $row->addLabel('locationDetail', __('Location Details'));
-                $row->addTextField('locationDetail')->readonly();
-
         if (!empty($values['locationURL'])) {
             $row->addLabel('locationURL', __('Location URL'));
             $row->addURL('locationURL')->readonly();
         }
     }
 
+    $row = $form->addRow();
+        $col = $row->addColumn();
+        $col->addLabel('description', __('Description'));
+        $col->addContent('description');
 
-    
+    $form->loadAllValuesFrom($values);
+    echo $form->getOutput();
+
+    // QUERY FOR DATATABLE
+    $criteria = $calendarEventPersonGateway->newQueryCriteria()
+        ->sortBy(['role','surname', 'preferredName', 'role'])
+        ->fromPOST();
+
+    $participants = $calendarEventPersonGateway->selectAllParticipants($gibbonCalendarEventID)->fetchAll();
+
+    // BULK ACTION FORM
+    $form = Form::create('participants', '');
+
+    // DATA TABLE FOR ALL PARTICIPANTS
+    $table = $form->addRow()->addDataTable('participants', $criteria)->withData(new DataSet($participants));
+    $table->setTitle(__('All Participants'));
+
+    $table->addColumn('name', __('Name'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false]));
+
+    $table->addColumn('role', __('Role'));
+
+    $table->addColumn('timestampCreated', __('Added on'))->format(Format::using('dateTime', 'timestampCreated'));
+
+    echo $form->getOutput();
 }
 ?>
