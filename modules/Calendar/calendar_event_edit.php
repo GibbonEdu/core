@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
 
     $row = $form->addRow()->addClass('timeOptions');
-        $row->addLabel('timeStart', __('Time'));
+        $row->addLabel('time', __('Time'));
         $col = $row->addColumn('timeStart')->addClass('right inline gap-2');
         $col->addTime('timeStart')
             ->required();
@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
      
     $row = $form->addRow();
         $row->addLabel('staff', __('New Staff'));
-        $row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), ['includeStaff' => true, 'includeAllUsers' => false])->selectMultiple();
+        $row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), ['includeStaff' => true])->selectMultiple();
 
     $row = $form->addRow();
         $row->addLabel('role', 'Role');

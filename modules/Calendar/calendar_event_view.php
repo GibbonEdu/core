@@ -110,9 +110,19 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         $row =  $form->addRow();
             $row->addLabel('timeEnd', __('End Time'));
             $row->addTime('timeEnd')->readonly();
+    } else {
+        $row = $form->addRow();
+            $row->addLabel('allDay', __('When'));
+            $row->addCheckbox('allDay')
+                ->description(__('All Day'))
+                ->inline()
+                ->setValue('Y')
+                ->checked('Y')
+                ->wrap('<div class="standardWidth floatRight">', '</div>')
+                ->readonly();
     }
-
-     $row = $form->addRow();
+    
+    $row = $form->addRow();
         $row->addLabel('locationType', __('Location Type'));
         $row->addTextField('locationType')
             ->readonly();
@@ -142,23 +152,27 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
 
     // QUERY FOR DATATABLE
     $criteria = $calendarEventPersonGateway->newQueryCriteria()
-        ->sortBy(['role','surname', 'preferredName', 'role'])
+        ->sortBy(['role','surname', 'preferredName'])
         ->fromPOST();
-
-    $participants = $calendarEventPersonGateway->selectAllParticipants($gibbonCalendarEventID)->fetchAll();
+        
+    $participants = $calendarEventPersonGateway->queryEventEnrolment($criteria, $gibbonCalendarEventID);
 
     // BULK ACTION FORM
     $form = Form::create('participants', '');
 
     // DATA TABLE FOR ALL PARTICIPANTS
-    $table = $form->addRow()->addDataTable('participants', $criteria)->withData(new DataSet($participants));
+    $table = $form->addRow()->addDataTable('participants', $criteria)->withData($participants);
     $table->setTitle(__('All Participants'));
 
     $table->addColumn('name', __('Name'))
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false]));
 
-    $table->addColumn('role', __('Role'));
+    $table->addColumn('category', __('Role'));
+
+    $table->addColumn('formGroup', __('Form Group'));
+
+    $table->addColumn('role', __('Event Role'));
 
     $table->addColumn('timestampCreated', __('Added on'))->format(Format::using('dateTime', 'timestampCreated'));
 

@@ -88,10 +88,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
 
     // QUERY
     $criteria = $calendarEventPersonGateway->newQueryCriteria()
-        ->sortBy(['surname', 'preferredName', 'formGroup'])
+        ->sortBy(['surname', 'preferredName', 'category'])
         ->fromPOST();
 
-    $participants = $calendarEventPersonGateway->queryEnrolledStudents($criteria, $gibbonCalendarEventID, $session->get('gibbonSchoolYearID'));
+    $participants = $calendarEventPersonGateway->queryEnrolledAttendees($criteria, $gibbonCalendarEventID);
 
     // BULK ACTION FORM
     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Calendar/calendar_event_enrolmentProcessBulk.php');
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
 
     // DATA TABLE FOR PARTICIPANTS
     $table = $form->addRow()->addDataTable('participants', $criteria)->withData($participants);
-    $table->setTitle(__('Students'));
+    $table->setTitle(__('Attendees'));
 
     $table->addMetaData('bulkActions', $col);
 
@@ -113,13 +113,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
         ->displayLabel();
 
-    $table->addColumn('student', __('Student'))
+    $table->addColumn('name', __('Name'))
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false]));
 
     $table->addColumn('formGroup', __('Form Group'));
 
-    $table->addColumn('role', __('Role'));
+    $table->addColumn('category', __('Role'));
+
+    $table->addColumn('role', __('Event Role'));
 
     $table->addColumn('timestampCreated', __('Timestamp'))->format(Format::using('dateTime', 'timestampCreated'));
 

@@ -125,11 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
 
     $table->addColumn('type', __('Event Type'))->context('primary');
 
-    $table->addColumn('dateStart', __('First Day'))
-        ->format(Format::using('dateReadable', ['dateStart']));
-
-    $table->addColumn('dateEnd', __('Last Day'))
-        ->format(Format::using('dateReadable', ['dateEnd']));
+    $table->addColumn('dates', __('Dates'))
+        ->formatDetails(function ($values) {
+            return Format::dateRangeReadable($values['dateStart'], $values['dateEnd']);
+        });
 
     $table->addColumn('locationType', __('Location Type'));
 
