@@ -33,7 +33,8 @@ $gibbonTTDayRowClassID = $_GET['gibbonTTDayRowClassID'] ?? '';
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '' or $gibbonTTDayRowClassID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_exception_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
+    $URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
+    $URLSuccess = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php') == false) {
         $URL .= '&return=error0';
@@ -63,6 +64,9 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                 //Run through each of the selected participants.
                 $update = true;
                 $choices = $_POST['Members'] ?? [];
+                if (!empty($_GET['gibbonPersonID'])) {
+                    $choices[] = $_GET['gibbonPersonID'];
+                }
 
                 if (count($choices) < 1) {
                     $URL .= '&return=error1';
@@ -96,8 +100,8 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                     } else {
-                        $URL .= '&return=success0';
-                        header("Location: {$URL}");
+                        $URLSuccess .= '&return=success0';
+                        header("Location: {$URLSuccess}");
                     }
                 }
             }

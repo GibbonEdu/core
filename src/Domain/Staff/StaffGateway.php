@@ -48,6 +48,8 @@ class StaffGateway extends QueryableGateway
      */
     public function queryAllStaff(QueryCriteria $criteria, $gibbonSchoolYearID = null)
     {
+        $biographicalGroupingOrder = '';
+        
         $query = $this
             ->newQuery()
             ->from($this->getTableName())

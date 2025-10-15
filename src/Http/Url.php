@@ -1,10 +1,4 @@
 <?php
-
-namespace Gibbon\Http;
-
-use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\UriInterface;
-
 /**
  * An implementation of PSR-7 URI for Gibbon URLs.
  *
@@ -34,6 +28,12 @@ use Psr\Http\Message\UriInterface;
  *
  * @author Koala Yeung
  */
+
+namespace Gibbon\Http;
+
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
+
 class Url extends Uri implements UriInterface
 {
 

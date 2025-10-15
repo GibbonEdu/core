@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -34,6 +35,14 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
         ->add(__('View Alert'));
 
     $gibbonAlertID = $_GET['gibbonAlertID'] ?? '';
+    $params = [
+        'gibbonPersonID'      => $_REQUEST['gibbonPersonID'] ?? '',
+        'gibbonFormGroupID'   => $_REQUEST['gibbonFormGroupID'] ?? '',
+        'gibbonYearGroupID'   => $_REQUEST['gibbonYearGroupID'] ?? '',
+        'gibbonCourseClassID' => $_REQUEST['gibbonCourseClassID'] ?? '',
+        'source'              => $_REQUEST['source'] ?? '',
+    ];
+
     $alertGateway = $container->get(AlertGateway::class);
 
     if (empty($gibbonAlertID)) {
@@ -45,6 +54,10 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
     if (empty($alert)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
+    }
+
+    if (!empty($params['gibbonPersonID']) || !empty($params['gibbonFormGroupID']) || !empty($params['gibbonYearGroupID'])) {
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Student Alerts', 'studentAlerts_manage')->withQueryParams($params));
     }
 
     $form = Form::create('viewAlert', '');
@@ -62,28 +75,18 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
             ->setValue($alert['type'])
             ->readonly();
     
-    $row = $form->addRow();
-        $row->addLabel('level', __('Level'));
-        $row->addTextField('level')
-            ->setValue($alert['level'])
-            ->readonly();
+    if (!empty($alert['level'])) {
+        $row = $form->addRow();
+            $row->addLabel('level', __('Level'));
+            $row->addTextField('level')
+                ->setValue($alert['level'])
+                ->readonly();
+    }
 
     $row = $form->addRow();
         $row->addLabel('status', __('Status'));
         $row->addTextField('status')
             ->setValue($alert['status'])
-            ->readonly();
-    
-    $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description(__('If the alert is for a specified period'));
-        $row->addTextField('dateStart')
-            ->setValue(!empty($alert['dateStart']) ? Format::date($alert['dateStart']) : __('N/A'))
-            ->readonly();
-
-    $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description(__('If the alert is for a specified period')); 
-        $row->addTextField('dateEnd')
-            ->setValue(!empty($alert['dateEnd']) ? Format::date($alert['dateEnd']) : __('N/A'))
             ->readonly();
 
     $row = $form->addRow();
@@ -93,6 +96,16 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
                 ->setValue($alert['comment'])
                 ->readonly()
                 ->setRows(3);
+
+    if ($alert['status'] != 'Pending') {
+        $row = $form->addRow();
+        $col = $row->addColumn();
+        $col->addLabel('notes', __('Notes'));
+        $col->addTextArea('notes')
+            ->setValue($alert['notesStatus'])
+            ->readonly()
+            ->setRows(3);
+    }
                 
     echo $form->getOutput();
 }

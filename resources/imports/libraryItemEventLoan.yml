@@ -8,30 +8,40 @@ access:
     action: Manage Catalog
 fields:
     id: 
-        name: "Item ID"
-        desc: "Item ID"
+        name: "School ID"
+        desc: ""
+        args: { filter: string, required: true }
     gibbonLibraryItemID: 
-        name: "LibItem ID"
-        desc: "LibItem ID"
+        name: "ID"
+        desc: "gibbonLibraryItemID"
         args: { filter: string, required: true, linked: id, readonly: [ gibbonLibraryItem ] } 
         relationship: { table: gibbonLibraryItem, key: gibbonLibraryItemID, field: id }
     gibbonPersonIDStatusResponsible:
-        name: "Student Username/Email"
+        name: "Responsible User"
         desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|email  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
     returnExpected: 
         name: "Return Date"
-        desc: "Expected return date for the loan"
+        desc: "Expected Return Date"
         args: { filter: date, custom: true }
+    gibbonPersonIDOut:
+        name: "Created By"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
+    timestampOut:
+        name: "Timestamp"
+        desc: ""
+        args: { filter: timestamp, hidden: true, function: timestamp }
     type:
-        name: "Type"
-        desc: "Type of event"
+        name: "Event Type"
+        desc: ""
         value: "Loan"
         args: { filter: string, hidden: true }
     status:
-        name: "Status"
-        desc: "Status of the event"
+        name: "New Status"
+        desc: ""
         value: "On Loan"
         args: { filter: string, hidden: true }
 tables:
@@ -49,6 +59,8 @@ tables:
         fields:
             - gibbonLibraryItemID
             - gibbonPersonIDStatusResponsible
+            - gibbonPersonIDOut
             - returnExpected
+            - timestampOut
             - type
             - status

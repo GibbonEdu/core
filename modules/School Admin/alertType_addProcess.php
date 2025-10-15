@@ -37,7 +37,8 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
     $data = [
         'name'                   => $_POST['name'] ?? '',
         'tag'                    => $_POST['tag'] ?? '',
-        'useLevels'              => $_POST['useLevels'] ?? '',
+        'adminOnly'              => $_POST['adminOnly'] ?? 'N',
+        'useLevels'              => $_POST['useLevels'] ?? 'N',
         'color'                  => $_POST['color'] ?? null,
         'colorBG'                => $_POST['colorBG'] ?? null,
         'description'            => $_POST['description'] ?? '',

@@ -52,7 +52,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
 
     $row = $form->addRow();
         $row->addLabel('tag', __('Tag'));
-        $row->addTextField('tag')->maxLength(2);
+        $row->addTextField('tag')->maxLength(2)->required();
 
     $row = $form->addRow();
         $row->addLabel('description', __('Description'));
@@ -60,10 +60,14 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->required();
+        $row->addYesNo('active');
 
     $row = $form->addRow();
-        $row->addLabel('useLevels', __('Alert Levels'))->description(__('Use low/medium/high alert levels?'));
+        $row->addLabel('adminOnly', __('Admin Only'))->description(__('Determines whether this type of alert requires full access to Manage Student Alerts.'));
+        $row->addYesNo('adminOnly')->selected('N');
+
+    $row = $form->addRow();
+        $row->addLabel('useLevels', __('Alert Levels'))->description(__('Enables this type of alert to use low, medium, and high alert levels. This determines the alert colour.'));
         $row->addYesNo('useLevels')->readonly();
 
     if ($values['useLevels'] == 'N') {
@@ -76,20 +80,27 @@ if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSe
             $row->addColor('colorBG');
     }
 
-    if ($values['name'] == 'Academic' || $values['name'] == 'Behaviour') {
+    if ($values['type'] == 'Core') {
         $row = $form->addRow();
-            $row->addLabel('thresholdLow', __('Low Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('Low')]));
-            $row->addNumber('thresholdLow')->onlyInteger(true)->maxLength(3)->required();
-
-        $row = $form->addRow();
-            $row->addLabel('thresholdMed', __('Medium Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('Medium')]));
-            $row->addNumber('thresholdMed')->onlyInteger(true)->maxLength(3)->required();
-
-        $row = $form->addRow();
-            $row->addLabel('thresholdHigh', __('High Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('High')]));
-            $row->addNumber('thresholdHigh')->onlyInteger(true)->maxLength(3)->required();
+            $row->addLabel('automatic', __('Automatic'))->description(__('Enables the automatic creation of alerts based on student data. Only core alerts can be created automatically.'));
+            $row->addYesNo('automatic')->selected($values['automatic'] ?? 'N');
     }
 
+    if ($values['type'] == 'Core' && ($values['name'] == 'Academic' || $values['name'] == 'Behaviour')) {
+        $form->toggleVisibilityByClass('thresholds')->onRadio('automatic')->when('Y');
+
+        $row = $form->addRow()->addClass('thresholds');
+            $row->addLabel('thresholdLow', __('Low Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('Low')]));
+            $row->addNumber('thresholdLow')->onlyInteger(true)->maxLength(3)->required()->setValue(3);
+
+        $row = $form->addRow()->addClass('thresholds');
+            $row->addLabel('thresholdMed', __('Medium Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('Medium')]));
+            $row->addNumber('thresholdMed')->onlyInteger(true)->maxLength(3)->required()->setValue(5);
+
+        $row = $form->addRow()->addClass('thresholds');
+            $row->addLabel('thresholdHigh', __('High Alert Threshold'))->description(__('The number of concerns needed to automatically raise a {level} level alert for a student.', ['level' => __('High')]));
+            $row->addNumber('thresholdHigh')->onlyInteger(true)->maxLength(3)->required()->setValue(9);
+    }
 
     $row = $form->addRow();
         $row->addFooter();

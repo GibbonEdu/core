@@ -202,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     // Create the status log
-                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'gibbonSchoolYearID' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
+                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
 
                     // Insert the image into GibbonPersonPhoto to keep a backup record
                     if (!empty($attachment1)) {

@@ -492,7 +492,7 @@ class Importer
                 $fields['passwordStrongSalt'] = $salt;
             }
 
-            if (!empty($fields) && $partialFail == false) {
+            if (!empty($fields) ) {
                 $this->tableData[$rowIndex] = $fields;
 
                 // Merge & cache the table data so multi-table imports can skip additional relational data checks

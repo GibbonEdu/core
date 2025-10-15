@@ -25,32 +25,26 @@ use Gibbon\Tables\DataTable;
 use Gibbon\UI\Components\Alert;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
-use Gibbon\Domain\FormGroups\FormGroupGateway;
 
-if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/report_alertsByFormGroup.php')) {
+if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/report_alertsByClass.php')) {
 	// Access denied
 	$page->addError(__('You do not have access to this action.'));
 } else {
-    $page->breadcrumbs->add(__('Student Alerts by Form Group'));
+    $page->breadcrumbs->add(__('Student Alerts by Class'));
 
-    $gibbonFormGroupID = $_REQUEST['gibbonFormGroupID'] ?? '';
+    $gibbonCourseClassID = $_REQUEST['gibbonCourseClassID'] ?? '';
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     $alertGateway = $container->get(AlertGateway::class);
     $alertManager = $container->get(Alert::class);
-
-    $formGroup = $container->get(FormGroupGateway::class)->selectFormGroupsByTutor($session->get('gibbonPersonID'))->fetch();
-    if (!empty($formGroup) && empty($gibbonFormGroupID)) {
-        $gibbonFormGroupID = $formGroup['gibbonFormGroupID'];
-    }
 
     // SEARCH
     $form = Form::createSearch();
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $row = $form->addRow();
-        $row->addLabel('gibbonFormGroupID',__('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->selected($gibbonFormGroupID)->placeholder();
+        $row->addLabel('gibbonCourseClassID',__('Class'));
+        $row->addSelectClass('gibbonCourseClassID', $gibbonSchoolYearID, $session->get('gibbonPersonID'))->selected($gibbonCourseClassID)->placeholder();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -58,28 +52,33 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/report_ale
 
     echo $form->getOutput();
 
-    if (empty($gibbonFormGroupID)) return;
+    if (empty($gibbonCourseClassID)) return;
 
-        // CRITERIA
+    // CRITERIA
     $criteria = $alertGateway->newQueryCriteria(true)
         ->sortBy(['surname', 'preferredName'])
-        ->filterBy('formGroup', $gibbonFormGroupID)
+        ->filterBy('class', $gibbonCourseClassID)
         ->fromPOST();
 
-    $students = $alertGateway->queryStudentsWithAlertsByFormGroup($criteria, $gibbonFormGroupID);
-    $students->transform(function (&$student) use ($alertGateway, $alertManager, $gibbonSchoolYearID) {
+    $students = $alertGateway->queryStudentsWithAlertsByClass($criteria, $gibbonCourseClassID);
+    $students->transform(function (&$student) use ($alertGateway, $alertManager, $gibbonSchoolYearID, $gibbonCourseClassID) {
         $student['alerts'] = $alertManager->getAlertsByStudent($student['gibbonPersonID']);
         $student['classAlerts'] = $alertGateway->selectClassAlertsByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGrouped();
+        $student['classAlerts'] = array_map(function ($alertGroup) use ($gibbonCourseClassID) {
+            return array_filter($alertGroup, function ($alert) use ($gibbonCourseClassID) {
+                return $alert['gibbonCourseClassID'] == $gibbonCourseClassID;
+            });
+        }, $student['classAlerts']);
     });
 
     // DATA TABLE
     $table = DataTable::createPaginated('manageAlerts', $criteria);
     $table->setTitle(__('Alerts'));
 
-    $table->addHeaderAction('add', __('Add Global Alert'))
+    $table->addHeaderAction('add', __('Add Class Alert'))
         ->setURL('/modules/Student Alerts/studentAlerts_add.php')
-        ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-        ->addParam('source', 'formGroup')
+        ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+        ->addParam('source', 'class')
         ->displayLabel();
 
     $table->modifyRows(function($alert, $row) {
@@ -142,9 +141,9 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/report_ale
     }
 
     $table->addActionColumn()
-        ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
+        ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+        ->addParam('source', 'class')
         ->addParam('gibbonPersonID')
-        ->addParam('source', 'formGroup')
         ->format(function ($alert, $actions)  {
             $actions->addAction('add', __('Add'))
                 ->setURL('/modules/Student Alerts/studentAlerts_add.php');

@@ -55,10 +55,13 @@ class AlertTypeGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectAllAlertTypes()
+    public function selectActiveAlertTypes($adminOnly = false)
     {
-        $sql = "SELECT * FROM gibbonAlertType ORDER BY sequenceNumber, name";
+        $sql = $adminOnly
+            ? "SELECT * FROM gibbonAlertType WHERE active='Y' ORDER BY sequenceNumber, name"
+            : "SELECT * FROM gibbonAlertType WHERE adminOnly='N' AND active='Y' ORDER BY sequenceNumber, name";
 
         return $this->db()->select($sql);
     }
+    
 }

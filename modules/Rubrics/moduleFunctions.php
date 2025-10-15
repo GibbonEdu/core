@@ -305,7 +305,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             }
 
             //Div to contain rubric for current and historicla views
-            $output .= "<div id='rubric'>";
+            $output .= "<div id='rubric' style='overflow-x: auto'>";
             
                 if ($mark == true) {
                     $output .= '<p>';

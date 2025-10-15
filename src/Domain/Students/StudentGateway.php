@@ -82,6 +82,14 @@ class StudentGateway extends QueryableGateway
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
+        $criteria->addFilterRules([
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('gibbonStudentEnrolment.gibbonYearGroupID = :gibbonYearGroupID')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
+        ]);
+
         return $this->runQuery($query, $criteria);
     }
 

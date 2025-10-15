@@ -31,13 +31,19 @@ v30.0.00
         Added a Pastoral heading to the main menu and moved Behaviour, Attendance and Individual Needs
 
     Tweaks & Additions
+        System: added the option for administrators to impersonate other user accounts
         System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
         System: switched interface strings from Value Added License to Catalyst License
+        System: added a backup table to store person images from previous years
+        System: added Balochi as a language option in dropdown menus
+        System: set Japanese and Portugese as an active language
+        System: added Balochi as a spoken language option for user data
         Activities: added the option for parents to register their children in activities
         Activities: added student tags on the Manage Enrolment page
         Activities: added a description field to the cost section for activities
         Activities: included the photos in the new copy when an activity is duplicated
         Behaviour: added Add Multiple button to Behaviour tab of student profile
+        Formal Assessment: added a Year Group filter option to Manage External Assessment
         Individual Needs: enabled viewing IN records for past students as read-only
         Library: added the option to send an email to parents when lending a library item
         Messenger: enabled resending to any recipient when read receipts are off in Send Report
@@ -55,12 +61,12 @@ v30.0.00
         Staff: limited Add Staff list to users who are not already staff but have a staff role
         Staff: added an option to separate the Staff Duty page into tabs by duty type
         Staff: added an option to accept a Staff Application without creating an account
-        Students: fixed error on student profile related to a typo in studentMenuCategory variable
+        Students: added a drop-down filter to the Student Transport report
         System Admin: added the option to upload user photos in jpeg format
         System Admin: added new loaned items import for Library
-        System: added a backup table to store person images from previous years
         Timetable: added coverage details for staff duty and activities on the timetable
         Timetable: added a search field in 'Manage Bookings' and 'Mange Facility Changes'
+        User Admin: added a backup table to store person images from previous years
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
 
@@ -71,14 +77,20 @@ v30.0.00
         System: fixed login redirect after public registration
         System: fixed redirect logic in Payment class causing unnecessary error logs
         Activities: fixed Manage Enrolment when participants are part of more than one activity
+        Activities: fixed the Activities tab on the parent dashboard to work with new activities system
         Data Updater: fixed attachments being cleared when new data updates are submitted
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Planner: fixed Teacher Notes in smart blocks not visible when using the Show Confidential Data toggle
         Planner: fixed access to class list in Edit Unit when viewing past and upcoming years
+        Rubrics: fixed the bug preventing to view ATL Rubrics table on mobile devices
         Staff: fixed coverage longer than one week not including staff duty and activity cover
         Staff: fixed order of Staff Directory to honour the biographicalGroupingOrder setting
+        Staff: fixed missing staff name for general coverage in Daily Coverage Planner
+        Students: updated default value for longTermMedication to N for new medical records
+        Timetable: fixed multiple instances of the same TT day in a week not showing up
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
         Timetable Admin: fixed the issue of setting white as the default color for both background and font
+        Timetable Admin: fixed bug to allow timetable deletion
         User Admin: fixed uneditable fields for new Personal Documents in Manage Users
 
     Deprecations
