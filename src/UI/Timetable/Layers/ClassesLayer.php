@@ -179,8 +179,8 @@ class ClassesLayer extends AbstractTimetableLayer
                 if ($canEditTimetable) {
                     $item->set('secondaryAction', [
                         'name'      => 'edit',
-                        'label'     => __('Manage Exceptions'),
-                        'url'       => Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception')->withQueryParams(['gibbonSchoolYearID' => $context->get('gibbonSchoolYearID'), 'gibbonTTID' => $class['gibbonTTID'], 'gibbonTTDayID' => $class['gibbonTTDayID'], 'gibbonTTDayRowClassID' => $class['gibbonTTDayRowClassID'], 'gibbonTTColumnRowID' => $class['gibbonTTColumnRowID'], 'gibbonCourseClassID' => $class['gibbonCourseClassID']]),
+                        'label'     => __('Add Exception'),
+                        'url'       => Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_addProcess')->withQueryParams(['gibbonSchoolYearID' => $context->get('gibbonSchoolYearID'), 'gibbonTTID' => $class['gibbonTTID'], 'gibbonTTDayID' => $class['gibbonTTDayID'], 'gibbonTTDayRowClassID' => $class['gibbonTTDayRowClassID'], 'gibbonTTColumnRowID' => $class['gibbonTTColumnRowID'], 'gibbonCourseClassID' => $class['gibbonCourseClassID'], 'gibbonPersonID' => $context->get('gibbonPersonID')])->directLink(),
                         'icon'      => 'user-minus',
                         'iconClass' => 'text-gray-600 hover:text-gray-800',
                     ]);

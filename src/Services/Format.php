@@ -597,9 +597,11 @@ class Format
      * @param string $class
      * @return string
      */
-    public static function tooltip($value, $tooltip = '', $class = '')
+    public static function tooltip($value, $tooltip = '', $class = '', $style = '')
     {
-        return '<span title="'.$tooltip.'" class="'.$class.'">'.$value.'</span>';
+        return !empty($style) 
+            ? '<span x-tooltip.'.$style.'="'.htmlPrep($tooltip).'" class="'.$class.'">'.$value.'</span>'
+            : '<span title="'.$tooltip.'" class="'.$class.'">'.$value.'</span>';
     }
 
     /**

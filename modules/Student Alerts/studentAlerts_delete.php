@@ -20,31 +20,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
-    //Check if gibbonTTID specified
-    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
-    if ($gibbonTTID == '') {
+    // Proceed!
+    $gibbonAlertID = $_GET['gibbonAlertID'] ?? '';
+    
+    if (empty($gibbonAlertID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
-    } else {
-        
-            $data = array('gibbonTTID' => $gibbonTTID);
-            $sql = 'SELECT * FROM gibbonTT WHERE gibbonTTID=:gibbonTTID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
-            $page->addError(__('The specified record cannot be found.'));
-        } else {
-            //Let's go!
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_deleteProcess.php", true);
-            $form->addHiddenValue('gibbonTTID', $gibbonTTID);
-            $form->addHiddenValue('gibbonSchoolYearID', $_GET['gibbonSchoolYearID']);
-            echo $form->getOutput();
-        }
+        return;
     }
+
+    $values = $container->get(AlertGateway::class)->getByID($gibbonAlertID);
+
+    if (empty($values)) {
+        $page->addError(__('The specified record cannot be found.'));
+        return;
+    }
+
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Student Alerts/studentAlerts_deleteProcess.php', true);
+    $form->addHiddenValue('gibbonAlertID', $gibbonAlertID);
+    echo $form->getOutput();
 }

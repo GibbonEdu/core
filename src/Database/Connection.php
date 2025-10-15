@@ -103,9 +103,12 @@ class Connection implements ConnectionInterface
     public function selectOne($query, $bindings = [])
     {
         $result = $this->run($query, $bindings);
-        return $result->columnCount() == 1
+        $default = $result->columnCount() == 1 ? 0 : [];
+        $value = $result->columnCount() == 1
             ? $result->fetchColumn()
             : $result->fetch();
+            
+        return $value !== false ? $value : $default;
     }
 
     /**

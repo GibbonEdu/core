@@ -2,43 +2,54 @@ details:
     type: libraryItemEventReturn
     name: Library Item Event Return
     table: gibbonLibraryItemEvent
-    modes: { update: true, insert: true, export: true }
+    modes: { update: true, insert: false, export: true }
 access:
     module: Library
     action: Manage Catalog
 fields:
     id: 
-        name: "Item ID"
-        desc: "Item ID"
+        name: "School ID"
+        desc: ""
+        args: { filter: string, required: true }
     gibbonLibraryItemID: 
-        name: "LibItem ID"
-        desc: "LibItem ID"
+        name: "ID"
+        desc: "gibbonLibraryItemID"
         args: { filter: string, required: true, linked: id, readonly: [ gibbonLibraryItem ] } 
         relationship: { table: gibbonLibraryItem, key: gibbonLibraryItemID, field: id }
     gibbonPersonIDStatusResponsible:
-        name: "Student Username/Email"
+        name: "Responsible User"
         desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|email  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
+    gibbonPersonIDIn:
+        name: "Created By"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
     type:
-        name: "Type"
-        desc: "Type of event"
+        name: "Event Type"
+        desc: ""
         value: "Loan"
         args: { filter: string, hidden: true }
     status:
-        name: "Status"
-        desc: "Status of the item"
-        value: "On Loan"
+        name: "Current Status"
+        desc: ""
+        value: "Available"
         args: { filter: string, hidden: true }
-    status2:
-        name: "Status2"
-        desc: "Status of the event"
+    timestampReturn:
+        name: "Timestamp"
+        desc: ""
+        args: { filter: timestamp, hidden: true, function: timestamp }
+    gibbonLibraryItemEvent.status:
+        name: "New Status"
+        desc: ""
         value: "Returned"
-        args: { filter: string, hidden: true }
+        args: { filter: string, hidden: true, readonly: [ gibbonLibraryItem ] }
     gibbonLibraryItemEventID: 
-        name: "Event ID"
-        desc: "Event ID"
-        args: { filter: string, required: true, linked: status } 
+        name: "gibbonLibraryItemEventID"
+        desc: ""
+        value: "On Loan"
+        args: { filter: string, required: true, hidden: true } 
         relationship: { table: gibbonLibraryItemEvent, key: gibbonLibraryItemEventID, field: [ status, gibbonLibraryItemID, gibbonPersonIDStatusResponsible, type ] }
 tables:
     gibbonLibraryItem:
@@ -55,4 +66,8 @@ tables:
         uniqueKeys:
             - [ gibbonLibraryItemEventID ]
         fields:
-            - status
+            - gibbonLibraryItemEvent.status
+            - gibbonLibraryItemEventID
+            - gibbonLibraryItemID
+            - timestampReturn
+            - gibbonPersonIDIn

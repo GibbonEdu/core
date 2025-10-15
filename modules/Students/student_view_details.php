@@ -90,8 +90,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 $skipBrief = true;
             }
 
-            //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full.
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
+            //Test if View Student Profile_myChildren is available and parent has access to this student...if so, skip brief, and go to full.
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
                     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                     $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                     $result = $connection2->prepare($sql);
@@ -1229,7 +1229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo $table->render(new DataSet(array_merge($familyAdults, $contacts, $staff)));
 
                     } elseif ($subpage == 'Medical') {
-                        if (!$skipBrief) {
+                        if (!$skipBrief || isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
                             echo Format::alert(__('Your request failed because you do not have access to this action.'));
                         } else {
                             /** @var MedicalGateway */
@@ -2507,7 +2507,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     if ($subpage == 'Medical') {
                         $style = "style='font-weight: bold'";
                     }
+                    if (!isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
                      $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>';
+                    }
 
                     if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php')) {
                         $style = '';

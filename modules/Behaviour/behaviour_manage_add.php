@@ -86,10 +86,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     ->setURL('/modules/Behaviour/behaviour_manage.php')
                     ->setIcon('search')
                     ->displayLabel()
-                    ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
-                    ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
-                    ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
-                    ->addParam('type', $_GET['type']);
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
+                    ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+                    ->addParam('type', $type);
             }
             
             $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");

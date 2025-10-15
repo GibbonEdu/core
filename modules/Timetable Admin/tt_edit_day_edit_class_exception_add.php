@@ -33,6 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -90,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             $row = $form->addRow();
                 $row->addLabel('Members', __('Participants'));
-                $row->addSelect('Members')->fromArray($participants)->selectMultiple()->required()->setSize(8);
+                $row->addSelect('Members')->fromArray($participants)->selectMultiple()->required()->setSize(8)->selected($gibbonPersonID);
 
             $row = $form->addRow();
                 $row->addFooter();

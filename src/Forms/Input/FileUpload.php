@@ -63,7 +63,7 @@ class FileUpload extends Input
 
             $this->setAttribute('title', (count($accepts) < 20? implode(', ', $accepts) : ''));
             $this->setAttribute('accept', str_replace("'", '', $within));
-            $this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "'.__('Illegal file type!').'", partialMatch: true, caseSensitive: false');
+            // $this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "'.__('Illegal file type!').'", partialMatch: true, caseSensitive: false');
         }
         return $this;
     }

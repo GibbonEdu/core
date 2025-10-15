@@ -193,6 +193,27 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectClassStudentEnrolment($gibbonCourseClassID)
+    {
+        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonCourseClassPerson.role, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.name as formGroup
+            FROM gibbonPerson
+            INNER JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+            INNER JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+            INNER JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            INNER JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID)
+            INNER JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
+            WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+            AND gibbonPerson.status='Full'
+            AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
+            AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)
+            AND gibbonCourseClassPerson.role='Student'
+            GROUP BY gibbonPerson.gibbonPersonID
+            ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectClassParticipantsByDate($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
         $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'today' => date('Y-m-d')];

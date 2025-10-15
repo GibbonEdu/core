@@ -1,7 +1,7 @@
 <?php
-    if ($action == 'add' || $action == 'addMultiple' || $action == 'accept') {
+    if ($action == 'add' || $action == 'addMultiple' || $action == 'accept' || $action == 'approve') {
         $hoverClass = 'hover:text-green-500 hover:border-green-500';
-    } elseif ($action == 'delete' || $action == 'reject') {
+    } elseif ($action == 'delete' || $action == 'reject' || $action == 'decline' || $action == 'cancel') {
         $hoverClass = 'hover:text-red-700 hover:border-red-700';
     } else {
         $hoverClass = 'hover:text-blue-500 hover:border-blue-500';

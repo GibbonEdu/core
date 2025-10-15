@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonTTID = $_P['gibbonTTID'] ?? '';
+$gibbonTTID = $_POST['gibbonTTID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt_delete.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt.php&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
 

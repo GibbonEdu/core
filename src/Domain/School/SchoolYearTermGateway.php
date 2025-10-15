@@ -86,7 +86,7 @@ class SchoolYearTermGateway extends QueryableGateway
                 GROUP BY name
                 ORDER BY date";
         } else {
-            $sql = "SELECT date, name, type
+            $sql = "SELECT date, name
                 FROM gibbonSchoolYearSpecialDay
                 WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)
                 AND type='School Closure'

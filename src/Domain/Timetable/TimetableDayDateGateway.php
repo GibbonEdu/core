@@ -105,8 +105,8 @@ class TimetableDayDateGateway extends QueryableGateway
             AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
             AND NOT role LIKE '% - Left' 
             AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
-        GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID 
-        ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC
+        GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTDayDate.gibbonTTDayDateID
+        ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC, gibbonCourse.name, gibbonCourseClass.nameShort, gibbonStaffCoverage.status
         ";
 
         return $this->db()->select($sql, $data);

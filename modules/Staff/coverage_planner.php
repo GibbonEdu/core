@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
-                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                if (empty($coverage['gibbonStaffAbsenceID']) || empty($coverage['context'])) {
                     return $coverage['contextName'].'<br/>'.Format::small(Format::timeRange($coverage['timeStart'], $coverage['timeEnd']));
                 };
 

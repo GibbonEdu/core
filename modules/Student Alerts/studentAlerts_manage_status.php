@@ -23,20 +23,17 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Support\Facades\Access;
 
-if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_manage_approval.php')) {
+if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_manage_status.php')) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $action = Access::get('Student Alerts', 'studentAlerts_manage');
-    if (!$action->allowsAny('Manage Student Alerts_all', 'Manage Student Alerts_headOfYear')) {
-        $page->addError(__('You do not have access to this action.'));
-        return;
-    }
+    $canApprove = $action->allowsAny('Manage Student Alerts_all', 'Manage Student Alerts_headOfYear');
     
     $page->breadcrumbs
         ->add(__('Manage Alerts'), 'studentAlerts_manage.php')
-        ->add(__('Approve Alert'));
+        ->add(__('Alert Status'));
 
     $gibbonAlertID = $_GET['gibbonAlertID'] ?? '';
     $status = $_GET['status'] ?? '';
@@ -73,48 +70,39 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
         $row->addTextField('level')
             ->setValue($alert['level'])
             ->readonly();
-    
-    $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description(__('If the alert is for a specified period'));
-        $row->addTextField('dateStart')
-            ->setValue(!empty($alert['dateStart']) ? Format::date($alert['dateStart']) : __('N/A'))
-            ->readonly();
 
-    $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description(__('If the alert is for a specified period')); 
-        $row->addTextField('dateEnd')
-            ->setValue(!empty($alert['dateEnd']) ? Format::date($alert['dateEnd']) : __('N/A'))
-            ->readonly();
-
-    $row = $form->addRow();
-            $col = $row->addColumn();
-            $col->addLabel('comment', __('Comment'));
-            $col->addEditor('comment')
-                ->setValue($alert['comment'])
-                ->readonly();
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('comment', __('Comment'));
+        $col->addTextArea('comment')->setRows(5)->readonly()->setValue($alert['comment']);
 
     echo $form->getOutput();
 
-    $form = Form::create('alertApproval', $session->get('absoluteURL').'/modules/Student Alerts/studentAlerts_manage_approvalProcess.php');
+    $form = Form::create('alertStatus', $session->get('absoluteURL').'/modules/Student Alerts/studentAlerts_manage_statusProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonAlertID', $gibbonAlertID);
     
-    $form->addRow()->addHeading('Approval', __('Approval'));
-
-    $options = [
-        'Approved' => __('Approved'),
-        'Declined' => __('Declined'),
-    ];
+    if ($canApprove && $status != 'Cancelled') {
+        $form->addRow()->addHeading('Approval', __('Approval'));
+        $options = [
+            'Approved' => __('Approved'),
+            'Declined' => __('Declined'),
+        ];
+    } else {
+        $form->addRow()->addHeading('Alert Status', __('Alert Status'));
+        $options = [
+            'Cancelled' => __('Cancelled'),
+        ];
+    }
 
     $row = $form->addRow();
         $row->addLabel('status', __('Status'));
         $row->addSelect('status')->fromArray($options)->selected($status)->required();
 
     $row = $form->addRow();
-        $row->addLabel('notesApproval', __('Reply'));
-        $row->addTextArea('notesApproval')->setRows(3);
+        $row->addLabel('notesStatus', __('Notes'));
+        $row->addTextArea('notesStatus')->setRows(3);
 
     $row = $form->addRow();
         $row->addFooter();

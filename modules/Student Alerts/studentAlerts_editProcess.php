@@ -17,19 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
-use Gibbon\Domain\System\AlertLevelGateway;
 
-include '../../gibbon.php';
-include './moduleFunctions.php';
+require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML']);
 
 $gibbonAlertID = $_POST['gibbonAlertID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Student Alerts/studentAlerts_edit.php&gibbonAlertID='.$gibbonAlertID;
+
+$URL = Url::fromModuleRoute('Student Alerts', 'studentAlerts_edit')->withQueryParams(['gibbonAlertID' => $gibbonAlertID]);
 
 if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_edit.php')) {
     // Access denied
@@ -42,10 +44,10 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
     $alertLevelGateway = $container->get(AlertLevelGateway::class);
     $alertTypeGateway = $container->get(AlertTypeGateway::class);
 
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
-    $canEditAlert = $alertGateway->getAlertEditAccess($gibbonAlertID, $session->get('gibbonPersonID'));
+    $action = Access::get('Student Alerts', 'studentAlerts_edit');
+    $canEditAlert = $action->allowsAny('Manage Student Alerts_all', 'Manage Student Alerts_headOfYear') || $alertGateway->getAlertEditAccess($gibbonAlertID, $session->get('gibbonPersonID'));
     
-    if ($highestAction != 'Manage Student Alerts_all' && $highestAction != 'Manage Student Alerts_headOfYear' && !$canEditAlert) {
+    if (!$canEditAlert) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

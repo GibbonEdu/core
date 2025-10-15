@@ -357,7 +357,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
                     $row = $table->addRow();
                     $row->addContent(__($importType->getField($fieldName, 'name')))
-                            ->wrap('<span class="'.$importType->getField($fieldName, 'desc').'">', '</span>')
+                            ->wrap('<span title="'.$importType->getField($fieldName, 'desc').'">', '</span>')
                             ->append($columnIndicators($fieldName));
                     $row->addContent($importType->readableFieldType($fieldName));
                     $row->addSelect('columnOrder['.$count.']')

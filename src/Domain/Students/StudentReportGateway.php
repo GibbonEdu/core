@@ -36,7 +36,7 @@ class StudentReportGateway extends QueryableGateway
     use SharedUserLogic;
 
     private static $tableName = 'gibbonStudentEnrolment';
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['gibbonPerson.transport', 'gibbonPerson.surname', 'gibbonPerson.preferredName'];
 
 
     /**
@@ -81,6 +81,13 @@ class StudentReportGateway extends QueryableGateway
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
             ->bindValue('today', date('Y-m-d'));
 
+        $criteria->addFilterRules([
+            'transport' => function ($query, $transport) {
+                return $query
+                    ->where('gibbonPerson.transport=:transport')
+                    ->bindValue('transport', $transport);
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }

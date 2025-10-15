@@ -612,7 +612,7 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('transport')->onRadio('transport')->when('Y');
 
-            $transportList = $this->userGateway->getTransportList()->fetchAll();
+            $transportList = $this->userGateway->selectTransportList()->fetchAll();
             $transportList = array_unique(array_reduce($transportList, function ($group, $item) {
                 $list = array_map('trim', explode(',', $item['transport'] ?? ''));
                 $group = array_merge($group, $list);

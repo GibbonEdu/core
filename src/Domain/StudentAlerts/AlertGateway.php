@@ -40,7 +40,7 @@ class AlertGateway extends QueryableGateway
     private static $primaryKey = 'gibbonAlertID';
     private static $searchableColumns = [];
 
-    public function queryAlertsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDCreator = null)
+    public function queryAlertsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDCreated = null)
     {
         $query = $this
             ->newQuery()
@@ -48,6 +48,7 @@ class AlertGateway extends QueryableGateway
             ->cols([
                 'gibbonAlert.gibbonAlertID',
                 'gibbonAlert.gibbonAlertLevelID',
+                'gibbonAlert.gibbonCourseClassID',
                 'gibbonAlert.context',
                 'gibbonAlert.type',
                 'gibbonAlert.status',
@@ -55,7 +56,7 @@ class AlertGateway extends QueryableGateway
                 'gibbonAlert.dateStart',
                 'gibbonAlert.dateEnd',
                 'gibbonAlert.comment',
-                'gibbonAlert.gibbonPersonIDCreator',
+                'gibbonAlert.gibbonPersonIDCreated',
                 'gibbonAlert.timestampCreated',
                 'gibbonAlertLevel.color as levelColor',
                 'gibbonAlertLevel.colorBG as levelColorBG',
@@ -71,21 +72,25 @@ class AlertGateway extends QueryableGateway
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator',
+                'gibbonCourse.nameShort as courseName',
+                'gibbonCourseClass.nameShort as className',
             ])
             ->innerJoin('gibbonAlertType', 'gibbonAlert.gibbonAlertTypeID=gibbonAlertType.gibbonAlertTypeID')
             ->leftJoin('gibbonAlertLevel', 'gibbonAlert.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID')
             ->innerJoin('gibbonPerson AS student', 'gibbonAlert.gibbonPersonID=student.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
-            ->leftJoin('gibbonPerson AS creator', 'gibbonAlert.gibbonPersonIDCreator=creator.gibbonPersonID')
+            ->leftJoin('gibbonPerson AS creator', 'gibbonAlert.gibbonPersonIDCreated=creator.gibbonPersonID')
+            ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonAlert.gibbonCourseClassID')
+            ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
             ->where('gibbonAlert.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonAlert.gibbonSchoolYearID')
             ->where('gibbonAlertType.active="Y"');
 
-        if (!empty($gibbonPersonIDCreator)) {
-            $query->where('gibbonAlert.gibbonPersonIDCreator = :gibbonPersonIDCreator')
-                ->bindValue('gibbonPersonIDCreator', $gibbonPersonIDCreator);
+        if (!empty($gibbonPersonIDCreated)) {
+            $query->where('gibbonAlert.gibbonPersonIDCreated = :gibbonPersonIDCreated')
+                ->bindValue('gibbonPersonIDCreated', $gibbonPersonIDCreated);
         }
 
         $criteria->addFilterRules([
@@ -103,6 +108,21 @@ class AlertGateway extends QueryableGateway
                 return $query
                     ->where('gibbonStudentEnrolment.gibbonYearGroupID = :gibbonYearGroupID')
                     ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonAlert.status = :status')
+                    ->bindValue('status', $status);
+            },
+            'context' => function ($query, $context) {
+                return $query
+                    ->where('gibbonAlert.context = :context')
+                    ->bindValue('context', $context);
+            },
+            'scope' => function ($query, $value) {
+                return $value == 'class' 
+                    ? $query->where('gibbonAlert.gibbonCourseClassID IS NOT NULL')
+                    : $query->where('gibbonAlert.gibbonCourseClassID IS NULL');
             },
         ]);
 
@@ -132,22 +152,42 @@ class AlertGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryStudentsWithAlertsByClass(QueryCriteria $criteria, $gibbonCourseClassID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'gibbonCourse.gibbonSchoolYearID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory"
+            ])
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
+            ->innerJoin('gibbonCourseClassPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
+            ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
+            ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID')
+            ->innerJoin('gibbonAlert', 'gibbonAlert.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonAlert.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID')
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+            ->bindValue('today', date('Y-m-d'))
+            ->where('gibbonCourseClassPerson.role="Student"')
+            ->where('gibbonCourseClassPerson.gibbonCourseClassID = :gibbonCourseClassID')
+            ->bindValue('gibbonCourseClassID', $gibbonCourseClassID)
+            ->groupBy(['gibbonPerson.gibbonPersonID']);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function getAlertEditAccess($gibbonAlertID, $gibbonPersonID)
     {
         $data = ['gibbonAlertID' => $gibbonAlertID, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT (CASE WHEN gibbonPersonIDCreator = :gibbonPersonID THEN TRUE ELSE FALSE END) AS canEdit FROM gibbonAlert WHERE gibbonAlertID = :gibbonAlertID";
+        $sql = "SELECT (CASE WHEN gibbonPersonIDCreated = :gibbonPersonID THEN TRUE ELSE FALSE END) AS canEdit FROM gibbonAlert WHERE gibbonAlertID = :gibbonAlertID";
 
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function selectActiveAlertTypes()
-    {
-        $sql = "SELECT name as groupBy, gibbonAlertType.* FROM gibbonAlertType WHERE active='Y' ORDER BY sequenceNumber, name";
-
-        return $this->db()->select($sql);
-    }
-
-    public function selectAllAlertTypes()
+    public function selectAlertTypes()
     {
         $sql = "SELECT name as groupBy, gibbonAlertType.* FROM gibbonAlertType ORDER BY sequenceNumber, name";
 
@@ -157,7 +197,7 @@ class AlertGateway extends QueryableGateway
     public function selectActiveAlertsByStudent($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonAlertType.name, gibbonAlertType.tag, gibbonAlertType.description, gibbonAlertType.color, gibbonAlertType.colorBG, gibbonAlertType.name as `type`, gibbonAlertLevel.name as `level`, gibbonAlertLevel.sequenceNumber as `alertLevel`, gibbonAlertLevel.color as `levelColor`, gibbonAlertLevel.colorBG as `levelColorBG`, gibbonPerson.privacy
+        $sql = "SELECT gibbonAlertType.name, gibbonAlertType.tag, gibbonAlertType.description, gibbonAlertType.color, gibbonAlertType.colorBG, gibbonAlertType.name as `type`, gibbonAlertLevel.name as `level`, gibbonAlertLevel.sequenceNumber as `alertLevel`, gibbonAlertLevel.color as `levelColor`, gibbonAlertLevel.colorBG as `levelColorBG`, gibbonPerson.privacy, gibbonAlert.timestampCreated, gibbonAlert.context
             FROM gibbonAlert 
             JOIN gibbonAlertType ON (gibbonAlertType.gibbonAlertTypeID=gibbonAlert.gibbonAlertTypeID)
             LEFT JOIN gibbonAlertLevel ON (gibbonAlert.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) 
@@ -165,6 +205,28 @@ class AlertGateway extends QueryableGateway
             WHERE gibbonAlert.gibbonSchoolYearID=:gibbonSchoolYearID 
             AND gibbonAlert.gibbonPersonID=:gibbonPersonID 
             AND gibbonAlert.status='Approved'
+            AND gibbonAlert.gibbonCourseClassID IS NULL
+            AND gibbonAlertType.active='Y'
+            AND (gibbonAlert.dateStart IS NULL OR gibbonAlert.dateStart<=CURRENT_DATE)
+            AND (gibbonAlert.dateEnd IS NULL OR gibbonAlert.dateEnd>=CURRENT_DATE)
+            ORDER BY gibbonAlertType.sequenceNumber, gibbonAlertLevel.sequenceNumber DESC, FIND_IN_SET(gibbonAlert.context,'Automatic,Manual'), gibbonAlert.timestampCreated DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectClassAlertsByStudent($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonAlertType.name as groupBy, gibbonAlertType.name, gibbonAlertType.tag, gibbonAlertType.description, gibbonAlertType.color, gibbonAlertType.colorBG, gibbonAlertType.name as `type`, gibbonAlertLevel.name as `level`, gibbonAlertLevel.sequenceNumber as `alertLevel`, gibbonAlertLevel.color as `levelColor`, gibbonAlertLevel.colorBG as `levelColorBG`, gibbonPerson.privacy, gibbonAlert.timestampCreated, gibbonAlert.context, gibbonAlert.gibbonCourseClassID
+            FROM gibbonAlert 
+            JOIN gibbonAlertType ON (gibbonAlertType.gibbonAlertTypeID=gibbonAlert.gibbonAlertTypeID)
+            LEFT JOIN gibbonAlertLevel ON (gibbonAlert.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) 
+            JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonAlert.gibbonPersonID)
+            WHERE gibbonAlert.gibbonSchoolYearID=:gibbonSchoolYearID 
+            AND gibbonAlert.gibbonPersonID=:gibbonPersonID 
+            AND gibbonAlert.status='Approved'
+            AND gibbonAlert.context='Manual'
+            AND gibbonAlert.gibbonCourseClassID IS NOT NULL
             AND gibbonAlertType.active='Y'
             AND (gibbonAlert.dateStart IS NULL OR gibbonAlert.dateStart<=CURRENT_DATE)
             AND (gibbonAlert.dateEnd IS NULL OR gibbonAlert.dateEnd>=CURRENT_DATE)
@@ -184,6 +246,18 @@ class AlertGateway extends QueryableGateway
             AND gibbonAlert.context='Automatic'";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getAutomaticAlertCount($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(*)
+            FROM gibbonAlert 
+            JOIN gibbonAlertType ON (gibbonAlertType.gibbonAlertTypeID=gibbonAlert.gibbonAlertTypeID)
+            WHERE gibbonAlert.gibbonSchoolYearID=:gibbonSchoolYearID 
+            AND gibbonAlert.context='Automatic'";
+
+        return $this->db()->selectOne($sql, $data);
     }
 
     public function getHighestAlertByType($gibbonSchoolYearID, $gibbonPersonID, $alertType)

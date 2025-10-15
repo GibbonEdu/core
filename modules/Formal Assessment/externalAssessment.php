@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -83,8 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
     $table->addMetaData('filterOptions', [
-        'all:on'        => __('All Students')
+        'all:on'        => __('All Students'),
     ]);
+
+    $yearGroups = $container->get(YearGroupGateway::class)->selectYearGroups()->fetchKeyPair();
+    foreach ($yearGroups as $gibbonYearGroupID => $name) {
+        $table->addMetaData('filterOptions', [
+            'yearGroup:'.$gibbonYearGroupID => $name,
+        ]);
+    }
 
     if ($criteria->hasFilter('all')) {
         $table->addMetaData('filterOptions', [
