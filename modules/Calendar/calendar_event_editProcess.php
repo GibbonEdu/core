@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         header("Location: {$URL}");
     }
 
-    if (empty($_POST['start']) || empty($_POST['end'])) {
+    if (empty($_POST['dateStart']) || empty($_POST['dateEnd'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     }
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     }
 
     $gibbonPersonIDOrganiser = $_POST['gibbonPersonIDOrganiser'] ?? '';
-
+    
     $data = [
         'gibbonCalendarID'        => $_POST['gibbonCalendarID'] ?? '',
         'gibbonCalendarEventTypeID' => $_POST['gibbonCalendarEventTypeID'] ?? '',
@@ -69,24 +69,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         'dateStart'               => $dateStart->format('Y-m-d'),
         'dateEnd'                 => $dateEnd->format('Y-m-d'),
         'allDay'                  => !empty($_POST['allDay']) ? $_POST['allDay'] : 'N',
+        'timeStart'               => $_POST['timeStart'] ?? NULL,
+        'timeEnd'                 => $_POST['timeEnd'] ?? NULL,    
         'locationType'            => $_POST['locationType'] ?? 'External',
+        'locationDetail'          => $_POST['locationDetail'] ?? '',
+        'locationURL'             => $_POST['locationURL'] ?? '',
+        'gibbonSpaceID'           => $_POST['gibbonSpaceID'] ?? NULL,
         'gibbonPersonIDOrganiser' => $gibbonPersonIDOrganiser,
         'timestampModified'       => date('Y-m-d H:i:s'),
         'gibbonPersonIDModified'  => $session->get('gibbonPersonID') ?? '',
     ];
     
-    if ($data['allDay'] == 'N') {
-        $data['timeStart'] = $_POST['timeStart'] ?? '';
-        $data['timeEnd'] = $_POST['timeEnd'] ?? '';
-    }
-
-    if ($data['locationType'] == 'Internal') {
-        $data['gibbonSpaceID'] = $_POST['gibbonSpaceID'] ?? '';
-    } else {
-        $data['locationDetail'] = $_POST['locationDetail'] ?? '';
-        $data['locationURL'] = $_POST['locationURL'] ?? '';
-    }
-
     // Validate the required values are present
     if (empty($data['name']) || empty($data['gibbonCalendarID']) || empty($data['gibbonCalendarEventTypeID']) || empty($data['locationType']) || empty($data['dateStart']) || empty($data['dateEnd'])) {
         $URL .= '&return=error1';

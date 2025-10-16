@@ -53,26 +53,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         'dateStart'               => $dateStart->format('Y-m-d'),
         'dateEnd'                 => $dateEnd->format('Y-m-d'),
         'allDay'                  => !empty($_POST['allDay']) ? $_POST['allDay'] : 'N',
+        'timeStart'               => $_POST['timeStart'] ?? NULL,
+        'timeEnd'                 => $_POST['timeEnd'] ?? NULL,   
         'locationType'            => $_POST['locationType'] ?? 'External',
+        'locationDetail'          => $_POST['locationDetail'] ?? '',
+        'locationURL'             => $_POST['locationURL'] ?? '',
+        'gibbonSpaceID'           => $_POST['gibbonSpaceID'] ?? NULL,
         'gibbonPersonIDOrganiser' => $gibbonPersonIDOrganiser,
         'timestampCreated'        => date('Y-m-d H:i:s'),
         'gibbonPersonIDCreated'   => $session->get('gibbonPersonID') ?? '',
         'timestampModified'       => date('Y-m-d H:i:s'),
         'gibbonPersonIDModified'  => $session->get('gibbonPersonID') ?? '',
     ];
-
-    if ($data['allDay'] == 'N') {
-        $data['timeStart'] = $_POST['timeStart'] ?? '';
-        $data['timeEnd'] = $_POST['timeEnd'] ?? '';
-    }
-
-    if ($data['locationType'] == 'Internal') {
-        $data['gibbonSpaceID'] = $_POST['gibbonSpaceID'] ?? '';
-    } else {
-        $data['locationDetail'] = $_POST['locationDetail'] ?? '';
-        $data['locationURL'] = $_POST['locationURL'] ?? '';
-    }
-
+    
     // Validate the required values are present
     if (empty($data['name']) || empty($data['dateStart']) || empty($data['dateEnd'])) {
         $URL .= '&return=error1';

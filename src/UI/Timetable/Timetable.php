@@ -31,6 +31,7 @@ use Gibbon\UI\Timetable\Layers\StaffDutyLayer;
 use Gibbon\UI\Timetable\Layers\ClassesLayer;
 use Gibbon\UI\Timetable\Layers\ActivitiesLayer;
 use Gibbon\UI\Timetable\Layers\BookingsLayer;
+use Gibbon\UI\Timetable\Layers\CalendarEventsLayer;
 use Gibbon\UI\Timetable\Layers\StaffCoverLayer;
 use Gibbon\UI\Timetable\Layers\StaffAbsenceLayer;
 use Gibbon\UI\Timetable\Layers\SchoolCalendarLayer;
@@ -141,6 +142,7 @@ class Timetable implements OutputableInterface
         $this->addLayer($container->get(StaffCoverLayer::class));
         $this->addLayer($container->get(StaffAbsenceLayer::class));
         $this->addLayer($container->get(ActivitiesLayer::class));
+        $this->addLayer($container->get(CalendarEventsLayer::class));
         $this->addLayer($container->get(BookingsLayer::class));
         $this->addLayer($container->get(SchoolCalendarLayer::class));
         $this->addLayer($container->get(PersonalCalendarLayer::class));

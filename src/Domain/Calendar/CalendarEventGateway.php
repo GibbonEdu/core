@@ -93,4 +93,85 @@ class CalendarEventGateway extends QueryableGateway
 
         return $this->db()->select($sql);
     }
+
+    public function selectActiveEnrolledEvents($gibbonSchoolYearID, $gibbonPersonID, $rangeStart = null, $rangeEnd = null)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonCalendarEvent.gibbonCalendarEventID',
+                'gibbonCalendarEvent.gibbonCalendarID',
+                'gibbonCalendarEvent.gibbonCalendarEventTypeID',
+                'gibbonCalendarEvent.name',
+                'gibbonCalendarEvent.status',
+                'gibbonCalendarEvent.description',
+                'gibbonCalendarEvent.dateStart',
+                'gibbonCalendarEvent.dateEnd',
+                'gibbonCalendarEvent.timeStart',
+                'gibbonCalendarEvent.timeEnd',
+                'gibbonCalendarEvent.allDay',
+                'gibbonCalendarEvent.locationType',
+                'gibbonCalendarEvent.locationDetail',
+                'gibbonCalendarEvent.locationURL',
+                'gibbonCalendarEvent.gibbonSpaceID',
+                'gibbonCalendarEvent.gibbonPersonIDOrganiser',
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.preferredName', 
+                'gibbonPerson.surname',
+                'CASE WHEN gibbonCalendarEvent.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE NULL END AS space',
+            ])
+            ->leftJoin('gibbonCalendar', 'gibbonCalendar.gibbonCalendarID=gibbonCalendarEvent.gibbonCalendarID')
+            ->leftJoin('gibbonCalendarEventType', 'gibbonCalendarEventType.gibbonCalendarEventTypeID=gibbonCalendarEvent.gibbonCalendarEventTypeID')
+            ->innerJoin('gibbonCalendarEventPerson', 'gibbonCalendarEvent.gibbonCalendarEventID=gibbonCalendarEventPerson.gibbonCalendarEventID')
+            ->innerJoin('gibbonPerson', "gibbonCalendarEventPerson.gibbonPersonID=gibbonPerson.gibbonPersonID")
+            ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonCalendarEvent.gibbonSpaceID')
+            ->where('gibbonCalendar.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonCalendarEvent.status = 'Confirmed'")
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonCalendarEvent.dateStart <= :rangeEnd AND gibbonCalendarEvent.dateEnd >= :rangeStart)')
+            ->bindValue('rangeStart', $rangeStart)
+            ->bindValue('rangeEnd', $rangeEnd)
+            ->where('gibbonCalendarEventPerson.gibbonPersonID=:gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+
+        return $this->runSelect($query);
+    }
+      public function selectEventsByFacility($gibbonSchoolYearID, $gibbonSpaceID, $rangeStart = null, $rangeEnd = null)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonCalendarEvent.gibbonCalendarEventID',
+                'gibbonCalendarEvent.gibbonCalendarID',
+                'gibbonCalendarEvent.gibbonCalendarEventTypeID',
+                'gibbonCalendarEvent.name',
+                'gibbonCalendarEvent.status',
+                'gibbonCalendarEvent.dateStart',
+                'gibbonCalendarEvent.dateEnd',
+                'gibbonCalendarEvent.timeStart',
+                'gibbonCalendarEvent.timeEnd',
+                'gibbonCalendarEvent.allDay',
+                'gibbonCalendarEvent.locationType',
+                'gibbonCalendarEvent.locationDetail',
+                'gibbonCalendarEvent.gibbonSpaceID',
+                'gibbonCalendarEvent.gibbonPersonIDOrganiser',
+                'CASE WHEN gibbonCalendarEvent.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE NULL END AS space',
+            ])
+            ->leftJoin('gibbonCalendar', 'gibbonCalendar.gibbonCalendarID=gibbonCalendarEvent.gibbonCalendarID')
+            ->leftJoin('gibbonCalendarEventType', 'gibbonCalendarEventType.gibbonCalendarEventTypeID=gibbonCalendarEvent.gibbonCalendarEventTypeID')
+            ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonCalendarEvent.gibbonSpaceID')
+            ->where('gibbonCalendar.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonCalendarEvent.status = 'Confirmed'")
+            ->where('(gibbonCalendarEvent.dateStart <= :rangeEnd AND gibbonCalendarEvent.dateEnd >= :rangeStart)')
+            ->bindValue('rangeStart', $rangeStart)
+            ->bindValue('rangeEnd', $rangeEnd)
+            ->where('gibbonSpace.gibbonSpaceID=:gibbonSpaceID')
+            ->bindValue('gibbonSpaceID', $gibbonSpaceID);
+
+        return $this->runSelect($query);
+    }
 }
