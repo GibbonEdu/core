@@ -87,6 +87,7 @@ v30.0.00
         Staff: fixed order of Staff Directory to honour the biographicalGroupingOrder setting
         Staff: fixed missing staff name for general coverage in Daily Coverage Planner
         Students: updated default value for longTermMedication to N for new medical records
+        Students: fixed the bug in the hook link when viewing Student Profiles with status left
         Timetable: fixed multiple instances of the same TT day in a week not showing up
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
         Timetable Admin: fixed the issue of setting white as the default color for both background and font
