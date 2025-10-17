@@ -327,17 +327,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
                             $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                         }
-
-                        if ($updateBackupPhoto && !empty($attachment1)) {
+                        
+                        if (!empty($updateBackupPhoto) && !empty($attachment1)) {
                             $personPhotoGateway = $container->get(PersonPhotoGateway::class);
 
                             $photoUpdated = $personPhotoGateway->insertAndUpdate([
-                                'gibbonPersonID' => $userData['gibbonPersonID'],
+                                'gibbonPersonID' => $gibbonPersonID,
                                 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
-                                'personImage' => $file['relativePath'],
+                                'personImage' => $attachment1,
                                 'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
                             ], [
-                                'personImage' => $file['relativePath'],
+                                'personImage' => $attachment1,
                                 'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
                             ]);
                         }

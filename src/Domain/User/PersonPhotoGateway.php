@@ -52,4 +52,17 @@ class PersonPhotoGateway extends QueryableGateway
             
         return $this->runQuery($query, $criteria);
     }
+
+      public function queryPersonPhotoByPerson(QueryCriteria $criteria, $gibbonPersonID) {
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonPersonPhoto.gibbonPersonPhotoID', 'gibbonPersonPhoto.gibbonSchoolYearID', 'gibbonPersonPhoto.gibbonPersonID', 'gibbonPersonPhoto.personImage', 'gibbonPersonPhoto.gibbonPersonIDCreated', 'gibbonPersonPhoto.timestamp', 'gibbonSchoolYear.name as schoolYear', 'modified.surname', 'modified.preferredName'])
+            ->from('gibbonPersonPhoto')
+            ->leftJoin('gibbonPerson as modified', 'modified.gibbonPersonID=gibbonPersonPhoto.gibbonPersonIDCreated')
+            ->leftJoin('gibbonSchoolYear', 'gibbonSchoolYear.gibbonSchoolYearID=gibbonPersonPhoto.gibbonSchoolYearID')
+            ->where('gibbonPersonPhoto.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+            
+        return $this->runQuery($query, $criteria);
+    }
 }
