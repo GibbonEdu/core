@@ -2671,11 +2671,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $options = unserialize($rowHook['options']);
                             $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
 
-                            // echo '<pre>';
-                            // print_r($hookPermission);
-                            // echo '</pre>';
-                            // die();
-
                             //Check for permission to hook
 
                             if (!empty($hookPermission)) {
