@@ -79,6 +79,7 @@ v30.0.00
         Activities: fixed Manage Enrolment when participants are part of more than one activity
         Activities: fixed the Activities tab on the parent dashboard to work with new activities system
         Data Updater: fixed attachments being cleared when new data updates are submitted
+        Library: fixed handling of SQL values in Library Browse page
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Planner: fixed Teacher Notes in smart blocks not visible when using the Show Confidential Data toggle
         Planner: fixed access to class list in Edit Unit when viewing past and upcoming years
@@ -87,6 +88,7 @@ v30.0.00
         Staff: fixed order of Staff Directory to honour the biographicalGroupingOrder setting
         Staff: fixed missing staff name for general coverage in Daily Coverage Planner
         Students: updated default value for longTermMedication to N for new medical records
+        Students: fixed sidebar links for custom modules when viewing Student Profiles for left students
         Timetable: fixed multiple instances of the same TT day in a week not showing up
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
         Timetable Admin: fixed the issue of setting white as the default color for both background and font
