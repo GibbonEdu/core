@@ -2669,7 +2669,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if (empty($rowHook) || empty($rowHook['options'])) continue;
 
                             $options = unserialize($rowHook['options']);
-
                             $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
 
                             //Check for permission to hook
@@ -2681,7 +2680,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                                 $studentMenuCategory[$studentMenuCount] = $mainMenu[$options['sourceModuleName']];
                                 $studentMenuName[$studentMenuCount] = __($rowHook['name']);
-                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID']."'>".__($rowHook['name']).'</a></li>';
+                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&allStudents='.$allStudents.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID']."'>".__($rowHook['name']).'</a></li>';
                                 ++$studentMenuCount;
                                 ++$count;
                             }
