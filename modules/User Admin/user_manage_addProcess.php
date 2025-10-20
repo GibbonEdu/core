@@ -19,14 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\PasswordPolicy;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
-use Gibbon\Data\Validator;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 include '../../gibbon.php';
 
@@ -54,8 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $passwordForceReset = $_POST['passwordForceReset'] ?? '';
     $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'] ?? '';
     $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
-    $email = trim($_POST['email'] ?? '');
-    $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
     $address1 = $_POST['address1'] ?? '';
     $address1District = $_POST['address1District'] ?? '';
     $address1Country = $_POST['address1Country'] ?? '';
@@ -86,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     }
     $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
     $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
-    $website = $_POST['website'] ?? '';
+    $website = filter_var(trim($_POST['website'] ?? ''), FILTER_SANITIZE_URL);
     $languageFirst = $_POST['languageFirst'] ?? '';
     $languageSecond = $_POST['languageSecond'] ?? '';
     $languageThird = $_POST['languageThird'] ?? '';
@@ -173,20 +175,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
-                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+                            $attachment1 = $fileUploader->uploadAndResizeImage($file, $username.'_240', 480, 100);
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
-                            } else {
-                                //Check image sizes
-                                $size1 = getimagesize($path.'/'.$attachment1);
-                                $width1 = $size1[0];
-                                $height1 = $size1[1];
-                                $aspect1 = $height1 / $width1;
-                                if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
-                                    $attachment1 = '';
-                                    $imageFail = true;
-                                }
                             }
                         }
                     }
@@ -210,7 +202,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     // Create the status log
-                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created')]);
+                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
+
+                    // Insert the image into GibbonPersonPhoto to keep a backup record
+                    if (!empty($attachment1)) {
+                        $container->get(PersonPhotoGateway::class)->insert(['gibbonPersonID' => $AI, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'personImage' => $attachment1,'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                    }
+
+                    // ALERTS: possible change to Privacy alert status, recalculate alerts
+                    $container->get(Alert::class)->recalculateAlerts($AI);
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';

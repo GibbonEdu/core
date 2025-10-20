@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonReportArchiveID = $_GET['gibbonReportArchiveID'] ?? '';
+$gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
 

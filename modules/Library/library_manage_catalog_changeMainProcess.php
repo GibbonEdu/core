@@ -24,8 +24,6 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\Library\LibraryGateway;
 use Gibbon\Domain\Library\LibraryTypeGateway;
 
-$_POST['address'] = '/modules/Library/library_manage_catalog_edit.php';
-
 require_once '../../gibbon.php';
 include './moduleFunctions.php';
 
@@ -74,9 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     // Update all child records to match this one
     $libraryGateway->updateChildRecords($gibbonLibraryItemID);
 
-    $URL .= $partialFail
-        ? '&return=warning1'
-        : '&return=success0';
+    $URL .= '&return=success0';
     header("Location: {$URL}");
-
 }

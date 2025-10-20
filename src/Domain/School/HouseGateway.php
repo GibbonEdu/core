@@ -113,4 +113,19 @@ class HouseGateway extends QueryableGateway
 
         return $this->runSelect($select);
     }
+
+    public function selectAllHouses()
+    {
+        $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
+
+        return $this->db()->select($sql);
+    }
+
+    public function selectHousesByPerson($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonHouse.gibbonHouseID as value, name FROM gibbonHouse JOIN gibbonPerson ON (gibbonHouse.gibbonHouseID=gibbonPerson.gibbonHouseID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

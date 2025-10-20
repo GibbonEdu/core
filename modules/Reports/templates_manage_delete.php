@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_d
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/templates_manage_deleteProcess.php?gibbonReportTemplateID='.$gibbonReportTemplateID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/templates_manage_deleteProcess.php', true);
+    $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
     echo $form->getOutput();
 }

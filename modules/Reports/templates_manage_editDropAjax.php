@@ -23,8 +23,6 @@ use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
-$_POST['address'] = '/modules/Reports/templates_manage_edit.php';
-
 require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_edit.php') == false) {

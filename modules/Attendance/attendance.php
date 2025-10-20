@@ -53,7 +53,7 @@ $form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get
 
 $form->setTitle(__('View Daily Attendance'));
 $form->setFactory(DatabaseFormFactory::create($pdo));
-$form->setClass('noIntBorder fullWidth');
+$form->setClass('noIntBorder w-full');
 
 $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.php');
 
@@ -153,14 +153,14 @@ if ($session->has('username')) {
         $dailyAttendanceTable->addColumn('today', __('Today'))
             ->context('primary')
             ->width('6%')
-            ->format(function ($row) use ($session) {
+            ->format(function ($row) {
                 switch ($row['today']) {
                     case 'taken':
                         // attendance taken
-                        return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconTick.png"/>';
+                        return icon('solid', 'check', 'size-6 fill-current text-green-600');
                     case 'not taken':
                         // attendance not taken
-                        return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconCross.png"/>';
+                        return icon('solid', 'cross', 'size-6 fill-current text-red-700');
                     case 'not timetabled':
                         // class not timetabled on the day
                         return '<span title="' . __('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.') . '">' .

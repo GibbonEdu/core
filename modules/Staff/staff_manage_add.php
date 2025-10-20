@@ -23,6 +23,8 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
     // Access denied
@@ -50,6 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_manage.php')->withQueryParams($params));
     }
 
+    $potentialStaff = $container->get(StaffGateway::class)->selectPotentialStaff()->fetchAll(\PDO::FETCH_COLUMN);
+
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/staff_manage_addProcess.php?search=$search&allStaff=$allStaff");
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -59,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'))->description(__('Must be unique.'));
-        $row->addSelectUsers('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->required();
+        $row->addSelectUsersFromList('gibbonPersonID', $potentialStaff)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
@@ -78,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     $row = $form->addRow();
         $row->addLabel('firstAidQualified', __('First Aid Qualified?'));
-        $row->addYesNo('firstAidQualified')->placeHolder();
+        $row->addYesNo('firstAidQualified')->placeHolder()->selected('N');
 
     $form->toggleVisibilityByClass('firstAid')->onSelect('firstAidQualified')->when('Y');
 
@@ -112,8 +116,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $row->addLabel('biography', __('Biography'));
         $row->addTextArea('biography')->setRows(10);
 
+    $internalCoverage = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageInternal');
+    if ($internalCoverage == 'Y') {
+        $form->addRow()->addHeading('Staff Coverage', __('Staff Coverage'));
+
+        $row = $form->addRow();
+            $row->addLabel('coverageExclude', __('Exclude from coverage?'))->description(__('If enabled, this user will be excluded from internal staff coverage lists.'));
+            $row->addYesNo('coverageExclude')->placeHolder()->setValue('N');
+
+        $form->toggleVisibilityByClass('coveragePriority')->onInput('coverageExclude')->when('N');
+        $row = $form->addRow()->addClass('coveragePriority');
+            $row->addLabel('coveragePriority', __('Priority'))->description(__('Higher priority substitutes appear first when booking coverage.'));
+            $row->addSelect('coveragePriority')->fromArray(range(-9, 9))->required()->selected(0);
+    }
+
     // Custom Fields
-    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Staff', []);
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Staff', ['requiredOverride' => 'N']);
 
     $row = $form->addRow();
         $row->addFooter();

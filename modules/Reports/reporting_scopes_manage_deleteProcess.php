@@ -25,7 +25,7 @@ use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonReportingScopeID = $_GET['gibbonReportingScopeID'] ?? '';
+$gibbonReportingScopeID = $_POST['gibbonReportingScopeID'] ?? '';
 $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage.php&gibbonReportingCycleID='.$gibbonReportingCycleID;

@@ -37,33 +37,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
     $page->scripts->add('chart');
 
-    $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['dateStart']) :new DateTimeImmutable();
+    $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat('Y-m-d', $_REQUEST['dateStart']) :new DateTimeImmutable();
 
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
     // DATE SELECTOR
-    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php');
-    $form->setClass('blank fullWidth');
+    $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php');
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addClass('flex flex-wrap');
+    $row = $form->addRow()->addClass('flex flex-wrap mb-4');
 
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php';
-    $lastWeek = $date->modify('-1 week')->format($dateFormat);
-    $thisWeek = (new DateTime('Today'))->format($dateFormat);
-    $nextWeek = $date->modify('+1 week')->format($dateFormat);
+    $lastWeek = $date->modify('-1 week')->format('Y-m-d');
+    $thisWeek = (new DateTime('Today'))->format('Y-m-d');
+    $nextWeek = $date->modify('+1 week')->format('Y-m-d');
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
-        $col->addButton(__('Last Week'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
-        $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$thisWeek}'");
-        $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
+        $col->addButton(__('Last Week'))->groupAlign('left')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
+        $col->addButton(__('This Week'))->groupAlign('middle')->onClick("window.location.href='{$link}&dateStart={$thisWeek}'");
+        $col->addButton(__('Next Week'))->groupAlign('right')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addDate('dateStart')->setValue($date->format($dateFormat))->setClass('shortWidth');
-        $col->addSubmit(__('Go'));
+        $col->addDate('dateStart')->groupAlign('left')->setValue($date->format('Y-m-d'))->setClass('w-36');
+        $col->addSubmit(__('Go'))->groupAlign('right');
 
     echo $form->getOutput();
 

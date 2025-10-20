@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'tokenEndpoint'      => $_POST['tokenEndpoint'] ?? '',
         'userEndpoint'       => $_POST['userEndpoint'] ?? '',
         'scopes'             => $_POST['scopes'] ?? '',
-        'usernameAttribute'      => $_POST['usernameAttribute'] ?? '',
+        'usernameAttribute'  => $_POST['usernameAttribute'] ?? '',
     ];
 
     $calendarFeed = $_POST['calendarFeed'] ?? '';

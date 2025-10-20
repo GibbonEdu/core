@@ -11,58 +11,83 @@ Fast Finder
 -->#}
 
 <style>
-    #fastFinder .token-input-list-facebook {
+    #fastFinder input[type="search"] {
         background-color: rgba(255,255,255,0.2) !important;
-        border: 1px transparent !important;
         border-radius: .25rem 0 0 .25rem !important;
-        height: 34px !important;
-        position: absolute;
-        top: -17px;
-    }
-
-    #fastFinder #token-input-fastFinderSearch {
-        color: #ffffff !important;
-    }
-
-    #fastFinder .token-input-list-facebook:focus-within {
-        border: 1px solid rgba(255,255,255,0.5) !important;
-        border-radius: .25rem 0 0 0 !important;
-    }
-
-    #fastFinder .token-input-token-facebook {
-        margin: 0.25rem !important;
-    }
-
-    #fastFinderSearch {
-        background-color: rgba(255,255,255,0.2) !important;
         border: 1px transparent !important;
     }
 
-    #fastFinder input[type="submit"] {
+    #fastFinder select {
         background-color: rgba(255,255,255,0.2) !important;
         border: 1px transparent !important;
         border-radius: 0 .25rem .25rem 0 !important;
         margin-left: 1px !important;
     }
 
-    .token-input-dropdown-facebook li {
-        padding: 0.4rem 0.75rem !important;
+    #fastFinder input[type="search"]:focus,
+    #fastFinder select:focus {
+        border: 1px white !important;
+        box-shadow: none !important;
     }
+
 </style>
 
-<button data-toggle="#fastFinder" class="flex sm:hidden items-center rounded bg-gray-300 mr-2 px-4 py-3 text-base">
-    <span class="hidden sm:inline text-gray-600 text-xs font-bold uppercase pr-2">{{ __('Fast Finder') }}</span>
-    <img src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/search.png" width="20" height="20">
-</button>
+<div id="fastFinder" class="sm:relative  sm:max-w-md m-0 p-0"
+    x-data="{ finderOpen: false, finderSearch: '' }"
+    x-on:keydown.escape.prevent.stop="finderOpen = false"
+    @click.outside="finderOpen = false"
+    >
 
-<div id="fastFinder" class="hidden sm:block absolute sm:static left-0 z-50 w-full sm:max-w-md -mt-16 sm:mt-0 pb-10 sm:pb-0">
+    <div class="relative flex">
+        <button type="button" @click="finderSearch=''" class="absolute top-0 left-0 mt-2.5 ml-2.5">
+            {{ icon('basic', 'search', 'size-5 text-white opacity-50') }}
+        </button>
 
-    <div class="absolute top-0 block sm:hidden w-full h-24 shadow" style="background:#794d95">
-        <a data-toggle="#fastFinder" class="p-2 pr-4 float-right text-xs link-white underline sm:hidden" href="#">{{ __('close') }}</a>
+        <input class="form-control flex-1 text-white placeholder:text-white placeholder:text-opacity-60 text-sm pl-10 h-10" 
+            type="search" autocomplete="off" 
+            name="search" placeholder="{{ __('Search') }}" 
+            hx-post="index_fastFinder_ajax.php" 
+            hx-trigger="input changed delay:500ms, search" 
+            hx-target="#search-results" 
+            hx-include="[name='searchType']"
+            hx-indicator=".htmx-indicator"
+            @click="finderOpen = true"
+            x-model="finderSearch"
+        >
+
+        {% if roleCategory == 'Staff' %}
+        <select name="searchType" class="w-20 h-10 text-white text-sm font-bold hidden sm:block"
+            hx-post="index_fastFinder_ajax.php" 
+            hx-target="#search-results" 
+            hx-include="[name='search']"
+            hx-indicator=".htmx-indicator"
+            >
+            <option value="all">{{ __('All') }}</option>
+            <option value="students">{{ __('Student') }}</option>
+            <option value="staff">{{ __('Staff') }}</option>
+            <option value="classes">{{ __('Class') }}</option>
+            <option value="departments">{{ __('Department') }}</option>
+            <option value="facilities">{{ __('Facility') }}</option>
+            <option value="actions">{{ __('Action') }}</option>
+        </select>
+        {% else %}
+        <input name="searchType" type="hidden" value="all">
+        {% endif %}
+        
     </div>
 
-    <div class="w-full px-4 sm:px-2 mt-8 sm:mt-0">
-    {{ form|raw }}
-    </div>
+    <div id="search-wrap" 
+        x-show="finderOpen"
+        class="absolute top-0 left-0 mt-10 w-full origin-top-right rounded-sm bg-white shadow-lg focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1" style="display:none; z-index: 45;">
 
+        <div class="htmx-indicator absolute top-0 left-0 h-10 w-full block px-4 py-2 text-sm italic text-gray-800 pointer-events-none"> 
+            {{ __('Searching...') }} 
+        </div>
+
+        <div id="search-results" class="py-1" role="none">
+            <span class="block px-4 py-2 text-sm text-gray-800" @click="finderOpen = false">
+                {{ __('Start typing a name ...') }}
+            </span>
+        </div>
+    </div>
 </div>

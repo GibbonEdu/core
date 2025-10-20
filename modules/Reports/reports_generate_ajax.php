@@ -25,8 +25,6 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-$_POST['address'] = '/modules/Reports/reports_generate.php';
-
 include '../../gibbon.php';
 
 $gibbonLogID = $_POST['gibbonLogID'] ?? '';

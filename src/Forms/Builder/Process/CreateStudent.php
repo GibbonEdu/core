@@ -32,6 +32,7 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\View\CreateStudentView;
 use Gibbon\Forms\Builder\Exception\FormProcessException;
+use Gibbon\UI\Components\Alert;
 
 class CreateStudent extends AbstractFormProcess implements ViewableProcess
 {
@@ -83,6 +84,13 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      * @var PasswordPolicy
      */
     protected $passwordPolicy;
+    
+    /**
+     * The Alert instance to calculate student alerts.
+     *
+     * @var Alert
+     */
+    protected $alert;
 
     public function __construct(
         UserGateway $userGateway,
@@ -90,7 +98,8 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         UsernameGenerator $usernameGenerator,
         CustomFieldGateway $customFieldGateway,
         PersonalDocumentGateway $personalDocumentGateway,
-        PasswordPolicy $passwordPolicy
+        PasswordPolicy $passwordPolicy,
+        Alert $alert
     )
     {
         $this->userGateway = $userGateway;
@@ -99,6 +108,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $this->customFieldGateway = $customFieldGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->passwordPolicy = $passwordPolicy;
+        $this->alert = $alert;
     }
 
     public function getViewClass() : string
@@ -138,6 +148,9 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         // Update existing data
         $this->transferPersonalDocuments($builder, $formData, $gibbonPersonIDStudent);
 
+        // ALERTS: possible change to Privacy alert status, recalculate alerts
+        $this->alert->recalculateAlerts($gibbonPersonIDStudent);
+
         $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $this->setResult($gibbonPersonIDStudent);
     }
@@ -159,43 +172,51 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
     protected function getUserData(FormDataInterface $formData, $gibbonRoleID, $prefix = '')
     {
         return [
-            'gibbonRoleIDPrimary' => $gibbonRoleID,
-            'gibbonRoleIDAll'     => $gibbonRoleID,
-            'username'            => $formData->get($prefix.'username'),
-            'passwordStrong'      => $formData->get($prefix.'passwordStrong'),
-            'passwordStrongSalt'  => $formData->get($prefix.'passwordStrongSalt'),
-            'status'              => $formData->get($prefix.'status'),
-            'email'               => $formData->get($prefix.'email'),
-            'emailAlternate'      => $formData->get($prefix.'emailAlternate'),
-            'title'               => $formData->get($prefix.'title', ''),
-            'surname'             => $formData->get($prefix.'surname'),
-            'firstName'           => $formData->get($prefix.'firstName'),
-            'preferredName'       => $formData->get($prefix.'preferredName'),
-            'officialName'        => $formData->get($prefix.'officialName'),
-            'nameInCharacters'    => $formData->get($prefix.'nameInCharacters', ''),
-            'gender'              => $formData->get($prefix.'gender', 'Unspecified'),
-            'dob'                 => $formData->get($prefix.'dob'),
-            'languageFirst'       => $formData->get($prefix.'languageFirst', ''),
-            'languageSecond'      => $formData->get($prefix.'languageSecond', ''),
-            'languageThird'       => $formData->get($prefix.'languageThird', ''),
-            'countryOfBirth'      => $formData->get($prefix.'countryOfBirth', ''),
-            'website'             => $formData->get($prefix.'website', ''),
-            'phone1Type'          => $formData->get($prefix.'phone1Type', ''),
-            'phone1CountryCode'   => $formData->get($prefix.'phone1CountryCode', ''),
-            'phone1'              => $formData->get($prefix.'phone1', ''),
-            'phone2Type'          => $formData->get($prefix.'phone2Type', ''),
-            'phone2CountryCode'   => $formData->get($prefix.'phone2CountryCode', ''),
-            'phone2'              => $formData->get($prefix.'phone2', ''),
-            'dateStart'           => $formData->get('dateStart'),
-            'privacy'             => $formData->get($prefix.'privacy'),
-            'dayType'             => $formData->get($prefix.'dayType'),
-            'profession'          => $formData->get($prefix.'profession', ''),
-            'employer'            => $formData->get($prefix.'employer', ''),
-            'jobTitle'            => $formData->get($prefix.'jobTitle', ''),
-            'religion'            => $formData->get($prefix.'religion', ''),
-            'ethnicity'           => $formData->get($prefix.'ethnicity', ''),
-            'studentID'           => $formData->get($prefix.'studentID', ''),
-            'fields'              => $formData->get($prefix.'fields', ''),
+            'gibbonRoleIDPrimary'    => $gibbonRoleID,
+            'gibbonRoleIDAll'        => $gibbonRoleID,
+            'username'               => $formData->get($prefix.'username'),
+            'passwordStrong'         => $formData->get($prefix.'passwordStrong'),
+            'passwordStrongSalt'     => $formData->get($prefix.'passwordStrongSalt'),
+            'status'                 => $formData->get($prefix.'status'),
+            'email'                  => $formData->get($prefix.'email'),
+            'emailAlternate'         => $formData->get($prefix.'emailAlternate'),
+            'title'                  => $formData->get($prefix.'title', ''),
+            'surname'                => $formData->get($prefix.'surname'),
+            'firstName'              => $formData->get($prefix.'firstName'),
+            'preferredName'          => $formData->get($prefix.'preferredName'),
+            'officialName'           => $formData->get($prefix.'officialName'),
+            'nameInCharacters'       => $formData->get($prefix.'nameInCharacters', ''),
+            'gender'                 => $formData->get($prefix.'gender', 'Unspecified'),
+            'dob'                    => $formData->get($prefix.'dob'),
+            'languageFirst'          => $formData->get($prefix.'languageFirst', ''),
+            'languageSecond'         => $formData->get($prefix.'languageSecond', ''),
+            'languageThird'          => $formData->get($prefix.'languageThird', ''),
+            'countryOfBirth'         => $formData->get($prefix.'countryOfBirth', ''),
+            'website'                => $formData->get($prefix.'website', ''),
+            'phone1Type'             => $formData->get($prefix.'phone1Type', ''),
+            'phone1CountryCode'      => $formData->get($prefix.'phone1CountryCode', ''),
+            'phone1'                 => $formData->get($prefix.'phone1', ''),
+            'phone2Type'             => $formData->get($prefix.'phone2Type', ''),
+            'phone2CountryCode'      => $formData->get($prefix.'phone2CountryCode', ''),
+            'phone2'                 => $formData->get($prefix.'phone2', ''),
+            'dateStart'              => $formData->get('dateStart'),
+            'privacy'                => $formData->get($prefix.'privacy'),
+            'dayType'                => $formData->get($prefix.'dayType'),
+            'profession'             => $formData->get($prefix.'profession', ''),
+            'employer'               => $formData->get($prefix.'employer', ''),
+            'jobTitle'               => $formData->get($prefix.'jobTitle', ''),
+            'religion'               => $formData->get($prefix.'religion', ''),
+            'ethnicity'              => $formData->get($prefix.'ethnicity', ''),
+            'studentID'              => $formData->get($prefix.'studentID', ''),
+            'emergency1Name'         => $formData->get($prefix.'emergency1Name', ''),
+            'emergency1Relationship' => $formData->get($prefix.'emergency1Relationship', ''),
+            'emergency1Number1'      => $formData->get($prefix.'emergency1Number1', ''),
+            'emergency1Number2'      => $formData->get($prefix.'emergency1Number2', ''),
+            'emergency2Name'         => $formData->get($prefix.'emergency2Name', ''),
+            'emergency2Relationship' => $formData->get($prefix.'emergency2Relationship', ''),
+            'emergency2Number1'      => $formData->get($prefix.'emergency2Number1', ''),
+            'emergency2Number2'      => $formData->get($prefix.'emergency2Number2', ''),
+            'fields'                 => $formData->get($prefix.'fields', ''),
         ];
     }
 

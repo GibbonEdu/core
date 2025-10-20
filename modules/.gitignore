@@ -13,6 +13,8 @@
 !/Attendance/**
 !/Behaviour
 !/Behaviour/**
+!/Calendar
+!/Calendar/**
 !/Crowd Assessment
 !/Crowd Assessment/**
 !/Data Updater
@@ -45,6 +47,8 @@
 !/Staff/**
 !/Students
 !/Students/**
+!/Student Alerts/**
+!/Student Alerts
 !/System Admin
 !/System Admin/**
 !/Timetable

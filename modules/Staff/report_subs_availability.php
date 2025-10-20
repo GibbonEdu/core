@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $subGateway = $container->get(SubstituteGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
+    $coverageInternal = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
@@ -47,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $allDay = $_GET['allDay'] ?? null;
     $timeStart = $_GET['timeStart'] ?? null;
     $timeEnd = $_GET['timeEnd'] ?? null;
-    $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
+    $allStaff = $_GET['allStaff'] ?? $coverageInternal;
 
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria(true)
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
 
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('sidebar', $_GET['sidebar'] ?? '');
@@ -93,9 +94,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->isRequired()
             ->setValue($timeEnd);
 
-    $row = $form->addRow();
-        $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
-        $row->addCheckbox('allStaff')->checked($allStaff)->setValue('Y');
+    if ($coverageInternal != 'Y') {
+        $row = $form->addRow();
+            $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
+            $row->addCheckbox('allStaff')->checked($allStaff)->setValue('Y');
+    }
 
     $row = $form->addRow();
         $row->addFooter();

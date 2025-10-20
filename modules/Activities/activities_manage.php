@@ -27,6 +27,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -46,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $search = $_GET['search'] ?? '';
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+    $gibbonActivityCategoryID = $_GET['gibbonActivityCategoryID'] ?? '';
     $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
     $enrolmentType = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
     $schoolTerms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
@@ -58,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->searchBy($activityGateway->getSearchableColumns(), $search)
         ->filterBy('term', $gibbonSchoolYearTermID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
+        ->filterBy('category', $gibbonActivityCategoryID)
         ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', $dateType != 'Date' ? 'ASC' : 'DESC')
         ->sortBy('name');
 
@@ -71,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/activities_manage.php");
 
@@ -90,6 +93,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'));
         $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
+
+    $categories = $container->get(ActivityCategoryGateway::class)->selectCategoriesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+    $row = $form->addRow();
+        $row->addLabel('gibbonActivityCategoryID', __('Category'));
+        $row->addSelect('gibbonActivityCategoryID')->fromArray($categories)->placeholder()->selected($gibbonActivityCategoryID);
 
     $row = $form->addRow();
         $row->addSearchSubmit($session, __('Clear Search'));
@@ -156,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     // COLUMNS
     $table->addColumn('name', __('Activity'))
         ->format(function($activity) {
-            return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+            return $activity['name'].'<br/><span class="text-xs italic">'.$activity['type'].'</span>';
         });
 
     $table->addColumn('days', __('Days'))

@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
             ->format(function ($student) use ($privacyOption, $session) {
                 $studentPrivacy = array_map('trim', explode(',', $student['privacy']));
                 return in_array($privacyOption, $studentPrivacy) 
-                    ? "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ".__('Required')
+                    ? icon('solid', 'check', 'size-6 mr-2 fill-current text-green-600 align-middle').__('Required')
                     : '';
             });
     }

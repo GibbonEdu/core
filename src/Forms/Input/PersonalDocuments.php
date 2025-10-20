@@ -37,7 +37,7 @@ class PersonalDocuments extends Input
     protected $view;
     protected $factory;
     protected $documents;
-    protected $validation;
+    protected $validationOutput;
 
     protected $absoluteURL;
     protected $nationalityList;
@@ -63,7 +63,7 @@ class PersonalDocuments extends Input
      */
     public function getValidationOutput()
     {
-        return $this->validation;
+        return $this->validationOutput;
     }
 
     /**
@@ -78,16 +78,15 @@ class PersonalDocuments extends Input
 
         foreach ($this->documents as $document) {
             $fields = json_decode($document['fields']);
+            $fieldsUsed = count(array_filter(array_intersect_key($document, array_flip($fields))));
+            $omitData = $document['required'] != 'Y' && !empty($document['gibbonPersonalDocumentID']) && $fieldsUsed == 0;
 
             $output .= '<input type="hidden" name="'.$name.'['.$document['gibbonPersonalDocumentTypeID'].'][gibbonPersonalDocumentID]" value="'.($document['gibbonPersonalDocumentID'] ?? '').'">';
 
-            $output .= '<div class="document rounded-sm bg-white border font-sans mt-4">';
+            $output .= '<div x-data="{omit: '.($omitData ? 'true' : 'false').'}" class="document rounded-sm bg-white border font-sans mt-4">';
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-between">';
-            
-            $output .= $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                'icon' => strtolower($document['document']),
-                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
-            ]);
+
+            $output .= icon('large', strtolower($document['document']), 'size-6 fill-current mr-3 -my-2');
 
             $output .= __($document['name']);
 
@@ -95,18 +94,18 @@ class PersonalDocuments extends Input
                 $output .= '<span class="ml-4 -my-2 tag message">'.__('Required').'</span>';
                 $output .= '<div class="flex-grow"></div>';
             } else {
-                $fieldsUsed = count(array_filter(array_intersect_key($document, array_flip($fields))));
+                
                 $output .= '<div class="flex-grow"></div>';
                 $output .= '<span class="font-normal text-xxs">'.__('N/A');
-                $output .= '<input class="document-omit ml-2" type="checkbox" value="Y" name="'.$name.'['.$document['gibbonPersonalDocumentTypeID'].'][omit]" '.(!empty($document['gibbonPersonalDocumentID']) && $fieldsUsed == 0? 'checked' : '').'>';
+                $output .= '<input x-model="omit" class="document-omit ml-2" type="checkbox" value="Y" name="'.$name.'['.$document['gibbonPersonalDocumentTypeID'].'][omit]" '.($omitData ? 'checked' : '').'>';
                 $output .= '</span>';
             }
 
             $output .= '</div>';
 
-            $output .= !empty($document['description']) ? '<p class="m-0 p-4 pb-0 font-normal text-xxs text-gray-600">'.$document['description'].'</p>' : '';
+            $output .= !empty($document['description']) ? '<p class="m-0 p-0 -mt-2 ml-1 pl-12 pb-2 font-normal text-xxs text-gray-600">'.$document['description'].'</p>' : '';
 
-            $output .= '<div class="document-details border-t sm:grid grid-cols-2 grid-flow-col auto-rows-fr py-2" style="grid-template-rows: repeat('.(ceil(count($fields)/2)).',auto);">';
+            $output .= '<div x-show="!omit" class="document-details border-t sm:grid grid-cols-2 grid-flow-col auto-rows-fr py-2" style="grid-template-rows: repeat('.(ceil(count($fields)/2)).',auto);">';
 
             foreach ($fields as $index => $field) {
                 $output .= '<div class="px-4 py-2 flex flex-col sm:flex-row justify-between sm:items-center content-center p-0">';
@@ -128,7 +127,7 @@ class PersonalDocuments extends Input
                     case 'documentType':
                         $label = $row->addLabel($field, __('Residency/Visa Type'));
                         $input = !empty($this->residencyStatus)
-                            ? $row->addSelect($field)->fromString($this->residencyStatus)->placeholder()
+                            ? $row->addSelect($field)->fromString($this->residencyStatus)->placeholder()->required($document['required'] == 'Y' && $index == 0)
                             : $row->addTextField($field)->maxLength(60)->required($document['required'] == 'Y');
                         break;
                     case 'country':
@@ -162,8 +161,10 @@ class PersonalDocuments extends Input
                     $input->loadFrom($document)->setName($fieldName)->setID($fieldID);
                     
                     $output .= $label->setClass('inline-block w-32 font-medium text-xs text-gray-700')->getOutput();
+                    $output .= '<div class="flex-1 relative flex justify-end items-center">';
                     $output .= $input->getOutput();
-                    $this->validation .= $input->getValidationOutput();
+                    $output .= '</div>';
+                    $this->validationOutput .= $input->getValidationOutput();
                 }
                 $output .= '</div>';
             }
@@ -171,17 +172,6 @@ class PersonalDocuments extends Input
             $output .= '</div>';
             $output .= '</div>';
         }
-
-        $output .= "
-        <script>
-            $('.document-omit').click(function () {
-                $(this).parents('.document').find('.document-details').toggle($(this).checked);
-            });
-            $('.document-omit:checked').each(function () {
-                $(this).parents('.document').find('.document-details').hide();
-            });
-        </script>
-        ";
 
         return $output;
     }

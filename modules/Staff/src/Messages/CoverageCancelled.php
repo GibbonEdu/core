@@ -27,10 +27,12 @@ use Gibbon\Services\Format;
 class CoverageCancelled extends Message
 {
     protected $coverage;
+    protected $dates;
 
-    public function __construct($coverage)
+    public function __construct($coverage, $dates)
     {
         $this->coverage = $coverage;
+        $this->dates = $dates;
     }
 
     public function via() : array
@@ -59,9 +61,27 @@ class CoverageCancelled extends Message
 
     public function getDetails() : array
     {
-        return [
+        $coverageDetails = [];
+
+        foreach ($this->dates as $date) {
+            $notes = !empty($date['notes']) ? ' ('.$date['notes'].')' : '';
+            if (!empty($date['period']) && !empty($date['contextName'])) {
+                $coverageDetails[$date['period']] = $date['contextName'].$notes;
+            } else {
+                $dateReadable = Format::dateReadable($date['date']);
+                $coverageDetails[$dateReadable] = (!empty($date['surnameCoverage']) ? Format::name($date['titleCoverage'], $date['preferredNameCoverage'], $date['surnameCoverage'], 'Staff', false, true) : '').$notes;
+            }
+        }
+
+        $details =  [
             __('Comment') => $this->coverage['notesStatus'],
         ];
+
+        if (!empty($coverageDetails)) {
+            $details[__('Coverage Cancelled')] = Format::listDetails($coverageDetails);
+        }
+
+        return $details;
     }
 
     public function getModule() : string

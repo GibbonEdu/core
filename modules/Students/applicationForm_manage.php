@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/applicationForm_manage.php');
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 

@@ -58,7 +58,7 @@ $editFormValues = array(
     'preferredName'             => 'Student',
     'officialName'              => 'Student A. TestUser',
     'nameInCharacters'          => 'TM',
-    'dob'                       => '30/01/2001',
+    'dob'                       => '2001-01-01',
 
     'emergency1Name'            => 'Emergency Person 1',
     'emergency1Relationship'    => 'Doctor',
@@ -125,7 +125,7 @@ $gibbonPersonUpdateID = $I->grabValueFromURL('gibbonPersonUpdateID');
 // Delete ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_personal_manage_delete.php', array('gibbonPersonUpdateID' => $gibbonPersonUpdateID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
 
 // Restore Original Settings -----------------------------------
@@ -152,7 +152,7 @@ $editFormValues = array(
     'preferredName'             => 'Student',
     'officialName'              => 'Student B. TestUser',
     'nameInCharacters'          => 'TM',
-    'dob'                       => '30/01/2001',
+    'dob'                       => '2001-01-01',
 
     'emergency1Name'            => 'Emergency Person 1',
     'emergency1Relationship'    => 'Doctor',

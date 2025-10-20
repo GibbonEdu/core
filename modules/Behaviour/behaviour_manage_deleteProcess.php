@@ -19,13 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\UI\Components\Alert;
+
 include '../../gibbon.php';
 
 $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? '';
 $address = $_POST['address'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
-$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
+$gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $type = $_GET['type'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_delete.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
@@ -72,6 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     header("Location: {$URL}");
                     exit();
                 }
+
+                // ALERTS: possible change to Behaviour alert status, recalculate alerts
+                $container->get(Alert::class)->recalculateAlerts($row['gibbonPersonID']);
 
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");

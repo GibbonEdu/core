@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
     $form->setTitle(__('Filter'));
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/firstAidRecord.php");
 

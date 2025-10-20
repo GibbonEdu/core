@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $page->breadcrumbs->add(__('Manage Library Shelves'));
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
         $form->setTitle(__('Search & Filter'));
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_manage_shelves.php");

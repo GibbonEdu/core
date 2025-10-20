@@ -22,23 +22,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets version information.
  */
-$version = '28.0.00';
+$version = '30.0.00';
 
 /**
  * System Requirements
  */
 $systemRequirements = [
-    'php'        => '7.4.0',
-    'mysql'      => '5.7',
+    'php'        => '8.0',
+    'mysql'      => '8.0',
     'apache'     => ['mod_rewrite'],
     'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd', 'intl'],
     'settings'   => [
-        ['max_input_vars', '>=', 5000],
-        ['max_file_uploads', '>=', 20],
-        ['allow_url_fopen', '==', 1],
-        ['register_globals', '==', 0],
-        ['session.gc_maxlifetime', '>=', 1200],
-        ['post_max_size', '>', 0],
-        ['upload_max_filesize', '>', 0],
+        'max_input_vars'         => ['max_input_vars', '>=', 8000],
+        'max_file_uploads'       => ['max_file_uploads', '>=', 20],
+        'allow_url_fopen'        => ['allow_url_fopen', '==', 1],
+        'register_globals'       => ['register_globals', '==', 0],
+        'session.gc_maxlifetime' => ['session.gc_maxlifetime', '>=', 1200],
+        'post_max_size'          => ['post_max_size', '>', 0],
+        'upload_max_filesize'    => ['upload_max_filesize', '>', 0],
     ],
 ];

@@ -131,8 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         ->setIcon('markbook')
         ->setURL('/modules/Reports/criteriaTypes_manage.php')
         ->addParam('referer', 'scopes')
-        ->displayLabel()
-        ->prepend(' | ');
+        ->displayLabel();
 
     $table->addActionColumn()
         ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])

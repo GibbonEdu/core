@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Finance\FinanceBudgetCycleGateway;
 
 require_once '../../gibbon.php';
 
@@ -41,17 +42,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-            $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(FinanceBudgetCycleGateway::class)->getByID($gibbonFinanceBudgetCycleID);
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
@@ -61,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
             $sequenceNumber = $_POST['sequenceNumber'] ?? '';
             $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
             $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null;
-
+            
             if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $dateStart == '' or $dateEnd == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

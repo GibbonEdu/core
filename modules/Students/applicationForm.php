@@ -123,11 +123,12 @@ if ($proceed == false) {
 
     // JS success return addition
     $return = (isset($_GET['return']))? $_GET['return'] : '';
-
+    $successMessage = $settingGateway->getSettingByScope('Application Form', 'successMessage');
+    
     if ($return == 'success0' or $return == 'success1' or $return == 'success2' or $return == 'success3' or $return == 'success4') {
         echo "<script type='text/javascript'>";
         echo '$(document).ready(function(){';
-        echo "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;";
+        echo "alert('".$successMessage."') ;";
         echo '});';
         echo '</script>';
     }
@@ -305,14 +306,14 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->required()->placeholder();
+            $row->addYesNo('sen')->required()->placeholder()->selected('N');
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 
         $row = $form->addRow()->setClass('senDetailsRow');
             $column = $row->addColumn();
             $column->addLabel('senDetails', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
-            $column->addTextArea('senDetails')->setRows(5)->required()->setClass('fullWidth');
+            $column->addTextArea('senDetails')->setRows(5)->required()->setClass('w-full');
 
     } else {
         $form->addHiddenValue('sen', 'N');
@@ -320,13 +321,13 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('medical', __('Medical Conditions'))->description(__('Does your child have any medical conditions or concerns?'));
-        $row->addYesNo('medical')->required()->placeholder();
+        $row->addYesNo('medical')->required()->placeholder()->selected('N');
 
     $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
 
     $col = $form->addRow()->setClass('medicalDetailsRow')->addColumn();
         $col->addLabel('medicalInformation', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
-        $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('fullWidth');
+        $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('w-full');
 
     // STUDENT EDUCATION
     $heading = $form->addRow()->addSubheading(__('Student Education'));
@@ -720,7 +721,7 @@ if ($proceed == false) {
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
-                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('w-full');
         }
     }
 
@@ -737,11 +738,11 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('scholarshipInterest', __('Interest'))->description(__('Indicate if you are interested in a scholarship.'));
-            $row->addRadio('scholarshipInterest')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+            $row->addYesNo('scholarshipInterest')->required()->checked('N');
 
         $row = $form->addRow();
             $row->addLabel('scholarshipRequired', __('Required?'))->description(__('Is a scholarship required for you to take up a place at the school?'));
-            $row->addRadio('scholarshipRequired')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+            $row->addYesNo('scholarshipRequired')->required()->checked('N');
     }
 
 
@@ -849,7 +850,6 @@ if ($proceed == false) {
                     ->setMaxUpload(false);
         }
 
-        $row = $form->addRow()->addContent(getMaxUpload());
         $form->addHiddenValue('fileCount', count($requiredDocumentsList));
     }
 
@@ -868,7 +868,7 @@ if ($proceed == false) {
     } else {
         $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->loadFrom($application);
 
-        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
+        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('');
 
         $row = $form->addRow()->addClass('tellUsMore');
             $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));

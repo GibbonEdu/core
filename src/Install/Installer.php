@@ -300,40 +300,6 @@ class Installer
     }
 
     /**
-     * Get password policy string messages.
-     *
-     * @return array
-     */
-    public function getPasswordPolicy(): array
-    {
-        $policies = [];
-
-        $alpha = $this->getSetting('passwordPolicyAlpha');
-        $numeric = $this->getSetting('passwordPolicyNumeric');
-        $punctuation = $this->getSetting('passwordPolicyNonAlphaNumeric');
-        $minLength = $this->getSetting('passwordPolicyMinLength');
-
-        if ($alpha === false or $numeric === false or $punctuation === false or $minLength === false) {
-            throw new \Exception(__('Internal Error: Password policy setting incorrect.'));
-        } elseif ($alpha != 'N' or $numeric != 'N' or $punctuation != 'N' or $minLength >= 0) {
-            if ($alpha == 'Y') {
-                $policies[] = __('Contain at least one lowercase letter, and one uppercase letter.');
-            }
-            if ($numeric == 'Y') {
-                $policies[] = __('Contain at least one number.');
-            }
-            if ($punctuation == 'Y') {
-                $policies[] = __('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).');
-            }
-            if ($minLength >= 0) {
-                $policies[] = sprintf(__('Must be at least %1$s characters in length.'), $minLength);
-            }
-        }
-        return $policies;
-
-    }
-
-    /**
      * Process config variables into string literals stored in string.
      *
      * @version v23

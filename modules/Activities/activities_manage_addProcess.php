@@ -65,11 +65,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $payment = null;
         $paymentType = null;
         $paymentFirmness = null;
+        $paymentDescription = null;
     } else {
         $paymentOn = true;
         $payment = $_POST['payment'] ?? '';
         $paymentType = $_POST['paymentType'] ?? '';
         $paymentFirmness = $_POST['paymentFirmness'] ?? '';
+        $paymentDescription = $_POST['paymentDescription'] ?? '';
     }
     $description = $_POST['description'] ?? '';
 
@@ -83,18 +85,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $type = $_POST['type'] ?? '';
 
         $data = [
-            'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
-            'name'                  => $name,
-            'provider'              => $provider,
-            'type'                  => $type,
-            'active'                => $active,
-            'registration'          => $registration,
-            'gibbonYearGroupIDList' => $gibbonYearGroupIDList,
-            'maxParticipants'       => $maxParticipants,
-            'payment'               => $payment,
-            'paymentType'           => $paymentType,
-            'paymentFirmness'       => $paymentFirmness,
-            'description'           => $description
+            'gibbonSchoolYearID'       => $session->get('gibbonSchoolYearID'),
+            'gibbonActivityCategoryID' => $_POST['gibbonActivityCategoryID'] ?? '',
+            'name'                     => $name,
+            'provider'                 => $provider,
+            'type'                     => $type,
+            'active'                   => $active,
+            'registration'             => $registration,
+            'gibbonYearGroupIDList'    => $gibbonYearGroupIDList,
+            'maxParticipants'          => $maxParticipants,
+            'payment'                  => $payment,
+            'paymentType'              => $paymentType,
+            'paymentFirmness'          => $paymentFirmness,
+            'paymentDescription'       => $paymentDescription,
+            'description'              => $description
         ];
 
         if ($dateType == 'Date') {

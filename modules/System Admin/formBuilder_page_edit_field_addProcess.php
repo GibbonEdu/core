@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         foreach ($fieldGroupFields as $fieldName) {
 
             if ($fieldName == 'generic') {
-                $fieldName = lcfirst(preg_replace('/[^a-zA-Z0-9]/', '', $_POST['label'] ?? $fieldName));
+                $fieldName = lcfirst(preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $_POST['label'] ?? $fieldName));
             } else {
                 $field = $fieldGroupClass->getField($fieldName);
                 if (empty($field)) {
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 }
 
                 if (!empty($field['type']) && ($field['type'] == 'heading' || $field['type'] == 'subheading')) {
-                    $fieldName = $field['type'].preg_replace('/[^a-zA-Z0-9]/', '', $_POST['label'] ?? $fieldName);
+                    $fieldName = $field['type'].preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $_POST['label'] ?? $fieldName);
                     $fieldGroupName = 'LayoutHeadings';
                 }
             }

@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             ->required()
             ->selected($urlParams['gibbonLibraryTypeID']);
 
-    $form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
+    $form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('');
 
     $form->addRow()->addClass('general')->addHeading('General Details', __('General Details'))->addClass('general');
 

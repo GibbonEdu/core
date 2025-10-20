@@ -75,6 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     if (copy($sourcePath, $destinationPath)) {
         chmod($destinationPath, 0755);
         $data['type'] = 'Additional';
+        $data['gibbonPersonIDLastEdit'] = $session->get('gibbonPersonID') ?? '';
         $data['templateFile'] = $sourceDir.'/'.$templateFileDestination;
         $duplicated = $prototypeGateway->insert($data);
     } else {

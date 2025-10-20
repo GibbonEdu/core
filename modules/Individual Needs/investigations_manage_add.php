@@ -83,18 +83,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $row = $form->addRow();
             $column = $row->addColumn();
             $column->addLabel('reason', __('Reason'))->description(__('Why should this student\'s individual needs be investigated?'));
-        	$column->addTextArea('reason')->setRows(5)->setClass('fullWidth')->required();
+        	$column->addTextArea('reason')->setRows(5)->setClass('w-full')->required();
 
         //Strategies Tried
         $row = $form->addRow();
         	$column = $row->addColumn();
         	$column->addLabel('strategiesTried', __('Strategies Tried'));
-        	$column->addTextArea('strategiesTried')->setRows(5)->setClass('fullWidth');
+        	$column->addTextArea('strategiesTried')->setRows(5)->setClass('w-full');
 
         //Parents Informed?
         $row = $form->addRow();
             $row->addLabel('parentsInformed', __('Parents Informed?'))->description(_('For example, via a phone call, email, Markbook, meeting or other means.'));
-            $row->addYesNo('parentsInformed')->required()->placeholder();
+            $row->addYesNo('parentsInformed')->required()->placeholder()->selected('N');
 
         $form->toggleVisibilityByClass('parentsInformedYes')->onSelect('parentsInformed')->when('Y');
         $form->toggleVisibilityByClass('parentsInformedNo')->onSelect('parentsInformed')->when('N');
@@ -103,12 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $row = $form->addRow()->addClass('parentsInformedYes');
         	$column = $row->addColumn();
         	$column->addLabel('parentsResponseYes', __('Parent Response'));
-        	$column->addTextArea('parentsResponseYes')->setName('parentsResponse')->setRows(5)->setClass('fullWidth');
+        	$column->addTextArea('parentsResponseYes')->setName('parentsResponse')->setRows(5)->setClass('w-full');
 
         $row = $form->addRow()->addClass('parentsInformedNo');
         	$column = $row->addColumn();
         	$column->addLabel('parentsResponseNo', __('Reason'))->description(__('Reasons why parents are not aware of the situation.'));
-        	$column->addTextArea('parentsResponseNo')->setName('parentsResponse')->setRows(5)->setClass('fullWidth')->required();
+        	$column->addTextArea('parentsResponseNo')->setName('parentsResponse')->setRows(5)->setClass('w-full')->required();
 
         $form->addRow()->addAlert(__("Submitting this referral will notify the student's form tutor for further investigation."), 'message');
 

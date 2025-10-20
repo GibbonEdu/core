@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     $form = Form::create('formFieldAdd', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->removeMeta();
 
     $form->addHiddenValue('address', '/modules/System Admin/formBuilder_page_edit.php');
     $form->addHiddenValue('fieldGroup', $fieldGroup);
@@ -160,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addLabel('optionsFile', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'));
         $row->addTextField('optionsFile')->setName('options');
 
-        $form->toggleVisibilityByClass('optionsRequired')->onSelect('type')->whenNot('Please select...');
+        $form->toggleVisibilityByClass('optionsRequired')->onSelect('type')->whenNot('');
 
         $row = $form->addRow()->addClass('optionsRequired');
         $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
@@ -189,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroupName);
             $fields = $fieldGroupClass->getFieldOptions();
 
-            $form->addRow()->addHeading($fieldGroupLabel)->append($fieldGroupClass->getDescription());
+            $form->addRow()->addHeading($fieldGroupName, $fieldGroupLabel)->append($fieldGroupClass->getDescription());
 
             $col = $form->addRow()->addColumn()->addClass('');
 
@@ -204,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 if ($fieldGroup == 'CustomFields') {
                     $col->addSubheading($heading);
                 } elseif (!empty($heading)) {
-                    $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $heading);
+                    $groupName = 'heading'.preg_replace('/[\s\~`\!@%#$%\^&\*\(\)+={}\[\]|\\:;"\'<>,\.\?\/]/', '', $heading);
                     $field = $fieldGroupClass->getField($groupName);
 
                     $description = '<div class="flex-1 text-left"><span class="text-sm font-bold uppercase text-gray-800 -ml-2">'.__($heading).'</span></div><div>'.($field['type'] ?? '').'</div>';
@@ -217,13 +218,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 }
 
                 foreach ($headingFields as $fieldName => $label) {
+                    $fieldName = preg_replace('/[\s\~`\!@%#$%\^&\*\(\)+={}\[\]|\\:;"\'<>,\.\?\/]/', '', $fieldName);
+
                     $description = '<div class="flex-1 text-left"><span class="text-sm -ml-2">'.$label.'</span></div>';
                     $col->addCheckbox("fields[$fieldGroupName][{$fieldName}]")
                         ->setValue($fieldName)
                         ->description($description)
                         ->alignLeft()
                         ->setLabelClass('w-full p-4')
-                        ->addClass('items-center border rounded pl-4 my-2 bg-blue-100');
+                        ->addClass('items-center border rounded pl-4 my-2 bg-blue-50');
                 }
             }
         }

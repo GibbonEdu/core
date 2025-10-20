@@ -21,18 +21,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Forms\FormPageGateway;
 
-$_POST['address'] = '/modules/System Admin/formBuilder_edit.php';
-
 require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
-    $order = json_decode($_POST['order']);
+    $gibbonFormID = $_POST['gibbonFormID'] ?? '';
+    $order = $_POST['order'] ?? [];
 
-    if (empty($order) || empty($data['gibbonFormID'])) {
+    if (empty($order) || empty($gibbonFormID)) {
         exit;
     } else {
         $formPageGateway = $container->get(FormPageGateway::class);

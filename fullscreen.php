@@ -18,6 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Http\Url;
 
 // Gibbon system-wide includes
 require_once './gibbon.php';
@@ -37,9 +38,16 @@ if (!$session->has('systemSettingsSet')) {
 }
 
 $address = $page->getAddress();
+$iframeSrc = Url::fromHandlerRoute('fullscreen.php', $address)
+    ->withQueryParams(array_replace($_GET, ['TB_iframe' => false]))
+    ->withAbsoluteUrl();
 
 $page->addData([
-    'isLoggedIn' => $session->has('username') && $session->has('gibbonRoleIDCurrent'),
+    'isLoggedIn'   => $session->has('username') && $session->has('gibbonRoleIDCurrent'),
+    'iframe'       => $_GET['TB_iframe'] ?? '',
+    'iframeSrc'    => $iframeSrc,
+    'iframeWidth'  => $_GET['width'] ?? '',
+    'iframeHeight' => $_GET['height'] ?? '',
 ]);
 
 if (empty($address)) {

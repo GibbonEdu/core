@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         $result4 = $connection2->prepare($sql4);
                         $result4->execute($data4);
 
-                    if ($result4->rowCount() != 1) {
+                    if ($result4->rowCount() == 0) {
                         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         //Let's go!

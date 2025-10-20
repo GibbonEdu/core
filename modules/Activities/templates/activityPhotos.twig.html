@@ -1,0 +1,47 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set photoCount = activity.photos|slice(0,6)|length %}
+
+{% if photoCount > 0 %}
+<section class="w-full grid {{ photoCount == 2 ? 'grid-cols-2' : (photoCount > 5 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3' ) }} {{ photoCount <= 4 ? 'activity-photo-container grid-rows-2' : 'activity-photo-container-lg grid-rows-4 md:grid-rows-2' }} grid-flow-col gap-3 lg:gap-6">
+
+<div class="{{ photoCount == 1 ? 'col-span-3' : 'col-span-1' }} row-span-2 rounded overflow-hidden bg-gray-100" style="max-height: 34vw;">
+    {% if activity.photos[0] %}
+        <img src="{{ absoluteURL }}/{{ activity.photos[0].filePath }}" class="w-full max-w-full h-full" style="object-position: center; object-fit: cover;">
+    {% endif %}
+</div>
+
+{% for index, photo in activity.photos|slice(1,5) %}
+
+    <div class="col-span-1 {{ (photoCount is even and loop.last) or photoCount == 3 ? 'row-span-2' : 'row-span-1' }} rounded overflow-hidden bg-gray-100 relative" style="{{ (photoCount is even and loop.last) or photoCount == 3 ? 'max-height: 34vw;' : 'max-height: 16vw;' }}">
+        {% if photo.filePath %}
+            <img src="{{ absoluteURL }}/{{ photo.filePath }}" class="w-full max-w-full h-full" style="object-position: center; object-fit: cover;" title="{{ photo.caption }}">
+        {% endif %}
+
+        {% if loop.last %}
+        <div class="hidden md:block absolute bottom-0 right-0 mb-6 mr-6">
+            <span class="tag text-white text-sm font-light" style="background: rgba(0,0,0,0.65)">
+                {% if activity.yearGroupCount >= 8 %}
+                    {{ __m('All Year Groups') }}
+                {% else %}
+                    {{ activity.yearGroups|replace({'Y0':'Y'}) }}
+                {% endif %}
+            </span>
+        </div>
+        {% endif %}
+
+    </div>
+
+{% endfor %}
+
+</section>
+
+{% endif %}

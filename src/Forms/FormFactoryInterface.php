@@ -25,6 +25,7 @@ use Gibbon\Forms\Layout\Column;
 use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Trigger;
+use Gibbon\Forms\Layout\Meta;
 
 interface FormFactoryInterface
 {
@@ -43,6 +44,13 @@ interface FormFactoryInterface
      * @return \Gibbon\Forms\Layout\Column
      */
     public function createColumn($id = ''): Column;
+
+    /**
+     * Create flex Meta.
+     *
+     * @return \Gibbon\Forms\Layout\Meta
+     */
+    public function createMeta(): Meta;
 
     /**
      * Create javascript trigger for certain event of DOM object

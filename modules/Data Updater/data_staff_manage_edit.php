@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
 
     $form = Form::createTable('updateStaff', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_staff_manage_editProcess.php?gibbonStaffUpdateID='.$gibbonStaffUpdateID);
 
-    $form->setClass('fullWidth colorOddEven');
+    $form->setClass('w-full colorOddEven');
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffID', $oldValues['gibbonStaffID']);
 
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
             ->displayLabel();    
      }
 
-    $row = $form->addRow()->setClass('head heading');
+    $row = $form->addRow()->setClass('head bg-gray-200');
         $row->addContent(__('Field'));
         $row->addContent(__('Current Value'));
         $row->addContent(__('New Value'));

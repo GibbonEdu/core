@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     echo '</h3>';
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/Individual Needs/in_summary.php');
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
         ->addParam('source', 'summary')
         ->format(function ($row, $actions) {
-            $actions->addAction('edit', __('Edit Individual Needs Details'))
+            $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Individual Needs/in_edit.php');
         });
 

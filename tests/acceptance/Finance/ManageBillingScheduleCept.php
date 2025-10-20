@@ -12,8 +12,8 @@ $addFormValues = array(
     'name'             => 'Test Schedule',
     'active'           => 'Y',
     'description'      => 'This is a test.',
-    'invoiceIssueDate' => '01/01/2020',
-    'invoiceDueDate'   => '01/12/2020',
+    'invoiceIssueDate' => '2001-01-01',
+    'invoiceDueDate'   => '2002-01-01',
 );
 
 $I->submitForm('#content form', $addFormValues, 'Submit');
@@ -32,8 +32,8 @@ $editFormValues = array(
     'name'             => 'Test Schedule Also',
     'active'           => 'N',
     'description'      => 'This is also a test.',
-    'invoiceIssueDate' => '30/01/2020',
-    'invoiceDueDate'   => '30/12/2020',
+    'invoiceIssueDate' => '2021-01-01',
+    'invoiceDueDate'   => '2022-01-01',
 );
 
 $I->submitForm('#content form', $editFormValues, 'Submit');

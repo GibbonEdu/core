@@ -82,4 +82,74 @@ class TimetableDayDateGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function selectTimetabledPeriodsByPersonAndDateRange($gibbonPersonID, $dateStart, $dateEnd)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+
+        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTDay.gibbonTTID, gibbonTTDayDate.date, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonSpace.phoneInternal as phone, gibbonSpace.name AS roomName, gibbonTTSpaceChange.gibbonTTSpaceChangeID as spaceChanged, spaceChange.name as roomNameChange, spaceChange.phoneInternal as phoneChange, gibbonStaffCoverage.status as coverageStatus, gibbonStaffCoverage.gibbonStaffCoverageID as coverageID, gibbonStaffCoverage.gibbonPersonIDCoverage as coveragePerson, CONCAT(gibbonCourseClass.gibbonCourseClassID, gibbonTTDayDate.date, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd) as lessonID
+        FROM gibbonCourse 
+        JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+        JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
+        JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) 
+        JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
+        JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
+        JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+        LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+        LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
+        LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) 
+        LEFT JOIN gibbonSpace as spaceChange ON (spaceChange.gibbonSpaceID=gibbonTTSpaceChange.gibbonSpaceID) 
+        LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.foreignTable='gibbonTTDayRowClass' AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date)
+        LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
+        WHERE gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
+            AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
+            AND NOT role LIKE '% - Left' 
+            AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
+        GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTDayDate.gibbonTTDayDateID
+        ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC, gibbonCourse.name, gibbonCourseClass.nameShort, gibbonStaffCoverage.status
+        ";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectTimetabledPeriodsByFacilityAndDateRange($gibbonSpaceID, $dateStart, $dateEnd)
+    {
+        $data = ['gibbonSpaceID' => $gibbonSpaceID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+
+        $sql = "(
+            SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTDay.gibbonTTID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTDayDate.date, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonSpace.phoneInternal as phone, gibbonSpace.name AS roomName, null as spaceChanged
+            FROM gibbonSpace
+            JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
+            JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
+            JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
+            JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) 
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+            LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) 
+            WHERE gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
+                AND gibbonSpace.gibbonSpaceID=:gibbonSpaceID 
+                AND gibbonTTSpaceChange.gibbonTTSpaceChangeID IS NULL
+            GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID 
+            ORDER BY timeStart, timeEnd DESC
+        ) UNION ALL (
+            SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTDay.gibbonTTID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTDayDate.date, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonSpace.phoneInternal as phone, gibbonSpace.name AS roomName, gibbonTTSpaceChange.gibbonTTSpaceChangeID as spaceChanged
+            FROM gibbonTTSpaceChange
+            JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTSpaceChange.gibbonSpaceID)
+            JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonTTSpaceChange.gibbonTTDayRowClassID)
+            JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
+            JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
+            JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) 
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+            WHERE gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
+                AND gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID 
+                AND gibbonTTSpaceChange.date=gibbonTTDayDate.date
+
+            GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID 
+            ORDER BY timeStart, timeEnd DESC
+        )
+        ";
+
+        return $this->db()->select($sql, $data);
+    }
 }

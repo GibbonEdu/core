@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 
@@ -32,7 +31,7 @@ use Gibbon\Forms\Traits\BasicAttributesTrait;
  * @version v14
  * @since   v14
  */
-class Table implements OutputableInterface, ValidatableInterface
+class Table implements OutputableInterface
 {
     use BasicAttributesTrait;
 
@@ -65,7 +64,7 @@ class Table implements OutputableInterface, ValidatableInterface
     {
         $this->factory = $factory;
         $this->setID($id);
-        $this->setClass('fullWidth formTable');
+        $this->setClass('w-full formTable overflow-x-scroll');
     }
 
     /**
@@ -187,35 +186,6 @@ class Table implements OutputableInterface, ValidatableInterface
         return $row->isLastElement($element) && $row->getElementCount() < $this->totalColumns
             ? 'colspan="'.($this->totalColumns + 1 - $row->getElementCount()).'"'
             : '';
-    }
-
-    /**
-     * Dead-end stub for interface: columns cannot validate.
-     * @param   string  $name
-     * @return  self
-     */
-    public function addValidation($name)
-    {
-        return $this;
-    }
-
-    /**
-     * Iterate over each element in the collection and get the combined validation output.
-     * @return  string
-     */
-    public function getValidationOutput()
-    {
-        $output = '';
-
-        foreach ($this->getElements() as $row) {
-            foreach ($row->getElements() as $element) {
-                if ($element instanceof ValidatableInterface) {
-                    $output .= $element->getValidationOutput();
-                }
-            }
-        }
-
-        return $output;
     }
 
     /**

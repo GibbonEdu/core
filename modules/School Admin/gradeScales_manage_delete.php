@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/gradeScales_manage_deleteProcess.php?gibbonScaleID=$gibbonScaleID", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/gradeScales_manage_deleteProcess.php", true);
+            $form->addHiddenValue('gibbonScaleID', $gibbonScaleID);
             echo $form->getOutput();
         }
     }

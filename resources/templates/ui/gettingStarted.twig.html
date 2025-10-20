@@ -17,7 +17,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
 
         <p class="mt-2 mb-0 text-gray-600">
-            {{ __('To complete your installation, it is advisable to follow the %1$sPost-Install and Server Config instructions%2$s.')|format("<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/#post-install-server-config'>", "</a>")|raw }}
+            {{ __('To complete your installation, it is advisable to follow the %1$sPost-Install and Server Config instructions%2$s.')|format("<a target='_blank' href='https://docs.gibbonedu.org/introduction/post-installation'>", "</a>")|raw }}
             <br/><br/>
 
             {{ __('After logging in, be sure to visit the System Check page to ensure all system requirements have been met. You can find additional information about your system in the Server Info page.') }}
@@ -71,9 +71,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% macro card(name, content, icon = '', url = '', target = '_blank') %}
     <div class="w-full sm:w-1/2 pr-4">
-        <a href="{{ url }}" target="{{ target }}" class="flex bg-white rounded h-full text-gray-800 hover:bg-{{ themeColour }}-100 hover:text-{{ themeColour }}-700">
+        <a href="{{ url }}" target="{{ target }}" class="flex bg-white rounded h-full text-gray-800 hover:bg-{{ themeColour }}-100 hover:text-{{ themeColour }}-800">
             <div class="pl-4 pr-2 py-4">
-                {{ include('ui/icons.twig.html', {'iconClass': 'w-10 h-10 opacity-75'}) }}
+                {{ icon('large', icon, 'size-10 opacity-75 text-purple-700') }}
             </div>
             <div class="flex-1 p-4">
                 <p class="m-0 text-base font-semibold font-sans">

@@ -81,12 +81,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $row = $form->addRow();
             $column = $row->addColumn();
             $column->addLabel('description', __('Description'));
-            $column->addTextArea('description')->setRows(8)->setClass('fullWidth')->setValue($firstAidDescriptionTemplate);
+            $column->addTextArea('description')->setRows(8)->setClass('w-full')->setValue($firstAidDescriptionTemplate);
 
         $row = $form->addRow();
             $column = $row->addColumn();
             $column->addLabel('actionTaken', __('Action Taken'));
-            $column->addTextArea('actionTaken')->setRows(8)->setClass('fullWidth');
+            $column->addTextArea('actionTaken')->setRows(8)->setClass('w-full');
 
         $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
         
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $row = $form->addRow();
             $column = $row->addColumn();
             $column->addLabel('followUp', __('Follow Up'))->description(__('If you are the student\'s teacher, please include details such as: the location & lesson, what lead up to the incident, what was the incident, what did you do.'));
-            $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
+            $column->addTextArea('followUp')->setRows(8)->setClass('w-full');
 
         // CUSTOM FIELDS
         $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'First Aid', []);

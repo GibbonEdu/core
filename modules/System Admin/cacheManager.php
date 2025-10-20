@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.php') == false) {
     // Access denied
@@ -99,6 +100,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
         $row->addLabel('frontEndCache', __('Front End Cache'));
         $row->addContent(Format::tag('.css .js', 'dull'));
         $row->addCheckbox('frontEndCache')->setValue('Y')->checked('N');
+
+    $form->addRow()->addHeading('School Admin', __('School Admin'));
+
+    $automaticAlertCount = $container->get(AlertGateway::class)->getAutomaticAlertCount($session->get('gibbonSchoolYearID'));
+    $row = $form->addRow();
+        $row->addLabel('studentAlerts', __('Automatic Student Alerts'));
+        $row->addContent(Format::tag($automaticAlertCount, 'dull'));
+        $row->addCheckbox('studentAlerts')->setValue('Y')->checked('N');
 
     $row = $form->addRow()->addSubmit(__('Clear Cache'));
 

@@ -39,18 +39,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $subGateway = $container->get(SubstituteGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
+    $coverageInternal = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     $date = isset($_REQUEST['date']) ? Format::dateConvert($_REQUEST['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
+    $allStaff = $_REQUEST['allStaff'] ?? $coverageInternal;
 
     // DATE SELECTOR
-    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
-    $form->setClass('blank fullWidth');
+    $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addClass('flex flex-wrap');
+    $row = $form->addRow()->addClass('flex flex-wrap mb-4');
 
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false';
 
@@ -59,14 +59,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $nextWeek = $dateObject->modify('+1 week')->format($dateFormat);
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
-        $col->addButton(__('Last Week'))->addClass('rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastWeek}&allStaff={$allStaff}'");
-        $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisWeek}&allStaff={$allStaff}'");
-        $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('Last Week'))->groupAlign('left')->onClick("window.location.href='{$link}&date={$lastWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('This Week'))->groupAlign('middle')->onClick("window.location.href='{$link}&date={$thisWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('Next Week'))->groupAlign('right')->onClick("window.location.href='{$link}&date={$nextWeek}&allStaff={$allStaff}'");
 
+    
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addCheckbox('allStaff')->description(__('All Staff'))->setValue('Y')->checked($allStaff)->setClass('mr-4');
-        $col->addDate('date')->setValue($dateObject->format($dateFormat))->setClass('shortWidth');
-        $col->addSubmit(__('Go'));
+        if ($coverageInternal != 'Y') {
+            $col->addCheckbox('allStaff')->description(__('All Staff'))->setValue('Y')->checked($allStaff)->setClass('mr-4');
+        }
+        $col->addDate('date')->groupAlign('left')->setValue($dateObject->format($dateFormat))->setClass('w-36');
+        $col->addSubmit(__('Go'))->groupAlign('right');
+    
 
     // DATA
     $firstDayOfTheWeek = $container->get(SettingGateway::class)->getSettingByScope('System', 'firstDayOfTheWeek');
@@ -91,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     // Attach availability info to each sub
     $availability = $subGateway->selectUnavailableDatesByDateRange($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d'))->fetchAll();
     $subsAvailability = array_reduce($availability, function ($group, $item) {
-        $gibbonPersonID = str_pad($item['gibbonPersonID'], 10, '0', STR_PAD_LEFT);
+        $gibbonPersonID = str_pad($item['gibbonPersonID'] ?? '', 10, '0', STR_PAD_LEFT);
         if (!isset($group[$gibbonPersonID])) return $group;
 
         $group[$gibbonPersonID]['dates'][$item['date']][] = $item;
@@ -107,6 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->setIcon('rubric')
         ->setURL('/modules/Staff/report_subs_availability.php')
         ->addParam('date', Format::date($date))
+        ->addParam('allStaff', $allStaff)
         ->displayLabel();
 
     $table->addColumn('image_240', __('Photo'))

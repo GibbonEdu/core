@@ -16,17 +16,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
-use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
-use Gibbon\Data\Validator;
-use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\NotificationGateway;
 
 require_once '../../gibbon.php';
 
@@ -169,8 +171,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $gibbonRoleIDAll = (is_array($gibbonRoleIDAll))? implode(',', array_unique($gibbonRoleIDAll)) : $row['gibbonRoleIDAll'];
 
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
-            $email = trim($_POST['email'] ?? '');
-            $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
             $address1 = $_POST['address1'] ?? '';
             $address1District = $_POST['address1District'] ?? '';
             $address1Country = $_POST['address1Country'] ?? '';
@@ -201,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
             $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
             $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
-            $website = $_POST['website'] ?? '';
+            $website = filter_var(trim($_POST['website'] ?? ''), FILTER_SANITIZE_URL);
             $languageFirst = $_POST['languageFirst'] ?? '';
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
@@ -267,6 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     header("Location: {$URL}");
                 } else {
                     $imageFail = false;
+                    $updateBackupPhoto = false;
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
                         $path = $session->get('absolutePath');
@@ -278,76 +281,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
-                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+                            $attachment1 = $fileUploader->uploadAndResizeImage($file, $username.'_240', 480, 100);
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
                             } else {
-                                //Check image sizes
-                                if (function_exists('getimagesize') && function_exists('imagecreatetruecolor')) {
-                                    $imageSize = getimagesize($path.'/'.$attachment1);
-                                    $width = $imageSize[0] ?? '';
-                                    $height = $imageSize[1] ?? '';
-                                    $aspect = $height / $width;
-
-                                    if ($width > 360 || $height > 480 || $aspect < 1.2 || $aspect > 1.4) {
-                                        $src_x = $src_y = $dst_x = $dst_y = 0;
-                                        $src_y = 0;
-                                        $src_w = $width;
-                                        $src_h = $height;
-                                        $maxWidth = 360;
-                                        $maxHeight = 480;
-
-                                        // New crop if needed
-                                        if ($aspect < 1.2) {
-                                            $src_w = $height / 1.2;
-                                            $src_x = ($width - $src_w) / 2;
-                                        }
-                                        else if ($aspect > 1.4) {
-                                            $src_h = $width * 1.4;
-                                            $src_y = ($height - $src_h) / 2;
-                                        }
-
-                                        $dst_w = $src_w;
-                                        $dst_h = $src_h;
-
-                                        // New compressed image if needed
-                                        if ($src_w > $maxWidth) {
-                                            $new_ratio = $maxWidth / $src_w;
-                                            $dst_w = $maxWidth;
-                                            $dst_h = $src_h * $new_ratio;
-                                        }
-                                        if ($src_h > $maxHeight) {
-                                            $new_ratio = $maxHeight / $src_h;
-                                            $dst_h = $maxHeight;
-                                            $dst_w = $src_w * $new_ratio;
-                                        }
-
-                                        $imagePath =  $path.'/'.$attachment1;
-
-                                        // Resampling the image
-                                        if (!empty($imageSize) && file_exists($imagePath)) {
-                                            $image_p = imagecreatetruecolor($dst_w, $dst_h);
-                                            $extension = mb_substr(mb_strrchr(strtolower($imagePath), '.'), 1);
-
-                                            switch ($extension) {
-                                                case 'png':     $image = imagecreatefrompng($imagePath); break;
-                                                case 'gif':     $image = imagecreatefromgif($imagePath); break;
-                                                case 'webp':    $image = imagecreatefromwebp($imagePath); break;
-                                                default:        $image = imagecreatefromjpeg($imagePath);
-                                            }
-
-                                            imagecopyresampled($image_p, $image,
-                                                            $dst_x, $dst_y,
-                                                            $src_x, $src_y,
-                                                            $dst_w, $dst_h,
-                                                            $src_w, $src_h);
-
-                                            imagedestroy($image);
-                                            imagejpeg($image_p, $imagePath, 100);
-                                        }
-                                    }
-                                }
+                                $updateBackupPhoto = true;
                             }
                         }
                     } else {
@@ -358,6 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     // CUSTOM FIELDS
                     $customRequireFail = false;
                     $params = compact('student', 'staff', 'parent', 'other');
+                    $params['requiredOverride'] = 'N';
                     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params, $customRequireFail);
 
                     // PERSONAL DOCUMENTS
@@ -385,8 +325,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $statusReason = $_POST['statusReason'] ?? '';
 
                             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
-                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason]);
+                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                         }
+                        
+                        if (!empty($updateBackupPhoto) && !empty($attachment1)) {
+                            $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+
+                            $photoUpdated = $personPhotoGateway->insertAndUpdate([
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                                'personImage' => $attachment1,
+                                'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                            ], [
+                                'personImage' => $attachment1,
+                                'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                            ]);
+                        }
+
+                        // ALERTS: possible change to Privacy alert status, recalculate alerts
+                        $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
 
                         //Deal with change to privacy settings
                         if ($student && $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {
@@ -449,11 +406,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 }
 
                                 //Set log
-                                $gibbonModuleID=getModuleIDFromName($connection2, 'User Admin') ;
                                 $privacyValues=array() ;
                                 $privacyValues['oldValue'] = $privacy_old ;
                                 $privacyValues['newValue'] = $privacy ;
-                                $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+                                $logGateway->addLog($session->get("gibbonSchoolYearID"), 'User Admin', $session->get("gibbonPersonID"), 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
                             }
                         }
 

@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
+$gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage.php';
 

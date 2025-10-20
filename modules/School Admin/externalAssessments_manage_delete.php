@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/externalAssessments_manage_deleteProcess.php?gibbonExternalAssessmentID=$gibbonExternalAssessmentID", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/externalAssessments_manage_deleteProcess.php", true);
+            $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
             echo $form->getOutput();
         }
     }

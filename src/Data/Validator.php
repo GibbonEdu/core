@@ -50,7 +50,7 @@ class Validator
     {
         return $this->allowableIframeSources;
     }
-
+    
     /**
      * Sanitize the input data.
      *

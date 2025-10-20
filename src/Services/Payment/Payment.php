@@ -162,12 +162,10 @@ class Payment implements PaymentInterface
             $responseData = $response->getData();
             header("Location: " . $responseData['url']);
             exit;
-            // return self::RETURN_SUCCESS;
-
         } elseif ($response->isRedirect()) {
             // Redirect to offsite payment gateway
             $response->redirect();
-
+            exit;
         } elseif (stripos($response->getMessage(), 'currency') !== false) {
             // Payment not possible
             return self::RETURN_ERROR_CURRENCY;

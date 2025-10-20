@@ -43,7 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/studentEnrolment_manage_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/studentEnrolment_manage_deleteProcess.php?search=$search", true);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
             echo $form->getOutput();
         }
     }

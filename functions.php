@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Locale;
+use Gibbon\UI\Icon;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -27,7 +29,6 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Input\Editor;
-use Gibbon\Locale;
 
 function getIPAddress()
 {
@@ -45,33 +46,6 @@ function getIPAddress()
         $return = getenv('HTTP_FORWARDED');
     else if (getenv('REMOTE_ADDR'))
         $return = getenv('REMOTE_ADDR');
-
-    return $return;
-}
-
-/**
- * Convert an HTML email body into a plain text email body.
- *
- * Deprecated. Use \Gibbon\Comms\Mailer::renderBody() instead, which internally
- * handles the HTML and non-HTML rendered messages.
- *
- * @deprecated v25
- * @version v12
- * @since   v12
- *
- * @param string $body
- *
- * @return string
- */
-function emailBodyConvert($body)
-{
-    $return = $body;
-
-    $return = preg_replace('#<br\s*/?>#i', "\n", $return);
-    $return = str_replace('</p>', "\n\n", $return);
-    $return = str_replace('</div>', "\n\n", $return);
-    $return = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $return);
-    $return = strip_tags($return, '<a>');
 
     return $return;
 }
@@ -179,6 +153,21 @@ function __m(string $text, array $params = [], array $options = [])
     return $gibbon->locale->translate($text, $params, $options);
 }
 
+/**
+ * Return an SVG icon from a specified icon library.
+ * Many of the icons come from: https://heroicons.com
+ *
+ * @param string $library   One of: basic, solid, outline
+ * @param string $icon      The name of an icon
+ * @param string $class     Applies a class to the svg returned
+ * @param array $options    Eg: strokeWidth for outline icons
+ * @return string
+ */
+function icon(string $library, string $icon, string $class = '', array $options = []) : string
+{
+    return Icon::get($library, $icon, $class, $options);
+}
+
 //$valueMode can be "value" or "id" according to what goes into option's value field
 //$selectMode can be "value" or "id" according to what is used to preselect an option
 //$honourDefault can TRUE or FALSE, and determines whether or not the default grade is selected
@@ -220,216 +209,6 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     $return .= '</select>';
 
     return $return;
-}
-
-/**
- * Archives one or more notifications, based on partial match of actionLink
- * and total match of gibbonPersonID.
- *
- * @deprecated v25
- *             Should use NotificationGateway::archiveNotificationForPersonAction()
- *
- * @param \PDO    $connection2     The PDO instance.
- * @param string  $guid            The guid of current installation.
- * @param int     $gibbonPersonID  The Gibbon person ID.
- * @param string  $actionLinkPart  The partial string in an action link.
- *
- * @return bool Whether the database update was successful.
- */
-function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
-{
-    $return = true;
-
-    try {
-        $data = array('gibbonPersonID' => $gibbonPersonID, 'actionLink' => "%$actionLink%");
-        $sql = "UPDATE gibbonNotification SET status='Archived' WHERE gibbonPersonID=:gibbonPersonID AND actionLink LIKE :actionLink AND status='New'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $return = false;
-    }
-
-    return $return;
-}
-
-/**
- * Calculate the number of days before next birthday.
- *
- * Deprecated because it was only used in \Gibbon\Services\Format.
- * Replaced by the private method \Gibbon\Services\Format::daysUntilNextBirthday().
- *
- * @deprecated v25
- * @version v12
- * @since   v12
- *
- * @param string $birthday  Accepts birthday in mysql date (YYYY-MM-DD).
- *
- * @return int  Number of days before the next birthday. If today is a birthday, returns 0.
- */
-function daysUntilNextBirthday($birthday)
-{
-    $today = date('Y-m-d');
-    $btsString = substr($today, 0, 4) . '-' . substr($birthday, 5);
-    $bts = strtotime($btsString);
-    $ts = time();
-
-    if ($bts < $ts) {
-        $bts = strtotime(date('y', strtotime('+1 year')) . '-' . substr($birthday, 5));
-    }
-
-    $days = ceil(($bts - $ts) / 86400);
-
-    //Full year correction, and leap year correction
-    $includesLeap = false;
-    if (substr($birthday, 5, 2) < 3) { //Born in January or February, so check if this year is a leap year
-        $includesLeap = is_leap_year(substr($today, 0, 4));
-    } else { //Otherwise, check next year
-        $includesLeap = is_leap_year(substr($today, 0, 4) + 1);
-    }
-
-    if ($includesLeap == true and $days == 366) {
-        $days = 0;
-    } elseif ($includesLeap == false and $days == 365) {
-        $days = 0;
-    }
-
-    return $days;
-}
-
-/**
- * This function written by David Walsh, shared under MIT License
- * (http://davidwalsh.name/checking-for-leap-year-using-php)
- *
- * @deprecated v25
- *
- * @param int  $year  The year.
- *
- * @return bool
- */
-function is_leap_year($year)
-{
-    return (($year % 4) == 0) && ((($year % 100) != 0) || (($year % 400) == 0));
-}
-
-/**
- * Check if a password matches the password policy in the
- * settings.
- *
- * Deprecated. Use \Gibbon\Data\PasswordPolicy::validate() instead.
- *
- * @deprecated v25
- * @version v25
- * @since   v12
- *
- * @param \PDO   $connection2
- * @param string $passwordNew
- *
- * @return bool
- */
-function doesPasswordMatchPolicy($connection2, $passwordNew)
-{
-    global $container;
-    /** @var PasswordPolicy */
-    $passwordPolicies = $container->get(PasswordPolicy::class);
-    try {
-        return $passwordPolicies->validate($passwordNew);
-    } catch (\Exception $e) {
-        return false;
-    }
-}
-
-/**
- * Get an HTML list of all password policies.
- *
- * @deprecated v25
- * @version v25
- * @since   v12
- *
- * @param string $guid
- * @param \PDO $connection2
- *
- * @return string  An unorder HTML list.
- */
-function getPasswordPolicy($guid, $connection2)
-{
-    global $container;
-    /** @var PasswordPolicy */
-    $passwordPolicies = $container->get(PasswordPolicy::class);
-    return $passwordPolicies->describeHTML();
-}
-
-function getFastFinder($connection2, $guid)
-{
-    global $session;
-
-    $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
-    $form->setClass('blank fullWidth');
-
-    $form->addHiddenValue('address', $session->get('address'));
-
-    $row = $form->addRow();
-    $row->addFinder('fastFinderSearch')
-        ->fromAjax(Url::fromHandlerRoute('index_fastFinder_ajax.php'))
-        ->setClass('w-full text-white flex items-center')
-        ->setAria('label', __('Search'))
-        ->setParameter('hintText', __('Start typing a name...'))
-        ->setParameter('noResultsText', __('No results'))
-        ->setParameter('searchingText', __('Searching...'))
-        ->setParameter('tokenLimit', 1)
-        ->setParameter('arialabel', __('Fast Finder'))
-        ->addValidation('Validate.Presence', 'failureMessage: " "')
-        ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="' . __('Go') . '">');
-
-    $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
-
-    $templateData = [
-        'roleCategory'        => $session->get('gibbonRoleIDCurrentCategory'),
-        'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
-        'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
-        'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
-        'form'                => $form->getOutput(),
-    ];
-
-    return $templateData;
-}
-
-/**
- * Get alert of the especified alert level.
- *
- * @deprecated v25
- *             Use AlertLevelGateway::getByID instead.
- *
- * @since    v12
- * @version  v23
- *
- * @param string  $guid
- * @param \PDO    $connection2
- * @param int     $gibbonAlertLevelID
- *
- * @return array|false
- */
-function getAlert($guid, $connection2, $gibbonAlertLevelID)
-{
-    $output = false;
-
-
-    $dataAlert = array('gibbonAlertLevelID' => $gibbonAlertLevelID);
-    $sqlAlert = 'SELECT * FROM gibbonAlertLevel WHERE gibbonAlertLevelID=:gibbonAlertLevelID';
-    $resultAlert = $connection2->prepare($sqlAlert);
-    $resultAlert->execute($dataAlert);
-    if ($resultAlert->rowCount() == 1) {
-        $rowAlert = $resultAlert->fetch();
-        $output = array();
-        $output['gibbonAlertLevelID'] = $rowAlert['gibbonAlertLevelID'];
-        $output['name'] = __($rowAlert['name']);
-        $output['nameShort'] = $rowAlert['nameShort'];
-        $output['color'] = $rowAlert['color'];
-        $output['colorBG'] = $rowAlert['colorBG'];
-        $output['description'] = __($rowAlert['description']);
-        $output['sequenceNumber'] = $rowAlert['sequenceNumber'];
-    }
-
-    return $output;
 }
 
 function getSalt()
@@ -505,43 +284,6 @@ function getWeekNumber($date, $connection2, $guid)
     }
 }
 
-/**
- * Render the editor. Updated v18 to use a twig template.
- *
- * @deprecated  Since v25. Will be removed in the future.
- *              Please use \Gibbon\Forms\Input\Editor directly.
- * @version v25
- * @since   v12
- *
- * @param string   $guid              Obsoleted parameter.
- * @param boolean  $tinymceInit
- * @param string   $id
- * @param string   $value
- * @param integer  $rows
- * @param boolean  $showMedia
- * @param boolean  $required
- * @param boolean  $initiallyHidden
- * @param boolean  $allowUpload
- * @param string   $initialFilter
- * @param boolean  $resourceAlphaSort
- *
- * @return string
- */
-function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false): string
-{
-    $editor = (new Editor($id))
-        ->tinymceInit($tinymceInit)
-        ->setValue($value)
-        ->setRows($rows)
-        ->showMedia($showMedia)
-        ->setRequired($required)
-        ->initiallyHidden($initiallyHidden)
-        ->allowUpload($allowUpload)
-        ->initialFilter($initialFilter)
-        ->resourceAlphaSort($resourceAlphaSort);
-    return $editor->getOutput();
-}
-
 function getYearGroups($connection2)
 {
     $output = false;
@@ -573,7 +315,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
         $sqlYears = 'SELECT DISTINCT nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
         $resultYears = $connection2->query($sqlYears);
 
-        $years = explode(',', $ids);
+        $years = explode(',', $ids ?? '');
         if (count($years) > 0 and $years[0] != '') {
             if (count($years) == $resultYears->rowCount()) {
                 $output = '<i>' . __('All') . '</i>';
@@ -623,163 +365,10 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
     return $output;
 }
 
-/**
- * Gets terms in the specified school year
- *
- * @deprecated v25
- *             Use SchoolYearTermGateway::selectTermsBySchoolYear() instead.
- *
- * @since   v12
- * @version v12
- *
- * @param \PDO     $connection2
- * @param int      $gibbonSchoolYearID
- * @param boolean  $short
- *
- * @return string[]
- */
-function getTerms($connection2, $gibbonSchoolYearID, $short = false)
-{
-    $output = false;
-    //Scan through year groups
-
-    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-    $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-
-    while ($row = $result->fetch()) {
-        $output .= $row['gibbonSchoolYearTermID'] . ',';
-        if ($short == true) {
-            $output .= $row['nameShort'] . ',';
-        } else {
-            $output .= $row['name'] . ',';
-        }
-    }
-    if ($output != false) {
-        $output = substr($output, 0, (strlen($output) - 1));
-        $output = explode(',', $output);
-    }
-
-    return $output;
-}
-
-/**
- * Array sort for multidimensional arrays.
- *
- * Deprecated in favor of native usort.
- *
- * @since 2013
- * @version v12.0.00
- * @deprecated v26.0.00
- */
-function msort($array, $id = 'id', $sort_ascending = true)
-{
-    $temp_array = array();
-    while (count($array) > 0) {
-        $lowest_id = 0;
-        $index = 0;
-        foreach ($array as $item) {
-            if (isset($item[$id])) {
-                if ($array[$lowest_id][$id]) {
-                    if (strtolower($item[$id]) < strtolower($array[$lowest_id][$id])) {
-                        $lowest_id = $index;
-                    }
-                }
-            }
-            ++$index;
-        }
-        $temp_array[] = $array[$lowest_id];
-        $array = array_merge(array_slice($array, 0, $lowest_id), array_slice($array, $lowest_id + 1));
-    }
-    if ($sort_ascending) {
-        return $temp_array;
-    } else {
-        return array_reverse($temp_array);
-    }
-}
-
-/**
- * Returns preformatted HTML indicator of max file upload size
- *
- * @since 2013
- * @version v26
- *
- * @param bool $multiple  Whether to show text about multiple files.
- */
-function getMaxUpload($multiple = false)
-{
-    // For backwards compatibilty
-    global $guid;
-    if ($multiple === $guid) {
-        $multiple = func_get_args()[1] ?? false;
-    }
-
-    $output = '';
-    $post = substr(ini_get('post_max_size'), 0, (strlen(ini_get('post_max_size')) - 1));
-    $file = substr(ini_get('upload_max_filesize'), 0, (strlen(ini_get('upload_max_filesize')) - 1));
-
-    $output .= "<div style='margin-top: 10px; font-style: italic; color: #c00'>";
-    if ($multiple == true) {
-        if ($post < $file) {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post) . '<br/>';
-        } else {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file) . '<br/>';
-        }
-    } else {
-        if ($post < $file) {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $post) . '<br/>';
-        } else {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $file) . '<br/>';
-        }
-    }
-    $output .= '</div>';
-
-    return $output;
-}
-
 //Encode strring using htmlentities with the ENT_QUOTES option
 function htmlPrep($str)
 {
-    return htmlentities($str, ENT_QUOTES, 'UTF-8');
-}
-
-/**
- * Get the risk level of the highest-risk condition for an individual.
- *
- * Deprecated. Use \Gibbon\Domain\Student\MedicalGateway::getHighestMedicalRisk() instead.
- *
- * @deprecated v25
- * @version v12
- *
- * @param string  $guid            Obsoleted parameter.
- * @param int     $gibbonPersonID  The person ID.
- * @param \PDO    $connection2
- *
- * @return array  An array of fields in the medical alert information of the person,
- *                or an empty array if none found.
- */
-function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
-{
-    $output = false;
-
-
-    $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-    $sqlAlert = 'SELECT * FROM gibbonPersonMedical JOIN gibbonPersonMedicalCondition ON (gibbonPersonMedical.gibbonPersonMedicalID=gibbonPersonMedicalCondition.gibbonPersonMedicalID) JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonAlertLevel.sequenceNumber DESC';
-    $resultAlert = $connection2->prepare($sqlAlert);
-    $resultAlert->execute($dataAlert);
-
-    if ($resultAlert->rowCount() > 0) {
-        $rowAlert = $resultAlert->fetch();
-        $output = array();
-        $output[0] = $rowAlert['gibbonAlertLevelID'];
-        $output[1] = __($rowAlert['name']);
-        $output[2] = $rowAlert['nameShort'];
-        $output[3] = $rowAlert['color'];
-        $output[4] = $rowAlert['colorBG'];
-    }
-
-    return $output;
+    return htmlentities($str ?? '', ENT_QUOTES, 'UTF-8');
 }
 
 //Looks at the grouped actions accessible to the user in the current module and returns the highest
@@ -823,37 +412,6 @@ function getHighestGroupedAction($guid, $address, $connection2)
     return $output;
 }
 
-/**
- * Returns the category of the specified role.
- *
- * Deprecated. Use RoleGateway::getRoleCategory() instead.
- *
- * @deprecated v25
- * @version v12
- * @since   v12
- *
- * @param int   $gibbonRoleID
- * @param \PDO  $connection2
- *
- * @return string|false
- */
-function getRoleCategory($gibbonRoleID, $connection2)
-{
-    $output = false;
-
-
-    $data = array('gibbonRoleID' => $gibbonRoleID);
-    $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-
-    if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-        $output = $row['category'];
-    }
-
-    return $output;
-}
 
 //Checks to see if a specified date (YYYY-MM-DD) is a day where school is open in the current academic year. There is an option to search all years
 function isSchoolOpen($guid, $date, $connection2, $allYears = '')
@@ -916,194 +474,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 
 function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false, $target = "_self")
 {
-    global $session, $container;
-
-    $output = '';
-    $alerts = [];
-
-    $target = ($target == "_blank") ? "_blank" : "_self";
-
-    $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-    if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
-        // Individual Needs
-        $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-        $sqlAlert = "SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
-        $resultAlert = $connection2->prepare($sqlAlert);
-        $resultAlert->execute($dataAlert);
-
-        if ($alert = $resultAlert->fetch()) {
-            $title = $resultAlert->rowCount() == 1
-                ? $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name'])
-                : $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
-
-            $alerts[] = [
-                'highestLevel'    => __($alert['name']),
-                'highestColour'   => $alert['color'],
-                'highestColourBG' => $alert['colorBG'],
-                'tag'             => __('IN'),
-                'title'           => $title,
-                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                    ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Individual Needs']),
-            ];
-        }
-
-        // Academic
-        $gibbonAlertLevelID = '';
-        $alertThresholdText = '';
-
-        $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
-        $sqlAlert = "SELECT *
-        FROM gibbonMarkbookEntry
-            JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-            JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-            JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-        WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
-            AND (attainmentConcern='Y' OR effortConcern='Y')
-            AND complete='Y'
-            AND gibbonSchoolYearID=:gibbonSchoolYearID
-            AND completeDate<=:today
-            AND completeDate>:date
-            ";
-        $resultAlert = $connection2->prepare($sqlAlert);
-        $resultAlert->execute($dataAlert);
-
-        $settingGateway = $container->get(SettingGateway::class);
-        $academicAlertLowThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertLowThreshold');
-        $academicAlertMediumThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertMediumThreshold');
-        $academicAlertHighThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertHighThreshold');
-
-        if ($resultAlert->rowCount() >= $academicAlertHighThreshold) {
-            $gibbonAlertLevelID = 001;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $academicAlertHighThreshold);
-        } elseif ($resultAlert->rowCount() >= $academicAlertMediumThreshold) {
-            $gibbonAlertLevelID = 002;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold - 1));
-        } elseif ($resultAlert->rowCount() >= $academicAlertLowThreshold) {
-            $gibbonAlertLevelID = 003;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold - 1));
-        }
-        if ($gibbonAlertLevelID != '') {
-            /**
-             * @var AlertLevelGateway
-             */
-            $alertLevelGateway = $container->get(AlertLevelGateway::class);
-            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
-                $alerts[] = [
-                    'highestLevel'    => __($alert['name']),
-                    'highestColour'   => $alert['color'],
-                    'highestColourBG' => $alert['colorBG'],
-                    'tag'             => __('A'),
-                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
-                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                        ->withQueryParams([
-                            'gibbonPersonID' => $gibbonPersonID,
-                            'subpage' => 'Markbook',
-                            'filter' => $session->get('gibbonSchoolYearID'),
-                        ]),
-                ];
-            }
-        }
-
-        // Behaviour
-        $gibbonAlertLevelID = '';
-        $alertThresholdText = '';
-
-        $dataAlert = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
-        $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>:date";
-        $resultAlert = $connection2->prepare($sqlAlert);
-        $resultAlert->execute($dataAlert);
-
-        $behaviourAlertLowThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertLowThreshold');
-        $behaviourAlertMediumThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertMediumThreshold');
-        $behaviourAlertHighThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertHighThreshold');
-
-        if ($resultAlert->rowCount() >= $behaviourAlertHighThreshold) {
-            $gibbonAlertLevelID = 001;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $behaviourAlertHighThreshold);
-        } elseif ($resultAlert->rowCount() >= $behaviourAlertMediumThreshold) {
-            $gibbonAlertLevelID = 002;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold - 1));
-        } elseif ($resultAlert->rowCount() >= $behaviourAlertLowThreshold) {
-            $gibbonAlertLevelID = 003;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold - 1));
-        }
-
-        if ($gibbonAlertLevelID != '') {
-            /**
-             * @var AlertLevelGateway
-             */
-            $alertLevelGateway = $container->get(AlertLevelGateway::class);
-            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
-                $alerts[] = [
-                    'highestLevel'    => __($alert['name']),
-                    'highestColour'   => $alert['color'],
-                    'highestColourBG' => $alert['colorBG'],
-                    'tag'             => __('B'),
-                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
-                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Behaviour']),
-                ];
-            }
-        }
-
-        // Medical
-        /** @var MedicalGateway */
-        $medicalGateway = $container->get(MedicalGateway::class);
-        if ($alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID)) {
-            $alerts[] = [
-                'highestLevel'    => __($alert['name']),
-                'highestColour'   => $alert['color'],
-                'highestColourBG' => $alert['colorBG'],
-                'tag'             => __('M'),
-                'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert['name']),
-                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                    ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
-            ];
-        }
-
-        // Privacy
-        $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
-        if ($privacySetting == 'Y' and $privacy != '') {
-            /**
-             * @var AlertLevelGateway
-             */
-            $alertLevelGateway = $container->get(AlertLevelGateway::class);
-            if ($alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_HIGH)) {
-                $alerts[] = [
-                    'highestLevel'    => __($alert['name']),
-                    'highestColour'   => $alert['color'],
-                    'highestColourBG' => $alert['colorBG'],
-                    'tag'             => __('P'),
-                    'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
-                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                        ->withQueryParam('gibbonPersonID', $gibbonPersonID),
-                ];
-            }
-        }
-
-        // Output alerts
-        $classDefault = 'block align-middle text-center font-bold border-0 border-t-2 ';
-        $classDefault .= $large
-            ? 'text-4xl w-10 pt-1 mr-2 leading-none'
-            : 'text-xs w-4 pt-px mr-1 leading-none';
-
-        foreach ($alerts as $alert) {
-            $style = "color: {$alert['highestColour']}; border-color: {$alert['highestColour']}; background-color: {$alert['highestColourBG']};";
-            $class = $classDefault . ' ' . ($alert['class'] ?? 'float-left');
-            $output .= Format::link($alert['link'], $alert['tag'], [
-                'title' => $alert['title'],
-                'class' => $class,
-                'style' => $style,
-                'target' => $target,
-            ]);
-        }
-
-        if ($div == true) {
-            $output = "<div {$divExtras} class='w-20 lg:w-24 h-6 text-left py-1 px-0 mx-auto'>{$output}</div>";
-        }
-    }
-
-    return $output;
+    return '';
 }
 
 //Gets system settings from database and writes them to individual session variables.
@@ -1230,7 +601,8 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
                     JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
                     WHERE gibbonAction.URLList LIKE :actionName
                         AND gibbonPermission.gibbonRoleID=:gibbonRoleID
-                        AND gibbonModule.name=:moduleName ";
+                        AND gibbonModule.name=:moduleName 
+                        AND gibbonModule.active='Y' ";
 
                     if ($sub != '') {
                         $data['sub'] = $sub;
@@ -1288,13 +660,41 @@ function isModuleAccessible($guid, $connection2, $address = '')
 //Get the module name from the address
 function getModuleName($address)
 {
-    return substr(substr($address, 9), 0, strpos(substr($address, 9), '/'));
+    $pos = stripos($address, 'modules/');
+    if ($pos !== false) {
+        $dir = substr($address, $pos + 8);
+        $nextSlash = stripos($dir, '/');
+        return $nextSlash !== false ? substr($dir, 0, $nextSlash) : $dir;
+    }
+
+    $pos = stripos($address, 'module');
+    if ($pos !== false) {
+        $dir = substr($address, $pos + 6);
+
+        $nextSlash = stripos($dir, '/');
+        return $nextSlash !== false ? trim(substr($dir, 0, $nextSlash)) : trim($dir);
+    }
+
+    return '';
 }
 
 //Get the action name from the address
 function getActionName($address)
 {
-    return substr($address, (10 + strlen(getModuleName($address))));
+    $module = getModuleName($address);
+
+     if (!empty($module)) {
+        $pos = stripos($address, 'modules/');
+        if ($pos !== false) {
+           return substr($address, (10 + strlen($module)));
+        } else {
+            $pos = stripos($address, 'module');
+            $actionStart = stripos($address, '/', $pos + 6) + 1;
+            return basename(substr($address, $actionStart));
+        }
+    }
+    
+    return basename($address);
 }
 
 //Using the current address, checks to see that a module exists and is ready to use, returning the ID if it is
@@ -1338,278 +738,6 @@ function getModuleCategory($address, $connection2)
     }
 
     return $output;
-}
-
-/**
- * Get the current year and set it as a global variable.
- * (i.e. global $session instance)
- *
- * @deprecated v25
- *             This happens in SessionFactory::setCurrentSchoolYear instead,
- *             which is called by Core::initializeCore, so shouldn't need to
- *             be called manually.
- *
- * @version v23
- * @since   v12
- *
- * @param  string $guid
- * @param  \PDO $connection2
- *
- * @return void
- */
-function setCurrentSchoolYear($guid,  $connection2)
-{
-    global $session;
-
-    //Run query
-    $data = array();
-    $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-
-    //Check number of rows returned.
-    //If it is not 1, show error
-    if (!($result->rowCount() == 1)) {
-        die(__('Configuration Error: there is a problem accessing the current Academic Year from the database.'));
-    }
-    //Else get schoolYearID
-    else {
-        $row = $result->fetch();
-        $session->set('gibbonSchoolYearID', $row['gibbonSchoolYearID']);
-        $session->set('gibbonSchoolYearName', $row['name']);
-        $session->set('gibbonSchoolYearSequenceNumber', $row['sequenceNumber']);
-        $session->set('gibbonSchoolYearFirstDay', $row['firstDay']);
-        $session->set('gibbonSchoolYearLastDay', $row['lastDay']);
-    }
-}
-
-/**
- * Convert linebreaks into <br/> tags.
- * Deprecated. Use nl2br() instead.
- *
- * @deprecated v25
- * @version v12
- *
- * @param string $string
- *
- * @return string
- */
-function nl2brr($string)
-{
-    return preg_replace("/\r\n|\n|\r/", '<br/>', $string);
-}
-
-/**
- * Take a school year, and return the previous one, or false if none.
- *
- * Please use SchoolYearGateway::getPreviousSchoolYearByID instead.
- *
- * @deprecated v25
- * @version v12
- * @since   v12
- *
- * @param int  $gibbonSchoolYearID
- * @param \PDO $connection2
- *
- * @return int|false  The ID of the previous school year, or false if none.
- */
-function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)
-{
-    $output = false;
-
-
-    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-    $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-    if ($result->rowcount() == 1) {
-        $row = $result->fetch();
-
-        $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
-        $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC';
-        $resultPrevious = $connection2->prepare($sqlPrevious);
-        $resultPrevious->execute($dataPrevious);
-        if ($resultPrevious->rowCount() >= 1) {
-            $rowPrevious = $resultPrevious->fetch();
-            $output = $rowPrevious['gibbonSchoolYearID'];
-        }
-    }
-
-    return $output;
-}
-
-/**
- * Take a school year, and return the previous one, or false if none.
- *
- * Please use SchoolYearGateway::getNextSchoolYearByID instead.
- *
- * @deprecated v25
- * @version v12
- * @since   v12
- *
- * @param int  $gibbonSchoolYearID
- * @param \PDO $connection2
- *
- * @return int|false  The ID of the next school year, or false if none.
- */
-function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
-{
-    $output = false;
-
-
-    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-    $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-    if ($result->rowcount() == 1) {
-        $row = $result->fetch();
-
-        $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
-        $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
-        $resultPrevious = $connection2->prepare($sqlPrevious);
-        $resultPrevious->execute($dataPrevious);
-        if ($resultPrevious->rowCount() >= 1) {
-            $rowPrevious = $resultPrevious->fetch();
-            $output = $rowPrevious['gibbonSchoolYearID'];
-        }
-    }
-
-    return $output;
-}
-
-/**
- * Take a year group, and return the next one, or false if none.
- * Use YearGroupGateway::getNextYearGroupID instead.
- *
- * @deprecated v25
- *
- * @version v12
- * @since   v12
- *
- * @param int  $gibbonYearGroupID
- * @param \PDO $connection2
- *
- * @return int|false
- */
-function getNextYearGroupID($gibbonYearGroupID, $connection2)
-{
-    $output = false;
-
-    $data = array('gibbonYearGroupID' => $gibbonYearGroupID);
-    $sql = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-    if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-
-        $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
-        $sqlPrevious = 'SELECT * FROM gibbonYearGroup WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
-        $resultPrevious = $connection2->prepare($sqlPrevious);
-        $resultPrevious->execute($dataPrevious);
-        if ($resultPrevious->rowCount() >= 1) {
-            $rowPrevious = $resultPrevious->fetch();
-            $output = $rowPrevious['gibbonYearGroupID'];
-        }
-    }
-
-    return $output;
-}
-
-/**
- * Take a form group, and return the next one, or false if none.
- * Use FormGroupGateway::getNextFormGroupID instead.
- *
- * @deprecated v25
- * @version v17
- * @since   v17
- *
- * @param int $gibbonFormGroupID
- * @param \PDO $connection2
- *
- * @return int|false
- */
-function getNextFormGroupID($gibbonFormGroupID, $connection2)
-{
-    $output = false;
-
-    $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
-    $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-    if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-        if (!is_null($row['gibbonFormGroupIDNext'])) {
-            $output = $row['gibbonFormGroupIDNext'];
-        }
-    }
-
-    return $output;
-}
-
-/**
- * Return the last school year in the school, or false if none.
- * Use YearGroupGateway::getLastYearGroupID instead.
- *
- * @deprecated v25
- *
- * @version v12
- * @since   v12
- *
- * @param \PDO $connection2
- *
- * @return int|false
- */
-function getLastYearGroupID($connection2)
-{
-    $output = false;
-
-    $data = array();
-    $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-    if ($result->rowCount() > 1) {
-        $row = $result->fetch();
-        $output = $row['gibbonYearGroupID'];
-    }
-
-    return $output;
-}
-
-/**
- * Generate a random password of the specified length.
- * Deprecated. Use PasswordPolicy::generate() instead.
- *
- * @deprecated v25
- * @version v12
- *
- * @param int $length
- *
- * @return string
- */
-function randomPassword($length)
-{
-    if (!(is_int($length))) {
-        $length = 8;
-    } elseif ($length > 255) {
-        $length = 255;
-    }
-
-    $charList = 'abcdefghijkmnopqrstuvwxyz023456789';
-    $password = '';
-
-    //Generate the password
-    for ($i = 0; $i < $length; ++$i) {
-        $password = $password . substr($charList, rand(1, strlen($charList)), 1);
-    }
-
-    return $password;
-}
-
-function getModuleID($connection2, $address)
-{
-    $name = getModuleName($address);
-
-    return getModuleIDFromName($connection2, $name);
 }
 
 function getModuleIDFromName($connection2, $name)

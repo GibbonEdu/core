@@ -382,7 +382,7 @@ class DatabaseFormFactory extends FormFactory
         $data = ['gibbonPersonIDList' => implode(',', $people)];
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username
                 FROM gibbonPerson
-                WHERE status='Full'
+                WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                 AND FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList)
                 ORDER BY FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList), surname, preferredName";
 
@@ -397,12 +397,12 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = [])
     {
-        $params = array_replace(['includeStudents' => false, 'includeStaff' => false, 'useMultiSelect' => false], $params);
+        $params = array_replace(['includeStudents' => false, 'includeStaff' => false, 'useMultiSelect' => false, 'includeAllUsers' => true], $params);
 
-        $users = array();
+        $users = [];
+        $data = [];
 
         if ($params['includeStaff'] == true) {
-            $data = array('date' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username
                     FROM gibbonPerson
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
@@ -430,6 +430,7 @@ class DatabaseFormFactory extends FormFactory
                      ";
 
             if (!empty($gibbonSchoolYearID)) {
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')];
                 $sql .= "WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                         AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                         AND (dateStart IS NULL OR dateStart<=:date)
@@ -438,7 +439,7 @@ class DatabaseFormFactory extends FormFactory
 
             $sql .= " ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
 
-            $result = $this->pdo->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')]);
+            $result = $this->pdo->select($sql, $data);
 
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
@@ -448,23 +449,25 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRole.category
-                FROM gibbonPerson
-                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) ";
+        if($params['includeAllUsers'] == true) {
+            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRole.category
+                    FROM gibbonPerson
+                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) ";
 
-        if (!empty($gibbonSchoolYearID)) {
-            $sql .= " WHERE (status='Full' OR status='Expected') ";
-        }
+            if (!empty($gibbonSchoolYearID)) {
+                $sql .= " WHERE (status='Full' OR status='Expected') ";
+            }
 
-        $sql .= " ORDER BY surname, preferredName";
+            $sql .= " ORDER BY surname, preferredName";
 
-        $result = $this->pdo->select($sql);
+            $result = $this->pdo->select($sql);
 
-        if ($result->rowCount() > 0) {
-            $users[__('All Users')] = array_reduce($result->fetchAll(), function ($group, $item) {
-                $group[$item['gibbonPersonID']] = Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.__($item['category']).')';
-                return $group;
-            }, array());
+            if ($result->rowCount() > 0) {
+                $users[__('All Users')] = array_reduce($result->fetchAll(), function ($group, $item) {
+                    $group[$item['gibbonPersonID']] = Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.__($item['category']).')';
+                    return $group;
+                }, array());
+            }
         }
 
         if ($params['useMultiSelect']) {
@@ -503,7 +506,7 @@ class DatabaseFormFactory extends FormFactory
         if ($params["byForm"]) {
             if ($params["allStudents"]) {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS name
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS name, gibbonStudentEnrolment.gibbonYearGroupID
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -511,7 +514,7 @@ class DatabaseFormFactory extends FormFactory
                     ORDER BY name, surname, preferredName";
             } elseif ($params["activeStudents"]) {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS name
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS name, gibbonStudentEnrolment.gibbonYearGroupID
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -520,7 +523,7 @@ class DatabaseFormFactory extends FormFactory
                     ORDER BY name, surname, preferredName";
             } else {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
-                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS name
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS name, gibbonStudentEnrolment.gibbonYearGroupID
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -535,6 +538,8 @@ class DatabaseFormFactory extends FormFactory
 
             if ($results && $results->rowCount() > 0) {
                 while ($row = $results->fetch()) {
+                    if (!empty($params['gibbonYearGroupID']) && $row['gibbonYearGroupID'] != $params['gibbonYearGroupID']) continue;
+
                     if ($multipleBys) {
                         $values[__('Students by Form Group')][$row['gibbonPersonID']] = htmlPrep($row['name']).' - '.Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)." (".$row['username'].")";
                     } else {
@@ -622,9 +627,15 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql, $data);
 
         $grades = ($results->rowCount() > 0)? $results->fetchAll() : array();
-        $gradeOptions = array_reduce($grades, function ($group, $item) use ($params) {
+        $default = '';
+
+        $gradeOptions = array_reduce($grades, function ($group, $item) use ($params, &$default) {
             $identifier = $params['valueMode'] == 'id' ? 'gibbonScaleGradeID' : 'value';
             $value = $params['labelMode'] == 'descriptor' ? $item['descriptor'] : $item['value'];
+
+            if ($item['isDefault'] == 'Y') {
+                $default = $value;
+            }
 
             if ($params['labelMode'] == 'both') {
                 $value = $item['value'] == $item['descriptor'] ? $item['value'] : $item['value'].' - '.$item['descriptor'];
@@ -634,10 +645,9 @@ class DatabaseFormFactory extends FormFactory
             return $group;
         }, []);
 
-        $default = array_search('Y', array_column($grades, 'isDefault'));
-        $selected = ($params['honourDefault'] && !empty($default))? $grades[$default]['value'] : '';
+        $selected = ($params['honourDefault'] && !empty($default))? $default: '';
 
-        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect');
+        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect w-auto');
     }
 
     public function createSelectRubric($name, $gibbonYearGroupIDList = '', $gibbonDepartmentID = '')

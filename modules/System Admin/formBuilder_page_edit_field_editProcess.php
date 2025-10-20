@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['label' => 'HTML', 'description' => 'HTML', 'options' => 'RAW']);
 
 $urlParams = [
     'gibbonFormID'      => $_REQUEST['gibbonFormID'] ?? '',

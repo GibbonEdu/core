@@ -112,11 +112,11 @@ try {
     ]);
 
     // Enable passing URL params to pages after logging in
-    if (isset($_GET['q']) && $_GET['q'] != '/publicRegistration.php' && $_GET['q'] != 'passwordReset.php') {
+    if (isset($_GET['q']) && $_GET['q'] != 'publicRegistration.php' && $_GET['q'] != 'passwordReset.php') {
         unset($_GET['return']);
         $URL = Url::fromRoute()->withQueryParams($_GET);
     }
-
+    
     // Double-check the auth status
     if (!$auth->isValid()) {
         $logLoginAttempt('Login - Failed', 'Unknown error');

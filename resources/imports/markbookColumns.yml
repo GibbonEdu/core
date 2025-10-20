@@ -121,6 +121,10 @@ table:
         name: "Completed?"
         desc: ""
         args: { filter: yesno, custom: true }
+    columnColor: 
+        name: "Column Color"
+        desc: "Hex code with leading #"
+        args: { filter: color, custom: true }
     sequenceNumber: 
         name: "Sequence Number"
         desc: ""

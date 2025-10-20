@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Forms\Form;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
     $today = date('Y-m-d');
 
-    $dateEnd = (isset($_GET['dateEnd']))? Format::dateConvert($_GET['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
+    $dateEnd = (isset($_GET['dateEnd']))? $_GET['dateEnd'] : date('Y-m-d');
+    $dateStart = (isset($_GET['dateStart']))? $_GET['dateStart'] : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
 
     $datediff = strtotime($dateEnd) - strtotime($dateStart);
     $daysBetweenDates = floor($datediff / (60 * 60 * 24)) + 1;
@@ -54,35 +55,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     echo '</h2>';
 
     //Produce array of attendance data
+    $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
+    $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
 
-        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
-        $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
-
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     $log = array();
     while ($row = $result->fetch()) {
         $log[$row['gibbonCourseClassID']][$row['date']] = true;
     }
 
     // Produce an array of scheduled classes
+    $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
+    $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
 
-        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-        $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
-
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     $tt = array();
     while ($row = $result->fetch()) {
         $tt[$row['gibbonCourseClassID']][$row['date']] = true;
     }
 
-
-
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID') );
-        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID') );
+    $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     if ( count($lastNSchoolDays) == 0 ) {
         echo "<div class='error'>";
@@ -99,11 +96,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         //Produce array of form groups
         $classes = $result->fetchAll();
 
-        echo "<div class='linkTop'>";
-        echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-        echo '</div>';
+        $form = Form::createBlank('buttons');
+        $form->addHeaderAction('print', __('Print'))
+            ->setURL('#')
+            ->onClick('javascript:window.print(); return false;');
+        echo $form->getOutput();
 
-        echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
+        echo "<table cellspacing='0' class='w-full colorOddEven'>";
         echo "<tr class='head'>";
         echo '<th width="140px">';
         echo __('Class');
@@ -184,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 echo '<td>';
 
                 $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
-                $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
+                $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher" AND gibbonPerson.status="Full"';
                 $resultTutor = $connection2->prepare($sqlTutor);
                 $resultTutor->execute($dataTutor);
 

@@ -93,11 +93,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     ];
 
     if ($status == 'Draft') {
+        $emailFrom = $_POST['emailFrom'] ?? $session->get('email');
+        $emailFrom = $emailFrom == 'Other' ? ($_POST['emailFromOther'] ?? $session->get('email')) : $emailFrom;
+
         $data += [
             'email'            => $_POST['email'] ?? 'N',
             'sms'              => $_POST['sms'] ?? 'N',
-            'emailFrom'        => $_POST['emailFrom'] ?? $session->get('email'),
-            'emailReplyTo'     => $_POST['emailReplyTo'] ?? $session->get('email'),
+            'emailFrom'        => $emailFrom,
+            'emailReplyTo'     => $_POST['emailReplyTo'] ?? $emailFrom,
             'emailReceipt'     => $_POST['emailReceipt'] ?? 'N',
             'emailReceiptText' => $_POST['emailReceiptText'] ?? '',
         ];
@@ -151,6 +154,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
             $URL.="&return=error6";
             header("Location: {$URL}");
             exit;
+        }
+
+        if ($_POST["individuals"]=="Y") {
+            $partcipantCount = count($_POST["individualList"]);
+
+            if($partcipantCount > 50) {
+                $URL.="&return=warning4";
+                header("Location: {$URL}");
+                exit;
+            }
         }
 
         if ($containsEmoji) {

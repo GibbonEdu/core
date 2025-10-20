@@ -27,11 +27,14 @@ require_once './gibbon.php';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
 
 $session->set('pageLoads', null);
+$URL = Url::fromRoute();
 
-//Check for parameter
-if (empty($gibbonSchoolYearID)) {
-    $URL = Url::fromRoute()->withReturn('error0');
-    header("Location: {$URL}");
+// Check for access
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+} elseif (empty($gibbonSchoolYearID)) {
+    header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
 
@@ -45,8 +48,7 @@ if (empty($gibbonSchoolYearID)) {
         $row = $result->fetch();
 
         if ($row['futureYearsLogin'] != 'Y' and $row['pastYearsLogin'] != 'Y') { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
-            $URL = Url::fromRoute()->withReturn('error0');
-            header("Location: {$URL}");
+            header("Location: {$URL->withReturn('error0')}");
             exit();
         } else {
             //Get details on requested school year
@@ -66,8 +68,7 @@ if (empty($gibbonSchoolYearID)) {
             //Check number of rows returned.
             //If it is not 1, show error
             if (!($resultYear->rowCount() == 1) && !($resultYearCurrent->rowCount() == 1)) {
-                $URL = Url::fromRoute()->withReturn('error0');
-                header("Location: {$URL}");
+                header("Location: {$URL->withReturn('error0')}");
                 exit;
             }
             //Else get year details
@@ -75,12 +76,10 @@ if (empty($gibbonSchoolYearID)) {
                 $rowYear = $resultYear->fetch();
                 $rowYearCurrent = $resultYearCurrent->fetch();
                 if ($row['futureYearsLogin'] != 'Y' and $rowYearCurrent['sequenceNumber'] < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                    $URL = Url::fromRoute()->withReturn('error0');
-                    header("Location: {$URL}");
+                    header("Location: {$URL->withReturn('error0')}");
                     exit();
                 } elseif ($row['pastYearsLogin'] != 'Y' and $rowYearCurrent['sequenceNumber'] > $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                    $URL = Url::fromRoute()->withReturn('error0');
-                    header("Location: {$URL}");
+                    header("Location: {$URL->withReturn('error0')}");
                     exit();
                 } else { //ALLOWED
                     $session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
@@ -95,8 +94,7 @@ if (empty($gibbonSchoolYearID)) {
                     // Clear the main menu from session cache
                     $session->forget('menuMainItems');
 
-                    $URL = Url::fromRoute()->withReturn('success0');
-                    header("Location: {$URL}");
+                    header("Location: {$URL->withReturn('success0')}");
                 }
             }
         }

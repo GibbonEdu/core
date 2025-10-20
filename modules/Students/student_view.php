@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID')
                     ->format(function ($row, $actions) {
-                        $actions->addAction('view', __('View Details'))
+                        $actions->addAction('profile', __('View'))
                             ->setURL('/modules/Students/student_view_details.php');
                     });
 
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Filter'));
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
             $form->addHiddenValue('q', '/modules/'.$session->get('module').'/student_view.php');
         
             $searchDescription = $canViewFullProfile 
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->addParam('sort', $sort)
                 ->addParam('allStudents', $canViewFullProfile ? $allStudents : '')
                 ->format(function ($row, $actions) {
-                    $actions->addAction('view', __('View Details'))
+                    $actions->addAction('profile', __('View'))
                         ->setURL('/modules/Students/student_view_details.php');
                 });
     

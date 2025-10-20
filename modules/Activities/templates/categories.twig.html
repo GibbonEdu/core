@@ -1,0 +1,72 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if welcomeText %}
+    <header class="text-base mb-6">
+        {{ welcomeText|raw }}
+    </header>
+{% endif %}
+
+{% for category in categories %}
+    {% set viewable = category.viewable == 'Y' %}
+    {% set hasBackground = category.viewableDate is not empty and category.backgroundImage is not empty %}
+
+    <div class="w-full h-56 relative rounded mb-6">
+        <div class="absolute w-full h-full rounded overflow-hidden">
+            {% if hasBackground %}
+                <img src="{{ absoluteURL }}/{{ category.backgroundImage }}" class="w-full max-w-full h-full" style="object-position: center; object-fit: cover;" loading="eager">
+            {% else %}
+                <div class="w-full max-w-full h-full bg-gray-200"></div>
+            {% endif %}
+        </div>
+
+        <div class="w-2/5 sm:w-1/3 h-full flex flex-col justify-start p-6 rounded-l {{ hasBackground ? '' : 'bg-gray-300' }} bg-blur bg-translucent-gray">
+            <h2 class="{{ hasBackground ? 'text-white' : 'text-gray-600' }} text-base sm:text-2xl mt-0 mb-2">
+                {{ category.name }}
+            </h2>
+            
+            <div class="{{ hasBackground ? 'text-white' : 'text-gray-600' }} text-xs font-thin">
+                {% for date in category.eventDates|split(',') %}
+                    {{- formatUsing('dateReadable', date, 102) -}}
+                    {{- not loop.last ? ', ' -}}
+                {% endfor %}
+            </div>
+
+            <div class="flex-1">
+            </div>
+
+            {% if viewable or canViewInactive %}
+                <a href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}" class="py-2 border border-white hover:bg-translucent transition duration-100 rounded-sm text-center text-white text-base font-light">
+                    {{ canViewInactive and not viewable ? __('Preview') : __('Explore') }}
+                </a>
+            {% elseif date() >= date(category.endDate)  %}
+                <div class="{{ hasBackground ? 'text-white font-light' : 'text-gray-600 font-thin' }} text-center text-white text-base italic">
+                    {{ __('Past') }}
+                </div>
+            {% else %}
+                <div class="{{ hasBackground ? 'text-white font-light' : 'text-gray-600 font-thin' }} text-center text-white text-base italic">
+                    {% if category.viewableDate is not empty %}
+                        {{ __('Viewable on') }} {{ category.viewableDate|date("M j \\a\\t g:ia") }}
+                    {% else %}
+                        {{ __('Upcoming') }}
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+        </div>
+        
+    </div>
+
+{% else %}
+    <div class="h-48 rounded-sm border bg-gray-100 overflow-hidden">
+        {% include 'components/blankSlate.twig.html' with {blankSlate: __('There are no activities available yet. Check back soon!')} %}
+    </div>
+{% endfor %}
+

@@ -21,8 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Forms\FormFieldGateway;
 
-$_POST['address'] = '/modules/System Admin/formBuilder_page_edit.php';
-
 require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
@@ -30,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 } else {
     // Proceed!
     $data = $_POST['data'] ?? [];
-    $order = json_decode($_POST['order']);
+    $order = json_decode($_POST['order']) ?? '';
 
     if (empty($order) || empty($data['gibbonFormPageID'])) {
         exit;
@@ -39,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
         $count = 1;
         foreach ($order as $gibbonFormFieldID) {
+            if (empty($gibbonFormFieldID)) continue;
 
             $updated = $formFieldGateway->update($gibbonFormFieldID, ['sequenceNumber' => $count]);
             $count++;

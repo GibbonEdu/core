@@ -120,6 +120,11 @@ class Format
         if (empty($dateString)) {
             return '';
         }
+
+        if (is_string($dateString) && stripos($dateString, '/') !== false) {
+            return $dateString;
+        }
+
         $date = static::createDateTime($dateString, is_string($dateString) && strlen($dateString) == 10 ? 'Y-m-d' : null);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
@@ -135,6 +140,11 @@ class Format
         if (empty($dateString)) {
             return '';
         }
+
+        if (is_string($dateString) && stripos($dateString, '-') === 4) {
+            return $dateString;
+        }
+
         $date = static::createDateTime($dateString, static::$settings['dateFormatPHP']);
         return $date ? $date->format('Y-m-d') : $dateString;
     }
@@ -287,6 +297,10 @@ class Format
     {
         if (empty($dateFrom) || empty($dateTo)) {
             return '';
+        }
+
+        if ($dateFrom == $dateTo) {
+            return static::date($dateFrom, $format);
         }
 
         return static::date($dateFrom, $format) . ' - ' . static::date($dateTo, $format);
@@ -471,6 +485,8 @@ class Format
      */
     public static function currency($value, $includeName = false, $decimals = 2)
     {
+        if (is_null($value)) return '';
+
         return static::$settings['currencySymbol'] . number_format($value, $decimals) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
     }
 
@@ -483,6 +499,8 @@ class Format
      */
     public static function yesNo($value, $translate = true)
     {
+        if (empty($value)) return '';
+        
         $value = ($value == 'Y' || $value == 'Yes') ? 'Yes' : 'No';
 
         return $translate ? __($value) : $value;
@@ -531,10 +549,10 @@ class Format
      * @param int $length
      * @return string
      */
-    public static function truncate($value, $length = 40)
+    public static function truncate($value, $length = 40, $class = '')
     {
         return is_string($value) && strlen($value) > $length
-            ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
+            ? "<span title='".htmlPrep($value)."' class='".$class."'>".substr(htmlPrep($value), 0, $length).'...</span>'
             : $value;
     }
 
@@ -575,11 +593,15 @@ class Format
      * Formats a string of additional details for a hover-over tooltip.
      *
      * @param string $value
+     * @param string $tooltip
+     * @param string $class
      * @return string
      */
-    public static function tooltip($value, $tooltip = '')
+    public static function tooltip($value, $tooltip = '', $class = '', $style = '')
     {
-        return '<span title="'.$tooltip.'">'.$value.'</span>';
+        return !empty($style) 
+            ? '<span x-tooltip.'.$style.'="'.htmlPrep($tooltip).'" class="'.$class.'">'.$value.'</span>'
+            : '<span title="'.$tooltip.'" class="'.$class.'">'.$value.'</span>';
     }
 
     /**
@@ -593,6 +615,8 @@ class Format
      */
     public static function link($url, $text = '', $attr = [])
     {
+        $isExternal = stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url;
+
         if (empty($url)) {
             return $text;
         }
@@ -604,13 +628,21 @@ class Format
         }
 
         if (stripos($url, '@') !== false) {
+            $url = filter_var($url, FILTER_SANITIZE_EMAIL);
             $url = 'mailto:'.$url;
-        }
-        if (substr($url, 0, 2) == './') {
-            $url = static::$settings['absoluteURL'].substr($url, 1);
+        } else {
+            $url = str_replace(' ', '%20', $url);
+            $url = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $url);
         }
 
-        if (stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url) {
+        $url = str_replace(['"', "'"], ['%22', '%27'], $url);
+        
+        if (substr($url, 0, 2) == './') {
+            $url = static::$settings['absoluteURL'].substr($url, 1);
+            $isExternal = false;
+        }
+
+        if ($isExternal) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank" rel="noopener noreferrer">'.$text.'</a>';
         } else {
             return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
@@ -625,7 +657,7 @@ class Format
      */
     public static function hyperlinkAll(string $value)
     {
-        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+)/';
+        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+?)(?=[.,;:!]*(?:\s|$))/';
         return preg_replace($pattern, '$1<a target="_blank" rel="noopener noreferrer" href="$2">$2</a>', $value);
     }
 
@@ -911,8 +943,10 @@ class Format
     public static function nameListArray($list, $roleCategory = 'Staff', $reverse = false, $informal = false, $id = 'gibbonPersonID')
     {
         $listFormatted = array_reduce($list, function ($group, $person) use ($roleCategory, $reverse, $informal, $id) {
-            $group[$person[$id]] = static::name($person['title'] ?? '', $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
-
+                $group[$person[$id]] = static::name($person['title'] ?? '', $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal); 
+                if ($roleCategory == 'Student' && !empty($person['formGroup'])) {
+                    $group[$person[$id]] = $group[$person[$id]].' ('.$person['formGroup'].')';
+                }
             return $group;
         }, []);
 
@@ -1042,7 +1076,7 @@ class Format
 
         if ($daysUntilNextBirthday == 0) {
             $title = __("{name}'s birthday today!", ['name' => $preferredName]);
-            $icon = 'gift_pink.png';
+            $iconClass = 'bg-pink-500 text-white';
         } else {
             $title = __n(
                 "{count} day until {name}'s birthday!",
@@ -1050,10 +1084,10 @@ class Format
                 $daysUntilNextBirthday,
                 ['name' => $preferredName]
             );
-            $icon = 'gift.png';
+            $iconClass = 'text-gray-600 bg-white';
         }
 
-        return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
+        return Format::tooltip(icon('outline', 'gift', 'absolute bottom-0 -ml-4 size-7 shadow p-0.5 rounded-md '.$iconClass, ['stroke-width' => '1.8']), $title);
     }
 
     /**
@@ -1130,6 +1164,28 @@ class Format
         return $courseName .'.'. $className;
     }
 
+    /**
+     * Displays a color swatch of the given Hex colour.
+     *
+     * @param string $color
+     * @return string
+     */
+    public static function colorSwatch($color)
+    {
+        $color = trim(preg_replace('/[^a-fA-F0-9]/', '', $color), '#');
+        $colorHex = !empty($color) ? '#'.$color : '#ffffff00';
+        $colorTitle = !empty($color) ? $colorHex : __('None');
+
+        return '<div class="rounded-md border h-8 w-8" style="background-color:'.$colorHex.'" title="'.$colorTitle.'"></div>';
+    }
+
+    /**
+     * Displays an alert box with the provided message and error level.
+     *
+     * @param string $message
+     * @param string $level
+     * @return string
+     */
     public static function alert($message, $level = 'error')
     {
         return '<div class="'.$level.'">'.$message.'</div>';
@@ -1141,8 +1197,14 @@ class Format
             return $dateOriginal;
         }
 
-        if (is_int($dateOriginal)) {
-            $expectedFormat = 'U';
+        if (empty($expectedFormat) && is_int($dateOriginal)) {
+            $dateOriginal = date('Y-m-d', $dateOriginal);
+            $expectedFormat = 'Y-m-d';
+        }
+
+        if (empty($expectedFormat) && stripos($dateOriginal, '/') !== false) {
+            $dateOriginal = date('Y-m-d', strtotime($dateOriginal));
+            $expectedFormat = 'Y-m-d';
         }
 
         return !empty($expectedFormat)

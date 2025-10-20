@@ -21,14 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Students\StudentGateway;
 
 /**
  * FormGroupTable
@@ -53,6 +54,7 @@ class FormGroupTable extends DataTable
 
     public function build($gibbonFormGroupID, $canViewConfidential, $canPrint, $sortBy = 'rollOrder, surname, preferredName')
     {
+        global $container;
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
@@ -79,8 +81,25 @@ class FormGroupTable extends DataTable
         $this->setID('formGroup'.$gibbonFormGroupID);
         $this->setTitle(__('Students'));
 
-        $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
+        $this->addMetaData('gridClass', 'rounded-sm bg-blue-50 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
+
+        if ($canViewConfidential) {
+            $checkbox = (new Checkbox('confidential'.$gibbonFormGroupID))
+                ->description(__('Show Confidential Data'))
+                ->setAttribute('x-model', 'globalShowHide')
+                ->setAttribute('x-init', 'globalShowHide = true')
+                ->setLabelClass('text-xs italic')
+                ->setClass('mr-2')
+                ->checked(true);
+
+            $this->addHeaderContent($checkbox->getOutput());
+
+            $this->addColumn('alerts')
+                ->format(function ($person) use ($gibbonFormGroupID, $container) {
+                    return $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], ['attributes' => "x-transition.opacity x-show='globalShowHide'"]);
+                });
+        }
 
         if ($canPrint) {
             $this->addHeaderAction('print', __('Print'))
@@ -96,29 +115,12 @@ class FormGroupTable extends DataTable
                 ->displayLabel();
         }
 
-        if ($canViewConfidential) {
-            $checkbox = (new Checkbox('confidential'.$gibbonFormGroupID))
-                ->description(__('Show Confidential Data'))
-                ->checked(true)
-                ->inline()
-                ->wrap('<div class="mt-2 text-right text-xxs text-gray-700 italic">', '</div>');
-
-            $this->addMetaData('gridHeader', $checkbox->getOutput());
-            $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonFormGroupID));
-
-            $this->addColumn('alerts')
-                ->format(function ($person) use ($guid, $connection2, $gibbonFormGroupID) {
-                    $divExtras = ' data-conf="confidential'.$gibbonFormGroupID.'"';
-                    return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
-                });
-        }
-
         $this->addColumn('image_240')
             ->setClass('relative')
-            ->format(function ($person) use ($canViewStudents) {
+            ->format(function ($person) use ($canViewStudents, $canViewConfidential) {
                 $url =  Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $person['gibbonPersonID']);
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
-                $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+                $icon = $canViewConfidential ? Format::userBirthdayIcon($person['dob'], $person['preferredName']) : '';
 
                 return $canViewStudents
                     ? Format::link($url, $photo).$icon
@@ -139,17 +141,5 @@ class FormGroupTable extends DataTable
         $this->addColumn('role')
             ->setClass('text-xs text-gray-600 italic leading-snug')
             ->translatable();
-    }
-
-    private function getCheckboxScript($id)
-    {
-        return '
-        <script type="text/javascript">
-        $(function () {
-            $("#confidential'.$id.'").click(function () {
-                $("[data-conf=\'confidential'.$id.'\']").slideToggle(!$(this).is(":checked"));
-            });
-        });
-        </script>';
     }
 }

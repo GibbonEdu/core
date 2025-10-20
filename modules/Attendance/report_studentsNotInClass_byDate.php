@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $form->setTitle(__('Choose Date'));
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_studentsNotInClass_byDate.php");
 

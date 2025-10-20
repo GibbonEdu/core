@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             'coverageFullDayThreshold',
             'coverageMode',
             'coverageInternal',
+            'staffDutyTypes',
         ],
         'System' => [
             'nameFormatStaffFormal',

@@ -19,14 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Http\Url;
 
 /**
  * BOOTSTRAP
@@ -260,19 +259,9 @@ if ($isLoggedIn) {
 /**
  * LOCALE
  *
- * Sets the i18n locale for jQuery UI DatePicker (if the file exists, otherwise
- * falls back to en-GB)
+ * Allow the URL to override system default from the i18l param
  */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
-$localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
-$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/datepicker-%1$s.js';
-
-$datepickerLocale = 'en-GB';
-if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
-    $datepickerLocale = $localeCode;
-} elseif (is_file(sprintf($localePath, $localeCodeShort))) {
-    $datepickerLocale = $localeCodeShort;
-}
 
 // Allow the URL to override system default from the i18l param
 if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
@@ -296,17 +285,12 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
  */
 $javascriptConfig = [
     'config' => [
-        'datepicker' => [
-            'locale' => $datepickerLocale,
-            'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
-            'firstDay' => $session->get('firstDayOfTheWeek') == 'Monday'? 1 : ($session->get('firstDayOfTheWeek') == 'Saturday' ? 6 : 0),
-        ],
-        'thickbox' => [
-            'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
-        ],
         'tinymce' => [
             'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
-        ]
+        ],
+        'htmx' => [
+            'unload_confirm' => __("Are you sure you want to leave this page? Information you've entered may not be saved."),
+        ],
     ],
 ];
 
@@ -319,14 +303,25 @@ $javascriptConfig = [
 
 // Set page scripts: head
 $page->scripts->addMultiple([
-    'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
     'jquery'         => 'lib/jquery/jquery.js',
     'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
     'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
+    'htmx'           => 'lib/htmx/htmx.min.js',
+    'core'           => 'resources/assets/js/core.min.js',
+    
+], ['context' => 'head']);
+
+$page->scripts->addMultiple([
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
-    'core'           => 'resources/assets/js/core.min.js',
-], ['context' => 'head']);
+    'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
+    'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
+    'alpineValidate' => 'lib/htmx/alpine.validate.min.js',
+    'alpine'         => 'lib/htmx/alpine.min.js',
+], ['context' => 'head', 'type' => 'defer']);
+
+// Set page scripts: foot - core
+$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
 
 // Set page scripts: foot - jquery
 $page->scripts->addMultiple([
@@ -334,27 +329,16 @@ $page->scripts->addMultiple([
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
-], ['context' => 'foot']);
-
-//This sets the default for en-US, or changes for none en-US
-if($datepickerLocale !== 'en-US'){
-    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/datepicker-'.$datepickerLocale.'.js');
-}
+], ['context' => 'foot', 'type' => 'defer']);
 
 // Set page scripts: foot - misc
-$thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
-$page->scripts->add('thickboxi', $thickboxInline, ['type' => 'inline']);
 $page->scripts->addMultiple([
-    'thickbox' => 'lib/thickbox/thickbox-compressed.js',
-    'tinymce'  => 'lib/tinymce/tinymce.min.js',
-], ['context' => 'foot']);
-
-// Set page scripts: foot - core
-$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
-$page->scripts->add('core-setup', 'resources/assets/js/setup.js');
+    'core-setup'     => 'resources/assets/js/setup.js',
+    'tinymce'        => 'lib/tinymce/tinymce.min.js',
+], ['context' => 'foot', 'type' => 'defer']);
 
 // Register scripts available to the core, but not included by default
-$page->scripts->register('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
+$page->scripts->add('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
 $page->scripts->register('instascan', 'lib/instascan/instascan.min.js', ['context' => 'head']);
 
 // Set system analytics code from session cache
@@ -364,9 +348,8 @@ $page->addHeadExtra($session->get('analytics'));
  * STYLESHEETS & CSS
  */
 $page->stylesheets->addMultiple([
-    'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
+    'jquery-ui'    => 'lib/jquery-ui/css/jquery-ui.min.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
-    'thickbox'     => 'lib/thickbox/thickbox.css',
 ], ['weight' => -1]);
 
 // Add right-to-left stylesheet
@@ -468,19 +451,11 @@ if ($isLoggedIn) {
 }
 
 /**
- * MENU ITEMS & FAST FINDER
+ * MENU ITEMS 
  *
  * TODO: Move this somewhere more sensible.
  */
 if ($isLoggedIn && !$upgrade) {
-    if ($cacheLoad || !$session->has('fastFinder')) {
-        $templateData = getFastFinder($connection2, $guid);
-        $templateData['enrolmentCount'] = $container->get(StudentGateway::class)->getStudentEnrolmentCount($session->get('gibbonSchoolYearID'));
-
-        $fastFinder = $page->fetchFromTemplate('finder.twig.html', $templateData);
-        $session->set('fastFinder', $fastFinder);
-    }
-
     /**
      * @var ModuleGateway
      */
@@ -497,6 +472,7 @@ if ($isLoggedIn && !$upgrade) {
         }
 
         // Update the menu items to indicate the current active action
+        $menuItemActive = '';
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
@@ -505,11 +481,14 @@ if ($isLoggedIn && !$upgrade) {
                     $item['moduleName'],
                     preg_replace('/\.php$/i', '', $item['entryURL'])
                 );
+                $menuItemActive = $item['active'] ? $item['actionName'] : $menuItemActive;
             }
         }
-
+        
+        
         $session->set('menuModuleItems', $menuModuleItems);
         $session->set('menuModuleName', $currentModule);
+        $session->set('menuItemActive', $menuItemActive);
     } else {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
@@ -557,6 +536,7 @@ if ($isLoggedIn && !$upgrade) {
 
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
+    'isHomePage'        => empty($page->getAddress()),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),
@@ -571,7 +551,8 @@ if ($isLoggedIn) {
     $page->addData([
         'menuMain'       => $session->get('menuMainItems', []),
         'menuModule'     => $session->get('menuModuleItems', []),
-        'fastFinder'     => $session->get('fastFinder'),
+        'menuModuleName' => $session->get('menuModuleName', ''),
+        'menuItemActive' => $session->get('menuItemActive', ''),
     ]);
 }
 
@@ -716,9 +697,10 @@ if ($isLoggedIn) {
     $header = $container->get(Gibbon\UI\Components\Header::class);
 
     $page->addData([
-        'currentUser'       => $header->getUserDetails(),
-        'minorLinks'        => $header->getMinorLinks(),
-        'statusTray'        => $header->getStatusTray(),
+        'currentUser'  => $header->getUserDetails(),
+        'minorLinks'   => $header->getMinorLinks(),
+        'statusTray'   => $header->getStatusTray(),
+        'roleCategory' => $session->get('gibbonRoleIDCurrentCategory'),
     ]);
 }
 

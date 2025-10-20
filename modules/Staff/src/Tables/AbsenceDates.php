@@ -85,9 +85,14 @@ class AbsenceDates
 
         $table = DataTable::create('staffAbsenceDates')->withData($dates);
 
+        $table->modifyRows(function ($absence, $row) {
+            if (!empty($absence['status']) && $absence['status'] == 'Cancelled') $row->addClass('dull');
+            return $row;
+        });
+
         if ($includeDetails) {
             $dateLabel = __($absence['type']).' '.__($absence['reason']);
-            $timeLabel = __n('{count} Day', '{count} Days', $absence['value'], ['count' => $absence['value']]);
+            $timeLabel = __n('{count} Day', '{count} Days', (int)$absence['value'], ['count' => $absence['value']]);
         } else {
             $dateLabel = __('Date');
             $timeLabel = __('Time');

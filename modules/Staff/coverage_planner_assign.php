@@ -70,6 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     }
 
     $dateObject = new \DateTimeImmutable($coverage['date']);
+    $startOfWeek = $dateObject->modify('last Sunday')->format('Y-m-d');
+    $endOfWeek = $dateObject->modify('next Sunday')->format('Y-m-d');
 
     $times = $staffCoverageDateGateway->getCoverageTimesByForeignTable($coverage['foreignTable'], $coverage['foreignTableID'], $coverage['date']);
 
@@ -122,10 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         ->fromPOST();
 
     // FORM
-    $form = Form::create('staffCoverage', $session->get('absoluteURL').'/modules/Staff/coverage_planner_assignProcess.php');
+    $form = Form::createBlank('staffCoverage', $session->get('absoluteURL').'/modules/Staff/coverage_planner_assignProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('blank bulkActionForm');
+    $form->setClass('bulkActionForm');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $coverage['gibbonStaffCoverageID']);
@@ -137,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         'Not Required' => __('Not Required'),
     ];
 
-    $row = $form->addRow()->setClass('border bg-gray-100 rounded mt-6 p-2');
+    $row = $form->addRow()->setClass('border bg-gray-100 rounded mt-6 p-2 flex justify-between items-center');
         $row->addLabel('coverageStatus', __('Status'))->setClass('text-sm font-bold');
         $row->addSelect('coverageStatus')
             ->fromArray($statuses)
@@ -163,31 +165,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $people = $subs->getColumn('gibbonPersonID');
     $coverageCounts = $staffCoverageGateway->selectCoverageCountsByPerson($people, $coverage['date'])->fetchGroupedUnique();
     $subs->joinColumn('gibbonPersonID', 'coverageCounts', $coverageCounts);
+    $timetableCounts = $staffCoverageGateway->selectTimetableCountsByPerson($people, $startOfWeek, $endOfWeek)->fetchGroupedUnique();
+    $subs->joinColumn('gibbonPersonID', 'timetableCounts', $timetableCounts);
 
+    // Collect together the sub availability data
     $subs->transform(function (&$sub) use (&$availability) {
         $sub['dates'] = $availability[intval($sub['gibbonPersonID'])] ?? [];
         $sub['availability'] = count($sub['dates']);
+        $sub['workload'] = array_sum(array_map(function ($item) {
+            return $item['status'] == 'Teaching' || $item['status'] == 'Covering' || $item['status'] == 'Staff Duty'
+                ? $item['mins']
+                : 0;
+        }, $sub['dates']));
         $sub['absences'] = count(array_filter($sub['dates'], function ($item) {
             return $item['status'] == 'Absent' && $item['allDay'] == 'Y';
         }));
+
+    });
+
+    // Get all the maximum values for coverage counts
+    $counts = ['workload' => 0, 'timetable' => 0, 'absences' => 0, 'weeklyCoverage' => 0, 'yearlyCoverage' => 0];
+    $subs->transform(function (&$sub) use (&$counts) {
+        if ($sub['coveragePriority'] > 5) return;
+        $counts['workload'] = max($sub['workload'] ?? 0, $counts['workload']);
+        $counts['absences'] = max($sub['absences'] ?? 0, $counts['absences']);
+        $counts['timetable'] = max($sub['timetableCounts']['totalMinutes'] ?? 0, $counts['timetable']);
+        $counts['weeklyCoverage'] = max($sub['coverageCounts']['weeklyCoverageMins'] ?? 0, $counts['weeklyCoverage']);
+        $counts['yearlyCoverage'] = max($sub['coverageCounts']['yearlyCoverage'] ?? 0, $counts['yearlyCoverage']);
+    });
+
+    // Create a weighing for sorting coverage availability
+    $subs->transform(function (&$sub) use (&$counts) {
+        $coveragePriority = ($sub['coveragePriority'] ?? 0) / 9.0;
+
+        // Total workload in minutes on that day
+        $workloadByDay = 1.0 - min($sub['workload'] ?? 0, $counts['workload']) / max(1, $counts['workload']);
+
+        // Total teaching minutes in the week
+        $weeklyClasses = 1.0 - min($sub['timetableCounts']['totalMinutes'] ?? 0, $counts['timetable']) / max(1, $counts['timetable']);
+
+        // Normalized coverage for that week/year
+        $weeklyCoverage = min($sub['coverageCounts']['weeklyCoverageMins'] ?? 0, $counts['weeklyCoverage']) / max(1, $counts['weeklyCoverage']);
+        $yearlyCoverage = min($sub['coverageCounts']['yearlyCoverage'] ?? 0, $counts['yearlyCoverage']) / max(1, $counts['yearlyCoverage']);
+
+        $sub['coverageWeight'] = ($coveragePriority * 4.5);
+        $sub['coverageWeight'] += ($workloadByDay * 1.0);
+        $sub['coverageWeight'] += ($weeklyClasses * 0.35);
+        $sub['coverageWeight'] += ($weeklyCoverage * -0.15);
+        $sub['coverageWeight'] += ($yearlyCoverage * -0.04);
+
+        $sub['timetableLoad'] = round(min($sub['timetableCounts']['totalMinutes'] ?? 0, $counts['timetable']) / max(1, $counts['timetable']) * 100);
+
     });
 
     // Sort by highest availability to lowest availability
     $subList = $subs->toArray();
     usort($subList, function ($a, $b) {
-        if ($a['available'] != $b['available']) {
-            return $b['available'] <=> $a['available'];
-        }
-
-        if ($a['absences'] != $b['absences']) {
-            return $a['absences'] <=> $b['absences'];
-        }
-
-        if ($a['availability'] != $b['availability']) {
-            return $a['availability'] <=> $b['availability'];
-        }
-
-        return ($a['coverageCounts']['totalCoverage'] ?? 0) <=> ($b['coverageCounts']['totalCoverage'] ?? 0);
+        return $b['available'] <=> $a['available'] ?: $b['coverageWeight'] <=> $a['coverageWeight'];
     });
 
     // Sort the current selected sub to the top of the list
@@ -256,11 +290,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
             return Format::link($url, $name, ['target' => '_blank']).'<br/>'.Format::small($person['jobTitle'] ?? $person['type']);
         });
 
+    $table->addColumn('load', __('Timetable'))
+        ->format(function ($person) {
+            $class = 'dull';
+            if ($person['timetableLoad'] >= 75) $class = 'warning';
+            if ($person['timetableLoad'] >= 90) $class = 'error';
+            return Format::tag($person['timetableLoad'].'%', $class);
+        });
+
     $table->addColumn('details', __('Details'))
         ->format(function ($person) {
             return Format::listDetails([
-                __('Week') => $person['coverageCounts']['weekCoverage'] ?? 0,
-                __('Year') => $person['coverageCounts']['totalCoverage'] ?? 0,
+                __('Week') => $person['coverageCounts']['weeklyCoverage'] ?? 0,
+                __('Year') => $person['coverageCounts']['yearlyCoverage'] ?? 0,
             ], 'ul', 'list-none text-xs text-right p-0 m-0', 'w-2/3 whitespace-nowrap');
         });
 
@@ -279,7 +321,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $form->toggleVisibilityByClass('unavailableSub')->onCheckbox('showUnavailable')->when('Y');
 
     $row = $form->addRow();
-        $row->addFooter();
         $row->addSubmit();
 
     echo $form->getOutput();

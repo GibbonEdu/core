@@ -44,6 +44,7 @@ class INAssistantGateway extends QueryableGateway
         $sql = "SELECT gibbonINAssistant.gibbonPersonIDAssistant, gibbonPerson.gibbonPersonID, preferredName, surname, comment 
                 FROM gibbonINAssistant 
                 JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) 
+                JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' 
                 ORDER BY surname, preferredName";
 

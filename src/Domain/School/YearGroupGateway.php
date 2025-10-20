@@ -73,20 +73,33 @@ class YearGroupGateway extends QueryableGateway
      *
      * @return array|false
      */
-    public function studentCountByYearGroup($gibbonYearGroupID)
+    public function studentCountByYearGroup($gibbonYearGroupID, $gibbonSchoolYearID)
     {
-        $data = array('gibbonYearGroupID' => $gibbonYearGroupID, 'today' => date('Y-m-d'));
+        $data = ['gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
         $sql = "SELECT count(*)
-            FROM gibbonStudentEnrolment
+                FROM gibbonStudentEnrolment
                 JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-            WHERE gibbonPerson.status='Full'
-                AND gibbonSchoolYear.status='Current'
+                WHERE gibbonPerson.status='Full'
                 AND (dateStart IS NULL OR dateStart<=:today)
                 AND (dateEnd IS NULL OR dateEnd>=:today)
                 AND gibbonYearGroupID=:gibbonYearGroupID
+                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 ";
 
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    /**
+     * Get the year group for a given Head of Year by gibbonPersonID
+     *
+     * @param string $gibbonPersonIDHOY
+     * @return array
+     */
+    public function getYearGroupByPerson(string $gibbonPersonIDHOY)
+    {
+        $data = ['gibbonPersonIDHOY' => $gibbonPersonIDHOY];
+        $sql = "SELECT * FROM gibbonYearGroup WHERE gibbonPersonIDHOY=:gibbonPersonIDHOY ";
         return $this->db()->selectOne($sql, $data);
     }
 
@@ -151,5 +164,12 @@ class YearGroupGateway extends QueryableGateway
     {
         $sql = 'SELECT COUNT(gibbonYearGroupID) FROM gibbonYearGroup';
         return $this->db()->selectOne($sql);
+    }
+
+    public function selectYearGroups()
+    {
+        $sql = 'SELECT gibbonYearGroupID AS value, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+        
+        return $this->db()->select($sql);
     }
 }

@@ -50,7 +50,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_de
         if ($result->rowCount() != 1) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/invoices_manage_deleteProcess.php?gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/invoices_manage_deleteProcess.php?status=$status&monthOfIssue=$monthOfIssue");
+            $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('gibbonFinanceInvoiceeID', $gibbonFinanceInvoiceeID);
+            $form->addHiddenValue('gibbonFinanceBillingScheduleID', $gibbonFinanceBillingScheduleID);
+            $form->addHiddenValue('gibbonFinanceFeeCategoryID', $gibbonFinanceFeeCategoryID);
             echo $form->getOutput();
         }
     }

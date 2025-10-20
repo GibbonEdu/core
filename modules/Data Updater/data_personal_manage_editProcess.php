@@ -28,6 +28,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -429,6 +430,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
                     $container->get(PersonalDocumentHandler::class)->updatePersonalDocumentsFromDataUpdate($gibbonPersonID, $gibbonPersonUpdateID, $params);
 
+                    // ALERTS: possible change to Privacy alert status, recalculate alerts
+                    $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
+                    
                     //Notify tutors of change to privacy settings
                     if (isset($_POST['newprivacyOn'])) {
                         if ($_POST['newprivacyOn'] == 'on') {
@@ -487,14 +491,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             }
 
                             //Set log
-                            $gibbonModuleID=getModuleIDFromName($connection2, 'User Admin') ;
                             $privacyValues=array() ;
                             $privacyValues['oldValue'] = $privacy_old ;
                             $privacyValues['newValue'] = $_POST['newprivacy'] ;
                             $privacyValues['gibbonPersonIDRequestor'] = $row['gibbonPersonIDUpdater'] ;
                             $privacyValues['gibbonPersonIDAcceptor'] = $session->get("gibbonPersonID") ;
 
-                            $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+                            $logGateway->addLog($session->get("gibbonSchoolYearID"), 'User Admin', $session->get("gibbonPersonID"), 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
 
                         }
                     }

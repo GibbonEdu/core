@@ -74,6 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $row->addLabel('context', __('Context'));
     $row->addTextField('context')->readonly();
 
+    $row = $form->addRow();
+    $row->addLabel('active', __('Active'));
+    $row->addYesNo('active')->required();
+
     $stylesheets = $prototypeSectionGateway->selectPrototypeStylesheets();
     $row = $form->addRow();
     $row->addLabel('stylesheet', __('Stylesheet'));
@@ -88,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         ->setSize(4)
         ->selected($config['fonts'] ?? []);
 
-    $flags = ['000' => __('TCPDF Renderer - Faster, Limited HTML'), '001' => __('mPDF Renderer - Slower, Better HTML Support')];
+    $flags = ['001' => __('mPDF Renderer - Slower, Better HTML Support'), '000' => __('TCPDF Renderer - Faster, Limited HTML')];
     $row = $form->addRow();
     $row->addLabel('flags', __('Renderer'));
     $row->addSelect('flags')->fromArray($flags)->required();
@@ -100,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $row->addLabel('orientation', __('Orientation'));
     $row->addSelect('orientation')->fromArray($orientations)->required();
 
-    $pageSizes = ['A4' => __('A4'), 'LETTER' => __('US Letter')];
+    $pageSizes = ['A4' => __('A4'), 'LETTER' => __('US Letter'), 'A3' => __('A3') ];
     $row = $form->addRow();
     $row->addLabel('pageSize', __('Page Size'));
     $row->addSelect('pageSize')->fromArray($pageSizes)->required();
@@ -183,33 +187,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $prototypeCoreSections = $prototypeSectionGateway->selectPrototypeSections('Core')->fetchGrouped();
     $prototypeAdditionalSections = $prototypeSectionGateway->selectPrototypeSections('Additional')->fetchGrouped();
 
-    // SETTINGS FORM
-    // $form = Form::create('settings', $session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php?search='.$search);
-
-    // $form->addHiddenValue('address', $session->get('address'));
-    // $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
-
-    // $fonts = ['Helvetica', 'Arial', 'Times New Roman'];
-    // $row = $form->addRow();
-    //     $row->addLabel('font', __('Font'));
-    //     $row->addSelect('font')->fromArray($fonts);
-
-    // $row = $form->addRow();
-    //     $row->addLabel('size', __('Size'));
-    //     $row->addNumber('size');
-
-    // $row = $form->addRow();
-    //     $row->addLabel('color', __('Color'));
-    //     $row->addTextField('color');
-
-    // $row = $form->addRow();
-    //     $row->addSubmit();
-
-
     echo $page->fetchFromTemplate('ui/templateBuilder.twig.html', [
         'gibbonReportTemplateID' => $gibbonReportTemplateID,
         'template' => $values,
-        // 'form'     => $form->getOutput(),
         'headers'  => $headerTable->render($headerSections),
         'body'     => $bodyTable->render($bodySections),
         'footers'  => $footerTable->render($footerSections),

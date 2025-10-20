@@ -27,6 +27,7 @@ use Gibbon\Tables\DataTable;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use Gibbon\Http\Url;
 
 /**
  * CoverageCalendar
@@ -105,7 +106,7 @@ class CoverageCalendar
 
                     $coverage = $day['coverage'];
 
-                    $url = 'fullscreen.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffCoverageID='.$coverage['gibbonStaffCoverageID'].'&width=800&height=550';
+                    $url = Url::fromHandlerModuleRoute('fullscreen.php', 'Staff', 'coverage_view_details.php')->withQueryParams(['gibbonStaffCoverageID' => $coverage['gibbonStaffCoverageID']]);
 
                     $params['title'] = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     $params['class'] = '';

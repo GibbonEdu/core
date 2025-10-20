@@ -71,4 +71,17 @@ class GradeScaleGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function getDefaultGrade($gibbonScaleID)
+    {
+        $select = $this
+            ->newSelect()
+            ->cols(['gibbonScaleGrade.value'])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonScaleGrade', "gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID AND gibbonScaleGrade.isDefault='Y'")
+            ->where('gibbonScale.gibbonScaleID = :gibbonScaleID')
+            ->bindValue('gibbonScaleID', $gibbonScaleID);
+
+        return $this->runSelect($select)->fetchColumn(0);
+    }
 }

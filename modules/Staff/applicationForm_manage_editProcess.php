@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
             $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-            $email = $_POST['email'] ?? '';
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $phone1Type = null;
             if (isset($_POST['phone1Type'])) {
                 $phone1Type = $_POST['phone1Type'] ?? '';

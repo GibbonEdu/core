@@ -82,8 +82,7 @@ if ($proceed == false) {
     } 
     
     // FORM
-    $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormSelectProcess.php');
-    $form->setClass('w-full blank');
+    $form = Form::createBlank('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormSelectProcess.php');
     $form->setTitle(__($welcomeHeading, ['organisationNameShort' => $session->get('organisationNameShort')]));
     $form->setDescription(__($welcomeText));
     
@@ -91,14 +90,14 @@ if ($proceed == false) {
     
     // Display all available public forms
     foreach ($forms as $index => $applicationForm) {
-        $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');
+        $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-50 mb-2');
 
         $row = $table->addRow();
             $row->addLabel('gibbonFormID'.$index, __($applicationForm['name']))->description($applicationForm['description'])->setClass('block w-full p-6 font-medium text-sm text-gray-700');
             $row->addRadio('gibbonFormID')->setID('gibbonFormID'.$index)->fromArray([$applicationForm['gibbonFormID'] => ''])->addClass('mr-6')->checked($index == 0 ? $applicationForm['gibbonFormID'] : false);
     }
 
-    $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');
+    $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-50 mb-2');
 
     $row = $table->addRow();
         $row->addLabel('gibbonFormID'.count($forms), __('Continue an Existing Application Form'))->description(__('If you already have an application form in progress or would like to check the status of an application form, select this option. You will receive an email with a link to access your existing forms.'))->setClass('block w-full p-6 font-medium text-sm text-gray-700');

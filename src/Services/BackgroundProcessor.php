@@ -75,7 +75,7 @@ class BackgroundProcessor implements ContainerAwareInterface
      */
     public function startProcess($processClassName, $processMethodName, array $arguments = []) : int
     {
-        $phpFile = $this->session->get('absolutePath').'/cli/system_backgroundProcess.php';
+        $phpFile = $this->session->get('absolutePath').'/cli/system_backgroundProcessor.php';
         $phpOutput = '/dev/null';
 
         if (!file_exists($phpFile)) {
@@ -269,6 +269,10 @@ class BackgroundProcessor implements ContainerAwareInterface
      */
     public function killProcess($processID) : bool
     {
+        if ($this->session->get('backgroundProcessing') == 'N') {
+            return false;
+        }
+
         if ($processData = $this->getProcess($processID)) {
             try {
                 exec('kill -9 '.$processData['pID']);
@@ -292,6 +296,10 @@ class BackgroundProcessor implements ContainerAwareInterface
         if ($processData = $this->getProcess($processID)) {
             if ($processData['status'] != 'Ready' && $processData['status'] != 'Running') {
                 return false;
+            }
+
+            if ($this->session->get('backgroundProcessing') == 'N') {
+                return $processData['status'] == 'Running';
             }
 
             try {

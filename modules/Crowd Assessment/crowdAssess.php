@@ -33,6 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->breadcrumbs->add(__('View All Assessments'));
     
     $sql = getLessons($guid, $connection2);
+    if (empty($sql[0]) || empty($sql[1])) return;
+    
     $lessons = $pdo->select($sql[1], $sql[0])->fetchAll();
     $unitGateway = $container->get(UnitGateway::class);
 

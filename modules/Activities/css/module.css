@@ -54,3 +54,55 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @media print {
 	.page-break	{ display: block; page-break-before: always; }
 }
+
+select[data-validation] option:first-child {
+    font-style: italic;
+}
+
+.text-base p {
+    font-size: 1rem !important;
+}
+
+.bg-translucent {
+    background-color: #fff4;
+}
+
+.bg-translucent-gray {
+    background-color: #0001;
+}
+
+.hover\:bg-translucent:hover {
+    background-color: #fff4;
+}
+
+.bg-blur {
+    -webkit-backdrop-filter: blur(22px) brightness(160%);
+    backdrop-filter: blur(22px) brightness(160%);
+}
+
+.hover\:bg-blur:hover {
+    background: rgba(0,0,0,0.15);
+    -webkit-backdrop-filter: blur(12px) brightness(120%);
+    backdrop-filter: blur(12px) brightness(120%);
+}
+
+.outline-inset:hover {
+    outline: 1px solid #fff;
+    outline-offset: -4px;
+}
+
+.activity-photo-container {
+    height: 36vw;
+}
+
+.activity-photo-container-lg {
+    height: 64vw;
+}
+
+@media (min-width: 768px) {
+    .activity-photo-container,
+    .activity-photo-container-lg {
+        height: 25vw;
+    }
+    
+}

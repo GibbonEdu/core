@@ -23,7 +23,7 @@ use Gibbon\Domain\Activities\ActivityTypeGateway;
 
 include '../../gibbon.php';
 
-$gibbonActivityTypeID = $_GET['gibbonActivityTypeID'] ?? '';
+$gibbonActivityTypeID = $_POST['gibbonActivityTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/activitySettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySettings_type_delete.php') == false) {

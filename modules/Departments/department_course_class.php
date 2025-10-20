@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $menuItems[] = [
                     'name' => __('Attendance'),
                     'url'  => './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.$currentDate,
-                    'icon' => 'attendance_large.png',
+                    'icon' => 'users',
                 ];
             }
             // Planner
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $menuItems[] = [
                     'name' => __('Planner'),
                     'url'  => './index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$gibbonCourseClassID.'&viewBy=class',
-                    'icon' => 'planner_large.png',
+                    'icon' => 'calendar',
                 ];
             }
             // Markbook
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $menuItems[] = [
                     'name' => __('Markbook'),
                     'url'  => './index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$gibbonCourseClassID,
-                    'icon' => 'markbook_large.png',
+                    'icon' => 'markbook',
                 ];
             }
             // Homework
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $menuItems[] = [
                     'name' => __($homeworkNamePlural),
                     'url'  => './index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$gibbonCourseClassID,
-                    'icon' => 'homework_large.png',
+                    'icon' => 'homework',
                 ];
             }
             // Internal Assessment
@@ -131,10 +131,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $menuItems[] = [
                     'name' => __('Internal Assessment'),
                     'url'  => './index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID='.$gibbonCourseClassID,
-                    'icon' => 'internalAssessment_large.png',
+                    'icon' => 'internal-assessment',
                 ];
             }
-
+            
             // Menu Items Table
             if (!empty($menuItems)) {
                 $gridRenderer = new GridView($container->get('twig'));
@@ -142,21 +142,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $table->setTitle($row['courseLong']." - ".$row['classLong']);
                 $table->setDescription(Format::courseClassName($row['course'], $row['class']));
 
-                $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
-                $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
+                $table->addMetaData('gridClass', 'rounded-md bg-gray-100 border py-4 gap-6 sm:flex-nowrap justify-around');
+                $table->addMetaData('gridItemClass', 'w-24 sm:flex-1 text-center text-gray-500 hover:text-gray-700');
                 $table->addMetaData('hidePagination', true);
 
-                $iconPath = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/';
                 $table->addColumn('icon')
-                    ->format(function ($menu) use ($iconPath) {
-                        $img = sprintf('<img src="%1$s" title="%2$s" class="w-24 sm:w-32 px-4 pb-2">', $iconPath.$menu['icon'], $menu['name']);
-                        return Format::link($menu['url'], $img);
+                    ->format(function ($menu) {
+                        return Format::link($menu['url'], icon('solid', $menu['icon'], 'size-8 sm:size-12'), ['class' => 'no-underline text-inherit']);
                     });
 
                 $table->addColumn('name')
                     ->setClass('font-bold text-xs')
                     ->format(function ($menu) {
-                        return Format::link($menu['url'], $menu['name']);
+                        return Format::link($menu['url'], $menu['name'], ['class' => 'no-underline text-gray-700']);
                     });
 
                 echo $table->render(new DataSet($menuItems));
@@ -221,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                         ->fromQuery($pdo, $sql, $data)
                         ->selected($gibbonCourseClassID)
                         ->placeholder()
-                        ->setClass('fullWidth');
+                        ->setClass('w-full');
                     $row->addSubmit(__('Go'));
 
                 $sidebarExtra .= $form->getOutput();

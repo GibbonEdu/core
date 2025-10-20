@@ -52,7 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
     $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
-    $gibbonThemeName = $session->get('gibbonThemeName');
 
     $scope = (isset($_GET['scope']))? $_GET['scope'] : 'single';
 
@@ -83,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $form = Form::create('attendanceSearch',$session->get('absoluteURL') . '/index.php','GET');
     $form->setTitle(__('Choose Student'));
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q','/modules/'.$session->get('module').'/attendance_future_byPerson.php');
 
@@ -237,10 +236,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                 $table->addColumn('date', __('Date'))->format(Format::using('date', 'date'));
                 $table->addColumn('attendance', __('Attendance'))
-                    ->format(function($log) use ($gibbonThemeName) {
+                    ->format(function($log) {
                         $output = '<b>'.__($log['direction']).'</b> ('.__($log['type']). (!empty($log['reason'])? ', '.$log['reason'] : '') .')';
                         if (!empty($log['comment']) ) {
-                            $output .= '&nbsp;<img title="'.$log['comment'].'" src="./themes/'.$gibbonThemeName.'/img/messageWall.png" width=16 height=16/>';
+                            $output .= Format::tooltip(icon('solid', 'chat-bubble-text', 'size-4'), htmlPrep($log['comment']));
                         }
                         return $output;
                     });
@@ -311,6 +310,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             foreach ($logs as $log) {
                                 if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
                                     $name = $log['type'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
+                                } else if ($log['context'] == 'Future' && $log['date'] == $targetDate) {
+                                    $name = $class['columnName'] . ' - ' . $log['type'] . ' '. $log['reason'];
                                 }
                             }
 
@@ -340,12 +341,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             return $group;
                         }, []);
 
+                        // Account for whole-day future absences that this student already has
+                        $futureAbsences = array_filter($logs, function ($log) use ($targetDate) {
+                            return $log['context'] == 'Future' && $log['date'] == $targetDate;
+                        });
+                        if (count($futureAbsences) > 0) {
+                            $disabled = array_keys($classOptions);
+                            $checked = [];
+                        }
+
                         $col->addCheckbox("courses[{$student['gibbonPersonID']}][]")
                             ->setID("classes{$student['gibbonPersonID']}")
                             ->fromArray($classOptions)
                             ->setClass('')
                             ->alignLeft()
-                            ->checked($checked + $disabled)
+                            ->checked(empty($futureAbsences) ? $checked + $disabled : $checked)
                             ->disabled($disabled);
 
                     } else {
@@ -411,13 +421,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         }
                     }
 
+                    // Account for whole-day future absences that this student already has
+                    $futureAbsences = array_filter($logs, function ($log) use ($targetDate) {
+                        return $log['context'] == 'Future' && $log['date'] == $targetDate;
+                    });
+                    if (count($futureAbsences) > 0) {
+                        $disabled = true;
+                        $checked = false;
+                    }
+
                     $row = $table->addRow();
                     $row->addCheckbox("courses[{$gibbonPersonIDList[0]}][]")
                         ->description($logName)
-                        ->setValue($class['gibbonCourseClassID'])
+                        ->setValue($class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID'])
                         ->inline()
                         ->setClass('')
-                        ->checked($checked ? $class['gibbonCourseClassID'] : '');
+                        ->checked($checked ? $class['gibbonCourseClassID'] : '')
+                        ->disabled($disabled);
                 }
             } else {
 

@@ -50,7 +50,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             if (empty($values)) {
                 $page->addError(__('The specified record cannot be found.'));
             } else {
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_edit_day_edit_class_exception_deleteProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_edit_day_edit_class_exception_deleteProcess.php");
+                $form->addHiddenValue('gibbonTTDayID', $gibbonTTDayID);
+                $form->addHiddenValue('gibbonTTID', $gibbonTTID);
+                $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+                $form->addHiddenValue('gibbonTTColumnRowID', $gibbonTTColumnRowID);
+                $form->addHiddenValue('gibbonTTDayRowClassID', $gibbonTTDayRowClassID);
+                $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+                $form->addHiddenValue('gibbonTTDayRowClassExceptionID', $gibbonTTDayRowClassExceptionID);
                 echo $form->getOutput();
             }
         }

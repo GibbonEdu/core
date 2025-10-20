@@ -39,6 +39,7 @@ use Gibbon\Module\Staff\Messages\NoCoverageAvailable;
 use Gibbon\Module\Staff\Messages\NewCoverageRequest;
 use Gibbon\Module\Staff\Messages\NewAbsenceWithCoverage;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Module\Staff\Messages\AbsenceWithCoverageCancelled;
 
 /**
  * CoverageNotificationProcess
@@ -292,14 +293,81 @@ class CoverageNotificationProcess extends BackgroundProcess
         $coverage = $this->getCoverageDetailsByID($gibbonStaffCoverageID);
         if (empty($coverage)) return false;
 
+        $dates = $this->getCoverageDates($gibbonStaffCoverageID);
+
         $recipients = [$coverage['gibbonPersonIDStatus'], $coverage['gibbonPersonIDCoverage'], $coverage['gibbonPersonID']];
         if ($coverage['requestType'] == 'Assigned') {
             $recipients[] = $this->organisationHR;
         }
 
-        $message = new CoverageCancelled($coverage);
+        // Add the absence approver, if there was one.
+        if (!empty($coverage['gibbonPersonIDApproval'])) {
+            $recipients[] = $coverage['gibbonPersonIDApproval'];
+        }
+
+        $message = new CoverageCancelled($coverage, $dates);
 
         return $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID']);
+    }
+
+    /**
+     * Sends a message to relevant users when an absence with coverage has been cancelled.
+     *
+     * @param string $gibbonStaffAbsenceID
+     * @param array $coverageList
+     * @return array
+     */
+    public function runAbsenceWithCoverageCancelled($gibbonStaffAbsenceID, $coverageList = [])
+    {
+        $absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($gibbonStaffAbsenceID);
+        $dates = $this->getCoverageDates($coverageList);
+        $coverage = $this->getCoverageDetailsByID(current($coverageList));
+
+        if (empty($absence) || empty($coverage)) return false;
+
+        // Target the absence message to the selected staff
+        $message = new AbsenceWithCoverageCancelled($absence, $coverage, $dates);
+        $recipients = !empty($absence['notificationList']) ? json_decode($absence['notificationList']) : [];
+        $recipients[] = $absence['gibbonPersonID'];
+
+        // Add the coverage creator, if it is not the same as the absent person
+        if ($coverage['gibbonPersonIDStatus'] != $absence['gibbonPersonID']) {
+            $recipients[] = $coverage['gibbonPersonIDStatus'];
+        }
+        
+        // If this is assigned coverage, let the manager know
+        if ($coverage['requestType'] == 'Assigned') {
+            $recipients[] = $this->organisationHR;
+        }
+
+        // Add the absence approver, if there is one
+        if (!empty($absence['gibbonPersonIDApproval'])) {
+            $recipients[] = $absence['gibbonPersonIDApproval'];
+        }
+
+        // Add the notification group members, if selected
+        if (!empty($absence['gibbonGroupID'])) {
+            $groupRecipients = $this->groupGateway->selectPersonIDsByGroup($absence['gibbonGroupID'])->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $recipients = array_merge($recipients, $groupRecipients);
+        }
+
+        $sent = $this->messageSender->send($message, $recipients, $absence['gibbonPersonID']);
+
+        // Notify the coverage teachers who have received individual requests
+        $message = new CoverageCancelled($coverage, $dates);
+        $recipients = [];
+
+        // Add any users who have already been assigned to this coverage
+        foreach ($dates as $date) {
+            if ($date['requestType'] != 'Individual') continue;
+            if (empty($date['gibbonPersonIDCoverage'])) continue;
+            $recipients[] = $date['gibbonPersonIDCoverage'];
+        }
+
+        $sent += $this->messageSender->send($message, $recipients, $absence['gibbonPersonID']);
+    
+
+        return $sent;
     }
     
     private function getCoverageDetailsByID($gibbonStaffCoverageID)

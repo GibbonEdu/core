@@ -46,7 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else {
             //Let's go!
             $row = $result->fetch();
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_class_edit_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseClassPersonID=$gibbonCourseClassPersonID&search=$search");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_class_edit_deleteProcess.php?search=$search");
+            $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+            $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('gibbonCourseClassPersonID', $gibbonCourseClassPersonID);
             echo $form->getOutput();
         }
     }

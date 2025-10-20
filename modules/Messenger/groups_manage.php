@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     // SEARCH FORM
     $searchForm = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-    $searchForm->setClass('noIntBorder fullWidth');
+    $searchForm->setClass('noIntBorder w-full');
 
     $searchForm->addHiddenValue('address', $session->get('address'));
     $searchForm->addHiddenValue('q', '/modules/Messenger/groups_manage.php');

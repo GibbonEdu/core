@@ -33,7 +33,7 @@ $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
 $coverageStatus = $_POST['coverageStatus'] ?? '';
 $date = $_POST['date'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php&sidebar=true&date='.Format::date($date);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php&sidebar=true&date='.$date;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
     $URL .= '&return=error0';
@@ -48,12 +48,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $coverage = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
 
     if ($coverageStatus != 'Not Required' && (empty($coverage) || empty($gibbonPersonIDCoverage))) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit;
-    }
-
-    if ($coverageStatus == 'Not Required') {
+        $data = [
+            'gibbonPersonIDCoverage' => null,
+            'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),
+            'requestType'            => 'Individual',
+            'status'                 => 'Requested',
+        ];
+    } elseif ($coverageStatus == 'Not Required') {
         $data = [
             'gibbonPersonIDCoverage' => null,
             'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),

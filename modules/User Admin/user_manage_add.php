@@ -146,15 +146,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             ->required()
             ->addGenerateUsernameButton($form);
 
-    /** @var PasswordPolicy */
-    $policies = $container->get(PasswordPolicy::class);
-    if (($policiesHTML = $policies->describeHTML()) !== '') {
-        $form->addRow()->addAlert($policiesHTML, 'warning');
-    }
     $row = $form->addRow();
         $row->addLabel('passwordNew', __('Password'));
         $row->addPassword('passwordNew')
-            ->addPasswordPolicy($pdo)
+            ->addPasswordPolicy($container->get(PasswordPolicy::class))
             ->addGeneratePasswordButton($form)
             ->required()
             ->maxLength(30);
@@ -197,18 +192,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addEmail('emailAlternate');
 
     $row = $form->addRow();
+        $row->addLabel('showAddresses', __('Enter Personal Address?'));
+        $row->addYesNo('showAddresses')->setValue('N');
+
+    $form->toggleVisibilityByClass('address')->onClick('showAddresses')->when('Y');
+
+    $row = $form->addRow()->addClass('address');
     $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
         ->append('<ol>')
         ->append('<li>'.__('If the user is not in a family.').'</li>')
         ->append('<li>'.__('If the user\'s family does not have a home address set.').'</li>')
         ->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
         ->append('</ol>');
-
-    $row = $form->addRow();
-        $row->addLabel('showAddresses', __('Enter Personal Address?'));
-        $row->addCheckbox('showAddresses')->setValue('Yes');
-
-    $form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 
     $row = $form->addRow()->addClass('address');
         $row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
@@ -475,7 +470,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     // SUBMIT
     $row = $form->addRow();
-        $row->addFooter()->append('<small>'.getMaxUpload(true).'</small>');
+        $row->addFooter();
         $row->addSubmit();
 
     echo $form->getOutput();

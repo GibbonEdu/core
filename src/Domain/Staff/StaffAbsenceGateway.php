@@ -107,7 +107,7 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
                 ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID']);
         } elseif ($grouped === 'coverage') {
             $query->cols(['COUNT(DISTINCT gibbonStaffAbsenceDate.date) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'SUM(gibbonStaffAbsenceDate.value) as value'])
-                ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
+                ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID']);
         } else {
             $query->cols(['1 as days', 'gibbonStaffAbsenceDate.date as dateStart', 'gibbonStaffAbsenceDate.date as dateEnd', 'gibbonStaffAbsenceDate.value as value'])
                 ->groupBy(['gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID']);

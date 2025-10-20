@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         return;
     }
 
-    $courseName = $_GET['courseName'] ?? '';
+    $courseName = $_GET['courseName'] ?? $session->get('courseNameUnitPlanner') ?? '';
 
     if (empty($gibbonCourseID) && !empty($courseName)) {
         $row = $container->get(CourseGateway::class)->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $courseName])->fetch();
@@ -63,32 +63,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     }
 
     if (empty($gibbonCourseID)) {
-        try {
-            if ($highestAction == 'Unit Planner_all') {
-                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort';
-            } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort";
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+        if ($highestAction == 'Unit Planner_all') {
+            $courseList = $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
+        } elseif ($highestAction == 'Unit Planner_learningAreas') {
+            $courseList = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
         }
-        if ($result->rowCount() > 0) {
-            $row = $result->fetch();
-            $gibbonCourseID = $row['gibbonCourseID'];
-        }
+        
+        $gibbonCourseID = key($courseList);
     }
+    
     if ($gibbonCourseID != '') {
-
-        $data = array('gibbonCourseID' => $gibbonCourseID);
-        $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-        }
+        $row = $container->get(CourseGateway::class)->getByID($gibbonCourseID);
     }
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['courseName' => $row['nameShort'] ?? '']);
@@ -173,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $form->toggleVisibilityByClass('copyTo')->onSelect('action')->when('Duplicate');
 
     // DATA TABLE
-    $table = $form->addRow()->addDataTable('units', $criteria)->withData($units);
+    $table = $form->addRow()->addDataTable('unitList', $criteria)->withData($units);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Planner/units_add.php')
@@ -187,8 +172,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         'active:N' => __('Active').': '.__('No'),
     ]);
 
-    $table->addColumn('name', __('Name'))->context('Primary');
-    $table->addColumn('description', __('Description'))->context('Secondary');
+    $table->addColumn('name', __('Name'))
+        ->context('Primary');
+    $table->addColumn('description', __('Description'))
+        ->context('Secondary')
+        ->width('45%');
     $table->addColumn('active', __('Active'))
         ->width('10%')
         ->format(Format::using('yesNo', 'active'));
@@ -209,8 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     ->setIcon('copy')
                     ->setURL('/modules/Planner/units_duplicate.php');
 
-            $actions->addAction('export', __('Export'))
-                    ->setIcon('download')
+            $actions->addAction('view', __('Overview'))
                     ->addParam('sidebar', 'false')
                     ->setURL('/modules/Planner/units_dump.php');
         });

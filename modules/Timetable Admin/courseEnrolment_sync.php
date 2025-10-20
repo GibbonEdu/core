@@ -69,8 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Timetable Admin/courseEnrolment_sync_add.php')
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-        ->displayLabel()
-        ->append('&nbsp;|&nbsp;');
+        ->displayLabel();
 
     $table->addHeaderAction('sync', __('Sync All'))
         ->setURL('/modules/Timetable Admin/courseEnrolment_sync_run.php')

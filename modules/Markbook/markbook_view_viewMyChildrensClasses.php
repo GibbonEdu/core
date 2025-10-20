@@ -78,7 +78,7 @@ if ($result->rowCount() < 1) {
         $gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-        $form->setClass('noIntBorder fullWidth standardForm');
+        $form->setClass('noIntBorder w-full standardForm');
 
         $form->addHiddenValue('q', '/modules/Markbook/markbook_view.php');
         $form->addHiddenValue('address', $session->get('address'));
@@ -152,7 +152,7 @@ if ($result->rowCount() < 1) {
             }
 
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php','get');
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
 
             $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
             $form->addHiddenValue('search', $gibbonPersonID);
@@ -198,7 +198,7 @@ if ($result->rowCount() < 1) {
             $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
             $form->addHiddenValue('details', 'No');
             $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)->inline(true)
-                ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span>');
+                ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="text-xs italic inline-block">', '</span>');
 
             $rowFilter = $form->addRow();
                 $rowFilter->addSearchSubmit($session, __('Clear Filters'), array('search'))->prepend($showHide->getOutput());

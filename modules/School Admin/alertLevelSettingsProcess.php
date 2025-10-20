@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
                 }
             }
         }
-
+        
         //Deal with failed update
         if ($partialFail == true) {
             $URL .= '&return=warning1';

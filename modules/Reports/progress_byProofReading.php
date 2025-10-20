@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofRe
     // FORM
     $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Reports/progress_byProofReading.php');
 
@@ -90,8 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofRe
                     'totalCount'    => $reporting['totalCount'],
                     'progressCount' => $reporting['progressCount'],
                     'partialCount'    => $reporting['partialCount'],
-                    'progressColour' => 'green',
-                    'partialColour' => 'orange',
+                    'progressColour' => 'bg-green-300',
+                    'progressBorder' => 'border-green-600',
+                    'partialColour' => 'bg-orange-300',
                     'width'         => 'w-64',
                 ]);
             });

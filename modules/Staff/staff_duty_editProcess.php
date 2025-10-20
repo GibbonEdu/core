@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
             'gibbonDaysOfWeekIDList' => $daysOfWeek,
             'name'                   => $duty['name'],
             'nameShort'              => $duty['nameShort'],
+            'type'                   => $duty['type'],
             'timeStart'              => $duty['timeStart'],
             'timeEnd'                => $duty['timeEnd'],
             'sequenceNumber'         => $sequenceNumber,

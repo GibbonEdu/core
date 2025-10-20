@@ -27,8 +27,6 @@ use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
-$_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
-
 require __DIR__.'/../gibbon.php';
 
 //Check for CLI, so this cannot be run through browser

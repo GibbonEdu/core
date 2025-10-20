@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
             ->required()
             ->setClass('status w-32');
         $col->addSelect('twoSided')
-            ->fromArray(['Y' => __('Two-sided'), 'N' => __('Single-sided')])
+            ->fromArray(['N' => __('Single-sided'), 'Y' => __('Two-sided')])
             ->required()
             ->setClass('status w-32 ml-1');
         $col->addSubmit(__('Go'));

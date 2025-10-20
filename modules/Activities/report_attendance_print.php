@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Forms\Form;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -58,9 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         if ($result->rowCount() < 1) {
             echo $page->getBlankSlate();
         } else {
-            echo "<div class='linkTop'>";
-            echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-            echo '</div>';
+            $form = Form::createBlank('buttons');
+            $form->addHeaderAction('print', __('Print'))
+                ->setURL('#')
+                ->onClick('javascript:window.print(); return false;');
+            echo $form->getOutput();
 
             $lastPerson = '';
 

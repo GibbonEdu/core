@@ -21,14 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
-use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 /**
  * ClassGroupTable
@@ -53,6 +54,7 @@ class ClassGroupTable extends DataTable
 
     public function build($gibbonSchoolYearID, $gibbonCourseClassID)
     {
+        global $container;
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
@@ -75,8 +77,24 @@ class ClassGroupTable extends DataTable
 
         $this->setTitle(__('Participants'));
 
-        $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
+        $this->addMetaData('gridClass', 'rounded-sm bg-blue-50 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
+
+        if ($canViewConfidential) {
+            $checkbox = (new Checkbox('confidential'.$gibbonCourseClassID))
+                ->description(__('Show Confidential Data'))
+                ->setAttribute('x-model', 'globalShowHide')
+                ->setLabelClass('text-xs italic')
+                ->setClass('mr-2');
+
+            $this->addHeaderContent($checkbox->getOutput());
+
+            $alert = $container->get(Alert::class);
+            $this->addColumn('alerts')
+                ->format(function ($person) use ($alert) {
+                    return $alert->getAlertBar($person['gibbonPersonID'], ['attributes' => "x-cloak x-transition.opacity x-show='globalShowHide'"]);
+                });
+        }
 
         if ($canEditEnrolment && count($participants) > 0) {
             $this->addHeaderAction('edit', __('Edit Enrolment'))
@@ -84,8 +102,7 @@ class ClassGroupTable extends DataTable
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonCourseID', $participants->getRow(0)['gibbonCourseID'] ?? '')
                 ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
-                ->displayLabel()
-                ->append('&nbsp;&nbsp;|&nbsp;&nbsp;');
+                ->displayLabel();
         }
 
         if ($canViewConfidential) {
@@ -98,33 +115,16 @@ class ClassGroupTable extends DataTable
                 ->displayLabel();
         }
 
-        if ($canViewConfidential) {
-            $checkbox = (new Checkbox('confidential'.$gibbonCourseClassID))
-                ->description(__('Show Confidential Data'))
-                ->checked(true)
-                ->inline()
-                ->wrap('<div class="mt-2 text-right text-xxs text-gray-700 italic">', '</div>');
-
-            $this->addMetaData('gridHeader', $checkbox->getOutput());
-            $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonCourseClassID));
-
-            $this->addColumn('alerts')
-                ->format(function ($person) use ($guid, $connection2, $gibbonCourseClassID) {
-                    $divExtras = ' data-conf="confidential'.$gibbonCourseClassID.'"';
-                    return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
-                });
-        }
-
         $this->addColumn('image_240')
             ->setClass('relative')
-            ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+            ->format(function ($person) use ($canViewStaff, $canViewStudents, $canViewConfidential) {
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
-                $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+                $icon = $canViewConfidential ? Format::userBirthdayIcon($person['dob'], $person['preferredName']) : '';
 
                 if ($person['role'] == 'Student') {
                     $url = Url::fromModuleRoute('Students', 'student_view_details')
                         ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
-                    return $canViewStudents
+                    return $canViewStudents && $canViewConfidential
                         ? Format::link($url, $photo).$icon
                         : $photo.$icon;
                 } else {
@@ -138,12 +138,12 @@ class ClassGroupTable extends DataTable
 
         $this->addColumn('name')
             ->setClass('text-xs font-bold mt-1')
-            ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+            ->format(function ($person) use ($canViewStaff, $canViewStudents, $canViewConfidential) {
                 if ($person['role'] == 'Student') {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
                     $url = Url::fromModuleRoute('Students', 'student_view_details')
                         ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
-                    $canViewProfile = $canViewStudents;
+                    $canViewProfile = $canViewStudents && $canViewConfidential;
                 } else {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, false);
                     $url = Url::fromModuleRoute('Staff', 'staff_view_details')
@@ -159,17 +159,15 @@ class ClassGroupTable extends DataTable
         $this->addColumn('role')
             ->setClass('text-xs text-gray-600 italic leading-snug')
             ->translatable();
-    }
-
-    private function getCheckboxScript($id)
-    {
-        return '
-        <script type="text/javascript">
-        $(function () {
-            $("#confidential'.$id.'").click(function () {
-                $("[data-conf=\'confidential'.$id.'\']").slideToggle(!$(this).is(":checked"));
+        
+        if ($canViewConfidential) {
+            $this->addColumn('reportable')
+                ->format(function ($person) {
+                    if ($person['role'] == 'Student' && $person['reportable'] == "N") {
+                        return Format::tag(__("Not Reportable"), 'dull text-xxs');      
+                    }
             });
-        });
-        </script>';
+        }
+            
     }
 }

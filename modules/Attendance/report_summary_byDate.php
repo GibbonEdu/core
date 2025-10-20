@@ -43,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $settingGateway = $container->get(SettingGateway::class);
     $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
-    $dateEnd = (isset($_REQUEST['dateEnd']))? Format::dateConvert($_REQUEST['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_REQUEST['dateStart']))? Format::dateConvert($_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
+    $dateEnd = (isset($_REQUEST['dateEnd']))? $_REQUEST['dateEnd'] : date('Y-m-d');
+    $dateStart = (isset($_REQUEST['dateStart']))? $_REQUEST['dateStart'] : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
     // Correct inverse date ranges rather than generating an error
     if ($dateStart > $dateEnd) {
@@ -74,17 +74,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_summary_byDate.php");
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
+        $row->addDate('dateStart')->setValue($dateStart)->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
+        $row->addDate('dateEnd')->setValue($dateEnd)->required();
 
     $options = array("all" => __('All Students'));
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
@@ -295,12 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 }
             }
 
-            // To avoid duplicating code, the print function has been removed until this report can be refactored
-            // echo "<div class='linkTop'>";
-            // echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_summary_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-            // echo '</div>';
-
-            echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
+            echo '<table cellspacing="0" class="w-full colorOddEven" >';
 
             echo "<tr class='head'>";
             echo '<th style="width:80px" rowspan=2>';
@@ -333,7 +328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             if ($reportType == 'types') {
 
-                $href= $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_summary_byDate.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&group=' . $group . '&sort=' . $sort;
+                $href= $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_summary_byDate.php&dateStart='.$dateStart.'&dateEnd='.$dateEnd.'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&group=' . $group . '&sort=' . $sort;
 
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['In'][$i]['scope']).'">';

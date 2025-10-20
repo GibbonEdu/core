@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Filter'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('q', '/modules/Staff/report_coverage_summary.php');
@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         // COLUMNS
         $table->addColumn('fullName', __('Name'))
-            ->sortable(['surname', 'preferredName'])
+            ->notSortable()
             ->format(function ($person) use ($session) {
                 $text = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
                 $url = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_coverage_summary.php&gibbonPersonID='.$person['gibbonPersonID'];

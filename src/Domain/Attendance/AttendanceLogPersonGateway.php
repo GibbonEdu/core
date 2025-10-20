@@ -210,7 +210,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID')
-            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date' .( $countClassAsSchool == 'N' ? " AND gibbonAttendanceLogPerson.context<>'Class'" : ""))
             ->joinSubSelect(
                 'LEFT',
                 $subSelect,
@@ -271,7 +271,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID')
-            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date '.( $countClassAsSchool == 'N' ? " AND gibbonAttendanceLogPerson.context<>'Class'" : "") )
             ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
             ->joinSubSelect(
                 'LEFT',
@@ -401,6 +401,24 @@ class AttendanceLogPersonGateway extends QueryableGateway
             $sql .= " AND NOT context='Class'";
         }
         $sql .= " ORDER BY timestampTaken DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    function selectNonAbsentAttendanceLogsByDate($gibbonPersonIDList, $date)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonIDList) ? implode(',', $gibbonPersonIDList) : $gibbonPersonIDList;
+
+        $data = ['gibbonPersonIDList' => $gibbonPersonIDList, 'date' => $date];
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID, GROUP_CONCAT(DISTINCT type SEPARATOR ',') 
+                FROM gibbonAttendanceLogPerson
+                JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE date=:date
+                AND gibbonAttendanceLogPerson.context='Class'
+                AND gibbonAttendanceLogPerson.type<>'Absent'
+                AND FIND_IN_SET(gibbonAttendanceLogPerson.gibbonPersonID, :gibbonPersonIDList)
+                GROUP BY gibbonAttendanceLogPerson.gibbonPersonID
+                ORDER BY timestampTaken DESC";
 
         return $this->db()->select($sql, $data);
     }

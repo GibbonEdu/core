@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     }, $templateVariables);
 
     $setting = $settingGateway->getSettingByScope('Messenger', 'signatureTemplate', true);
-    $col = $form->addRow()->addClass('certificate')->addColumn();
+    $col = $form->addRow()->addClass('bg-white certificate')->addColumn();
         $col->addLabel($setting['name'], __m($setting['nameDisplay']))->description(__m($setting['description']).'<br/>'.__('Available Variables').': '.implode(', ', $templateVariables));
         $col->addCodeEditor($setting['name'])->setMode('twig')->setValue($setting['value'])->setHeight('200')->required();
 

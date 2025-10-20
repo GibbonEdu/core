@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 				if ($result->rowCount() == 0) {
 					$form->addRow()->addAlert(__('There are no records to display.'), 'error');
 				} else {
-					$table = $form->addRow()->addTable()->addClass('fullWidth colorOddEven');
+					$table = $form->addRow()->addTable()->addClass('w-full colorOddEven');
 
 					$row = $table->addHeaderRow();
 						$row->addContent(__('Name'));

@@ -62,7 +62,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             //Let's go!
             $row = $result->fetch();
 
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_deleteProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_deleteProcess.php?search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
+            $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
+            $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
             echo $form->getOutput();
         }
     }

@@ -36,9 +36,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
 
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-    $form = Form::create('filter', $session->get('absoluteURL')."/index.php", 'get', 'noIntBorder fullWidth standardForm');
+    $form = Form::create('filter', $session->get('absoluteURL')."/index.php", 'get', 'noIntBorder w-full standardForm');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->addHiddenValue('q', '/modules/Behaviour/behaviour_letters.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

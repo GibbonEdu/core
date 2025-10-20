@@ -40,8 +40,6 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view_register.php&gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&mode=$mode&search=".$_GET['search'];
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
-$gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
@@ -197,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 }
 
                                 //Set log
-                                $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Registered', array('gibbonPersonIDStudent' => $gibbonPersonID));
+                                $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Activities', $session->get('gibbonPersonID'), 'Activities - Student Registered', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
                                 // Get the start and end date of the activity, depending on which dateType we're using
                                 $activityTimespan = getActivityTimespan($connection2, $gibbonActivityID, $row['gibbonSchoolYearTermIDList']);
@@ -260,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
 
                             //Set log
-                            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Withdrawn', array('gibbonPersonIDStudent' => $gibbonPersonID));
+                            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Activities', $session->get('gibbonPersonID'), 'Activities - Student Withdrawn', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
                             $reg = $resultReg->fetch();
 
@@ -350,7 +348,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         $resultBump->execute($dataBump);
 
                                         //Set log
-                                        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Bump', array('gibbonPersonIDStudent' => $rowBumps['gibbonPersonID']));
+                                        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Activities', $session->get('gibbonPersonID'), 'Activities - Student Bump', array('gibbonPersonIDStudent' => $rowBumps['gibbonPersonID']));
 
                                         //Raise notifications
                                         $event = new NotificationEvent('Activities', 'Student Bumped');

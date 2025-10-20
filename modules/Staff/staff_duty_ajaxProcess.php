@@ -24,7 +24,7 @@ use Gibbon\Domain\Staff\StaffDutyPersonGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_GET = $container->get(Validator::class)->sanitize($_GET);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_duty_edit.php';
 
@@ -34,10 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
 } else {
     //Proceed!
 
-    $gibbonStaffDutyPersonID = $_POST['gibbonStaffDutyPersonID'] ?? null;
+    $gibbonStaffDutyPersonID = $_GET['gibbonStaffDutyPersonID'] ?? null;
     $data = [
-        'gibbonStaffDutyID' => $_POST['gibbonStaffDutyID'] ?? null,
-        'gibbonDaysOfWeekID' => $_POST['gibbonDaysOfWeekID'] ?? null,
+        'gibbonStaffDutyID' => $_GET['gibbonStaffDutyID'] ?? null,
+        'gibbonDaysOfWeekID' => $_GET['gibbonDaysOfWeekID'] ?? null,
     ];
 
     if (empty($gibbonStaffDutyPersonID) || empty($data['gibbonDaysOfWeekID']) || empty($data['gibbonStaffDutyID'])) {

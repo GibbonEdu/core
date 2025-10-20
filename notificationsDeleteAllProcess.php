@@ -23,7 +23,12 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-$URL = Url::fromRoute('notifications');
+$URL = Url::fromRoute('notifications')->withQueryParam('sidebar', 'false');
+
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+}
 
 try {
     $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));

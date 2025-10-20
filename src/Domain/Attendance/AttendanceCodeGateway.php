@@ -50,14 +50,20 @@ class AttendanceCodeGateway extends QueryableGateway
             ->cols([
                 'gibbonAttendanceCodeID', 'name', 'nameShort', 'scope', 'active', 'direction', 'type', 'sequenceNumber'
             ]);
-
-
+            
         return $this->runQuery($query, $criteria);
     }
 
     public function selectAttendanceCodes()
     {
         $sql = "SELECT gibbonAttendanceCodeID as value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber";
+
+        return $this->db()->select($sql);
+    }
+
+    public function selectAttendanceCodeRoleMapping() 
+    {
+        $sql = "SELECT name, gibbonRoleIDAll FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY direction DESC, sequenceNumber ASC, name";
 
         return $this->db()->select($sql);
     }

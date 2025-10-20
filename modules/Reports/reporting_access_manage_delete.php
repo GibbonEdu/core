@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reporting_access_manage_deleteProcess.php?gibbonReportingAccessID='.$gibbonReportingAccessID);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reporting_access_manage_deleteProcess.php');
+    $form->addHiddenValue('gibbonReportingAccessID', $gibbonReportingAccessID);
     echo $form->getOutput();
 }

@@ -84,6 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             $biographicalGrouping = $_POST['biographicalGrouping'] ?? '';
             $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'] ?? '';
             $biography = $_POST['biography'] ?? '';
+            $coverageExclude = $_POST['coverageExclude'] ?? 'N';
+            $coveragePriority = $_POST['coveragePriority'] ?? 0;
 
             if ($type == '') {
                 $URL .= '&return=error3';
@@ -101,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 }
 
                 $customRequireFail = false;
-                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', [], $customRequireFail);
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', ['requiredOverride' => 'N'], $customRequireFail);
 
                 if ($customRequireFail) {
                     $URL .= '&return=error1';
@@ -115,8 +117,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 } else {
                     //Write to database
                     try {
-                        $data = array('initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'firstAidQualified' => $firstAidQualified, 'firstAidQualification' => $firstAidQualification, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography, 'fields' => $fields, 'gibbonStaffID' => $gibbonStaffID);
-                        $sql = 'UPDATE gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) SET initials=:initials, type=:type, gibbonStaff.jobTitle=:jobTitle, dateStart=:dateStart, dateEnd=:dateEnd, firstAidQualified=:firstAidQualified, firstAidQualification=:firstAidQualification, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography, gibbonStaff.fields=:fields WHERE gibbonStaffID=:gibbonStaffID';
+                        $data = array('initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'firstAidQualified' => $firstAidQualified, 'firstAidQualification' => $firstAidQualification, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography, 'coveragePriority' => $coveragePriority, 'coverageExclude' => $coverageExclude, 'fields' => $fields, 'gibbonStaffID' => $gibbonStaffID);
+                        $sql = 'UPDATE gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) SET initials=:initials, type=:type, gibbonStaff.jobTitle=:jobTitle, dateStart=:dateStart, dateEnd=:dateEnd, firstAidQualified=:firstAidQualified, firstAidQualification=:firstAidQualification, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography, coveragePriority=:coveragePriority, coverageExclude=:coverageExclude, gibbonStaff.fields=:fields WHERE gibbonStaffID=:gibbonStaffID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

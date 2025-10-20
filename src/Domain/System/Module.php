@@ -60,7 +60,7 @@ class Module
         $this->scripts->add(
             'module',
             'modules/'.$this->name.'/js/module.js',
-            ['version' => $this->version, 'context' => 'head']
+            ['version' => $this->version, 'context' => 'foot', 'type' => 'defer']
         );
     }
 

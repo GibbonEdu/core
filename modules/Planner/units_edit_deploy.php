@@ -109,11 +109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         $lessonTimes = $plannerEntryGateway->queryPlannerTimeSlotsByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
 
-        $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
+        $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
         $form->setTitle(__('Step 1 - Select Lessons'));
         $form->setDescription(__('Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.'));
 
-        $form->setClass('w-full blank bulkActionForm');
+        $form->setClass('bulkActionForm');
 
         $table = $form->addRow()->addDataTable('lessons', $criteria)->withData($lessonTimes);
         $table->addMetaData('hidePagination', true);
@@ -209,7 +209,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Planner/units_edit_deployProcess.php?'.http_build_query($urlParams));
         $form->setFactory(PlannerFormFactory::create($pdo));
         $form->setTitle(__('Step 2 - Distribute Blocks'));
-        $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
+
+        $addAll = $form->getFactory()->createRow()
+        ->setClass('-mt-4')
+        ->addSelect('blockAddAll')
+        ->fromArray($blockSelect)
+        ->placeholder()
+        ->setClass('blockAddAll float-right w-32')
+        ->prepend(Format::small(__('Add Block to All').':'));
+
+        $form->setDescription('<div class="float-right w-32 -mt-8">'.$addAll->getOutput().'</div>'.__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
         
         $form->addHiddenValue('address', $session->get('address'));
 
@@ -277,7 +286,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $row->addLabel('viewableParents', __('Viewable to Parents'));
             $row->addYesNo('viewableParents')->required();
 
-        $form->addRow()->addSubmit();
+        $row = $form->addRow();
+        $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
+        $row->addSubmit();
 
         echo $form->getOutput();
     }
@@ -316,6 +327,16 @@ $('.blockAdd').change(function () {
 
     $(sortable).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
     count++;
+});
+
+$('.blockAddAll').change(function () {
+    var gibbonUnitBlockID = $(this).val();
+    if (gibbonUnitBlockID == '') return;
+
+    var sortable = $('.sortableArea').each(function (index, element) {
+        $(element).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + gibbonUnitBlockID, "id=" + count) );
+        count++;
+    });
 });
 
 </script>

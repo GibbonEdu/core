@@ -139,8 +139,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $table->modifyRows(function ($item, $row) {
                 if ($item['status'] == 'On Loan') {
-                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row->addClass('warning');
+                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row->addClass('success');
                 }
+                if ($item['status'] == 'Reserved') $row->addClass('message');
+                if ($item['status'] == 'Decommissioned' || $item['status'] == 'Lost') $row->addClass('error');
                 return $row;
             });
 

@@ -21,6 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\View\Component;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
+
 /**
  * Time
  *
@@ -31,11 +34,44 @@ namespace Gibbon\Forms\Input;
  */
 class Time extends TextField
 {
+    use ButtonGroupTrait;
+    
     protected $format = 'H:i'; // Default to 24 hour clock
     protected $min;
     protected $max;
     protected $chained;
     protected $showDuration;
+
+    /**
+     * Overload the base loadFrom method to handle converting time formats.
+     * @param   array  &$data
+     * @return  self
+     */
+    public function loadFrom(&$data)
+    {
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($data[$name])) {
+            $this->setValue($data[$name]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the input's value.
+     * @param  string  $value
+     * @return $this
+     */
+    public function setValue($value = '')
+    {
+        if (is_string($value) && strlen($value) == 19) {
+            $value = substr($value, 11);
+        }
+
+        $this->setAttribute('value', $value);
+        return $this;
+    }
 
     /**
      * Set the format to output time values (default 'H:i').
@@ -113,10 +149,8 @@ class Time extends TextField
             'maxTime' => $this->max,
         ];
 
-        $output = '';
-        $output = '<input type="text" '.$this->getAttributeString().' maxlength="5">';
-
-        $output .= '<script type="text/javascript">';
+        $output = '<script type="text/javascript">';
+        $output .= '$(document).ready(function () {';
         $output .= '$("#'.$this->getID().'").timepicker('.json_encode($jsonData).');';
         if (!empty($this->chained)) {
             // On change, update this time and set duration
@@ -125,8 +159,15 @@ class Time extends TextField
             $output .= '$("#'.$this->getID().'").timepicker({ "minTime": $(this).val(), "timeFormat" : "'.$this->format.'", "showDuration" : "'.$this->showDuration.'"});';
             $output .= '});';
         }
+        $output .= '});';
         $output .= '</script>';
 
-        return $output;
+        return Component::render(Time::class, $this->getAttributeArray() + [
+            'groupClass'       => $this->getGroupClass(),
+            'unique'           => $this->unique ? json_encode($this->unique) : '',
+            'autocompleteList' => $this->autocomplete
+                ? $this->autocomplete
+                : '',
+        ]).$output;
     }
 }

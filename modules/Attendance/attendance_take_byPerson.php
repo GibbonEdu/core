@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setTitle(__('Choose Student'));
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/attendance_take_byPerson.php');
@@ -129,17 +129,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         if (empty($log['timestampTaken'])) return Format::small(__('N/A'));
 
                         return $currentDate != substr($log['timestampTaken'], 0, 10)
-                            ? Format::dateReadable($log['timestampTaken'], Format::MEDIUM, Format::SHORT)
-                            : Format::dateReadable($log['timestampTaken'], Format::NONE, Format::SHORT);
+                            ? Format::dateTimeReadable($log['timestampTaken'])
+                            : Format::dateTimeReadable($log['timestampTaken']);
                     });
 
                 $table->addColumn('direction', __('Attendance'))
-                    ->format(function ($log) use ($session) {
+                    ->format(function ($log) {
                         if (empty($log['direction'])) return Format::small(__('Not Taken'));
 
                         $output = '<b>'.__($log['direction']).'</b> ('.__($log['type']). (!empty($log['reason'])? ', '.__($log['reason']) : '') .')';
                         if (!empty($log['comment'])) {
-                            $output .= '&nbsp;<img title="'.$log['comment'].'" src="./themes/'.$session->get('gibbonThemeName').'/img/messageWall.png" width=16 height=16/>';
+                            $output .= Format::tooltip(icon('solid', 'chat-bubble-text', 'size-4'), htmlPrep($log['comment']));
                         }
 
                         return $output;
@@ -191,17 +191,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 if (count($logs) + $classLogCount == 0) {
                     $schoolTable->addMetaData('blankSlate', __('There is currently no attendance data today for the selected student.'));
                 }
-
                 echo $schoolTable->render($logs);
 
                 // Class Attendance
                 if ($countClassAsSchool == 'N') {
-                    if ($classLogCount > 0) {
-                        $classTable = clone $table;
-                        $classTable->setTitle(__('Class Attendance'));
+                    $classTable = clone $table;
+                    $classTable->setTitle(__('Class Attendance'));
 
-                        echo $classTable->render($classLogs);
-                    }
+                    echo $classTable->render($classLogs);
                 }
                 echo '<br/>';
 

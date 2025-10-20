@@ -167,4 +167,39 @@ class InvoiceGateway extends QueryableGateway
         ]);
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectInvoicesByPersonID($gibbonSchoolYearID, $gibbonPersonID) 
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT 
+            gibbonFinanceInvoice.gibbonFinanceInvoiceID,
+            gibbonFinanceInvoice.gibbonSchoolYearID,
+            surname,
+            preferredName,
+            gibbonFinanceInvoice.invoiceTo,
+            gibbonFinanceInvoice.status,
+            gibbonFinanceInvoice.key,
+            gibbonFinanceInvoice.invoiceIssueDate,
+            gibbonFinanceInvoice.invoiceDueDate,
+            paidDate,
+            paidAmount,
+            billingScheduleType AS billingSchedule,
+            gibbonFinanceBillingSchedule.name AS billingScheduleExtra,
+            gibbonFinanceInvoice.notes,
+            gibbonFormGroup.name AS formGroup,
+            gibbonPerson.gibbonPersonID 
+        FROM gibbonFinanceInvoice 
+            JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID = gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) 
+            JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID = gibbonPerson.gibbonPersonID) 
+            LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID = gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) 
+            LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID = gibbonPerson.gibbonPersonID) 
+            LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) 
+        WHERE gibbonFinanceInvoice.gibbonSchoolYearID = :gibbonSchoolYearID 
+            AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID 
+            AND NOT gibbonFinanceInvoice.status='Pending' 
+            AND gibbonFinanceInvoicee.gibbonPersonID = :gibbonPersonID 
+        ORDER BY invoiceIssueDate, surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }

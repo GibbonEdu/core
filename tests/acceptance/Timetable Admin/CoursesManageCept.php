@@ -78,12 +78,12 @@ $I->see('Your request was completed successfully.', '.success');
 // Delete Class -------------------------------------------
 $I->amOnModulePage('Timetable Admin', 'course_manage_class_delete.php', array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('Timetable Admin', 'course_manage_delete.php', array('gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => ''));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
 

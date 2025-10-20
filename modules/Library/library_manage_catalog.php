@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
         $form->setTitle(__('Search & Filter'));
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_manage_catalog.php");
@@ -65,11 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             ->selected($gibbonLibraryTypeID)
             ->placeholder();
 
-        $row = $form->addRow()->addClass('advancedOptions hidden');
+        $row = $form->addRow()->advancedOptions();
             $row->addLabel('gibbonSpaceID', __('Location'));
             $row->addSelectSpace('gibbonSpaceID')->selected($gibbonSpaceID)->placeholder();
 
-        $row = $form->addRow()->addClass('advancedOptions hidden');
+        $row = $form->addRow()->advancedOptions();
             $row->addLabel('locationDetail', __('Location Detail'));
             $row->addTextField('locationDetail')->setValue($locationDetail)->placeholder();
 
@@ -83,27 +83,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             'Repair' => __('Repair'),
             'Reserved' => __('Reserved')
         );
-        $row = $form->addRow()->addClass('advancedOptions hidden');
+        $row = $form->addRow()->advancedOptions();
             $row->addLabel('status', __('Status'));
             $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
-        $row = $form->addRow()->addClass('advancedOptions hidden');
+        $row = $form->addRow()->advancedOptions();
             $row->addLabel('gibbonPersonIDOwnership', __('Owner/User'));
             $row->addSelectUsers('gibbonPersonIDOwnership')->selected($gibbonPersonIDOwnership)->placeholder();
 
-        $row = $form->addRow()->addClass('advancedOptions hidden');
+        $row = $form->addRow()->advancedOptions();
         $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
             ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
         $row->addScanner('typeSpecificFields')
             ->setValue($typeSpecificFields);
 
-        $row = $form->addRow()->addClass(empty($parentID) ? 'advancedOptions hidden' : 'advancedOptions');
+        $row = $form->addRow()->advancedOptions();
             $row->addLabel('parentID', __('Copies Of'));
             $row->addTextField('parentID')->setValue($parentID);
 
-        $col = $form->addRow()->setClass('advancedOptions hidden')->addColumn();
+        $col = $form->addRow()->advancedOptions()->addColumn();
             $col->addLabel('everything', __('All Fields'));
-            $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
+            $col->addTextField('everything')->setClass('w-full')->setValue($everything);
 
         $row = $form->addRow();
         $row->addAdvancedOptionsToggle();
@@ -139,8 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->addParam('status', $status)
         ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)
         ->addParam('typeSpecificFields', $typeSpecificFields)
-        ->displayLabel()
-        ->prepend(' | ');
+        ->displayLabel();
 
     $table->addColumn('id', __('School ID'))
         ->description(__('Type'))

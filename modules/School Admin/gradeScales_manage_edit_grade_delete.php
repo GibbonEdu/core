@@ -43,7 +43,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             //Let's go!
             $row = $result->fetch();
 
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/gradeScales_manage_edit_grade_deleteProcess.php?gibbonScaleGradeID=$gibbonScaleGradeID&gibbonScaleID=$gibbonScaleID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/gradeScales_manage_edit_grade_deleteProcess.php");
+            $form->addHiddenValue('gibbonScaleGradeID', $gibbonScaleGradeID);
+            $form->addHiddenValue('gibbonScaleID', $gibbonScaleID);
             echo $form->getOutput();
         }
     }

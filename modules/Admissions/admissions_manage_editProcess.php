@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
 
     $data = [
-        'email' => $_POST['email'] ?? '',
+        'email' => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
     ];
 
     // Validate the required values are present

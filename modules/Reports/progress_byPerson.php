@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
     // FORM
     $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Reports/progress_byPerson.php');
     $form->addHiddenValue('gibbonReportingScopeID', $gibbonReportingScopeID);
@@ -101,12 +101,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
 
     $table->addColumn('name', __('Name'))
         ->width('30%')
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['surname', 'preferredName'])
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Staff', true, true);
         });
     $table->addColumn('progress', __('Progress'))
         ->width('40%')
+        ->sortable(['progressCount', 'totalCount'])
         ->format(function ($reporting) use (&$page) {
             return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
                 'progressCount' => $reporting['progressCount'],
@@ -123,6 +124,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
                     ->setURL('/modules/Reports/reporting_my.php');
         });
 
-    echo $table->render(new DataSet(array_values($progressByPerson)));
+    echo $table->render((new DataSet(array_values($progressByPerson)))->removePagination());
 
 }

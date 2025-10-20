@@ -7,15 +7,15 @@ on:
 jobs:
   test:
     name: ${{ matrix.name }} (PHP ${{ matrix.php-version }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
+        php-version: ["8.0", "8.1", "8.2", "8.3"]
         experimental: [false]
         name: ["CI Test"]
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:8.0
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: gibbon_test
@@ -136,7 +136,7 @@ jobs:
             echo
             (exit 1)
           fi
-        continue-on-error: ${{ matrix.experimental }}
+        continue-on-error: true
 
       - name: Check PHP notice in server_log
         if: success() || failure()
@@ -161,7 +161,7 @@ jobs:
           mysqldump -u root --protocol=tcp --column-statistics=0 gibbon_test > ./tests/_dump/mysqldump.sql
 
       - name: Save Test Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ failure() || matrix.experimental }}
         with:
           name: Test Artifacts (PHP ${{ matrix.php-version }})

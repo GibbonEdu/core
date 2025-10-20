@@ -23,6 +23,10 @@ table:
         name: "Capacity"
         desc: ""
         args: { filter: numeric, custom: true }
+    bookable: 
+        name: "Bookable"
+        desc: ""
+        args: { filter: yesno, custom: true }
     computer: 
         name: "Teacher's Computer"
         desc: ""

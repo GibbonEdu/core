@@ -21,11 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonExternalAssessmentStudentID = $_GET['gibbonExternalAssessmentStudentID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonExternalAssessmentStudentID = $_POST['gibbonExternalAssessmentStudentID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $search = $_GET['search'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
-
 
 if ($gibbonPersonID == '' or $gibbonExternalAssessmentStudentID == '') { echo 'Fatal error loading this page!';
 } else {

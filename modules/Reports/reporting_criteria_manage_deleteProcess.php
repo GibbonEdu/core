@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonReportingCriteriaID = $_GET['gibbonReportingCriteriaID'] ?? '';
+$gibbonReportingCriteriaID = $_POST['gibbonReportingCriteriaID'] ?? '';
 $urlParams = [
     'gibbonReportingScopeID' => $_POST['gibbonReportingScopeID'] ?? '',
     'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? '',

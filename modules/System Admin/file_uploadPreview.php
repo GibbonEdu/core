@@ -19,7 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 use Gibbon\FileUploader;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -62,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-
+    
     // Open the zip archive
     $zip = new ZipArchive();
     if ($zip->open($tempFile['tmp_name']) === false) {
@@ -72,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
 
     $tempDirectoryPath = $session->get('absolutePath').'/uploads/temp';
     if (!is_dir($tempDirectoryPath)) {
-        mkdir($tempDirectoryPath, 0755);
+        mkdir($tempDirectoryPath, 0755, true);
     }
 
     $userGateway = $container->get(UserGateway::class);
@@ -108,6 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             'gibbonPersonID',
             'username',
             'image_240',
+            'studentID',
             'title',
             'preferredName',
             'surname',
@@ -121,13 +121,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
                 $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID']);
                 $userData['exists'] = !empty($fields[$gibbonCustomFieldID]);
             } elseif ($type == 'personalDocuments') {
-                $document = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);
+                $document = $personalDocumentGateway->getPersonalDocumentDataByID($gibbonPersonalDocumentTypeID, 'gibbonPerson', $userData['gibbonPersonID']);
                 $userData['exists'] = !empty($document['filePath']);
             } else {
                 $userData['exists'] = !empty($userData['image_240']);
             }
 
-            if ($type == 'userPhotos' && ($extension != 'jpg' && $extension != 'png')) {
+            if ($type == 'userPhotos' && ($extension != 'jpg' && $extension != 'png' && $extension != 'jpeg')) {
                 $userData['statusText'] = __('Invalid File Type');
             } else {
                 $validFiles++;

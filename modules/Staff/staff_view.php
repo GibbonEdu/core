@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $form = Form::create('filters', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Search'));
 
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('q', '/modules/Staff/staff_view.php');
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             ->addParam('gibbonPersonID')
             ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($person, $actions) {
-                $actions->addAction('view', __('View Details'))
+                $actions->addAction('profile', __('View'))
                         ->setURL('/modules/Staff/staff_view_details.php');
             });
 
@@ -179,8 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Staff/staff_manage_add.php')
                 ->addParam('search', $urlParams['search'])
-                ->displayLabel()
-                ->prepend('&nbsp; | &nbsp;');
+                ->displayLabel();
         }
 
         $table->addMetaData('filterOptions', [
@@ -275,7 +274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                 ->addParam('allStaff', $urlParams['allStaff'])
                 ->addParam('search', $criteria->getSearchText(true))
                 ->format(function ($person, $actions) {
-                    $actions->addAction('view', __('View Details'))
+                    $actions->addAction('profile', __('View'))
                             ->setURL('/modules/Staff/staff_view_details.php');
                 });
         }

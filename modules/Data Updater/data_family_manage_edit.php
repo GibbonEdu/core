@@ -81,11 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 
 			$form = Form::createTable('updateFamily', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_family_manage_editProcess.php?gibbonFamilyUpdateID='.$gibbonFamilyUpdateID);
 
-			$form->setClass('fullWidth colorOddEven');
+			$form->setClass('w-full colorOddEven');
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonFamilyID', $oldValues['gibbonFamilyID']);
 
-			$row = $form->addRow()->setClass('head heading');
+			$row = $form->addRow()->setClass('head bg-gray-200');
 				$row->addContent(__('Field'));
 				$row->addContent(__('Current Value'));
 				$row->addContent(__('New Value'));

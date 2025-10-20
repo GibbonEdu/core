@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     $form->addRow()->addHeading('Primary External Assessement', __('Primary External Assessement'))->append(__('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). You are required to select a particular field category from which to draw data (if no category is chosen, the data will not be saved).'));
 
     $row = $form->addRow()->setClass('break');
-        $row->addContent(__('Year Group'));
+        $row->addContent(__('Year Group'))->setClass('w-24');
         $row->addContent(__('External Assessment'));
         $row->addContent(__('Field Set'));
 
@@ -87,18 +87,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
         $selectedField = (isset($primaryExternalAssessmentByYearGroup[$id]))? $primaryExternalAssessmentByYearGroup[$id] : '';
 
         $row = $form->addRow();
-        $row->addContent($yearGroup['name']);
+        $row->addContent($yearGroup['name'])->setClass('w-24');
 
         $row->addSelect('gibbonExternalAssessmentID['.$id.']')
             ->setID('gibbonExternalAssessmentID'.$id)
-            ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessments)
             ->selected($selectedID);
 
         $row->addSelect('category['.$id.']')
             ->setID('category'.$id)
-            ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessmentsFieldSetNames)
             ->selected($selectedField)

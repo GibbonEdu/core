@@ -28,6 +28,7 @@ use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\StaffContractGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     // Access denied
@@ -152,8 +153,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addLabel('biography', __('Biography'));
                     $row->addTextArea('biography')->setRows(10);
 
+                $internalCoverage = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageInternal');
+                if ($internalCoverage == 'Y') {
+                    $form->addRow()->addHeading('Staff Coverage', __('Staff Coverage'));
+
+                    $row = $form->addRow();
+                        $row->addLabel('coverageExclude', __('Exclude from coverage?'))->description(__('If enabled, this user will be excluded from internal staff coverage lists.'));
+                        $row->addYesNo('coverageExclude')->placeHolder();
+            
+                    $form->toggleVisibilityByClass('coveragePriority')->onClick('coverageExclude')->when('N');
+                    $row = $form->addRow()->addClass('coveragePriority');
+                        $row->addLabel('coveragePriority', __('Priority'))->description(__('Higher priority substitutes appear first when booking coverage.'));
+                        $row->addSelect('coveragePriority')->fromArray(range(-9, 9))->required();
+                }
+
                 // Custom Fields
-                $customFieldHandler->addCustomFieldsToForm($form, 'Staff', [], $values['fields']);
+                $customFieldHandler->addCustomFieldsToForm($form, 'Staff', ['requiredOverride' => 'N'], $values['fields']);
 
                 $row = $form->addRow();
                     $row->addFooter();

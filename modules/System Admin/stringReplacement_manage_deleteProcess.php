@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStringID = $_GET['gibbonStringID'] ?? '';
+$gibbonStringID = $_POST['gibbonStringID'] ?? '';
 $search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/stringReplacement_manage_delete.php&gibbonStringID=$gibbonStringID&search=$search";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/stringReplacement_manage.php&search=$search";

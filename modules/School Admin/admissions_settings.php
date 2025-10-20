@@ -81,6 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/admissions_se
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
+    $setting = $settingGateway->getSettingByScope('Application Form', 'successMessage', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

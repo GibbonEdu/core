@@ -1,0 +1,68 @@
+details:
+    type: meetTheTeacherBooking
+    name: Meet The Teacher - Bookings
+    desc: Allows import of bookings, to be used with the Export Bookings option.
+    table: meetTheTeacherBooking
+    category: Additional
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Meet The Teacher
+    action: Export Bookings
+primaryKey:
+    meetTheTeacherBookingID
+uniqueKeys:
+    - appointmentID
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    consultationName: 
+        name: "Consultation Name"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+    appointmentID: 
+        name: "Appointment ID"
+        desc: ""
+        args: { filter: string, required: true }
+    appointmentStart: 
+        name: "Appointment Start"
+        desc: ""
+        args: { filter: timestamp, required: true }
+    appointmentEnd: 
+        name: "Appointment End"
+        desc: ""
+        args: { filter: timestamp, required: true }
+    courseName: 
+        name: "Department"
+        desc: ""
+        args: { filter: string, required: true }
+    gibbonPersonIDStudent: 
+        name: "Student External ID"
+        desc: ""
+        args: { filter: string, required: true }
+    gibbonPersonIDTeacher: 
+        name: "Teacher External ID"
+        desc: ""
+        args: { filter: string, required: true }
+    gibbonPersonIDParent: 
+        name: "Parent External ID"
+        desc: ""
+        args: { filter: string, required: true }
+    timestampAdded: 
+        name: "Added At"
+        desc: ""
+        args: { filter: timestamp, required: true }
+    parentMessage: 
+        name: "Parent Message"
+        desc: ""
+        args: { filter: string, required: true }
+    parentTranslator: 
+        name: "Parent Requires Translator"
+        desc: ""
+        args: { filter: string, required: true }
+    location: 
+        name: "Location"
+        desc: ""
+        args: { filter: string, required: true }

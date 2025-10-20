@@ -250,7 +250,7 @@ class FinanceFormFactory extends DatabaseFormFactory
 
     public function createInvoiceEmailCheckboxes($checkboxName, $hiddenValueName, $values, $session)
     {
-        $table = $this->createTable()->setClass('fullWidth');
+        $table = $this->createTable()->setClass('w-full');
 
         // Company Emails
         if ($values['invoiceTo'] == 'Company') {
@@ -301,7 +301,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                         $row->onlyIf(empty($person['email']))
                             ->addContent(__('No email address.'))
                             ->addClass('right')
-                            ->wrap('<span class="small emphasis">', '</span>');
+                            ->wrap('<span class="text-xs italic">', '</span>');
                 }
             }
         }

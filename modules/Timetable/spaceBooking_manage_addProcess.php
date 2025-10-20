@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             'gibbonPersonID' => $_POST['gibbonPersonID'] ?? $session->get('gibbonPersonID'),
         ];
         
-        $dates = $_POST['dates'] ?? '';
+        $dates = $_POST['dates'] ?? [];
         $repeat = $_POST['repeat'] ?? '';
         $override = $_POST['override'] ?? 'N';
         $repeatDaily = $repeat == 'Daily' ? $_POST['repeatDaily'] : null;
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             } else {
                 // Redirect back to View Timetable by Facility if we started there
                 if (isset($_POST['source']) && $_POST['source'] == 'tt') {
-                    $ttDate = Format::date($dates[0]);
+                    $ttDate = $dates[0] ?? '';
                     $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$data['foreignKeyID'].'&ttDate='.$ttDate;
                 }
 

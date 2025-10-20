@@ -24,6 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\Staff\StaffDutyGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php') == false) {
     // Access denied
@@ -35,10 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
         ->add(__('Edit Duty Schedule'));
     
     $staffDutyGateway = $container->get(StaffDutyGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
+    $types = $settingGateway->getSettingByScope('Staff', 'staffDutyTypes');
     
     // FORM
     $form = Form::create('dutyEdit', $session->get('absoluteURL').'/modules/Staff/staff_duty_editProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
+    $form->removeMeta();
 
     // Custom Block Template
     $addBlockButton = $form->getFactory()->createButton(__('Add Time Slot'))->addClass('addBlock');
@@ -66,11 +70,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
                 ->chainedTo('timeStart');
 
         $row = $blockTemplate->addRow();
+            $row->addLabel('type', __('Type'));
+                $row->addSelect('type')->fromString($types);
+
             $row->addLabel('gibbonDaysOfWeekIDList', __('Weekday'));
             $row->addCheckbox('gibbonDaysOfWeekIDList')
                 ->fromQuery($pdo, $sqlWeekdays)
-                ->setLabelClass('w-20')
-                ->setClass('my-3')
+                // ->setLabelClass('w-20')
                 ->inline()
                 ->alignLeft();
 

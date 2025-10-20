@@ -38,7 +38,7 @@ class StaffGateway extends QueryableGateway
     private static $tableName = 'gibbonStaff';
     private static $primaryKey = 'gibbonStaffID';
 
-    private static $searchableColumns = ['preferredName', 'surname', 'username', 'gibbonStaff.jobTitle'];
+    private static $searchableColumns = ['preferredName', 'surname', 'username', 'gibbonPerson.nameInCharacters', 'gibbonStaff.jobTitle'];
 
     /**
      * Queries the list of users for the Manage Staff page.
@@ -48,6 +48,8 @@ class StaffGateway extends QueryableGateway
      */
     public function queryAllStaff(QueryCriteria $criteria, $gibbonSchoolYearID = null)
     {
+        $biographicalGroupingOrder = '';
+        
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
@@ -94,8 +96,15 @@ class StaffGateway extends QueryableGateway
                     ->bindValue('grouping', $grouping);
             },
 
-            'biographicalGroupingSort' => function ($query, $group) {
-                return $query->orderBy(['(biographicalGrouping="Leadership Team") DESC',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
+            'biographicalGroupingSort' => function ($query, $group) use ($biographicalGroupingOrder) {
+                if (!empty($biographicalGroupingOrder)) {
+                    return $query->cols(["(CASE WHEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingSortOrder) > 0 THEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingSortOrder) WHEN gibbonStaff.biographicalGrouping <> '' THEN 998 ELSE 999 END) AS biographicalGroupingOrder"])
+                        ->bindValue('biographicalGroupingSortOrder', $biographicalGroupingOrder)
+                        ->orderBy(['biographicalGroupingOrder',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
+                } else {
+                    return $query->orderBy(['(biographicalGrouping="Leadership Team") DESC',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
+                }
+                
             },
 
             'status' => function ($query, $status) {
@@ -131,6 +140,18 @@ class StaffGateway extends QueryableGateway
         $sql = 'SELECT gibbonStaff.*, title, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function selectPotentialStaff() {
+        $sql = "SELECT gibbonPerson.gibbonPersonID
+            FROM gibbonPerson 
+            JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+            LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            WHERE gibbonStaff.gibbonStaffID IS NULL
+            AND gibbonRole.category='Staff'
+            GROUP BY gibbonPerson.gibbonPersonID";
+
+        return $this->db()->select($sql);
     }
 
     public function getIsPreferredNameUnique($preferredName)

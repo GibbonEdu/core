@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addHeading('For Office Use', __('For Office Use'));
-        $row->addContent(__('Fix Block Caps'))->wrap('<small class="emphasis small" style="float:right;margin-top:16px;"><a id="fixCaps">', '</a></small>');
+        $row->addContent(__('Fix Block Caps'))->wrap('<small class="italic text-xs" style="float:right;margin-top:16px;"><a id="fixCaps">', '</a></small>');
 
     $row = $form->addRow();
         $row->addLabel('gibbonApplicationFormID', __('Application ID'));
@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $row = $form->addRow();
         $column = $row->addColumn();
         $column->addLabel('notes', __('Notes'));
-        $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
+        $column->addTextArea('notes')->setRows(5)->setClass('w-full');
 
     // SIBLING APPLICATIONS
     $heading = $form->addRow()->addSubheading(__('Sibling Applications'));
@@ -420,14 +420,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->required()->placeholder();
+            $row->addYesNo('sen')->required()->placeholder()->selected('N');
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 
         $row = $form->addRow()->setClass('senDetailsRow');
             $column = $row->addColumn();
             $column->addLabel('', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
-            $column->addTextArea('senDetails')->setRows(5)->setClass('fullWidth');
+            $column->addTextArea('senDetails')->setRows(5)->setClass('w-full');
 
     } else {
         $form->addHiddenValue('sen', 'N');
@@ -436,7 +436,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $row = $form->addRow();
         $column = $row->addColumn();
         $column->addLabel('', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
-        $column->addTextArea('medicalInformation')->setRows(5)->setClass('fullWidth');
+        $column->addTextArea('medicalInformation')->setRows(5)->setClass('w-full');
 
 
     // STUDENT EDUCATION
@@ -716,7 +716,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
-                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('w-full');
 
         }
     }
@@ -734,11 +734,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('scholarshipInterest', __('Interest'))->description(__('Indicate if you are interested in a scholarship.'));
-            $row->addRadio('scholarshipInterest')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+            $row->addYesNo('scholarshipInterest')->required()->checked('N');
 
         $row = $form->addRow();
             $row->addLabel('scholarshipRequired', __('Required?'))->description(__('Is a scholarship required for you to take up a place at the school?'));
-            $row->addRadio('scholarshipRequired')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+            $row->addYesNo('scholarshipRequired')->required()->checked('N');
     }
 
 
@@ -878,7 +878,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     } else {
         $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder();
 
-        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
+        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('');
 
         $row = $form->addRow()->addClass('tellUsMore');
             $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));

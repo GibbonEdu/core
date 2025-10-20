@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_formGroupsNotRegistered_byDate.php");
 
@@ -105,11 +105,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
         //Produce array of attendance data
-
-            $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-            $sql = 'SELECT date, nameShort, gibbonAttendanceLogFormGroup.gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) as timestamp, timestampTaken, gibbonPersonIDTaker FROM gibbonAttendanceLogFormGroup JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonAttendanceLogFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
+        $sql = 'SELECT date, nameShort, gibbonAttendanceLogFormGroup.gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) as timestamp, timestampTaken, gibbonPersonIDTaker FROM gibbonAttendanceLogFormGroup JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonAttendanceLogFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
         $log = [];
         $logAll = [];
         while ($row = $result->fetch()) {
@@ -132,9 +131,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             //Produce array of form groups
             $formGroups = $result->fetchAll();
 
-            echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_formGroupsNotRegistered_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-            echo '</div>';
+            $form = Form::createBlank('buttons');
+            $form->addHeaderAction('print', __('Print'))
+                ->setURL('/report.php')
+                ->addParam('q', '/modules/Attendance/report_formGroupsNotRegistered_byDate_print.php')
+                ->addParam('dateStart', $dateStart)
+                ->addParam('dateEnd', $dateEnd)
+                ->addParam('format', 'print')
+                ->setTarget('_blank')
+                ->directLink();
+            echo $form->getOutput();
 
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
@@ -238,10 +244,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                         echo '<i>Not set</i>';
                     } else {
 
-                            $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
-                            $sqlTutor = 'SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
-                            $resultTutor = $connection2->prepare($sqlTutor);
-                            $resultTutor->execute($dataTutor);
+                        $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
+                        $sqlTutor = "SELECT surname, preferredName FROM gibbonPerson WHERE (gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3) AND gibbonPerson.status='Full'";
+                        $resultTutor = $connection2->prepare($sqlTutor);
+                        $resultTutor->execute($dataTutor);
 
                         while ($rowTutor = $resultTutor->fetch()) {
                             echo Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';

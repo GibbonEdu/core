@@ -134,13 +134,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
     $row = $form->addRow()->addClass('timeOptions');
         $row->addLabel('timeStart', __('Time'));
-        $col = $row->addColumn('timeStart')->addClass('right inline');
+        $col = $row->addColumn('timeStart')->addClass('right inline gap-2');
         $col->addTime('timeStart')
-            ->setClass('coverageField shortWidth')
+            ->setClass('coverageField flex-1')
             ->required();
         $col->addTime('timeEnd')
             ->chainedTo('timeStart')
-            ->setClass('coverageField shortWidth')
+            ->setClass('coverageField flex-1')
             ->required();
 
     $col = $form->addRow()->addClass('schoolClosedOverride hidden')->addColumn();
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
         $row = $form->addRow()->addClass('coverageRequest');
             $row->addLabel('coverageRequired', __('Substitute Required'));
-            $row->addYesNo('coverageRequired')->required()->placeholder();
+            $row->addYesNo('coverageRequired')->required()->placeholder()->selected('N');
 
         $form->addRow()->setClass('hidden coverageRequestForm p-0');
 
@@ -280,7 +280,6 @@ $(document).ready(function() {
                 'timeStart': $('#timeStart').val(),
                 'timeEnd': $('#timeEnd').val(),
             }, function(result) {
-                console.log('loaded');
                 $('input[name="timetableClasses[]"]').trigger('change');
                 $('input[name="requestDates[]"]').trigger('change');
             });

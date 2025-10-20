@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
         $form = Form::create('action', $session->get('absoluteURL')."/index.php?q=/modules/Students/report_familyAddress_byStudent.php");
         $form->setTitle(__('Choose Students'));
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Students'));

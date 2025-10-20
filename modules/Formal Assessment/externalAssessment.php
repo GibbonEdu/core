@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment.php');
 
@@ -83,8 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
     $table->addMetaData('filterOptions', [
-        'all:on'        => __('All Students')
+        'all:on'        => __('All Students'),
     ]);
+
+    $yearGroups = $container->get(YearGroupGateway::class)->selectYearGroups()->fetchKeyPair();
+    foreach ($yearGroups as $gibbonYearGroupID => $name) {
+        $table->addMetaData('filterOptions', [
+            'yearGroup:'.$gibbonYearGroupID => $name,
+        ]);
+    }
 
     if ($criteria->hasFilter('all')) {
         $table->addMetaData('filterOptions', [
@@ -107,14 +115,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 ->fromQuery($pdo, $sql)
                 ->required()
                 ->placeholder()
-                ->setClass('w-32');
+                ->setClass('w-32 mr-2');
             $col->addDate('date')
                 ->placeholder(__('Date'))
-                ->setClass('w-32');
-            $col->addYesNo('copyToGCSECheck')
+                ->setClass('mr-2 w-32');
+            $col->addSelect('copyToGCSECheck')
+                ->fromArray(['Y' => __('Yes'), 'N' => __('No')])
                 ->required()
                 ->placeholder(__('Copy Target Grades?'))
-                ->setClass('w-32 copyToGCSE');
+                ->setClass('mr-2 copyToGCSE');
             $col->addSubmit(__('Go'));
 
         $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');

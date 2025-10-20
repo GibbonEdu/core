@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\View\Component;
+
 /**
  * TextArea
  *
@@ -113,14 +115,9 @@ class TextArea extends Input
         $text = $this->getAttribute('value');
         $this->setAttribute('value', '');
 
-        $output = '<textarea '.$this->getAttributeString().'>';
-        $output .= htmlentities((string) $text, ENT_QUOTES, 'UTF-8');
-        $output .= '</textarea>';
-
-        if ($this->autosize) {
-            $output .= '<script type="text/javascript">autosize($("#'.$this->getID().'"));</script>';
-        }
-
-        return $output;
+        return Component::render(TextArea::class, $this->getAttributeArray() + [
+            'text'     => htmlentities((string) $text, ENT_QUOTES, 'UTF-8'),
+            'autosize' => $this->autosize,
+        ]);
     }
 }

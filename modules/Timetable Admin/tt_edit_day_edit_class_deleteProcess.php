@@ -21,12 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
-$gibbonTTID = $_GET['gibbonTTID'] ?? '';
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$gibbonTTDayRowClassID = $_GET['gibbonTTDayRowClassID'] ?? '';
+$gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
+$gibbonTTID = $_POST['gibbonTTID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonTTColumnRowID = $_POST['gibbonTTColumnRowID'] ?? '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonTTDayRowClassID = $_POST['gibbonTTDayRowClassID'] ?? '';
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '') { echo 'Fatal error loading this page!';
 } else {

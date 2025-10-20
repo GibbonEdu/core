@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Staff/absences_manage.php');
 
@@ -104,6 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     $table->modifyRows(function ($absence, $row) {
         if ($absence['status'] == 'Pending Approval') $row->addClass('warning');
         if ($absence['status'] == 'Declined') $row->addClass('error');
+        if ($absence['status'] == 'Cancelled') $row->addClass('dull');
         return $row;
     });
 
@@ -111,8 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
         $table->addHeaderAction('view', __('View'))
             ->setIcon('planner')
             ->setURL('/modules/Staff/report_absences_summary.php')
-            ->displayLabel()
-            ->append('&nbsp;|&nbsp;');
+            ->displayLabel();
     }
 
     $table->addHeaderAction('add', __('New Absence'))
@@ -152,6 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
         ->format([AbsenceFormats::class, 'typeAndReason']);
 
     $table->addColumn('coverage', __('Coverage'))
+        ->sortable('coverageRequired')
         ->format([AbsenceFormats::class, 'coverageList']);
 
     $table->addColumn('timestampCreator', __('Created'))

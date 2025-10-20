@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // SEARCH FORM
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Staff/coverage_manage.php');
 

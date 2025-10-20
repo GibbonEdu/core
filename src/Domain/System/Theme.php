@@ -58,7 +58,7 @@ class Theme
         $this->scripts->add(
             'theme',
             'themes/'.$this->name.'/js/common.js',
-            ['version' => $this->version]
+            ['version' => $this->version, 'context' => 'foot', 'type' => 'defer']
         );
     }
 

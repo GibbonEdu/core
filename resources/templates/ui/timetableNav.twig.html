@@ -1,0 +1,148 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<form
+    hx-post='{{ apiEndpoint }}' 
+    hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
+    hx-target='closest #timetable' 
+    hx-select='#timetable'
+    hx-swap='outerHTML' 
+    hx-indicator='#indicator'
+    hx-include='[name="ttDateChooser"],[name="ttCalendarRefresh"],[name="gibbonTTID"]''
+    hx-vals='js:{"edit": "{{ edit }}"}'
+>
+    <nav id='#ttNav' cellspacing='0' class='flex justify-between items-end w-full my-2'>
+    <input type='hidden' name='ttDateNav' x-model='ttDate'>
+    <input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>
+    <input type='hidden' name='gibbonTTID' x-model='ttID'>
+
+    <div x-data="{layersOpen: false, timetablesOpen: false, optionsOpen: false}" class=" flex items-start">
+    
+        {% if timetables|length > 1 %}
+        <div class="relative">
+            <button type='button' class='inline-flex items-center align-middle rounded-l h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700' @click="timetablesOpen = !timetablesOpen" :class="{'bg-gray-300 text-gray-700': timetablesOpen}">
+            {{ icon('solid', 'calendar', 'inline-block size-4') }}
+                <span class='hidden md:inline ml-2'>{{ __('Timetables') }}</span>
+            </button>
+
+            <div x-cloak x-transition.opacity x-show="timetablesOpen" @click.outside="timetablesOpen = false" class="absolute min-w-48 -mt-px z-20 flex flex-col gap-2 items-start justify-end rounded border bg-white shadow-lg px-3 py-4">
+                {% for timetableID, timetableName in timetables %}
+                
+                <button type='button' class="ttNav inline-flex items-center gap-2 px-1 text-gray-600 hover:text-gray-800 text-sm" @click="ttID = '{{ timetableID }}'">
+                    <input type="radio" x-model="ttID" value="{{ timetableID }}" class="border {{ color.background }} {{ color.textLight }}" >
+                    <label class="select-none whitespace-nowrap">
+                    {{ timetableName }}
+                    </label>
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="relative">
+            <button type='button' class='inline-flex items-center align-middle  h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 {{ timetables|length > 1 ? '-ml-px' : 'rounded-l' }}' @click="layersOpen = !layersOpen" :class="{'bg-gray-300 text-gray-700': layersOpen}">
+            {{ icon('outline', 'layers', 'inline-block size-4') }}
+                <span class='hidden md:inline ml-2'>{{ __('Layers') }}</span>
+            </button>
+
+            <div x-cloak x-transition.opacity x-show="layersOpen" @click.outside="layersOpen = false" class="absolute min-w-48 -ml-px -mt-px z-20 flex flex-col justify-end rounded border bg-white shadow-lg p-3">
+                {% for layer in layers %}
+                    
+                    {% set color = structure.getColors(layer.getColor) %}
+
+                    <div class="p-1 flex gap-2 items-center text-gray-700 cursor-pointer mr-4" @click="{{ layer.getID }} = !{{ layer.getID }}" hx-get="{{ preferencesUrl }}" hx-target="this" hx-trigger="click consume" hx-swap="none" hx-include="[name='{{ layer.getID }}']" hx-vals='{"scope": "ttLayers", "key": "{{ layer.getID }}", "default": 0}' >
+                        <input type="checkbox" x-model="{{ layer.getID }}" name="{{ layer.getID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" checked="{{ layer.getID }}"  >
+                        <label class="select-none whitespace-nowrap text-sm" :class="{'line-through opacity-50': !{{ layer.getID }} }" for="{{ layer.getID }}">
+                            {{ layer.getName }}<span class="inline-block ml-2 text-gray-400 text-xs">({{ layer.countItems }}) </span>
+                        </label>
+                    </div>
+                    
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="relative">
+            <button type='button' class='inline-flex items-center align-middle h-8 px-2 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 {{ layers|length > 1 ? 'rounded-r -ml-px' : 'rounded' }}' @click="optionsOpen = !optionsOpen" :class="{'bg-gray-300 text-gray-700': optionsOpen}">
+                {{ icon('basic', 'ellipsis-vertical', 'inline-block size-5') }}
+            </button>
+
+            <div x-cloak x-transition.opacity x-show="optionsOpen" @click.outside="optionsOpen = false" class="absolute min-w-48 -ml-px -mt-px z-20 flex flex-col justify-end rounded border bg-white shadow-lg ">
+                
+                <nav class="py-1">
+                    {% if gibbonPersonID or gibbonSpaceID %}
+                    <a href="{{ absoluteURL }}/report.php?q=/modules/Timetable/{{ gibbonPersonID ? 'tt_view.php&gibbonPersonID=' ~ gibbonPersonID : 'tt_space_view.php&gibbonSpaceID=' ~ gibbonSpaceID  }}&ttDate={{  structure.getCurrentDate.format('Y-m-d') }}&format=print&hideHeader=true" target="_blank" class="flex justify-start items-center align-middle select-none whitespace-nowrap text-sm px-3 py-1.5 gap-3 text-gray-700 hover:text-gray-800 hover:bg-gray-200">
+                        {{ icon('solid', 'print', 'inline-block size-5 text-gray-600') }}
+                        {{ __('Print') }}
+                    </a>
+                    
+                    <a href="{{ absoluteURL }}/index.php?q=/modules/Timetable/{{ gibbonPersonID ? 'tt_view.php&gibbonPersonID=' ~ gibbonPersonID : 'tt_space_view.php&gibbonSpaceID=' ~ gibbonSpaceID  }}&ttDate={{ structure.getCurrentDate.format('Y-m-d') }}" target="_blank" class="flex justify-start items-center align-middle select-none whitespace-nowrap text-sm px-3 py-1.5 gap-3 text-gray-700 hover:text-gray-800 hover:bg-gray-200">
+                        {{ icon('solid', 'external-link', 'inline-block size-5 text-gray-600') }}
+                        {{ __('Open') }}
+                    </a>
+
+                    {% endif %}
+                </nav>
+
+                <nav class="py-1 px-2 border-t border-gray-400">
+                    {% set optionID = 'showCurrentTime' %}
+
+                    <div class="p-1 flex gap-3 items-center text-gray-600 hover:text-gray-800 cursor-pointer mr-4" @click="{{ optionID }} = !{{ optionID }}" hx-get="{{ preferencesUrl }}" hx-target="this" hx-trigger="click consume" hx-swap="none" hx-include="[name='{{ optionID }}']" hx-vals='{"scope": "ttOptions", "key": "{{ optionID }}", "default": 0}' >
+                        <input type="checkbox" x-model="{{ optionID }}" name="{{ optionID }}" class="border mx-0.5 p-1 {{ color.background }} {{ color.textLight }}" value="1" >
+                        <label class="select-none whitespace-nowrap text-sm" for="{{ optionID }}">
+                            {{ __('Show Current Time') }}
+                        </label>
+                    </div>
+
+                </nav>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <div class="flex-shrink flex">
+    
+        <button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+        x-on:click='ttDate="{{ structure.getCurrentDate.modify("-1 week")|date('Y-m-d') }}"'>
+        {{ icon('basic', 'chevron-left', 'inline-block size-5') }}
+        <span class='hidden sm:inline sr-only'>{{ __('Last Week') }}</span></button>
+
+        <button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+            x-on:click='ttDate="{{ structure.today.format('Y-m-d') }}"' title="{{ __('This Week') }}">
+            {{ icon('basic', 'home', 'inline-block size-4') }}
+            <span class='hidden sm:inline sr-only'>{{ __('This Week') }}</span>
+        </button>
+
+        <div class='relative hidden xl:inline-flex h-8 px-4 text-xs/6  -ml-px items-center border border-gray-400 text-gray-600 bg-gray-100 font-medium'>
+            <div id="indicator" class="absolute left-0 top-0 w-full h-full htmx-indicator bg-stripe animate-bg-slide opacity-0 transition-opacity duration-300 delay-150"></div>
+
+            {{ formatUsing('dateRangeReadable', structure.getStartDate, structure.getEndDate) }}
+        </div>
+            
+        <button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+            x-on:click='ttDate="{{ structure.getCurrentDate.modify("+1 week")|date('Y-m-d') }}"'><span class='hidden sm:inline mr-1 sr-only'>{{ __('Next Week') }}</span>
+        {{ icon('basic', 'chevron-right', 'inline-block size-5') }}
+        </button>
+
+    </div>
+
+    <div class=" text-right inline-flex justify-end items-center text-xs/6">
+
+        <button type='button' class='ttNav inline-flex items-center rounded-l px-2 h-8 -mr-px text-base border border-gray-400 bg-gray-100 font-medium hover:bg-gray-300 text-gray-600 hover:text-gray-700' x-on:click='ttRefresh=true'>
+            {{ icon('basic', 'refresh', 'size-4') }}
+            </span>
+        </button>
+
+        <input name='ttDateChooser' id='ttDateChooser' aria-label='{{ __('Choose Date') }}' maxlength=10 value='{{ structure.getCurrentDate|date('Y-m-d') }}' type='date' required class='inline-flex border rounded-r bg-gray-100 text-xs/6 h-8 font-sans w-10 md:w-36 px-2 md:px-3'> 
+    </div>
+
+    </nav>
+</form>
+

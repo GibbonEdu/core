@@ -20,23 +20,90 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
+use Gibbon\UI\Components\Alert;
+use Gibbon\View\Component;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
+if (!isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSettings.php')) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
-    $page->breadcrumbs->add(__('Manage Alert Levels'));
+    // Proceed!
+    $page->breadcrumbs->add(__('Student Alert Settings'));
 
-    $data = array();
+    // ALERT TYPES
+    $alertTypeGateway = $container->get(AlertTypeGateway::class);
+    
+    // QUERY
+    $criteria = $alertTypeGateway->newQueryCriteria(true)
+        ->sortBy(['sequenceNumber', 'name'])
+        ->fromArray($_POST);
+
+    $alertTypes = $alertTypeGateway->queryAlertTypes($criteria);
+
+    // DATA TABLE
+    $table = DataTable::create('alertTypesManage');
+    $table->setTitle(__('Alert Types'));
+
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/School Admin/alertType_add.php')
+        ->displayLabel();
+
+    $table->modifyRows(function ($values, $row) {
+        if ($values['active'] != 'Y') $row->addClass('error');
+        return $row;
+    });
+
+    $table->addDraggableColumn('gibbonAlertTypeID', $session->get('absoluteURL').'/modules/School Admin/alertType_editOrderAjax.php');
+
+    $table->addColumn('tag', __('Tag'))
+        ->width('8%')
+        ->format(function($values) {
+            return Component::render(Alert::class,  [
+                'title'   => $values['name'],
+                'color'   => $values['color'] ?? '#939090',
+                'colorBG' => $values['colorBG'] ?? '#dddddd',
+                'large'   => true,
+            ] + $values);
+        });
+    
+    $table->addColumn('name', __('Name'))
+        ->format(function($values) {
+            return Format::bold(__($values['name']));
+        });
+
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+    $table->addColumn('type', __('Type'));
+    $table->addColumn('description', __('Description'));    
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonAlertTypeID')
+        ->format(function ($values, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/School Admin/alertType_edit.php');
+
+            if ($values['type'] != 'Core') {
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/School Admin/alertType_delete.php');
+            }
+        });
+
+    echo $table->render($alertTypes);
+
+    // ALERT LEVELS
+    $data = [];
     $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 
-    //Let's go!
+    // Let's go!
     $form = Form::create('alertLevelSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/alertLevelSettingsProcess.php' );
-
     $form->addHiddenValue('address', $session->get('address'));
+    
+    $form->setTitle(__('Alert Levels'));
 
     $count = 0;
     while ($rowSQL = $result->fetch()) {
@@ -92,5 +159,4 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
 		$row->addSubmit();
 
 	echo $form->getOutput();
-
 }

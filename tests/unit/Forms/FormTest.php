@@ -13,8 +13,12 @@ namespace Gibbon\Forms;
 
 use PHPUnit\Framework\TestCase;
 use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Session\TokenHandler;
 use Gibbon\Services\ViewServiceProvider;
 use League\Container\Container;
+use Gibbon\Forms\View\FormView;
+use Gibbon\Contracts\Services\Session as SessionInterface;
+use Gibbon\Session\Session;
 
 /**
  * @covers Form
@@ -49,9 +53,21 @@ class FormTest extends TestCase
         $container->share('twig', function () {
             $absolutePath = realpath(__DIR__ . '/../../../');
             $loader = new \Twig\Loader\FilesystemLoader($absolutePath.'/resources/templates');
-            return new \Twig\Environment($loader);
+
+            $twig = new \Twig\Environment($loader);
+            $twig->addFunction(new \Twig\TwigFunction('__', function ($string, $domain = null) {
+                return $string;
+            }));
+
+            return $twig;
         });
 
+        $container->share(SessionInterface::class, function () {
+            return new Session('test-guid');
+        });
+        $container->share(TokenHandler::class, function () use ($container) {
+            return new TokenHandler($container->get(SessionInterface::class));
+        });
         $service = new ViewServiceProvider();
         $service->setContainer($container);
         $service->register();
@@ -137,7 +153,7 @@ class FormTest extends TestCase
             ->setID('testID')
             ->setAction('testAction');
 
-        $newRenderer = FormRenderer::create();
+        $newRenderer = $this->createMock(FormView::class);
         $form->setRenderer($newRenderer);
 
         $this->assertSame($newRenderer, $form->getRenderer());

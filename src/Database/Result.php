@@ -38,7 +38,7 @@ class Result extends PDOStatement implements ResultContract
      */
     public function isEmpty()
     {
-        return $this->rowCount() == 0;
+        return !isset($this->queryString) || $this->rowCount() == 0;
     }
 
     /**
@@ -48,7 +48,7 @@ class Result extends PDOStatement implements ResultContract
      */
     public function isNotEmpty()
     {
-        return $this->rowCount() > 0;
+        return isset($this->queryString) && $this->rowCount() > 0;
     }
 
     /**

@@ -248,18 +248,21 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
         }
     }
 
-    $form = Form::create('classSelect', $session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::createBlank('classSelect', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
     $form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_'.$mode.'.php');
     $form->setTitle(__('Select Class'));
-    $form->setClass('smallIntBorder w-full');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('flex');
         $row->addSelect('gibbonCourseClassID')
             ->fromArray($classes)
             ->selected($gibbonCourseClassID)
             ->placeholder()
+            ->groupAlign('left')
             ->setClass('float-none w-full');
-        $row->addSubmit(__('Go'));
+        $row->addSubmit(__('Go'))
+            ->setType('quickSubmit')
+            ->groupAlign('right')
+            ->setClass('flex');
 
     $output .= $form->getOutput();
 

@@ -58,6 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
+    $setting = $settingGateway->getSettingByScope('Behaviour', 'observationDescriptors', true);
+    $row = $form->addRow()->addClass('descriptors');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
+
     $row = $form->addRow()->addHeading('Levels', __('Levels'));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'enableLevels', true);

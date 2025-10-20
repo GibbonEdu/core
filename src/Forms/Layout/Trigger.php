@@ -57,7 +57,7 @@ class Trigger implements OutputableInterface
     public function onSelect($name)
     {
         $this->elementType = 'select';
-        $this->sourceSelector = 'select[name="'.$name.'"]';
+        $this->sourceSelector = 'select[name="'.$name.'"],input[type="hidden"][name="'.$name.'"]';
         $this->sourceValueSelector = $this->sourceSelector;
 
         return $this;
@@ -85,8 +85,22 @@ class Trigger implements OutputableInterface
     public function onRadio($name)
     {
         $this->elementType = 'radio';
-        $this->sourceSelector = 'input[type="radio"][name="'.$name.'"]';
+        $this->sourceSelector = 'input[type="hidden"][name="'.$name.'"],input[type="radio"][name="'.$name.'"]';
         $this->sourceValueSelector = $this->sourceSelector.':checked';
+
+        return $this;
+    }
+
+    /**
+     * Link this trigger to a text input by name.
+     * @param   string  $name
+     * @return  self
+     */
+    public function onClick($name)
+    {
+        $this->elementType = 'text';
+        $this->sourceSelector = 'input[name="'.$name.'"]';
+        $this->sourceValueSelector = $this->sourceSelector;
 
         return $this;
     }
@@ -155,7 +169,7 @@ class Trigger implements OutputableInterface
         $output .= "$(document).on('change showhide', '{$this->sourceSelector}', function(event){ \n";
             $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && {$comparisons}) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
-                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput')) { $(this).prop('disabled', element.disabledState !== undefined ? element.disabledState : false); } });";
+                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput, [type=\"hidden\"]')) { $(this).prop('disabled', element.disabledState !== undefined ? element.disabledState : false); } });";
             $output .= "} else { \n";
                 $output .= "$('{$this->targetSelector}').hide(); \n";
                 $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";

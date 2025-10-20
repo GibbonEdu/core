@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Students\StudentGateway;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -43,28 +45,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             //Confirm access to this student
-            try {
-                if ($highestAction=="View Invoices_myChildren") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                } else if ($highestAction=="View Invoices_mine") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID);
-                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPersonID=:gibbonPersonID" ;
-                }
-                $resultChild = $connection2->prepare($sqlChild);
-                $resultChild->execute($dataChild);
-            } catch (PDOException $e) {
+
+            if ($highestAction=="View Invoices_myChildren") {
+                $student = $container->get(StudentGateway::class)->getStudentByFamilyAdult($gibbonPersonID, $session->get('gibbonPersonID'));
+            } else if ($highestAction=="View Invoices_mine") {
+                $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetch();
             }
-            if ($resultChild->rowCount() < 1) {
+
+
+            if (empty($student)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                $rowChild = $resultChild->fetch();
 
-
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = "SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID AND (gibbonFinanceInvoice.status='Issued' OR gibbonFinanceInvoice.status='Paid' OR gibbonFinanceInvoice.status='Paid - Partial')";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'gibbonPersonID' => $gibbonPersonID);
+                $sql = "SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID AND (gibbonFinanceInvoice.status='Issued' OR gibbonFinanceInvoice.status='Paid' OR gibbonFinanceInvoice.status='Paid - Partial')";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The specified record cannot be found.'));

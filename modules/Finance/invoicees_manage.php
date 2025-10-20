@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setTitle(__('Filters'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/invoicees_manage.php");

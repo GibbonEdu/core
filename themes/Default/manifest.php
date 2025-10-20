@@ -32,11 +32,14 @@ $responsive = 'Y';
 // Optionally define a set of theme colours that this theme supports.
 $themeColours = [
     'purple' => __('Purple'),
-    'blue'   => __('Blue'),
     'indigo' => __('Indigo'),
+    'blue'   => __('Blue'),
+    'sky'    => __('Sky'),
+    'teal'   => __('Teal'),
     'green'  => __('Green'),
     'yellow' => __('Yellow'),
     'orange' => __('Orange'),
     'red'    => __('Red'),
     'pink'   => __('Pink'),
+    'fuchsia' => __('Violet'),
 ];

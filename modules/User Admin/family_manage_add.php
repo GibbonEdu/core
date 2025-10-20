@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\CustomFieldHandler;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_add.php') == false) {
     // Access denied
@@ -82,10 +83,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
         $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
         $row->addSelectCountry('homeAddressCountry');
 
+    // CUSTOM FIELDS
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Family', [], '');
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
 
     echo $form->getOutput();
 }
-?>

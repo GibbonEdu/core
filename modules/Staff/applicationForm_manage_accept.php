@@ -85,6 +85,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
+                $col->addCheckbox('createStaffAccount')
+                    ->description(__('Create New Staff Account'))
+                    ->inline(true)
+                    ->checked('on')
+                    ->setClass('');
+
                 $informApplicant = ($settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationDefault') == 'Y');
                 $col->addCheckbox('informApplicant')
                     ->description(__('Automatically inform <u>applicant</u> of their Gibbon login details by email?'))
@@ -92,18 +98,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     ->checked($informApplicant)
                     ->setClass('');
 
-                $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
+                $col->addContent(__('The system will perform following action:'))->wrap('<i><u>', '</u></i>');
+                $list = $col->addContent();
+                $list->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
+                $list->wrap('<ol>', '</ol>');
+
+                $col->addContent(__('If Create New Staff Account is checked, the system will also perform the following actions'))->wrap('<i><u>', '</u></i>');
                 $list = $col->addContent();
 
                 if (empty($values['gibbonPersonID'])) {
                     $list->append('<li>'.__('Create a Gibbon user account for the applicant.').'</li>')
-                         ->append('<li>'.__('Register the user as a member of staff.').'</li>')
-                         ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
+                         ->append('<li>'.__('Register the user as a member of staff.').'</li>');
                 } else {
-                    $list->append('<li>'.__('Register the user as a member of staff, if not already done.').'</li>')
-                         ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
+                    $list->append('<li>'.__('Register the user as a member of staff, if not already done.').'</li>');
                 }
-
                 $list->wrap('<ol>', '</ol>');
 
                 $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
@@ -121,250 +129,255 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo __('Step')." $step";
                 echo '</h3>';
 
-                if ($values['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM
-                    $informApplicant = 'N';
-                    if (isset($_POST['informApplicant'])) {
-                        if ($_POST['informApplicant'] == 'on') {
-                            $informApplicant = 'Y';
-                            $informApplicantArray = array();
-                        }
-                    }
 
-                    //DETERMINE ROLE
-                    $gibbonRoleID = ($values['type'] == 'Teaching') ? '002' : '006';
+                $createStaffAccount = !empty($_POST['createStaffAccount']);
 
-                    //CREATE APPLICANT
-                    $failapplicant = true;
-                    // Generate a unique username for the staff member
-                    $generator = new UsernameGenerator($pdo);
-                    $generator->addToken('preferredName', $values['preferredName']);
-                    $generator->addToken('firstName', $values['firstName']);
-                    $generator->addToken('surname', $values['surname']);
-
-                    $username = $generator->generateByRole($gibbonRoleID);
-
-                    // Generate a random password from site's password policy.
-                    /** @var PasswordPolicy */
-                    $p = $container->get(PasswordPolicy::class);
-                    $password = $p->generate();
-                    $salt = getSalt();
-                    $passwordStrong = hash('sha256', $salt.$password);
-
-                    $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
-
-
-                    //Set default email address for applicant
-                    $email = $values['email'];
-                    $emailAlternate = '';
-                    $applicantDefaultEmail = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultEmail');
-                    if ($applicantDefaultEmail != '') {
-                        $emailAlternate = $email;
-                        $email = str_replace('[username]', $username, $applicantDefaultEmail);
-                    }
-
-                    //Set default website address for applicant
-                    $website = '';
-                    $applicantDefaultWebsite = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultWebsite');
-                    if ($applicantDefaultWebsite != '') {
-                        $website = str_replace('[username]', $username, $applicantDefaultWebsite);
-                    }
-
-                    //Email website and email address to admin for creation
-                    if ($applicantDefaultEmail != '' or $applicantDefaultWebsite != '') {
-                        echo '<h4>';
-                        echo __('New Staff Member Email & Website');
-                        echo '</h4>';
-                        $to = $session->get('organisationHREmail');
-                        $subject = sprintf(__('Create applicant Email/Websites for %1$s at %2$s'), $session->get('systemName'), $session->get('organisationNameShort'));
-                        $body = sprintf(__('Please create the following for new staff member %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
-                        if ($applicantDefaultEmail != '') {
-                            $body .= __('Email').': '.$email."<br/>";
-                        }
-                        if ($applicantDefaultWebsite != '') {
-                            $body .= __('Website').': '.$website."<br/>";
-                        }
-                        if ($values['dateStart'] != '') {
-                            $body .= __('Start Date').': '.Format::date($values['dateStart'])."<br/>";
-                        }
-                        $body .= __('Job Type').': '.__($values['type'])."<br/>";
-                        $body .= __('Job Title').': '.__($values['jobTitle'])."<br/>";
-
-                        $mail = $container->get(Mailer::class);
-                        $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
-                        $mail->AddAddress($to);
-                        $mail->Subject = $subject;
-                        $mail->renderBody('mail/email.twig.html', [
-                            'title'  => $subject,
-                            'body'   => $body,
-                        ]);
-
-                        if ($mail->Send()) {
-                            echo "<div class='success'>";
-                            echo sprintf(__('A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $session->get('organisationHRName'));
-                            echo '</div>';
-                        } else {
-                            echo "<div class='error'>";
-                            echo sprintf(__('A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $session->get('organisationHRName'));
-                            echo '</div>';
-                        }
-                    }
-
-                    if ($continueLoop == false) {
-                        $insertOK = true;
-                        try {
-                            $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'dateStart' => $values['dateStart'], 'fields' => $values['fields'], 'gibbonRoleID' => $gibbonRoleID);
-                            $sql = "INSERT INTO gibbonPerson SET username=:username, passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary=:gibbonRoleID, gibbonRoleIDAll=:gibbonRoleID, status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth,  email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, dateStart=:dateStart, fields=:fields";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $insertOK = false;
-                        }
-                        if ($insertOK == true) {
-                            $gibbonPersonID = $connection2->lastInsertID();
-
-                            $failapplicant = false;
-
-                            //Populate informApplicant array
-                            if ($informApplicant == 'Y') {
-                                $informApplicantArray[0]['email'] = $values['email'];
-                                $informApplicantArray[0]['surname'] = $values['surname'];
-                                $informApplicantArray[0]['preferredName'] = $values['preferredName'];
-                                $informApplicantArray[0]['username'] = $username;
-                                $informApplicantArray[0]['password'] = $password;
+                if ($createStaffAccount) {
+                    if ($values['gibbonPersonID'] == '') { // USER IS NEW TO THE SYSTEM
+                        $informApplicant = 'N';
+                        if (isset($_POST['informApplicant'])) {
+                            if ($_POST['informApplicant'] == 'on') {
+                                $informApplicant = 'Y';
+                                $informApplicantArray = array();
                             }
-
-                            // Update personal document ownership
-                            $container->get(PersonalDocumentGateway::class)->updatePersonalDocumentOwnership('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, 'gibbonPerson', $gibbonPersonID);
-                        }
-                    }
-
-                    if ($failapplicant == true) {
-                        echo "<div class='error'>";
-                        echo __('Applicant could not be created!');
-                        echo '</div>';
-                    } else {
-                        echo '<h4>';
-                        echo __('Applicant Details');
-                        echo '</h4>';
-                        echo '<ul>';
-                        echo "<li><b>gibbonPersonID</b>: $gibbonPersonID</li>";
-                        echo '<li><b>'.__('Name').'</b>: '.Format::name('', $values['preferredName'], $values['surname'], 'Student').'</li>';
-                        echo '<li><b>'.__('Email').'</b>: '.$email.'</li>';
-                        echo '<li><b>'.__('Email Alternate').'</b>: '.$emailAlternate.'</li>';
-                        echo '<li><b>'.__('Username')."</b>: $username</li>";
-                        echo '<li><b>'.__('Password')."</b>: $password</li>";
-                        echo '</ul>';
-
-                        //Enrol applicant
-                        $enrolmentOK = true;
-                        try {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $values['type'], 'jobTitle' => $values['jobTitle'], 'fields' => $values['staffFields']);
-                            $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, fields=:fields';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $enrolmentOK = false;
                         }
 
-                        //Report back
-                        if ($enrolmentOK == false) {
-                            echo "<div class='warning'>";
-                            echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
+                        //DETERMINE ROLE
+                        $gibbonRoleID = ($values['type'] == 'Teaching') ? '002' : '006';
+
+                        //CREATE APPLICANT
+                        $failapplicant = true;
+                        // Generate a unique username for the staff member
+                        $generator = new UsernameGenerator($pdo);
+                        $generator->addToken('preferredName', $values['preferredName']);
+                        $generator->addToken('firstName', $values['firstName']);
+                        $generator->addToken('surname', $values['surname']);
+
+                        $username = $generator->generateByRole($gibbonRoleID);
+
+                        // Generate a random password from site's password policy.
+                        /** @var PasswordPolicy */
+                        $p = $container->get(PasswordPolicy::class);
+                        $password = $p->generate();
+                        $salt = getSalt();
+                        $passwordStrong = hash('sha256', $salt.$password);
+
+                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
+
+
+                        //Set default email address for applicant
+                        $email = $values['email'];
+                        $emailAlternate = '';
+                        $applicantDefaultEmail = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultEmail');
+                        if ($applicantDefaultEmail != '') {
+                            $emailAlternate = $email;
+                            $email = str_replace('[username]', $username, $applicantDefaultEmail);
+                        }
+
+                        //Set default website address for applicant
+                        $website = '';
+                        $applicantDefaultWebsite = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultWebsite');
+                        if ($applicantDefaultWebsite != '') {
+                            $website = str_replace('[username]', $username, $applicantDefaultWebsite);
+                        }
+
+                        //Email website and email address to admin for creation
+                        if ($applicantDefaultEmail != '' or $applicantDefaultWebsite != '') {
+                            echo '<h4>';
+                            echo __('New Staff Member Email & Website');
+                            echo '</h4>';
+                            $to = $session->get('organisationHREmail');
+                            $subject = sprintf(__('Create applicant Email/Websites for %1$s at %2$s'), $session->get('systemName'), $session->get('organisationNameShort'));
+                            $body = sprintf(__('Please create the following for new staff member %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
+                            if ($applicantDefaultEmail != '') {
+                                $body .= __('Email').': '.$email."<br/>";
+                            }
+                            if ($applicantDefaultWebsite != '') {
+                                $body .= __('Website').': '.$website."<br/>";
+                            }
+                            if ($values['dateStart'] != '') {
+                                $body .= __('Start Date').': '.Format::date($values['dateStart'])."<br/>";
+                            }
+                            $body .= __('Job Type').': '.__($values['type'])."<br/>";
+                            $body .= __('Job Title').': '.__($values['jobTitle'])."<br/>";
+
+                            $mail = $container->get(Mailer::class);
+                            $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
+                            $mail->AddAddress($to);
+                            $mail->Subject = $subject;
+                            $mail->renderBody('mail/email.twig.html', [
+                                'title'  => $subject,
+                                'body'   => $body,
+                            ]);
+
+                            if ($mail->Send()) {
+                                echo "<div class='success'>";
+                                echo sprintf(__('A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $session->get('organisationHRName'));
+                                echo '</div>';
+                            } else {
+                                echo "<div class='error'>";
+                                echo sprintf(__('A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $session->get('organisationHRName'));
+                                echo '</div>';
+                            }
+                        }
+
+                        if ($continueLoop == false) {
+                            $insertOK = true;
+                            try {
+                                $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'dateStart' => $values['dateStart'], 'fields' => $values['fields'], 'gibbonRoleID' => $gibbonRoleID);
+                                $sql = "INSERT INTO gibbonPerson SET username=:username, passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary=:gibbonRoleID, gibbonRoleIDAll=:gibbonRoleID, status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth,  email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, dateStart=:dateStart, fields=:fields";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $insertOK = false;
+                            }
+                            if ($insertOK == true) {
+                                $gibbonPersonID = $connection2->lastInsertID();
+
+                                $failapplicant = false;
+
+                                //Populate informApplicant array
+                                if ($informApplicant == 'Y') {
+                                    $informApplicantArray[0]['email'] = $values['email'];
+                                    $informApplicantArray[0]['surname'] = $values['surname'];
+                                    $informApplicantArray[0]['preferredName'] = $values['preferredName'];
+                                    $informApplicantArray[0]['username'] = $username;
+                                    $informApplicantArray[0]['password'] = $password;
+                                }
+
+                                // Update personal document ownership
+                                $container->get(PersonalDocumentGateway::class)->updatePersonalDocumentOwnership('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, 'gibbonPerson', $gibbonPersonID);
+                            }
+                        }
+
+                        if ($failapplicant == true) {
+                            echo "<div class='error'>";
+                            echo __('Applicant could not be created!');
                             echo '</div>';
                         } else {
                             echo '<h4>';
-                            echo 'Applicant Enrolment';
+                            echo __('Applicant Details');
                             echo '</h4>';
                             echo '<ul>';
-                            echo '<li>'.__('The applicant has successfully been added to staff listing.').'</li>';
+                            echo "<li><b>gibbonPersonID</b>: $gibbonPersonID</li>";
+                            echo '<li><b>'.__('Name').'</b>: '.Format::name('', $values['preferredName'], $values['surname'], 'Student').'</li>';
+                            echo '<li><b>'.__('Email').'</b>: '.$email.'</li>';
+                            echo '<li><b>'.__('Email Alternate').'</b>: '.$emailAlternate.'</li>';
+                            echo '<li><b>'.__('Username')."</b>: $username</li>";
+                            echo '<li><b>'.__('Password')."</b>: $password</li>";
                             echo '</ul>';
-                        }
 
-                        //SEND APPLICANT EMAIL
-                        if ($informApplicant == 'Y') {
-                            echo '<h4>';
-                            echo __('New Staff Member Welcome Email');
-                            echo '</h4>';
-                            $notificationApplicantMessage = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationMessage');
-                            foreach ($informApplicantArray as $informApplicantEntry) {
-                                if ($informApplicantEntry['email'] != '' and $informApplicantEntry['surname'] != '' and $informApplicantEntry['preferredName'] != '' and $informApplicantEntry['username'] != '' and $informApplicantEntry['password']) {
-                                    $to = $informApplicantEntry['email'];
-                                    $subject = sprintf(__('Welcome to %1$s at %2$s'), $session->get('systemName'), $session->get('organisationNameShort'));
-                                    if ($notificationApplicantMessage != '') {
-                                        $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.' '.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $session->get('organisationHRName'), $session->get('systemName'));
-                                    } else {
-                                        $body = 'Dear '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$session->get('systemName').', '.$session->get('organisationNameShort')."'s system for managing school information. You can access the system by going to ".$session->get('absoluteURL').' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$session->get('organisationHRName').",<br/><br/>".$session->get('systemName').' Administrator';
-                                    }
+                            //Enrol applicant
+                            $enrolmentOK = true;
+                            try {
+                                $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $values['type'], 'jobTitle' => $values['jobTitle'], 'fields' => $values['staffFields']);
+                                $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, fields=:fields';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $enrolmentOK = false;
+                            }
 
-                                    $mail = $container->get(Mailer::class);
-                                    $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
-                                    $mail->AddAddress($to);
-                                    $mail->Subject = $subject;
-                                    $mail->renderBody('mail/email.twig.html', [
-                                        'title'  => $subject,
-                                        'body'   => $body,
-                                    ]);
+                            //Report back
+                            if ($enrolmentOK == false) {
+                                echo "<div class='warning'>";
+                                echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
+                                echo '</div>';
+                            } else {
+                                echo '<h4>';
+                                echo 'Applicant Enrolment';
+                                echo '</h4>';
+                                echo '<ul>';
+                                echo '<li>'.__('The applicant has successfully been added to staff listing.').'</li>';
+                                echo '</ul>';
+                            }
 
-                                    if ($mail->Send()) {
-                                        echo "<div class='success'>";
-                                        echo __('A welcome email was successfully sent to').' '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
-                                        echo '</div>';
-                                    } else {
-                                        echo "<div class='error'>";
-                                        echo __('A welcome email could not be sent to').' '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
-                                        echo '</div>';
+                            //SEND APPLICANT EMAIL
+                            if ($informApplicant == 'Y') {
+                                echo '<h4>';
+                                echo __('New Staff Member Welcome Email');
+                                echo '</h4>';
+                                $notificationApplicantMessage = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationMessage');
+                                foreach ($informApplicantArray as $informApplicantEntry) {
+                                    if ($informApplicantEntry['email'] != '' and $informApplicantEntry['surname'] != '' and $informApplicantEntry['preferredName'] != '' and $informApplicantEntry['username'] != '' and $informApplicantEntry['password']) {
+                                        $to = $informApplicantEntry['email'];
+                                        $subject = sprintf(__('Welcome to %1$s at %2$s'), $session->get('systemName'), $session->get('organisationNameShort'));
+                                        if ($notificationApplicantMessage != '') {
+                                            $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.' '.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $session->get('organisationHRName'), $session->get('systemName'));
+                                        } else {
+                                            $body = 'Dear '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$session->get('systemName').', '.$session->get('organisationNameShort')."'s system for managing school information. You can access the system by going to ".$session->get('absoluteURL').' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$session->get('organisationHRName').",<br/><br/>".$session->get('systemName').' Administrator';
+                                        }
+
+                                        $mail = $container->get(Mailer::class);
+                                        $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
+                                        $mail->AddAddress($to);
+                                        $mail->Subject = $subject;
+                                        $mail->renderBody('mail/email.twig.html', [
+                                            'title'  => $subject,
+                                            'body'   => $body,
+                                        ]);
+
+                                        if ($mail->Send()) {
+                                            echo "<div class='success'>";
+                                            echo __('A welcome email was successfully sent to').' '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
+                                            echo '</div>';
+                                        } else {
+                                            echo "<div class='error'>";
+                                            echo __('A welcome email could not be sent to').' '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
+                                            echo '</div>';
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                } else { //IF NOT IN THE SYSTEM AS STAFF, THEN ADD THEM
-                    echo '<h4>';
-                    echo 'Staff Listing';
-                    echo '</h4>';
+                    } else { //IF NOT IN THE SYSTEM AS STAFF, THEN ADD THEM
+                        echo '<h4>';
+                        echo 'Staff Listing';
+                        echo '</h4>';
 
-                    $alreadyEnrolled = false;
-                    $enrolmentCheckFail = false;
-                    try {
-                        $data = array('gibbonPersonID' => $values['gibbonPersonID']);
-                        $sql = 'SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $enrolmentCheckFail = true;
-                    }
-                    if ($result->rowCount() == 1) {
-                        $alreadyEnrolled = true;
-                    }
-                    if ($enrolmentCheckFail) { //Enrolment check did not work, so report error
-                        echo "<div class='warning'>";
-                        echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
-                        echo '</div>';
-                    } elseif ($alreadyEnrolled) { //User is already enrolled, so display message
-                        echo "<div class='warning'>";
-                        echo __('Applicant already exists in staff listing.');
-                        echo '</div>';
-                    } else { //User is not yet enrolled, so try and enrol them.
-                        $enrolmentOK = true;
-
+                        $alreadyEnrolled = false;
+                        $enrolmentCheckFail = false;
                         try {
-                            $data = array('gibbonPersonID' => $values['gibbonPersonID'], 'type' => $values['type'], 'jobTitle' => $values['jobTitle'], 'fields' => $values['staffFields']);
-                            $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, fields=:fields';
+                            $data = array('gibbonPersonID' => $values['gibbonPersonID']);
+                            $sql = 'SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $enrolmentOK = false;
+                            $enrolmentCheckFail = true;
                         }
-
-                        //Report back
-                        if ($enrolmentOK == false) {
+                        if ($result->rowCount() == 1) {
+                            $alreadyEnrolled = true;
+                        }
+                        if ($enrolmentCheckFail) { //Enrolment check did not work, so report error
                             echo "<div class='warning'>";
                             echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
                             echo '</div>';
-                        } else {
-                            echo '<ul>';
-                            echo '<li>'.__('The applicant has successfully been added to staff listing.').'</li>';
-                            echo '</ul>';
+                        } elseif ($alreadyEnrolled) { //User is already enrolled, so display message
+                            echo "<div class='warning'>";
+                            echo __('Applicant already exists in staff listing.');
+                            echo '</div>';
+                        } else { //User is not yet enrolled, so try and enrol them.
+                            $enrolmentOK = true;
+
+                            try {
+                                $data = array('gibbonPersonID' => $values['gibbonPersonID'], 'type' => $values['type'], 'jobTitle' => $values['jobTitle'], 'fields' => $values['staffFields']);
+                                $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, fields=:fields';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $enrolmentOK = false;
+                            }
+
+                            //Report back
+                            if ($enrolmentOK == false) {
+                                echo "<div class='warning'>";
+                                echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
+                                echo '</div>';
+                            } else {
+                                echo '<ul>';
+                                echo '<li>'.__('The applicant has successfully been added to staff listing.').'</li>';
+                                echo '</ul>';
+                            }
                         }
                     }
                 }

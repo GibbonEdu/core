@@ -19,10 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Data\Validator;
+use Gibbon\Domain\Finance\FinanceExpenseApproverGateway;
 
 require_once '../../gibbon.php';
 
@@ -65,10 +66,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
             } else {
                 //Check if there are approvers
                 try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(FinanceExpenseApproverGateway::class)->selectExpenseApprovers();
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");

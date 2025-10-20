@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
             echo '</h2>';
 
             $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
 
             $form->addHiddenValue('q', '/modules/'.$session->get('module').'/iep_view_myChildren.php');
             $form->addHiddenValue('address', $session->get('address'));
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                     echo '</h3>';
 
                     $row = $result->fetch(); ?>
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
+					<table class='smallIntBorder w-full' cellspacing='0'>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'>
 								<span style='font-weight: bold; font-size: 135%'><?php echo __('Targets') ?></span><br/>

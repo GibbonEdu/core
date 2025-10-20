@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
     // FORM
     $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/Reports/archive_byReport_view.php');
@@ -153,7 +153,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
 
                 return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
                     'progressName'   => __('Read'),
-                    'progressColour' => 'green',
+                    'progressColour' => 'bg-green-300',
+                    'progressBorder' => 'border-green-600',
                     'progressCount' => $report['readCount'],
                     'totalCount'    => $report['count'],
                     'width'         => 'w-48',
@@ -186,7 +187,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
 
                 return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
                     'progressName'   => __('Read'),
-                    'progressColour' => 'green',
+                    'progressColour' => 'bg-green-300',
+                    'progressBorder' => 'border-green-600',
                     'progressCount'  => $report['readCount'],
                     'totalCount'     => $report['count'],
                     'width'          => 'w-48',

@@ -128,6 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
             } else {
                 //Let's go!
                 $values = $result->fetch();
+                $fields = !empty($values['fields'])? json_decode($values['fields'], true) : [];
 
                 if ($viewBy == 'date') {
                     $extra = Format::date($date);
@@ -156,6 +157,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $gibbonUnitClassID = $rowUnitClass['gibbonUnitClassID'];
                 }
 
+                $dataMarkbook = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                $sqlMarkbook = 'SELECT mb.gibbonMarkbookColumnID FROM gibbonMarkbookColumn AS mb WHERE :gibbonPlannerEntryID=mb.gibbonPlannerEntryID';
+                $gibbonMarkbookColumnID = $pdo->selectOne($sqlMarkbook, $dataMarkbook);
+
                 $returns = array();
                 $returns['success1'] = __('Your request was completed successfully.').__('You can now edit more details of your newly duplicated entry.');
                 $page->return->addReturns($returns);
@@ -165,6 +170,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $form->addHiddenValue('address', $session->get('address'));
                 
+                if (!empty($gibbonMarkbookColumnID)) {
+                    $form->addHeaderAction('markbook', __('Linked Markbook'))
+                        ->setURL('/modules/Markbook/markbook_edit_data.php')
+                        ->addParam('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
+                        ->addParams($params)
+                        ->displayLabel();
+                }
+                
                 $params["gibbonPlannerEntryID"] = $gibbonPlannerEntryID;
                 $form->addHeaderAction('view', __('View'))
                     ->setURL('/modules/Planner/planner_view_full.php')
@@ -172,6 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     ->setIcon('plus')
                     ->displayLabel();
 
+                
                 //BASIC INFORMATION
                 $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
@@ -258,10 +272,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 //HOMEWORK
                 $form->addRow()->addHeading('Homework', __($homeworkNameSingular));
 
-                $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
+                $form->toggleVisibilityByClass('homework')->onClick('homework')->when('Y');
                 $row = $form->addRow();
                     $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
-                    $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                    $row->addYesNo('homework')->required()->checked('N');
 
                 if (!empty($values['homeworkDueDateTime'])) {
                     $values['homeworkDueDate'] = substr(Format::date($values['homeworkDueDateTime'], 'Y-m-d H:i:s'), 0, 10);
@@ -283,10 +297,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
                     $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
 
-                $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
+                $form->toggleVisibilityByClass('homeworkSubmission')->onClick('homeworkSubmission')->when('Y');
                 $row = $form->addRow()->addClass('homework');
                     $row->addLabel('homeworkSubmission', __('Online Submission?'));
-                    $row->addRadio('homeworkSubmission')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                    $row->addYesNo('homeworkSubmission')->required()->checked('N');
 
                 $values['homeworkSubmissionDateOpen'] = (!empty($values['homeworkSubmissionDateOpen'])) ? $values['homeworkSubmissionDateOpen'] : date('Y-m-d') ;
                 $row = $form->addRow()->setClass('homeworkSubmission');
@@ -306,10 +320,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
                 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
-                    $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
+                    $form->toggleVisibilityByClass('homeworkCrowdAssess')->onClick('homeworkCrowdAssess')->when('Y');
                     $row = $form->addRow()->addClass('homeworkSubmission');
                         $row->addLabel('homeworkCrowdAssess', __('Crowd Assessment?'));
-                        $row->addRadio('homeworkCrowdAssess')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->inline(true);
+                        $row->addYesNo('homeworkCrowdAssess')->required();
 
                     $row = $form->addRow()->addClass('homeworkCrowdAssess');
                         $row->addLabel('homeworkCrowdAssessControl', __('Access Controls?'))->description(__('Decide who can see this homework.'));
@@ -327,17 +341,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 // MARKBOOK
                 $form->addRow()->addHeading(__('Markbook'));
                 // Check database for a linked markbook column
-                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                $sql = 'SELECT mb.gibbonMarkbookColumnID FROM gibbonMarkbookColumn AS mb WHERE :gibbonPlannerEntryID=mb.gibbonPlannerEntryID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-                if ($result->rowCount() != 0) {
+                
+                if (!empty($gibbonMarkbookColumnID)) {
                     $row = $form->addRow();
                     $row->addLabel('markbook', __('Markbook Column Already Created'))->description(__('A Markbook column has already been created for this assignment.'));
                 } else {
                     $row = $form->addRow();
                     $row->addLabel('markbook', __('Create Markbook Column?'))->description(__('Linked to this lesson by default.'));
-                    $row->addRadio('markbook')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                    $row->addYesNo('markbook')->required()->checked('N');
                 }
 
                 // OUTCOMES
@@ -378,6 +389,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $row = $form->addRow();
                     $row->addLabel('viewableParents', __('Viewable to Parents'));
                     $row->addYesNo('viewableParents')->required();
+
+                $row = $form->addRow()->addClass('advanced');
+                    $row->addLabel('videoLink', __('Online Lesson'))->description(__('Displays a video link for online lessons'));
+                    $row->addURL('videoLink')->setValue($fields['videoLink'] ?? '');
 
                 //Guests
                 $form->addRow()->addHeading('Guests', __('Current Guests'));
@@ -426,7 +441,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addSelect('role')->fromArray($roles);
 
                 $row = $form->addRow();
-                    $row->addFooter();
                     $row->addCheckbox('notify')->description(__('Notify all class participants'));
                     $row->addSubmit();
 

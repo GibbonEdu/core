@@ -23,6 +23,8 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\UI\Timetable\Timetable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,7 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $search = $_GET['search'] ?? '';
         $allUsers = $_GET['allUsers'] ?? '';
-        $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+        $gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
+        $format = $_GET['format'] ?? '';
 
 
         $canViewAllTimetables = $highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears';
@@ -94,72 +97,71 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             // DISPLAY PERSON DATA
             $table = DataTable::createDetails('personal');
 
-            if ($search != '') {
-                $params = [
-                    "search" => $search,
-                    "allUsers" => $allUsers,
-                ];
-                $table->addHeaderAction('back', __('Back to Search Results'))
-                    ->setURL('/modules/Timetable/tt.php')
-                    ->addParams($params)
-                    ->setIcon('search')
-                    ->displayLabel();
-            }
-            if ($canEdit && ($roleCategory == 'Student' or $roleCategory == 'Staff')) {
-                $params = [
-                    "gibbonPersonID" => $gibbonPersonID,
-                    "gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'),
-                    "type" => $roleCategory,
-                    "allUsers" => $allUsers,
-                ];
-                $table->addHeaderAction('edit', __('Edit'))
-                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
-                    ->addParams($params)
-                    ->setIcon('config')
-                    ->displayLabel()
-                    ->prepend((!empty($search)) ? ' | ' : '');
-                }
-
+            if ($format == 'print') {
                 $table->addHeaderAction('print', __('Print'))
-                    ->setURL('/report.php')
-                    ->addParam('q', '/modules/Timetable/tt_view.php')
-                    ->addParam('gibbonPersonID', $gibbonPersonID)
-                    ->addParam('gibbonTTID', $gibbonTTID)
-                    ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                    ->setIcon('print')
-                    ->setTarget('_blank')
-                    ->directLink()
-                    ->displayLabel()
-                    ->prepend(' | ');
-
-                if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
-                    $table->addHeaderAction('export', __('Export'))
-                        ->modalWindow()
-                        ->setURL('/modules/Timetable/tt_manage_subscription.php')
-                        ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
-                        ->setIcon('download')
+                    ->setURL('#')
+                    ->onClick('javascript:window.print(); return false;');
+            } else {
+                if ($search != '') {
+                    $params = [
+                        "search" => $search,
+                        "allUsers" => $allUsers,
+                    ];
+                    $table->addHeaderAction('back', __('Back to Search Results'))
+                        ->setURL('/modules/Timetable/tt.php')
+                        ->addParams($params)
+                        ->setIcon('search')
+                        ->displayLabel();
+                }
+                if ($canEdit && ($roleCategory == 'Student' or $roleCategory == 'Staff')) {
+                    $params = [
+                        "gibbonPersonID" => $gibbonPersonID,
+                        "gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'),
+                        "type" => $roleCategory,
+                        "allUsers" => $allUsers,
+                    ];
+                    $table->addHeaderAction('edit', __('Edit'))
+                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
+                        ->addParams($params)
+                        ->setIcon('config')
                         ->displayLabel()
-                        ->prepend(' | ');
+                        ->prepend((!empty($search)) ? ' | ' : '');
+                    }
+
+                    if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+                        $table->addHeaderAction('export', __('Export'))
+                            ->modalWindow()
+                            ->setURL('/modules/Timetable/tt_manage_subscription.php')
+                            ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
+                            ->setIcon('download')
+                            ->displayLabel();
+                    }
                 }
 
-
-            $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', 'false']));
-                        $table->addColumn('yearGroup', __('Year Group'));
-                        $table->addColumn('formGroup', __('Form Group'));
+            $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', false, false]));
+            $table->addColumn('yearGroup', __('Year Group'));
+            $table->addColumn('formGroup', __('Form Group'));
 
             echo $table->render([$row]);
 
             $ttDate = null;
             if (!empty($_REQUEST['ttDate'])) {
-                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
+                $ttDate = Format::dateConvert($_REQUEST['ttDate']);
             }
 
-            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_view.php', "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
-            if ($tt != false) {
-                echo $tt;
-            } else {
-                echo $page->getBlankSlate();
-            }
+            // Create timetable context
+            $context = $container->get(TimetableContext::class)
+                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                ->set('gibbonPersonID', $gibbonPersonID)
+                ->set('gibbonTTID', $gibbonTTID)
+                ->set('format', $format);
+
+            // Build and render timetable
+            echo $container->get(Timetable::class)
+                ->setDate($ttDate)
+                ->setContext($context)
+                ->addCoreLayers($container)
+                ->getOutput(); 
 
             //Set sidebar
             $session->set('sidebarExtra', Format::userPhoto($row['image_240'], 240));

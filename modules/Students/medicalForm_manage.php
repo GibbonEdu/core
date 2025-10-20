@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     echo '</h2>';
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/medicalForm_manage.php');
 

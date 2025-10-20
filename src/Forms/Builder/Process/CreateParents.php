@@ -32,6 +32,7 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Process\CreateStudent;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\View\CreateParentsView;
+use Gibbon\UI\Components\Alert;
 
 class CreateParents extends CreateStudent implements ViewableProcess
 {
@@ -46,7 +47,8 @@ class CreateParents extends CreateStudent implements ViewableProcess
         CustomFieldGateway $customFieldGateway,
         PersonalDocumentGateway $personalDocumentGateway,
         FamilyAdultGateway $familyAdultGateway,
-        PasswordPolicy $passwordPolicy
+        PasswordPolicy $passwordPolicy,
+        Alert $alert
     )
     {
         $this->familyAdultGateway = $familyAdultGateway;
@@ -57,7 +59,8 @@ class CreateParents extends CreateStudent implements ViewableProcess
             $usernameGenerator,
             $customFieldGateway,
             $personalDocumentGateway,
-            $passwordPolicy
+            $passwordPolicy,
+            $alert
         );
     }
 

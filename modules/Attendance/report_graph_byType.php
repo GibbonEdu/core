@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     // Options & Filters
     $form = Form::create('attendanceTrends', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_graph_byType.php');
     $form->setTitle(__('Choose Date'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
 
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         echo __('Report Data');
         echo '</h2>';
 
-        echo '<p><span class="small emphasis">'.__('Click a legend item to toggle visibility.').'</span></p>';
+        echo '<p><span class="text-xs italic">'.__('Click a legend item to toggle visibility.').'</span></p>';
 
         //Produce array of attendance data
         $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);

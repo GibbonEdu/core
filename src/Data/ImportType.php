@@ -762,7 +762,7 @@ class ImportType
      */
     public function filterFieldValue($fieldName, $value)
     {
-        $value = trim($value);
+        $value = trim($value ?? '');
         $defaultValue = $this->getField($fieldName, 'null') == 'YES' ? null : '';
 
         $filter = $this->getField($fieldName, 'filter');
@@ -829,12 +829,6 @@ class ImportType
 
                 break;
 
-            case 'schoolyear': // Change school years formated as 2015-16 to 2015-2016
-                if (preg_match('/(^\d{4}[-]\d{2}$)/u', $value) > 0) {
-                    $value = mb_substr($value, 0, 5) . mb_substr($value, 0, 2) . mb_substr($value, 5, 2);
-                }
-                break;
-
             case 'gender':  // Handle various gender formats
                 $strvalue = str_replace('.', '', $strvalue);
                 if ($strvalue == 'M' || $strvalue == 'MALE' || $strvalue == 'MR') {
@@ -850,6 +844,10 @@ class ImportType
 
             case 'numeric':
                 $value = !empty($value) ? preg_replace("/[^0-9]/u", '', $value) : $defaultValue;
+                break;
+
+            case 'color':
+                $value = !empty($value) ? preg_replace("/[^#0-9a-fA-F]/", '', $value) : $defaultValue;
                 break;
 
             case 'phone':   // Handle phone numbers - strip all non-numeric chars
@@ -1017,7 +1015,7 @@ class ImportType
                 return false;
             } break;
 
-            case 'schoolyear':  if (preg_match('/(^\d{4}[-]\d{4}$)/u', $value) > 1) {
+            case 'color':   if (preg_match('/^#(?:[0-9a-fA-F]{3}){1,2}$/', $value) == 0) {
                 return false;
             } break;
 
