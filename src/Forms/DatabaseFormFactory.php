@@ -316,7 +316,7 @@ class DatabaseFormFactory extends FormFactory
             return $group;
         }, []);
 
-        return $this->createSelect($name)->fromArray($values)->placeholder();
+        return $this->createSearchSelect($name)->fromArray($values)->placeholder();
     }
 
     public function createSelectLanguage($name)

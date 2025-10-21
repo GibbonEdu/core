@@ -32,6 +32,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Action;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Layout\Section;
+use DateTimeZone;
 
 /**
  * FormFactory
@@ -469,7 +470,7 @@ class FormFactory implements FormFactoryInterface
             'zh_HK' => '繁體字 - 香港',
         );
 
-        return $this->createSelect($name)->fromArray($languages);
+        return $this->createSearchSelect($name)->fromArray($languages);
     }
 
     public function createSelectCurrency($name)
@@ -555,6 +556,16 @@ class FormFactory implements FormFactoryInterface
             ),
         );
 
-        return $this->createSelect($name)->fromArray($currencies)->placeholder();
+        return $this->createSearchSelect($name)->fromArray($currencies)->placeholder();
+    }
+
+    public function createSelectTimezone($name)
+    {
+        $timezones = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
+            $group[$item] = __($item);
+            return $group;
+        }, []);
+
+        return $this->createSearchSelect($name)->fromArray($timezones)->placeholder();
     }
 }

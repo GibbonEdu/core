@@ -156,14 +156,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($firstDayOfTheWeekOptions)->selected($setting['value'])->required();
 
-    $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
-        $group[$item] = __($item);
-        return $group;
-    }, array());
     $setting = $settingGateway->getSettingByScope('System', 'timezone', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromArray($tzlist)->selected($setting['value'])->placeholder()->required();
+        $row->addSelectTimezone($setting['name'])->selected($setting['value'])->placeholder()->required();
 
     $setting = $settingGateway->getSettingByScope('System', 'currency', true);
     $row = $form->addRow();
