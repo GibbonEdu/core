@@ -38,6 +38,8 @@ class Icon
         'Large',
     ];
 
+    protected static $cache;
+
     /**
      * Return an SVG icon from a specified icon library.
      * Many of the icons come from: https://heroicons.com
@@ -50,15 +52,60 @@ class Icon
      */
     public static function get(string $library, string $icon, string $class = '', array $options = []) : string
     {
-        if (!$path = static::getLibraryPath($library)) {
-            return '';
+        if (!empty(static::$cache[$library][$icon])) {
+           return static::$cache[$library][$icon];
         }
 
-        return Component::render($path, [
-            'icon'    => strtolower($icon),
-            'class'   => $class , //.' pointer-events-none'
-            'options' => $options,
-        ]);
+        $library = static::loadLibrary($library, $class, $options);
+        $alias = $library['alias'][strtolower($icon)] ?? '';
+
+        $icon = $library[strtolower($icon)] ?? $library[$alias] ?? '';
+        
+        static::$cache[$icon] = $icon;
+
+        return $icon;
+    }
+
+    /**
+     * Get an array of icons from an icon library.
+     *
+     * @param string $library
+     * @return array
+     */
+    public static function getLibrary(string $library, string $class = '', array $options = []): array
+    {
+        return static::loadLibrary($library, $class, $options);
+    }
+
+    /**
+     * Return the internal array of available libraries.
+     *
+     * @return array
+     */
+    public static function getLibraryList(): array
+    {
+        return static::$libraries;
+    }
+
+    /**
+     * Load an array of icons for an icon library by name.
+     *
+     * @param string $library
+     * @return array
+     */
+    protected static function loadLibrary(string $library, string $class = '', array $options = []): array
+    {
+        if (!$path = static::getLibraryPath($library)) {
+            return [];
+        }
+
+        try {
+            $icons = include($path);
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        return $icons;
     }
 
     /**
@@ -75,6 +122,6 @@ class Icon
             return false;
         }
 
-        return 'UI/Icons/Icons'.$library;
+        return realpath(__DIR__.'/../').'/UI/Icons/Icons'.$library.'.template.php';
     }
 }
