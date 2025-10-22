@@ -245,6 +245,7 @@ class Select extends Input
         }
 
         return Component::render(Select::class, $this->getAttributeArray() + [
+            'outerClass'  => $this->getOuterClass(),
             'groupClass'  => $this->getGroupClass(),
             'placeholder' => $this->placeholder,
             'chainedToID' => $this->chainedToID,

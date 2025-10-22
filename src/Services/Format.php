@@ -780,7 +780,15 @@ class Format
 
     public static function heading(string $text, string $tag = 'h3', string $class = '')
     {
-        return "<{$tag} class='{$class}'>{$text}</{$tag}>";
+        return "<{$tag} ".($class ? "class='{$class}'" : '').">{$text}</{$tag}>";
+    }
+
+    public static function paragraph(string $text, string $class = '')
+    {
+        $text = nl2br($text);
+        $class = $class ?: 'text-sm';
+
+        return "<p class='{$class}'>{$text}</p>";
     }
 
     public static function list(array $items, $tag = 'ul', $listClass = '', $itemClass = 'leading-normal')

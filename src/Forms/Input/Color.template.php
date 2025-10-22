@@ -20,7 +20,7 @@
     </button>
 
     <input type="text" <?= $attributes; ?>
-        class="<?= $class; ?> <?= $showField ? '' : 'hidden'; ?> rounded-md flex-grow font-sans py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6" x-model="colorSelected">
+        class="<?= $class; ?> <?= $showField ? '' : 'hidden'; ?> rounded-md flex-grow font-sans py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5" x-model="colorSelected">
 
     <div x-show="isOpen" @click.away="isOpen = false" x-transition:enter="transition ease-out duration-100 transform"
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"

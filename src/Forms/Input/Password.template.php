@@ -8,7 +8,7 @@
 
 <div x-data="{ show: true, policy: false, pw: '' }" class="flex-grow relative flex">
     <input x-model.fill="pw" :type="show ? 'password' : 'text'" <?= $attributes; ?> autocomplete="off" 
-    class="<?= $class; ?> <?= $groupClass; ?> w-full min-w-0  py-2 placeholder:text-gray-500  sm:text-sm sm:leading-6 <?= $type != 'text' ? 'input-icon' : ''; ?>
+    class="<?= $class; ?> <?= $groupClass; ?> w-full min-w-0  py-2 placeholder:text-gray-500  sm:text-sm sm:leading-5 <?= $type != 'text' ? 'input-icon' : ''; ?>
     <?= !empty($readonly) ? 'border-dashed text-gray-600 cursor-not-allowed :ring-0 focus:border-gray-400' : 'text-gray-900 focus:ring-1 focus:ring-inset focus:ring-blue-500'; ?>"
     <?= !empty($policy) ? ' @focus="policy=true;pw=$el.value" @blur="policy=false;pw=$el.value" @click.away="policy=false"' : ''; ?>
     />

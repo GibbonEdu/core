@@ -162,6 +162,7 @@ class TextField extends Input
     protected function getElement()
     {
         return Component::render(TextField::class, $this->getAttributeArray() + [
+            'outerClass'       => $this->getOuterClass(),
             'groupClass'       => $this->getGroupClass(),
             'unique'           => !empty($this->unique) ? $this->unique : [],
             'autocompleteList' => $this->autocomplete

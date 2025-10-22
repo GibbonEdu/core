@@ -1,6 +1,6 @@
 <select <?= $attributes; ?> 
-    class="<?= $class; ?> <?= $groupClass; ?> w-full min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 
-    focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6" >
+    class="<?= $class; ?> <?= $groupClass; ?> <?= $outerClass ?? 'w-full' ?> min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 
+    focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5" >
 
     <?php if (isset($placeholder) && empty($multiple)) { ?>
         <option value=""><?= __($placeholder); ?></option>
@@ -22,9 +22,9 @@
 
     <?php } ?>
 
-</select>
+</select><?php 
 
-<?php if (!empty($chainedToID)) { ?>
+if (!empty($chainedToID)) { ?>
     <script type="text/javascript">
         $(function() {$("#<?= $id; ?>").chainedTo("#<?= $chainedToID; ?>");});
     </script>

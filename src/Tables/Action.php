@@ -111,7 +111,7 @@ class Action extends WebLink
      *
      * @var boolean
      */
-    protected $displayLabel = false;
+    protected $displayLabel = true;
 
     /**
      * Class constructor of Action.

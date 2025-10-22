@@ -63,9 +63,9 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             ->addClass("floatNone")
             ->wrap('<div class="w-full">', '</div>');
 
-        $this->addButton = $factory->createButton(__("Add"), '', $name . 'Add')->setIcon('add', 'text-green-600')
+        $this->addButton = $factory->createButton(__("Add"), '', $name . 'Add')->setIcon('solid', 'add', 'text-green-600')
             ->addClass("flex-1 sm:w-auto");
-        $this->removeButton = $factory->createButton(__("Remove"), '', $name . 'Remove')->setIcon('cross', 'text-red-700')
+        $this->removeButton = $factory->createButton(__("Remove"), '', $name . 'Remove')->setIcon('solid', 'cross', 'text-red-700')
             ->addClass("flex-1 sm:w-auto");
 
         $this->searchBox = $factory->createTextField($name . "Search")

@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     if ($gibbonPersonID == $session->get('gibbonPersonID')) {
         $filterOptions = $form->getFactory()->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('auto-submit filters float-none w-24 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200 rounded-md w-full min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6')
+            ->setClass('auto-submit filters float-none w-24 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200 rounded-md w-full min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5')
             ->placeholder(__('Filters'))
             ->selected($filter)
             ->getOutput();

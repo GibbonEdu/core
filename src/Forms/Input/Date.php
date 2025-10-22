@@ -154,6 +154,7 @@ class Date extends TextField
         $this->setAttribute('autocomplete', 'off');
 
         return Component::render(Date::class, $this->getAttributeArray() + [
+            'outerClass' => $this->getOuterClass(),
             'groupClass' => $this->getGroupClass(),
         ]);
     }
