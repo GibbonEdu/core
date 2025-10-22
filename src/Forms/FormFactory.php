@@ -208,6 +208,7 @@ class FormFactory implements FormFactoryInterface
     {
         return (new Input\TextField($name))
             ->addValidation('Validate.Email')
+            ->setType('email')
             ->maxLength(75);
     }
 

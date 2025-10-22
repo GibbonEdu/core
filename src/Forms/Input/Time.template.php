@@ -7,8 +7,8 @@
         <?= !empty($readonly) ? 'border-dashed text-gray-600 cursor-not-allowed focus:ring-0 focus:border-gray-400' : 'text-gray-900 focus:ring-1 focus:ring-inset focus:ring-blue-500'; ?>
         "/>
 
-    <span class="pointer-events-none absolute top-0.5 right-0.5">
-        <?= icon('outline', 'clock', 'pointer-events-none size-9 p-2 rounded text-gray-600 hover:text-gray-800'); ?>
+    <span class="pointer-events-none absolute top-0.5 right-2">
+        <?= icon('outline', 'clock', 'pointer-events-none size-8 mt-px p-1.5 rounded text-gray-600 hover:text-gray-800'); ?>
     </span>
 
 </div>

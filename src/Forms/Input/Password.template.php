@@ -13,14 +13,14 @@
     <?= !empty($policy) ? ' @focus="policy=true;pw=$el.value" @blur="policy=false;pw=$el.value" @click.away="policy=false"' : ''; ?>
     />
 
-    <span class="absolute top-0.5 right-0.5">
+    <span class="absolute top-0.5 right-2">
 
         <button type="button" @click="show = !show" :class="{'hidden': !show, 'block':show }" tabindex="-1">
-        <?= icon('basic', 'eye', 'pointer-events-none size-9 p-2 rounded bg-white text-gray-500 hover:text-gray-700'); ?>
+        <?= icon('basic', 'eye', 'pointer-events-none size-8 mt-px p-1.5 rounded bg-white text-gray-500 hover:text-gray-700'); ?>
         </button>
 
         <button type="button" @click="show = !show" :class="{'block': !show, 'hidden':show }" tabindex="-1">
-        <?= icon('basic', 'eye-slash', 'pointer-events-none size-9 p-2 rounded bg-white text-gray-500 hover:text-gray-700'); ?>
+        <?= icon('basic', 'eye-slash', 'pointer-events-none size-8 mt-px p-1.5 rounded bg-white text-gray-500 hover:text-gray-700'); ?>
         </button>
 
     </span>

@@ -40,14 +40,14 @@ if ($disabled) {
 <?php } elseif ($type == 'input') { ?>
     <input type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?> inline-block align-middle items-center border border-gray-400 px-8 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"/>
 <?php } elseif ($type == 'button') { ?>
-<button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?> inline-flex align-middle items-center border border-gray-400 px-4 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500">
+<button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?> inline-flex align-middle items-center border border-gray-400 gap-2 px-4 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500">
 
-    <?php $svgClass = 'text-gray-600 block size-5 '.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5 ' : '').($iconClass ?? ''); ?>
+    <?php $svgClass = 'text-gray-600 block size-5 '.(!empty($value) ? 'lg:-ml-0.5 ' : '').($iconClass ?? ''); ?>
     <?= !empty($icon) ? icon($iconLibrary ?? 'solid', $icon, $svgClass ) : ''; ?>
 
-    <?= $value; ?>
+    <?php if ($value) { ?><span aria-label="<?= $value; ?>"><?= $value; ?></span><?php } ?>
 
-    <?= !empty($tag) ? "<span class='inline-flex items-center justify-center size-5 rounded-full ml-2 text-xxs bg-gray-300 text-gray-600 font-normal'>{$tag}</span>" : ''; ?>
+    <?= !empty($tag) ? "<span class='inline-flex items-center justify-center size-5 rounded-full text-xxs bg-gray-300 text-gray-600 font-normal'>{$tag}</span>" : ''; ?>
 
     </button><?php 
 } ?>

@@ -5,8 +5,14 @@
         />
 
     <?php if ($type == 'url') { ?>
-        <span class="pointer-events-none absolute top-0.5 right-0.5">
-        <?= icon('basic', 'link', 'size-9 p-2 rounded bg-white text-gray-500 hover:text-gray-700'); ?>
+        <span class="pointer-events-none absolute top-0.5 right-2">
+        <?= icon('basic', 'link', 'size-8 mt-px p-1.5 rounded bg-white text-gray-500 hover:text-gray-700'); ?>
+        </span>
+    <?php } ?>
+
+    <?php if ($type == 'email') { ?>
+        <span class="pointer-events-none absolute top-0.5 right-2">
+        <?= icon('basic', 'email', 'size-8 mt-px p-1.5 rounded bg-white text-gray-500 hover:text-gray-700'); ?>
         </span>
     <?php } ?>
 
