@@ -21,22 +21,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\View\View;
+use Gibbon\Tables\Action;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Tables\Action;
+use Gibbon\Forms\Layout\Element;
+use Gibbon\Tables\View\GridView;
 use Gibbon\Tables\Columns\Column;
-use Gibbon\Tables\Columns\ActionColumn;
-use Gibbon\Tables\Columns\CheckboxColumn;
-use Gibbon\Tables\Columns\ExpandableColumn;
-use Gibbon\Tables\Columns\DraggableColumn;
-use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Tables\View\DetailsView;
+use Gibbon\Forms\OutputableInterface;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
-use Gibbon\View\View;
-use Gibbon\Tables\View\DetailsView;
 use Gibbon\Tables\Columns\RadioColumn;
-use Gibbon\Forms\Layout\Element;
+use Gibbon\Tables\Columns\ActionColumn;
+use Gibbon\Tables\Columns\CheckboxColumn;
+use Gibbon\Tables\Columns\DraggableColumn;
+use Gibbon\Tables\Columns\ExpandableColumn;
+use Gibbon\Tables\Renderer\RendererInterface;
 
 /**
  * DataTable
@@ -122,6 +123,20 @@ class DataTable implements OutputableInterface
         global $container;
 
         $renderer = $container->get(DetailsView::class);
+        return (new static($renderer))->setID($id);
+    }
+
+    /**
+     * Helper method to create a details table.
+     *
+     * @param string $id
+     * @return self
+     */
+    public static function createGrid($id)
+    {
+        global $container;
+
+        $renderer = $container->get(GridView::class);
         return (new static($renderer))->setID($id);
     }
 
