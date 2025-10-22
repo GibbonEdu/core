@@ -61,6 +61,7 @@ class SearchSelect extends Select
         // TODO: validation
 
         return Component::render(SearchSelect::class, $this->getAttributeArray() + [
+            'outerClass'    => $this->getOuterClass(),
             'groupClass'    => $this->getGroupClass(),
             'placeholder'   => $this->placeholder,
             'options'       => array_values($options),

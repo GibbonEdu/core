@@ -54,14 +54,13 @@
                 this.getFilteredOptions('');
             }
         },
-    }" class="flex w-full flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-init="getOptions()">
+    }" class="relative flex flex-col gap-1 <?= $outerClass ?? 'flex-1'; ?>" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-init="getOptions()">
 
-    <div class="relative">
 
         <!-- trigger button  -->
-        <button type="button" class="<?= $class; ?> <?= $groupClass; ?> inline-flex w-full items-center justify-between h-[2.625rem] min-w-16 bg-white border border-outline py-2 px-3 text-gray-900  placeholder:text-gray-500 focus:border-blue-500 focus-within:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5 transition  " role="combobox" aria-controls="<?= $id ?>List" aria-haspopup="<?= $id ?>List listbox" x-on:click="toggleSelect(!isOpen)" x-on:keydown.down.prevent="openedWithKeyboard = true" x-on:keydown.enter.prevent="openedWithKeyboard = true" x-on:keydown.space.prevent="openedWithKeyboard = true" x-bind:aria-expanded="isOpen || openedWithKeyboard" x-bind:aria-label="selectedOption ? selectedOption.label : '<?= __($placeholder); ?>'" x-ref="searchSelect" >
+        <button type="button" class="<?= $class; ?> <?= $groupClass; ?> inline-flex w-full overflow-hidden items-center justify-between min-w-16 h-[2.375rem] bg-white border border-outline py-2 px-3 text-gray-900  placeholder:text-gray-500 focus:border-blue-500 focus-within:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5 transition  " role="combobox" aria-controls="<?= $id ?>List" aria-haspopup="<?= $id ?>List listbox" x-on:click="toggleSelect(!isOpen)" x-on:keydown.down.prevent="openedWithKeyboard = true" x-on:keydown.enter.prevent="openedWithKeyboard = true" x-on:keydown.space.prevent="openedWithKeyboard = true" x-bind:aria-expanded="isOpen || openedWithKeyboard" x-bind:aria-label="selectedOption ? selectedOption.label : '<?= __($placeholder); ?>'" x-ref="searchSelect" >
 
-            <span class="text-left text-sm font-normal" x-text="selectedOption ? selectedOption.label : ''"><?= $selectedLabel ?? __($placeholder); ?></span>
+            <span class="flex-1 w-24 text-left text-sm sm:leading-5 font-normal truncate" x-text="selectedOption ? selectedOption.label : ''"><?= $selectedLabel ?? __($placeholder); ?></span>
             <!-- Chevron  -->
             <svg x-cloak x-show="selectedOption == null" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 text-gray-500" aria-hidden="true">
                 <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
@@ -80,7 +79,7 @@
             <?php } ?>
         </select>
         
-        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.100ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
+        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full min-w-52 overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.100ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
         style="display:none;">
 
             <!-- Search  -->
@@ -88,7 +87,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" class="absolute ml-3 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50" aria-hidden="true" >
                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
                 </svg>
-                <input type="text" class="w-full border  focus:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 rounded-t-md py-2.5 pl-10 text-sm text-on-surface focus:outline-hidden focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-75 dark:text-on-surface-dark dark:focus-visible:border-primary-dark" name="searchField" aria-label="<?= __('Search') ?>" x-on:input="getFilteredOptions($el.value)" x-model="search" x-ref="searchField" placeholder="<?= __('Search') ?>" />
+                <input type="text" class="w-full border  focus:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 rounded-t-md py-2 pl-10 text-sm text-on-surface focus:outline-hidden focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-75 dark:text-on-surface-dark dark:focus-visible:border-primary-dark" name="searchField" aria-label="<?= __('Search') ?>" x-on:input="getFilteredOptions($el.value)" x-model="search" x-ref="searchField" placeholder="<?= __('Search') ?>" />
             </div>
 
             <!-- Options  -->
@@ -110,5 +109,5 @@
                 </template>
             </ul>
         </div>
-    </div>
+ 
 </div>

@@ -73,10 +73,11 @@ class PhoneNumber extends Input
             ->addClass('inline-flex mr-1 w-1/3 sm:w-1/4');
         
         $this->phoneCodes = $this->column
-            ->addSelect($name.'CountryCode')
+            ->addSearchSelect($name.'CountryCode')
             ->fromArray($countryCodes)
             ->placeholder()
-            ->addClass('inline-flex w-1/3 sm:w-1/4 rounded-r-none border-r-0');
+            ->setOuterClass('w-1/3 sm:w-1/4')
+            ->addClass('inline-flex rounded-r-none border-r-0');
             
         $this->phoneNumber = $this->column
             ->addTextField($name)

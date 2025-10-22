@@ -169,7 +169,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                 $row->addButton('')
                     ->setID('schoolYearLabel')
-                    ->setIcon('calendar')
+                    ->setIcon('solid', 'calendar')
                     ->groupAlign('left')
                     ->setAria('label', __('School Year'))
                     ->setClass('text-sm py-2')
@@ -184,7 +184,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                     $row->addButton('')
                         ->setID('languageLabel')
-                        ->setIcon('language')
+                        ->setIcon('solid', 'language')
                         ->groupAlign('left')
                         ->setAria('label', __('Language'))
                         ->setClass('text-sm py-2')
@@ -247,7 +247,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row = $form->addRow()->addClass('flex items-center justify-between');
                         $row->addButton('')
                             ->setID('usernameLabel')
-                            ->setIcon('user')
+                            ->setIcon('solid', 'user')
                             ->groupAlign('left')
                             ->setAria('label', __('Username or email'))
                             ->setTitle(__('Username or email'))
@@ -265,7 +265,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row = $form->addRow()->addClass('flex items-center justify-between');
                         $row->addButton('')
                             ->setID('passwordLabel')
-                            ->setIcon('password')
+                            ->setIcon('solid', 'password')
                             ->groupAlign('left')
                             ->setAria('label', __('Password'))
                             ->setTitle(__('Password'))
@@ -283,7 +283,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                         $row->addButton('')
                             ->setID('schoolYearLabel')
-                            ->setIcon('calendar')
+                            ->setIcon('solid', 'calendar')
                             ->groupAlign('left')
                             ->setAria('label', __('School Year'))
                             ->setTitle(__('School Year'))
@@ -299,7 +299,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                         $row->addButton('')
                             ->setID('languageLabel')
-                            ->setIcon('language')
+                            ->setIcon('solid', 'language')
                             ->groupAlign('left')
                             ->setAria('label', __('Language'))
                             ->setTitle(__('Language'))
