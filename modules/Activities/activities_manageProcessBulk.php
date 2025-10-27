@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityPhotoGateway;
+use Gibbon\Domain\Activities\ActivityCategoryGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'] ?? null;
@@ -46,7 +49,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                 foreach ($activities AS $gibbonActivityID) { //For every activity to be copied
                     //Check existence of activity and fetch details
                     try {
-                        $data = array('gibbonActivityID' => $gibbonActivityID);
+                        $data = ['gibbonActivityID' => $gibbonActivityID];
                         $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -63,10 +66,21 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                             $name .= ' (Copy)';
                         }
 
-                        //Write the duplicate to the database
+                        // Find the name of the gibbonActivityCategory
+                        $activityCategoryGateway = $container->get(ActivityCategoryGateway::class);
+                        $category = $activityCategoryGateway->getCategoryDetailsByID($row['gibbonActivityCategoryID']);
+                        $categoryName = $category['name'];
+
+                        // Find the gibbonActivityCategoryID
+                        if(!empty($categoryName)) {
+                            $activityCategory = $activityCategoryGateway->selectBy(['name' => $categoryName, 'gibbonSchoolYearID' => $gibbonSchoolYearIDCopyTo])->fetch();
+                            $gibbonActivityCategoryID = $activityCategory['gibbonActivityCategoryID'] ?? null;
+                        }
+
+                        // Write the duplicate to the database
                         try {
-                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearIDCopyTo, 'active' => $row['active'], 'registration' => $row['registration'], 'name' => $name, 'provider' => $row['provider'], 'type' => $row['type'], 'gibbonSchoolYearTermIDList' => $row['gibbonSchoolYearTermIDList'], 'listingStart' => $row['listingStart'], 'listingEnd' => $row['listingEnd'], 'programStart' => $row['programStart'], 'programEnd' => $row['programEnd'], 'gibbonYearGroupIDList' => $row['gibbonYearGroupIDList'], 'maxParticipants' => $row['maxParticipants'], 'description' => $row['description'], 'payment' => $row['payment'], 'paymentType' => $row['paymentType'], 'paymentFirmness' => $row['paymentFirmness']);
-                            $sql = 'INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, active=:active, registration=:registration, name=:name, provider=:provider, type=:type, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, description=:description, payment=:payment, paymentType=:paymentType, paymentFirmness=:paymentFirmness';
+                            $data = ['gibbonSchoolYearID' => $gibbonSchoolYearIDCopyTo, 'gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'active' => $row['active'], 'registration' => $row['registration'], 'name' => $name, 'provider' => $row['provider'], 'type' => $row['type'], 'gibbonSchoolYearTermIDList' => $row['gibbonSchoolYearTermIDList'], 'listingStart' => $row['listingStart'], 'listingEnd' => $row['listingEnd'], 'programStart' => $row['programStart'], 'programEnd' => $row['programEnd'], 'gibbonYearGroupIDList' => $row['gibbonYearGroupIDList'], 'maxParticipants' => $row['maxParticipants'], 'description' => $row['description'], 'payment' => $row['payment'], 'paymentType' => $row['paymentType'], 'paymentFirmness' => $row['paymentFirmness'], 'paymentDescription' => $row['paymentDescription']];
+                            $sql = 'INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonActivityCategoryID = :gibbonActivityCategoryID, active=:active, registration=:registration, name=:name, provider=:provider, type=:type, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, description=:description, payment=:payment, paymentType=:paymentType, paymentFirmness=:paymentFirmness, paymentDescription=:paymentDescription';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -137,6 +151,14 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                                     $partialFail = true;
                                 }
                             }
+                        }
+
+                        // Deal with activity photos
+                        $activityPhotos = $container->get(ActivityPhotoGateway::class)->selectPhotosByActivity($gibbonActivityID)->fetchAll();
+
+                        foreach ($activityPhotos as $activityPhoto) {
+                            $activityPhoto['gibbonActivityID'] = $AI;
+                            $container->get(ActivityPhotoGateway::class)->insert($activityPhoto);
                         }
                     }
                 }

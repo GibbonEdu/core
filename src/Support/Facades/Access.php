@@ -26,7 +26,7 @@ use Gibbon\Auth\Access\Access as AccessContract;
 /**
  * @method static bool allows(string $module, string $routePath, string $actionName = '')
  * @method static bool denies(string $module, string $routePath, string $actionName = '')
- * @method static Action inspect(string $module, string $routePath, string $actionName = '')
+ * @method static Action get(string $module, string $routePath, string $actionName = '')
  *
  * @see \Gibbon\Auth\Access\Access
  */

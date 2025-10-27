@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                 $row = $form->addRow();
                     $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
-                    $row->addYesNoRadio('uploadedResponse')->required();
+                    $row->addYesNoRadio('uploadedResponse')->required()->checked('N');
 
                 $form->addRow()->addHeading('Access', __('Access'));
 

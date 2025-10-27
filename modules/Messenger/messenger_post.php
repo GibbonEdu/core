@@ -48,6 +48,8 @@ else {
     $page->breadcrumbs->add(__('New Message'));
 
     $page->return->addReturns([
+        'warning3' => __('Your request was successful but the emojis and symbols in your text have been removed due to compatibility constraints.'),
+        'warning4' => __('You have selected more than 50 individuals. Please select a target of less than 50 individuals and click Send.'),
         'error5' => __('Your request failed due to an attachment error.'),
     ]);
 

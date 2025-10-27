@@ -47,7 +47,7 @@ class ActivityPhotoGateway extends QueryableGateway
     public function selectPhotosByActivity($gibbonActivityID)
     {
         $data = ['gibbonActivityID' => $gibbonActivityID];
-        $sql = "SELECT gibbonActivityPhoto.gibbonActivityPhotoID, gibbonActivityPhoto.filePath, gibbonActivityPhoto.caption
+        $sql = "SELECT gibbonActivityPhoto.gibbonActivityPhotoID, gibbonActivityPhoto.filePath, gibbonActivityPhoto.caption, gibbonActivityPhoto.sequenceNumber
                 FROM gibbonActivityPhoto
                 JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityPhoto.gibbonActivityID)
                 WHERE gibbonActivityPhoto.gibbonActivityID=:gibbonActivityID

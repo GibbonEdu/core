@@ -23,6 +23,7 @@ use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 use Gibbon\Domain\Activities\ActivityChoiceGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Students\StudentGateway;
 
 require_once '../../gibbon.php';
 
@@ -43,6 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
 } else {
     // Proceed!
     $partialFail = false;
+    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/explore_activity_signUp.php', $connection2);
 
     $activityGateway = $container->get(ActivityGateway::class);
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
@@ -83,11 +85,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         $signUpIsOpen = $accessOpenDate <= $now && $accessCloseDate >= $now;
     }
 
+    // Can register for family children
+    if ($highestAction == 'Explore Activities_registerByParent') {
+        $categoryYearGroups = explode(',', $category['gibbonYearGroupIDParentRegister'] ?? ''); 
+        $children = $container->get(StudentGateway::class)
+            ->selectAnyStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
+            ->fetchGroupedUnique();
+
+        $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+        $child = $children[$gibbonPersonID] ?? [];
+        if (empty($child) || !in_array($child['gibbonYearGroupID'], $categoryYearGroups)) {
+            $URL .= '&return=error4';
+            header("Location: {$URL}");
+            exit;
+        }
+
+        $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_view_myChildren.php&'.http_build_query($params);
+    }
+
     // Check the student's sign up access based on their year group
     $signUpCategory = $categoryGateway->getCategorySignUpAccess($params['gibbonActivityCategoryID'], $gibbonPersonID);
 
     if (!$signUpIsOpen || !$signUpCategory) {
-        $URL .= '&return=error4';
+        $URL .= '&return=error4&reason=1';
         header("Location: {$URL}");
         exit;
     }

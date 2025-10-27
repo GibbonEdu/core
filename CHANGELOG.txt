@@ -23,31 +23,79 @@ v30.0.00
 --------
 
     Headlines
+        Added a new Student Alerts module to manage automatic and manual alerts
+        Catalan, Japanese and Portugese are now available interface languages
 
     Security
 
     Changes With Important Notices
+        Added a Pastoral heading to the main menu and moved Behaviour, Attendance and Individual Needs
 
     Tweaks & Additions
+        System: added the option for administrators to impersonate other user accounts
         System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
         System: switched interface strings from Value Added License to Catalyst License
+        System: added a backup table to store person images from previous years
+        System: set Catalan, Japanese and Portugese as active languages
+        System: added Balochi as a spoken language option for user data
+        Activities: added the option for parents to register their children in activities
+        Activities: added student tags on the Manage Enrolment page
+        Activities: added a description field to the cost section for activities
+        Activities: included the photos in the new copy when an activity is duplicated
+        Behaviour: added Add Multiple button to Behaviour tab of student profile
+        Formal Assessment: added a Year Group filter option to Manage External Assessment
         Individual Needs: enabled viewing IN records for past students as read-only
+        Library: added the option to send an email to parents when lending a library item
+        Library: added a new type called Digital Publication
         Messenger: enabled resending to any recipient when read receipts are off in Send Report
-        Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
-        Reports: prevented deletion of template assets that are not set to inactive
-        Reports: added a way for tracking and displaying who last edited an asset
+        Messenger: added clarifying text to Applicants target which only includes Accepted applications
+        Messenger: enabled users with Manage Messages_all access to see shareable link in Send Report
         Planner: added a highlight for Off Timetable students in View Lesson Plan attendance list
         Planner: added a button to access Linked Markbook from Edit Lesson Plan page
         Planner: added a highlight for Off Timetable Lessons in the "Year Overview" mode
+        Planner: added the option to use smart block names as lesson names in Deploy Lessons
+        Planner: added an Online Lesson option in the planner to display a video call link
+        Planner: restricted visibility of user photos in Lesson Plans based on planner access permissions
+        Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
+        Reports: prevented deletion of template assets that are not set to inactive
+        Reports: added a way for tracking and displaying who last edited an asset
         Staff: limited Add Staff list to users who are not already staff but have a staff role
+        Staff: added an option to separate the Staff Duty page into tabs by duty type
+        Staff: added an option to accept a Staff Application without creating an account
+        Students: added a drop-down filter to the Student Transport report
+        System Admin: added the option to upload user photos in jpeg format
+        System Admin: added new loaned items import for Library
         Timetable: added coverage details for staff duty and activities on the timetable
+        Timetable: added a search field in 'Manage Bookings' and 'Mange Facility Changes'
+        User Admin: added a backup table to store person images from previous years
         User Admin: added Sibling as option to Emergency Relationship select
+        User Admin: added Prof. as an option in Title select
+        User Admin: added an option to view User Image of previous years
 
     Bug Fixes
         System: fixed toggle field direction for right-to-left languages
-        Staff: fixed coverage longer than one week not including staff duty and activity cover
+        System: fixed uninitialized variable PHP warnings on Parent Dashboard
+        System: fixed login options not working when using SSO button
+        System: fixed login redirect after public registration
+        System: fixed redirect logic in Payment class causing unnecessary error logs
+        Activities: fixed Manage Enrolment when participants are part of more than one activity
+        Activities: fixed the Activities tab on the parent dashboard to work with new activities system
+        Data Updater: fixed attachments being cleared when new data updates are submitted
+        Library: fixed handling of SQL values in Library Browse page
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
+        Planner: fixed Teacher Notes in smart blocks not visible when using the Show Confidential Data toggle
+        Planner: fixed access to class list in Edit Unit when viewing past and upcoming years
+        Rubrics: fixed the bug preventing to view ATL Rubrics table on mobile devices
+        Staff: fixed coverage longer than one week not including staff duty and activity cover
+        Staff: fixed order of Staff Directory to honour the biographicalGroupingOrder setting
+        Staff: fixed missing staff name for general coverage in Daily Coverage Planner
+        Students: updated default value for longTermMedication to N for new medical records
+        Students: fixed sidebar links for custom modules when viewing Student Profiles for left students
+        Timetable: fixed multiple instances of the same TT day in a week not showing up
         Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
+        Timetable Admin: fixed the issue of setting white as the default color for both background and font
+        Timetable Admin: fixed bug to allow timetable deletion
+        User Admin: fixed uneditable fields for new Personal Documents in Manage Users
 
     Deprecations
         Removed all functions in functions.php flagged for deprecation since v25
@@ -1258,8 +1306,8 @@ v21.0.00
         Timetable: fixed View Available Facilities not counting bookings on Fridays
         Timetable: fixed last week/next week links for facilities involved in multiple TTs
         Tracking: fixed Data Points export when internal or external data points set, but not both
-	    Tests: added fallback environment variables if .env is not defining DB details
-	    Tests: fixed HTTP to HTTPs, so SSL enabled environments don't fail
+        Tests: added fallback environment variables if .env is not defining DB details
+        Tests: fixed HTTP to HTTPs, so SSL enabled environments don't fail
         Tests: fixed install suite admin username and password to be compliant with the default password requirements
 
 v20.0.00
@@ -1772,8 +1820,8 @@ v16.0.00
 
 v15.0.01
 --------
-	Security
-		Fixed privacy-related issue in Student Profile permissions
+    Security
+        Fixed privacy-related issue in Student Profile permissions
 
 v15.0.00
 --------

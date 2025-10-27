@@ -37,7 +37,7 @@ class Component
     /**
      * @var array
      */
-    private static $environment = [];
+    private static $environment = ['rtl' => false];
 
     /**
      * Load a set of globals into the environment for component templates to use.

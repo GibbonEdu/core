@@ -91,7 +91,7 @@ x-tooltip.white="
     {% if format != 'print' %}
         {% set iconSize = duration >= 50 ? 'size-6' : duration >= 30 ? 'size-5' : 'size-3' %}
 
-        {% if item.primaryAction and duration >= 20 %}
+        {% if item.primaryAction and duration >= 15 %}
             {% set action = item.primaryAction %}
             {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
             
@@ -100,7 +100,7 @@ x-tooltip.white="
             </a>
         {% endif %}
 
-        {% if item.secondaryAction and duration >= 20 %}
+        {% if item.secondaryAction and duration >= 15 %}
             {% set action = item.secondaryAction %}
             {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
 

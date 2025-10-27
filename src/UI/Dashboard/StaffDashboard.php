@@ -36,6 +36,8 @@ use Gibbon\Contracts\Database\Connection;
 use League\Container\ContainerAwareTrait;
 use Gibbon\Tables\Prefab\TodaysLessonsTable;
 use League\Container\ContainerAwareInterface;
+use Gibbon\Support\Facades\Access;
+
 
 /**
  * Staff Dashboard View Composer
@@ -179,6 +181,14 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
                     ->setURL('/modules/Attendance/attendance_take_byFormGroup.php')
                     ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
+                    ->displayLabel();
+            }
+
+            if (Access::allows('Student Alerts', 'report_alertsByFormGroup')) {
+                $formGroupTable->addHeaderAction('alerts', __('Student Alerts'))
+                    ->setURL('/modules/Student Alerts/report_alertsByFormGroup.php')
+                    ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
+                    ->setIcon('warning')
                     ->displayLabel();
             }
 

@@ -363,6 +363,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('viewableParents', __('Viewable to Parents'));
                 $row->addYesNo('viewableParents')->required()->selected($sharingDefaultParents);
 
+            $row = $form->addRow()->addClass('advanced');
+                $row->addLabel('videoLink', __('Online Lesson'))->description(__('Displays a video link for online lessons'));
+                $row->addURL('videoLink');
+
             //Guests
             $form->addRow()->addClass('advanced')->addHeading('Guests', __('Guests'));
 

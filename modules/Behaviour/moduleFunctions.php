@@ -82,6 +82,14 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                         ->addParam('gibbonYearGroupID', '')
                         ->addParam('type', '')
                         ->displayLabel();
+
+                    $table->addHeaderAction('addMultiple', __('Add Multiple'))
+                        ->setURL('/modules/Behaviour/behaviour_manage_addMulti.php')
+                        ->addParam('gibbonPersonID', $gibbonPersonID)
+                        ->addParam('gibbonFormGroupID', '')
+                        ->addParam('gibbonYearGroupID', '')
+                        ->addParam('type', '')
+                        ->displayLabel();
                 }
 
                 $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');

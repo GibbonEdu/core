@@ -22,8 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Module\Activities\Tables\ActivitiesViewParent;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_myChildren.php') == false) {
     // Access denied
@@ -41,73 +41,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonPersonID = $session->get('gibbonPersonID');
 
-    $activityGateway = $container->get(ActivityGateway::class);
-    $studentGateway = $container->get(StudentGateway::class);
-    $children = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)->fetchAll();
+    $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)->fetchAll();
 
     if (empty($children)) {
         echo Format::alert(__('There are no records to display.'), 'message');
         return;
     }
-
-    $canExplore = isActionAccessible($guid, $connection2, '/modules/Activities/explore.php');
-
+    
     foreach ($children as $child) {
-        
-        $criteria = $activityGateway->newQueryCriteria()
-            ->sortBy(['sequenceNumber', 'accessOpenDate'])
-            ->fromPOST();
-
-        $activities = $activityGateway->queryActivitiesByParticipant($criteria, $gibbonSchoolYearID, $child['gibbonPersonID']);
-
-        $table = DataTable::create('activities');
-        $table->setTitle(Format::name('', $child['preferredName'], $child['surname'], 'Student', false, true));
-
-        $table->addColumn('category', __('Category'))
-            ->sortable(['category'])
-            ->context('primary')
-            ->width('20%')
-            ->format(function ($activity) use ($canExplore) {
-                $url = Url::fromModuleRoute('Activities', 'explore_category.php')->withQueryParams(['gibbonActivityCategoryID' => $activity['gibbonActivityCategoryID'], 'sidebar' => 'false']);
-                return $canExplore 
-                    ? Format::link($url, $activity['category'])
-                    : $activity['category'];
-            });
-
-            $table->addColumn('choices', __('Activity'))
-                ->context('primary')
-                ->width('40%')
-                ->format(function ($activity) {
-                    if (empty($activity['choices'])) {
-                        return $activity['name'].'<br/>'.Format::small($activity['type']);
-                    }
-                    
-                    $choices = explode(',', $activity['choices']);
-                    return Format::small(__('Activity Choices')).':<br/>'.Format::list($choices, 'ol', 'ml-2 my-0 text-xs');
-                });
-
-            $table->addColumn('status', __('Status'))
-                ->width('12%')
-                ->format(function ($activity) {
-                    if (empty($activity['status'])) return Format::small(__('N/A'));
-
-                    return $activity['status'] == 'Pending' 
-                        ? (!empty($activity['choices']) ? Format::tag($activity['status'], 'message')  : '')
-                        : $activity['status'];
-                });
-        
-        $table->addActionColumn()
-            ->addParam('gibbonActivityCategoryID')
-            ->addParam('gibbonActivityID')
-            ->format(function ($activity, $actions) use ($canExplore) {
-                if ($canExplore && !empty($activity['gibbonActivityID'])) {
-                    $actions->addAction('view', __('View Details'))
-                        // ->isModal(1000, 650)
-                        ->addParam('sidebar', 'false')
-                        ->setURL('/modules/Activities/explore_activity.php');
-                }
-            });
-
-        echo $table->render($activities);
+        echo $container->get(ActivitiesViewParent::class)
+            ->createTable($gibbonSchoolYearID, $child['gibbonPersonID'], $child)
+            ->getOutput();
     }
 }

@@ -30,6 +30,7 @@ use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -126,6 +127,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             exit();
                         }
                     }
+
+                    // ALERTS: possible change to Behaviour alert status, recalculate alerts
+                    $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
 
                     // Add a new follow up log, if needed
                     if (!empty($followUp)) {

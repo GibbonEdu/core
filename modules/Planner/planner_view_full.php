@@ -19,21 +19,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
-use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
-use Gibbon\Tables\DataTable;
-use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\Timetable\TimetableDayDateGateway;
-use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -97,6 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         //Check existence of and access to this class.
         else {
             $data = array();
+            $teacher = false; // define variable early to avoid undefined variable $teacher error later
             $gibbonPersonID = null;
             if (isset($_GET['search'])) {
                 $gibbonPersonID = $_GET['search'] ?? '';
@@ -157,6 +159,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 }
             }
 
+            $teacherViewOnlyAccess = $highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses";
+
             if (isset($sql)) {
 
                     $result = $connection2->prepare($sql);
@@ -167,6 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     echo '</div>';
                 } else {
                     $values = $result->fetch();
+
                     $gibbonDepartmentID = null;
                     if (isset($values['gibbonDepartmentID'])) {
                         $gibbonDepartmentID = $values['gibbonDepartmentID'];
@@ -317,6 +322,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         echo $table->render([$values]);
 
+                        $fields = !empty($values['fields'])? json_decode($values['fields'], true) : [];
+                        if (!empty($fields['videoLink']) && ($values['role'] == 'Student' || $values['role'] == 'Teacher' || $roleCategory == 'Staff')) {
+                            echo '<div class="message tag text-base font-normal flex justify-start items-center gap-4">';
+                            echo icon('outline', 'video', 'inline-block size-8 text-blue-600');
+                            echo Format::bold(__('Online Lesson').':').' '.__('Click the link to join the video call: {link}', ['link' => Format::link($fields['videoLink'],$fields['videoLink'])]);
+                            echo '</div>';
+                        }
+
                         //Lesson outcomes
                         $dataOutcomes = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
                         $sqlOutcomes = "SELECT scope, name, nameShort, category, gibbonYearGroupIDList, sequenceNumber, content FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND active='Y' ORDER BY (sequenceNumber='') ASC, sequenceNumber, category, name";
@@ -449,7 +462,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $description = Format::alert(__('This lesson has not had any content assigned to it.'));
                         }
 
-                        if (!empty($values['teachersNotes']) and ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') and ($values['role'] == 'Teacher' or $values['role'] == 'Assistant' or $values['role'] == 'Technician')) {
+                        if (!empty($values['teachersNotes']) && ($highestAction == 'Lesson Planner_viewEditAllClasses' || ($highestAction == 'Lesson Planner_viewAllEditMyClasses' && ($values['role'] == 'Teacher' || $values['role'] == 'Assistant' || $values['role'] == 'Technician')) )) {
                             $description .= '<div x-cloak x-show="globalShowHide" x-transition id="teachersNotes" class="unit-block rounded p-8 mb-4 border bg-blue-50 text-gray-700"><h3 class="m-0">'.__('Teacher\'s Notes').'</h3>'.$values['teachersNotes'].'</div>';
                         }
 
@@ -781,7 +794,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission').'</span><br/>';
                                     echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
 
-                                    $teacherViewOnlyAccess = $highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses";
                                     if ($teacher || $teacherViewOnlyAccess) {
 
                                         //List submissions
@@ -1146,9 +1158,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $gibbonCourseClassID = $values['gibbonCourseClassID'];
                         $columns = 2;
 
-                        $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+                        $highestProfileAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
-                        $canAccessProfile = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes') ;
+                        $canAccessProfile = ($highestProfileAction == 'View Student Profile_brief' || $highestProfileAction == 'View Student Profile_full' || $highestProfileAction == 'View Student Profile_fullNoNotes' || $highestProfileAction == 'View Student Profile_fullEditAllNotes') ;
 
                         // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
                         $attendanceEnabled = $values['attendance'] == 'Y';
@@ -1168,7 +1180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form = Form::createBlank('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
                         $form->setClass('w-full font-sans text-xs text-gray-700');
                         $form->setAutocomplete('off');
-                        $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
+                        $form->setTitle($attendanceEnabled && $canTakeAttendance ? __('Participants & Attendance') : __('Participants'));
 
                         // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {
@@ -1217,15 +1229,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             if (empty($classLogs)) {
                                 $form->setDescription(Format::alert(__('Attendance has not been taken. The entries below are a best-guess, not actual data.')));
                             } else {
-                                $logText = '<ul class="ml-4">';
-                                foreach ($classLogs as $log) {
-                                    $linkText = Format::time($log['timestampTaken']).' '.Format::date($log['date']).' '.__('by').' '.Format::name('', $log['preferredName'], $log['surname'], 'Student', true);
+                                if ($teacherViewOnlyAccess) {
+                                    $logText = '<ul class="ml-4">';
+                                    foreach ($classLogs as $log) {
+                                        $linkText = Format::time($log['timestampTaken']).' '.Format::date($log['date']).' '.__('by').' '.Format::name('', $log['preferredName'], $log['surname'], 'Student', true);
 
-                                    $logText .= '<li>'.Format::link('./index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.Format::date($log['date']), $linkText, ['style' => 'color: inherit']).'</li>';
+                                        $logText .= '<li>'.Format::link('./index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.Format::date($log['date']), $linkText, ['style' => 'color: inherit']).'</li>';
 
+                                    }
+                                    $logText .= '</ul>';
+                                    $form->setDescription(Format::alert(__('Attendance has been taken at the following times for this lesson:').$logText, 'success'));
+                                } else {
+                                    // GDPR: no student names for restricted viewers
+                                    $form->setDescription(Format::alert(__('Attendance records exist for this lesson.'), 'success'));
                                 }
-                                $logText .= '</ul>';
-                                $form->setDescription(Format::alert(__('Attendance has been taken at the following times for this lesson:').$logText, 'success'));
                             }
                         }
 
@@ -1234,9 +1251,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         // Display attendance grid
                         $count = 0;
 
-                        $canViewConfidential = ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
+                        $canViewConfidential = ($highestProfileAction == 'View Student Profile_full' || $highestProfileAction == 'View Student Profile_fullNoNotes' || $highestProfileAction == 'View Student Profile_fullEditAllNotes');
+                        // Only users with full planner permissions can see students in this panel
 
                         foreach ($participants as $person) {
+                            // GDPR: hide ALL student rows unless full planner permissions
+                            if (!$teacherViewOnlyAccess && ($person['role'] ?? '') === 'Student') {
+                                continue;
+                            }
+
                             $form->addHiddenValue($count . '-gibbonPersonID', $person['gibbonPersonID']);
                             $form->addHiddenValue($count . '-prefilled', $person['log']['prefilled'] ?? '');
 
@@ -1245,19 +1268,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 ->addClass($person['cellHighlight'] ?? '');
 
                             // Display alerts and birthdays, teacher only
-                            if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && $teacher == true) {
-                                $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "x-cloak x-show='globalShowHide'");
+                            $alert = '';
+                            if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && ($teacher || $teacherViewOnlyAccess)) {
+                                $alert = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], ['attributes' => "x-cloak x-transition.opacity x-show='globalShowHide'"]);
                             }
-
+                                                        
                             if ($person['role'] == 'Student' && $canViewConfidential) {
                                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }
 
-                            // Display a photo per user
-                            $cell->addContent(Format::userPhoto($person['image_240'], 75, ''))
-                                ->setClass('relative')
-                                ->prepend($alert ?? '')
-                                ->append($icon ?? '');
+                            // Display a photo per user (never for students unless permitted)
+                            if (($person['role'] ?? '') !== 'Student' || $teacherViewOnlyAccess) {
+                                $cell->addContent(Format::userPhoto($person['image_240'], 75, ''))
+                                    ->setClass('relative')
+                                    ->prepend($alert ?? '')
+                                    ->append($icon ?? '');
+                            }
 
                             if ($person['role'] == 'Student') {
                                 // Add attendance fields, teacher only
@@ -1324,8 +1350,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $form->setTitle(__('Guests'));
 
                             $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');
-
+                            
+                            $shown = false;
                             foreach ($guests as $guest) {
+                                // GDPR: never render Student guests unless full permissions
+                                if (!$teacherViewOnlyAccess && (
+                                        (($guest['role'] ?? '') === 'Student') ||
+                                        (($guest['type'] ?? '') === 'Student')
+                                    )) {
+                                    continue; // this skips just this guest item
+                                }
+                                $shown = true;
                                 $cell = $grid->addCell()->setClass('text-center py-4 px-1 -mr-px -mb-px flex flex-col justify-start');
 
                                 $cell->addContent(Format::userPhoto($guest['image_240'], 75, ''));
@@ -1333,7 +1368,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $cell->addContent($guest['role']);
                             }
 
-                            $page->addSidebarExtra($form->getOutput());
+                            if ($shown) {
+                                $page->addSidebarExtra($form->getOutput());
+                            }
                         }
 
                     }

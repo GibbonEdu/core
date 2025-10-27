@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
             //Let's go!
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_deleteProcess.php", true);
             $form->addHiddenValue('gibbonTTID', $gibbonTTID);
-            $form->addHiddenValue('gibbonSchoolYearID', $$_GET['gibbonSchoolYearID']);
+            $form->addHiddenValue('gibbonSchoolYearID', $_GET['gibbonSchoolYearID']);
             echo $form->getOutput();
         }
     }

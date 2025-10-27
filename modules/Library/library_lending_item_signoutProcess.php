@@ -19,8 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\Comms\EmailTemplate;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\FamilyGateway;
 
 require_once '../../gibbon.php';
 
@@ -40,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
+    // Proceed!
     $statusCurrent = $_POST['statusCurrent'] ?? '';
     $status = $_POST['status'] ?? '';
     $typeActions = [
@@ -51,13 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
         'Reserved'       => 'Reserve',
     ];
     $type = $typeActions[$status] ?? 'Other';
-
     $gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? null;
     $returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
+    $notifyParents = $_POST['notifyParents'] ?? 'N';
     $returnAction = $_POST['returnAction'] ?? '';
     $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? null;
 
-    //Validate Inputs
+    // Validate Inputs
     if ($gibbonLibraryItemID == '' or $status == '' or empty($gibbonPersonIDStatusResponsible) or $statusCurrent != 'Available') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -100,6 +104,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 exit();
             }
 
+            // Send notifications to parents if Notify Parents is selected for a Student
+            $userDetails = $container->get(UserGateway::class)->getUserDetails($gibbonPersonIDStatusResponsible, $session->get('gibbonSchoolYearID'));
+
+            if ($notifyParents == 'Y' && $userDetails['roleCategory'] == 'Student') {
+                $template = $container->get(EmailTemplate::class)->setTemplate('Parent Notification for Student Lending Item');
+
+                $mail = $container->get(Mailer::class);
+                $mail->SMTPKeepAlive = true;
+
+                // Get Parent Contact Details
+                $familyGateway = $container->get(FamilyGateway::class);
+                $familyAdults = $familyGateway->selectContactPriority1AdultsByStudent($gibbonPersonIDStatusResponsible)->fetchAll();
+
+                foreach ($familyAdults as $adult) {
+                    // Format an email to send to the parent
+                    $templateData = [
+                        'parentTitle'         => $adult['title'],
+                        'parentPreferredName' => $adult['preferredName'],
+                        'parentSurname'       => $adult['surname'],
+                        'parentEmail'         => $adult['email'],
+                        'date'                =>  Format::date(date('Y-m-d')),
+                        'studentPreferredName' => $userDetails['preferredName'],
+                        'studentSurname' => $userDetails['surname'],
+                    ];
+
+                    // Setup the email recipients
+                    $mail->ClearAddresses();
+                    $mail->AddAddress($adult['email']);
+
+                    $mail->SetFrom($session->get('organisationEmail'), $session->get('organisationName'));
+                    $mail->AddReplyTo($session->get('organisationEmail'));
+                    $mail->setDefaultSender($template->renderSubject($templateData));
+
+                    $mail->renderBody('mail/message.twig.html', [
+                        'title'  => $template->renderSubject($templateData),
+                        'body'   => $template->renderBody($templateData),
+                    ]);
+
+                    // Send email and record the result
+                    $sent = $mail->Send();
+
+                    $emails[$emailIndex] = Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').' ('.$adult['email'].') - '.__('Student').': '.$userDetails['preferredName'].' '.$userDetails['surname']. ($sent ? __('Sent') : __('Failed') );
+                    $emailIndex++;
+                }
+            }
+            
             $URL = $URLSuccess.'&return=success0';
             header("Location: {$URL}");
         }

@@ -75,7 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     $changeList = [];
 
     // Update student enrolments
-    foreach ($enrolmentList as $gibbonPersonID => $gibbonActivityID) {
+    foreach ($enrolmentList as $person => $gibbonActivityID) {
+        list($gibbonPersonID, $enrolmentID) = array_pad(explode('-', $person, 2), 2, '');
         $change = '';
 
         // Get any existing enrolment

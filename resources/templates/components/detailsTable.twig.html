@@ -50,14 +50,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     <h4>{{ __(heading) }}</h4>
                 {% endif %}
 
-                <div class="sm:grid {{ gridClass|default('grid-cols-3') }} rounded border bg-gray-100 text-xs text-gray-700">
+                <div class="sm:grid {{ gridClass|default('grid-cols-2 sm:grid-cols-3') }} rounded border bg-gray-50 text-xs text-gray-700">
             
                 {% for columnIndex, column in headingColumns %}
 
-                    <div class="p-2 border-b -mb-px {{ column.getClass }}" 
+                    <div class="px-4 py-4 border-b -mb-px {{ column.getClass }}" 
                         style="{{ column.getWidth != 'auto' ? 'width: ' ~ column.getWidth }}" >
-                        <span class="block text-sm font-bold mb-1">{{ column.getLabel | raw }}</span>
-                        <span class="block text-gray-700 overflow-x-auto">{{ column.getOutput(rowData) | raw }}</span>
+                        <span class="block text-sm text-gray-700 font-semibold mb-1.5">{{ column.getLabel | raw }}</span>
+                        <span class="block text-sm text-gray-700 overflow-x-auto">{{ column.getOutput(rowData) | raw }}</span>
                     </div>
 
                 {% endfor %}

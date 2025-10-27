@@ -192,6 +192,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $customRequireFail = false;
             $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Lesson Plan', [], $customRequireFail);
 
+            if (!empty($_POST['videoLink'])) {
+                $fields = !empty($fields) ? json_decode($fields, true) : [];
+                $fields = json_encode(['videoLink'=> $_POST['videoLink'] ?? ''] + $fields);
+            }
+
             if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
                 $URL .= "&return=error1$params";
                 header("Location: {$URL}");

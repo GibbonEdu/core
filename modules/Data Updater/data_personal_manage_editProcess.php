@@ -28,6 +28,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -429,6 +430,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
                     $container->get(PersonalDocumentHandler::class)->updatePersonalDocumentsFromDataUpdate($gibbonPersonID, $gibbonPersonUpdateID, $params);
 
+                    // ALERTS: possible change to Privacy alert status, recalculate alerts
+                    $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
+                    
                     //Notify tutors of change to privacy settings
                     if (isset($_POST['newprivacyOn'])) {
                         if ($_POST['newprivacyOn'] == 'on') {

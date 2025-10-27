@@ -22,11 +22,16 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\MultiPartForm;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Module\Activities\EnrolmentGenerator;
 use Gibbon\Domain\Activities\ActivityChoiceGateway;
 use Gibbon\Domain\Activities\ActivityStudentGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
+use Gibbon\Domain\IndividualNeeds\INPersonDescriptorGateway;
+use Gibbon\View\Component;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
 
 
 
@@ -44,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
     $activityStudentGateway = $container->get(ActivityStudentGateway::class);
+    $alertGateway = $container->get(AlertGateway::class);
 
     $categories = $categoryGateway->selectCategoriesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
     
@@ -83,7 +89,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     $unenrolled = $activityStudentGateway->queryUnenrolledStudentsByCategory($criteria, $params['gibbonActivityCategoryID'])->toArray();
 
     $enrolments = array_merge($enrolments, $unenrolled);
-    
+    $alert = $container->get(Alert::class);
+
+    foreach ($enrolments as $index => $person) {
+        $gibbonPersonID = $person['gibbonPersonID'] ?? '';
+        $person['age'] = !empty($person['dob']) ? Format::age($person['dob']) : '';
+        $person['link'] = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
+        $person['alerts'] = $alert->getAlertBar($gibbonPersonID, ['wrap' => false, 'filter' => ['Medical', 'Individual Needs', 'Privacy']]);
+
+        $enrolments[$index] = $person;
+    }
+
     $groups = [];
 
     foreach ($enrolments as $person) {

@@ -55,7 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     $assigned = [];
 
     // Update staffing
-    foreach ($staffingList as $gibbonPersonID => $personActivities) {
+    foreach ($staffingList as $person => $personActivities) {
+        list($gibbonPersonID, $enrolmentID) = array_pad(explode('-', $person, 2), 2, '');
 
         foreach ($personActivities as $listIndex => $gibbonActivityID) {
             if (empty($gibbonActivityID)) {
@@ -67,14 +68,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
             if (!empty($staffing)) {
                 // Update and existing staffing
                 $updated = $staffGateway->update($staffing['gibbonActivityStaffID'], [
-                    'role' => $roleList[$gibbonPersonID][$listIndex] ?? 'Assistant',
+                    'role' => $roleList[$person][$listIndex] ?? 'Assistant',
                 ]);
             } else {
                 // Add a new staffing
                 $inserted = $staffGateway->insert([
                     'gibbonActivityID' => $gibbonActivityID,
                     'gibbonPersonID'   => $gibbonPersonID,
-                    'role'             => $roleList[$gibbonPersonID][$listIndex] ?? 'Assistant',
+                    'role'             => $roleList[$person][$listIndex] ?? 'Assistant',
                 ]);
                 $partialFail &= !$inserted;
             }

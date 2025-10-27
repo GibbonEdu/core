@@ -1,0 +1,73 @@
+details:
+    type: libraryItemEventReturn
+    name: Library Item Event Return
+    table: gibbonLibraryItemEvent
+    modes: { update: true, insert: false, export: true }
+access:
+    module: Library
+    action: Manage Catalog
+fields:
+    id: 
+        name: "School ID"
+        desc: ""
+        args: { filter: string, required: true }
+    gibbonLibraryItemID: 
+        name: "ID"
+        desc: "gibbonLibraryItemID"
+        args: { filter: string, required: true, linked: id, readonly: [ gibbonLibraryItem ] } 
+        relationship: { table: gibbonLibraryItem, key: gibbonLibraryItemID, field: id }
+    gibbonPersonIDStatusResponsible:
+        name: "Responsible User"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
+    gibbonPersonIDIn:
+        name: "Created By"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
+    type:
+        name: "Event Type"
+        desc: ""
+        value: "Loan"
+        args: { filter: string, hidden: true }
+    status:
+        name: "Current Status"
+        desc: ""
+        value: "Available"
+        args: { filter: string, hidden: true }
+    timestampReturn:
+        name: "Timestamp"
+        desc: ""
+        args: { filter: timestamp, hidden: true, function: timestamp }
+    gibbonLibraryItemEvent.status:
+        name: "New Status"
+        desc: ""
+        value: "Returned"
+        args: { filter: string, hidden: true, readonly: [ gibbonLibraryItem ] }
+    gibbonLibraryItemEventID: 
+        name: "gibbonLibraryItemEventID"
+        desc: ""
+        value: "On Loan"
+        args: { filter: string, required: true, hidden: true } 
+        relationship: { table: gibbonLibraryItemEvent, key: gibbonLibraryItemEventID, field: [ status, gibbonLibraryItemID, gibbonPersonIDStatusResponsible, type ] }
+tables:
+    gibbonLibraryItem:
+        primaryKey:
+            gibbonLibraryItemID
+        uniqueKeys:
+            - [ id ]
+        fields:
+            - id
+            - status
+    gibbonLibraryItemEvent:
+        primaryKey:
+            gibbonLibraryItemEventID
+        uniqueKeys:
+            - [ gibbonLibraryItemEventID ]
+        fields:
+            - gibbonLibraryItemEvent.status
+            - gibbonLibraryItemEventID
+            - gibbonLibraryItemID
+            - timestampReturn
+            - gibbonPersonIDIn

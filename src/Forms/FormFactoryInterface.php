@@ -26,9 +26,19 @@ use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Forms\Layout\Meta;
+use Gibbon\Forms\Layout\Section;
 
 interface FormFactoryInterface
 {
+    /**
+     * Create form field.
+     *
+     * @param string $id  Section id.
+     * @param string $heading  Section heading.
+     * @return \Gibbon\Forms\Layout\Section
+     */
+    public function createSection($id, $heading = ''): Section;
+
     /**
      * Create form row.
      *

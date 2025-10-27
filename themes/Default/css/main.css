@@ -807,7 +807,6 @@ table.smallIntBorder td.noPadding {
 }
 
 .blockTemplate {
-    overflow: hidden;
     background: #edf7ff;
     border: 1px solid #d8dcdf;
     margin: 0 0 5px;
@@ -857,7 +856,7 @@ table.smallIntBorder td.noPadding {
     height: 1.2rem;
     position: absolute;
     top: 30%;
-    right: 6px;
+    right: 0;
 }
 
 .dataTable .sortable:not(.sorting):hover:after,

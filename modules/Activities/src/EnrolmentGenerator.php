@@ -19,7 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Activities;
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityChoiceGateway;
 use Gibbon\Domain\Activities\ActivityStudentGateway;
@@ -35,6 +37,7 @@ class EnrolmentGenerator
     protected $activityStudentGateway;
     protected $activityChoiceGateway;
     protected $activityCategoryGateway;
+    protected $alert;
 
     protected $newStudentPriority = true;
     protected $yearGroupPriority = true;
@@ -47,12 +50,13 @@ class EnrolmentGenerator
     protected $choices;
     protected $groups;
 
-    public function __construct(ActivityGateway $activityGateway, ActivityStudentGateway $activityStudentGateway, ActivityChoiceGateway $activityChoiceGateway, ActivityCategoryGateway $activityCategoryGateway)
+    public function __construct(ActivityGateway $activityGateway, ActivityStudentGateway $activityStudentGateway, ActivityChoiceGateway $activityChoiceGateway, ActivityCategoryGateway $activityCategoryGateway, Alert $alert)
     {
         $this->activityGateway = $activityGateway;
         $this->activityStudentGateway = $activityStudentGateway;
         $this->activityChoiceGateway = $activityChoiceGateway;
         $this->activityCategoryGateway = $activityCategoryGateway;
+        $this->alert = $alert;
     }
 
     public function getActivities()
@@ -114,7 +118,7 @@ class EnrolmentGenerator
             if (!empty($this->enrolments[$gibbonPersonID])) continue;
             
             for ($i = 1; $i <= $this->signUpChoices; $i++) {
-                $person["choice{$i}"] = str_pad($person["choice{$i}"], 8, '0', STR_PAD_LEFT);
+                $person["choice{$i}"] = str_pad($person["choice{$i}"] ?? '', 8, '0', STR_PAD_LEFT);
                 $person["choice{$i}Name"] = $this->activities[$person["choice{$i}"]]['name'] ?? '';
             }
 
@@ -130,12 +134,15 @@ class EnrolmentGenerator
     {
         // Preload any existing enrolments
         foreach ($this->enrolments as $gibbonPersonID => $person) {
+            $person = $this->getAlertData($person);
             $person['enrolled'] = true;
+
             $this->groups[$person['gibbonActivityID']][$gibbonPersonID] = $person;
         }
 
         // Assign choices to groups until the groups fill up
         foreach ($this->choices as $gibbonPersonID => $person) {
+            $person = $this->getAlertData($person);
             $enrolmentGroup = 0;
 
             for ($i = 1; $i <= 3; $i++) {
@@ -173,7 +180,9 @@ class EnrolmentGenerator
     {
         $results = ['total' => 0, 'choice0' => 0, 'choice1' => 0, 'choice2' => 0, 'choice3' => 0, 'choice4' => 0, 'choice5' => 0, 'unassigned' => 0, 'inserted' => 0, 'updated' => 0, 'error' => 0];
 
-        foreach ($enrolmentList as $gibbonPersonID => $gibbonActivityID) {
+        foreach ($enrolmentList as $person => $gibbonActivityID) {
+            list($gibbonPersonID, $enrolmentID) = array_pad(explode('-', $person, 2), 2, '');
+
             if (empty($gibbonActivityID)) {
                 $results['unassigned']++;
                 continue;
@@ -262,5 +271,13 @@ class EnrolmentGenerator
             return $b['weight'] <=> $a['weight'];
         });
     }
-    
+
+    protected function getAlertData(array $person) : array 
+    {
+        $person['age'] = !empty($person['dob']) ? Format::age($person['dob']) : '';
+        $person['link'] = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
+        $person['alerts'] = $this->alert->getAlertBar($person['gibbonPersonID'], ['wrap' => false, 'filter' => ['Medical', 'Individual Needs', 'Privacy']]);
+
+        return $person;
+    }
 }

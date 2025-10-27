@@ -84,6 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
         $col->addLabel('description', __('Introduction'));
         $col->addEditor('description', $guid)->showMedia(true);
 
+    // Registration
+    $form->addRow()->addHeading(__('Registration'));
+
+    $row = $form->addRow();
+    $row->addLabel('gibbonYearGroupIDParentRegister', __('Parent Registration Access'))->description(__('If parent registration is enabled, which student year groups can parents register activities for?'));
+    $row->addCheckboxYearGroup('gibbonYearGroupIDParentRegister')
+        ->addCheckAllNone()
+        ->loadFromCSV($values);
+
     // ACCESS
     $form->addRow()->addHeading(__('Access'));
 

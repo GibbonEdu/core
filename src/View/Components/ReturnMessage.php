@@ -40,10 +40,9 @@ class ReturnMessage
         $this->addReturns([ 
             //Successes
             'success0' => __('Your request was completed successfully.'),
-            'success1' => __('Password reset was successful: you may now log in.'),
+            'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.'),
             'success5' => __('Your request has been successfully started as a background process. It will continue to run on the server until complete and you will be notified of any errors.'),
-            'successa' => __('Your account has been successfully updated. You can now continue to use the system as per normal.'),
-            
+
             //Errors
             'error0' => __('Your request failed because you do not have access to this action.'),
             'error1' => __('Your request failed because your inputs were invalid.'),
@@ -61,8 +60,6 @@ class ReturnMessage
             'warning0' => __('Your optional extra data failed to save.'),
             'warning1' => __('Your request was successful, but some data was not properly saved.'),
             'warning2' => __('Your request was successful, but some data was not properly deleted.'),
-            'warning3' => __('Your request was successful but the emojis and symbols in your text have been removed due to compatibility constraints.'),
-            'warning4' => __('You have selected more than 50 individuals. Please select a target of less than 50 individuals and click Send.'),
         ]);
     }
 
@@ -97,6 +94,16 @@ class ReturnMessage
     }
 
     /**
+     * Gets the array of return codes
+     *
+     * @return array
+     */
+    public function getReturns(): array
+    {
+        return $this->returns;
+    }
+
+    /**
      * Process a return string and get back a context and text.
      *
      * @param string $return
@@ -123,6 +130,7 @@ class ReturnMessage
 
             return ['context' => $returnClass, 'text' => $returnMessage];
         }
-        return null;
+
+        return [];
     }
 }

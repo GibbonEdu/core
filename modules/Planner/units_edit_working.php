@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addHeaderAction('add', __('Add'))
+    $form->addHeaderAction('add', __('Add Lessons'))
         ->setURL('/modules/Planner/units_edit_working_add.php')
         ->addParams($urlParams)
         ->displayLabel();
@@ -200,7 +200,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     }
 
-    $form->addRow()->addSubmit();
+    $row = $form->addRow();
+    $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
+    $row->addSubmit();
 
     echo $form->getOutput();
 

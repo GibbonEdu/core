@@ -26,6 +26,7 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -458,6 +459,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                 }
             }
+
+            // ALERTS: possible change to Medical alert status, recalculate alerts
+            $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
 
             if (!empty($conditions)) {
                 $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();

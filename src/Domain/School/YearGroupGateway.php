@@ -91,6 +91,19 @@ class YearGroupGateway extends QueryableGateway
     }
 
     /**
+     * Get the year group for a given Head of Year by gibbonPersonID
+     *
+     * @param string $gibbonPersonIDHOY
+     * @return array
+     */
+    public function getYearGroupByPerson(string $gibbonPersonIDHOY)
+    {
+        $data = ['gibbonPersonIDHOY' => $gibbonPersonIDHOY];
+        $sql = "SELECT * FROM gibbonYearGroup WHERE gibbonPersonIDHOY=:gibbonPersonIDHOY ";
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    /**
      * Select year group by ids.
      *
      * @version v24

@@ -41,6 +41,7 @@ if (!$session->exists("username")) {
     }
 
     $returns = array();
+    $returns['successa'] = __('Your account has been successfully updated. You can now continue to use the system as per normal.');
     $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationAdministratorEmail')."'>".$session->get('organisationAdministratorName').'</a>');
     $returns['error4'] = __('Your request failed due to non-matching passwords.');
     $returns['error3'] = __('Your request failed due to incorrect current password.');

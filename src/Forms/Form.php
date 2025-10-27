@@ -30,17 +30,22 @@ use Gibbon\Forms\FormFactoryInterface;
 use League\Container\ContainerAwareTrait;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
+use Gibbon\Forms\Traits\FormFieldsTrait;
+use Gibbon\Forms\Layout\Row;
 
 /**
  * Form
  *
  * @version v14
  * @since   v14
+ * 
+ * {@inheritDoc}
  */
 class Form implements OutputableInterface
 {
     use BasicAttributesTrait;
     use ContainerAwareTrait;
+    use FormFieldsTrait;
 
     protected $title;
     protected $description;
@@ -56,6 +61,8 @@ class Form implements OutputableInterface
     protected $header = [];
     protected $steps = [];
     protected $step = null;
+
+    protected $sections = [];
 
     /**
      * Create a form with a specific factory and renderer.
@@ -80,9 +87,9 @@ class Form implements OutputableInterface
      * @param    string  $action
      * @param    string  $method
      * @param    string  $class
-     * @return   object  Form object
+     * @return  Form
      */
-    public static function create($id, $action, $method = 'post', $class = 'standardForm')
+    public static function create($id, $action, $method = 'post', $class = 'standardForm') : Form
     {
         global $container;
 
@@ -106,7 +113,10 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public static function createSearch($id = 'search', $action = '', $method = 'get', $class = '')
+    /**
+     * @return Form
+     */
+    public static function createSearch($id = 'search', $action = '', $method = 'get', $class = '') : Form
     {
         $form = static::create($id, $action ?? Url::fromRoute(), $method, $class);
         $form->renderer->setTemplate('components/formSearch.twig.html');
@@ -123,7 +133,10 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public static function createTable($id, $action, $method = 'post', $class = 'smallIntBorder w-full')
+    /**
+     * @return Form
+     */
+    public static function createTable($id, $action, $method = 'post', $class = 'smallIntBorder w-full') : Form
     {
         $form = static::create($id, $action, $method, $class);
         $form->renderer->setTemplate('components/formTable.twig.html');
@@ -131,7 +144,10 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public static function createBlank($id, $action = '', $method = 'post', $class = '')
+    /**
+     * @return Form
+     */
+    public static function createBlank($id, $action = '', $method = 'post', $class = '') : Form
     {
         $form = static::create($id, $action, $method, $class);
         $form->renderer->setTemplate('components/formBlank.twig.html');
@@ -276,47 +292,102 @@ class Form implements OutputableInterface
     }
 
     /**
+     * Adds an Element object to the form and returns it.
+     * @param  string  $id
+     * @param  Layout\Element  $element
+     * @return Element
+     */
+    public function addElement(Layout\Element $element)
+    {
+        $this->getCurrentSection()->addRow()->addElement($element);
+
+        return $element;
+    }
+
+    public function addSection(string $id = '', string $heading = '')
+    {
+        $id = !empty($id) ? $id : 'section-'.count($this->sections);
+
+        $this->sections[$id] = $this->factory->createSection($id, $heading);
+
+        return $this->sections[$id];
+    }
+
+    public function getSection(string $id)
+    {
+        return $this->sections[$id] ?? null;
+    }
+
+    public function getSections()
+    {
+        return $this->sections;
+    }
+
+    public function getSectionCount()
+    {
+        return count($this->sections);
+    }
+
+    public function getCurrentRow()
+    {
+        return $this->getCurrentSection()->getCurrentRow();
+    }
+
+    public function getCurrentSection()
+    {
+        if (empty($this->sections)) {
+            $this->addSection();
+        }
+
+        return end($this->sections);
+    }
+
+    /**
      * Adds a Row object to the form and returns it.
      * @param  string  $id
-     * @return object Row
+     * @return Row
      */
-    public function addRow($id = '')
+    public function addRow($id = '') : Row
     {
-        $section = !empty($this->rows) ? end($this->rows)->getHeading() : '';
-        $row = $this->factory->createRow($id)->setHeading($section);
+        $section = $this->getCurrentSection();
+        $heading = $section->getRowCount() > 0 ? $section->getCurrentRow()->getHeading() :'';
 
-        $this->rows[] = $row;
+        $row = $this->factory->createRow($id)->setHeading($heading);
+
+        $section->addRow($row);
 
         return $row;
     }
 
     /**
-     * Cet the last added Row object, null if none exist.
-     * @return  object|null
+     * Get the last added Row object, null if none exist.
+     * @return  Row
      */
-    public function getRow()
+    public function getRow() : Row
     {
-        return (!empty($this->rows))? end($this->rows) : null;
+        return $this->getCurrentRow();
     }
 
     /**
      * Get an array of all Row objects in the form.
      * @return  array
      */
-    public function getRows()
+    public function getRows() : array
     {
-        return array_filter($this->rows, function ($item) {
-            return !empty($item->getElements());
-        });
+        return array_reduce($this->sections, function ($group, $section) {
+            if ($section->getRowCount() == 0) return $group;
+            $group = array_merge($group, $section->getRows());
+            return $group;
+        }, []);
     }
 
     /**
      * Get the total number of rows in a form.
      * @return  array
      */
-    public function getRowCount()
+    public function getRowCount() : int
     {
-        return count($this->rows);
+        return count($this->sections);
     }
 
     /**
@@ -326,11 +397,29 @@ class Form implements OutputableInterface
      */
     public function getRowsByHeading()
     {
-        return array_reduce($this->rows, function ($group, $row) {
-            // if ($row->getElementCount() == 0) return $group;
+        $group = array_reduce($this->getRows(), function ($group, $row) {
+            if ($row->getElementCount() == 0) return $group;
             $group[$row->getHeading()][] = $row;
             return $group;
         }, []);
+
+        return $group;
+    }
+
+    /**
+     * Reset sections based on row headings, backwards compatibility
+     *
+     * @return void
+     */
+    protected function resetSections()
+    {
+        $rows = $this->getRowsByHeading();
+        $this->sections = [];
+
+        foreach ($rows as $heading => $rows) {
+            $label = $heading != 'submit' ? $heading : '';
+            $this->addSection($heading, $label)->setRows($rows);
+        }
     }
 
     /**
@@ -341,8 +430,8 @@ class Form implements OutputableInterface
      */
     public function hasHeading(string $heading)
     {
-        return count(array_filter($this->rows, function ($row) use ($heading) {
-            return $row->getHeading() == $heading;
+        return count(array_filter($this->sections, function ($section) use ($heading) {
+            return $section->getHeading() == $heading;
         }));
     }
 
@@ -353,9 +442,7 @@ class Form implements OutputableInterface
      */
     public function addMeta()
     {
-        if (empty($this->meta)) {
-            $this->meta = $this->factory->createMeta();
-        }
+        $this->meta = $this->factory->createMeta();
 
         return $this->meta;
     }
@@ -643,6 +730,14 @@ class Form implements OutputableInterface
      */
     public function getOutput()
     {
+        if ($this->hasMeta()) {
+            if (count($this->sections) <= 2) $this->resetSections();
+
+            if ($this->sections > 2) {
+                $this->getMeta()->addSectionList($this->getSections());
+            }
+        }
+
         return $this->renderer->renderForm($this);
     }
 }

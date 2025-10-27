@@ -45,5 +45,16 @@ class INPersonDescriptorGateway extends QueryableGateway implements ScrubbableGa
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['gibbonINDescriptorID'=> null,'gibbonAlertLevelID'=> null];
-    
+
+    public function selectINDescriptorAlertLevelsByPerson($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonAlertLevel.name as level 
+            FROM gibbonINPersonDescriptor 
+            JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) 
+            WHERE gibbonPersonID=:gibbonPersonID 
+            ORDER BY gibbonAlertLevel.sequenceNumber DESC";
+
+        return $this->db()->select($sql, $data);
+    }
 }

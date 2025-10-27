@@ -153,10 +153,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $currentRole = $container->get(RoleGateway::class)->getByID($session->get('gibbonRoleIDCurrent'));
                         $selectedSchoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
 
-                        $isCurrentYear = $session->get('gibbonSchoolYearIDCurrent') == $gibbonSchoolYearID && $session->get('gibbonSchoolYearIDCurrent') == $session->get('gibbonSchoolYearID');
+                        $isCurrentYear = $session->get('gibbonSchoolYearIDCurrent') == $gibbonSchoolYearID;
                         $canAccessUpcomingYear = !empty($currentRole) && $currentRole['futureYearsLogin'] == 'Y';
+                        $canAccessPastYear = !empty($currentRole) && $currentRole['pastYearsLogin'] == 'Y';
 
-                        if ($isCurrentYear || ($canAccessUpcomingYear && $selectedSchoolYear['status'] == 'Upcoming')) {
+                        if ($isCurrentYear || ($canAccessUpcomingYear && $selectedSchoolYear['status'] == 'Upcoming') || ($canAccessPastYear && $selectedSchoolYear['status'] == 'Past')) {
                             $dataClass = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                             $sqlClass = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort, running, gibbonUnitClassID, gibbonUnitID
                                         FROM gibbonCourseClass

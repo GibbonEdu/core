@@ -43,6 +43,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $page->return->addReturns([
         'error5' => __('Your request failed due to an attachment error.'),
         'error6' => __('Your message is not ready to send because no targets have been selected or no valid recipients were found. Be sure to select at least one target for your message.'),
+        'warning3' => __('Your request was successful but the emojis and symbols in your text have been removed due to compatibility constraints.'),
+        'warning4' => __('You have selected more than 50 individuals. Please select a target of less than 50 individuals and click Send.'),
     ]);
 
     // Check if gibbonMessengerID specified

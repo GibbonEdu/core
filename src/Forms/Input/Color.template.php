@@ -13,7 +13,7 @@
 ],}" x-cloak>
 
     <button type="button" @click="isOpen = !isOpen"
-        class="w-10 h-10 rounded-full focus:outline-none inline-flex items-center justify-center shadow hover:ring" :class="{'text-gray-500': colorSelected == '#ffffff', 'text-white': colorSelected != '#ffffff'}"
+        class="w-10 h-10 rounded-full focus:outline-none inline-flex items-center justify-center shadow hover:ring" :class="{'text-gray-500': colorSelected == '#ffffff' || colorSelected == '', 'text-white': colorSelected != '#ffffff' && colorSelected != ''}"
         :style="`background: ${colorSelected};`">
         <?= icon('outline', 'swatch', 'size-6'); ?>
     </button>

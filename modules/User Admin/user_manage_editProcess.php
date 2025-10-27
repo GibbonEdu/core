@@ -16,17 +16,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
-use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
-use Gibbon\Data\Validator;
-use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\NotificationGateway;
 
 require_once '../../gibbon.php';
 
@@ -267,6 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     header("Location: {$URL}");
                 } else {
                     $imageFail = false;
+                    $updateBackupPhoto = false;
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
                         $path = $session->get('absolutePath');
@@ -282,6 +285,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
+                            } else {
+                                $updateBackupPhoto = true;
                             }
                         }
                     } else {
@@ -322,6 +327,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
                             $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                         }
+                        
+                        if (!empty($updateBackupPhoto) && !empty($attachment1)) {
+                            $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+
+                            $photoUpdated = $personPhotoGateway->insertAndUpdate([
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                                'personImage' => $attachment1,
+                                'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                            ], [
+                                'personImage' => $attachment1,
+                                'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                            ]);
+                        }
+
+                        // ALERTS: possible change to Privacy alert status, recalculate alerts
+                        $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
 
                         //Deal with change to privacy settings
                         if ($student && $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {

@@ -38,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     //Proceed!
     //Get display settings
     $settingGateway = $container->get(SettingGateway::class);
-    $settingGateway = $container->get(SettingGateway::class);
 
     //Get current filter values
     $name = trim($_REQUEST['name'] ?? '');
@@ -189,11 +188,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $locationName = ['name' => ''];
         
         if(!empty($location)) {
-            $locationSql = "SELECT gibbonSpace.name FROM gibbonSpace WHERE gibbonSpaceID = ".$location;
-            $locationName = $pdo->select($locationSql)->fetch();
+            $locationData = ['location' => $location];
+            $locationSql = "SELECT gibbonSpace.name FROM gibbonSpace WHERE gibbonSpaceID = :location";
+            $locationName = $pdo->select($locationSql, $locationData)->fetch();
         }
-
-        
 
         $criteria = $gateway->newQueryCriteria()
             ->sortBy('id')

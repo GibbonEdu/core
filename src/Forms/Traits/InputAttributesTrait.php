@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Traits;
 
+use Gibbon\Forms\RowDependancyInterface;
+
 /**
  * Basic HTML Input Attributes (name, type, value, required)
  *

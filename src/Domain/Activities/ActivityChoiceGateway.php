@@ -179,6 +179,7 @@ class ActivityChoiceGateway extends QueryableGateway
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'today' => date('Y-m-d')];
         $sql = "SELECT gibbonActivityChoice.gibbonPersonID as groupBy,
+                    gibbonActivityChoice.gibbonActivityChoiceID as enrolmentID,
                     gibbonActivityChoice.gibbonPersonID,
                     gibbonActivityChoice.timestampCreated,
                     gibbonPerson.surname,

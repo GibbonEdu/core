@@ -21,6 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -53,6 +56,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     if (!empty($_POST['frontEndCache']) && $_POST['frontEndCache'] == 'Y') {
         $session->set('cacheString', time());
         $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $session->get('cacheString'));
+    }
+
+    // Update automatic student alerts
+    if (!empty($_POST['studentAlerts']) && $_POST['studentAlerts'] == 'Y') {
+        $alertManager = $container->get(Alert::class);
+        $alertGateway = $container->get(AlertGateway::class);
+        
+        // Get all active students
+        $allStudents = $container->get(StudentGateway::class)->queryStudentEnrolmentBySchoolYear($alertGateway->newQueryCriteria(), $session->get('gibbonSchoolYearID'));
+
+        // Recalculate automatic alerts for each student
+        foreach ($allStudents as $person) {
+            $alertManager->recalculateAlerts($person['gibbonPersonID']);
+        }
     }
 
     $URL .= '&return=success0';

@@ -24,7 +24,9 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Tables\View\GridView;
+use Gibbon\UI\Timetable\Timetable;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
@@ -32,6 +34,7 @@ use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
@@ -48,10 +51,8 @@ use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
-use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Students\View\LibraryBorrowingView;
-use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\UI\Timetable\Timetable;
+use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -90,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 $skipBrief = true;
             }
 
-            //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full.
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
+            //Test if View Student Profile_myChildren is available and parent has access to this student...if so, skip brief, and go to full.
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
                     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                     $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                     $result = $connection2->prepare($sql);
@@ -287,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
                         if (!empty($alert)) {
                             echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
+                            echo '<b>'.__('This student has one or more {level} risk medical conditions.', ['level' => __($alert['name'])]).'</b>';
                             echo '</div>';
                         }
 
@@ -992,7 +993,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo '<tr>';
                                         echo "<td $class style='width: 33%; vertical-align: top' colspan=3>";
                                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Comment').'</span><br/>';
-                                        echo $rowMember['comment'];
+                                        echo Format::alert($rowMember['comment'], 'message');
                                         echo '</td>';
                                         echo '</tr>';
                                     }
@@ -1229,102 +1230,104 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo $table->render(new DataSet(array_merge($familyAdults, $contacts, $staff)));
 
                     } elseif ($subpage == 'Medical') {
-                        /** @var MedicalGateway */
-                        $medicalGateway = $container->get(MedicalGateway::class);
+                        if (!$skipBrief || isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
+                            echo Format::alert(__('Your request failed because you do not have access to this action.'));
+                        } else {
+                            /** @var MedicalGateway */
+                            $medicalGateway = $container->get(MedicalGateway::class);
 
-                        $medical = $medicalGateway->getMedicalFormByPerson($gibbonPersonID);
-                        $conditions = $medicalGateway->selectMedicalConditionsByID($medical['gibbonPersonMedicalID'] ?? null)->fetchAll();
+                            $medical = $medicalGateway->getMedicalFormByPerson($gibbonPersonID);
+                            $conditions = $medicalGateway->selectMedicalConditionsByID($medical['gibbonPersonMedicalID'] ?? null)->fetchAll();
 
-                        //Medical alert!
-                        $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
-                        if (!empty($alert)) {
-                            echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
-                            echo '</div>';
-                        }
-
-                        // MEDICAL DETAILS
-                        $table = DataTable::createDetails('medical');
-
-                        if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php')) {
-                            if (empty($medical)) {
-                                $table->addHeaderAction('add', __('Add Medical Form'))
-                                    ->setURL('/modules/Students/medicalForm_manage_add.php')
-                                    ->addParam('gibbonPersonID', $gibbonPersonID)
-                                    ->addParam('search', $search)
-                                    ->displayLabel();
-                            } else {
-                                $table->addHeaderAction('edit', __('Edit Medical Form'))
-                                    ->setURL('/modules/Students/medicalForm_manage_edit.php')
-                                    ->addParam('gibbonPersonID', $gibbonPersonID)
-                                    ->addParam('gibbonPersonMedicalID', $medical['gibbonPersonMedicalID'])
-                                    ->addParam('search', $search)
-                                    ->displayLabel();
-                            }
-                        }
-
-                        $col = $table->addColumn('General Information');
-
-                        $col->addColumn('longTermMedication', __('Long Term Medication'))
-                            ->format(Format::using('yesno', 'longTermMedication'));
-
-                        $col->addColumn('longTermMedicationDetails', __('Details'))
-                            ->addClass('col-span-2')
-                            ->format(function ($medical) {
-                                return !empty($medical['longTermMedication'])
-                                    ? $medical['longTermMedicationDetails']
-                                    : Format::small(__('Unknown'));
-                            });
-
-                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'] ?? '', $table);
-
-                        $col->addColumn('medicalConditions', __('Medical Conditions?'))
-                            ->addClass('col-span-3')
-                            ->format(function ($medical) use ($conditions) {
-                                return count($conditions) > 0
-                                    ? __('Yes').'. '.__('Details below.')
-                                    : __('No');
-                            });
-
-                        if (!empty($medical['comment'])) {
-                            $col->addColumn('comment', __('Comment'))->addClass('col-span-3');
-                        }
-
-
-                        if (!empty($medical['fields']) && is_string($medical['fields'])) {
-                            $fields = json_decode($medical['fields'], true);
-                            $medical = is_array($fields) ? array_merge($medical, $fields) : $medical;
-                        }
-
-                        echo $table->render([$medical]);
-
-                        // MEDICAL CONDITIONS
-                        $canManageMedical = isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php');
-
-                        foreach ($conditions as $condition) {
-                            $table = DataTable::createDetails('medicalConditions');
-                            $table->setTitle(__($condition['name'])." <span style='color: ".$condition['alertColor']."'>(".__($condition['risk']).' '.__('Risk').')</span>');
-                            $table->setDescription($condition['description']);
-                            $table->addMetaData('gridClass', 'grid-cols-1 md:grid-cols-2');
-
-                            $table->addColumn('triggers', __('Triggers'));
-                            $table->addColumn('reaction', __('Reaction'));
-                            $table->addColumn('response', __('Response'));
-                            $table->addColumn('medication', __('Medication'));
-                            $table->addColumn('lastEpisode', __('Last Episode Date'))
-                                ->format(Format::using('date', 'lastEpisode'));
-                            $table->addColumn('lastEpisodeTreatment', __('Last Episode Treatment'));
-                            $table->addColumn('comment', __('Comments'))->addClass('col-span-2');
-
-                            if ($canManageMedical && !empty($condition['attachment'])) {
-                                $table->addColumn('attachment', __('Attachment'))
-                                    ->addClass('col-span-2')
-                                    ->format(function ($condition) {
-                                        return Format::link('./'.$condition['attachment'], __('View Attachment'), ['target' => '_blank']);
-                                    });
+                            //Medical alert!
+                            $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
+                            if (!empty($alert)) {
+                                echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
+                                echo '<b>'.__('This student has one or more {level} risk medical conditions.', ['level' => __($alert['name'])]).'</b>';
+                                echo '</div>';
                             }
 
-                            echo $table->render([$condition]);
+                            // MEDICAL DETAILS
+                            $table = DataTable::createDetails('medical');
+
+                            if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php')) {
+                                if (empty($medical)) {
+                                    $table->addHeaderAction('add', __('Add Medical Form'))
+                                        ->setURL('/modules/Students/medicalForm_manage_add.php')
+                                        ->addParam('gibbonPersonID', $gibbonPersonID)
+                                        ->addParam('search', $search)
+                                        ->displayLabel();
+                                } else {
+                                    $table->addHeaderAction('edit', __('Edit Medical Form'))
+                                        ->setURL('/modules/Students/medicalForm_manage_edit.php')
+                                        ->addParam('gibbonPersonID', $gibbonPersonID)
+                                        ->addParam('gibbonPersonMedicalID', $medical['gibbonPersonMedicalID'])
+                                        ->addParam('search', $search)
+                                        ->displayLabel();
+                                }
+                            }
+
+                            $col = $table->addColumn('General Information');
+
+                            $col->addColumn('longTermMedication', __('Long Term Medication'))
+                                ->format(Format::using('yesno', 'longTermMedication'));
+
+                            $col->addColumn('longTermMedicationDetails', __('Details'))
+                                ->addClass('col-span-2')
+                                ->format(function ($medical) {
+                                    return !empty($medical['longTermMedication'])
+                                        ? $medical['longTermMedicationDetails']
+                                        : Format::small(__('Unknown'));
+                                });
+
+                            $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'] ?? '', $table);
+
+                            $col->addColumn('medicalConditions', __('Medical Conditions?'))
+                                ->addClass('col-span-3')
+                                ->format(function ($medical) use ($conditions) {
+                                    return count($conditions) > 0
+                                        ? __('Yes').'. '.__('Details below.')
+                                        : __('No');
+                                });
+
+                            if (!empty($medical['comment'])) {
+                                $col->addColumn('comment', __('Comment'))->addClass('col-span-3');
+                            }
+
+
+                            if (!empty($medical['fields']) && is_string($medical['fields'])) {
+                                $fields = json_decode($medical['fields'], true);
+                                $medical = is_array($fields) ? array_merge($medical, $fields) : $medical;
+                            }
+
+                            echo $table->render([$medical]);
+
+                            // MEDICAL CONDITIONS
+                            foreach ($conditions as $condition) {
+                                $table = DataTable::createDetails('medicalConditions');
+                                $table->setTitle(__($condition['name'])." <span style='color: ".$condition['alertColor']."'>(".__($condition['risk']).' '.__('Risk').')</span>');
+                                $table->setDescription($condition['description']);
+                                $table->addMetaData('gridClass', 'grid-cols-1 md:grid-cols-2');
+
+                                $table->addColumn('triggers', __('Triggers'));
+                                $table->addColumn('reaction', __('Reaction'));
+                                $table->addColumn('response', __('Response'));
+                                $table->addColumn('medication', __('Medication'));
+                                $table->addColumn('lastEpisode', __('Last Episode Date'))
+                                    ->format(Format::using('date', 'lastEpisode'));
+                                $table->addColumn('lastEpisodeTreatment', __('Last Episode Treatment'));
+                                $table->addColumn('comment', __('Comments'))->addClass('col-span-2');
+
+                                if (!empty($condition['attachment'])) {
+                                    $table->addColumn('attachment', __('Attachment'))
+                                        ->addClass('col-span-2')
+                                        ->format(function ($condition) {
+                                            return Format::link('./'.$condition['attachment'], __('View Attachment'), ['target' => '_blank']);
+                                        });
+                                }
+
+                                echo $table->render([$condition]);
+                            }
                         }
                     } elseif ($subpage == 'First Aid') {
                         if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
@@ -2468,20 +2471,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $session->set('sidebarExtra', '');
 
                     $sidebarExtra = '';
+                    $alert = '';
                     //Show alerts
                     if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
-                        $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-
-                        $sidebarExtra .= '<div class="w-48 sm:w-64 h-10 mb-2">';
-                        if ($alert == '') {
-                             $sidebarExtra .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
-                        } else {
-                             $sidebarExtra .= $alert;
-                        }
-                         $sidebarExtra .= '</div>';
+                        $alert = $container->get(Alert::class)->getAlertBar($gibbonPersonID, ['wrap' => false, 'large' => true]);
+                        $sidebarExtra .= '<div class="w-48 sm:w-64 h-10 mb-2">'.$alert.'</div>';
                     }
-
-                     $sidebarExtra .= Format::userPhoto($studentImage, 240);
+                    
+                    $sidebarExtra .= Format::userPhoto($studentImage, 240);
 
                     //PERSONAL DATA MENU ITEMS
                      $sidebarExtra .= '<div class="column-no-break">';
@@ -2511,7 +2508,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     if ($subpage == 'Medical') {
                         $style = "style='font-weight: bold'";
                     }
+                    if (!isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
                      $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>';
+                    }
 
                     if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php')) {
                         $style = '';
@@ -2544,9 +2543,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     while ($rowMenu = $resultMenu->fetch()) {
                         $mainMenu[$rowMenu['name']] = $rowMenu['category'];
                     }
-                    $studentMenuCateogry = array();
-                    $studentMenuName = array();
-                    $studentMenuLink = array();
+                    $studentMenuCategory = [];
+                    $studentMenuName = [];
+                    $studentMenuLink = [];
                     $studentMenuCount = 0;
 
                     //Store items in an array
@@ -2671,7 +2670,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if (empty($rowHook) || empty($rowHook['options'])) continue;
 
                             $options = unserialize($rowHook['options']);
-
                             $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
 
                             //Check for permission to hook
@@ -2683,7 +2681,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                                 $studentMenuCategory[$studentMenuCount] = $mainMenu[$options['sourceModuleName']];
                                 $studentMenuName[$studentMenuCount] = __($rowHook['name']);
-                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID']."'>".__($rowHook['name']).'</a></li>';
+                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&allStudents='.$allStudents.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID']."'>".__($rowHook['name']).'</a></li>';
                                 ++$studentMenuCount;
                                 ++$count;
                             }

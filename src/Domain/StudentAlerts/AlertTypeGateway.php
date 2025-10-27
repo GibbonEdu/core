@@ -1,0 +1,67 @@
+<?php
+/*
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+namespace Gibbon\Domain\StudentAlerts;
+
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\SequenceAware;
+
+/**
+ * AlertTypeGateway
+ *
+ * @version v30
+ * @since   v30
+ */
+
+class AlertTypeGateway extends QueryableGateway
+{
+    use TableAware;
+    use SequenceAware;
+
+    private static $tableName = 'gibbonAlertType';
+    private static $primaryKey = 'gibbonAlertTypeID';
+    private static $sequenceField = 'sequenceNumber';
+    private static $searchableColumns = [];
+
+    public function queryAlertTypes(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonAlertTypeID', 'name', 'tag', 'type', 'color', 'active', 'colorBG', 'description', 'sequenceNumber',
+            ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function selectActiveAlertTypes($adminOnly = false)
+    {
+        $sql = $adminOnly
+            ? "SELECT * FROM gibbonAlertType WHERE active='Y' ORDER BY sequenceNumber, name"
+            : "SELECT * FROM gibbonAlertType WHERE adminOnly='N' AND active='Y' ORDER BY sequenceNumber, name";
+
+        return $this->db()->select($sql);
+    }
+    
+}

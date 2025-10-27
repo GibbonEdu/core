@@ -58,6 +58,9 @@ class FormTest extends TestCase
             $twig->addFunction(new \Twig\TwigFunction('__', function ($string, $domain = null) {
                 return $string;
             }));
+            $twig->addFunction(new \Twig\TwigFunction('icon', function ($string, $domain = null) {
+                return $string;
+            }));
 
             return $twig;
         });

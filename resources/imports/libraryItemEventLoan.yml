@@ -1,0 +1,66 @@
+details:
+    type: libraryItemEventLoan
+    name: Library Item Event Loan
+    table: gibbonLibraryItemEvent
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Library
+    action: Manage Catalog
+fields:
+    id: 
+        name: "School ID"
+        desc: ""
+        args: { filter: string, required: true }
+    gibbonLibraryItemID: 
+        name: "ID"
+        desc: "gibbonLibraryItemID"
+        args: { filter: string, required: true, linked: id, readonly: [ gibbonLibraryItem ] } 
+        relationship: { table: gibbonLibraryItem, key: gibbonLibraryItemID, field: id }
+    gibbonPersonIDStatusResponsible:
+        name: "Responsible User"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
+    returnExpected: 
+        name: "Return Date"
+        desc: "Expected Return Date"
+        args: { filter: date, custom: true }
+    gibbonPersonIDOut:
+        name: "Created By"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: studentID|username|email  }
+    timestampOut:
+        name: "Timestamp"
+        desc: ""
+        args: { filter: timestamp, hidden: true, function: timestamp }
+    type:
+        name: "Event Type"
+        desc: ""
+        value: "Loan"
+        args: { filter: string, hidden: true }
+    status:
+        name: "New Status"
+        desc: ""
+        value: "On Loan"
+        args: { filter: string, hidden: true }
+tables:
+    gibbonLibraryItem:
+        primaryKey:
+            gibbonLibraryItemID
+        uniqueKeys:
+            - [ id ]
+        fields:
+            - id
+            - status
+    gibbonLibraryItemEvent:
+        primaryKey:
+            gibbonLibraryItemEventID
+        fields:
+            - gibbonLibraryItemID
+            - gibbonPersonIDStatusResponsible
+            - gibbonPersonIDOut
+            - returnExpected
+            - timestampOut
+            - type
+            - status

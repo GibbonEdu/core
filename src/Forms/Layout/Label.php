@@ -79,6 +79,19 @@ class Label extends Element implements RowDependancyInterface
     }
 
     /**
+     * Set the label text.
+     * @param   string  $value
+     * @return  self
+     */
+    public function label($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+
+    /**
      * Get the label text.
      * @return string
      */
@@ -86,7 +99,7 @@ class Label extends Element implements RowDependancyInterface
     {
         return $this->label;
     }
-
+    
     /**
      * Set the smaller description text to be output with the label.
      * @param   string  $value

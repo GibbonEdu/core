@@ -22,8 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 require_once '../../gibbon.php';
 
@@ -111,10 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID']);
             $existingFile = $fields[$gibbonCustomFieldID] ?? '';
         } elseif ($type == 'personalDocuments') {
-            $document = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);;
+            $document = $personalDocumentGateway->getPersonalDocumentDataByID($gibbonPersonalDocumentTypeID, 'gibbonPerson', $userData['gibbonPersonID']);
             $existingFile = $document['filePath'] ?? '';
         } else {
             $existingFile = $userData['image_240'];
+            $updateBackupPhoto = true;
         }
 
         // Optionally overwrite and delete exiting files
@@ -125,6 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         // Skip uploading files if the file exists and overwrite is not on
         if (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
             unlink($file['absolutePath']);
+            $updateBackupPhoto = false;
             continue;
         }
 
@@ -134,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $updated = $customFieldGateway->updateCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID'], $fields);
 
         } elseif ($type == 'personalDocuments') {
-            $documentData = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);
+            $documentData = $personalDocumentGateway->getPersonalDocumentDataByID($gibbonPersonalDocumentTypeID, 'gibbonPerson', $userData['gibbonPersonID']);
             $updated = $personalDocumentGateway->update($documentData['gibbonPersonalDocumentID'], [
                 'filePath'              => $file['relativePath'],
                 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
@@ -155,6 +158,21 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
 
         if ($updated) {
             $count++;
+            // For user photos, also update/insert into the backup photo table
+            if ($updateBackupPhoto && !empty($file['relativePath'])) {
+                $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+                $photoUpdated = $personPhotoGateway->insertAndUpdate([
+                    'gibbonPersonID' => $userData['gibbonPersonID'],
+                    'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                    'personImage' => $file['relativePath'],
+                    'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                ], [
+                    'personImage' => $file['relativePath'],
+                    'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
+                ]);
+                
+                $partialFail = !$photoUpdated;
+            }
         }
     }
 

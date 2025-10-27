@@ -526,14 +526,14 @@ if ($proceed == false) {
 
             $return = $payment->confirmPayment();
             $result = $payment->getPaymentResult();
-            $gibbonPaymentID = $result['gibbonPaymentID'];
+            $gibbonPaymentID = $result['gibbonPaymentID'] ?? '';
 
             //Payment was successful. Yeah!
-            if ($result['success']) {
+            if (!empty($result['success']) && $result['success']) {
                 $updateFail = false;
 
                 //Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
-                if ($gibbonPaymentID != '') {
+                if (!empty($gibbonPaymentID)) {
                     try {
                         $data = array('paymentMade' => 'Y', 'gibbonPaymentID' => $gibbonPaymentID, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
                         $sql = 'UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, gibbonPaymentID=:gibbonPaymentID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
@@ -571,7 +571,7 @@ if ($proceed == false) {
                 $updateFail = false;
 
                 //Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
-                if ($gibbonPaymentID != '') {
+                if (!empty($gibbonPaymentID)) {
                     try {
                         $data = array('paymentMade' => $paymentMade, 'gibbonPaymentID' => $gibbonPaymentID, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
                         $sql = 'UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, gibbonPaymentID=:gibbonPaymentID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';

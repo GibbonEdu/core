@@ -286,7 +286,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $row->addLabel('viewableParents', __('Viewable to Parents'));
             $row->addYesNo('viewableParents')->required();
 
-        $form->addRow()->addSubmit();
+        $row = $form->addRow();
+        $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
+        $row->addSubmit();
 
         echo $form->getOutput();
     }

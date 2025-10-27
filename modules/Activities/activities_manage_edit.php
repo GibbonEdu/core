@@ -1,4 +1,4 @@
-<?php
+ <?php
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -224,6 +224,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                             'Finalised' => __('Finalised'),
                             'Estimated' => __('Estimated')
                         ]);
+
+                $row = $form->addRow();
+                    $row->addLabel('paymentDescription', __('Payment Description'));
+                    $row->addTextArea('paymentDescription')->setRows(2);
             }
 
             $form->addRow()->addHeading('Time Slots', __('Time Slots'));

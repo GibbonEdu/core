@@ -14,20 +14,20 @@ $I->seeInFormFields('#content form', $originalFormValues);
 $newFormValues = array(
     'name0'           => 'LowTest',
     'nameShort0'      => 'LT',
-    'color0'          => '000000',
-    'colorBG0'        => '111111',
+    'color0'          => '#000000',
+    'colorBG0'        => '#111111',
     'description0'    => 'Low Test',
 
     'name1'           => 'MedTest',
     'nameShort1'      => 'MT',
-    'color1'          => '222222',
-    'colorBG1'        => '333333',
+    'color1'          => '#222222',
+    'colorBG1'        => '#333333',
     'description1'    => 'Med Test',
 
     'name2'           => 'HighTest',
     'nameShort2'      => 'HT',
-    'color2'          => '444444',
-    'colorBG2'        => '555555',
+    'color2'          => '#444444',
+    'colorBG2'        => '#555555',
     'description2'    => 'High Test',
 );
 

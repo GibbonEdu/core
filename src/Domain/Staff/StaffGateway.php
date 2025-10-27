@@ -48,6 +48,8 @@ class StaffGateway extends QueryableGateway
      */
     public function queryAllStaff(QueryCriteria $criteria, $gibbonSchoolYearID = null)
     {
+        $biographicalGroupingOrder = '';
+        
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
@@ -94,8 +96,15 @@ class StaffGateway extends QueryableGateway
                     ->bindValue('grouping', $grouping);
             },
 
-            'biographicalGroupingSort' => function ($query, $group) {
-                return $query->orderBy(['(biographicalGrouping="Leadership Team") DESC',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
+            'biographicalGroupingSort' => function ($query, $group) use ($biographicalGroupingOrder) {
+                if (!empty($biographicalGroupingOrder)) {
+                    return $query->cols(["(CASE WHEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingSortOrder) > 0 THEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingSortOrder) WHEN gibbonStaff.biographicalGrouping <> '' THEN 998 ELSE 999 END) AS biographicalGroupingOrder"])
+                        ->bindValue('biographicalGroupingSortOrder', $biographicalGroupingOrder)
+                        ->orderBy(['biographicalGroupingOrder',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
+                } else {
+                    return $query->orderBy(['(biographicalGrouping="Leadership Team") DESC',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
+                }
+                
             },
 
             'status' => function ($query, $status) {

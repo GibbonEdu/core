@@ -32,6 +32,7 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\View\CreateStudentView;
 use Gibbon\Forms\Builder\Exception\FormProcessException;
+use Gibbon\UI\Components\Alert;
 
 class CreateStudent extends AbstractFormProcess implements ViewableProcess
 {
@@ -83,6 +84,13 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      * @var PasswordPolicy
      */
     protected $passwordPolicy;
+    
+    /**
+     * The Alert instance to calculate student alerts.
+     *
+     * @var Alert
+     */
+    protected $alert;
 
     public function __construct(
         UserGateway $userGateway,
@@ -90,7 +98,8 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         UsernameGenerator $usernameGenerator,
         CustomFieldGateway $customFieldGateway,
         PersonalDocumentGateway $personalDocumentGateway,
-        PasswordPolicy $passwordPolicy
+        PasswordPolicy $passwordPolicy,
+        Alert $alert
     )
     {
         $this->userGateway = $userGateway;
@@ -99,6 +108,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $this->customFieldGateway = $customFieldGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->passwordPolicy = $passwordPolicy;
+        $this->alert = $alert;
     }
 
     public function getViewClass() : string
@@ -137,6 +147,9 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
 
         // Update existing data
         $this->transferPersonalDocuments($builder, $formData, $gibbonPersonIDStudent);
+
+        // ALERTS: possible change to Privacy alert status, recalculate alerts
+        $this->alert->recalculateAlerts($gibbonPersonIDStudent);
 
         $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $this->setResult($gibbonPersonIDStudent);

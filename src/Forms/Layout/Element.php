@@ -34,6 +34,7 @@ class Element implements OutputableInterface
 {
     use BasicAttributesTrait;
 
+    protected $class;
     protected $content;
     protected $appended;
     protected $prepended;
@@ -63,6 +64,45 @@ class Element implements OutputableInterface
     public function setContent($value)
     {
         $this->content = $value;
+        return $this;
+    }
+
+    /**
+     * Set the class of the outer container when rendering.
+     * @param  string  $value
+     * @return self
+     */
+    public function setOuterClass($value)
+    {
+        $this->class = $value;
+        return $this;
+    }
+
+    /**
+     * Get the class of the outer container when rendering.
+     * @param  string  $value
+     * @return self
+     */
+    public function getOuterClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Set the element's width width breakpoints.
+     * @param  string  $width
+     * @return $this
+     */
+    public function width($width = '')
+    {
+        switch ($width) {
+            case '1/2':
+                $this->setOuterClass('w-full sm:w-1/2');
+                break;
+            case '1/3':
+                $this->setOuterClass('w-full md:w-1/3');
+                break;
+        }
         return $this;
     }
 

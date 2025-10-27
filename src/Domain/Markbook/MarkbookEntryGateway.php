@@ -60,4 +60,20 @@ class MarkbookEntryGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+    public function selectMarkbookConcernsByStudentAndDate($gibbonSchoolYearID, $gibbonPersonID, $days = 60)
+    {
+        $data = ['gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * $days)))];
+        $sql = "SELECT gibbonMarkbookEntry.* FROM gibbonMarkbookEntry 
+            JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) 
+            JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+            JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+            WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND gibbonMarkbookEntry.gibbonPersonIDStudent=:gibbonPersonIDStudent 
+            AND (gibbonMarkbookEntry.attainmentConcern='Y' OR gibbonMarkbookEntry.effortConcern='Y') 
+            AND gibbonMarkbookColumn.complete='Y' 
+            AND gibbonMarkbookColumn.completeDate<=:today 
+            AND gibbonMarkbookColumn.completeDate>:date";
+        
+        return $this->db()->select($sql, $data);
+    }
 }

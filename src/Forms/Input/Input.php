@@ -62,6 +62,30 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     }
 
     /**
+     * Sets the inputs label via the underlying row.
+     * @param  string      $label
+     * @return self
+     */
+    public function label(string $label, string $description = '')
+    {
+        if (empty($this->row)) return;
+
+        $this->row->setLabel($this->getID() ?? $this->getName() ?? '', $label, $description);
+
+        return $this;
+    }
+
+    /**
+     * Shortcut for adding the next input to the same row.
+     *
+     * @return Row
+     */
+    public function attach()
+    {
+        return $this->row;
+    }
+
+    /**
      * Add a LiveValidation option to the javascript object (eg: onlyOnSubmit: true, onlyOnBlur: true)
      * @param  string  $option
      */

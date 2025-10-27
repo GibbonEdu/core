@@ -23,19 +23,22 @@ namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Http\Url;
 use Gibbon\View\View;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
+use League\Container\ContainerAwareTrait;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\Tables\Prefab\TodaysLessonsTable;
+use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
-use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\System\SettingGateway;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
-use Gibbon\Tables\Prefab\TodaysLessonsTable;
-use Gibbon\Data\Validator;
+use Gibbon\Module\Activities\Tables\ActivitiesViewParent;
+use Gibbon\Services\ModuleLoader;
 
 /**
  * Parent Dashboard View Composer
@@ -173,6 +176,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $alertLevelGateway = $this->getContainer()->get(AlertLevelGateway::class);
         $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
         $entryCount = 0;
+		
+		//INITIALISE OUTPUT VARIABLES (to silence warnings in Apache error log)
+		$plannerOutput   = '';
+		$gradesOutput    = '';
+		$deadlinesOutput = '';
 
         //PREPARE PLANNER SUMMARY
         $classes = false;
@@ -516,150 +524,24 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         }
 
         //PREPARE ACTIVITIES
-        $activities = false;
         $activitiesOutput = false;
-        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php'))) {
-            $activitiesOutput .= "<div class='error'>";
-            $activitiesOutput .= __('Your request failed because you do not have access to this action.');
-            $activitiesOutput .= '</div>';
+        if (isActionAccessible($guid, $connection2, '/modules/Activities/explore.php') || isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php')) {
+            $activitiesModuleLoaded = $this->container->get(ModuleLoader::class)->registerModuleNamespace('Activities');
+
+            $gibbonSchoolYearID = $this->session->get('gibbonSchoolYearID');
+            $student = $this->container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
+
+            if (empty($student) || !$activitiesModuleLoaded) {
+                $activitiesOutput .= Format::alert(__('There are no records to display.'), 'empty');
+            }
+            
+            /* @phpstan-ignore class.notFound */
+            $activitiesOutput .= $this->container->get(ActivitiesViewParent::class)
+                ->createTable($gibbonSchoolYearID, $gibbonPersonID, $student)
+                ->getOutput();
+
         } else {
-            $activities = true;
-
-            $activitiesOutput .= "<div class='linkTop'>";
-            $activitiesOutput .= "<a href='".Url::fromModuleRoute('Activities', 'activities_view')->withQueryParam('gibbonPersonID', $gibbonPersonID).
-                "'>".__('View Available Activities').'</a>';
-            $activitiesOutput .= '</div>';
-
-            $dateType = $this->settingGateway->getSettingByScope('Activities', 'dateType');
-            if ($dateType == 'Term') {
-                $maxPerTerm = $this->settingGateway->getSettingByScope('Activities', 'maxPerTerm');
-            }
-            try {
-                $dataYears = array('gibbonPersonID' => $gibbonPersonID);
-                $sqlYears = "SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.status='Current' AND gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
-                $resultYears = $connection2->prepare($sqlYears);
-                $resultYears->execute($dataYears);
-            } catch (\PDOException $e) {
-            }
-
-            if ($resultYears->rowCount() < 1) {
-                $activitiesOutput .= "<div class='error'>";
-                $activitiesOutput .= __('There are no records to display.');
-                $activitiesOutput .= '</div>';
-            } else {
-                $yearCount = 0;
-                while ($rowYears = $resultYears->fetch()) {
-                    ++$yearCount;
-                    try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                        $sql = "SELECT gibbonActivity.*, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (\PDOException $e) {
-                    }
-
-                    if ($result->rowCount() < 1) {
-                        $activitiesOutput .= "<div class='error'>";
-                        $activitiesOutput .= __('There are no records to display.');
-                        $activitiesOutput .= '</div>';
-                    } else {
-                        $activitiesOutput .= "<table cellspacing='0' style='width: 100%'>";
-                        $activitiesOutput .= "<tr class='head'>";
-                        $activitiesOutput .= '<th>';
-                        $activitiesOutput .= __('Activity');
-                        $activitiesOutput .= '</th>';
-                        $activitiesOutput .= '<th>';
-                        $activitiesOutput .= __('Type');
-                        $activitiesOutput .= '</th>';
-                        $activitiesOutput .= '<th>';
-                        if ($dateType != 'Date') {
-                            $activitiesOutput .= __('Term');
-                        } else {
-                            $activitiesOutput .= __('Dates');
-                        }
-                        $activitiesOutput .= '</th>';
-                        $activitiesOutput .= '<th>';
-                        $activitiesOutput .= __('Slots');
-                        $activitiesOutput .= '</th>';
-                        $activitiesOutput .= '<th>';
-                        $activitiesOutput .= __('Status');
-                        $activitiesOutput .= '</th>';
-                        $activitiesOutput .= '</tr>';
-
-                        $count = 0;
-                        $rowNum = 'odd';
-                        while ($row = $result->fetch()) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-                            ++$count;
-
-                            //COLOR ROW BY STATUS!
-                            $activitiesOutput .= "<tr class=$rowNum>";
-                            $activitiesOutput .= '<td>';
-                            $activitiesOutput .= $row['name'];
-                            $activitiesOutput .= '</td>';
-                            $activitiesOutput .= '<td>';
-                            $activitiesOutput .= trim($row['type'] ?? '');
-                            $activitiesOutput .= '</td>';
-                            $activitiesOutput .= '<td>';
-                            if ($dateType != 'Date') {
-                                /**
-                                 * @var SchoolYearTermGateway
-                                 */
-                                $schoolYearTermGateway = $this->getContainer()->get(SchoolYearTermGateway::class);
-                                $termList = $schoolYearTermGateway->getTermNamesByID($row['gibbonSchoolYearTermIDList']);
-                                $activitiesOutput .= !empty($termList) ? implode('<br/>', $termList) : '-';
-                            } else {
-                                if (substr($row['programStart'], 0, 4) == substr($row['programEnd'], 0, 4)) {
-                                    if (substr($row['programStart'], 5, 2) == substr($row['programEnd'], 5, 2)) {
-                                        $activitiesOutput .= date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4);
-                                    } else {
-                                        $activitiesOutput .= date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).'<br/>'.substr($row['programStart'], 0, 4);
-                                    }
-                                } else {
-                                    $activitiesOutput .= date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4).' -<br/>'.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programEnd'], 0, 4);
-                                }
-                            }
-                            $activitiesOutput .= '</td>';
-                            $activitiesOutput .= '<td>';
-                                try {
-                                    $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
-                                    $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS dayOfWeek, gibbonSpace.name AS facility FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
-                                    $resultSlots = $connection2->prepare($sqlSlots);
-                                    $resultSlots->execute($dataSlots);
-                                } catch (\PDOException $e) {
-                                }
-                                $count = 0;
-                                while ($rowSlots = $resultSlots->fetch()) {
-                                    $activitiesOutput .= '<b>'.$rowSlots['dayOfWeek'].'</b><br/>';
-                                    $activitiesOutput .= '<i>'.__('Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
-                                    if ($rowSlots['gibbonSpaceID'] != '') {
-                                        $activitiesOutput .= '<i>'.__('Location').'</i>: '.$rowSlots['facility'];
-                                    } else {
-                                        $activitiesOutput .= '<i>'.__('Location').'</i>: '.$rowSlots['locationExternal'];
-                                    }
-                                    ++$count;
-                                }
-                                if ($count == 0) {
-                                    $activitiesOutput .= '<i>'.__('None').'</i>';
-                                }
-                            $activitiesOutput .= '</td>';
-                            $activitiesOutput .= '<td>';
-                            if ($row['status'] != '') {
-                                $activitiesOutput .= $row['status'];
-                            } else {
-                                $activitiesOutput .= '<i>'.__('NA').'</i>';
-                            }
-                            $activitiesOutput .= '</td>';
-                            $activitiesOutput .= '</tr>';
-                        }
-                        $activitiesOutput .= '</table>';
-                    }
-                }
-            }
+            $activitiesOutput .= Format::alert(__('There are no records to display.'), 'empty');
         }
 
         // TABS

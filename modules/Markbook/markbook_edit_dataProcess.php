@@ -23,6 +23,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
+use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
 
@@ -89,6 +90,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 $uploadedResponse = $row['uploadedResponse'] ?? '';
                 $gibbonScaleIDAttainment = $row['gibbonScaleIDAttainment'] ?? '';
                 $gibbonScaleIDTarget = $row['gibbonScaleIDTarget'] ?? '';
+
+                $alert = $container->get(Alert::class);
 
                 for ($i = 1;$i <= $count;++$i) {
                     $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"] ?? '';
@@ -335,6 +338,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             }
                         }
                     }
+
+                    // ALERTS: possible change to Academic alert status, recalculate alerts
+                    $alert->recalculateAlerts($gibbonPersonIDStudent);
                 }
 
                 //Update column

@@ -59,17 +59,18 @@
 {% if canEdit %}
 <script>
 
-$('#duty .dutySection').sortable({
+
+$('#dutyOuter .dutySection').sortable({
     tolerance: 5,
     cursor: "move",
     items: ".dutyPerson",
     connectWith: ".dutySection",
     zIndex: 20,
-    containment: "#duty",
+    containment: "#dutyOuter",
     
 });
 
-$('#duty .dutySection').droppable({
+$('#dutyOuter .dutySection').droppable({
     accept: '.dutyPerson',
 
     classes: {

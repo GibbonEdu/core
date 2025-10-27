@@ -762,7 +762,7 @@ class ImportType
      */
     public function filterFieldValue($fieldName, $value)
     {
-        $value = trim($value);
+        $value = trim($value ?? '');
         $defaultValue = $this->getField($fieldName, 'null') == 'YES' ? null : '';
 
         $filter = $this->getField($fieldName, 'filter');

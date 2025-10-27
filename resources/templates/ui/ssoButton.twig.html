@@ -9,24 +9,23 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% if clientName %}
-<a target="_top" class="login block mb-4" href="{{ authURL }}" onclick="addOAuth2LoginParams(this)">
+<a target="_top" class="login block mb-4" href="{{ authURL }}" onclick="return addOAuth2LoginParams(this, event)">
     <button type="button" class="w-full bg-white rounded-md shadow border border-gray-500 flex items-center px-2 py-1 mb-2 text-gray-600 hover:shadow-md hover:border-blue-600 hover:text-blue-600">
         <img class="w-10 h-10" src="themes/{{ gibbonThemeName }}/img/{{ service }}-login.svg">
         <span class="flex-grow text-lg">{{ __('Sign in with {service}', {'service': clientName } ) }}</span>
     </button>
 </a>
-
-{% else %}
-    <script>
-    function addOAuth2LoginParams(element)
-    {
-        $(element).attr('href', function() {
-            if ($('#gibbonSchoolYearIDOAuth2').is(':visible')) {
-                var googleSchoolYear = $('#gibbonSchoolYearIDOAuth2').val();
-                var googleLanguage = $('#gibboni18nIDOAuth2').val();
-                return this.href.replace('&options=', '&options='+googleSchoolYear+':'+googleLanguage+':');
-            }
-        });
-    }
-    </script>
 {% endif %}
+
+<script>
+function addOAuth2LoginParams(element, event)
+{
+    if (event) event.preventDefault();
+    var googleSchoolYear = document.getElementById('gibbonSchoolYearID') ? document.getElementById('gibbonSchoolYearID').value : '';
+    var googleLanguage = document.getElementById('gibboni18nID') ? document.getElementById('gibboni18nID').value : '';
+
+    var url = element.href.replace('&options=', '&options=' + encodeURIComponent(googleSchoolYear + ':' + googleLanguage + ':'));
+    window.location.href = url;
+    return false;
+}
+</script>

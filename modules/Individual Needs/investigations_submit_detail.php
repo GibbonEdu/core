@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
             //Parents Informed?
             $row = $form->addRow();
-                $row->addLabel('parentsInformed', __('Parents Informed?'))->description(_('For example, via a phone call, email, Markbook, meeting or other means.'));
+                $row->addLabel('parentsInformed', __('Parents Informed?'))->description(__('For example, via a phone call, email, Markbook, meeting or other means.'));
                 $row->addYesNo('parentsInformed')->selected('N')->required()->readonly();
 
             $form->toggleVisibilityByClass('parentsInformedYes')->onSelect('parentsInformed')->when('Y');

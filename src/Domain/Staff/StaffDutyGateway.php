@@ -50,7 +50,7 @@ class StaffDutyGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->cols([
-                'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonStaffDuty.name', 'gibbonStaffDuty.nameShort', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffDuty.sequenceNumber', 'gibbonStaffDuty.gibbonDaysOfWeekIDList'
+                'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonStaffDuty.name', 'gibbonStaffDuty.nameShort', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffDuty.sequenceNumber', 'gibbonStaffDuty.gibbonDaysOfWeekIDList', 'gibbonStaffDuty.type',
             ])
             ->from($this->getTableName());
 
@@ -66,7 +66,8 @@ class StaffDutyGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->cols([
-                'gibbonDaysOfWeek.name as groupBy', 'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonDaysOfWeek.gibbonDaysOfWeekID', 'gibbonDaysOfWeek.name as weekdayName', 'gibbonStaffDuty.name', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd'
+                'gibbonDaysOfWeek.name as groupBy', 'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonDaysOfWeek.gibbonDaysOfWeekID', 'gibbonDaysOfWeek.name as weekdayName', 'gibbonStaffDuty.name', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd',
+                'gibbonStaffDuty.type'
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonDaysOfWeek', 'FIND_IN_SET(gibbonDaysOfWeek.gibbonDaysOfWeekID, gibbonStaffDuty.gibbonDaysOfWeekIDList)')

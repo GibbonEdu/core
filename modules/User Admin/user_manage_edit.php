@@ -86,6 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 ->setURL('/modules/User Admin/user_manage_view_status_log.php')
                 ->modalWindow(750, 500);
 
+            $page->navigator->addHeaderAction('previousPhoto', __('View Previous Photos'))
+                ->displayLabel()
+                ->addParam('gibbonPersonID', $gibbonPersonID)
+                ->setURL('/modules/User Admin/user_manage_view_previousPhotos.php')
+                ->modalWindow(850, 600);
+                
             $scrubbed = $container->get(DataRetentionGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
             if (!empty($scrubbed)) {
                 echo Format::alert(__("This user's personal data was cleared on {date} as part of a data retention action. The following database tables were cleared: {tables}", ['date' => Format::date($scrubbed['timestamp']), 'tables' => Format::list(json_decode($scrubbed['tables']), 'ul', 'text-xs mb-0')] ), 'warning');

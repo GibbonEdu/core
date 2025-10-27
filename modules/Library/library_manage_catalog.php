@@ -160,6 +160,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         });
     $table->addColumn('spaceName', __('Location'))
         ->format(function ($item) {
+            $fields = json_decode($item['fields'] ?? '', true);
+            if($item['itemType'] == 'Digital Publication') {
+                return _('<b>'.Format::link($fields['URL Link'], 'Link').'</b>');
+            }
             return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
         });
     $table->addColumn('ownershipType', __('Ownership'))
@@ -201,9 +205,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
           ->format(function ($item, $actions) {
               $actions->addAction('edit', __('Edit'))
                       ->setURL('/modules/Library/library_manage_catalog_edit.php');
-              $actions->addAction('lending', __('Lending'))
-                      ->setURL('/modules/Library/library_lending_item.php')
-                      ->setIcon('attendance');
+
+            if ($item['itemType'] != 'Digital Publication') {
+                $actions->addAction('lending', __('Lending'))
+                        ->setURL('/modules/Library/library_lending_item.php')
+                        ->setIcon('attendance');
+            }
               $actions->addAction('delete', __('Delete'))
                       ->setURL('/modules/Library/library_manage_catalog_delete.php');
               if (empty($item['gibbonLibraryItemIDParent'])) {

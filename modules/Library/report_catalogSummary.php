@@ -114,6 +114,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         ->sortable(['space', 'locationDetail'])
         ->width('15%')
         ->format(function ($item) {
+            $fields = json_decode($item['fields'] ?? '', true);
+            if($item['type'] == 'Digital Publication') {
+                return _('<b>'.Format::link($fields['URL Link'], 'Link').'</b>');
+            }
             return $item['space'].'<br/>'.Format::small($item['locationDetail']);
         });
 
@@ -140,13 +144,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
     $table->addColumn('purchaseDate', __('Purchase Date'))->description(__('Vendor'))
         ->format(function ($item) {
-            return !empty($item['purchaseDate'])
-                ? Format::date($item['purchaseDate'])
-                : Format::small(__('Unknown'));
+            if ($item['type'] != 'Digital Publication') {
+                return !empty($item['purchaseDate'])
+                    ? Format::date($item['purchaseDate'])
+                    : Format::small(__('Unknown'));
+            }
         })
         ->formatDetails(function ($item) {
             return Format::small($item['vendor']);
         });
+    
     
     echo $table->render($catalog);
 }

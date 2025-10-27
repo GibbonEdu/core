@@ -31,7 +31,7 @@ use Gibbon\Forms\Form;
  */
 class DeleteForm extends Form
 {
-    public static function createForm($action, $confirmation = false, $submit = true)
+    public static function createForm($action, $confirmation = false, $submit = true) : Form
     {
         $form = parent::createBlank('deleteRecord'.substr(md5(random_bytes(10)), 0, 20), $action);
         $form->addHiddenValue('address', $_GET['q']);

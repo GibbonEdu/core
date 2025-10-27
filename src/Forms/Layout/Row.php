@@ -25,20 +25,25 @@ use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\RowDependancyInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
+use Gibbon\Forms\Traits\FormFieldsTrait;
 
 /**
  * Holds a collection of form elements to be output horizontally.
  *
- * @version v14
+ * @version v30
  * @since   v14
+ * 
+ * {@inheritDoc}
  */
 class Row
 {
     use BasicAttributesTrait;
+    use FormFieldsTrait;
 
     protected $factory;
-    protected $heading = '';
-    protected $formElements = [];
+    protected $heading;
+
+    protected $elements = [];
 
     /**
      * Construct a row with access to a specific factory.
@@ -51,53 +56,9 @@ class Row
         $this->setID($id);
     }
 
-    /**
-     * Invoke factory method for creating elements when an "add" method is called on this row.
-     * @param   string  $function
-     * @param   array   $args
-     * @return  object  Element
-     */
-    public function __call($function, $args)
+    public function getCurrentRow()
     {
-        if (substr($function, 0, 3) != 'add') {
-            return;
-        }
-
-        try {
-            $function = substr_replace($function, 'create', 0, 3);
-
-            $reflectionMethod = new \ReflectionMethod($this->factory, $function);
-            $element = $reflectionMethod->invokeArgs($this->factory, $args);
-
-            if ($element instanceof RowDependancyInterface) {
-                $element->setRow($this);
-            }
-
-            if ($function == 'createSubmit') {
-                $this->setHeading('submit');
-            }
-        } catch (\ReflectionException $e) {
-            $element = $this->factory->createContent(strtr('Cannot {function}. This form element does not exist in the current FormFactory: {message}', [
-                '{function}' => $function,
-                '{message}' => $e->getMessage(),
-            ]));
-        } catch (\Exception $e) {
-            $element = $this->factory->createContent(strtr('Cannot {function}. Error creating form element: {message}', [
-                '{function}' => $function,
-                '{message}' => $e->getMessage(),
-            ]));
-        } finally {
-            if (!($element instanceof OutputableInterface)) {
-                if (($element_type = gettype($element)) === 'object') $element_type = get_class($element);
-                $element = $this->factory->createContent(strtr('{function} returned {type} instead of an outputable form element.', [
-                    '{type}' => $element_type,
-                    '{function}' => $function,
-                ]));
-            }
-            $this->addElement($element);
-        }
-
-        return $element;
+        return $this;
     }
 
     public function getHeading()
@@ -107,7 +68,19 @@ class Row
 
     public function setHeading($heading)
     {
+        if (empty($heading) && !empty($this->heading)) return $this;
+
         $this->heading = $heading;
+
+        return $this;
+    }
+
+    public function setLabel(string $id, string $label, string $description = '')
+    {
+        $label = $this->factory->createLabel($id, $label)->description($description);
+        $label->setRow($this);
+        array_unshift($this->elements, $label);
+        
         return $this;
     }
 
@@ -129,6 +102,7 @@ class Row
             ->setAttribute('x-transition.duration.200ms');
     }
 
+
     /**
      * Adds an outputtable element to the row's internal collection.
      * @param  OutputableInterface  $element
@@ -137,7 +111,11 @@ class Row
     {
         $id = $this->getUniqueIdentifier($element);
 
-        $this->formElements[$id] = $element;
+        if ($element instanceof RowDependancyInterface) {
+            $element->setRow($this); 
+        }
+
+        $this->elements[$id] = $element;
         return $element;
     }
 
@@ -148,10 +126,10 @@ class Row
      */
     public function getElement($id = '')
     {
-        if (empty($this->formElements) || count($this->formElements) == 0) {
+        if (empty($this->elements) || count($this->elements) == 0) {
             return null;
         }
-        return (isset($this->formElements[$id]))? $this->formElements[$id] : null;
+        return (isset($this->elements[$id]))? $this->elements[$id] : null;
     }
 
     /**
@@ -160,7 +138,7 @@ class Row
      */
     public function getElements()
     {
-        return $this->formElements;
+        return $this->elements;
     }
 
     /**
@@ -169,7 +147,7 @@ class Row
      */
     public function getElementCount()
     {
-        return count($this->formElements);
+        return count($this->elements);
     }
 
     /**
@@ -179,7 +157,7 @@ class Row
      */
     public function isLastElement($element)
     {
-        return (end($this->formElements) === $element);
+        return (end($this->elements) === $element);
     }
 
     /**

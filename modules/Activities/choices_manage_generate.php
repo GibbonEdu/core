@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
             ->placeholder()
             ->selected($params['gibbonActivityCategoryID']);
 
-        $form->addRow()->addSubmit(_('Next'));
+        $form->addRow()->addSubmit(__('Next'));
 
     } elseif ($form->getCurrentPage() == 2) {
         // STEP 2
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         $table->addClass('bulkActionForm colorOddEven');
 
         $header = $table->addHeaderRow();
-            $header->addTableCell(__('Include'));
+            $header->addCheckbox('checkall')->setClass('checkall')->alignLeft();
             $header->addTableCell(__('Activity'));
             $header->addTableCell(__('Maximum Enrolment'));
             for ($i = 1; $i <= $signUpChoices; $i++) {
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         if ($totalChoice > $totalMax) {
             $form->addRow()->addContent(Format::alert(__('The maximum available spaces is {max}, which is less than the total sign ups. {difference} participants will not be automatically added to groups, but can still be added manually.', ['max' => $totalMax, 'difference' => $totalChoice - $totalMax]), 'warning'));
         }
-        $form->addRow()->addSubmit(_('Next'));
+        $form->addRow()->addSubmit(__('Next'));
 
     } elseif ($form->getCurrentPage() == 3) {
         // STEP 3

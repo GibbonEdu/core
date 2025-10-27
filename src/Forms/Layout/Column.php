@@ -30,6 +30,8 @@ use Gibbon\Forms\Input\Button;
  *
  * @version v14
  * @since   v14
+ * 
+ * @inheritDoc
  */
 class Column extends Row implements OutputableInterface
 {

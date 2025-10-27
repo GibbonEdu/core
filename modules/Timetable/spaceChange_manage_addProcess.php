@@ -61,9 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         $dataSelect = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
         $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
     }
-    $resultSelect = $pdo->select($sqlSelect, $dataSelect);
+    $resultCheck = $pdo->selectOne($sqlSelect, $dataSelect);
 
-    if ($resultSelect->rowCount() != 1) {
+    if (empty($resultCheck)) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

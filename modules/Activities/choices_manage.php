@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage.
             return Format::nameLinked($values['gibbonPersonID'], '', $values['preferredName'], $values['surname'], 'Student', true, true);
         });
 
-    $table->addColumn('formGroup', __('FormGroup'))->context('secondary');
+    $table->addColumn('formGroup', __('Form Group'))->context('secondary');
 
     $table->addColumn('categoryName', __('Category'))
         ->width('8%');

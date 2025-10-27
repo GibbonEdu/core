@@ -279,10 +279,11 @@ class TimetableDayGateway extends QueryableGateway
         $gibbonTTDayRowClassIDList = is_array($gibbonTTDayRowClassIDList)? implode(',', $gibbonTTDayRowClassIDList) : $gibbonTTDayRowClassIDList;
 
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID, 'gibbonTTDayRowClassIDList' => $gibbonTTDayRowClassIDList];
-        $sql = "DELETE gibbonTTDayRowClass
+        $sql = "DELETE gibbonTTDayRowClass, gibbonTTDayRowClassException
                 FROM gibbonTTDayRowClass
                 INNER JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
                 INNER JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID)
                 WHERE gibbonTT.gibbonTTID=:gibbonTTID
                 AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
                 AND NOT FIND_IN_SET(gibbonTTDayRowClass.gibbonTTDayRowClassID, :gibbonTTDayRowClassIDList)";

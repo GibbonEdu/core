@@ -35,6 +35,7 @@ $page->return->addReturns([
     'fail2'    => __('You do not have sufficient privileges to login.'),
     'fail9'    => __('Your primary role does not support the ability to log into the specified year.'),
     'success0' => __('Password reset request successfully initiated, please check your email.'),
+    'success1' => __('Password reset was successful: you may now log in.'),
 ]);
 
 $step = 1;

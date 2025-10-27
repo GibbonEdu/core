@@ -24,6 +24,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Students\StudentReportGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\Form;
 
 
 //Module includes
@@ -35,20 +37,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
+    $transport = $_GET['transport'] ?? '';
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-
-    if (empty($viewMode)) {
-        $page->breadcrumbs->add(__('Student Transport'));
-    }
 
     $reportGateway = $container->get(StudentReportGateway::class);
     $familyGateway = $container->get(FamilyGateway::class);
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria(true)
-        ->sortBy(['gibbonPerson.transport', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['gibbonPerson.transport', 'formGroup', 'gibbonPerson.surname'])
+        ->filterBy('transport', $transport)
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
+
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Student Transport'));
+
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
+        $form->setClass('noIntBorder w-full');
+
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_transport_student.php");
+
+        $transportList = $container->get(UserGateway::class)->selectTransportList()->fetchAll();
+        $transportList = array_unique(array_reduce($transportList, function ($group, $item) {
+            $list = array_map('trim', explode(',', $item['transport'] ?? ''));
+            foreach ($list as $listItem) {
+                $group[$listItem] = $listItem;
+            }
+            return $group;
+        }, []));
+        asort($transportList, SORT_NATURAL);
+
+        $row = $form->addRow();
+            $row->addLabel('transport', __('Transport'));
+            $row->addSelect('transport')->fromArray(['' => __('All')] + $transportList)->selected($transport);
+
+        $form->addRow()->addSearchSubmit($session);
+
+        echo $form->getOutput();
+    }
 
     $transport = $reportGateway->queryStudentTransport($criteria, $gibbonSchoolYearID);
 

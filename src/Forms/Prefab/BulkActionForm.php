@@ -31,7 +31,7 @@ use Gibbon\Forms\Form;
  */
 class BulkActionForm extends Form
 {
-    public static function create($id, $action, $method = 'post', $class = 'w-full blank bulkActionForm border-0 bg-transparent p-0')
+    public static function create($id, $action, $method = 'post', $class = 'w-full blank bulkActionForm border-0 bg-transparent p-0') : Form
     {
         global $container;
 

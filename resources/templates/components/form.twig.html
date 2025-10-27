@@ -69,8 +69,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    {% if form.getRows|length > 0 %}
-    <div id="form" class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0" 
+    {% if form.getSectionCount > 0 %}
+    <div id="{{ form.getID }}Wrap" class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0" 
         {% if useSaveWarning %}
         x-data="{changed: false, 
             checkInput(formElement) {  
@@ -92,11 +92,31 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         <div class="{{ standardLayout and form.hasMeta ? 'col-span-6' : 'col-span-8' }}">
 
-        {% for section, rows in form.getRowsByHeading %}
+        {% for section in form.getSections %}
+            {% set rows = section.getRows %}
             {% set sectionLoop = loop %}
 
             {% if useSections %}
-            <section class="{{ (rows|first).class|split(' ')|first }} mb-6 pb-4 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? '  ' : ''}}" >
+            <section x-data="{sectionOpen: {{ section.getOpen|default(0) }} }" class="relative {{ (rows|first).class|split(' ')|first }} mb-6 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'pb-4 border-t-4 focus-within:border-t-blue-500 transition' }} {{ section.getID == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? '  ' : ''}}" >
+
+                {% if not section.getOpen %}
+                <div @click="sectionOpen = !sectionOpen" class="text-gray-500 hover:text-blue-500">
+                    <div class="absolute top-0 right-0 mt-5 mr-6">
+                        <div x-show="!sectionOpen" class="p-2">
+                            {{ icon('solid', 'add', 'size-6 text-inherit')}}
+                        </div>
+                        <div x-cloak x-show="sectionOpen" class="p-2">
+                            {{ icon('solid', 'cross', 'size-6')}}
+                        </div>
+                    </div>
+
+                    <h3 {{ section.getOpen ? 'x-cloak' }} x-show="!sectionOpen" class="px-4 sm:px-8 pt-6 pb-2 font-semibold text-gray-950 text-2xl/8 sm:text-xl/8">
+                        {{ section.getHeading }}
+                    </h3>
+
+                </div>
+                {% endif %}
+               
             {% endif %}
 
             {% set isformTable = ((rows|first).getElements|first).isInstanceOf('Gibbon\\Forms\\Layout\\Table') %}
@@ -105,14 +125,18 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 {% set rowLoop = loop %}
 
-                {% set rowClass = section == 'submit' 
+                {% set rowClass = section.getID == 'submit' 
                     ? 'flex flex-row content-center p-0 gap-2 sm:gap-4 justify-end sm:items-center' 
                     : 'flex flex-col sm:flex-row  content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start' 
                 %}
                 
-                <div id="{{ row.getID }}" class="{{ standardLayout and not isformTable ? ' px-4 sm:px-8 py-4' : smallLayout ? 'px-2 py-2' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
+                <div id="{{ row.getID }}"  class="{{ standardLayout and not isformTable ? ' px-4 sm:px-8 py-4' : smallLayout ? 'px-2 py-2' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}
+                
+                {% if not section.getOpen %}x-show="sectionOpen" x-cloak {% endif %}
+                
+                >
   
-                {% if quickSave and section == 'submit' %}
+                {% if quickSave and section.getID == 'submit' %}
                     <span class="text-xs text-gray-600 flex-1">
                         {{ __('Press {shortcut} to {action}', {shortcut: '<kbd class="bg-white">⌘ Cmd</kbd> + <kbd class="bg-white">S</kbd>', action: __('quick save')} )|raw }}
                     </span>
@@ -180,8 +204,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     <ul class="ml-6">
                     <template x-for="v in $validate.data($refs.form)" >
                         <template x-if="!v.valid && v.node.labels.length > 0">
-                        <li>
-                            <span x-text="v.node.labels[0].ariaLabel" :aria-label="v.name" class="text-xs"></span>
+                        <li class="py-0.5">
+                            <a x-bind:href="'#' + v.name" target="_self" x-text="v.node.labels[0].ariaLabel" :aria-label="v.name" class="text-sm hover:underline"></a>
                         </li>
                         </template>
                     </template>

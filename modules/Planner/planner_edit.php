@@ -128,6 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
             } else {
                 //Let's go!
                 $values = $result->fetch();
+                $fields = !empty($values['fields'])? json_decode($values['fields'], true) : [];
 
                 if ($viewBy == 'date') {
                     $extra = Format::date($date);
@@ -388,6 +389,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $row = $form->addRow();
                     $row->addLabel('viewableParents', __('Viewable to Parents'));
                     $row->addYesNo('viewableParents')->required();
+
+                $row = $form->addRow()->addClass('advanced');
+                    $row->addLabel('videoLink', __('Online Lesson'))->description(__('Displays a video link for online lessons'));
+                    $row->addURL('videoLink')->setValue($fields['videoLink'] ?? '');
 
                 //Guests
                 $form->addRow()->addHeading('Guests', __('Current Guests'));
