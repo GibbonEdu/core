@@ -3,90 +3,50 @@ details:
   category: Attendance
   name: Future Absences
   table: gibbonAttendanceLogPerson
-  modes:
-    insert: true
-    update: false
-
+  modes: { insert: true, update: false }
 access:
   module: Attendance
   action: Set Future Absence
-
 primaryKey: gibbonAttendanceLogPersonID
-
 table:
   gibbonPersonID:
     name: "Student"
-    desc: "Username"
-    args:
-      filter: nospaces
-      required: true
-    relationship:
-      table: gibbonPerson
-      key: gibbonPersonID
-      field: username
-
+    desc: "Username, student ID, or Email (if unique)"
+    args: { filter: nospaces, required: true }
+    relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email|studentID }
   date:
     name: "Date"
-    desc: "YYYY-MM-DD"
-    args:
-      filter: date
-      required: true
-
+    desc: "Must be unique."
+    args: { filter: date, required: true }
   gibbonAttendanceCodeID:
-    name: "Attendance Code (short, e.g. PS, A, etc.)"
-    desc: "Looks up the code ID"
-    args:
-      filter: string
-      required: true
-    lookup:
-      table: gibbonAttendanceCode
-      key: nameShort
-      value: gibbonAttendanceCodeID
-
+    name: "Attendance Status"
+    desc: "Short Name"
+    args: { filter: string, required: true }
+    lookup: { table: gibbonAttendanceCode, key: nameShort, value: gibbonAttendanceCodeID }
   type:
     name: "Type"
     desc: "Eg. Absent, Excused Absence"
-    args:
-      filter: string
-      required: true
-
+    args: { filter: string, required: true }
   reason:
     name: "Reason"
     desc: "From School Admin > Attendance Settings"
-    args:
-      filter: string
-      required: false
-
+    args: { filter: string }
   comment:
     name: "Comment"
     desc: "Optional note"
-    args:
-      filter: string
-      required: false
-
+    args: { filter: string }
   context:
     name: "Context"
-    desc: "Must be Future"
-    args:
-      filter: string
-      required: true
-    default: Future
-
+    desc: ""
+    value: "Future"
+    args: { filter: string, hidden: true }
   direction:
     name: "Direction"
-    desc: "Must be Out for absences"
-    args:
-      filter: string
-      required: true
-    default: Out
-
+    desc: ""
+    value: "Out"
+    args: { filter: string, hidden: true }
   gibbonPersonIDTaker:
     name: "Recorded By"
     desc: "Username of staff recording the absence"
-    args:
-      filter: nospaces
-      required: true
-    relationship:
-      table: gibbonPerson
-      key: gibbonPersonID
-      field: username
+    args: { filter: nospaces, required: true }
+    relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }
