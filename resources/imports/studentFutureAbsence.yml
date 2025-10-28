@@ -1,0 +1,92 @@
+details:
+  type: studentFutureAbsence
+  category: Attendance
+  name: Future Absences
+  table: gibbonAttendanceLogPerson
+  modes:
+    insert: true
+    update: false
+
+access:
+  module: Attendance
+  action: Set Future Absence
+
+primaryKey: gibbonAttendanceLogPersonID
+
+table:
+  gibbonPersonID:
+    name: "Student"
+    desc: "Username"
+    args:
+      filter: nospaces
+      required: true
+    relationship:
+      table: gibbonPerson
+      key: gibbonPersonID
+      field: username
+
+  date:
+    name: "Date"
+    desc: "YYYY-MM-DD"
+    args:
+      filter: date
+      required: true
+
+  gibbonAttendanceCodeID:
+    name: "Attendance Code (short, e.g. PS, A, etc.)"
+    desc: "Looks up the code ID"
+    args:
+      filter: string
+      required: true
+    lookup:
+      table: gibbonAttendanceCode
+      key: nameShort
+      value: gibbonAttendanceCodeID
+
+  type:
+    name: "Type"
+    desc: "Eg. Absent, Excused Absence"
+    args:
+      filter: string
+      required: true
+
+  reason:
+    name: "Reason"
+    desc: "From School Admin > Attendance Settings"
+    args:
+      filter: string
+      required: false
+
+  comment:
+    name: "Comment"
+    desc: "Optional note"
+    args:
+      filter: string
+      required: false
+
+  context:
+    name: "Context"
+    desc: "Must be Future"
+    args:
+      filter: string
+      required: true
+    default: Future
+
+  direction:
+    name: "Direction"
+    desc: "Must be Out for absences"
+    args:
+      filter: string
+      required: true
+    default: Out
+
+  gibbonPersonIDTaker:
+    name: "Recorded By"
+    desc: "Username of staff recording the absence"
+    args:
+      filter: nospaces
+      required: true
+    relationship:
+      table: gibbonPerson
+      key: gibbonPersonID
+      field: username
