@@ -65,6 +65,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         ->setIcon('attendance')
         ->displayLabel();
 
+    $form->addHeaderAction('email', __('Notify Staff'))
+        ->setURL('/modules/Calendar/calendar_event_notify.php')
+        ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
+        ->setIcon('run')
+        ->displayLabel();
+
     $form->addRow()->addHeading(__('Basic Information'));
 
     // Get Calendars of the current school year
