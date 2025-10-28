@@ -48,9 +48,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
 
+    $notes = $_POST['notes'] ?? '';
+    $notifyGroups = $_POST['notifyGroups'] ?? [];
+    $allStaff = $_POST['allStaff'] ?? 'N';
+    $notificationList = isset($_POST['notificationList']) ? explode(',', $_POST['notificationList']) : [];
+    $staff = [];
+
     // Get event details
-    $values = $calendarEventGateway->getByID($gibbonCalendarEventID);
-    if (!empty($gibbonCalendarEventID) && empty($values)) {
+    $event = $calendarEventGateway->getByID($gibbonCalendarEventID);
+    if (!empty($gibbonCalendarEventID) && empty($event)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
@@ -65,12 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         $page->addError(__('The specified record does not have any enrolled attendees.'));
         return;
     }
-
-    $notes = $_POST['notes'] ?? '';
-    $notifyGroups = $_POST['notifyGroups'] ?? [];
-    $allStaff = $_POST['allStaff'] ?? 'N';
-    $notificationList = isset($_POST['notificationList']) ? explode(',', $_POST['notificationList']) : [];
-    $staff = [];
 
     if ($allStaff == 'Y') {
          // All Staff
@@ -121,10 +121,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $staffDetails = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($staffPersonIDs)->fetchAll();
     $sender = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'));
 
-    echo '<pre>';
-    print_r($staffDetails);
-    echo '</pre>';
-    die();
+
+
+
+                                    // LEFT TO DO
 
     // Create the email Template
     $template = $container->get(EmailTemplate::class)->setTemplate('Calendar Event Notification');
@@ -134,7 +134,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
 
     $emailIndex = 1;
     $emails = [];
-
 
     foreach ($staffDetails as $staffDetail) {
 
@@ -154,15 +153,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         // Send email and record the result
         $sent = $mail->Send();
 
-        $emails[$emailIndex] = Format::name($templateData['title'], $templateData['preferredName'], $templateData['surname'], 'Staff').': '.$templateData['email'].' ($'.$templateData['amount'].') - '. ($sent ? __('Sent') : __('Failed') );
+        $emails[$emailIndex] = Format::name($staffDetail['title'], $staffDetail['preferredName'], $staffDetail['surname'], 'Staff').': '.$staffDetail['email'].($sent ? __('Sent') : __('Failed') );
         $emailIndex++;
     }
-
-        
-    // echo '<pre>';
-    // print_r($emailStaff);
-    // echo '</pre>';
-    // die();
         
 
         // $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
