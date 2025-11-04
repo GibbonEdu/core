@@ -56,11 +56,17 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHeaderAction('enrolment', __('Enrolment'))
-    ->setURL('/modules/Calendar/calendar_event_enrolment.php')
-    ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
-      ->setIcon('attendance')
-    ->displayLabel();
+        ->setURL('/modules/Calendar/calendar_event_enrolment.php')
+        ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
+        ->setIcon('attendance')
+        ->displayLabel();
 
+    $form->addHeaderAction('email', __('Notify Staff'))
+        ->setURL('/modules/Calendar/calendar_event_notify.php')
+        ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
+        ->setIcon('run')
+        ->displayLabel();
+        
     $form->addRow()->addHeading(__('Basic Information'));
 
     // Get Calendars of the current school year

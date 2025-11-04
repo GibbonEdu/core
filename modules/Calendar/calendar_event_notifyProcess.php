@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
 
 
 
-                                    // LEFT TO DO
+                                    ///. /-/-/-/-/-/-/-/-/-/-/-/-/-/- LEFT TO DO
 
     // Create the email Template
     $template = $container->get(EmailTemplate::class)->setTemplate('Calendar Event Notification');
@@ -216,7 +216,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         // $event->sendNotifications($pdo, $session);
 
     
-
     $URL .= $partialFail
         ? "&return=warning1"
         : "&return=success0";

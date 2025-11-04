@@ -64,6 +64,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
         ->displayLabel();
 
+    $form->addHeaderAction('email', __('Notify Staff'))
+        ->setURL('/modules/Calendar/calendar_event_notify.php')
+        ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
+        ->setIcon('run')
+        ->displayLabel();
+
     $calendars = $calendarGateway->selectCalendarsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
     $row = $form->addRow();
         $row->addLabel('gibbonCalendarID', __('Calendar'));
