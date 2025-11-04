@@ -19,11 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\Mailer;
+use Gibbon\View\View;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
-use Gibbon\Comms\EmailTemplate;
-use Gibbon\Comms\NotificationEvent;
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\School\YearGroupGateway;
@@ -121,99 +120,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $staffDetails = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($staffPersonIDs)->fetchAll();
     $sender = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'));
 
-
-
-
-                                    ///. /-/-/-/-/-/-/-/-/-/-/-/-/-/- LEFT TO DO
-
-    // Create the email Template
-    $template = $container->get(EmailTemplate::class)->setTemplate('Calendar Event Notification');
-
+    $view = $container->get(View::class);
     $mail = $container->get(Mailer::class);
     $mail->SMTPKeepAlive = true;
 
-    $emailIndex = 1;
-    $emails = [];
+    $content = $view->fetchFromTemplate('calendarEvents.twig.html', [
+        'students' => $students->toArray(),
+        'event' => $event ?? [],
+        'notes' => $notes ?? '',
+    ]);
+    
+    $sender = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'));
+    $replyTo = $sender['email'];
+    $replyToName = Format::name($sender['title'], $sender['preferredName'], $sender['surname'], 'Staff');
 
     foreach ($staffDetails as $staffDetail) {
+        $buttonURL = "index.php?q=/modules/Calendar/calendar_event_view.php&gibbonCalendarEventID=".$gibbonCalendarEventID;
+        $subject = sprintf(__('Event Summary - %1$s (%2$s - %3$s'), $event['name'], Format::date($event['dateStart']), Format::date($event['dateEnd']). ')', $session->get('systemName'), $session->get('organisationNameShort'));
 
-        // Setup the email recipients
-        $mail->ClearAddresses();
-        $mail->AddAddress($staffDetail['email']);
+        $body = sprintf(__('Dear %1$s'), $staffDetail['preferredName'].' '.$staffDetail['surname']).',<br/><br/>';
+        $body .= $content;
 
-        $mail->SetFrom($sender['email'], $sender['preferredName'].' '.$sender['surname']);
-        $mail->AddReplyTo($sender['email'],);
-        $mail->setDefaultSender($template->renderSubject($templateData));
+        $mail->AddReplyTo($replyTo ?? $session->get('organisationEmail'), $replyToName ?? '');
+        $mail->AddAddress($staffDetail['email'], $staffDetail['surname'].', '.$staffDetail['preferredName']);
 
+        $mail->setDefaultSender($subject);
         $mail->renderBody('mail/message.twig.html', [
-            'title'  => $template->renderSubject($templateData),
-            'body'   => $template->renderBody($templateData),
+            'title'  => __('Event Summary'),
+            'body'   => $body,
+            'button' => [
+                'url'  => $buttonURL,
+                'text' => __('Click Here to View Event'),
+            ],
         ]);
 
-        // Send email and record the result
-        $sent = $mail->Send();
+        // Send
+        if ($mail->Send()) {
+            $sendReport['emailSent']++;
+        } else {
+            $sendReport['emailFailed']++;
+            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'email send failed', $staffDetail['preferredName'].' '.$staffDetail['surname']).'<br/>';
+        }
 
-        $emails[$emailIndex] = Format::name($staffDetail['title'], $staffDetail['preferredName'], $staffDetail['surname'], 'Staff').': '.$staffDetail['email'].($sent ? __('Sent') : __('Failed') );
-        $emailIndex++;
+        $mail->ClearAllRecipients();
+        $mail->clearReplyTos();
     }
+
+    // Close SMTP connection
+    $mail->smtpClose();
         
-
-        // $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
-            
-        // $today = date("Y-m-d"); 
-        // if ($today > $data['dateEnd']) {
-        //     $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
-        //         'student'   => $studentName,
-        //         'formGroup'   => $student['formGroup'],
-        //         'school'    => $session->get('organisationNameShort'),
-        //         'date'      => Format::date($data['dateEnd']),
-        //     ]);
-        // } else {
-        //     $notificationString = __('{student} {formGroup} will withdraw from {school}, effective from {date}.', [
-        //         'student'   => $studentName,
-        //         'formGroup'   => $student['formGroup'],
-        //         'school'    => $session->get('organisationNameShort'),
-        //         'date'      => Format::date($data['dateEnd']),
-        //     ]);
-        // }
-        
-        // if (!empty($withdrawNote)) {
-        //     $notificationString .= '<br/><br/>'.__('Withdraw Note').': '.$withdrawNote;
-        // }
-
-        // Raise a new notification event
-        // $event = new NotificationEvent('Admissions', 'Student Withdrawn');
-        // $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
-        // $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
-        // $event->setNotificationText($notificationString);
-        // $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
-
-        // Notify Additional People
-
-        // Head of Year
-        // if (in_array('HOY', $notify)) {
-        //     $yearGroup = $container->get(YearGroupGateway::class)->getByID($student['gibbonYearGroupID']);
-        //     $event->addRecipient($yearGroup['gibbonPersonIDHOY']);
-        // }
-
-        // Form Tutors
-        // if (in_array('tutors', $notify)) {
-        //     $formGroup = $container->get(FormGroupGateway::class)->getByID($student['gibbonFormGroupID']);
-        //     $event->addRecipient($formGroup['gibbonPersonIDTutor']);
-        //     $event->addRecipient($formGroup['gibbonPersonIDTutor2']);
-        //     $event->addRecipient($formGroup['gibbonPersonIDTutor3']);
-        // }
-
-        // // Class Teachers
-        // if (in_array('teachers', $notify)) {
-        //     $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
-        //     foreach ($teachers as $teacher) {
-        //         $event->addRecipient($teacher['gibbonPersonID']);
-        //     }
-        // }
-
-        // Add event listeners to the notification sender
-        // $event->sendNotifications($pdo, $session);
 
     
     $URL .= $partialFail

@@ -1,0 +1,41 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{{ __('Please find below the list of the partipants for the Event - {eventName}, happening on {eventDate}, {eventTime}.', {'eventName': event.name , 'eventDate': formatUsing('dateRangeReadable', event.dateStart, event.dateEnd), 'eventTime': event.allDay == 'Y' ? 'All Day' : formatUsing('timeRange', event.timeStart, event.timeEnd) }) }}<br/>
+
+<p>
+    <strong>Notes:</strong><br>
+    {{ notes }}
+</p>
+
+<p><h2>Student Participants</h2></p>
+
+{% if students is defined and students is not empty %}
+    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Form group</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ formatUsing('name', '', student.preferredName, student.surname, 'Student', false) }}</td>
+                    <td>{{  student.formGroup }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}
+    <p> No students enrolled </p>
+{% endif %}
