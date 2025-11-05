@@ -29,6 +29,7 @@ use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
 require_once '../../gibbon.php';
@@ -46,12 +47,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     // Proceed!
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
+    $userGateway = $container->get(UserGateway::class);
 
     $notes = $_POST['notes'] ?? '';
     $notifyGroups = $_POST['notifyGroups'] ?? [];
     $allStaff = $_POST['allStaff'] ?? 'N';
     $notificationList = isset($_POST['notificationList']) ? explode(',', $_POST['notificationList']) : [];
     $staff = [];
+    $staffStudentContext = [];
 
     // Get event details
     $event = $calendarEventGateway->getByID($gibbonCalendarEventID);
@@ -64,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $criteria = $calendarEventPersonGateway->newQueryCriteria()
         ->sortBy(['surname', 'preferredName', 'category'])
         ->fromPOST();
-    $students = $calendarEventPersonGateway->queryEnrolledAttendees($criteria, $gibbonCalendarEventID);
+    $students = $calendarEventPersonGateway->queryEnrolledAttendees($criteria, $gibbonCalendarEventID)->toArray();
 
     if (empty($students)) {
         $page->addError(__('The specified record does not have any enrolled attendees.'));
@@ -80,29 +83,74 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         foreach ($results as $result) {
             $staff[] = $result['gibbonPersonID'];
         }
-    } elseif (!empty($notifyGroups)) {
-        foreach ($students as $student) {
-            // Head of Year
-            if (in_array('HOY', $notifyGroups)) {
-                $yearGroup = $container->get(YearGroupGateway::class)->getByID($student['gibbonYearGroupID']);
-                if (!empty($yearGroup['gibbonPersonIDHOY'])) {
-                    $staff[] = $yearGroup['gibbonPersonIDHOY'];
+    } else {
+        if (!empty($notifyGroups)) {
+            foreach ($students as $student) {
+                $gibbonPersonIDStudent = $student['gibbonPersonID'];
+
+                // Head of Year
+                if (in_array('HOY', $notifyGroups)) {
+                    $yearGroup = $container->get(YearGroupGateway::class)->getByID($student['gibbonYearGroupID']);
+                    $gibbonPersonIDHOY = $yearGroup['gibbonPersonIDHOY'] ?? null;
+                    if (!empty($gibbonPersonIDHOY)) {
+                        $staff[] = $gibbonPersonIDHOY;
+
+                        // Record Relation
+                        if (!isset($staffStudentContext[$gibbonPersonIDHOY][$gibbonPersonIDStudent]['context']) || !in_array('HOY', $staffStudentContext[$gibbonPersonIDHOY][$gibbonPersonIDStudent]['context'])) {
+                            $staffStudentContext[$gibbonPersonIDHOY][$gibbonPersonIDStudent]['context'][] = 'HOY';
+                        }
+                    }
                 }
-            }
 
-            // Form Tutors
-            if (in_array('tutors', $notifyGroups)) {
-                $formGroup = $container->get(FormGroupGateway::class)->getByID($student['gibbonFormGroupID']);
-                $staff[] = $formGroup['gibbonPersonIDTutor'];
-                $staff[] = $formGroup['gibbonPersonIDTutor2'];
-                $staff[] = $formGroup['gibbonPersonIDTutor3'];
-            }
+                // Form Tutors
+                if (in_array('tutors', $notifyGroups)) {
+                    $formGroup = $container->get(FormGroupGateway::class)->getByID($student['gibbonFormGroupID']);
+                    $tutorIDs = [
+                        $formGroup['gibbonPersonIDTutor'] ?? null,
+                        $formGroup['gibbonPersonIDTutor2'] ?? null,
+                        $formGroup['gibbonPersonIDTutor3'] ?? null,
+                    ];
 
-            // Class Teachers
-            if (in_array('teachers', $notifyGroups)) {
-                $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($session->get('gibbonSchoolYearID'), $student['gibbonPersonID']);
-                foreach ($teachers as $teacher) {
-                    $staff[] = $teacher['gibbonPersonID'];
+                    foreach ($tutorIDs as $gibbonPersonIDTutor) {
+                        if (empty($gibbonPersonIDTutor)) continue;
+                        $staff[] = $gibbonPersonIDTutor;
+
+                        // Record Relation
+                        if (!isset($staffStudentContext[$gibbonPersonIDTutor][$gibbonPersonIDStudent]['context']) || !in_array('Form Tutor', $staffStudentContext[$gibbonPersonIDTutor][$gibbonPersonIDStudent]['context'])) {
+                            $staffStudentContext[$gibbonPersonIDTutor][$gibbonPersonIDStudent]['context'][] = 'Form Tutor';
+                        }
+                    }
+                }
+
+                // Class Teachers
+                if (in_array('teachers', $notifyGroups)) {
+                    $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonIDStudent);
+                    foreach ($teachers as $teacher) {
+                        $gibbonPersonIDTeacher = $teacher['gibbonPersonID'] ?? null;
+
+                        if (empty($gibbonPersonIDTeacher)) continue;
+                        $staff[] = $gibbonPersonIDTeacher;
+
+                        // Record relation
+                        if (!isset($staffStudentContext[$gibbonPersonIDTeacher][$gibbonPersonIDStudent]['context']) || !in_array('Class Teacher', $staffStudentContext[$gibbonPersonIDTeacher][$gibbonPersonIDStudent]['context'])) {
+                            $staffStudentContext[$gibbonPersonIDTeacher][$gibbonPersonIDStudent]['context'][] = 'Class Teacher';
+                        }
+                    }
+                }
+
+                if (in_array('INAssistant', $notifyGroups)) {
+                    $assistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonIDStudent);
+                    foreach ($assistants as $assistant) {
+                        $gibbonPersonIDAssistant = $assistant['gibbonPersonID'] ?? null;
+
+                        if (empty($gibbonPersonIDAssistant)) continue; 
+                        $staff[] = $gibbonPersonIDAssistant;
+
+                        // Record Relation
+                        if (!isset($staffStudentContext[$gibbonPersonIDAssistant][$gibbonPersonIDStudent]['context']) || !in_array('LSA', $staffStudentContext[$gibbonPersonIDAssistant][$gibbonPersonIDStudent]['context'])) {
+                            $staffStudentContext[$gibbonPersonIDAssistant][$gibbonPersonIDStudent]['context'][] = 'LSA';
+                        }
+                    }
                 }
             }
         }
@@ -116,27 +164,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     }
 
     $staffPersonIDs = isset($staff) ? array_values(array_filter(array_unique($staff))) : [];
-
-    $staffDetails = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($staffPersonIDs)->fetchAll();
-    $sender = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'));
+    $staffDetails = $userGateway->selectNotificationDetailsByPerson($staffPersonIDs)->fetchAll();
 
     $view = $container->get(View::class);
     $mail = $container->get(Mailer::class);
     $mail->SMTPKeepAlive = true;
 
-    $content = $view->fetchFromTemplate('calendarEvents.twig.html', [
-        'students' => $students->toArray(),
-        'event' => $event ?? [],
-        'notes' => $notes ?? '',
-    ]);
-    
-    $sender = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'));
+    $sender = $userGateway->getByID($session->get('gibbonPersonID'));
     $replyTo = $sender['email'];
     $replyToName = Format::name($sender['title'], $sender['preferredName'], $sender['surname'], 'Staff');
 
     foreach ($staffDetails as $staffDetail) {
+        $gibbonPersonIDTeacher = $staffDetail['gibbonPersonID'];
+
+        // Get the relevant students of this staff
+        $relevantStudents = [];
+        foreach ($students as $student) {
+            $gibbonPersonIDStudent = $student['gibbonPersonID'];
+            if (isset($staffStudentContext[$gibbonPersonIDTeacher][$gibbonPersonIDStudent]['context'])) {
+                
+                // Get all the roles for this student-teacher pair
+                $contextLabels = implode(', ', $staffStudentContext[$gibbonPersonIDTeacher][$gibbonPersonIDStudent]['context']);
+                $relevantStudents[] = array_merge($student, [
+                    'context' => $contextLabels
+                ]);
+            } else {
+                $relevantStudents[] = array_merge($student, [
+                    'context' => $allStaff == 'Y' ? 'All Staff' : 'Other',
+                ]);
+            }
+        }
+
         $buttonURL = "index.php?q=/modules/Calendar/calendar_event_view.php&gibbonCalendarEventID=".$gibbonCalendarEventID;
         $subject = sprintf(__('Event Summary - %1$s (%2$s - %3$s'), $event['name'], Format::date($event['dateStart']), Format::date($event['dateEnd']). ')', $session->get('systemName'), $session->get('organisationNameShort'));
+
+         // Generate content from template
+        $content = $view->fetchFromTemplate('calendarEvents.twig.html', [
+            'students' => $relevantStudents,
+            'event' => $event ?? [],
+            'notes' => $notes ?? '',
+        ]);
 
         $body = sprintf(__('Dear %1$s'), $staffDetail['preferredName'].' '.$staffDetail['surname']).',<br/><br/>';
         $body .= $content;
@@ -146,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
 
         $mail->setDefaultSender($subject);
         $mail->renderBody('mail/message.twig.html', [
-            'title'  => __('Event Summary'),
+            'title'  => __('Event'),
             'body'   => $body,
             'button' => [
                 'url'  => $buttonURL,
@@ -169,8 +236,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     // Close SMTP connection
     $mail->smtpClose();
         
-
-    
     $URL .= $partialFail
         ? "&return=warning1"
         : "&return=success0";

@@ -74,6 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
             'HOY'      => __('Head of Year'),
             'tutors'   => __('Form Tutors'),
             'teachers' => __('Class Teachers'),
+            'INAssistant' => __('LSAs'),
         ])->checkAll()->addClass('notifyGroups');
 
     $row = $form->addRow();

@@ -29,7 +29,7 @@ $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_enrolment.php&gibbonCalendarEventID='.$gibbonCalendarEventID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_enrolment_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_enrolment_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
