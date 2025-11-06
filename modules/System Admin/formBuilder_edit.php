@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
             $view->configure($form);
         }
 
-        $config = json_decode($values['config'], true);
+        $config = json_decode($values['config'] ?? '', true);
         $form->loadAllValuesFrom($config);
 
         $row = $form->addRow()->addClass('mt-4');

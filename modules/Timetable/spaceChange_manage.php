@@ -81,6 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         // DATA TABLE
         $table = DataTable::createPaginated('facilityChanges', $criteria);
 
+        $table->setTitle(__('Facility Changes'));
+
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/Timetable/spaceChange_manage_add.php')
             ->displayLabel();

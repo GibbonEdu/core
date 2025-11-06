@@ -222,8 +222,8 @@ class LessonTable
                 ->sortable(['date'])
                 ->context('primary')
                 ->format(function ($values) {
-                    $output = Format::bold(Format::date($values['date'])).'<br/>'
-                        .Format::dayOfWeekName($values['date']);
+                    $output = Format::bold(Format::date($values['date'] ?? '')).'<br/>'
+                        .Format::dayOfWeekName($values['date'] ?? '');
                     
                     return $output;
                 });

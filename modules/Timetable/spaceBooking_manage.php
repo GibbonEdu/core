@@ -77,6 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         // DATA TABLE
         $table = DataTable::createPaginated('facilityBookings', $criteria);
 
+        $table->setTitle(__('Facility Bookings'));
+
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/Timetable/spaceBooking_manage_add.php')
             ->displayLabel();
