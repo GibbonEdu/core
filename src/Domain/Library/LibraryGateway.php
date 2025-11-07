@@ -353,7 +353,7 @@ class LibraryGateway extends QueryableGateway
     public function getByRecordID($id)
     {
         $data = ['id' => $id];
-        $sql = "SELECT * FROM gibbonLibraryItem WHERE id=:id OR JSON_EXTRACT(gibbonLibraryItem.fields , '$.ISBN13')=:id";
+        $sql = "SELECT * FROM gibbonLibraryItem WHERE id=:id OR (gibbonLibraryItem.fields IS NOT NULL AND gibbonLibraryItem.fields != '' AND JSON_VALID(gibbonLibraryItem.fields) AND JSON_EXTRACT(gibbonLibraryItem.fields , '$.ISBN13')=:id)";
 
         return $this->db()->selectOne($sql, $data);
     }
