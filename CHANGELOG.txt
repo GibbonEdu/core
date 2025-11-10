@@ -58,6 +58,7 @@ v30.0.00
         Planner: added the option to use smart block names as lesson names in Deploy Lessons
         Planner: added an Online Lesson option in the planner to display a video call link
         Planner: restricted visibility of user photos in Lesson Plans based on planner access permissions
+        Planner: added shortcut buttons to access the Unit Planner and Lesson Planner from each other
         Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
         Reports: prevented deletion of template assets that are not set to inactive
         Reports: added a way for tracking and displaying who last edited an asset
@@ -77,6 +78,7 @@ v30.0.00
         User Admin: added Prof. as an option in Title select
         User Admin: added an option to view User Image of previous years
         User Admin: increased the username field length to 40 characters
+        User Admin: added a None option for the Note Creation Notification in Student Settings
 
     Bug Fixes
         System: fixed toggle field direction for right-to-left languages

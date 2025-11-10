@@ -144,28 +144,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
 							$row = $form->addRow();
 								$row->addLabel('rowName'.$count, sprintf(__('Row %1$s Title'), ($count + 1)) );
-                                $column = $row->addColumn()->addClass('flex-col');
                                 
-                                $column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
-                                $col = $column->addColumn()->addClass('flex');
+                                $row->addRadio('type'.$count)->fromArray($typeOptions)->checked($type)->addClass('flex-shrink whitespace-nowrap');
+
+                                $col = $row->addColumn()->setClass('flex-grow w-full sm:max-w-sm');
 								$col->addTextField('rowTitle['.$count.']')
 									->setID('rowTitle'.$count)
-									->addClass('flex-1 rowTitle'.$count)
+									->addClass('rowTitle'.$count)
 									->maxLength(40)
 									->required()
-									->setValue($rubricRow['title']);
+									->setValue($rubricRow['title'])
+                                    ->setOuterClass('w-full');
 								$col->addSelect('gibbonOutcomeID['.$count.']')
 									->setID('gibbonOutcomeID'.$count)
-									->addClass('flex-1 gibbonOutcomeID'.$count)
+									->addClass('gibbonOutcomeID'.$count)
 									->fromArray($outcomes)
 									->required()
 									->placeholder()
-                                    ->selected($rubricRow['gibbonOutcomeID']);
+                                    ->selected($rubricRow['gibbonOutcomeID'])
+                                    ->setOuterClass('w-full');
                                     
-                                $column->addColor('rowColor['.$count.']')
+                                $row->addColor('rowColor['.$count.']')
                                     ->setID('rowColor'.$count)
                                     ->setValue($rubricRow['backgroundColor'])
-                                    ->setTitle(__('Background Colour'));
+                                    ->setTitle(__('Background Colour'))
+                                    ->setOuterClass('flex-shrink');
 
 							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
 							$form->toggleVisibilityByClass('gibbonOutcomeID'.$count)->onRadio('type'.$count)->when('Outcome Based');
@@ -175,10 +178,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 						}
 					}
 
-                    $row = $form->addRow();
-                        $row->addHeading('Columns', __('Columns'));
-                        $row->addContent(__('Visualise?'))->setClass('font-bold text-center');
-                        $row->addContent()->setClass('w-full sm:max-w-sm');
+                    $row = $form->addRow()->addClass('sm:items-center');
+                        $row->addHeading('Columns', __('Columns'))->setClass('w-1/5 flex-shrink');
+                        $row->addContent(__('Visualise?'))->setClass('font-bold text-center items-center');
+                        $row->addContent()->setClass('flex-grow w-full');
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
 					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise, backgroundColor FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
@@ -195,32 +198,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                             
                             $row->addCheckbox('columnVisualise['.$count.']')
                                 ->setValue('Y')
-                                ->alignCenter()
+                                ->alignRight()
                                 ->checked($rubricColumn['visualise'])
-                                ->setClass('textCenter flex-1 self-center');
-                            $column = $row->addColumn()->setClass('sm:max-w-sm');
-                            $col = $column->addColumn()->setClass('flex flex-col -mb-1');
+                                ->setClass('text-center flex-shrink w-10 self-center')
+                                ->setTitle(__('Visualise?'));
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {
-								$col->addTextField('columnTitle['.$count.']')
+								$row->addTextField('columnTitle['.$count.']')
 									->setID('columnTitle'.$count)
                                     ->maxLength(20)
 									->required()
-                                    ->setClass('flex-1 w-full')
+                                    ->setClass('flex-grow w-full')
 									->setValue($rubricColumn['title']);
 							} else {
 								$data = array('gibbonScaleID' => $values['gibbonScaleID']);
 								$sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
-								$col->addSelect('gibbonScaleGradeID['.$count.']')
+								$row->addSelect('gibbonScaleGradeID['.$count.']')
 									->setID('gibbonScaleGradeID'.$count)
 									->fromQuery($pdo, $sql, $data)
                                     ->required()
-                                    ->setClass('flex-1 w-full')
+                                    ->setClass('flex-grow w-full')
 									->selected($rubricColumn['gibbonScaleGradeID']);
                             }
                             
-                            $col->addColor('columnColor['.$count.']')
+                            $row->addColor('columnColor['.$count.']')
                                 ->setID('columnColor'.$count)
                                 ->setValue($rubricColumn['backgroundColor'])
                                 ->setTitle(__('Background Colour'));

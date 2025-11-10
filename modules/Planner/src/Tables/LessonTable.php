@@ -30,6 +30,7 @@ use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
+use Gibbon\Support\Facades\Access;
 
 /**
  * LessonTable
@@ -74,6 +75,7 @@ class LessonTable
 
         $viewingAs = $this->getViewingAs($highestAction, $roleCategory);
         $editAccess = $this->getEditAccess($highestAction, $roleCategory);
+        $unitAccess = Access::allows('Planner', 'units');
 
         if ($editAccess || $highestAction == 'Lesson Planner_viewOnly') {
             $gibbonPersonID = $viewBy == 'date' && $viewingAs == 'Teacher' ? $gibbonPersonIDSelf : null;
@@ -105,6 +107,8 @@ class LessonTable
         if ($viewBy == 'year') {
             $lessons = $this->addSchoolClosureDates($gibbonSchoolYearID, $lessons->toArray());
         }
+
+        $lessonData = $lessons->getRow(0);
 
         $table = DataTable::createPaginated('lessonPlanner', $criteria)->withData($lessons);
 
@@ -145,6 +149,17 @@ class LessonTable
                 ->addClass($viewBy == 'year' ? 'ring-1 ring-blue-500 border-blue-500' : '')
                 ->displayLabel();
         }
+
+        if ($unitAccess) {
+            $table->addHeaderAction('units', __('Unit Planner'))
+                ->setURL('/modules/Planner/units.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->addParam('gibbonCourseID', $lessonData['gibbonCourseID'] ?? '')
+                ->setIcon('squares-plus')
+                ->displayLabel();
+        }
+
         if ($editAccess) {
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Planner/planner_add.php')

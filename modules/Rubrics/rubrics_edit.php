@@ -235,15 +235,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 
                     echo $form->getOutput();
 
-					echo '<a name="rubricDesign"></a>';
-					echo '<table class="smallIntBorder" cellspacing="0" style="width:100%">';
-						echo '<tr class="break">';
-							echo '<td colspan=2>';
-								echo '<h3>'. __('Rubric Design') .'</h3>';
-							echo '</td>';
-						echo '</tr>';
-					echo '</table>';
-
                     echo rubricEdit($guid, $connection2, $gibbonRubricID, $gradeScaleName, $search, $filter2);
                 }
             }
