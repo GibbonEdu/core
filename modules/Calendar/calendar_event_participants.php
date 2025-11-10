@@ -29,7 +29,7 @@ use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_enrolment.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_participants.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
     
     $page->breadcrumbs
         ->add(__('Manage Event'), 'calendar_event_manage.php')
-        ->add(__('Event Enrolment'));
+        ->add(__('Participants'));
 
     $event = $calendarEventGateway->getByID($gibbonCalendarEventID);
     if (empty($event)) {
@@ -62,12 +62,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
      $form->addHeaderAction('view', __('View Event'))
         ->setURL('/modules/Calendar/calendar_event_view.php')
         ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
-        ->displayLabel();
-
-    $form->addHeaderAction('notify', __('Notify Staff'))
-        ->setURL('/modules/Calendar/calendar_event_notify.php')
-        ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
-        ->setIcon('notify')
         ->displayLabel();
 
     $calendars = $calendarGateway->selectCalendarsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
@@ -97,10 +91,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         ->sortBy(['surname', 'preferredName', 'category'])
         ->fromPOST();
 
-    $participants = $calendarEventPersonGateway->queryEnrolledAttendees($criteria, $gibbonCalendarEventID);
+    $participants = $calendarEventPersonGateway->queryEventAttendees($criteria, $gibbonCalendarEventID);
 
     // BULK ACTION FORM
-    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Calendar/calendar_event_enrolmentProcessBulk.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Calendar/calendar_event_participantsProcessBulk.php');
     $form->addHiddenValue('gibbonCalendarEventID', $gibbonCalendarEventID);
 
     $col = $form->createBulkActionColumn([
@@ -110,22 +104,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
 
     // DATA TABLE FOR PARTICIPANTS
     $table = $form->addRow()->addDataTable('participants', $criteria)->withData($participants);
-    $table->setTitle(__('Attendees'));
+    $table->setTitle(__('Participants'));
 
     $table->addMetaData('bulkActions', $col);
 
-    $table->addHeaderAction('add', __('Add Student'))
-        ->setURL('/modules/Calendar/calendar_event_enrolment_add.php')
+    $table->addHeaderAction('add', __('Add Participants'))
+        ->setURL('/modules/Calendar/calendar_event_participants_add.php')
         ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
         ->displayLabel();
 
+    $form->addHeaderAction('notify', __('Notify Staff'))
+        ->setURL('/modules/Calendar/calendar_event_notify.php')
+        ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
+        ->setIcon('notify')
+        ->displayLabel();
+
+    $table->addColumn('image_240', __('Photo'))
+        ->context('primary')
+        ->width('7%')
+        ->notSortable()
+        ->format(Format::using('userPhoto', ['image_240', 'xs']));
+
     $table->addColumn('name', __('Name'))
         ->sortable(['surname', 'preferredName'])
-        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false]));
+        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'roleCategory', true, true]));
 
     $table->addColumn('formGroup', __('Form Group'));
 
-    $table->addColumn('category', __('Role'));
+    $table->addColumn('roleCategory', __('Role'));
 
     $table->addColumn('role', __('Event Role'));
 
@@ -138,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         ->addParam('gibbonPersonID')
         ->format(function ($event, $actions) {
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Calendar/calendar_event_enrolment_delete.php');
+                    ->setURL('/modules/Calendar/calendar_event_participants_delete.php');
         });
 
     $table->addCheckboxColumn('gibbonCalendarEventPersonID');

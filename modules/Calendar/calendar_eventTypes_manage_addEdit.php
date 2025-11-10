@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_eventTypes_manage_addEdit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -64,9 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.p
         $row->addLabel('type', __('Type'));
         $row->addTextField('type')->required()->maxLength(60);
 
-    $row = $form->addRow();
-        $row->addLabel('color', __('Colour'));
-        $row->addColor('color')->required();
+    // $row = $form->addRow();
+    //     $row->addLabel('color', __('Colour'));
+    //     $row->addColor('color')->required();
         
     $row = $form->addRow();
         $row->addSubmit();

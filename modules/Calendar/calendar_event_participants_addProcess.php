@@ -32,14 +32,14 @@ include '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonCalendarEventID = $_GET['gibbonCalendarEventID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_enrolment.php&gibbonCalendarEventID='.$gibbonCalendarEventID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_participants.php&gibbonCalendarEventID='.$gibbonCalendarEventID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_enrolment.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_participants.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     // Proceed
-    $targetStudents = $_POST['targetStudents'] ?? '';
+    $target = $_POST['target'] ?? '';
     $gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
     $gibbonGroupID = $_POST['gibbonGroupID'] ?? '';
     $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
@@ -47,13 +47,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
     $foreignTable = '';
     
     // Check if required values are specified
-    if (empty($targetStudents)) {
+    if (empty($target)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
-    switch ($targetStudents) {
+    switch ($target) {
         case 'Activity':
             if ($container->get(ActivityGateway::class)->exists($gibbonActivityID)) {
                 $foreignTable = 'gibbonActivity';
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
                 $foreignTable = 'gibbonCourseClass';
             };
             break;
-        case 'manualSelect':
+        case 'Individual':
             $targetID = $gibbonPersonIDList;
             break;
     }
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
 
     // Get all the participants from the selected target
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
-    $participants = $calendarEventPersonGateway->selectTargetStudentsForEnrolment($session->get('gibbonSchoolYearID'), $targetStudents, $targetID)->fetchAll();
+    $participants = $calendarEventPersonGateway->selectTargetParticipants($session->get('gibbonSchoolYearID'), $target, $targetID)->fetchAll();
     
     $gibbonPersonIDs = array_column($participants, 'gibbonPersonID');
     
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         $partialFail &= !$inserted;
     }
 
-    if (!($targetStudents == 'manualSelect')) {
+    if (!($target == 'Individual')) {
         $calendarEventGateway = $container->get(CalendarEventGateway::class);
         $data = ['foreignTable' => $foreignTable, 'foreignTableID' => $targetID];
         $partialFail &= !$calendarEventGateway->update($gibbonCalendarEventID, $data);

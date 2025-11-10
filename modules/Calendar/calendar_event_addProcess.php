@@ -36,11 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
     $partialFail = false;
 
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
-    
-    if (empty($_POST['dateStart']) || empty($_POST['dateEnd'])) return;
-
-    $dateStart = new DateTime(trim($_POST['dateStart'], '"'));
-    $dateEnd = new DateTime(trim($_POST['dateEnd'], '"'));
 
     $gibbonPersonIDOrganiser = $_POST['gibbonPersonIDOrganiser'] ?? '';
 
@@ -50,15 +45,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         'name'                    => $_POST['name'] ?? '',
         'description'             => $_POST['description'] ?? '',
         'status'                  => $_POST['status'] ?? 'Tentative',
-        'dateStart'               => $dateStart->format('Y-m-d'),
-        'dateEnd'                 => $dateEnd->format('Y-m-d'),
+        'dateStart'               => $_POST['dateStart'] ?? '',
+        'dateEnd'                 => $_POST['dateEnd'] ?? $_POST['dateStart'] ?? '',
         'allDay'                  => !empty($_POST['allDay']) ? $_POST['allDay'] : 'N',
-        'timeStart'               => $_POST['timeStart'] ?? NULL,
-        'timeEnd'                 => $_POST['timeEnd'] ?? NULL,   
+        'timeStart'               => $_POST['timeStart'] ?? null,
+        'timeEnd'                 => $_POST['timeEnd'] ?? null,   
         'locationType'            => $_POST['locationType'] ?? 'External',
         'locationDetail'          => $_POST['locationDetail'] ?? '',
         'locationURL'             => $_POST['locationURL'] ?? '',
-        'gibbonSpaceID'           => $_POST['gibbonSpaceID'] ?? NULL,
+        'gibbonSpaceID'           => $_POST['gibbonSpaceID'] ?? null,
         'gibbonPersonIDOrganiser' => $gibbonPersonIDOrganiser,
         'timestampCreated'        => date('Y-m-d H:i:s'),
         'gibbonPersonIDCreated'   => $session->get('gibbonPersonID') ?? '',
@@ -93,13 +88,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
 
     foreach ($staff as $staffPersonID) {
         $personData = [
-            'gibbonCalendarEventID' => $gibbonCalendarEventID,
-            'gibbonPersonID'   => $staffPersonID,
-            'role'    => $role,
-            'gibbonPersonIDCreated' => $session->get('gibbonPersonID') ?? '',
-            'timestampCreated' => date('Y-m-d H:i:s'),
+            'gibbonCalendarEventID'  => $gibbonCalendarEventID,
+            'gibbonPersonID'         => $staffPersonID,
+            'role'                   => $role,
+            'gibbonPersonIDCreated'  => $session->get('gibbonPersonID') ?? '',
+            'timestampCreated'       => date('Y-m-d H:i:s'),
             'gibbonPersonIDModified' => $session->get('gibbonPersonID') ?? '',
-            'timestampModified' => date('Y-m-d H:i:s'),
+            'timestampModified'      => date('Y-m-d H:i:s'),
         ];
 
         $gibbonCalendarEventPersonID = $calendarEventPersonGateway->insert($personData);
@@ -108,13 +103,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
 
     // Add the organiser to the particapants list
     $organiserData = [
-            'gibbonCalendarEventID' => $gibbonCalendarEventID,
-            'gibbonPersonID'   => $gibbonPersonIDOrganiser,
-            'role'    => 'Organiser',
-            'gibbonPersonIDCreated' => $session->get('gibbonPersonID') ?? '',
-            'timestampCreated' => date('Y-m-d H:i:s'),
+            'gibbonCalendarEventID'  => $gibbonCalendarEventID,
+            'gibbonPersonID'         => $gibbonPersonIDOrganiser,
+            'role'                   => 'Organiser',
+            'gibbonPersonIDCreated'  => $session->get('gibbonPersonID') ?? '',
+            'timestampCreated'       => date('Y-m-d H:i:s'),
             'gibbonPersonIDModified' => $session->get('gibbonPersonID') ?? '',
-            'timestampModified' => date('Y-m-d H:i:s'),
+            'timestampModified'      => date('Y-m-d H:i:s'),
         ];
 
     $gibbonCalendarEventPersonID = $calendarEventPersonGateway->insert($organiserData);

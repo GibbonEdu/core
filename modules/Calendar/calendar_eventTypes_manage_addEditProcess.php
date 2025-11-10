@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_eventTyp
     // Update the type
     $data = [
         'type'               => $_POST['type'] ?? '',
-        'color'              => $_POST['color'] ?? '',
+        'color'              => null,
     ];
 
     // Validate the required values are present

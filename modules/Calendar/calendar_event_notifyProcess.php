@@ -34,7 +34,7 @@ use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['notes' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_notify.php';
 $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
@@ -49,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
     $userGateway = $container->get(UserGateway::class);
 
+    $subject = $_POST['subject'] ?? '';
     $notes = $_POST['notes'] ?? '';
     $notifyGroups = $_POST['notifyGroups'] ?? [];
     $allStaff = $_POST['allStaff'] ?? 'N';
@@ -59,8 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     // Get event details
     $event = $calendarEventGateway->getByID($gibbonCalendarEventID);
     if (!empty($gibbonCalendarEventID) && empty($event)) {
-        $page->addError(__('The specified record cannot be found.'));
-        return;
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
     }
 
     // Get all student participants
@@ -70,8 +72,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $students = $calendarEventPersonGateway->queryEnrolledAttendees($criteria, $gibbonCalendarEventID)->toArray();
 
     if (empty($students)) {
-        $page->addError(__('The specified record does not have any enrolled attendees.'));
-        return;
+        $URL .= '&return=error3';
+        header("Location: {$URL}");
+        exit;
     }
 
     if ($allStaff == 'Y') {
@@ -196,28 +199,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         }
 
         $buttonURL = "index.php?q=/modules/Calendar/calendar_event_view.php&gibbonCalendarEventID=".$gibbonCalendarEventID;
-        $subject = sprintf(__('Event Summary - %1$s (%2$s - %3$s'), $event['name'], Format::date($event['dateStart']), Format::date($event['dateEnd']). ')', $session->get('systemName'), $session->get('organisationNameShort'));
-
-         // Generate content from template
+        $subject = !empty($subject) ? $subject : __('Event').': '. $values['name'] . ($values['allDay'] != 'Y' ? ', ' .Format::dateRangeReadable($values['dateStart'], $values['dateEnd']) : '');
+        
+        // Generate content from template
         $content = $view->fetchFromTemplate('calendarEvents.twig.html', [
             'students' => $relevantStudents,
             'event' => $event ?? [],
             'notes' => $notes ?? '',
         ]);
 
-        $body = sprintf(__('Dear %1$s'), $staffDetail['preferredName'].' '.$staffDetail['surname']).',<br/><br/>';
-        $body .= $content;
+        // $body = sprintf(__('Dear %1$s'), $staffDetail['preferredName'].' '.$staffDetail['surname']).',<br/><br/>';
+        // $body .= $content;
 
         $mail->AddReplyTo($replyTo ?? $session->get('organisationEmail'), $replyToName ?? '');
         $mail->AddAddress($staffDetail['email'], $staffDetail['surname'].', '.$staffDetail['preferredName']);
 
         $mail->setDefaultSender($subject);
         $mail->renderBody('mail/message.twig.html', [
-            'title'  => __('Event'),
+            'title'  => $event['name'],
             'body'   => $body,
             'button' => [
                 'url'  => $buttonURL,
-                'text' => __('Click Here to View Event'),
+                'text' => __('View Details'),
             ],
         ]);
 

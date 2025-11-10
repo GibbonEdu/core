@@ -29,7 +29,7 @@ use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
 
-if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_enrolment.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_participants.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
 
     $page->breadcrumbs
         ->add(__('Manage Activities'), 'calendar_event_manage.php')
-        ->add(__('Event Enrolment'), 'calendar_event_enrolment.php',  $urlParams)
-        ->add(__('Add Student'));
+        ->add(__('Participants'), 'calendar_event_participants.php',  $urlParams)
+        ->add(__('Add Participants'));
 
     if (empty($gibbonCalendarEventID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -56,27 +56,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         return;
     }
 
-    $form = Form::create('studentEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/calendar_event_enrolment_addProcess.php?gibbonCalendarEventID=".$gibbonCalendarEventID);
+    $form = Form::create('studentEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/calendar_event_participants_addProcess.php?gibbonCalendarEventID=".$gibbonCalendarEventID);
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
     
-    $form->setTitle(__('Choose Students'));
+    $form->setTitle(__('Choose Participant'));
 
-     $targetOptions = [
+    $targetOptions = [
         'Messenger'    => __('Messenger Group'),
         'Activity' => __('Activity Enrolment'),
         'Class'   => __('Class Enrolment'),
-        'manualSelect'   => __('Select Manually'),
+        'Individual'   => __('Select Manually'),
     ];
 
     $row = $form->addRow();
-        $row->addLabel('targetStudents', __('Students'));
-        $row->addSelect('targetStudents')->fromArray($targetOptions)->required()->placeholder();
+        $row->addLabel('target', __('Target'));
+        $row->addSelect('target')->fromArray($targetOptions)->required()->placeholder();
 
-    $form->toggleVisibilityByClass('targetActivity')->onSelect('targetStudents')->when('Activity');
-    $form->toggleVisibilityByClass('targetMessenger')->onSelect('targetStudents')->when('Messenger');
-    $form->toggleVisibilityByClass('targetClass')->onSelect('targetStudents')->when('Class');
-    $form->toggleVisibilityByClass('targetSelect')->onSelect('targetStudents')->when('manualSelect');
+    $form->toggleVisibilityByClass('targetActivity')->onSelect('target')->when('Activity');
+    $form->toggleVisibilityByClass('targetMessenger')->onSelect('target')->when('Messenger');
+    $form->toggleVisibilityByClass('targetClass')->onSelect('target')->when('Class');
+    $form->toggleVisibilityByClass('targetSelect')->onSelect('target')->when('Individual');
 
     // Activity
     $activities = $container->get(ActivityGateway::class)->selectActivitiesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
@@ -98,8 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_en
         ->placeholder();
 
     // Select Attendees
-    $row = $form->addRow();
-        $col = $row->addColumn()->addClass('targetSelect')->addColumn();
+    $row = $form->addRow()->addClass('targetSelect');
+        $col = $row->addColumn();
             $col->addLabel('participants', __('Attendees'));
             $col->addSelectUsers('participants', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'useMultiSelect' => true])
                 ->required()

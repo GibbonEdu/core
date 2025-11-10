@@ -60,7 +60,7 @@ class CalendarEventsLayer extends AbstractTimetableLayer
             $eventList = $this->calendarEventGateway->selectEventsByFacility($context->get('gibbonSchoolYearID'), $context->get('gibbonSpaceID'), $dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'))->fetchAll();
         }
 
-        $canViewActivities = Access::allows('Calendar', 'calendar_event_view');
+        $canViewEvents = Access::allows('Calendar', 'calendar_event_view');
 
         foreach ($dateRange as $dateObject) {
             $date = $dateObject->format('Y-m-d');
@@ -72,7 +72,7 @@ class CalendarEventsLayer extends AbstractTimetableLayer
                     'type'      => __('Event'),
                     'title'     => $event['name'],
                     'subtitle'  => $event['locationType']. ': ' .(!empty($event['space']) ? $event['space'] : $event['locationDetail'] ?? ''),
-                    'link'      => $canViewActivities ? Url::fromModuleRoute('Calendar', 'calendar_event_view')->withQueryParam('gibbonCalendarEventID', $event['gibbonCalendarEventID']) : '',
+                    'link'      => $canViewEvents ? Url::fromModuleRoute('Calendar', 'calendar_event_view')->withQueryParam('gibbonCalendarEventID', $event['gibbonCalendarEventID']) : '',
                     'allDay'      => $event['allDay'] ?? false,
                     'timeStart'   => $event['timeStart'] ?? null,
                     'timeEnd'     => $event['timeEnd'] ?? null,

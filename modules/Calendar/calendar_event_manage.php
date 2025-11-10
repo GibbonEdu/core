@@ -143,13 +143,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
             $actions->addAction('view', __('View'))
                 ->setURL('/modules/Calendar/calendar_event_view.php');
 
-            $actions->addAction('enrolment', __('Enrolment'))
-                ->setURL('/modules/Calendar/calendar_event_enrolment.php')
-                ->setIcon('attendance');
-
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Calendar/calendar_event_edit.php');
-                
+        
+            $actions->addAction('participants', __('Participants'))
+                ->setURL('/modules/Calendar/calendar_event_participants.php')
+                ->setIcon('users');
+
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/Calendar/calendar_event_delete.php');
         });

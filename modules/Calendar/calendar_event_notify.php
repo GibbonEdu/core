@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_edit.php') == false) {
     // Access denied
@@ -31,7 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Events'), 'calendar_event_manage.php')
-        ->add(__('Notify Event'));
+        ->add(__('Notify Staff'));
+
+    $page->return->addReturns(['error3' => __('This event does not have any attendees.')]);
 
     $gibbonCalendarEventID = $_GET['gibbonCalendarEventID'] ?? '';
 
@@ -45,6 +48,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         return;
     }
 
+    // Get all student participants
+    $criteria = $calendarEventPersonGateway->newQueryCriteria()
+        ->sortBy(['surname', 'preferredName', 'category'])
+        ->fromPOST();
+    $students = $calendarEventPersonGateway->queryEnrolledAttendees($criteria, $gibbonCalendarEventID)->toArray();
+
+    if (empty($students)) {
+        $page->addError(__('This event does not have any attendees.'));
+        return;
+    }
+
     $form = Form::create('eventNotification', $session->get('absoluteURL').'/modules/Calendar/calendar_event_notifyProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -52,11 +66,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $form->addHiddenValue('gibbonCalendarEventID', $gibbonCalendarEventID);
 
     // NOTES
-    $form->addRow()->addHeading('notes', __('Notes'));
+    $form->addRow()->addHeading('Message Details', __('Message Details'));
+
+    $subject = __('Event').': '. $values['name'] . ($values['allDay'] != 'Y' ? ', ' .Format::dateRangeReadable($values['dateStart'], $values['dateEnd']) : '');
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('subject', __('Subject'));
+        $col->addTextField('subject')->maxLength(120)->setValue($subject);
 
     $col = $form->addRow()->addColumn();
-        $col->addLabel('notes', __('Add Notes to the Email'))->description(__('If provided, this note will be shared with all the email recipients.'));
-        $col->addTextArea('notes');
+        $col->addLabel('notes', __('Notes'))->description(__('Optional notes that will be shared with email recipients.'));
+        $col->addEditor('notes', $guid)->setRows(5);
 
     // NOTIFICATIONS
     $form->addRow()->addHeading('Notifications', __('Notifications'));

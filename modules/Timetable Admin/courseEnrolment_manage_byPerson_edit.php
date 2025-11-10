@@ -235,8 +235,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $ttDate = $_REQUEST['ttDateNav'];
             } elseif (!empty($_REQUEST['ttDateChooser'])) {
                 $ttDate = $_REQUEST['ttDateChooser'];
-            } elseif (!empty($_REQUEST['ttDate'])) {
-                $ttDate = Format::dateConvert($_REQUEST['ttDate']);
+            } else {
+                $ttDate = $_REQUEST['ttDate'] ?? null;
             }
 
             $apiEndpoint = Url::fromHandlerRoute('index.php')->withQueryParams(['q' => $_GET['q'], 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTID' => $gibbonTTID, 'gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'ttDate' => $ttDate]);

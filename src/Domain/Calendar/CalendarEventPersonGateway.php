@@ -37,10 +37,10 @@ class CalendarEventPersonGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-    public function queryEnrolledAttendees($criteria, $gibbonCalendarEventID) {
+    public function queryEventAttendees($criteria, $gibbonCalendarEventID) {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonCalendarEventPerson.*', 'surname', 'preferredName', 'gibbonRole.category', 'gibbonStudentEnrolment.gibbonYearGroupID', 'gibbonStudentEnrolment.gibbonFormGroupID', 'gibbonFormGroup.nameShort as formGroup'])
+            ->cols(['gibbonCalendarEventPerson.*', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.image_240', 'gibbonRole.category as roleCategory', 'gibbonStudentEnrolment.gibbonFormGroupID', 'gibbonFormGroup.nameShort as formGroup'])
             ->from($this->getTableName())
             ->innerJoin('gibbonCalendarEvent', 'gibbonCalendarEvent.gibbonCalendarEventID=gibbonCalendarEventPerson.gibbonCalendarEventID')
             ->innerJoin('gibbonCalendar', 'gibbonCalendarEvent.gibbonCalendarID=gibbonCalendar.gibbonCalendarID')
@@ -56,10 +56,10 @@ class CalendarEventPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryEventEnrolment($criteria, $gibbonCalendarEventID) {
+    public function queryAllEventParticipants($criteria, $gibbonCalendarEventID) {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonCalendarEventPerson.*', 'surname', 'preferredName', 'gibbonRole.category', 'gibbonFormGroup.nameShort as formGroup'])
+            ->cols(['gibbonCalendarEventPerson.*', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category as roleCategory', 'gibbonFormGroup.nameShort as formGroup'])
             ->from($this->getTableName())
             ->innerJoin('gibbonCalendarEvent', 'gibbonCalendarEventPerson.gibbonCalendarEventID=gibbonCalendarEvent.gibbonCalendarEventID')
             ->innerJoin('gibbonCalendar', 'gibbonCalendarEvent.gibbonCalendarID=gibbonCalendar.gibbonCalendarID')
@@ -72,6 +72,7 @@ class CalendarEventPersonGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
     public function selectEventStaff($gibbonCalendarEventID) {
         $select = $this
             ->newSelect()
@@ -86,7 +87,8 @@ class CalendarEventPersonGateway extends QueryableGateway
 
         return $this->runSelect($select);
     }
-    public function selectTargetStudentsForEnrolment($gibbonSchoolYearID, $targetStudents, $targetID)
+    
+    public function selectTargetParticipants($gibbonSchoolYearID, $targetStudents, $targetID)
     {
         switch ($targetStudents) {
             case 'Activity':
@@ -126,7 +128,7 @@ class CalendarEventPersonGateway extends QueryableGateway
                         GROUP BY gibbonCourseClassPerson.gibbonPersonID
                         ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
                     break;
-            case 'manualSelect':
+            case 'Individual':
                 $data = ['gibbonPersonIDList' => implode(',', $targetID)];
                 $sql = "SELECT gibbonPersonID
                         FROM gibbonPerson

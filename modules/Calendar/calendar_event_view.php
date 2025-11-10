@@ -55,16 +55,16 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $form = Form::create('viewEvent', '');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHeaderAction('enrolment', __('Enrolment'))
-        ->setURL('/modules/Calendar/calendar_event_enrolment.php')
+    $form->addHeaderAction('participants', __('Participants'))
+        ->setURL('/modules/Calendar/calendar_event_participants.php')
         ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
         ->setIcon('attendance')
         ->displayLabel();
 
-    $form->addHeaderAction('email', __('Notify Staff'))
+    $form->addHeaderAction('notify', __('Notify Staff'))
         ->setURL('/modules/Calendar/calendar_event_notify.php')
         ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
-        ->setIcon('run')
+        ->setIcon('notify')
         ->displayLabel();
         
     $form->addRow()->addHeading(__('Basic Information'));
@@ -151,7 +151,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('description', __('Description'));
-        $col->addContent('description');
+        $col->addContent($values['description']);
 
     $form->loadAllValuesFrom($values);
     echo $form->getOutput();
@@ -161,7 +161,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         ->sortBy(['role','surname', 'preferredName'])
         ->fromPOST();
         
-    $participants = $calendarEventPersonGateway->queryEventEnrolment($criteria, $gibbonCalendarEventID);
+    $participants = $calendarEventPersonGateway->queryAllEventParticipants($criteria, $gibbonCalendarEventID);
 
     // BULK ACTION FORM
     $form = Form::create('participants', '');
@@ -172,9 +172,9 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
 
     $table->addColumn('name', __('Name'))
         ->sortable(['surname', 'preferredName'])
-        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false]));
+        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'roleCategory', true, true]));
 
-    $table->addColumn('category', __('Role'));
+    $table->addColumn('roleCategory', __('Role'));
 
     $table->addColumn('formGroup', __('Form Group'));
 

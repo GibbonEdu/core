@@ -57,27 +57,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         $URL .= '&return=error1';
         header("Location: {$URL}");
     }
-
-    $gibbonPersonIDOrganiser = $_POST['gibbonPersonIDOrganiser'] ?? '';
     
     $data = [
-        'gibbonCalendarID'        => $_POST['gibbonCalendarID'] ?? '',
+        'gibbonCalendarID'          => $_POST['gibbonCalendarID'] ?? '',
         'gibbonCalendarEventTypeID' => $_POST['gibbonCalendarEventTypeID'] ?? '',
-        'name'                    => $_POST['name'] ?? '',
-        'description'             => $_POST['description'] ?? '',
-        'status'                  => $_POST['status'] ?? 'Tentative',
-        'dateStart'               => $dateStart->format('Y-m-d'),
-        'dateEnd'                 => $dateEnd->format('Y-m-d'),
-        'allDay'                  => !empty($_POST['allDay']) ? $_POST['allDay'] : 'N',
-        'timeStart'               => $_POST['timeStart'] ?? NULL,
-        'timeEnd'                 => $_POST['timeEnd'] ?? NULL,    
-        'locationType'            => $_POST['locationType'] ?? 'External',
-        'locationDetail'          => $_POST['locationDetail'] ?? '',
-        'locationURL'             => $_POST['locationURL'] ?? '',
-        'gibbonSpaceID'           => $_POST['gibbonSpaceID'] ?? NULL,
-        'gibbonPersonIDOrganiser' => $gibbonPersonIDOrganiser,
-        'timestampModified'       => date('Y-m-d H:i:s'),
-        'gibbonPersonIDModified'  => $session->get('gibbonPersonID') ?? '',
+        'name'                      => $_POST['name'] ?? '',
+        'description'               => $_POST['description'] ?? '',
+        'status'                    => $_POST['status'] ?? 'Tentative',
+        'dateStart'                 => $dateStart->format('Y-m-d'),
+        'dateEnd'                   => $dateEnd->format('Y-m-d'),
+        'allDay'                    => !empty($_POST['allDay']) ? $_POST['allDay'] : 'N',
+        'timeStart'                 => $_POST['timeStart'] ?? null,
+        'timeEnd'                   => $_POST['timeEnd'] ?? null,
+        'locationType'              => $_POST['locationType'] ?? 'External',
+        'locationDetail'            => $_POST['locationDetail'] ?? '',
+        'locationURL'               => $_POST['locationURL'] ?? '',
+        'gibbonSpaceID'             => !empty($_POST['gibbonSpaceID']) ? $_POST['gibbonSpaceID'] : null,
+        'timestampModified'         => date('Y-m-d H:i:s'),
+        'gibbonPersonIDModified'    => $session->get('gibbonPersonID') ?? '',
     ];
     
     // Validate the required values are present
