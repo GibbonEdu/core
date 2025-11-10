@@ -97,10 +97,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = $settingGateway->getSettingByScope('Students', 'noteCreationNotification', true);
-    $noteCreationNotificationRoles = array(
+    $noteCreationNotificationRoles = [
         'Tutors' => __('Tutors'),
-        'Tutors & Teachers' => __('Tutors & Teachers')
-    );
+        'Tutors & Teachers' => __('Tutors & Teachers'),
+        'None' => __('None')
+    ];
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($noteCreationNotificationRoles)->selected($setting['value'])->required();

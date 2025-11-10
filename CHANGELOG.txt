@@ -76,6 +76,7 @@ v30.0.00
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
         User Admin: added an option to view User Image of previous years
+        User Admin: added a "None" option to disable notifications when a note is added/edited
 
     Bug Fixes
         System: fixed toggle field direction for right-to-left languages
