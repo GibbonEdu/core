@@ -76,6 +76,7 @@ v30.0.00
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
         User Admin: added an option to view User Image of previous years
+        User Admin: increased the username field length to 40 characters
 
     Bug Fixes
         System: fixed toggle field direction for right-to-left languages
