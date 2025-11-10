@@ -202,8 +202,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                 ->checked($rubricColumn['visualise'])
                                 ->setClass('text-center flex-shrink w-10 self-center')
                                 ->setTitle(__('Visualise?'));
-                            // $column = $row->addColumn()->setClass('sm:max-w-sm');
-                            // $col = $column->addColumn()->setClass('flex flex-col -mb-1');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {

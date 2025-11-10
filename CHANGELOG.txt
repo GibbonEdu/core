@@ -78,6 +78,8 @@ v30.0.00
         User Admin: added Sibling as option to Emergency Relationship select
         User Admin: added Prof. as an option in Title select
         User Admin: added an option to view User Image of previous years
+        User Admin: increased the username field length to 40 characters
+        User Admin: added a None option for the Note Creation Notification in Student Settings
 
     Bug Fixes
         System: fixed toggle field direction for right-to-left languages
@@ -89,6 +91,7 @@ v30.0.00
         Activities: fixed the Activities tab on the parent dashboard to work with new activities system
         Data Updater: fixed attachments being cleared when new data updates are submitted
         Library: fixed handling of SQL values in Library Browse page
+        Markbook: fixed the bug preventing to display user inputs
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Planner: fixed Teacher Notes in smart blocks not visible when using the Show Confidential Data toggle
         Planner: fixed access to class list in Edit Unit when viewing past and upcoming years

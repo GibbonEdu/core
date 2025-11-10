@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
     // Attempt to issue alerts form tutor(s) and teacher(s) according to settings
     if ($student['status'] == 'Full') {
-
+        
         // Raise a new notification event
         $event = new NotificationEvent('Students', 'Student Notes');
 
