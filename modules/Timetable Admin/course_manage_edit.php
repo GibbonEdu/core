@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'));
-				$row->addTextField('nameShort')->required()->maxLength(12);
+				$row->addTextField('nameShort')->required()->maxLength(16);
 
             $row = $form->addRow()->addHeading('Display Information', __('Display Information'));
 

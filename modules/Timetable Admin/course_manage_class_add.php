@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this course.'));
-				$row->addTextField('nameShort')->required()->maxLength(8);
+				$row->addTextField('nameShort')->required()->maxLength(16);
 
 			$row = $form->addRow();
 				$row->addLabel('reportable', __('Reportable?'))->description(__('Should this class show in reports?'));
