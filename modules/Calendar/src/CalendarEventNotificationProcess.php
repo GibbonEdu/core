@@ -192,6 +192,7 @@ class CalendarEventNotificationProcess extends BackgroundProcess
         $sender = $this->userGateway->getByID($this->session->get('gibbonPersonID'));
         $replyTo = $sender['email'];
         $replyToName = Format::name($sender['title'], $sender['preferredName'], $sender['surname'], 'Staff');
+        $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
         foreach ($staffDetails as $staffDetail) {
             $gibbonPersonIDTeacher = $staffDetail['gibbonPersonID'];
@@ -253,12 +254,12 @@ class CalendarEventNotificationProcess extends BackgroundProcess
             $this->mail->clearReplyTos();
         }
 
+        
+
         // Close SMTP connection
         $this->mail->smtpClose();
 
-
-
-        return $sent;
+        return $sendReport['emailFailed'] == 0;
     }
 
     // public function runNewAbsenceWithCoverageRequest($coverageList)
