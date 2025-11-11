@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Module\Staff;
+namespace Gibbon\Module\Calendar;
 
 use Gibbon\View\View;
 use Gibbon\Services\Format;
@@ -254,56 +254,29 @@ class CalendarEventNotificationProcess extends BackgroundProcess
             $this->mail->clearReplyTos();
         }
 
+        $reportSubject = __('EmailReport For: ').$event['name'];
+        $reportBody = sprintf(__('Dear %1$s'), $sender['preferredName'].' '.$sender['surname']).',<br/><br/>';
+        $reportBody .= '<strong>'.__('Summary').':</strong><br/>';
+        $reportBody .= sprintf(__('Emails Sent: %1$s'), $sendReport['emailSent']) . '<br/>';
+        $reportBody .= sprintf(__('Emails Failed: %1$s'), $sendReport['emailFailed']) . '<br/>';
         
+        if (!empty($sendReport['emailErrors'])) {
+            $reportBody .= '<br/><strong>'.__('Errors').':</strong><br/>';
+            $reportBody .= $sendReport['emailErrors'];
+        }
+
+        $this->mail->AddAddress($sender['email'], $sender['surname'].', '.$sender['preferredName']);
+        $this->mail->setDefaultSender($reportSubject);
+        $this->mail->renderBody('mail/message.twig.html', [
+            'title'  => __('Email Report'),
+            'body'   => $reportBody,
+        ]);
+
+        $this->mail->Send();
 
         // Close SMTP connection
         $this->mail->smtpClose();
 
         return $sendReport['emailFailed'] == 0;
     }
-
-    // public function runNewAbsenceWithCoverageRequest($coverageList)
-    // {
-    //     if (empty($coverageList)) return false;
-
-    //     $dates = $this->getCoverageDates($coverageList);
-
-    //     $coverage = $this->getCoverageDetailsByID(current($coverageList));
-    //     $absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($coverage['gibbonStaffAbsenceID'] ?? '');
-
-    //     $message = new NewAbsenceWithCoverage($absence, $coverage, $dates);
-
-    //     $recipients = !empty($coverage['notificationListAbsence']) ? json_decode($coverage['notificationListAbsence']) : [];
-    //     $recipients[] = $this->organisationHR;
-
-    //     // Add the absent person, if this coverage request was created by someone else
-    //     if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus'] || empty($coverage['gibbonPersonIDApproval'])) {
-    //         $recipients[] = $coverage['gibbonPersonID'];
-    //     }
-
-    //     // Add the notification group members, if selected
-    //     if (!empty($coverage['gibbonGroupID'])) {
-    //         $groupRecipients = $this->groupGateway->selectPersonIDsByGroup($coverage['gibbonGroupID'])->fetchAll(\PDO::FETCH_COLUMN, 0);
-    //         $recipients = array_merge($recipients, $groupRecipients);
-    //     }
-
-    //     if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
-    //         $data = [
-    //             'status' => $this->coverageMode == 'Assigned' && !empty($coverage['gibbonPersonIDCoverage'])? 'Accepted' : 'Requested',
-    //             'notificationSent' => 'Y',
-    //             'notificationList' => json_encode($recipients),
-    //         ];
-    //         foreach ($coverageList as $gibbonStaffCoverageID) {
-    //             $this->staffCoverageGateway->update($gibbonStaffCoverageID, $data);
-    //         }
-
-    //         $this->staffAbsenceGateway->update($coverage['gibbonStaffAbsenceID'], [
-    //             'notificationSent' => 'Y',
-    //         ]);
-    //     }
-
-    //     return $sent;
-    // }
-
-
 }
