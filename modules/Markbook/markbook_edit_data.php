@@ -461,7 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $col = $row->onlyIf($hasAttainment && $hasRawAttainment)->addColumn();
                         $col->addNumber($count.'-attainmentValueRaw')
-                            ->onlyInteger(false)
+                            ->decimalPlaces(2)
                             ->setClass('inline-block w-16')
                             ->setValue($student['attainmentValueRaw']);
                         $col->addContent('/ '.floatval($values['attainmentRawMax']))->setClass('inline-block ml-1');

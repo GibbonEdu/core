@@ -97,7 +97,7 @@ v30.0.00
         Attendance: fixed Student History display when all seven weekdays are set as school days
         Data Updater: fixed attachments being cleared when new data updates are submitted
         Library: fixed handling of SQL values in Library Browse page
-        Markbook: fixed the bug preventing to display user inputs
+        Markbook: fixed the bug preventing to display user inputs and allow decimal inputs
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
         Planner: fixed Teacher Notes in smart blocks not visible when using the Show Confidential Data toggle
         Planner: fixed access to class list in Edit Unit when viewing past and upcoming years
