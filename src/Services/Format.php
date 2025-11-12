@@ -72,6 +72,9 @@ class Format
         static::$settings = array_replace(static::$settings, $settings);
         static::$intlFormatterAvailable = class_exists('IntlDateFormatter');
 
+        // Ensure the time format is used for dates
+        static::$settings['dateTimeFormatPHP'] = static::$settings['dateFormatPHP'].' '.static::$settings['timeFormatPHP'];
+
         // Generate best-fit date formats for this locale, if possible
         if (static::$settings['dateFormatGenerate'] && class_exists('IntlDatePatternGenerator')) {
             $intlPatternGenerator = new \IntlDatePatternGenerator(static::$settings['code']);
@@ -104,6 +107,7 @@ class Format
         $settings['nameFormatStaffInformalReversed'] = $session->get('nameFormatStaffInformalReversed');
         $settings['nameFormatStaffFormal'] = $session->get('nameFormatStaffFormal');
         $settings['nameFormatStaffFormalReversed'] = $session->get('nameFormatStaffFormalReversed');
+        $settings['timeFormatPHP'] = $session->get('timeFormatPHP', 'H:i');
 
         static::setup($settings);
     }

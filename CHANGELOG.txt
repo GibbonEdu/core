@@ -26,6 +26,7 @@ v31.0.00
         Form fields have been improved with searchable select boxes
         Smart blocks have been updated with a streamlined appearance and more tools
         Improved text editor with drag-drop image uploads and more formatting options
+        Added support for 12-hour and 24-hour time formats
 
     Security
 
@@ -34,6 +35,7 @@ v31.0.00
     Tweaks & Additions
         System: updated TinyMCE to version 8 and added a minimal mode to Editor fields
         System: added a User module to organise user preferences and settings
+        System: enabled configuring the time format as 12-hour clock or 24-hour clock in System Settings
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
         Attendance: student attendance history now ordered by timetable period

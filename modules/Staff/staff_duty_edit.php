@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
         function setTimepicker(input) {
             input.removeClass('hasTimepicker').timepicker({
                     'scrollDefault': 'now',
-                    'timeFormat': 'H:i',
+                    'timeFormat': '<?= $session->get('timeFormatPHP', 'H:i') ?>',
                     'minTime': '00:00',
                     'maxTime': '23:59',
                     onSelect: function(){$(this).blur();},
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
             //This is needed to ensure that loaded timeEnds are properly chained to loaded timeStarts
             $('input[id^=timeEnd]').each(function() {
                 var timeStart = $('#' + $(this).prop('id').replace('End', 'Start'));
-                $(this).timepicker('option', {'minTime': timeStart.val(), 'timeFormat': 'H:i', 'showDuration': true});
+                $(this).timepicker('option', {'minTime': timeStart.val(), 'timeFormat': '<?= $session->get('timeFormatPHP', 'H:i') ?>', 'showDuration': true});
             });
         });
 
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
             if (timeEnd.val() == "" || $(this).val() > timeEnd.val()) {
                 timeEnd.val($(this).val());
             }
-            timeEnd.timepicker('option', {'minTime': $(this).val(), 'timeFormat': 'H:i', 'showDuration': true});
+            timeEnd.timepicker('option', {'minTime': $(this).val(), 'timeFormat': '<?= $session->get('timeFormatPHP', 'H:i') ?>', 'showDuration': true});
         });
 
         //This is needed to make Time inputs have time pickers.

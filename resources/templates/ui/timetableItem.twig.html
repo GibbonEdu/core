@@ -27,7 +27,7 @@ x-tooltip.white="
         </div>
         
         <div class='px-2 pt-2 border-t flex justify-between leading-relaxed'>
-            <div>{{ icon('outline', 'clock', 'size-4 text-gray-600 inline align-middle mr-1', {'stroke-width': 2.4})|escape }} {{ item.allDay ? __('All Day') : item.timeStart|slice(0,5)|trim('0', 'left') ~ ' - ' ~ item.timeEnd|slice(0,5)|trim('0', 'left') }}
+            <div>{{ icon('outline', 'clock', 'size-4 text-gray-600 inline align-middle mr-1', {'stroke-width': 2.4})|escape }} {{ item.allDay ? __('All Day') : formatUsing('timeRange', item.timeStart, item.timeEnd)}}
                 {{ isActive ? formatUsing('tag', __('Active'), 'success ml-2 text-xxs' )|escape }}
                 {{ item.hasStatus('absent') ? formatUsing('tag', __('Absent'), 'dull ml-2 text-xxs')|escape }}
             </div>
@@ -49,7 +49,7 @@ x-tooltip.white="
     <div class="flex items-start justify-between  border-gray-500 py-1 px-1.5">
         <span class="text-xxs text-gray-700 ">{{ item.period ?? item.type }}</span>
         {% if item.overlap is empty %}
-        <span class="inline md:hidden lg:inline text-xxs text-gray-700 ">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
+        <span class="inline md:hidden lg:inline text-xxs text-gray-700 ">{{ formatUsing('timeRange', item.timeStart, item.timeEnd) }}</span>
         {% endif %}
     </div>
     {% endif %}

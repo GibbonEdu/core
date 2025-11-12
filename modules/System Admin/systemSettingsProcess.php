@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             'organisationAdmissions' => 'required',
             'pagination' => 'required',
             'timezone' => 'required',
+            'timeFormatPHP' => 'required',
             'country' => '',
             'firstDayOfTheWeek' => 'required',
             'analytics' => '',
