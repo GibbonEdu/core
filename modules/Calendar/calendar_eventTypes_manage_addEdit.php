@@ -63,11 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_eventTyp
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addTextField('type')->required()->maxLength(60);
-
-    // $row = $form->addRow();
-    //     $row->addLabel('color', __('Colour'));
-    //     $row->addColor('color')->required();
-        
+                
     $row = $form->addRow();
         $row->addSubmit();
 

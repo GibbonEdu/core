@@ -49,13 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_eventTyp
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Calendar/calendar_eventTypes_manage_addEdit.php')
         ->displayLabel();
-
-    // $table->addColumn('color', __('Colour'))
-    //     ->width('8%')
-    //     ->format(function ($values) {
-    //         return !empty($values['color'])? Format::colorSwatch($values['color']) : '';
-    //     });
-
+        
     $table->addColumn('type', __('Type'));
     
     $table->addActionColumn()
