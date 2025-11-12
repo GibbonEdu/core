@@ -45,6 +45,7 @@ v30.0.00
         Activities: included the photos in the new copy when an activity is duplicated
         Activities: fixed staff on inactive activities not showing up in the Manage Staffing page
         Behaviour: added Add Multiple button to Behaviour tab of student profile
+        Calendar: added notifyStaff feature as a background process
         Formal Assessment: added a Year Group filter option to Manage External Assessment
         Individual Needs: enabled viewing IN records for past students as read-only
         Library: added the option to send an email to parents when lending a library item

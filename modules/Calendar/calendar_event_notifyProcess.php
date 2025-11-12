@@ -27,9 +27,24 @@ use Gibbon\Module\Calendar\CalendarEventNotificationProcess;
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['notes' => 'HTML']);
-
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_notify.php';
 $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_view.php&gibbonCalendarEventID='.$gibbonCalendarEventID;
+
+if (empty($gibbonCalendarEventID)) {
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit;
+}
+
+$criteria = $container->get(CalendarEventPersonGateway::class)->newQueryCriteria()
+            ->sortBy(['surname', 'preferredName', 'category'])
+            ->fromPOST();
+$students = $container->get(CalendarEventPersonGateway::class)->queryEventAttendees($criteria, $gibbonCalendarEventID)->toArray();
+if (empty($students)) {
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit;
+}
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_edit.php') == false) {
     $URL .= '&return=error0';
@@ -45,17 +60,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $notifyGroups = $_POST['notifyGroups'] ?? [];
     $allStaff = $_POST['allStaff'] ?? 'N';
     $notificationList = isset($_POST['notificationList']) ? explode(',', $_POST['notificationList']) : [];
-
-    if (empty($gibbonCalendarEventID)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
+    $gibbonPersonIDSender = $session->get('gibbonPersonID') ?? '';
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID') ?? '';
+    $organisationEmail = $session->get('organisationEmail') ?? '';
 
     $process = $container->get(CalendarEventNotificationProcess::class);
-    $partialFail = $process->startNotifyStaff($gibbonCalendarEventID, $subject, $notes, $notifyGroups, $allStaff, $notificationList);
+    $success = $process->startNotifyStaff($gibbonCalendarEventID, $subject, $notes, $notifyGroups, $allStaff, $notificationList, $gibbonPersonIDSender, $gibbonSchoolYearID, $organisationEmail);
 
-    $URL .= $partialFail
+    $URL .= !$success
         ? "&return=warning1"
         : "&return=success0";
 

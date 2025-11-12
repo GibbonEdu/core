@@ -26,7 +26,6 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffGateway;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Services\BackgroundProcess;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
@@ -43,9 +42,9 @@ use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
  */
 class CalendarEventNotificationProcess extends BackgroundProcess
 {
-    protected $session;
     protected $view;
     protected $mail;
+    
     protected $userGateway;
     protected $staffGateway;
     protected $yearGroupGateway;
@@ -56,6 +55,8 @@ class CalendarEventNotificationProcess extends BackgroundProcess
     protected $calendarEventPersonGateway;
 
     public function __construct(
+        View $view,
+        Mailer $mail,
         UserGateway $userGateway,
         StaffGateway $staffGateway,
         YearGroupGateway $yearGroupGateway,
@@ -64,11 +65,9 @@ class CalendarEventNotificationProcess extends BackgroundProcess
         INAssistantGateway $iNAssistantGateway,
         CalendarEventGateway $calendarEventGateway,
         CalendarEventPersonGateway $calendarEventPersonGateway,
-        Session $session,
-        View $view,
-        Mailer $mail
     ) {
-        $this->session = $session;
+        $this->view = $view;
+        $this->mail = $mail;
         $this->userGateway = $userGateway;
         $this->staffGateway = $staffGateway;
         $this->yearGroupGateway = $yearGroupGateway;
@@ -77,17 +76,13 @@ class CalendarEventNotificationProcess extends BackgroundProcess
         $this->iNAssistantGateway = $iNAssistantGateway;
         $this->calendarEventGateway = $calendarEventGateway;
         $this->calendarEventPersonGateway = $calendarEventPersonGateway;
-        $this->view = $view;
-        $this->mail = $mail;
     }
 
-    public function runNotifyStaff($gibbonCalendarEventID, $subject, $notes, $notifyGroups, $allStaff, $notificationList)
+    public function runNotifyStaff($gibbonCalendarEventID, $subject, $notes, $notifyGroups, $allStaff, $notificationList, $gibbonPersonIDSender, $gibbonSchoolYearID, $organisationEmail)
     {
         $staff = [];
         $staffStudentContext = [];
-
         $event = $this->calendarEventGateway->getByID($gibbonCalendarEventID);
-
 
         // Get all Attendees 
         $criteria = $this->calendarEventPersonGateway->newQueryCriteria()
@@ -103,7 +98,7 @@ class CalendarEventNotificationProcess extends BackgroundProcess
 
             foreach ($results as $result) {
                 $staff[] = $result['gibbonPersonID'];
-            }
+            }            
         } else {
             if (!empty($notifyGroups)) {
                 foreach ($students as $student) {
@@ -145,7 +140,7 @@ class CalendarEventNotificationProcess extends BackgroundProcess
 
                     // Class Teachers
                     if (in_array('teachers', $notifyGroups)) {
-                        $teachers = $this->courseEnrolmentGateway->selectClassTeachersByStudent($this->session->get('gibbonSchoolYearID'), $gibbonPersonIDStudent);
+                        $teachers = $this->courseEnrolmentGateway->selectClassTeachersByStudent($gibbonSchoolYearID, $gibbonPersonIDStudent);
                         foreach ($teachers as $teacher) {
                             $gibbonPersonIDTeacher = $teacher['gibbonPersonID'] ?? null;
 
@@ -189,7 +184,7 @@ class CalendarEventNotificationProcess extends BackgroundProcess
 
         $this->mail->SMTPKeepAlive = true;
 
-        $sender = $this->userGateway->getByID($this->session->get('gibbonPersonID'));
+        $sender = $this->userGateway->getByID($gibbonPersonIDSender);
         $replyTo = $sender['email'];
         $replyToName = Format::name($sender['title'], $sender['preferredName'], $sender['surname'], 'Staff');
         $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
@@ -202,7 +197,6 @@ class CalendarEventNotificationProcess extends BackgroundProcess
             foreach ($students as $student) {
                 $gibbonPersonIDStudent = $student['gibbonPersonID'];
                 if (isset($staffStudentContext[$gibbonPersonIDTeacher][$gibbonPersonIDStudent]['context'])) {
-                
                     // Get all the roles for this student-teacher pair
                     $contextLabels = implode(', ', $staffStudentContext[$gibbonPersonIDTeacher][$gibbonPersonIDStudent]['context']);
                     $relevantStudents[] = array_merge($student, [
@@ -229,7 +223,7 @@ class CalendarEventNotificationProcess extends BackgroundProcess
             $body = sprintf(__('Dear %1$s'), $staffDetail['preferredName'].' '.$staffDetail['surname']).',<br/><br/>';
             $body .= $content;
 
-            $this->mail->AddReplyTo($replyTo ?? $this->session->get('organisationEmail'), $replyToName ?? '');
+            $this->mail->AddReplyTo($replyTo ?? $organisationEmail, $replyToName ?? '');
             $this->mail->AddAddress($staffDetail['email'], $staffDetail['surname'].', '.$staffDetail['preferredName']);
 
             $this->mail->setDefaultSender($subject);
@@ -251,12 +245,13 @@ class CalendarEventNotificationProcess extends BackgroundProcess
             }
 
             $this->mail->ClearAllRecipients();
+            $this->mail->ClearAddresses();
             $this->mail->clearReplyTos();
         }
-
-        $reportSubject = __('EmailReport For: ').$event['name'];
-        $reportBody = sprintf(__('Dear %1$s'), $sender['preferredName'].' '.$sender['surname']).',<br/><br/>';
-        $reportBody .= '<strong>'.__('Summary').':</strong><br/>';
+        
+        $reportSubject = __('Email Report for Event: ').$event['name'];
+        $reportBody  = '<strong>'.__('Summary').':</strong><br/>';
+        $reportBody .= sprintf(__('Total Emails Sent: %1$s'), $sendReport['emailSent'] + $sendReport['emailFailed']) . '<br/>';
         $reportBody .= sprintf(__('Emails Sent: %1$s'), $sendReport['emailSent']) . '<br/>';
         $reportBody .= sprintf(__('Emails Failed: %1$s'), $sendReport['emailFailed']) . '<br/>';
         
