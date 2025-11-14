@@ -53,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         'gibbonFormGroupIDList'  => $_POST['gibbonFormGroupIDList'] ?? '',
         'cancelActivities'       => $_POST['cancelActivities'] ?? 'N',
         'cancelBookings'         => $_POST['cancelBookings'] ?? 'N',
+        'cancelClasses'          => $_POST['cancelClasses'] ?? 'N',
         'cancelDuty'             => $_POST['cancelDuty'] ?? 'N',
     ];
 

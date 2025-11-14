@@ -104,6 +104,8 @@ class ClassesLayer extends AbstractTimetableLayer
             $teachers = $classTeachers[$class['gibbonTTDayRowClassID']] ?? [];
             $specialDay = $specialDays[$class['date']] ?? [];
 
+            if (!empty($specialDay['cancelClasses']) && $specialDay['cancelClasses'] == 'Y') continue;
+
             $item = $this->createItem($class['date'])->loadData([
                 'type'          => __('Class'),
                 'period'        => $class['period'],
@@ -210,7 +212,8 @@ class ClassesLayer extends AbstractTimetableLayer
         }
 
         foreach ($lessons as $lesson) {
-            $specialDay = $specialDays[$class['date']] ?? [];
+            $specialDay = $specialDays[$lesson['date']] ?? [];
+            if (!empty($specialDay['cancelClasses']) && $specialDay['cancelClasses'] == 'Y') continue;
 
             $item = $this->createItem($lesson['date'])->loadData([
                 'type'          => __('Lesson'),
@@ -277,6 +280,7 @@ class ClassesLayer extends AbstractTimetableLayer
 
         foreach ($classes as $class) {
             $specialDay = $specialDays[$class['date']] ?? [];
+            if (!empty($specialDay['cancelClasses']) && $specialDay['cancelClasses'] == 'Y') continue;
 
             $teachers = $classTeachers[$class['gibbonTTDayRowClassID']] ?? [];
 

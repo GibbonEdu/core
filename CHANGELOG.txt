@@ -47,6 +47,7 @@ v30.0.00
         Activities: fixed Generate Enrolments to not show pre-enrolled students in the unassigned column
         Behaviour: added Add Multiple button to Behaviour tab of student profile
         Calendar: added the feature to cross-check student future absences from Event Participants list
+        Calendar: added notifyStaff feature as a background process
         Formal Assessment: added a Year Group filter option to Manage External Assessment
         Individual Needs: enabled viewing IN records for past students as read-only
         Library: added the option to send an email to parents when lending a library item

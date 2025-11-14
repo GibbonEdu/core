@@ -144,11 +144,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
     $form->toggleVisibilityByClass('cancelTT')->onSelect('type')->when(['Timing Change', 'Off Timetable']);
     $row = $form->addRow()->addClass('cancelTT');
+        $row->addLabel('cancelClasses', __('Cancel {event}?', ['event' => __('Classes')]))->description(__('Should all {event} scheduled for this day no longer appear on the timetable?', ['event' => __('Classes')]));
+        $row->addYesNo('cancelClasses')->required()->selected('N');
+
+    $row = $form->addRow()->addClass('cancelTT');
         $row->addLabel('cancelActivities', __('Cancel Activities?'))->description(__('Should activities scheduled for this day no longer appear on the timetable?'));
         $row->addYesNo('cancelActivities')->required();
 
     $row = $form->addRow()->addClass('cancelTT');
-        $row->addLabel('cancelDuty', __('Cancel {event}?', ['event' => __('Staff Duty')]))->description(__('Should {event} scheduled for this day no longer appear on the timetable?', ['event' => __('Staff Duty')]));
+        $row->addLabel('cancelDuty', __('Cancel {event}?', ['event' => __('Staff Duty')]))->description(__('Should all {event} scheduled for this day no longer appear on the timetable?', ['event' => __('Staff Duty')]));
         $row->addYesNo('cancelDuty')->required()->selected('N');
 
     $row = $form->addRow()->addClass('cancelTT');

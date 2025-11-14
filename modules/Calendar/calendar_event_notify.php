@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     $criteria = $calendarEventPersonGateway->newQueryCriteria()
         ->sortBy(['surname', 'preferredName', 'category'])
         ->fromPOST();
-    $students = $calendarEventPersonGateway->queryEnrolledAttendees($criteria, $gibbonCalendarEventID)->toArray();
+    $students = $calendarEventPersonGateway->queryEventAttendees($criteria, $gibbonCalendarEventID)->toArray();
 
     if (empty($students)) {
         $page->addError(__('This event does not have any attendees.'));

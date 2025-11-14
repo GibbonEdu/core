@@ -136,6 +136,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         $col->addSelect('schoolCloseM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'))->selected(substr($schoolClose, 3, 2));
 
     $form->toggleVisibilityByClass('cancelTT')->onSelect('type')->when(['Timing Change', 'Off Timetable']);
+
+    $row = $form->addRow()->addClass('cancelTT');
+        $row->addLabel('cancelClasses', __('Cancel {event}?', ['event' => __('Classes')]))->description(__('Should all {event} scheduled for this day no longer appear on the timetable?', ['event' => __('Classes')]));
+        $row->addYesNo('cancelClasses')->required()->selected('N');
+
     $row = $form->addRow()->addClass('cancelTT');
         $row->addLabel('cancelActivities', __('Cancel Activities?'))->description(__('Should activities scheduled for this day no longer appear on the timetable?'));
         $row->addYesNo('cancelActivities')->required()->selected('N');
