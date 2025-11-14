@@ -165,19 +165,18 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $participants = $calendarEventPersonGateway->queryAllEventParticipants($criteria, $gibbonCalendarEventID);
 
     // Query all attendance logs for futire absence records on the event date and time
-    $futureAbsences = [];
+    $futureAbsenceRecords = [];
     if ($event['allDay'] == 'Y') {
         $futureAbsenceRecords = $container->get(AttendanceLogPersonGateway::class)->selectFutureAttendanceLogsByDate($event['dateStart'], $event['dateEnd'])->fetchAll();
+    } else {
+        $futureAbsenceRecords = $container->get(AttendanceLogPersonGateway::class)->selectFutureAttendanceLogsByDateAndTime($event['dateStart'], $event['dateEnd'], $event['timeStart'], $event['timeEnd'])->fetchAll();
     }
-
-    foreach ($futureAbsenceRecords as $absence) {
-            $futureAbsences[$absence['gibbonPersonID']] = $absence['context'];
+    $futureAbsences = [];
+    if (!empty($futureAbsenceRecords)) {
+        foreach ($futureAbsenceRecords as $absence) {
+            $futureAbsences[$absence['gibbonPersonID']] = $absence;
+        }
     }
-
-    // echo '<pre>';
-    // print_r($futureAbsences);
-    // echo '</pre>';
-    // die();
 
     // BULK ACTION FORM
     $form = Form::create('participants', '');
@@ -185,6 +184,11 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     // DATA TABLE FOR ALL PARTICIPANTS
     $table = $form->addRow()->addDataTable('participants', $criteria)->withData($participants);
     $table->setTitle(__('All Participants'));
+
+    $table->addHeaderAction('setFutureAbsence', __('Set Future Absence'))
+        ->setURL('/modules/Attendance/attendance_future_byPerson.php')
+        ->setIcon('planner')
+        ->displayLabel();
 
     $table->addColumn('name', __('Name'))
         ->sortable(['surname', 'preferredName'])
@@ -201,7 +205,9 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $table->addColumn('futureAbsenceStatus', __('Future Absence'))
     ->format(function ($row) use ($futureAbsences) {
         if (isset($futureAbsences[$row['gibbonPersonID']]) && !empty($futureAbsences[$row['gibbonPersonID']])) {
-            return Format::tag(__('Set'), 'success');
+            $absenceType =$futureAbsences[$row['gibbonPersonID']]['type'] ?? '';
+            $absenceReason =$futureAbsences[$row['gibbonPersonID']]['reason'] ?? '';
+            return Format::tag(__($absenceReason ? $absenceType . ' , ' . $absenceReason : $absenceType), 'success');
         }
         return Format::tag(__('N/A'), 'dull');
     });
