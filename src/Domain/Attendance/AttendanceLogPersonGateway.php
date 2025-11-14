@@ -387,6 +387,18 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+    public function selectFutureAttendanceLogsByDate($dateStart, $dateEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT gibbonAttendanceLogPerson.*
+            FROM gibbonAttendanceLogPerson 
+            WHERE gibbonAttendanceLogPerson.date >= :dateStart
+            AND gibbonAttendanceLogPerson.date <= :dateEnd
+            AND gibbonAttendanceLogPerson.context = 'Future'
+            ORDER BY gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.gibbonPersonID";
+
+        return $this->db()->select($sql, $data);
+    }
 
     function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
     {

@@ -28,6 +28,7 @@ use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_view.php')) {
 	$page->addError(__('You do not have access to this action.'));
@@ -45,12 +46,12 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $calendarEventTypeGateway = $container->get(CalendarEventTypeGateway::class);
 
      // Get event details
-    $values = $calendarEventGateway->getByID($gibbonCalendarEventID);
-    if (!empty($gibbonCalendarEventID) && empty($values)) {
+    $event = $calendarEventGateway->getByID($gibbonCalendarEventID);
+    if (!empty($gibbonCalendarEventID) && empty($event)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
-    $organiser = $container->get(UserGateway::class)->getByID($values['gibbonPersonIDOrganiser'], ['preferredName', 'surname']);
+    $organiser = $container->get(UserGateway::class)->getByID($event['gibbonPersonIDOrganiser'], ['preferredName', 'surname']);
 
     $form = Form::create('viewEvent', '');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -87,7 +88,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDOrganiser', __('Organiser'));
-        $row->addContent(Format::nameLinked($values['gibbonPersonIDOrganiser'], '', $organiser['preferredName'], $organiser['surname'], 'Staff', false, true))
+        $row->addContent(Format::nameLinked($event['gibbonPersonIDOrganiser'], '', $organiser['preferredName'], $organiser['surname'], 'Staff', false, true))
             ->wrap('<div class="text-left w-full text-sm">', '</div>');
 
     $row = $form->addRow();
@@ -108,7 +109,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         $row->addDate('dateEnd')
             ->readonly();
 
-    if ($values['allDay'] == 'N') {
+    if ($event['allDay'] == 'N') {
         $row =  $form->addRow();
             $row->addLabel('timeStart', __('Start Time'));
             $row->addTime('timeStart')->readonly();
@@ -133,7 +134,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         $row->addTextField('locationType')
             ->readonly();
 
-     if ($values['locationType'] == 'Internal') {
+     if ($event['locationType'] == 'Internal') {
         $row = $form->addRow();
             $row->addLabel('gibbonSpaceID', __('Location'));
             $row->addSelectSpace('gibbonSpaceID')->readonly();
@@ -142,7 +143,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
             $row->addLabel('locationDetail', __('Location Details'));
             $row->addTextField('locationDetail')->readonly();
 
-        if (!empty($values['locationURL'])) {
+        if (!empty($event['locationURL'])) {
             $row->addLabel('locationURL', __('Location URL'));
             $row->addURL('locationURL')->readonly();
         }
@@ -151,9 +152,9 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('description', __('Description'));
-        $col->addContent($values['description']);
+        $col->addContent($event['description']);
 
-    $form->loadAllValuesFrom($values);
+    $form->loadAllValuesFrom($event);
     echo $form->getOutput();
 
     // QUERY FOR DATATABLE
@@ -162,6 +163,21 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         ->fromPOST();
         
     $participants = $calendarEventPersonGateway->queryAllEventParticipants($criteria, $gibbonCalendarEventID);
+
+    // Query all attendance logs for futire absence records on the event date and time
+    $futureAbsences = [];
+    if ($event['allDay'] == 'Y') {
+        $futureAbsenceRecords = $container->get(AttendanceLogPersonGateway::class)->selectFutureAttendanceLogsByDate($event['dateStart'], $event['dateEnd'])->fetchAll();
+    }
+
+    foreach ($futureAbsenceRecords as $absence) {
+            $futureAbsences[$absence['gibbonPersonID']] = $absence['context'];
+    }
+
+    // echo '<pre>';
+    // print_r($futureAbsences);
+    // echo '</pre>';
+    // die();
 
     // BULK ACTION FORM
     $form = Form::create('participants', '');
@@ -181,6 +197,14 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $table->addColumn('role', __('Event Role'));
 
     $table->addColumn('timestampCreated', __('Added on'))->format(Format::using('dateTime', 'timestampCreated'));
+
+    $table->addColumn('futureAbsenceStatus', __('Future Absence'))
+    ->format(function ($row) use ($futureAbsences) {
+        if (isset($futureAbsences[$row['gibbonPersonID']]) && !empty($futureAbsences[$row['gibbonPersonID']])) {
+            return Format::tag(__('Set'), 'success');
+        }
+        return Format::tag(__('N/A'), 'dull');
+    });
 
     echo $form->getOutput();
 }
