@@ -128,7 +128,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
     if ($data['status'] == 'Approved') {
         $event = new NotificationEvent('Student Alerts', !empty($alert['gibbonCourseClassID']) ? 'New Class Alert' : 'New Global Alert');
         $event->setNotificationDetails($notificationDetails);
-        $event->setNotificationText(__('{student} ({formGroup}) has a new {type} alert', $notificationData));
+        $event->setNotificationText(__('{user} has approved a {type} alert for {student} ({formGroup})', $notificationData));
         $event->setActionLink(Url::fromModuleRoute('Student Alerts', 'studentAlerts_manage_view')->withQueryParams([
             'gibbonAlertID' => $gibbonAlertID,
         ])->withPath(''));
