@@ -19,17 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\School\FacilityGateway;
 use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
-use Gibbon\Support\Facades\Access;
-use Gibbon\Tables\DataTable;
 
 if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_view.php')) {
 	$page->addError(__('You do not have access to this action.'));
@@ -52,115 +50,107 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
+    // Get organiser name
     $organiser = $container->get(UserGateway::class)->getByID($event['gibbonPersonIDOrganiser'], ['preferredName', 'surname']);
+    $event['preferredName'] = $organiser['preferredName'];
+    $event['surname'] = $organiser['surname'];
+
     $isEventOwner = $session->get('gibbonPersonID') == $event['gibbonPersonIDCreated'] || $session->get('gibbonPersonID') == $event['gibbonPersonIDOrganiser'];
 
-    $form = Form::create('viewEvent', '');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
+    // DATA TABLE TO VIEW EVENT DETAILS
+    $table = DataTable::createDetails('viewEvent');
+
+    $table->setTitle(__('View'));
 
     if (Access::allows('Calendar', 'calendar_event_edit') && $isEventOwner) {
-        $form->addHeaderAction('edit', __('Edit Event'))
+        $table->addHeaderAction('edit', __('Edit Event'))
             ->setURL('/modules/Calendar/calendar_event_edit.php')
             ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
             ->displayLabel();
     }
 
     if (Access::allows('Calendar', 'calendar_event_edit') && $isEventOwner) {
-        $form->addHeaderAction('notify', __('Notify Staff'))
+        $table->addHeaderAction('notify', __('Notify Staff'))
             ->setURL('/modules/Calendar/calendar_event_notify.php')
             ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
             ->setIcon('notify')
             ->displayLabel();
     }
-        
-    $form->addRow()->addHeading(__('Basic Information'));
 
-    // Get Calendars of the current school year
-    $calendars = $calendarGateway->selectCalendarsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
-    $row = $form->addRow();
-        $row->addLabel('gibbonCalendarID', __('Calendar'));
-        $row->addSelect('gibbonCalendarID')
-            ->fromArray($calendars)
-            ->readonly();
+    $table->addColumn('gibbonCalendarID', __('Calendar'))
+            ->format(function($event) use ($calendarGateway) {
+                if (isset($event['gibbonCalendarID'])) {
+                    $calendar = $calendarGateway->getByID($event['gibbonCalendarID']);
+                    $output = '';
+                    if (!empty($calendar)) {
+                        $output .= __($calendar['name']);
+                    }
+                    return $output;
+                }
+            });
 
-    // Get all event types
-    $types = $calendarEventTypeGateway->selectAllEventTypes()->fetchKeyPair();
-    $row = $form->addRow();
-        $row->addLabel('gibbonCalendarEventTypeID', __('Event Type'));
-        $row->addSelect('gibbonCalendarEventTypeID')
-            ->fromArray($types)
-            ->readonly();
+    $table->addColumn('gibbonCalendarEventType', __('Event Type'))
+            ->format(function($event) use ($calendarEventTypeGateway) {
+                if (isset($event['gibbonCalendarEventTypeID'])) {
+                    $gibbonCalendarEventType = $calendarEventTypeGateway->getByID($event['gibbonCalendarEventTypeID']);
+                    $output = '';
+                    if (!empty($gibbonCalendarEventType)) {
+                        $output .= __($gibbonCalendarEventType['type']);
+                    }
+                    return $output;
+                }
+            });
 
-    $row = $form->addRow();
-        $row->addLabel('gibbonPersonIDOrganiser', __('Organiser'));
-        $row->addContent(Format::nameLinked($event['gibbonPersonIDOrganiser'], '', $organiser['preferredName'], $organiser['surname'], 'Staff', false, true))
-            ->wrap('<div class="text-left w-full text-sm">', '</div>');
+    $table->addColumn('organiser', __('Organiser'))
+        ->format(Format::using('nameLinked', ['gibbonPersonIDOrganiser', '', 'preferredName', 'surname', 'Staff', false, true]));
 
-    $row = $form->addRow();
-        $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->readonly();
+    $table->addColumn('name', __('Name'));
 
-    $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addTextField('status')->readonly();
+    $table->addColumn('status', __('Status'));
 
-    $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')
-            ->readonly();
+    $col = $table->addColumn('School Information', __('Event Information'));
 
-    $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')
-            ->readonly();
+    $col->addColumn('dateStart', __('Start Date'))->format(Format::using('date', 'dateStart'));
+
+    $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
 
     if ($event['allDay'] == 'N') {
-        $row =  $form->addRow();
-            $row->addLabel('timeStart', __('Start Time'));
-            $row->addTime('timeStart')->readonly();
-
-        $row =  $form->addRow();
-            $row->addLabel('timeEnd', __('End Time'));
-            $row->addTime('timeEnd')->readonly();
+        $col->addColumn('timeStart', __('Start Time'))->format(Format::using('time', 'timeStart'));
+        $col->addColumn('timeEnd', __('End Time'))->format(Format::using('time', 'timeEnd'));
     } else {
-        $row = $form->addRow();
-            $row->addLabel('allDay', __('When'));
-            $row->addCheckbox('allDay')
-                ->description(__('All Day'))
-                ->inline()
-                ->setValue('Y')
-                ->checked('Y')
-                ->wrap('<div class="standardWidth floatRight">', '</div>')
-                ->readonly();
+         $col->addColumn('allDay', __('When'))->format(function() {
+            return __('All Day');
+        });
     }
     
-    $row = $form->addRow();
-        $row->addLabel('locationType', __('Location Type'));
-        $row->addTextField('locationType')
-            ->readonly();
+    $col = $table->addColumn('Location Information', __('Location'));
 
-     if ($event['locationType'] == 'Internal') {
-        $row = $form->addRow();
-            $row->addLabel('gibbonSpaceID', __('Location'));
-            $row->addSelectSpace('gibbonSpaceID')->readonly();
-     } else {
-        $row = $form->addRow();
-            $row->addLabel('locationDetail', __('Location Details'));
-            $row->addTextField('locationDetail')->readonly();
+    $col->addColumn('locationType', __('Location Type'));
 
-        if (!empty($event['locationURL'])) {
-            $row->addLabel('locationURL', __('Location URL'));
-            $row->addURL('locationURL')->readonly();
+    $col->addColumn('location', __('Location'))->format(function($event) use ($container) {
+        $output = '';
+        if ($event['locationType'] == 'Internal') {
+            if (!empty($event['gibbonSpaceID'])) {
+                $space = $container->get(FacilityGateway::class)->getByID($event['gibbonCalendarID']);
+                if (!empty($space)) {
+                    $output .= __($space['name']. ' - ' . $space['type']);
+                }
+                return $output;
+            } 
+        } else {
+            if (!empty($event['locationDetail'])) {
+                $output .= ($event['locationDetail']);
+            }
         }
-    }
+        return $output;
+    });
 
-    $row = $form->addRow();
-        $col = $row->addColumn();
-        $col->addLabel('description', __('Description'));
-        $col->addContent($event['description']);
+    $col->addColumn('locationURL', __('Location URL'))
+        ->format(Format::using('link', ['locationURL', 'View Link']));
 
-    $form->loadAllValuesFrom($event);
-    echo $form->getOutput();
+    $table->addColumn('description', __('Description'));
+
+    echo $table->render([$event]);
 
     // QUERY FOR DATATABLE
     $criteria = $calendarEventPersonGateway->newQueryCriteria()
@@ -196,8 +186,6 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     $table->addColumn('formGroup', __('Form Group'));
 
     $table->addColumn('role', __('Event Role'));
-
-    // $table->addColumn('timestampCreated', __('Added on'))->format(Format::using('dateTime', 'timestampCreated'));
 
     echo $table->getOutput();
 }
