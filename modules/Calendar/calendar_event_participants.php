@@ -19,16 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
-use Gibbon\Support\Facades\Access;
-use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_participants.php') == false) {
     // Access denied
@@ -61,49 +61,69 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
     $isEventOwner = $session->get('gibbonPersonID') == $event['gibbonPersonIDCreated'] || $session->get('gibbonPersonID') == $event['gibbonPersonIDOrganiser'];
 
     // FORM
-    $form = Form::create('eventEnrolment', $session->get('absoluteURL').'/index.php');
+    $table = DataTable::createDetails('viewEvent');
 
-    $form->addHeaderAction('view', __('View Event'))
+    $table->addHeaderAction('view', __('View Event'))
         ->setURL('/modules/Calendar/calendar_event_view.php')
         ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
         ->displayLabel();
 
     if (Access::allows('Calendar', 'calendar_event_edit') && $isEventOwner) {
-        $form->addHeaderAction('edit', __('Edit Event'))
+        $table->addHeaderAction('edit', __('Edit Event'))
             ->setURL('/modules/Calendar/calendar_event_edit.php')
             ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
             ->displayLabel();
     }
 
     if (Access::allows('Calendar', 'calendar_event_edit') && $isEventOwner) {
-        $form->addHeaderAction('notify', __('Notify Staff'))
+        $table->addHeaderAction('notify', __('Notify Staff'))
             ->setURL('/modules/Calendar/calendar_event_notify.php')
             ->addParam('gibbonCalendarEventID', $gibbonCalendarEventID)
             ->setIcon('notify')
             ->displayLabel();
     }
 
-    $calendars = $calendarGateway->selectCalendarsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
-    $row = $form->addRow();
-        $row->addLabel('gibbonCalendarID', __('Calendar'));
-        $row->addSelect('gibbonCalendarID')
-            ->fromArray($calendars)
-            ->selected($event['gibbonCalendarID'])->readonly();
+    $table->addColumn('gibbonCalendarID', __('Calendar'))
+            ->format(function($event) use ($calendarGateway) {
+                if (isset($event['gibbonCalendarID'])) {
+                    $calendar = $calendarGateway->getByID($event['gibbonCalendarID']);
+                    $output = '';
+                    if (!empty($calendar)) {
+                        $output .= __($calendar['name']);
+                    }
+                    return $output;
+                }
+            });
+     $table->addColumn('gibbonCalendarEventType', __('Event Type'))
+            ->format(function($event) use ($calendarEventTypeGateway) {
+                if (isset($event['gibbonCalendarEventTypeID'])) {
+                    $gibbonCalendarEventType = $calendarEventTypeGateway->getByID($event['gibbonCalendarEventTypeID']);
+                    $output = '';
+                    if (!empty($gibbonCalendarEventType)) {
+                        $output .= __($gibbonCalendarEventType['type']);
+                    }
+                    return $output;
+                }
+            });
 
-    // Get all event types
-    $types = $calendarEventTypeGateway->selectAllEventTypes()->fetchKeyPair();
-    $row = $form->addRow();
-        $row->addLabel('gibbonCalendarEventTypeID', __('Event Type'));
-        $row->addSelect('gibbonCalendarEventTypeID')
-            ->fromArray($types)
-            ->selected($event['gibbonCalendarEventTypeID'])
-            ->readonly();
-            
-    $row = $form->addRow();
-        $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->readOnly()->setValue($event['name']);
+    $table->addColumn('name', __('Name'));
 
-    echo $form->getOutput();
+    $col = $table->addColumn('eventInfo', __('Event Details'));
+
+    $col->addColumn('dateStart', __('Start Date'))->format(Format::using('date', 'dateStart'));
+
+    $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
+
+    if ($event['allDay'] == 'N') {
+        $col->addColumn('timeStart', __('Start Time'))->format(Format::using('time', 'timeStart'));
+        $col->addColumn('timeEnd', __('End Time'))->format(Format::using('time', 'timeEnd'));
+    } else {
+         $col->addColumn('allDay', __('When'))->format(function() {
+            return __('All Day');
+        });
+    }
+
+     echo $table->render([$event]);
 
     // QUERY
     $criteria = $calendarEventPersonGateway->newQueryCriteria()
