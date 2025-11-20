@@ -1,0 +1,81 @@
+details:
+    type: studentAlerts
+    category: Alerts
+    name: Student Alerts
+    table: gibbonAlert
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Student Alerts
+    action: Manage Student Alerts_all
+primaryKey:
+    gibbonAlertID
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonPersonID:
+        name: "Student Username/Email"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }
+    level:
+        name: "Alert Level"
+        desc: "High, Medium or Low"
+        args: { filter: string, custom: true }
+    gibbonAlertLevelID:
+        name: "Level ID"
+        desc: ""
+        args: { filter: string, linked: level }
+        relationship: { table: gibbonAlertLevel, key: gibbonAlertLevelID, field: name }
+    type:
+        name: "Alert Type"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+    gibbonAlertTypeID:
+        name: "Type ID"
+        desc: ""
+        args: { filter: string, required: true, linked: type }
+        relationship: { table: gibbonAlertType, key: gibbonAlertTypeID, field: name }
+    gibbonCourseID:
+        name: "Course"
+        desc: "Short Name"
+        args: { filter: string, readonly: true }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
+    gibbonCourseClassID:
+        name: "Class"
+        desc: "Short Name"
+        args: { filter: string }
+        relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ] }
+    context:
+        name: "Context"
+        desc: ""
+        value: "Manual"
+        args: { filter: string, hidden: true }
+    status:
+        name: "Status"
+        desc: ""
+        value: "Approved"
+        args: { filter: string, hidden: true }
+    dateStart: 
+        name: "Start Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date }
+    dateEnd: 
+        name: "End Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date }
+    comment:
+        name: "Comment"
+        desc: ""
+        args: { filter: string }
+    gibbonPersonIDCreated:
+        name: "Recorded By"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, custom: true}
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }
+    notesStatus:
+        name: "Notes"
+        desc: ""
+        args: { filter: string }
