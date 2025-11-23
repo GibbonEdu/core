@@ -7,18 +7,15 @@ Gibbon™, Gibbon Education Ltd. (Hong Kong)
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
-
 {% extends "components/dataTable.twig.html" %}
 {% import _self as attendance  %}
 
 {% block tableInner %}
-
     <div class="flex flex-wrap justify-center md:justify-between rounded bg-gray-100 border">
         <div class="md:flex-1 p-4 text-sm text-gray-700">
             <h3 class="mt-2 border-b-0">
                 {{ __('Summary') }}
             </h3>
-
             {% if summary.total %}
                 {% if summary.total != (summary.present + summary.partial + summary.absent) %}
                     <div class="italic mb-4 text-xs">
@@ -160,13 +157,37 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {%if day.classLogs %}
             <li class='text-xxs  font-bold mt-2'>{{ __('Class Attendance') }}:</li>
-            {% for log in day.classLogs %}
-                <li class='{{ log.statusClass }} leading-relaxed'>
-                    {{ log.timestampTaken|date( log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'H:i Y-m-d') }} -
-                    {{ __(log.type) }} {{- log.reason ? ', ' ~ __(log.reason) }} - 
-                    {{ log.contextName ? log.contextName : __(log.context) }}
-                </li>
-            {% endfor %}
+            {% if day.attendanceOrdering == 'period' %}
+				{# <!--- PERIOD VIEW ---> #}
+				{% for log in day.classLogs %}
+					<li class='{{ log.statusClass }} leading-relaxed'>
+						{% if log.periodName %}
+							<strong>{{ log.periodName }}</strong> -
+						{% endif %}
+
+						{{ log.contextName ? log.contextName : __(log.context) }} -
+						{{ __(log.type) }}{{ log.reason ? ', ' ~ __(log.reason) }}
+
+						{% if log.timestampTaken %}
+							({{ log.timestampTaken|date(
+								log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'Y-m-d H:i'
+							) }})
+						{% endif %}
+					</li>
+				{% endfor %}
+
+			{% else %}
+				{# <!--- TIMESTAMP VIEW (original Gibbon layout) ---> #}
+				{% for log in day.classLogs %}
+					<li class='{{ log.statusClass }} leading-relaxed'>
+						{{ log.timestampTaken|date(
+							log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'Y-m-d H:i'
+						) }} -
+						{{ __(log.type) }}{{ log.reason ? ', ' ~ __(log.reason) }} -
+						{{ log.contextName ? log.contextName : __(log.context) }}
+					</li>
+				{% endfor %}
+			{% endif %}
         {% endif %}
     </section>
 {% endmacro tooltip %}

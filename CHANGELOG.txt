@@ -29,6 +29,7 @@ v31.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+		Attendance: added option to view student Attendance History in timetable period or time register taken order
 
     Bug Fixes
 

@@ -71,6 +71,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     } catch (PDOException $e) {
         $fail = true;
     }
+	
+	$attendanceOrdering = (isset($_POST['attendanceOrdering'])) ? $_POST['attendanceOrdering'] : NULL;
+	try {
+		$data = array('value' => $attendanceOrdering);
+		$sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceOrdering'";
+		$result = $connection2->prepare($sql);
+		$result->execute($data);
+	} catch (PDOException $e) {
+		$fail = true;
+	}
 
     $defaultFormGroupAttendanceType = (isset($_POST['defaultFormGroupAttendanceType'])) ? $_POST['defaultFormGroupAttendanceType'] : NULL;
     try {
