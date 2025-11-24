@@ -158,10 +158,11 @@
         class="hidden"
         value="<?= $value; ?>" 
         :value="time ? convertTo24HourFormat(time) : $el.value"
+        x-ref="timeValue"
         tabindex="-1"
     />
 
-    <div x-cloak x-show="isOpen" id="<?= $id ?>List" 
+    <div x-cloak x-show="isOpen" :id="$refs.timeValue.id+'List'"
         class="absolute mt-10 top-0 left-0 z-50 w-full h-60 rounded-md border bg-white shadow-lg" 
         x-on:click.outside="isOpen=false" 
         x-on:keydown.down.prevent="$focus.wrap().next()" 
@@ -179,7 +180,7 @@
             </button>
 
             <button @click="timePickerView=2" type="button" class="bg-gray-200 px-4 py-1 text-center text-xxs hover:bg-gray-400 text-gray-600 rounded-md" 
-                hx-post="<?= $absoluteURL ?>/modules/User/forms_time_ajax.php" hx-target="#<?= $id ?>PeriodList" hx-include="<?= !empty($date) ? '#'.$date : '' ?>" hx-vals='{"key": "<?= $date ?>"}'
+                hx-post="<?= $absoluteURL ?>/modules/User/forms_time_ajax.php" x-bind:hx-target="'#'+$refs.timeValue.id+'PeriodList'" hx-include="<?= !empty($date) ? '#'.$date : '' ?>" hx-vals='{"key": "<?= $date ?>"}'
                 :class="{'bg-gray-400 text-gray-800' : timePickerView==2}">
                 <?= __('Period') ?>
             </button>
@@ -192,7 +193,7 @@
         
             <template x-for="(value, index) in availableTimes" :key="index" >
                 <li :value="time" role="option" tabindex="0" 
-                x-bind:id="'<?= $id; ?>Option-' + index"
+                x-bind:id="$refs.timeValue.id+'Option-' + index"
                 x-on:click="time = value.time; timeSelected = index; isOpen = false"
                 x-on:keydown.enter="time = value.time; isOpen = false"
                 :class="timeSelected == index ? 'bg-gray-300 text-gray-900 hover:text-white' : ''"
@@ -208,7 +209,7 @@
         </div>
 
         <div x-cloak x-show="timePickerView==2" class="absolute w-full h-full" role="listbox" aria-label="list">
-            <ul id="<?= $id ?>PeriodList" class="flex max-h-52 flex-col overflow-y-auto overflow-x-hidden m-0 p-1 rounded-b-md">
+            <ul :id="$refs.timeValue.id+'PeriodList'" class="flex max-h-52 flex-col overflow-y-auto overflow-x-hidden m-0 p-1 rounded-b-md">
             </ul>
         </div>
 
