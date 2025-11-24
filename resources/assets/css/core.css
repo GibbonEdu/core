@@ -60,6 +60,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     break-inside: avoid;
 }
 
+#loadingIndicator {
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: repeating-linear-gradient(var(--angle), #833AB4, #c84fc0, #FCB045, #c84fc0, #833AB4 var(--d));
+    background-size: calc(var(--d)/sin(var(--angle))) 100%;
+    animation: loading-animation 4s linear infinite reverse;
+}
+
+#loadingIndicator.htmx-request {
+    opacity: 1;
+    animation: loading-fade 1s linear forwards, loading-animation 4s linear infinite reverse;
+}
+
+@keyframes loading-animation {
+    0% {
+        background-position: calc(var(--d)/sin(var(--angle))) 0;
+    }
+}
+
+@keyframes loading-fade {
+    0%   { opacity: 0; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 /*
  --------------------------------------------------------------------------
   Typography

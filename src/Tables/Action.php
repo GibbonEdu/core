@@ -308,6 +308,7 @@ class Action extends WebLink
             $this->setAttribute('hx-boost', 'true')
                 ->setAttribute('hx-target', '#content-wrap')
                 ->setAttribute('hx-select', '#content-wrap')
+                ->setAttribute('hx-indicator', '#loadingIndicator')
                 ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
         } elseif (!empty($this->getAttribute('hx-confirm'))) {
             $this->setAttribute('hx-post', Url::fromHandlerRoute(ltrim($this->url, '/')) )

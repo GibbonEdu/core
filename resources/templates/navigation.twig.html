@@ -66,8 +66,7 @@ collapsed drop-down list in 'mini' view-mode.
                     <ul class="list-none m-0 mb-6">
                     {% for item in items %}
                         <li class="-mx-4 -my-1">
-                            <a @click="moduleMenu = false" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:window:top swap:0s" 
-                            @click="menuItemActive = '{{ item.actionName|replace({' ': '-', '&': '', '\'': ''}) }}'"
+                            <a @click="moduleMenu = false" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:window:top swap:0s" hx-indicator="#loadingIndicator" @click="menuItemActive = '{{ item.actionName|replace({' ': '-', '&': '', '\'': ''}) }}'"
                             href="{{ item.url }}" class="block relative text-gray-700 no-underline px-3 py-1  text-sm leading-normal lg:leading-normal rounded transition cursor-pointer hover:bg-gray-200" :class="[ (menuItemActive === '{{ item.actionName|replace({' ': '-', '&': '', '\'': ''}) }}' ) ? 'navigation-link text-gray-900 bg-gray-300 font-semibold' : '' ] ">
                                 {{ __(item.name, item.textDomain) }}
                             </a>
