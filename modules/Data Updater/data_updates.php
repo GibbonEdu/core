@@ -128,10 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
                         : '';
 
                     // Create an action icon for this type of update
-                    $action = (new Action('edit', __('Edit')))
+                    $action = (new Action($dataUpdate['required'] == 'N' ? 'approve' : 'decline', __('Edit')))
                         ->setURL('/modules/Data Updater/data_'.strtolower($type).'.php')
                         ->addParam($dataUpdate['idType'], $dataUpdate['id'])
-                        ->setClass('block underline');
+                        ->setClass('block underline')
+                        ->displayLabel(false);
 
                     // Add the family name if there's more than one family
                     if (!empty($dataUpdate['name']) && count($person['updates'][$type]) > 1) {
