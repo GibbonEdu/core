@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\View\Component;
-use Gibbon\Forms\Input\Select;
 
 /**
  * SearchSelect (Combobox)
@@ -38,6 +37,10 @@ class SearchSelect extends Select
      */
     protected function getElement()
     {
+        if (!empty($this->getAttribute('multiple'))) {
+            return parent::getElement();
+        }
+
         $this->processOutput();
         
         $this->setValue($this->selected);
@@ -59,10 +62,9 @@ class SearchSelect extends Select
             }
         }
 
-        $multiple = !empty($this->getAttribute('multiple'));
         $selected = is_array($this->selected)? ($this->selected[0] ?? '') : $this->selected;
 
-        return Component::render($multiple ? Select::class : SearchSelect::class, $this->getAttributeArray() + [
+        return Component::render(SearchSelect::class, $this->getAttributeArray() + [
             'outerClass'    => $this->getOuterClass(),
             'groupClass'    => $this->getGroupClass(),
             'placeholder'   => $this->placeholder,

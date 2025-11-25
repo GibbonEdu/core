@@ -198,8 +198,8 @@ trait BasicAttributesTrait
                 if (is_bool($attributes[$key])) {
                     return $attributes[$key]? $key : '';
                 }
-                if (isset($attributes[$key]) && !is_array($attributes[$key])) {
-                    return is_string($attributes[$key]) && $attributes[$key] != ''
+                if (isset($attributes[$key])) {
+                    return !is_array($attributes[$key]) && $attributes[$key] != ''
                         ? $key.'="'.htmlPrep($attributes[$key]).'"'
                         : $key;
                 }

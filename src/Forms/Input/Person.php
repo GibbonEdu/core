@@ -26,7 +26,7 @@ use Gibbon\View\Component;
 /**
  * Person
  *
- * @version v30
+ * @version v31
  * @since   v18
  */
 class Person extends SearchSelect
@@ -48,6 +48,10 @@ class Person extends SearchSelect
      */
     protected function getElement()
     {
+        if (!empty($this->getAttribute('multiple'))) {
+            return parent::getElement();
+        }
+
         $this->processOutput();
 
         $this->setValue($this->selected);
@@ -67,15 +71,13 @@ class Person extends SearchSelect
             }
         }
 
-        // TODO: support opt groups (as a dropdown?)
-        // TODO: support select multiple?
-        // TODO: validation
+        $selected = is_array($this->selected)? ($this->selected[0] ?? '') : $this->selected;
 
         return Component::render(Person::class, $this->getAttributeArray() + [
             'groupClass'  => $this->getGroupClass(),
             'placeholder' => $this->placeholder,
             'options'     => array_values($options),
-            'selected'    => $this->selected,
+            'selected'    => $selected,
         ]);
     }
 }
