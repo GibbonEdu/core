@@ -31,6 +31,7 @@ v31.0.00
     Tweaks & Additions
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
+        System Admin: fixed the issue of adding long label descriptions in the Form Builder
 
     Bug Fixes
 

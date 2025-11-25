@@ -60,8 +60,9 @@ class LayoutHeadings extends AbstractFieldGroup
             case 'heading':
                 $row->addClass($field['options'] ?? '')
                     ->addHeading($field['label'], __($field['label']))
-                    ->append(__($field['description']));
+                    ->append(strlen($field['description'] ?? '') <= 4000 ? __($field['description']) : ($field['description']));         
                 break;
+
             case 'subheading':
                 $row->addClass($field['options'] ?? '')
                     ->addSubheading($field['label'], __($field['label']))

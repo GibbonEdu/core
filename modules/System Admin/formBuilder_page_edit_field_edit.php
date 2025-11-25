@@ -83,11 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     if ($values['fieldType'] == 'heading' || $values['fieldType'] == 'subheading' || $values['fieldType'] == 'layout') {
         $col = $form->addRow()->addColumn();
-        $col->addLabel('description', __('Description'));
+        $col->addLabel('description', __('Description'))->description(__('If the description is too long(more than 4000 characters), it will be displayed in the original language.'));
         $col->addTextArea('description')->setRows(4);
     } else {
         $row = $form->addRow();
-            $row->addLabel('description', __('Description'));
+            $row->addLabel('description', __('Description'))->description(__('If the description is too long(more than 4000 characters), it will be displayed in the original language.'));
             $row->addTextArea('description')->setRows(2);
 
         $row = $form->addRow();
