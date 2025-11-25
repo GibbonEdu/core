@@ -70,6 +70,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     background: repeating-linear-gradient(var(--angle), #833AB4, #c84fc0, #FCB045, #c84fc0, #833AB4 var(--d));
     background-size: calc(var(--d)/sin(var(--angle))) 100%;
     animation: loading-animation 4s linear infinite reverse;
+    z-index: 100;
 }
 
 #loadingIndicator.htmx-request {
@@ -96,6 +97,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 @layer utilities {
+    .text-xsm {
+        font-size: 0.825rem;
+    }
     .text-xxs {
         font-size: 0.65rem;
     }

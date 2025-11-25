@@ -134,7 +134,7 @@ img.logo {
 /* TABLES */
 table {
     color: #666;
-    font-size: 12px;
+    font-size: .825rem;
     text-shadow: none;
     background-color: #fefefe;
     margin: 0px;
@@ -283,7 +283,7 @@ textarea[disabled] {
 
 .linkTop {
     text-align: right;
-    font-size: 12px;
+    font-size: .825rem;
     margin: 1.0rem 0px 0.5rem 0px;
 }
 
@@ -451,7 +451,7 @@ div#tabs {
 
 .ui-autocomplete,
 .ui-autocomplete:hover {
-    font-size: 12px;
+    font-size: .825rem;
     border-radius: 0;
     background: rgba(25, 25, 25, 0.9);
     box-shadow: 2px 2px 4px rgba(25, 25, 25, 0.9);
@@ -712,7 +712,7 @@ table.columnHighlight .hover:not(:first-child) {
 .max-upload {
     font-style: italic;
     color: #c00;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .matchHighlight table {
@@ -729,8 +729,8 @@ table.columnHighlight .hover:not(:first-child) {
 }
 
 tr.head td {
-    font-weight: bold;
-    font-size: 110%;
+    /* font-weight: bold;
+    font-size: 110%; */
 }
 
 .right {
@@ -981,7 +981,7 @@ table.smallIntBorder td.noPadding {
     list-style-type: none;
     color: #444;
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: .825rem;
     width: 40px;
     position: relative;
     z-index: 0;

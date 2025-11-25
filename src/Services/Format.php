@@ -569,7 +569,7 @@ class Format
      */
     public static function small($value)
     {
-        return '<span class="text-xxs italic">'.$value.'</span>';
+        return '<span class="text-xs italic">'.$value.'</span>';
     }
 
     /**

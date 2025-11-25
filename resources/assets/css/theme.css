@@ -239,7 +239,7 @@ div.message:not(.tag), div.warning:not(.tag), div.exception:not(.tag), div.succe
 }
 
 div.message, div.success, div.warning, div.error, div.exception, div.dull, div.magic, div.empty {
-    @apply rounded border my-4 p-4 text-xs relative border-opacity-15;
+    @apply rounded border my-4 p-4 text-[0.825rem] leading-[1.125rem] relative border-opacity-15;
 }
 
 div.message a, div.success a, div.warning a, div.error a, div.exception a, div.dull a {
