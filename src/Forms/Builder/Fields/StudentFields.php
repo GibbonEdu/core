@@ -236,7 +236,7 @@ class StudentFields extends AbstractFieldGroup
                 break;
 
             case 'phone':
-                $colGroup = $row->addColumn()->setClass('flex-col flex-1 justify-between items-start gap-2');
+                $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start gap-2');
                 $phoneCount = $field['options'] ?? 2;
                 for ($i = 1; $i <= $phoneCount; ++$i) {
                     $col = $colGroup->addColumn()->setClass('flex flex-col sm:flex-row content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start');

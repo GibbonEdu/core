@@ -21,18 +21,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
-$gibbonTTID = $_POST['gibbonTTID'] ?? '';
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-$gibbonTTColumnRowID = $_POST['gibbonTTColumnRowID'] ?? '';
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
-$gibbonTTDayRowClassID = $_POST['gibbonTTDayRowClassID'] ?? '';
-$gibbonTTDayRowClassExceptionID = $_POST['gibbonTTDayRowClassExceptionID'] ?? '';
+$gibbonTTDayID = $_REQUEST['gibbonTTDayID'] ?? '';
+$gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
+$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? '';
+$gibbonTTColumnRowID = $_REQUEST['gibbonTTColumnRowID'] ?? '';
+$gibbonCourseClassID = $_REQUEST['gibbonCourseClassID'] ?? '';
+$gibbonTTDayRowClassID = $_REQUEST['gibbonTTDayRowClassID'] ?? '';
+$gibbonTTDayRowClassExceptionID = $_REQUEST['gibbonTTDayRowClassExceptionID'] ?? '';
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '' or $gibbonTTDayRowClassID == '' or $gibbonTTDayRowClassExceptionID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_exception_delete.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID";
-    $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
+    $URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID";
+    $URLDelete = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php') == false) {
         $URL .= '&return=error0';

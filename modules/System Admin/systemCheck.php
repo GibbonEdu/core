@@ -34,6 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $page->breadcrumbs->add(__('System Check'));
 
     $versionDB = $container->get(SettingGateway::class)->getSettingByScope('System', 'version');
+    $gibbon = $container->get('config');
+    $config = $gibbon->getConfig();
 
     $trueIcon =  icon('solid', 'check', 'size-6 ml-2 fill-current text-green-600');
     $falseIcon = icon('solid', 'cross', 'size-6 ml-2 fill-current text-red-700');
@@ -46,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $mysqlVersion = $pdo->selectOne("SELECT VERSION()");
     $mysqlCollation = $pdo->selectOne("SELECT COLLATION('gibbon')");
     $backgroundProcessing = function_exists('exec') && @exec('echo EXEC') == 'EXEC';
+    $sessionSecure = $config['sessionSecure'] ?? isset($_SERVER['HTTPS']);
 
     $phpRequirement = $gibbon->getSystemRequirement('php');
     $mysqlRequirement = $gibbon->getSystemRequirement('mysql');
@@ -95,6 +98,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
         $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly()
             ->append((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
+
+    $row = $form->addRow();
+        $row->addLabel('sessionSecureLabel', __('Secure HTTPS Connection'))->description(__('Requires a valid SSL Certificate'));
+        $row->addTextField('sessionSecure')->setValue($sessionSecure ? __('Enabled') : __('Not Available'))->readonly();
+        $row->addContent($sessionSecure? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('backgroundProcessingLabel', __('Background Processing'))->description(__('Requires PHP exec() function access'));

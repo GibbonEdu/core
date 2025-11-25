@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
+use Gibbon\Support\Facades\Access;
 
 require_once '../../gibbon.php';
 
@@ -43,15 +44,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_de
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
 
     // Validate the database relationships exist
-    if (!$calendarEventGateway->exists($gibbonCalendarEventID)) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+    $event = $calendarEventGateway->getEventDetailsByID($gibbonCalendarEventID, $session->get('gibbonPersonID'));
+    if (empty($event)) {
+        header("Location: {$URL}&return=error2");
         exit;
-    }
+    } 
+
+    // Check for access to edit this event
+    if ($event['editor'] != 'Y' && !Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all')) {
+        header("Location: {$URL}&return=error0");
+        exit;
+    } 
 
     $deleted = $calendarEventGateway->delete($gibbonCalendarEventID);
 
-    $calendarEventPersonGateway ->deleteWhere(['gibbonCalendarEventID' => $gibbonCalendarEventID]);
+    $calendarEventPersonGateway->deleteWhere(['gibbonCalendarEventID' => $gibbonCalendarEventID]);
 
     $URL .= !$deleted
         ? '&return=error2'

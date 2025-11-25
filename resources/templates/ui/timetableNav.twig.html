@@ -17,18 +17,19 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     hx-indicator='#indicator'
     hx-include='[name="ttDateChooser"],[name="ttCalendarRefresh"],[name="gibbonTTID"]''
     hx-vals='js:{"edit": "{{ edit }}"}'
+    hx-disinherit="*"
 >
     <nav id='#ttNav' cellspacing='0' class='flex justify-between items-end w-full my-2'>
     <input type='hidden' name='ttDateNav' x-model='ttDate'>
     <input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>
     <input type='hidden' name='gibbonTTID' x-model='ttID'>
 
-    <div x-data="{layersOpen: false, timetablesOpen: false, optionsOpen: false}" class=" flex items-start">
+    <div x-data="{layersOpen: false, calendarsOpen: false, timetablesOpen: false, optionsOpen: false}" class=" flex items-start">
     
         {% if timetables|length > 1 %}
         <div class="relative">
             <button type='button' class='inline-flex items-center align-middle rounded-l h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700' @click="timetablesOpen = !timetablesOpen" :class="{'bg-gray-300 text-gray-700': timetablesOpen}">
-            {{ icon('solid', 'calendar', 'inline-block size-4') }}
+            {{ icon('outline', 'squares', 'inline-block size-4', {'stroke-width': 2}) }}
                 <span class='hidden md:inline ml-2'>{{ __('Timetables') }}</span>
             </button>
 
@@ -53,20 +54,75 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </button>
 
             <div x-cloak x-transition.opacity x-show="layersOpen" @click.outside="layersOpen = false" class="absolute min-w-48 -ml-px -mt-px z-20 flex flex-col justify-end rounded border bg-white shadow-lg p-3">
-                {% for layer in layers %}
+                {% for layer in layersList|reverse %}
                     
                     {% set color = structure.getColors(layer.getColor) %}
 
                     <div class="p-1 flex gap-2 items-center text-gray-700 cursor-pointer mr-4" @click="{{ layer.getID }} = !{{ layer.getID }}" hx-get="{{ preferencesUrl }}" hx-target="this" hx-trigger="click consume" hx-swap="none" hx-include="[name='{{ layer.getID }}']" hx-vals='{"scope": "ttLayers", "key": "{{ layer.getID }}", "default": 0}' >
-                        <input type="checkbox" x-model="{{ layer.getID }}" name="{{ layer.getID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" checked="{{ layer.getID }}"  >
+                        <input type="checkbox" x-model="{{ layer.getID }}" name="{{ layer.getID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" checked="{{ layer.getID }}" >
                         <label class="select-none whitespace-nowrap text-sm" :class="{'line-through opacity-50': !{{ layer.getID }} }" for="{{ layer.getID }}">
                             {{ layer.getName }}<span class="inline-block ml-2 text-gray-400 text-xs">({{ layer.countItems }}) </span>
                         </label>
                     </div>
                     
                 {% endfor %}
+
+                {% if gibbonPersonID %}
+                <div class="-mx-3 mt-2 -mb-3 border-t border-gray-400">
+                    <a hx-boost="true" 
+                    hx-target="#modalContent"
+                    hx-push-url="false"
+                    x-on:htmx:after-on-load="modalOpen = true"
+                    x-on:click="modalType = 'delete'"
+                    hx-swap="innerHTML show:no-scroll swap:0s" 
+                    
+                    href="{{ absoluteURL }}/index_tt_layers.php" class="flex justify-start items-center align-middle select-none whitespace-nowrap text-sm px-4 py-2 gap-2 text-gray-700 hover:text-gray-800 hover:bg-gray-200 rounded-b">
+                        {{ icon('basic', 'menu', 'inline-block size-5 text-gray-600 mt-px -ml-px') }}
+                        {{ __('Reorder Layers') }}
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
+
+        {% if calendars %}
+        <div class="relative">
+            <button type='button' class='inline-flex items-center align-middle  h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px' @click="calendarsOpen = !calendarsOpen" :class="{'bg-gray-300 text-gray-700': calendarsOpen}">
+            {{ icon('solid', 'calendar', 'inline-block size-4') }}
+                <span class='hidden md:inline ml-2'>{{ __('Calendars') }}</span>
+            </button>
+
+            <div x-cloak x-transition.opacity x-show="calendarsOpen" @click.outside="calendarsOpen = false" class="absolute min-w-48 -ml-px -mt-px z-20 flex flex-col justify-end rounded border bg-white shadow-lg p-3">
+                {% for calendar in calendars|reverse %}
+                    
+                    {% set color = structure.getColors(calendar.getColor) %}
+
+                    <div class="p-1 flex gap-2 items-center text-gray-700 cursor-pointer mr-4" @click="{{ calendar.getID }} = !{{ calendar.getID }}" hx-get="{{ preferencesUrl }}" hx-target="this" hx-trigger="click consume" hx-swap="none" hx-include="[name='{{ calendar.getID }}']" hx-vals='{"scope": "ttLayers", "key": "{{ calendar.getID }}", "default": 0}' >
+                        <input type="checkbox" x-model="{{ calendar.getID }}" name="{{ calendar.getID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" checked="{{ calendar.getID }}" style="{{ color.bgStyle }}" >
+                        <label class="select-none whitespace-nowrap text-sm" :class="{'line-through opacity-50': !{{ calendar.getID }} }" for="{{ calendar.getID }}">
+                            {{ calendar.getName }}<span class="inline-block ml-2 text-gray-400 text-xs">({{ calendar.countItems }}) </span>
+                        </label>
+                    </div>
+                    
+                {% endfor %}
+
+                {% if gibbonPersonID %}
+                <nav class="-mx-3 mt-2 -mb-3 border-t border-gray-400">
+                    {% set optionID = 'onlyMyEvents' %}
+
+                    <div class="px-4 py-2 flex gap-2 items-center text-gray-700 hover:text-gray-800 cursor-pointer mr-4" @click="{{ optionID }} = !{{ optionID }}" hx-get="{{ preferencesUrl }}" hx-target="this" hx-trigger="click consume" hx-swap="none" hx-include="[name='{{ optionID }}']" hx-vals='{"scope": "ttOptions", "key": "{{ optionID }}", "default": 0}' >
+                        <input type="checkbox" x-model="{{ optionID }}" name="{{ optionID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" value="1" >
+                        <label class="select-none whitespace-nowrap text-sm" for="{{ optionID }}">
+                            {{ __('Only Show My Events') }}
+                        </label>
+                    </div>
+
+                </nav>
+                {% endif %}
+            </div>
+            
+        </div>
+        {% endif %}
 
         <div class="relative">
             <button type='button' class='inline-flex items-center align-middle h-8 px-2 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 {{ layers|length > 1 ? 'rounded-r -ml-px' : 'rounded' }}' @click="optionsOpen = !optionsOpen" :class="{'bg-gray-300 text-gray-700': optionsOpen}">

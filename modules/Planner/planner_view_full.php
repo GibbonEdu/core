@@ -1175,6 +1175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd'])->fetchAll();
                         $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y'];
+                        $attendanceCount = $attendanceCountPresent = 0;
 
                         // ATTENDANCE FORM
                         $form = Form::createBlank('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
@@ -1288,6 +1289,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             if ($person['role'] == 'Student') {
                                 // Add attendance fields, teacher only
                                 if ($canTakeAttendance) {
+                                    $attendanceCount++;
+                                    if (!empty($person['log']['type']) && $attendance->isTypePresent($person['log']['type'])) {
+                                        $attendanceCountPresent++;
+                                    }
+
                                     $form->toggleVisibilityByClass($count.'-attendance')->onSelect($count . '-type')->whenNot('Present');
                                     $restricted = $attendance->isTypeRestricted($person['log']['type']);
                                     $cell->addSelect($count . '-type')
@@ -1328,6 +1334,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
 
                         if ($canTakeAttendance && date('Y-m-d') >= $values['date']) {
+
+                            $alertText = Format::bold(__('Total students:') . ' ' . $attendanceCount) ;
+                            
+                            if (!empty($classLogs)) {
+                                $alertText .= '<br/><span title="' . __('e.g. Present or Present - Late') . '" class="whitespace-nowrap">' . __('Total students present in room:') . ' ' . $attendanceCountPresent . '</span>' . '<br/><span title="' . __('e.g. not Present and not Present - Late') . '" class="whitespace-nowrap">' . __('Total students absent from room:') . ' ' . ($attendanceCount - $attendanceCountPresent) . '</span>';
+                            } 
+
+                            $form->addRow()->addAlert($alertText, !empty($classLogs) ? 'success' : 'message')->setClass('right');
+
                             $form->addHiddenValue('address', $session->get('address'));
                             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
                             $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);

@@ -33,6 +33,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/impersonateUs
     //Proceed!
     $page->breadcrumbs->add(__('Impersonate User'));
 
+    // Validate the config settings
+    $config = $container->get('config')->getConfig();
+    if (empty($config['allowImpersonateUser']) || !in_array($session->get('username'), $config['allowImpersonateUser'])) {
+        $page->addError(__('Access to this action must be manually enabled in the configuration file.'));
+        return;
+    }
+
     // Validate the current user and that the session data is correct
     $currentUser = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'), ['gibbonRoleIDPrimary']);
     if (empty($currentUser) || $currentUser['gibbonRoleIDPrimary'] != $session->get('gibbonRoleIDCurrent')) {

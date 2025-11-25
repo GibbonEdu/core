@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
+use Gibbon\Support\Facades\Access;
 
 include '../../gibbon.php';
 
@@ -43,12 +44,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     } else {
         $partialFail = false;
 
-        if ($action == 'Duplicate' or $action == 'DuplicateParticipants') {
+        $canManageAllEvents = Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all');
+
+        if ($action == 'Duplicate' || $action == 'DuplicateParticipants') {
             foreach ($events AS $gibbonCalendarEventID) { // For every event to be duplicated
                 // Check existence of event and fetch details
                 $calendarEvent = $calendarEventGateway->getByID($gibbonCalendarEventID);
-
                 if (empty($calendarEvent)) {
+                    $partialFail = true;
+                    continue;
+                }
+
+                // Check for access to edit this event
+                $event = $calendarEventGateway->getEventDetailsByID($gibbonCalendarEventID, $session->get('gibbonPersonID'));
+                if ($event['editor'] != 'Y' && !$canManageAllEvents) {
                     $partialFail = true;
                     continue;
                 }

@@ -94,7 +94,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% else %}
         <div class="mb-6 px-10 py-4 rounded bg-gray-300 text-center text-gray-600 text-lg font-thin italic">
-            {% if signUpIsOpen and (not signUpAccess or not canSignUp) %}
+            {% if activity.registration != 'Y' %}
+                {{ __m('Sign up is not available') }}
+            {% elseif signUpIsOpen and (not signUpAccess or not canSignUp) %}
                 {% if activity.yearGroups is not empty %}
                     {{ __m('Sign up is open for current') }}<br/>{{ activity.yearGroups|replace({'Y0':'Y'})|split(',')|join(', ', ' and ') }} {{ __m('students') }}
                 {% else %}

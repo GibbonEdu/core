@@ -43,16 +43,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_a
     $editorGateway = $container->get(CalendarEditorGateway::class);
 
     $data = [
-        'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'name'               => $_POST['name'] ?? '',
-        'description'        => $_POST['description'] ?? '',
-        'color'              => $_POST['color'] ?? '',
-        'summary'            => $_POST['summary'] ?? '',
-        'public'             => $_POST['public'] ?? 'N',
-        'viewableStaff'      => $_POST['viewableStaff'] ?? 'N',
-        'viewableStudents'   => $_POST['viewableStudents'] ?? 'N',
-        'viewableParents'    => $_POST['viewableParents'] ?? 'N',
-        'viewableOther'      => $_POST['viewableOther'] ?? 'N',
+        'gibbonSchoolYearID'   => $gibbonSchoolYearID,
+        'name'                 => $_POST['name'] ?? '',
+        'description'          => $_POST['description'] ?? '',
+        'color'                => $_POST['color'] ?? '',
+        'summary'              => $_POST['summary'] ?? '',
+        'public'               => $_POST['public'] ?? 'N',
+        'viewableStaff'        => $_POST['viewableStaff'] ?? 'N',
+        'viewableStudents'     => $_POST['viewableStudents'] ?? 'N',
+        'viewableParents'      => $_POST['viewableParents'] ?? 'N',
+        'viewableOther'        => $_POST['viewableOther'] ?? 'N',
+        'viewableParticipants' => $_POST['viewableParticipants'] ?? 'N',
+        'editableStaff'        => $_POST['editableStaff'] ?? 'N',
     ];
 
     // Validate the required values are present

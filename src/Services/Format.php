@@ -1181,8 +1181,9 @@ class Format
      */
     public static function colorSwatch($color)
     {
-        $colorValue = '#ffffff00';
+        $colorValue = '';
         $colorTitle = '';
+        $colorClass = '';
 
         if (substr($color, 0, 1) == '#') {
             $color = trim(preg_replace('/[^a-fA-F0-9]/', '', $color), '#');
@@ -1192,9 +1193,11 @@ class Format
             $color = preg_replace('/[^rgba0-9., \(\)]/', '', $color);
             $colorValue = !empty($color) ? $color : '#ffffff00';
             $colorTitle = !empty($color) ? $colorValue : __('None');
+        } else {
+            $colorClass = trim(preg_replace('/[^a-zA-Z0-9_-]/', '', $color));
         }
 
-        return '<div class="rounded-md border h-8 w-8" style="background-color:'.$colorValue.'" title="'.$colorTitle.'"></div>';
+        return "<div class='rounded-md border h-8 w-8 {$colorClass}' style='background-color:{$colorValue}' title='{$colorTitle}'></div>";
     }
 
     /**

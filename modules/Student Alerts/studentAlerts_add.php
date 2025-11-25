@@ -125,15 +125,7 @@ if (!isActionAccessible($guid, $connection2, "/modules/Student Alerts/studentAle
     } else if ($isClassAlert) {
         $form->addHiddenValue('status', 'Approved');
     }
-
-    // $row = $form->addRow();
-    //     $row->addLabel('dateStart', __('Start Date'))->description(__('If the alert is for a specified period'));
-    //     $row->addDate('dateStart');
-
-    // $row = $form->addRow();
-    //     $row->addLabel('dateEnd', __('End Date'))->description(__('If the alert is for a specified period')); 
-    //     $row->addDate('dateEnd');
-
+    
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('comment', __('Comment'));

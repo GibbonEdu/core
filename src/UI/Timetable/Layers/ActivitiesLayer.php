@@ -63,6 +63,7 @@ class ActivitiesLayer extends AbstractTimetableLayer
         if (!$context->has('gibbonSchoolYearID')) return;
     
         $dateType = $this->settingGateway->getSettingByScope('Activities', 'dateType');
+        $specialDays = $context->get('specialDays', []);
 
         if ($context->has('gibbonPersonID')) {
             $activityList = $this->activityGateway->selectActiveEnrolledActivities($context->get('gibbonSchoolYearID'), $context->get('gibbonPersonID'), $dateType, $dateRange->getStartDate()->format('Y-m-d'))->fetchAll();
@@ -75,6 +76,10 @@ class ActivitiesLayer extends AbstractTimetableLayer
         foreach ($dateRange as $dateObject) {
             $date = $dateObject->format('Y-m-d');
             $weekday = $dateObject->format('l');
+            $specialDay = $specialDays[$date] ?? [];
+
+            if (!empty($specialDay['cancelActivities']) && $specialDay['cancelActivities'] == 'Y') continue;
+
             foreach ($activityList as $activity) {
                 // Add activities that match the weekday and the school is open
                 if (empty($activity['dayOfWeek']) || $activity['dayOfWeek'] != $weekday) continue;

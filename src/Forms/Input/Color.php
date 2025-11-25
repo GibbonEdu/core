@@ -52,7 +52,7 @@ class Color extends Input
     }
 
     /**
-     * Set a named color palette for this field to use.
+     * Set a named color palette for this field to use. Options are: default, background
      *
      * @param string $palette
      * @return self

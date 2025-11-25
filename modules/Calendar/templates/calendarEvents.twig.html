@@ -1,0 +1,78 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if notes is not empty %}
+    <p>
+        {{ notes|raw }}
+    </p>
+{% else %}
+<p>
+    {{ __('{sender} has sent a notification about {eventName} on {eventDate}, {eventTime}.', {'sender': formatUsing('name', sender.title, sender.preferredName, sender.surname, 'Staff', false, true), 'eventName': event.name , 'eventDate': formatUsing('dateRangeReadable', event.dateStart, event.dateEnd), 'eventTime': event.allDay == 'Y' ? 'All Day' : formatUsing('timeRange', event.timeStart, event.timeEnd) }) }}
+</p>
+{% endif %}
+
+<h4>{{ __('Participants') }}</h4>
+
+{% if students is defined and students is not empty %}
+    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; border: 1px solid #cacaca; ">
+        <thead>
+            <tr>
+                <th style="border: 1px solid #cacaca; min-width: 220px;">{{ __('Name') }}</th>
+
+                {% if formGroups %}
+                    <th style="border: 1px solid #cacaca; min-width: 100px;">{{ __('Form Group') }}</th>
+                {% endif %}
+
+                {% if relevant > 0 %}
+                    <th style="border: 1px solid #cacaca; min-width: 100px;">{{ __('Context') }}</th>
+                {% endif %}
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td style="border: 1px solid #cacaca;">
+                        {{ formatUsing('name', '', student.preferredName, student.surname, 'Student', false) }}
+                    </td>
+
+                    {% if formGroups %}
+                    <td style="border: 1px solid #cacaca;">
+                        {{  student.formGroup }}
+                    </td>
+                    {% endif %}
+
+                    {% if relevant > 0 %}
+                    <td style="border: 1px solid #cacaca;">
+                        {% if student.context is defined and student.context is not empty %}
+                            {{ __(student.context) }}
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}
+    <p>{{ __('There are no records to display.') }}</p>
+{% endif %}
+
+<br>
+<p style="color: #999999; font-size: 13px;">
+    <em>
+        {% if allStaff == 'Y' %}
+            {{ __('This notification has been sent to all staff.') }}
+        {% else %}
+            {{ __('This notification has been sent to individual recipients.') }}
+            {% if contexts %} {{ __('You are receiving this notification as {context}.', {'context': contexts }) }}{% endif %}
+        {% endif %}
+    </em>
+</p>

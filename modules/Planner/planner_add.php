@@ -355,12 +355,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $sharingDefaultStudents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents');
             $row = $form->addRow()->addClass('advanced');
-                $row->addLabel('viewableStudents', __('Viewable to Students'));
+                $row->addLabel('viewableStudents', __('Viewable by Students'));
                 $row->addYesNo('viewableStudents')->required()->selected($sharingDefaultStudents);
 
             $sharingDefaultParents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents');
             $row = $form->addRow()->addClass('advanced');
-                $row->addLabel('viewableParents', __('Viewable to Parents'));
+                $row->addLabel('viewableParents', __('Viewable by Parents'));
                 $row->addYesNo('viewableParents')->required()->selected($sharingDefaultParents);
 
             $row = $form->addRow()->addClass('advanced');

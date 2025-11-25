@@ -75,13 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $form->addHiddenValue('fieldType', $values['fieldType']);
     }
 
-    if ($values['fieldType'] != 'text') {
+    if ($values['fieldType'] != 'layout') {
         $row = $form->addRow();
             $row->addLabel('label', __('Label'));
             $row->addTextField('label')->maxLength(90)->required();
     }
 
-    if ($values['fieldType'] == 'heading' || $values['fieldType'] == 'subheading') {
+    if ($values['fieldType'] == 'heading' || $values['fieldType'] == 'subheading' || $values['fieldType'] == 'layout') {
         $col = $form->addRow()->addColumn();
         $col->addLabel('description', __('Description'));
         $col->addTextArea('description')->setRows(4);
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $row->addYesNo('prefill')->required();
     }
 
-    if (!in_array($values['fieldType'], ['heading', 'subheading', 'phone', 'files', 'personalDocument'])) {
+    if (!in_array($values['fieldType'], ['heading', 'subheading', 'phone', 'files', 'personalDocument', 'layout'])) {
         $row = $form->addRow();
             $row->addLabel('defaultValue', __('Default Value'))->description(__('When not prefilled from existing data, what is the default value for this field? Use Y or N for Yes/No fields.'));
             $row->addTextField('defaultValue');

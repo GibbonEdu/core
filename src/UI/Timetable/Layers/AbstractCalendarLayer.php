@@ -39,7 +39,7 @@ use GuzzleHttp\Exception\ConnectException;
 abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
-    
+
     abstract public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 
     protected function loadEventsByCalendarFeed($calendarFeed, \DatePeriod $dateRange, $color = null)
@@ -104,7 +104,7 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
         }
     }
 
-    protected function getCalendarEvents(string $calendarFeed, $startDayStamp, $endDayStamp)
+    public function getCalendarEvents(string $calendarFeed, $startDayStamp, $endDayStamp, $cache = true)
     {
         $settingGateway = $this->getContainer()->get(SettingGateway::class);
         $session = $this->getContainer()->get(Session::class);
@@ -116,7 +116,7 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
             $session->forget($calendarEventsCache);
         }
 
-        if ($session->exists($calendarEventsCache) ) {
+        if ($cache && $session->exists($calendarEventsCache) ) {
             return $session->get($calendarEventsCache);
         }
     
@@ -277,7 +277,9 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
             $eventsSchool = [];
         }
     
-        $session->set($calendarEventsCache, $eventsSchool);
+        if ($cache) {
+            $session->set($calendarEventsCache, $eventsSchool);
+        }
     
         return $eventsSchool;
     }

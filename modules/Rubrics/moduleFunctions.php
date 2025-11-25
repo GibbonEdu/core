@@ -69,14 +69,18 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
             $cells[$rowCells['gibbonRubricRowID']][$rowCells['gibbonRubricColumnID']] = $rowCells;
         }
 
-        $output .= "<div class='linkTop'>";
-        $output .= "<a onclick='return confirm(\"".__('Are you sure you want to edit rows and columns? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>".__('Edit Rows & Columns')."<img title='Edit' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>";
-        $output .= '</div>';
-
         $form = Form::createTable('editRubric', $session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
+        $form->setTitle(__('Rubric Design'));
 
         $form->setClass('rubricTable w-full');
         $form->addHiddenValue('address', $session->get('address'));
+
+        $form->addHeaderAction('edit', __('Edit Rows & Columns'))
+            ->setURL('/modules/Rubrics/rubrics_edit_editRowsColumns.php')
+            ->addParam('gibbonRubricID', $gibbonRubricID)
+            ->addParam('search', $search)
+            ->addParam('filter2', $filter2)
+            ->displayLabel();
 
         $row = $form->addRow()->addClass();
             $row->addContent()->addClass('rubricCellEmpty');
@@ -95,7 +99,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this column? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=".$columns[$n]['gibbonRubricColumnID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>");
+            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this column? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=".$columns[$n]['gibbonRubricColumnID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'>".icon('solid', 'delete', 'size-6 text-gray-600')."</a>");
         }
 
         // Rows
@@ -115,7 +119,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i]['gibbonRubricRowID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>");
+            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i]['gibbonRubricRowID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'>".icon('solid', 'delete', 'size-6 text-gray-600')."</a><br/>");
 
             for ($n = 0; $n < $columnCount; ++$n) {
                 $cell = @$cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']];

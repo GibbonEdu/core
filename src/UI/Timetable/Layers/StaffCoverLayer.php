@@ -72,8 +72,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
             ->filterBy('status', 'Accepted');
                     
         $staffCoverage = $this->staffCoverageGateway->queryCoverageByPersonCovering($criteria, $context->get('gibbonSchoolYearID'), $context->get('gibbonPersonID'), false);
-
-        $specialDays = $this->specialDayGateway->selectSpecialDaysByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'))->fetchGroupedUnique();
+        $specialDays = $context->get('specialDays', []);
 
         $canViewPlanner = Access::allows('Planner', 'planner_view_full');
 

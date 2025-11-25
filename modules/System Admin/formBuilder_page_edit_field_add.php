@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addLabel('optionsLength', __('Max Length'))->description(__('Number of characters, up to 255.'));
         $row->addNumber('optionsLength')->setName('options')->minimum(1)->maximum(255)->onlyInteger(true);
 
-        $form->toggleVisibilityByClass('optionsRows')->onSelect('type')->when(['text', 'editor']);
+        $form->toggleVisibilityByClass('optionsRows')->onSelect('type')->when(['text']);
 
         $row = $form->addRow()->addClass('optionsRows');
         $row->addLabel('optionsRows', __('Rows'))->description(__('Number of rows for field.'));
@@ -172,18 +172,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $fieldGroups = $fieldGroup == 'CustomFields' ? [
             'CustomFields' => __('Custom Fields'),
         ] : [
-            'StudentFields'     => __('Student'),
-            'AdmissionsFields'  => __('Admissions'),
-            'FamilyFields'      => __('Family'),
-            'Parent1Fields'      => __('Parent 1'),
-            'Parent2Fields'      => __('Parent 2'),
-            'MedicalFields'     => __('Medical'),
-            'INFields'          => __('Individual Needs'),
-            'FinanceFields'     => __('Finance'),
-            'LanguageFields'    => __('Language'),
-            'ScholarshipFields' => __('Scholarships'),
-            'PrivacyFields'     => __('Privacy'),
-            'AgreementFields'   => __('Agreement'),
+            'StudentFields'       => __('Student'),
+            'AdmissionsFields'    => __('Admissions'),
+            'FamilyFields'        => __('Family'),
+            'Parent1Fields'       => __('Parent 1'),
+            'Parent2Fields'       => __('Parent 2'),
+            'MedicalFields'       => __('Medical'),
+            'INFields'            => __('Individual Needs'),
+            'FinanceFields'       => __('Finance'),
+            'LanguageFields'      => __('Language'),
+            'ScholarshipFields'   => __('Scholarships'),
+            'PrivacyFields'       => __('Privacy'),
+            'MiscellaneousFields' => __('Miscellaneous'),
+            'AgreementFields'     => __('Agreement'),
         ];
 
         foreach ($fieldGroups as $fieldGroupName => $fieldGroupLabel) {
@@ -192,10 +193,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
             $form->addRow()->addHeading($fieldGroupName, $fieldGroupLabel)->append($fieldGroupClass->getDescription());
 
-            $col = $form->addRow()->addColumn()->addClass('');
-
             foreach ($fields as $heading => $headingFields) {
                 if (empty($headingFields)) continue;
+
+                $col = $form->addRow()->addColumn()->addClass('');
 
                 if (!is_array($headingFields)) {
                     $headingFields = [$heading => $headingFields];
@@ -218,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 }
 
                 foreach ($headingFields as $fieldName => $label) {
-                    $fieldName = preg_replace('/[\s\~`\!@%#$%\^&\*\(\)+={}\[\]|\\:;"\'<>,\.\?\/]/', '', $fieldName);
+                    $fieldName = preg_replace('/[\~\`\!\@\%\#\$%\^&\*\(\)\+\=\{\}\[\]\|\:;"\'\\<>\,\.\?\/]/', '', $fieldName);
 
                     $description = '<div class="flex-1 text-left"><span class="text-sm -ml-2">'.$label.'</span></div>';
                     $col->addCheckbox("fields[$fieldGroupName][{$fieldName}]")

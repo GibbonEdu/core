@@ -59,16 +59,20 @@ class BookingsLayer extends AbstractTimetableLayer
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {   
         $bookings = $this->facilityBookingGateway->selectFacilityBookingsByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'), $context->get('gibbonPersonID'), $context->get('gibbonSpaceID'))->fetchAll();
+        $specialDays = $context->get('specialDays', []);
         
         $this->facility = $this->facilityGateway->getByID($context->get('gibbonSpaceID'), ['bookable']);
         $canViewSpaceTimetable = Access::allows('Timetable', 'tt_space_view');
 
         foreach ($bookings as $booking) {
+            $specialDay = $specialDays[$booking['date']] ?? [];
+            if (!empty($specialDay['cancelBookings']) && $specialDay['cancelBookings'] == 'Y') continue;
+
             $bookedBy = Format::name($booking['title'], $booking['preferredName'], $booking['surname'], 'Staff', false, true);
 
             $this->createItem($booking['date'])->loadData([
                 'type'      => __('Booking'),
-                'title'     => $booking['reason'],
+                'title'     => $booking['reason'] ?: __('Booking'),
                 'subtitle'  => $context->has('gibbonPersonID') ? $booking['name'] : $bookedBy,
                 'timeStart' => $booking['timeStart'],
                 'timeEnd'   => $booking['timeEnd'],

@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Domain\Calendar\CalendarEventTypeGateway;
+use Gibbon\Support\Facades\Access;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_add.php') == false) {
     // Access denied
@@ -31,19 +32,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         ->add(__('Manage Events'), 'calendar_event_manage.php')
         ->add(__('Add Event'));
 
+    if (isset($_GET['editID'])) {
+        $page->return->setEditLink($session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_edit.php&gibbonCalendarEventID='.$_GET['editID']);
+    }
+
     $calendarGateway = $container->get(CalendarGateway::class);
     $calendarEventTypeGateway = $container->get(CalendarEventTypeGateway::class);
+
+    // Get values from post, coming from FullCalendar
+    $source = $_GET['source'] ?? '';
+    $date = $_GET['date'] ?? '';
+    $allDay = $_GET['allDay'] ?? '';
+
+    $dateStart = $date;
+    $dateEnd = $date;
+
+    // From FullCalendar date selection
+    if (!empty($_GET['start']) && !empty($_GET['end'])) {
+        $dateStart = date('Y-m-d', strtotime($_GET['start']));
+        $dateEnd = date('Y-m-d', strtotime($_GET['end'])-86400);
+    }
+    
+    // Get Calendars of the current school year
+    $gibbonPersonIDEditor = Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all') ? null : $session->get('gibbonPersonID');
+    $calendars = $calendarGateway->selectEditableCalendarsByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonIDEditor)->fetchKeyPair();
+
+    if (empty($calendars)) {
+        $page->addError(__('You do not have access to this action.'));
+        return;
+    }
 
     // FORM
     $form = Form::create('event', $session->get('absoluteURL').'/modules/Calendar/calendar_event_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('source', $source);
 
-    $form->addRow()->addHeading(__('Basic Information'));
+    if ($source == 'ajax') $form->removeMeta();
 
-    // Get Calendars of the current school year
-    $calendars = $calendarGateway->selectCalendarsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+    $form->addSection('Basic Information', __('Basic Information'));
+
     $row = $form->addRow();
         $row->addLabel('gibbonCalendarID', __('Calendar'));
         $row->addSelect('gibbonCalendarID')
@@ -60,11 +89,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
             ->placeholder()
             ->required();
 
-    $gibbonPersonID = $session->get('gibbonPersonID');
-    $row = $form->addRow();
-        $row->addLabel('gibbonPersonIDOrganiser', __('Organiser'));
-        $row->addSelectStaff('gibbonPersonIDOrganiser')->placeholder()->required()->selected($gibbonPersonID);
-
     $row = $form->addRow();
         $row->addLabel('name', __('Event Name'));
         $row->addTextField('name')->required()->maxLength(120);
@@ -80,16 +104,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
             ->fromArray($statusList)
             ->required();
 
-    $col = $form->addRow()->addColumn();
-        $col->addLabel('description', __('Description'));
-        $col->addEditor('description', $guid);
+    // Event Dates
+    $form->addSection('Event Details', __('Event Details'));
 
-    $form->addRow()->addHeading(__('Event Details'));
+    $row = $form->addRow();
+        $row->addLabel('dateStart', __('Date'));
+
+        $row->addDate('dateStart')->chainedTo('dateEnd')->required()->setValue($dateStart);
+        $row->addDate('dateEnd')->chainedFrom('dateStart')->setValue($dateEnd);
+
+        $row->addCheckbox('allDay')
+            ->description(__('All Day'))
+            ->setOuterClass('w-min')
+            ->inline()
+            ->setValue('Y')
+            ->checked('Y');
+
+    $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
+
+    $row = $form->addRow()->addClass('timeOptions');
+        $row->addLabel('time', __('Time'));
+        $row->addTime('timeStart')
+            ->required();
+        $row->addTime('timeEnd')
+            ->chainedTo('timeStart')
+            ->required();
+
+    // Description
+    $form->addSection('Description', __('Description'))->closed();
+
+    $form->addRow()->addEditor('description', $guid)->setRows(5);
+
 
     // Event Location
+    $form->addSection('Location', __('Location'))->closed();
+
     $row = $form->addRow();
         $row->addLabel('locationType', __('Location Type'));
-        $row->addSelect('locationType')->fromArray(['Internal' => __('Internal'), 'External' => __('External')])->required()->placeholder();
+        $row->addSelect('locationType')->fromArray(['Internal' => __('Internal'), 'External' => __('External')])->placeholder();
 
     $form->toggleVisibilityByClass('internal')->onSelect('locationType')->when('Internal');
 
@@ -105,45 +157,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
 
     $row = $form->addRow()->addClass('external');
         $row->addLabel('locationURL', __('Location URL'));
-        $row->addTextField('locationURL')->maxLength(255);
-
-    // Event Dates
-    $date = $_GET['date'] ?? '';
-    $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')->chainedTo('dateEnd')->required()->setValue($date);
-
-    $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')->chainedFrom('dateStart')->required()->setValue($date);
-
-    $row = $form->addRow();
-        $row->addLabel('allDay', __('When'));
-        $row->addCheckbox('allDay')
-            ->description(__('All Day'))
-            ->inline()
-            ->setValue('Y')
-            ->checked('Y')
-            ->wrap('<div class="standardWidth floatRight">', '</div>');
-
-    $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
-
-    $row = $form->addRow()->addClass('timeOptions');
-        $row->addLabel('time', __('Time'));
-        $col = $row->addColumn('timeStart')->addClass('right inline gap-2');
-        $col->addTime('timeStart')
-            ->setClass('flex-1')
-            ->required();
-        $col->addTime('timeEnd')
-            ->chainedTo('timeStart')
-            ->setClass('flex-1')
-            ->required();
+        $row->addUrl('locationURL')->maxLength(255);
 
     // STAFF
-    $form->addRow()->addHeading(__('Teachers'));
+    $form->addSection('Staff', __('Staff'))->closed();
+
+    $gibbonPersonID = $session->get('gibbonPersonID');
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonIDOrganiser', __('Organiser'));
+        $row->addSelectStaff('gibbonPersonIDOrganiser')->placeholder()->required()->selected($gibbonPersonID);
+
 
     $row = $form->addRow();
-        $row->addLabel('staff', __('Staff'));
+        $row->addLabel('staff', __('Add Staff'));
         $row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), ['includeStaff' => true])->selectMultiple();
 
     $row = $form->addRow();
@@ -156,9 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
                 'Other'     => __('Other'), 
             ]);
 
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+    $form->addSection($source == 'ajax' ? 'ajax' : 'submit')->addSubmit();
 
     echo $form->getOutput();
 }

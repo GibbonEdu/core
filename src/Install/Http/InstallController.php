@@ -256,6 +256,12 @@ class InstallController
             $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
             $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
+        $sessionSecure = isset($_SERVER['HTTPS']);
+        $row = $form->addRow();
+            $row->addLabel('sessionSecureLabel', __('Secure HTTPS Connection'))->description(__('Requires a valid SSL Certificate'));
+            $row->addTextField('sessionSecure')->setValue($sessionSecure ? __('Enabled') : __('Not Available'))->readonly();
+            $row->addContent($sessionSecure? $trueIcon : $falseIcon);
+
         if ($apacheVersion !== false) {
             /**
              * @var mixed $apacheRequirement
@@ -265,7 +271,7 @@ class InstallController
                 $readyToInstall = $readyToInstall && $active;
                 $row = $form->addRow();
                     $row->addLabel('moduleLabel', 'Apache '.__('Module').' '.$moduleName);
-                    $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly();
+                    $row->addTextField('module')->setValue(($active)? __('Enabled') : __('Not Available'))->readonly();
                     $row->addContent(($active)? $trueIcon : $falseIcon);
             }
         }

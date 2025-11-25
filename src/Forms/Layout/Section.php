@@ -162,16 +162,16 @@ class Section
         return $this;
     }
 
-    public function opened(bool $open)
+    public function opened(bool $open = true)
     {
         $this->open = $open;
 
         return $this;
     }
 
-    public function closed()
+    public function closed(bool $closed = true)
     {
-        $this->open = false;
+        $this->open = !$closed;
 
         return $this;
     }

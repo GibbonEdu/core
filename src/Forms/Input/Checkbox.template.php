@@ -1,4 +1,4 @@
-<div class="<?= !empty($checkall) ? 'checkboxGroup' : ''; ?> flex-grow relative gap-2 <?= $inline ? 'flex justify-between items-center ' : 'flex flex-col justify-center ' . ($align == 'left' ? 'items-start' : 'items-end w-full'); ?>" >
+<div class="<?= !empty($checkall) ? 'checkboxGroup' : ''; ?> flex-grow relative gap-2 <?= $inline ? 'flex justify-between items-center ' : 'flex flex-col justify-center ' . ($align == 'left' ? 'items-start' : 'items-end'); ?> <?= $outerClass ?? 'w-full' ?>" >
    
 <?php if (!empty($checkall)) { ?>
 <div class="flex mt-1 <?= $align == 'right' ? 'justify-end text-right' : '' ?>">
@@ -46,7 +46,5 @@
     <?php } ?>
 
 <?php } ?>
-
-</fieldset>
 
 </div>

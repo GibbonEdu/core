@@ -75,6 +75,8 @@ class Meta extends Row
 
     public function addSectionList(array $sections)
     {
+        if (count($sections) <= 2) return $this;
+        
         $output = '<h5 class="text-sm font-semibold text-gray-800 mt-0 mb-2 ">'. __('Jump To').'</h5>';
         $links = [];
 

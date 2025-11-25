@@ -58,7 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
             //Let's go!
 			$values = $result->fetch();
-
+            $courseClassName = $values['courseNameShort'].$values['nameShort'];
+            $length= mb_strlen($courseClassName);
+            if ($length> 16) {
+                $page->addWarning(__('The combined short name for this class, {courseClassName}, is longer than the recommended length of 16 characters. Please note this may cause visual issues on the timetable and in dropdown menus.', ['courseClassName' => $courseClassName]));
+            }
+            
 			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_class_editProcess.php');
 
 			$form->addHiddenValue('address', $session->get('address'));
@@ -82,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this course.'));
-				$row->addTextField('nameShort')->required()->maxLength(8);
+				$row->addTextField('nameShort')->required()->maxLength(16);
 
 			$row = $form->addRow();
 				$row->addLabel('reportable', __('Reportable?'))->description(__('Should this class show in reports?'));

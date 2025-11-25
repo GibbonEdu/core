@@ -63,7 +63,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endfor %}
 
                 {% for dayNameShort, dayName in daysOfWeek %}
-                    <div class="hidden md:block {{ blockWidth }} py-1" title="{{ __(dayName) }}">
+                    <div class="hidden xl:block {{ blockWidth }} py-1" title="{{ __(dayName) }}">
                         {{ __(dayNameShort) }}
                     </div>
                 {% endfor %}
@@ -71,7 +71,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
             {#<!-- Attendance Days: grouped by week -->#}
             {% for weekNumber, week in term.weeks %}
-                <div class="w-full md:w-1/2 flex items-stretch text-xxs text-center text-gray-600" style="min-height: 55px;">
+                <div class="w-full xl:w-1/2 flex items-stretch text-xxs text-center text-gray-600" style="min-height: 55px;">
 
                 {% for day in week %}
                     {% if day.outsideTerm %}

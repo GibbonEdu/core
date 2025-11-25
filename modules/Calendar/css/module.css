@@ -18,3 +18,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+#calendar {
+    --fc-button-text-color: hsl(220 8% 52%);
+    --fc-button-bg-color: #fff;
+    --fc-button-border-color: hsl(220 14% 84%);
+    --fc-button-hover-bg-color: hsl(220 14% 94%);
+    --fc-button-hover-border-color: hsl(220 14% 84%);
+    --fc-button-active-bg-color: hsl(220 12% 78%);
+    --fc-button-active-border-color: hsl(220 12% 65%);
+
+    a, a:not([class]) {
+        color: inherit;
+    }
+}

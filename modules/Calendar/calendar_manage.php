@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.p
     $table->addDraggableColumn('gibbonCalendarID', $session->get('absoluteURL').'/modules/Calendar/calendar_manage_orderAjax.php');
 
     $table->addColumn('color', __('Colour'))
-        ->width('8%')
+        ->width('6%')
         ->format(function ($values) {
             return !empty($values['color'])? Format::colorSwatch($values['color']) : '';
         });
@@ -67,6 +67,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.p
     $table->addColumn('name', __('Name'));
 
     $table->addColumn('description', __('Description'));
+
+    $table->addColumn('public', __('Public'))
+        ->format(function ($values) {
+            return $values['public'] == 'Y' 
+                ? Format::tag(__('Yes'), 'success')
+                : Format::tag(__('No'), 'dull');
+        });
+
+    $table->addColumn('viewable', __('Viewable'))
+        ->notSortable()
+        ->format(function ($values) {
+            $viewable = [];
+            if ($values['public'] == 'Y') return __('All');
+            if ($values['viewableParticipants'] == 'Y') $viewable[] = __('Participants');
+            if ($values['viewableStaff'] == 'Y') $viewable[] = __('Staff');
+            if ($values['viewableStudents'] == 'Y') $viewable[] = __('Students');
+            if ($values['viewableParents'] == 'Y') $viewable[] = __('Parents');
+            if ($values['viewableOther'] == 'Y') $viewable[] = __('Other');
+
+            return !empty($viewable) 
+                ? implode(', ', $viewable)
+                : Format::tag(__('No'), 'dull');
+        });
+
+    $table->addColumn('editors', __('Editors'))
+        ->format(function ($values) {
+            if ($values['editableStaff'] == 'Y') return __('All Staff');
+
+            return $values['editors'];
+        });
 
     $table->addActionColumn()
         ->addParam('gibbonCalendarID')

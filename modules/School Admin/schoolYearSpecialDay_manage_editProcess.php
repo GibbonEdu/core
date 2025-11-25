@@ -63,6 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         'gibbonYearGroupIDList'  => $_POST['gibbonYearGroupIDList'] ?? '',
         'gibbonFormGroupIDList'  => $_POST['gibbonFormGroupIDList'] ?? '',
         'cancelActivities'       => $_POST['cancelActivities'] ?? 'N',
+        'cancelBookings'         => $_POST['cancelBookings'] ?? 'N',
+        'cancelClasses'          => $_POST['cancelClasses'] ?? 'N',
+        'cancelDuty'             => $_POST['cancelDuty'] ?? 'N',
     ];
 
     if (!empty($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenM'])) {

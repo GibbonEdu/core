@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                         $notificationSender->sendNotifications();
 
-                        header('Location: ' . $URL->withReturn('success0')->withFragment($replyTo));
+                        header('Location: ' . $URL->withReturn('success0')->withFragment($replyTo ?? ''));
                     }
                 }
             }

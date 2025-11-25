@@ -398,7 +398,6 @@ class Form implements OutputableInterface
     public function getRowsByHeading()
     {
         $group = array_reduce($this->getRows(), function ($group, $row) {
-            if ($row->getElementCount() == 0) return $group;
             $group[$row->getHeading()][] = $row;
             return $group;
         }, []);
@@ -730,12 +729,10 @@ class Form implements OutputableInterface
      */
     public function getOutput()
     {
-        if ($this->hasMeta()) {
-            if (count($this->sections) <= 2) $this->resetSections();
+        if (count($this->sections) <= 2) $this->resetSections();
 
-            if ($this->sections > 2) {
-                $this->getMeta()->addSectionList($this->getSections());
-            }
+        if ($this->hasMeta() && $this->sections > 2) {
+            $this->getMeta()->addSectionList($this->getSections());
         }
 
         return $this->renderer->renderForm($this);

@@ -58,10 +58,15 @@ class StaffDutyLayer extends AbstractTimetableLayer
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
         $staffDutyList = $this->staffDutyPersonGateway->selectDutyByPerson($context->get('gibbonPersonID'))->fetchAll();
+        $specialDays = $context->get('specialDays', []);
 
         foreach ($dateRange as $dateObject) {
             $date = $dateObject->format('Y-m-d');
             $weekday = $dateObject->format('l');
+            $specialDay = $specialDays[$date] ?? [];
+
+            if (!empty($specialDay['cancelDuty']) && $specialDay['cancelDuty'] == 'Y') continue;
+
             foreach ($staffDutyList as $duty) {
                 // Add duty that matched the weekday and the school is open
                 if (empty($duty['dayOfWeek']) || $duty['dayOfWeek'] != $weekday) continue;

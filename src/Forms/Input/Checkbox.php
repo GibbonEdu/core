@@ -249,6 +249,7 @@ class Checkbox extends Input
         }
 
         return Component::render(Checkbox::class, $this->getAttributeArray() + [
+            'outerClass'     => $this->getOuterClass(),
             'identifier'     => $identifier,
             'options'        => $options,
             'totalOptions'   => $this->getOptionCount(),

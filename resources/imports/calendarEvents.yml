@@ -1,0 +1,108 @@
+details:
+    type: calendarEvents
+    category: Events
+    name: Calendar Events
+    table: gibbonCalendarEvent
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Calendar
+    action: Manage Calendars_all
+fields:
+    gibbonCalendarID: 
+        name: "Calendar Name"
+        desc: "Calendar name. Must already exist."
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonCalendar, key: gibbonCalendarID, field: name  }
+    gibbonCalendarEventTypeID: 
+        name: "Event Type"
+        desc: "Event Type. Must already exist."
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonCalendarEventType, key: gibbonCalendarEventTypeID, field: type  }
+    name:
+        name: "Event Name"
+        desc: ""
+        args: { filter: string, required: true }
+    description:
+        name: "Event Description"
+        desc: ""
+        args: { filter: string }
+    status:
+        name: "Status"
+        desc: ""
+        value: "Confirmed"
+        args: { filter: string, hidden: true }
+    allDay:
+        name: "All Day"
+        desc: ""
+        args: { filter: yesno, custom: true, required: true }
+    dateStart: 
+        name: "Start Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date, required: true }
+    dateEnd: 
+        name: "End Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date, required: true }
+    timeStart:
+        name: "Start Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, custom: true }
+    timeEnd:
+        name: "End Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, custom: true }
+    locationType:
+        name: "Location Type"
+        desc: "Internal or External"
+        args: { filter: string, required: true }
+    locationDetail:
+        name: "Location Details"
+        desc: ""
+        args: { filter: string }
+    locationURL:
+        name: "Location URL"
+        desc: ""
+        args: { filter: string }
+    gibbonSpaceID: 
+        name: "School Location"
+        desc: "If Location is internal, specify which facility in school is used"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name  }
+    gibbonPersonIDOrganiser:
+        name: "Staff Responsible"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true, custom: true}
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
+    timestampCreated:
+        name: "Created On"
+        desc: ""
+        args: { filter: timestamp, custom: true }
+    gibbonPersonIDCreated:
+        name: "Created By"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, custom: true}
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }
+tables:
+    gibbonCalendarEvent: 
+        primaryKey:
+            gibbonCalendarEventID
+        uniqueKeys:
+            - [ gibbonCalendarID, gibbonCalendarEventTypeID, name ]
+        fields:
+            - gibbonCalendarID
+            - gibbonCalendarEventTypeID
+            - name
+            - description
+            - status
+            - allDay
+            - dateStart
+            - dateEnd
+            - timeStart
+            - timeEnd
+            - locationType
+            - locationDetail
+            - locationURL
+            - gibbonSpaceID
+            - gibbonPersonIDOrganiser
+            - timestampCreated
+            - gibbonPersonIDCreated

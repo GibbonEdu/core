@@ -33,6 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
     //Proceed!
     $page->breadcrumbs->add(__('Security & Privacy Settings'));
 
+    $settingGateway = $container->get(SettingGateway::class);
+
     $form = Form::create('privacySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/privacySettingsProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -40,9 +42,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
 
     // SECURITY SETTINGS
     $form->addRow()->addHeading('Security Settings', __('Security Settings'));
-    $form->addRow()->addSubheading(__('Password Policy'));
 
-    $settingGateway = $container->get(SettingGateway::class);
+    $setting = $settingGateway->getSettingByScope('System', 'sessionDuration', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(1200)->maxLength(50)->required();
+
+    $setting = $settingGateway->getSettingByScope('System', 'allowableIframeSources', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
+
+    $form->addRow()->addHeading('Password Policy', __('Password Policy'));
 
     $setting = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength', true);
     $row = $form->addRow();
@@ -64,23 +75,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $form->addRow()->addSubheading(__('Miscellaneous'));
-
-    $setting = $settingGateway->getSettingByScope('System', 'sessionDuration', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(1200)->maxLength(50)->required();
-
-    $setting = $settingGateway->getSettingByScope('System', 'allowableIframeSources', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
-
-    $setting = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->maxLength(60)->setValue($setting['value']);
-
     // PRIVACY
     $form->addRow()->addHeading('Privacy Settings', __('Privacy Settings'));
 
@@ -99,6 +93,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
     $col = $form->addRow()->addColumn();
         $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $col->addEditor($setting['name'], $guid)->setRows(15)->setValue($setting['value']);
+
+    // MISC
+    $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
+
+    $setting = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->maxLength(60)->setValue($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();

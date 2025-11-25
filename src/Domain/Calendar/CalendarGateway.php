@@ -48,7 +48,8 @@ class CalendarGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCalendarID', 'name', 'description', 'color'
+                'gibbonCalendarID', 'name', 'description', 'color', 'public', 'viewableStaff', 'viewableStudents', 'viewableParents', 'viewableOther', 'viewableParticipants', 'editableStaff',
+                '(SELECT COUNT(*) FROM gibbonCalendarEditor WHERE gibbonCalendarID=gibbonCalendar.gibbonCalendarID) as editors'
             ])
             ->where('gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -56,14 +57,42 @@ class CalendarGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-     public function selectCalendarsBySchoolYear($gibbonSchoolYearID)
+    public function selectActiveCalendarsBySchoolYear($gibbonSchoolYearID)
     {
-        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonCalendar.gibbonCalendarID as value, gibbonCalendar.name 
-                FROM gibbonCalendar
-                WHERE gibbonCalendar.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonCalendar.sequenceNumber, gibbonCalendar.name";
+        $select = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonCalendar.gibbonCalendarID', 'gibbonCalendar.name', 'gibbonCalendar.description', 'gibbonCalendar.color', 'gibbonCalendar.sequenceNumber', 'gibbonCalendar.public', 'gibbonCalendar.viewableStaff', 'gibbonCalendar.viewableStudents', 'gibbonCalendar.viewableParents', 'gibbonCalendar.viewableOther', 'gibbonCalendar.viewableParticipants', 'gibbonCalendar.editableStaff'
+            ])
+            ->where('gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->orderBy(['gibbonCalendar.sequenceNumber', 'gibbonCalendar.name']);
 
-        return $this->db()->select($sql, $data);
+        return $this->runSelect($select);
+    }
+
+    public function selectEditableCalendarsByPerson($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $select = $this
+            ->newSelect()
+            ->cols([
+                'gibbonCalendar.gibbonCalendarID as value', 'gibbonCalendar.name'
+            ])
+            ->from($this->getTableName())
+            
+            ->where('gibbonCalendar.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->orderBy(['gibbonCalendar.sequenceNumber', 'gibbonCalendar.name']);
+
+        if (!empty($gibbonPersonID)) {
+            $select
+                ->leftJoin('gibbonCalendarEditor', 'gibbonCalendarEditor.gibbonCalendarID=gibbonCalendar.gibbonCalendarID AND gibbonCalendarEditor.gibbonPersonID=:gibbonPersonID')
+                ->leftJoin('gibbonStaff', 'gibbonStaff.gibbonPersonID=:gibbonPersonID')
+                ->where('( (gibbonCalendar.editableStaff="Y" AND gibbonStaff.gibbonStaffID IS NOT NULL) OR (gibbonCalendarEditor.gibbonCalendarEditorID IS NOT NULL) )')
+                ->bindValue('gibbonPersonID', $gibbonPersonID);
+        }
+
+        return $this->runSelect($select);
     }
 }

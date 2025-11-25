@@ -167,6 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_editProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
                 $form->setFactory(PlannerFormFactory::create($pdo));
+                $form->addMeta()->addDefaultContent('editProcess');
 
                 $form->addHiddenValue('address', $session->get('address'));
                 
@@ -383,11 +384,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $form->addRow()->addHeading('Access', __('Access'));
 
                 $row = $form->addRow();
-                    $row->addLabel('viewableStudents', __('Viewable to Students'));
+                    $row->addLabel('viewableStudents', __('Viewable by Students'));
                     $row->addYesNo('viewableStudents')->required();
 
                 $row = $form->addRow();
-                    $row->addLabel('viewableParents', __('Viewable to Parents'));
+                    $row->addLabel('viewableParents', __('Viewable by Parents'));
                     $row->addYesNo('viewableParents')->required();
 
                 $row = $form->addRow()->addClass('advanced');

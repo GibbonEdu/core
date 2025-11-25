@@ -207,24 +207,7 @@ class AdmissionsFields extends AbstractFieldGroup
                     $tableRow->addDate('schoolDate'.$i)->setSize(10);
                 }
                 break;
-            
-            case 'howDidYouHear':
-                $howDidYouHear = $this->settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
-                $howDidYouHearList = array_map('trim', explode(',', $howDidYouHear));
-
-                $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
-
-                if (empty($howDidYouHear)) {
-                    $row->addTextField('howDidYouHear')->required()->maxLength(30);
-                } else {
-                    $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->selected($default);
-                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('');
-
-                    $row = $form->addRow()->addClass('tellUsMore');
-                        $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
-                        $row->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
-                }
-                
+              
         }
 
         return $row;

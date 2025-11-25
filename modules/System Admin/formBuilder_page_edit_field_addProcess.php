@@ -25,7 +25,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['label' => 'HTML', 'description' => 'HTML', 'options' => 'RAW']);
 
 $urlParams = [
     'gibbonFormID'     => $_POST['gibbonFormID'] ?? '',
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     } else {
         $sequenceNumber = $formFieldGateway->getNextSequenceNumberByPage($urlParams['gibbonFormPageID']) ?? 1;
     }
-    
+
     foreach ($fields as $fieldGroup => $fieldGroupFields) {
         $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroup);
 
@@ -79,9 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         }
 
         foreach ($fieldGroupFields as $fieldName) {
-
             if ($fieldName == 'generic') {
-                $fieldName = lcfirst(preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $_POST['label'] ?? $fieldName));
+                $fieldName = strtolower(preg_replace('/[\~\`\!\@\%\#\$%\^&\*\(\)\+\=\{\}\[\]\|\:;"\'\\<>\,\.\?\/ ]/', '', $_POST['label'] ?? $fieldName));
             } else {
                 $field = $fieldGroupClass->getField($fieldName);
                 if (empty($field)) {
@@ -90,16 +89,39 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 }
 
                 if (!empty($field['type']) && ($field['type'] == 'heading' || $field['type'] == 'subheading')) {
-                    $fieldName = $field['type'].preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $_POST['label'] ?? $fieldName);
+                    $fieldName = $field['type'].preg_replace('/[\~\`\!\@\%\#\$%\^&\*\(\)\+\=\{\}\[\]\|\:;"\'\\<>\,\.\?\/ ]/', '', $_POST['label'] ?? $fieldName);
                     $fieldGroupName = 'LayoutHeadings';
                 }
             }
 
-            $existing = $formFieldGateway->getFieldInForm($urlParams['gibbonFormID'], $fieldName);
-            if (!empty($existing) || $fieldName == $formBuilder->getDetail('honeyPot')) {
-                $duplicateFail[] = $fieldName;
+            if ($fieldName == $formBuilder->getDetail('honeyPot')) {
                 $partialFail = true;
                 continue;
+            }
+
+            // Check for fields that already exist with the same field name
+            $existing = $formFieldGateway->getFieldInForm($urlParams['gibbonFormID'], $fieldName);
+            if (!empty($existing)) {
+                // Allow certain fields to increment the field name if more than one field has been added.
+                if (in_array($fieldGroup, ['GenericFields', 'LayoutText', 'LayoutHeadings', ])) {
+                    $hasCounter = is_int(substr($fieldName, -1, 1));
+                    $countStart = $hasCounter ? substr($fieldName, -1, 1) : 1;
+
+                    $fieldNameBase = $hasCounter ? substr($fieldName, 0, -1) : $fieldName;
+                    for ($i = $countStart+1; $i <= 9; $i++) {
+                        $fieldName = $fieldNameBase.$i;
+                        $existing = $formFieldGateway->getFieldInForm($urlParams['gibbonFormID'], $fieldName);
+                        if (empty($existing)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (!empty($existing)) {
+                    $duplicateFail[] = $fieldName;
+                    $partialFail = true;
+                    continue;
+                }
             }
 
             $data = [

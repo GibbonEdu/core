@@ -83,13 +83,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
     $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
+    $gibbonPersonID = $session->get('gibbonPersonID');
     if ($highestAction == 'New Absence_any') {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Person'));
             $row->addSelectStaff('gibbonPersonID')->addClass('coverageField')->placeholder()->required()->selected($gibbonPersonID);
     } elseif ($highestAction == 'New Absence_mine') {
-        $gibbonPersonID = $session->get('gibbonPersonID');
+        
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     }
 

@@ -387,6 +387,35 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+    public function selectFutureAttendanceLogsByDate($dateStart, $dateEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID as groupBy, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason, gibbonAttendanceLogPerson.context, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.direction, gibbonAttendanceLogPerson.comment
+            FROM gibbonAttendanceLogPerson 
+            WHERE gibbonAttendanceLogPerson.date >= :dateStart
+            AND gibbonAttendanceLogPerson.date <= :dateEnd
+            AND gibbonAttendanceLogPerson.context = 'Future'
+            ORDER BY gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.gibbonPersonID";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectFutureAttendanceLogsByDateAndTime($dateStart, $dateEnd, $timeStart, $timeEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd];
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID as groupBy, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason, gibbonAttendanceLogPerson.context, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.direction, gibbonAttendanceLogPerson.comment, gibbonTTColumnRow.name
+            FROM gibbonAttendanceLogPerson 
+            JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonAttendanceLogPerson.gibbonTTDayRowClassID)
+            JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+            WHERE gibbonAttendanceLogPerson.context = 'Class'
+            AND (gibbonAttendanceLogPerson.date >= :dateStart
+            AND gibbonAttendanceLogPerson.date <= :dateEnd)
+            AND ((gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart < :timeEnd) OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart < gibbonTTColumnRow.timeEnd))
+            ORDER BY gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.date";
+
+        return $this->db()->select($sql, $data);
+    }
 
     function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
     {

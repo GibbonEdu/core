@@ -27,6 +27,7 @@ use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
+use Gibbon\UI\Timetable\Palette;
 
 /**
  * Timetable UI
@@ -66,102 +67,11 @@ class Structure
     protected $timestampEnd;
 
     protected $pixelRatio = 1.2;
+    protected $palette;
 
-    protected $colors = [
-        'gray' => [
-            'background'   => 'bg-gray-200/90',
-            'text'         => 'text-gray-700',
-            'textLight'    => 'text-gray-400',
-            'textHover'    => 'hover:text-gray-800',
-            'outline'      => 'outline-gray-500',
-            'outlineLight' => 'outline-gray-500/50',
-            'outlineHover' => 'hover:outline-gray-600',
-        ],
-        'blue' => [
-            'background'   => 'bg-blue-200',
-            'text'         => 'text-blue-900',
-            'textLight'    => 'text-blue-400',
-            'textHover'    => 'hover:text-blue-950',
-            'outline'      => 'outline-blue-700',
-            'outlineLight' => 'outline-blue-700/50',
-            'outlineHover' => 'hover:outline-blue-600',
-        ],
-        'cyan' => [
-            'background'   => 'bg-cyan-200',
-            'text'         => 'text-cyan-800',
-            'textLight'    => 'text-cyan-400',
-            'textHover'    => 'hover:text-cyan-950',
-            'outline'      => 'outline-cyan-700',
-            'outlineLight' => 'outline-cyan-700/50',
-            'outlineHover' => 'hover:outline-cyan-600',
-        ],
-        'pink' => [
-            'background'   => 'bg-pink-300',
-            'textLight'    => 'text-pink-400',
-            'text'         => 'text-pink-800',
-            'textHover'    => 'hover:text-pink-950',
-            'outline'      => 'outline-pink-800',
-            'outlineLight' => 'outline-pink-800/50',
-            'outlineHover' => 'hover:outline-pink-600',
-        ],
-        'green' => [
-            'background'   => 'bg-green-200',
-            'textLight'    => 'text-green-400',
-            'text'         => 'text-green-800',
-            'textHover'    => 'hover:text-green-950',
-            'outline'      => 'outline-green-700',
-            'outlineLight' => 'outline-green-700/50',
-            'outlineHover' => 'hover:outline-green-600',
-        ],
-        'teal' => [
-            'background'   => 'bg-teal-200',
-            'text'         => 'text-teal-800',
-            'textLight'    => 'bg-teal-400',
-            'textHover'    => 'hover:text-teal-950',
-            'outline'      => 'outline-teal-700',
-            'outlineLight' => 'outline-teal-700/50',
-            'outlineHover' => 'hover:outline-teal-600',
-        ],
-        'yellow' => [
-            'background'   => 'bg-yellow-200',
-            'text'         => 'text-yellow-800',
-            'textLight'    => 'text-yellow-400',
-            'textHover'    => 'hover:text-yellow-950',
-            'outline'      => 'outline-yellow-700',
-            'outlineLight' => 'outline-yellow-700/50',
-            'outlineHover' => 'hover:outline-yellow-600',
-        ],
-        'orange' => [
-            'background'   => 'bg-orange-200',
-            'text'         => 'text-orange-800',
-            'textLight'    => 'text-orange-400',
-            'textHover'    => 'hover:text-orange-900',
-            'outline'      => 'outline-orange-700',
-            'outlineLight' => 'outline-orange-700/50',
-            'outlineHover' => 'hover:outline-orange-600',
-        ],
-        'purple' => [
-            'background'   => 'bg-purple-200',
-            'text'         => 'text-purple-800',
-            'textLight'    => 'text-purple-400',
-            'textHover'    => 'hover:text-purple-950',
-            'outline'      => 'outline-purple-700',
-            'outlineLight' => 'outline-purple-700/50',
-            'outlineHover' => 'hover:outline-purple-600',
-        ],
-        'red' => [
-            'background'   => 'bg-red-200',
-            'text'         => 'text-red-800',
-            'textLight'    => 'text-red-400',
-            'textHover'    => 'hover:text-red-950',
-            'outline'      => 'outline-red-700',
-            'outlineLight' => 'outline-red-700/50',
-            'outlineHover' => 'hover:outline-red-600',
-        ],
-    ];
-
-    public function __construct(DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, SchoolYearTermGateway $schoolYearTermGateway, TimetableGateway $timetableGateway, TimetableDayGateway $timetableDayGateway, TimetableColumnGateway $timetableColumnGateway)
+    public function __construct(Palette $palette, DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, SchoolYearTermGateway $schoolYearTermGateway, TimetableGateway $timetableGateway, TimetableDayGateway $timetableDayGateway, TimetableColumnGateway $timetableColumnGateway)
     {
+        $this->palette = $palette;
         $this->daysOfWeekGateway = $daysOfWeekGateway;
         $this->specialDayGateway = $specialDayGateway;
         $this->schoolYearTermGateway = $schoolYearTermGateway;
@@ -276,6 +186,11 @@ class Structure
         return $this->weekdays;
     }
 
+    public function getSpecialDays()
+    {
+        return $this->specialDays;
+    }
+
     public function getSpecialDay(string $date)
     {
         return $this->specialDays[$date] ?? [];
@@ -293,7 +208,7 @@ class Structure
 
     public function getColors($color = null)
     {
-        return $this->colors[$this->color ?? $color] ?? $this->colors['gray'];
+        return $this->palette->getPalette($color);
     }
 
     public function daysInWeek()
@@ -462,5 +377,24 @@ class Structure
             new \DateInterval('P1D'),
             (new \DateTime(date('Y-m-d H:i:s', $this->timestampEnd)))
         );
+    }
+
+    protected function adjustColor($hexCode, $adjustPercent) {
+        $hexCode = ltrim($hexCode, '#');
+    
+        if (strlen($hexCode) == 3) {
+            $hexCode = $hexCode[0] . $hexCode[0] . $hexCode[1] . $hexCode[1] . $hexCode[2] . $hexCode[2];
+        }
+    
+        $hexCode = array_map('hexdec', str_split($hexCode, 2));
+    
+        foreach ($hexCode as & $color) {
+            $adjustableLimit = $adjustPercent < 0 ? $color : 255 - $color;
+            $adjustAmount = ceil($adjustableLimit * $adjustPercent);
+    
+            $color = str_pad(dechex($color + $adjustAmount), 2, '0', STR_PAD_LEFT);
+        }
+    
+        return '#' . implode($hexCode);
     }
 }

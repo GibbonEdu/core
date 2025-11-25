@@ -128,7 +128,7 @@ class Alert
         }
 
         if ($params['wrap'] == true) {
-            $output = "<div class='w-20 lg:w-24 h-6 -mt-2 text-left py-1 px-0 mx-auto'><div ".$params['attributes'].">{$output}</div></div>";
+            $output = "<div class='w-20 lg:w-24 flex overflow-visible whitespace-nowrap h-6 -mt-2 text-left py-1 px-0 mx-auto' ".$params['attributes'].">{$output}</div>";
         }
         
         return $output;

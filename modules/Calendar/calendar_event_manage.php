@@ -25,6 +25,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
+use Gibbon\UI\Timetable\Palette;
+use Gibbon\Support\Facades\Access;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_manage.php') == false) {
     // Access denied
@@ -33,22 +35,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     // Proceed!
     $page->breadcrumbs->add(__('Manage Events'));
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    if (empty($highestAction)) {
-        $page->addError(__('You do not have access to this action.'));
-        return;
-    }
-
     $search = $_REQUEST['search'] ?? '';
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
+    $calendarGateway = $container->get(CalendarGateway::class);
+    $palette = $container->get(Palette::class);
 
     $criteria = $calendarEventGateway->newQueryCriteria()
         ->searchBy($calendarEventGateway->getSearchableColumns(), $search)
-        ->sortBy(['dateStart', 'eventName', 'status'])
+        ->sortBy(['dateStart', 'timeStart'])
         ->fromPOST();
 
     // SEARCH
@@ -63,13 +61,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($session, 'Clear Filters', ['view', 'sidebar']);
+        $row->addSearchSubmit($session, __('Clear Filters'), ['view', 'sidebar']);
 
     echo $form->getOutput();
 
     // Query units
-    $gibbonPersonID = $highestAction == 'Manage Events_my' ? $session->get('gibbonPersonID') : null;
-    $events = $calendarEventGateway->queryEvents($criteria, $gibbonPersonID);
+    $canManageAllEvents = Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all');
+    $gibbonPersonIDEditor = $canManageAllEvents ? null : $session->get('gibbonPersonID');
+
+    $events = $calendarEventGateway->queryEvents($criteria, $gibbonPersonIDEditor);
+    $calendars = $calendarGateway->selectEditableCalendarsByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonIDEditor)->fetchKeyPair();
 
     // FORM
     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/calendar_event_manageProcessBulk.php');
@@ -85,15 +86,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     // DATA TABLE
     $table = $form->addRow()->addDataTable('events', $criteria)->withData($events);
 
-    $table->setTitle($highestAction == 'Manage Events_all' ? __('All Events') : __('My Events'));
+    $table->setTitle($canManageAllEvents ? __('All Events') : __('My Events'));
 
-    $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/Calendar/calendar_event_add.php')
-        ->displayLabel();
+    if (!empty($calendars)) {
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Calendar/calendar_event_add.php')
+            ->displayLabel();
+    }
 
     $table->modifyRows(function($values, $row) {
+        if ($values['status'] == 'Tentative') $row->addClass('message');
         if ($values['status'] == 'Cancelled') $row->addClass('dull');
-        if ($values['status'] == 'Tentative') $row->addClass('error');
         return $row;
     });
 
@@ -106,54 +109,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     $table->addMetaData('bulkActions', $col);
 
     // COLUMNS
-    if (!empty($values['description'])) {
-        $table->addExpandableColumn('description')
-            ->format(function ($values) {
-                if (!empty($values['description'])) {
-                    return formatExpandableSection(__('Description'), $values['description']);
-                }
-                return '';
-            });
-    }
+    $table->addColumn('eventName', __('Event'))
+        ->context('primary')
+        ->format(function ($values) use ($palette) {
+            $contrast = $palette->getHexContrastColor($values['color']);
+            $border = $palette->adjustHexColor($values['color'], -0.1);
+            $text = $contrast == 'white'
+                ? $palette->adjustHexColor($values['color'], 0.7)
+                : $palette->adjustHexColor($values['color'], -0.7);
 
-    $table->addColumn('eventName', __('Event Name'))
-        ->context('primary');
+            $style = "background-color: {$values['color']}; border-color: {$border}; color: {$text} !important;";
 
-    $table->addColumn('status', __('Status'));
-
-    $table->addColumn('calendarName', __('Calendar'))->context('primary');
-
-    $table->addColumn('type', __('Event Type'))->context('primary');
-
-    $table->addColumn('dates', __('Dates'))
+            return "<span class='inline-block rounded py-1 px-2 text-xs font-medium font-sans border' style='{$style}' title='{$values['calendarName']}'>{$values['eventName']}</span>";
+        })
         ->formatDetails(function ($values) {
-            return Format::dateRangeReadable($values['dateStart'], $values['dateEnd']);
+            return $values['status'] != 'Confirmed'
+                ? Format::small($values['status'])
+                : '';
         });
 
-    $table->addColumn('locationType', __('Location Type'));
+    $table->addColumn('dateStart', __('When'))
+        ->format(function ($values) {
+            return Format::dateRangeReadable($values['dateStart'], $values['dateEnd']);
+        })
+        ->formatDetails(function ($values) {
+            return $values['allDay'] != 'Y'
+                ? Format::small(Format::timeRange($values['timeStart'], $values['timeEnd']))
+                : Format::small(__('All Day'));
+        });
+
+    $table->addColumn('locationType', __('Location'))
+        ->format(function($values)  {
+            if ($values['locationType'] == 'Internal') {
+                return $values['space'] ?? ''; 
+            }
+
+            return !empty($values['locationURL'])
+                ? Format::link($values['locationURL'], $values['locationDetail'])
+                : $values['locationDetail'] ?? '';
+        });
+
+    $table->addColumn('participants', __('Participants'));
 
     $table->addColumn('organiser', __('Organiser'))
-        ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]))
+        ->format(Format::using('nameLinked', ['gibbonPersonIDOrganiser', 'title', 'preferredName', 'surname', 'Staff', false, true]))
         ->sortable('surname');
 
      // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonCalendarEventID')
-        ->format(function ($row, $actions) {
+        ->format(function ($values, $actions) use ($canManageAllEvents) {
             $actions->addAction('view', __('View'))
                 ->setURL('/modules/Calendar/calendar_event_view.php');
 
-            $actions->addAction('enrolment', __('Enrolment'))
-                ->setURL('/modules/Calendar/calendar_event_enrolment.php')
-                ->setIcon('attendance');
+            if ($values['editor'] == 'Y' || $canManageAllEvents) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Calendar/calendar_event_edit.php');
+            
+                $actions->addAction('participants', __('Participants'))
+                    ->setURL('/modules/Calendar/calendar_event_participants.php')
+                    ->setIcon('users');
 
-            $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Calendar/calendar_event_edit.php');
-                
-            $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Calendar/calendar_event_delete.php');
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Calendar/calendar_event_delete.php');
+            }
         });
 
     $table->addCheckboxColumn('gibbonCalendarEventID');
+
     echo $form->getOutput();
 }

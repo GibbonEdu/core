@@ -1,0 +1,52 @@
+details:
+  type: studentFutureAbsence
+  category: Attendance
+  name: Future Absence
+  table: gibbonAttendanceLogPerson
+  modes: { insert: true, update: false }
+access:
+  module: Attendance
+  action: Set Future Absence
+primaryKey: gibbonAttendanceLogPersonID
+table:
+  gibbonPersonID:
+    name: "Student"
+    desc: "Username, student ID, or Email (if unique)"
+    args: { filter: nospaces, required: true }
+    relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email|studentID }
+  date:
+    name: "Date"
+    desc: "Must be unique."
+    args: { filter: date, required: true }
+  type:
+    name: "Attendance Status"
+    desc: ""
+    args: { filter: string, required: true }
+  gibbonAttendanceCodeID:
+    name: "Attendance Code"
+    desc: ""
+    args: { filter: string, required: true, hidden: true, linked: type }
+    relationship: { table: gibbonAttendanceCode, key: gibbonAttendanceCodeID, field: name }
+  reason:
+    name: "Reason"
+    desc: ""
+    args: { filter: string }
+  comment:
+    name: "Comment"
+    desc: "Optional"
+    args: { filter: string }
+  context:
+    name: "Context"
+    desc: ""
+    value: "Future"
+    args: { filter: string, hidden: true }
+  direction:
+    name: "Direction"
+    desc: ""
+    value: "Out"
+    args: { filter: string, hidden: true }
+  gibbonPersonIDTaker:
+    name: "Recorded By"
+    desc: "Username or Email (if unique)"
+    args: { filter: nospaces, required: true }
+    relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }

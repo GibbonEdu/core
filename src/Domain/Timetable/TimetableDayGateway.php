@@ -172,6 +172,25 @@ class TimetableDayGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectTTDayRowClassExceptionsByPersonAndRange($gibbonPersonID, $dateStart, $dateEnd) {
+        $data =['gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT gibbonTTDayDate.date, gibbonTTDayRowClassExceptionID, gibbonPerson.gibbonPersonID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDay.gibbonTTID, gibbonTTDay.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTDayRowClass.gibbonTTColumnRowID
+                FROM gibbonTTDayRowClassException
+                JOIN gibbonPerson ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonTTDayRowClassException.gibbonTTDayRowClassID)
+                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
+                WHERE gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID
+                AND gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
+                ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+
     public function getTTDayByID($gibbonTTDayID)
     {
         $data = array('gibbonTTDayID' => $gibbonTTDayID);

@@ -67,57 +67,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_a
         $row->addLabel('description', __('Description'));
         $row->addTextField('description')->maxLength(255);
         
-
-    // DISPLAY
-    $form->addRow()->addHeading(__('Display'));
-
     $row = $form->addRow();
         $row->addLabel('color', __('Colour'));
-        $row->addColor('color');
-    
-    $col = $form->addRow()->addColumn();
-        $col->addLabel('summary', __('Summary'));
-        $col->addEditor('summary', $guid)->showMedia(true);
-
+        $row->addColor('color')->setPalette('background');
+        
     // ACCESS
     $form->addRow()->addHeading(__('Access'));
 
+    $form->toggleVisibilityByClass('viewable')->onRadio('public')->when('N');
     $row = $form->addRow();
         $row->addLabel('public', __('Public'))->description(__('If yes, members of the public can see events on this calendar without logging in.'));
         $row->addYesNo('public')->selected('N');
 
-    $row = $form->addRow();
-        $row->addLabel('viewableStaff', __('Viewable to Staff'));
+    $row = $form->addRow()->addClass('viewable');
+        $row->addLabel('viewableParticipants', __('Viewable by Participants'))->description(__('If yes, participants can always see events they have been added to, regardless of other permissions.'));
+        $row->addYesNo('viewableParticipants')->selected('Y');
+
+    $row = $form->addRow()->addClass('viewable');
+        $row->addLabel('viewableStaff', __('Viewable by Staff'));
         $row->addYesNo('viewableStaff')->selected('N');
 
-    $row = $form->addRow();
-        $row->addLabel('viewableStudents', __('Viewable to Students'));
+    $row = $form->addRow()->addClass('viewable');
+        $row->addLabel('viewableStudents', __('Viewable by Students'));
         $row->addYesNo('viewableStudents')->selected('N');
 
-    $row = $form->addRow();
-        $row->addLabel('viewableParents', __('Viewable to Parents'));
+    $row = $form->addRow()->addClass('viewable');
+        $row->addLabel('viewableParents', __('Viewable by Parents'));
         $row->addYesNo('viewableParents')->selected('N');
 
-    $row = $form->addRow();
-        $row->addLabel('viewableOther', __('Viewable to Other'));
+    $row = $form->addRow()->addClass('viewable');
+        $row->addLabel('viewableOther', __('Viewable by Other'));
         $row->addYesNo('viewableOther')->selected('N');
 
 
     // EDITORS
     $form->addRow()->addHeading(__('Editors'));
 
+    $row = $form->addRow();
+        $row->addLabel('editableStaff', __('All Staff'))->description(__('Staff can add and edit their own events. They cannot edit other events without editor access.'));
+        $row->addYesNo('editableStaff')->selected('N');
+    
+
     // Custom Block Template
     $addBlockButton = $form->getFactory()->createButton(__m('Add'))->addClass('addBlock');
 
     $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
-    $row = $blockTemplate->addRow()->addClass('w-full flex justify-between items-center mt-1 ml-2');
+    $row = $blockTemplate->addRow()->addClass('w-full max-w-lg flex justify-between items-center mt-1 ml-2');
         $row->addSelectStaff('gibbonPersonID')->photo(false)->setClass('flex-1 mr-1')->required()->placeholder();
         $row->addCheckbox('editAllEvents')->setLabelClass('w-32')->alignLeft()->setValue('Y')->description(__('Edit All Events?'))
             ->append("<input type='hidden' id='gibbonCalendarEditorID' name='gibbonCalendarEditorID' value=''/>");
 
     // Custom Blocks
-    $row = $form->addRow();
-    $customBlocks = $row->addCustomBlocks('editors', $session)
+    $col = $form->addRow()->addColumn();
+    $col->addLabel('editors', __('Editors'));
+    $customBlocks = $col->addCustomBlocks('editors', $session)
         ->fromTemplate($blockTemplate)
         ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click'))
         ->placeholder(__('Add a person...'))

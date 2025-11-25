@@ -139,7 +139,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->displayLabel();
 
     $table->modifyRows(function ($activity, $row) {
-        if ($activity['active'] == 'N') $row->addClass('error');
+        if ($activity['registration'] == 'N') return $row->addClass('warning');
+        if ($activity['active'] == 'N') return $row->addClass('error');
         return $row;
     });
 
@@ -175,6 +176,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $table->addColumn('yearGroups', __('Years'))
         ->format(function($activity) use ($yearGroups) {
+            if ($activity['registration'] == 'N') return Format::tag(__('Registration').': '.__('Off'), 'warning whitespace-nowrap');
+            if ($activity['active'] == 'N') return Format::tag(__('Inactive'), 'error');
+
             return ($activity['yearGroupCount'] >= count($yearGroups)/2)? '<i>'.__('All').'</i>' : $activity['yearGroups'];
         });
 

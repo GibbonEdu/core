@@ -12,13 +12,16 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set color = structure.getColors(item.color ?? layer.getColor) %}
 {% set duration = item.allDay ? 30 : structure.timeDifference(item.timeStart, item.timeEnd) %}
 
-<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline hover:ring {{ isActive ? 'relative outline-3 ' ~ color.outline : 'outline-1 ' ~ color.outlineLight }} {{ color.outlineHover }} {{ color.background }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} {{ format == 'print' and not layer.isActive ? 'hidden' }}" style="height: {{ structure.minutesToPixels(duration) -1 }}px;" :class="{'hidden': !{{ layer.getID }} }"
+<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline hover:ring {{ isActive ? 'relative outline-3 ' ~ color.outline : 'outline-1 ' ~ color.outlineLight }} {{ color.outlineHover }} {{ color.background }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} {{ format == 'print' and not layer.isActive ? 'hidden' }}" style="height: {{ structure.minutesToPixels(duration) -1 }}px; {{ color.style }}" :class="{'hidden': !{{ layer.getID }} 
+ {% if not item.hasStatus('myEvent') %} || ({{ layer.getID }} && onlyMyEvents && '{{ layer.type }}' == 'calendar') {% endif %} 
+}" {{ not layer.isActive ? ' x-cloak ' : '' }} 
+
 x-tooltip.white="
     <div class='w-72 flex flex-col py-2 gap-1 overflow-hidden'>
         <div class='px-2 pb-1'>
             <div class='flex justify-between leading-normal'>
                 <span class='font-semibold text-sm'>{{ item.label ?? item.title }}</span>
-                <span class='tag ml-2 text-xxs h-5  border-0 outline outline-1 {{ color.outlineLight }} {{ color.text }} {{ color.background }}'>{{ item.type }}</span>
+                <span class='tag ml-2 text-xxs h-5 border-0 outline outline-1 {{ color.outlineLight }} {{ color.text }} {{ color.background }}' style='{{ color.style }} {{ color.textStyle }}'>{{ item.type }}</span>
             </div>
             <div class='font-normal mt-1'>{{ item.description ?? item.subtitle }}</div>
         </div>
@@ -52,9 +55,9 @@ x-tooltip.white="
     {% endif %}
 
     
-    <a href="{{ item.link }}" class="flex flex-col items-center cursor-pointer h-full px-2 {{ duration >= 40 ? 'justify-start' : 'justify-center' }} {{ color.text }} {{ color.textHover }}">
+    <a href="{{ item.link }}" class="flex flex-col items-center cursor-pointer h-full px-2 {{ duration >= 40 ? 'justify-start' : 'justify-center' }} {{ color.text }} {{ color.textHover }} overflow-y-hidden">
         {% if duration >= 15 %}
-        <div class="inline-block font-bold {{ duration > 30 and item.title|length <= 20 ? 'text-sm' : 'text-xs mt-1' }}">
+        <div class="inline-block font-bold {{ duration > 30 and item.title|length <= 20 ? 'text-sm' : 'text-xs mt-1' }}" style="{{ color.textStyle }}">
             {{ duration >= 40 ? item.title|slice(0,40) : item.title|slice(0,22) }}
         </div>
         {% endif %}
@@ -109,7 +112,7 @@ x-tooltip.white="
             </a>
         {% endif %}
 
-        {% if item.hasStatus('overlap') and duration >= 40 %}
+        {% if item.hasStatus('overlap') and duration >= 40 and not item.secondaryAction %}
         <div href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1" title="{{ __('Click & drag to see overlapping items') }}">
             {{  icon('outline', 'layers', 'size-5 text-gray-500 hover:text-gray-600') }}
         </div>

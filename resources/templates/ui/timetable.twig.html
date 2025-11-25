@@ -10,7 +10,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% set now = structure.getToday.format('H:i:s') %}
 
-<div id="timetable" name='tt' x-data='{ ttDate: "", ttID: "{{ gibbonTTID }}", ttRefresh: false, ttPopup: false, ttActiveDay: "{{ structure.getActiveDay.nameShort }}", showCurrentTime: {{ options.showCurrentTime is same as ('0') ? 'false' : 'true' }} }' @ttpopup.window="ttPopup = false">
+<div id="timetable" name='tt' x-data='{ ttDate: "", ttID: "{{ gibbonTTID }}", ttRefresh: false, ttPopup: false, ttActiveDay: "{{ structure.getActiveDay.nameShort }}", showCurrentTime: {{ options.showCurrentTime is same as ('0') ? 'false' : 'true' }}, onlyMyEvents: {{ gibbonPersonID and options.onlyMyEvents ? 'true' : 'false' }} }' @ttpopup.window="ttPopup = false">
 
     <div x-data="{{ layersToggle }}" class="relative" >
 

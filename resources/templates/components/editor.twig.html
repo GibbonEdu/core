@@ -170,8 +170,12 @@ $(document).ready(function(){
             "#000000", "Black", 
             "#ffffff", "White", 
         ],
+        setup: (editor) => {
+            editor.on('submit', (e) => {
+                if (editor.editMode == 'html') editor.setContent(document.getElementById(editor.id).value);
+            });
+        },
         init_instance_callback: (editor) => {
-
             // Enable quick save from within tinymce
             editor.addShortcut("meta+s", "Custom Ctrl+S", function (e) {
                 editor.formElement.dispatchEvent(new Event('quicksave'));
@@ -187,10 +191,12 @@ $(document).ready(function(){
             var htmlButton = document.getElementById(editor.id + 'edButtonHTML');
             var resourceSliders = document.getElementsByClassName(editor.id + 'resourceSlider');
             var mediaInner = document.getElementById(editor.id + 'mediaInner');
+            editor.editMode = 'visual';
 
             previewButton.classList.add('active');
 
             htmlButton.addEventListener('click', function (event) {
+                editor.editMode = 'html';
                 editor.hide();
                 htmlButton.classList.add('active');
                 previewButton.classList.remove('active');
@@ -199,6 +205,7 @@ $(document).ready(function(){
             });
 
             previewButton.addEventListener('click', function (event) {
+                editor.editMode = 'visual';
                 editor.show();
                 htmlButton.classList.remove('active');
                 previewButton.classList.add('active');
@@ -210,7 +217,7 @@ $(document).ready(function(){
                 setTimeout(function () {
                     editor.on('keydown', function () {
                         tinymce.triggerSave();
-                        gibbonFormSubmitQuiet($('#'+editor.formElement.id), editor.targetElm.getAttribute('data-autosave'))
+                        gibbonFormSubmitQuiet(document.getElementById(editor.formElement.id), editor.targetElm.getAttribute('data-autosave'))
                     })
                 }, 100);
             }

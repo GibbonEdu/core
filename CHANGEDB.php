@@ -1026,12 +1026,27 @@ UPDATE `gibbonSetting` SET value=REPLACE(value,',Pastoral,Pastoral,',',Pastoral,
 ALTER TABLE `gibbonPersonMedical` CHANGE `longTermMedication` `longTermMedication` ENUM('','Y','N') NOT NULL DEFAULT 'N';end
 SELECT NULL;end
 SELECT NULL;end
-INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar'), 'Manage Events_my', 0, 'Administration', 'Allows users to create ands edit thier own calendar events.', '', 'calendar_event_manage.php, calendar_event_add.php, calendar_event_edit.php, calendar_event_view.php, calendar_event_enrolment.php, calendar_event_enrolment_add.php', 'calendar_event_manage.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N');end
-INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Calendar' AND gibbonAction.name='Manage Events_my'));end
-INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (002, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Calendar' AND gibbonAction.name='Manage Events_my'));end
+SELECT NULL;end
+SELECT NULL;end
+SELECT NULL;end
 INSERT INTO `gibbonLibraryType` (`name`, `active`, `fields`) VALUES ('Digital Publication', 'Y', '[{\"name\":\"URL Link\",\"description\":\"Paste the url link of the digital publication\",\"type\":\"Text\",\"options\":\"\",\"default\":\"\",\"required\":\"Y\"}]');end
 UPDATE `gibbonAction` SET URLList='calendar_manage.php,calendar_manage_addEdit.php,calendar_manage_delete.php,calendar_eventTypes_manage.php, calendar_eventTypes_manage_addEdit.php' WHERE name='Manage Calendars_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar');end
 UPDATE `gibbonAction` SET URLList='calendar_event_manage.php, calendar_event_add.php, calendar_event_edit.php, calendar_event_delete.php, calendar_event_view.php, calendar_event_enrolment.php, calendar_event_enrolment_add.php, calendar_event_enrolment_edit.php' WHERE (name='Manage Events_all' OR name='Manage Events_my') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar');end
 INSERT INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('ca_CA', 'Català - Catalonia', '30.0.00', 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
+UPDATE `gibbonAction` SET description='Allows users to create and edit thier own calendar events.' WHERE name='Manage Events_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar');end
+UPDATE `gibbonAction` SET URLList='calendar_event_manage.php, calendar_event_add.php, calendar_event_edit.php, calendar_event_delete.php, calendar_event_view.php, calendar_event_participants.php, calendar_event_participants_add.php, calendar_event_participants_edit.php, calendar_event_participants_delete.php' WHERE (name='Manage Events_all' OR name='Manage Events_my') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar');end
+ALTER TABLE `gibbonPerson` CHANGE `username` `username` VARCHAR(40) NULL DEFAULT NULL;end
+ALTER TABLE `gibbonCourse` CHANGE `nameShort` `nameShort` VARCHAR(16) NOT NULL;end
+ALTER TABLE `gibbonCourseClass` CHANGE `nameShort` `nameShort` VARCHAR(16) NOT NULL;end
+ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelDuty` ENUM('Y','N') DEFAULT 'N' NULL AFTER `cancelActivities`;end
+ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelBookings` ENUM('Y','N') DEFAULT 'N' NULL AFTER `cancelDuty`;end
+ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelClasses` ENUM('Y','N') DEFAULT 'N' NULL AFTER `cancelBookings`;end
+INSERT INTO `gibbonCalendarEventType` (`type`, `color`, `sequenceNumber`) VALUES ('School Event', '', 0), ('Meeting', '', 1);end
+ALTER TABLE `gibbonCalendar` ADD `editableStaff` ENUM('Y','N') DEFAULT 'N' NULL AFTER `viewableOther`;end
+ALTER TABLE `gibbonCalendar` ADD `viewableParticipants` ENUM('Y','N') DEFAULT 'N' NULL AFTER `viewableOther`;end
+UPDATE `gibbonAction` SET name='View Calendar' WHERE name='View Calendar_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar');end
+UPDATE `gibbonFormField` SET `fieldGroup`='Miscellaneous' WHERE `fieldGroup`='AdmissionsFields' AND `gibbonFormField`.`fieldName` = 'howDidYouHear';end
+UPDATE `gibbonFormField` SET `fieldGroup`='MiscellaneousFields' WHERE `fieldGroup`='Miscellaneous' AND `gibbonFormField`.`fieldName` = 'howDidYouHear';end
+ALTER TABLE `gibbonCalendarEventType` CHANGE `color` `color` VARCHAR(7) NULL, CHANGE `sequenceNumber` `sequenceNumber` INT(3) NOT NULL DEFAULT 0;end
 
 ";

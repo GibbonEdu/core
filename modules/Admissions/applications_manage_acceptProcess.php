@@ -39,6 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     header("Location: {$URL}");
 } else {
     // Proceed!
+    ini_set('memory_limit', '2048M');
+    ini_set('max_execution_time', 1800);
+    set_time_limit(1800);
+
     // Get the application form data
     $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
     if (empty($gibbonAdmissionsApplicationID) || empty($application)) {

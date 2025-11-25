@@ -111,11 +111,16 @@ class EnrolmentGenerator
         $category = $this->activityCategoryGateway->getByID($gibbonActivityCategoryID);
         $this->signUpChoices = $category['signUpChoices'] ?? 3;
 
+        $enrolmentsByPerson = array_reduce($this->enrolments, function ($group, $item) {
+            $group[$item['gibbonPersonID']] = $item; 
+            return $group;
+        }, []);
+        
         $choices = $this->activityChoiceGateway->selectChoicesByCategory($gibbonActivityCategoryID)->fetchGroupedUnique();
         $this->choices = [];
 
         foreach ($choices as $gibbonPersonID => $person) {
-            if (!empty($this->enrolments[$gibbonPersonID])) continue;
+            if (!empty($enrolmentsByPerson[$gibbonPersonID])) continue;
             
             for ($i = 1; $i <= $this->signUpChoices; $i++) {
                 $person["choice{$i}"] = str_pad($person["choice{$i}"] ?? '', 8, '0', STR_PAD_LEFT);
@@ -133,15 +138,16 @@ class EnrolmentGenerator
     public function generateGroups()
     {
         // Preload any existing enrolments
-        foreach ($this->enrolments as $gibbonPersonID => $person) {
+        foreach ($this->enrolments as $gibbonActivityStudentID => $person) {
             $person = $this->getAlertData($person);
             $person['enrolled'] = true;
 
-            $this->groups[$person['gibbonActivityID']][$gibbonPersonID] = $person;
+            $this->groups[$person['gibbonActivityID']][$person['gibbonPersonID']] = $person;
         }
 
         // Assign choices to groups until the groups fill up
         foreach ($this->choices as $gibbonPersonID => $person) {
+
             $person = $this->getAlertData($person);
             $enrolmentGroup = 0;
 

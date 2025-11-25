@@ -60,7 +60,7 @@ class Username extends TextField
      */
     protected function getElement()
     {
-        $this->maxLength(20)
+        $this->maxLength(40)
             ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF\u3040-\u309F\u3400-\u4DBF\u4E00-\u9FFF\u2B740–\u2B81F0-9_\-\.]*$/u, failureMessage: "'.__('Must be alphanumeric').'"');
 
         if (empty($this->unique)) {

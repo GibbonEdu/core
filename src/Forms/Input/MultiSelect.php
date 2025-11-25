@@ -64,9 +64,9 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             ->wrap('<div class="w-full">', '</div>');
 
         $this->addButton = $factory->createButton(__("Add"), '', $name . 'Add')->setIcon('add', 'text-green-600')
-            ->addClass("w-full sm:w-auto");
+            ->addClass("flex-1 sm:w-auto");
         $this->removeButton = $factory->createButton(__("Remove"), '', $name . 'Remove')->setIcon('cross', 'text-red-700')
-            ->addClass("w-full sm:w-auto");
+            ->addClass("flex-1 sm:w-auto");
 
         $this->searchBox = $factory->createTextField($name . "Search")
             ->placeholder(__("Search"))
@@ -180,7 +180,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
 
         $output .= '<div class="w-full md:flex-1 flex flex-col items-center gap-2 md:py-0 ">';
 
-            $output .= '<div class="flex w-full items-center justify-center gap-2 md:flex-col md:flex-row md:flex-wrap sm:gap-2">';
+            $output .= '<div class="flex w-full items-center justify-center gap-2 sm:flex-col md:flex-row md:flex-wrap sm:gap-2">';
                 $output .= $this->addButton->getOutput();
                 $output .= $this->removeButton->getOutput();
             $output .= '</div>';

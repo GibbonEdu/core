@@ -33,7 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/alertTypes_edit.php&gibbonAlertTypeID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/alertType_edit.php&gibbonAlertTypeID='.$_GET['editID'];
+        $page->return->setEditLink($editLink);
     }
     $page->return->setEditLink($editLink);
 

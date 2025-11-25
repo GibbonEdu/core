@@ -40,7 +40,7 @@ class PersonalCalendarLayer extends AbstractCalendarLayer
 
         $this->name = 'Personal Calendar';
         $this->color = 'cyan';
-        $this->type = 'optional';
+        $this->type = 'calendar';
         $this->order = 60;
     }
     
@@ -55,6 +55,10 @@ class PersonalCalendarLayer extends AbstractCalendarLayer
 
         if ($personalCalendarFeed = $this->session->get('calendarFeedPersonal', null)) {
             $this->loadEventsByCalendarFeed($personalCalendarFeed, $dateRange, 'cyan');
+        }
+
+        foreach ($this->getItems() as $item) {
+            $item->addStatus('myEvent');
         }
 
         $this->sortOverlappingEvents($dateRange);

@@ -65,19 +65,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_edi
         $row->addYesNo('readonly')->required()->selected('N');
 
     $row = $form->addRow();
-        $row->addLabel('viewableStaff', __('Viewable to Staff'));
+        $row->addLabel('viewableStaff', __('Viewable by Staff'));
         $row->addYesNo('viewableStaff')->required()->selected('N');
 
     $row = $form->addRow();
-        $row->addLabel('viewableStudents', __('Viewable to Students'));
+        $row->addLabel('viewableStudents', __('Viewable by Students'));
         $row->addYesNo('viewableStudents')->required()->selected('N');
 
     $row = $form->addRow();
-        $row->addLabel('viewableParents', __('Viewable to Parents'));
+        $row->addLabel('viewableParents', __('Viewable by Parents'));
         $row->addYesNo('viewableParents')->required()->selected('N');
 
     $row = $form->addRow();
-        $row->addLabel('viewableOther', __('Viewable to Other'));
+        $row->addLabel('viewableOther', __('Viewable by Other'));
         $row->addYesNo('viewableOther')->required()->selected('N');
 
     $row = $form->addRow();

@@ -42,7 +42,7 @@ class PlannerEntryGateway extends QueryableGateway
 
     public function queryPlannerByClass($criteria, $gibbonSchoolYearID, $gibbonPersonID, $gibbonCourseClassID, $viewingAs = 'Student')
     {
-        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'timeStart', 'timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'date'];
+        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonCourse.gibbonCourseID', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'timeStart', 'timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'date'];
 
         $query = $this
             ->newQuery()
@@ -93,7 +93,7 @@ class PlannerEntryGateway extends QueryableGateway
 
     public function queryPlannerByDate($criteria, $gibbonSchoolYearID, $gibbonPersonID, $date, $viewingAs = 'Student')
     {
-        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.summary', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'gibbonPlannerEntry.timeStart', 'gibbonPlannerEntry.timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'gibbonPlannerEntry.date'];
+        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.summary', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonCourse.gibbonCourseID', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'gibbonPlannerEntry.timeStart', 'gibbonPlannerEntry.timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'gibbonPlannerEntry.date'];
 
         $query = $this
             ->newQuery()
@@ -155,12 +155,14 @@ class PlannerEntryGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name AS period', 'gibbonTTDayRowClass.gibbonTTDayRowClassID', 'gibbonTTDayRowClass.gibbonCourseClassID', 'gibbonTTDayDate.gibbonTTDayDateID', 'gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.name as lesson', 'gibbonUnit.name as unit', 'gibbonSchoolYearTerm.nameShort as termName', 'gibbonSchoolYearTerm.firstDay', 'gibbonSchoolYearTerm.lastDay', 'gibbonSchoolYearSpecialDay.name as specialDay', "CONCAT(gibbonTTDayRowClass.gibbonTTDayRowClassID, '-', gibbonTTDayDate.gibbonTTDayDateID) as identifier", 'gibbonSpace.name as spaceName', 'GROUP_CONCAT(DISTINCT teacher.gibbonPersonID) AS teacherIDs'])
+            ->cols(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name AS period', 'gibbonTTDayRowClass.gibbonTTDayRowClassID', 'gibbonCourse.gibbonCourseID', 'gibbonTTDayRowClass.gibbonCourseClassID', 'gibbonTTDayDate.gibbonTTDayDateID', 'gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.name as lesson', 'gibbonUnit.name as unit', 'gibbonSchoolYearTerm.nameShort as termName', 'gibbonSchoolYearTerm.firstDay', 'gibbonSchoolYearTerm.lastDay', 'gibbonSchoolYearSpecialDay.name as specialDay', "CONCAT(gibbonTTDayRowClass.gibbonTTDayRowClassID, '-', gibbonTTDayDate.gibbonTTDayDateID) as identifier", 'gibbonSpace.name as spaceName', 'GROUP_CONCAT(DISTINCT teacher.gibbonPersonID) AS teacherIDs'])
             ->from('gibbonTTDayRowClass')
             ->innerJoin('gibbonTTColumnRow', 'gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID')
             ->innerJoin('gibbonTTColumn', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID')
             ->innerJoin('gibbonTTDayDate', 'gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID')
             ->innerJoin('gibbonSchoolYearTerm', 'gibbonTTDayDate.date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay')
+            ->innerJoin('gibbonCourseClass', 'gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
+            ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
             ->leftJoin('gibbonCourseClassPerson as teacher', 'gibbonTTDayRowClass.gibbonCourseClassID=teacher.gibbonCourseClassID AND (teacher.role = "Teacher" OR teacher.role="Assistant")')
             ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID')
             ->leftJoin('gibbonSchoolYearSpecialDay', "gibbonSchoolYearSpecialDay.date=gibbonTTDayDate.date and gibbonSchoolYearSpecialDay.type='School Closure'")

@@ -40,7 +40,7 @@ class SchoolCalendarLayer extends AbstractCalendarLayer
 
         $this->name = 'School Calendar';
         $this->color = 'green';
-        $this->type = 'optional';
+        $this->type = 'calendar';
         $this->order = 0;
     }
 

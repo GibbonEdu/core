@@ -48,3 +48,10 @@ $guid = {{ guid|raw }};
  * Must be positive integer. 1 means no caching.
  */
 $caching = 10;
+
+/**
+ * Enables the System Admin > Impersonate User action, for testing and development.
+ * This option is off by default. Access can be granted by adding usernames to 
+ * the list below. Allowed users must also have administrator access.
+ */
+$allowImpersonateUser = [];

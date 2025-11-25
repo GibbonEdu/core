@@ -135,10 +135,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         $col->addSelect('schoolCloseH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'))->selected(substr($schoolClose, 0, 2));
         $col->addSelect('schoolCloseM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'))->selected(substr($schoolClose, 3, 2));
 
-    $form->toggleVisibilityByClass('cancelActivities')->onSelect('type')->when(['Timing Change', 'Off Timetable']);
-    $row = $form->addRow()->addClass('cancelActivities');
+    $form->toggleVisibilityByClass('cancelTT')->onSelect('type')->when(['Timing Change', 'Off Timetable']);
+
+    $row = $form->addRow()->addClass('cancelTT');
+        $row->addLabel('cancelClasses', __('Cancel {event}?', ['event' => __('Classes')]))->description(__('Should all {event} scheduled for this day no longer appear on the timetable?', ['event' => __('Classes')]));
+        $row->addYesNo('cancelClasses')->required()->selected('N');
+
+    $row = $form->addRow()->addClass('cancelTT');
         $row->addLabel('cancelActivities', __('Cancel Activities?'))->description(__('Should activities scheduled for this day no longer appear on the timetable?'));
         $row->addYesNo('cancelActivities')->required()->selected('N');
+
+    $row = $form->addRow()->addClass('cancelTT');
+        $row->addLabel('cancelDuty', __('Cancel {event}?', ['event' => __('Staff Duty')]))->description(__('Should all {event} scheduled for this day no longer appear on the timetable?', ['event' => __('Staff Duty')]));
+        $row->addYesNo('cancelDuty')->required()->selected('N');
+        
+    $row = $form->addRow()->addClass('cancelTT');
+        $row->addLabel('cancelBookings', __('Cancel {event}?', ['event' => __('Bookings')]))->description(__('Should all {event} scheduled for this day no longer appear on the timetable?', ['event' => __('Bookings')]));
+        $row->addYesNo('cancelBookings')->required()->selected('N');
 
     $row = $form->addRow();
         $row->addFooter();

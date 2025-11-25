@@ -45,6 +45,8 @@ interface TimetableLayerInterface
 
     public function setActive(bool $active);
 
+    public function setOrder(int $order);
+
     public function createItem(string $date, bool $allDay = false) : TimetableItem;
 
     public function addItem(TimetableItem $item);

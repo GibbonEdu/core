@@ -60,6 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $gibbonPersonIDList = is_array($gibbonPersonIDList)
             ? array_unique($gibbonPersonIDList)
             : explode(",", $gibbonPersonIDList);
+    } else {
+        $gibbonPersonIDList = [];
     }
 
     $target = $_GET['target'] ?? '';
@@ -67,6 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
     $absenceType = $_GET['absenceType'] ?? 'full';
     $date = $_GET['date'] ?? '';
+    $dateStart = $_GET['dateStart'] ?? '';
+    $dateEnd = $_GET['dateEnd'] ?? '';
     $timeStart = $_GET['timeStart'] ?? '';
     $timeEnd = $_GET['timeEnd'] ?? '';
 
@@ -137,6 +141,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $studentList = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'));
     $studentList = array_reduce($studentList->toArray(), function ($group, $student) use ($gibbonPersonIDList) {
+        if (empty($gibbonPersonIDList)) return $group;
+
         $list = in_array($student['gibbonPersonID'], $gibbonPersonIDList) ? 'destination' : 'source';
         $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup'];
         $group['form'][$student['gibbonPersonID']] = $student['formGroup'];
@@ -146,13 +152,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $col = $form->addRow()->addClass($canTakeAdHocAttendance ? 'targetSelect' : 'multiple')->addColumn();
         $col->addLabel('gibbonPersonIDList', __('Students'));
         $select = $col->addMultiSelect('gibbonPersonIDList')->isRequired();
-        $select->addSortableAttribute(__('Form Group'), $studentList['form']);
+        $select->addSortableAttribute(__('Form Group'), $studentList['form'] ?? '');
         $select->source()->fromArray($studentList['students']['source'] ?? []);
         $select->destination()->fromArray($studentList['students']['destination'] ?? []);
 
     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php')) {
         $availableAbsenceTypes = [
-            'full' => __('Full Day'),
+            'full'    => __('Full Day'),
             'partial' => __('Partial'),
         ];
 
@@ -383,11 +389,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         if ($absenceType == 'full') {
             $row = $form->addRow();
                 $row->addLabel('dateStart', __('Start Date'));
-                $row->addDate('dateStart')->required()->minimum(date('Y-m-d'));
+                $row->addDate('dateStart')->required()->minimum(date('Y-m-d'))->setValue($dateStart);
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));
-                $row->addDate('dateEnd')->minimum(date('Y-m-d'));
+                $row->addDate('dateEnd')->minimum(date('Y-m-d'))->setValue($dateEnd);
         } else {
             $form->addHiddenValue('dateStart', $date);
             $form->addHiddenValue('dateEnd', $date);

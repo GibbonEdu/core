@@ -91,6 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $values = $formData->getData();
     $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
 
+    // Add page returns and javascript
+    $page->return->addReturns($formBuilder->getReturns());
+    
     // Prefill application form values
     if ($incomplete && !empty($account)) {
         $formPrefill = $container->get(FormPrefill::class)

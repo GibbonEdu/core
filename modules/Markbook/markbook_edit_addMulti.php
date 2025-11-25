@@ -239,11 +239,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $form->addRow()->addHeading('Access', __('Access'));
 
                 $row = $form->addRow();
-                    $row->addLabel('viewableStudents', __('Viewable to Students'));
+                    $row->addLabel('viewableStudents', __('Viewable by Students'));
                     $row->addYesNo('viewableStudents')->required();
 
                 $row = $form->addRow();
-                    $row->addLabel('viewableParents', __('Viewable to Parents'));
+                    $row->addLabel('viewableParents', __('Viewable by Parents'));
                     $row->addYesNo('viewableParents')->required();
 
                 $row = $form->addRow();

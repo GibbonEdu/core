@@ -66,6 +66,9 @@ trait FormatResolver
     /**
      * Returns a callable function that can be used to format a bulk array of data.
      * 
+     * Note: this method only accepts array keys, not values themselves. Values are extracted
+     * from the row data that is passed into the resulting closure.
+     * 
      * The callable returned takes a single array of data and returns the formatted string.
      *
      * @param string $method

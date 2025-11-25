@@ -97,7 +97,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% set sectionLoop = loop %}
 
             {% if useSections %}
-            <section x-data="{sectionOpen: {{ section.getOpen|default(0) }} }" class="relative {{ (rows|first).class|split(' ')|first }} mb-6 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'pb-4 border-t-4 focus-within:border-t-blue-500 transition' }} {{ section.getID == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? '  ' : ''}}" >
+            <section id="{{ section.getID }}" x-data="{sectionOpen: {{ section.getOpen|default(0) }} }" class="relative {{ (rows|first).class|split(' ')|first }} mb-6 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'pb-4 border-t-4 focus-within:border-t-blue-500 transition' }} {{ section.getID == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? '  ' : ''}}" >
 
                 {% if not section.getOpen %}
                 <div @click="sectionOpen = !sectionOpen" class="text-gray-500 hover:text-blue-500">
@@ -160,9 +160,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {% set class = '' %}
                     {% endif %}
 
-                    {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
+                    {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Column') %}
                     {% set class = hasClass ? class ~ ' ' ~  element.getClass : class %}
-                    <div class="{{ class }} {{ 'flex-' not in class and section != 'submit' ? 'flex-1' }}" {{ element.getAttributeString('x-show')|raw }}>
+                    <div class="{{ class }} {{ 'flex-' not in class and section != 'submit' ? element.getOuterClass|default('flex-1') }}" {{ element.getAttributeString('x-show')|raw }}>
 
                         {% if useSaveWarning and element.getAttribute('id') == 'Submit' %}
                             <span x-cloak x-show="changed" class="tag message mr-4 whitespace-nowrap">{{ __('Unsaved Changes') }}</span>
