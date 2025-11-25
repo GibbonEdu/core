@@ -610,7 +610,7 @@ class DatabaseFormFactory extends FormFactory
     {
         $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
 
-        return $this->createSelect($name)->fromQuery($this->pdo, $sql)->placeholder();
+        return $this->createSearchSelect($name)->fromQuery($this->pdo, $sql)->placeholder();
     }
 
     public function createSelectGradeScaleGrade($name, $gibbonScaleID, $params = array())
@@ -670,7 +670,7 @@ class DatabaseFormFactory extends FormFactory
     {
         $sql = "SELECT gibbonSchoolYear.name as schoolYear, gibbonReportingCycleID as value, gibbonReportingCycle.name FROM gibbonReportingCycle JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber DESC, gibbonReportingCycle.sequenceNumber";
 
-        return $this->createSelect($name)->fromQuery($this->pdo, $sql, [], 'schoolYear')->placeholder();
+        return $this->createSearchSelect($name)->fromQuery($this->pdo, $sql, [], 'schoolYear')->placeholder();
     }
 
     public function createPhoneNumber($name)
@@ -753,12 +753,12 @@ class DatabaseFormFactory extends FormFactory
         if ($params['byType'] == true) {
             $sql = "SELECT gibbonSpaceID as value, name, type as groupBy FROM gibbonSpace ORDER BY type, name";
             $results = $this->pdo->select($sql);
-            return $this->createSelect($name)->fromResults($results, 'groupBy')->placeholder();
+            return $this->createSearchSelect($name)->fromResults($results, 'groupBy')->placeholder();
 
         } else {
             $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
             $results = $this->pdo->select($sql);
-            return $this->createSelect($name)->fromResults($results)->placeholder();
+            return $this->createSearchSelect($name)->fromResults($results)->placeholder();
         }
     }
 

@@ -35,7 +35,7 @@ class Radio extends Input
     use MultipleOptionsTrait;
 
     protected $inline = false;
-    protected $align = 'left';
+    protected $align = 'right';
 
     public function __construct($name)
     {

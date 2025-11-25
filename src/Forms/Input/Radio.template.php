@@ -7,17 +7,16 @@
 
     <?php if ($inline) { ?>
         <input type="radio" value="<?= $radioValue; ?>" id="<?= $itemId; ?>" <?= $attributes; ?> <?= $checked ? 'checked' : ''; ?> >
-        <label for="<?= $itemId; ?>" class="flex-1 text-left font-medium"><?= $radioLabel; ?></label>
+        <label for="<?= $itemId; ?>" class="flex-1 text-left text-sm"><?= $radioLabel; ?></label>
     <?php } elseif ($align == 'right') { ?>
-        
         <div class="flex gap-2 items-center text-right">
-        <label class="leading-compact flex-1 font-medium" for="<?= $itemId; ?>"><?= $radioLabel; ?></label>
+        <label class="leading-compact flex-1 text-sm" for="<?= $itemId; ?>"><?= $radioLabel; ?></label>
         <input type="radio" value="<?= $radioValue; ?>" id="<?= $itemId; ?>" <?= $attributes; ?> <?= $checked ? 'checked' : ''; ?> >
         </div>
     <?php } else { ?>
         <div class="flex gap-2 items-center text-left">
         <input type="radio" value="<?= $radioValue; ?>" id="<?= $itemId; ?>" <?= $attributes; ?> <?= $checked ? 'checked' : ''; ?> >
-        <label class="leading-compact flex-1 font-medium" for="<?= $itemId; ?>"><?= $radioLabel; ?></label>
+        <label class="leading-compact flex-1 text-sm" for="<?= $itemId; ?>"><?= $radioLabel; ?></label>
         </div>
     <?php } ?>
 

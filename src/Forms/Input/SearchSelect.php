@@ -48,7 +48,7 @@ class SearchSelect extends Select
                 $optGroup = is_array($items) ? $items : [$key => $items];
 
                 foreach ($optGroup as $value => $label) {
-                    $options[$value] = [
+                    $options[$optLabel][$value] = [
                         'value' => $value,
                         'label' => $label,
                     ];
@@ -56,7 +56,6 @@ class SearchSelect extends Select
             }
         }
 
-        // TODO: support opt groups (as a dropdown?)
         // TODO: support select multiple?
         // TODO: validation
 
@@ -64,7 +63,7 @@ class SearchSelect extends Select
             'outerClass'    => $this->getOuterClass(),
             'groupClass'    => $this->getGroupClass(),
             'placeholder'   => $this->placeholder,
-            'options'       => array_values($options),
+            'options'       => $options,
             'selected'      => $this->selected,
             'selectedLabel' => $options[$this->selected]['label'] ?? '',
         ]);

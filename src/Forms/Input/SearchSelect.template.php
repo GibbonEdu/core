@@ -7,8 +7,24 @@
         selectedValue: '<?= $selected ?>',
         selectedOption: null,
         getOptions() {
-            Array.from(this.$refs.hiddenInput.options).forEach((option) => { if (option.value != '')this.allOptions.push(option) });
-            this.selectedOption = this.allOptions.find(element => element.value == this.selectedValue);
+            Array.from(this.$refs.hiddenInput.querySelectorAll('optgroup')).forEach((optGroup) => { 
+                    var group = {
+                        label: optGroup.label,
+                        options: [],
+                    };
+
+                    Array.from(optGroup.children)
+                        .filter((option) => option.value != '')
+                        .forEach((option) => { 
+                            option.group = optGroup.label;
+                            group.options.push(option);
+                        });
+
+                    this.selectedOption = group.options.find(element => element.value == this.selectedValue);
+                    this.allOptions.push(group);
+                }
+            );
+        
             this.options = this.allOptions;
         },
         setSelectedOption(option) {
@@ -30,9 +46,15 @@
         },
         getFilteredOptions(query) {
             var search = query.toLowerCase().split(' ');
-            this.options = this.allOptions.filter((option) =>
-                search.every(v => option.label.toLowerCase().includes(v))
-            );
+
+            this.options = this.allOptions
+                .filter((element) => 
+                    element.options.some((option) => search.every(v => option.label.toLowerCase().includes(v)) ))
+                .map(element => {
+                    return Object.assign({}, element, {options : element.options.filter((option) => search.every(v => option.label.toLowerCase().includes(v)))});
+
+                }); 
+            
             if (this.options.length === 0) {
                 this.$refs.noResultsMessage.classList.remove('hidden')
             } else {
@@ -74,8 +96,15 @@
         <!-- Hidden Input To Grab The Selected Value  -->
         <select class="hidden invisible" <?= $attributes; ?> x-ref="hiddenInput">
             <option value=""></option>
-            <?php foreach ($options as $option)  { ?>
-                <option value="<?= $option['value'] ?>" <?= $option['value'] == $selected? 'selected' : '' ?>><?= $option['label'] ?></option>
+            <?php foreach ($options as $group => $optionList)  { ?>
+                <optgroup label="<?= $group ?>">
+
+                <?php foreach ($optionList as $option)  { ?>
+                <option value="<?= $option['value'] ?>" <?= $option['value'] == $selected? 'selected' : '' ?> ><?= $option['label'] ?></option>
+                <?php } ?>
+
+                </optgroup>
+
             <?php } ?>
         </select>
         
@@ -91,22 +120,40 @@
             </div>
 
             <!-- Options  -->
-            <ul class="flex max-h-52 flex-col overflow-y-auto m-0 p-1 border border-t-0 rounded-b-md">
-                <li class="hidden px-3 py-2 text-sm text-on-surface dark:text-on-surface-dark" x-ref="noResultsMessage">
+            <ul class="list-none flex max-h-52 flex-col overflow-y-auto m-0 p-1 border border-t-0 rounded-b-md">
+                <li class="hidden px-4 py-2 text-sm text-on-surface dark:text-on-surface-dark" x-ref="noResultsMessage">
                     <span><?= __('No results') ?></span>
                 </li>
-                <template x-for="(item, index) in options" x-bind:key="item.value">
-                    <li class="combobox-option inline-flex justify-between rounded px-3 py-1.5 text-sm text-gray-700 hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="selectedOption == item ? 'bg-gray-300 text-gray-900 hover:text-white' : ''">
-                        <!-- Label  -->
-                        <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label"></span>
-                        <!-- Screen reader 'selected' indicator  -->
-                        <span class="sr-only" x-text="selectedOption == item ? 'selected' : null"></span>
-                        <!-- Checkmark  -->
-                        <svg x-cloak x-show="selectedOption == item" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" class="size-4" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5">
-                        </svg>
-                    </li>
+
+                <template x-for="(group, groupIndex) in options" x-bind:key="group.label">
+
+                    <ul class="list-none flex flex-col m-0 p-1">
+                        <template x-if="group.label != ''">
+                            <li x-text="group.label" class="px-3 py-1.5 text-sm text-gray-700 font-semibold"></li>
+                        </template>
+
+                        <template x-for="(item, index) in group.options" x-bind:key="item.value">
+
+                            <li class="combobox-option inline-flex justify-between rounded px-3 py-1.5 text-sm text-gray-700 hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
+
+                                <!-- Label  -->
+                                <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label"></span>
+
+                                <!-- Screen reader 'selected' indicator  -->
+                                <span class="sr-only" x-text="selectedOption == item ? 'selected' : null"></span>
+
+                                <!-- Checkmark  -->
+                                <svg x-cloak x-show="selectedOption == item" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" class="size-4" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5">
+                                </svg>
+                            </li>
+
+                        </template>
+
+                    </ul>
+
                 </template>
+
             </ul>
         </div>
  
