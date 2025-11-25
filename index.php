@@ -355,6 +355,7 @@ $page->scripts->addMultiple([
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
+    'alpineSort'     => 'lib/htmx/alpine.sort.min.js',
     'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
     'alpineValidate' => 'lib/htmx/alpine.validate.min.js',
     'alpine'         => 'lib/htmx/alpine.min.js',

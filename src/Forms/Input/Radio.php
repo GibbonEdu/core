@@ -108,6 +108,23 @@ class Radio extends Input
     }
 
     /**
+     * Gets the internal options collection.
+     * @return  array
+     */
+    public function getOptions()
+    {
+        if (!empty($this->options) && is_array($this->options)) {
+            // Select the first option by default for required Radio elements with no checked value set
+            if ($this->getRequired() && is_null($this->getValue())) {
+                $firstOption = key($this->options);
+                $this->checked($firstOption);
+            }
+        }
+
+        return $this->options;
+    }
+
+    /**
      * Return true if the passed value matches the current radio element value.
      * @param   mixed  $value
      * @return  bool
@@ -123,14 +140,6 @@ class Radio extends Input
      */
     protected function getElement()
     {
-        if (!empty($this->getOptions()) && is_array($this->getOptions())) {
-            // Select the first option by default for required Radio elements with no checked value set
-            if ($this->getRequired() && is_null($this->getValue())) {
-                $firstOption = key($this->getOptions());
-                $this->checked($firstOption);
-            }
-        }
-
         return Component::render(Radio::class, $this->getAttributeArray() + [
             'options'      => $this->getOptions(),
             'totalOptions' => $this->getOptionCount(),

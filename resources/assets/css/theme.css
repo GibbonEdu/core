@@ -396,6 +396,10 @@ input[type="color"]::-moz-color-swatch {
     @apply border-gray-400;
 }
 
+/* Alpine Sortable */
+.sortable-ghost {
+    opacity: .4 !important;
+}
 
 /*
  --------------------------------------------------------------------------

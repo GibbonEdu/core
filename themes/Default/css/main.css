@@ -787,9 +787,8 @@ table.smallIntBorder td.noPadding {
 }
 
 .customBlocks .sortHandle {
-    width: 2px;
+    width: 7px;
     height: 64px;
-    margin: 5px;
     border-color: #c7dae9;
     border-style: dotted;
     border-width: 0px 3px 0px 3px;

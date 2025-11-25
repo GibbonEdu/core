@@ -245,7 +245,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
 
         $message = $failureMessage ?? $message;
 
-        if (!empty($element->validation) || !empty($validations)) {
+        if (!empty($validations)) {
             $validations = !empty($validations)? '.'.implode('.', array_unique($validations)) : '';
             $element->setAttribute('x-validate' . $validations, $expression);
             $element->setAttribute('data-error-msg', $message);
