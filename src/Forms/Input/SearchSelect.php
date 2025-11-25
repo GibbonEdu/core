@@ -22,12 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\View\Component;
+use Gibbon\Forms\Input\Select;
 
 /**
  * SearchSelect (Combobox)
  *
- * @version v30
- * @since   v30
+ * @version v31
+ * @since   v31
  */
 class SearchSelect extends Select
 {
@@ -51,21 +52,25 @@ class SearchSelect extends Select
                     $options[$optLabel][$value] = [
                         'value' => $value,
                         'label' => $label,
+                        'selected' => $this->isOptionSelected($value) ? 'selected' : '',
+                        'class' => !empty($this->chainedToValues[$value]) ? $this->chainedToValues[$value] : '',
                     ];
                 }
             }
         }
 
-        // TODO: support select multiple?
-        // TODO: validation
+        $multiple = !empty($this->getAttribute('multiple'));
+        $selected = is_array($this->selected)? ($this->selected[0] ?? '') : $this->selected;
 
-        return Component::render(SearchSelect::class, $this->getAttributeArray() + [
+        return Component::render($multiple ? Select::class : SearchSelect::class, $this->getAttributeArray() + [
             'outerClass'    => $this->getOuterClass(),
             'groupClass'    => $this->getGroupClass(),
             'placeholder'   => $this->placeholder,
+            'chainedToID'   => $this->chainedToID,
             'options'       => $options,
-            'selected'      => $this->selected,
-            'selectedLabel' => $options[$this->selected]['label'] ?? '',
+            'selected'      => $selected,
+            'selectedLabel' => $options[$selected]['label'] ?? '',
+            'validation'    => '',
         ]);
     }
 }

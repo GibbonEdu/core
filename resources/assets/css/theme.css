@@ -396,6 +396,7 @@ input[type="color"]::-moz-color-swatch {
     @apply border-gray-400;
 }
 
+
 /*
  --------------------------------------------------------------------------
   TinyMCE
@@ -473,14 +474,16 @@ textarea + .error-msg {
     @apply top-auto bottom-0 mb-1 ml-2;
 }
 
-*[aria-invalid="true"] {
+*[aria-invalid="true"],
+div[data-error] .inner-input {
     @apply text-red-700 hover:text-red-700;
 }
 
 input[aria-invalid="true"],
 select[aria-invalid="true"],
 textarea[aria-invalid="true"],
-textarea[aria-invalid="true"] + .tox-tinymce {
+textarea[aria-invalid="true"] + .tox-tinymce,
+div[data-error] .inner-input {
     @apply border !border-red-700 hover:!border-red-700;
 }
 
