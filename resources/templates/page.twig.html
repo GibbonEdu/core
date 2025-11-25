@@ -14,23 +14,25 @@ all stylesheets and scripts with a 'head' context.
 <div class="w-full flex flex-between mb-4">
     {% if page.breadcrumbs %}
     <nav aria-label="breadcrumb" class="flex-1 pt-6">
-        <ol class="mb-0 mx-0 text-xs text-blue-700">
+        <ol class="mb-0 mx-0 text-xsm flex items-center">
             {% for title, src in page.breadcrumbs %}
-                {% if loop.last %}
-                    <li aria-current="page" class="list-none inline ml-0 trailEnd">{{ title }}</li>
-                {% elseif loop.revindex > 5 and loop.index != 1 %}
-                    <li class="list-none inline ml-0 ">
-                        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" hx-indicator="#loadingIndicator" class="text-blue-700 underline" href="{{ src }}">...
 
-                        </a> > 
-                    </li>
-                {% else %}
                     <li class="list-none inline ml-0 ">
-                        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" hx-indicator="#loadingIndicator" class="text-blue-700 underline" href="{{ src }}">
-                            {{ title }}
-                        </a> > 
+                        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" hx-indicator="#loadingIndicator" class="text-gray-600 hover:text-gray-800 no-underline hover:cursor-pointer" href="{{ src }}">
+                            {% if loop.index == 1 %}
+                                {{ icon('basic', 'home', 'block size-4 text-gray-500 hover:text-gray-800') }}
+                            {% elseif loop.revindex > 4 %}
+                                <span title="{{ title }}">...</span>
+                            {% else %}
+                                {{ title }}
+                            {% endif %}
+                        </a> 
                     </li>
-                {% endif %}
+
+                    {% if not loop.last %}
+                    <li class="list-none inline ml-0 px-2 ">{{ icon('basic', 'chevron-right', 'block size-4 text-gray-500') }}</li>
+                    {% endif %}
+
             {% endfor %}
         </ol>
     </nav>
