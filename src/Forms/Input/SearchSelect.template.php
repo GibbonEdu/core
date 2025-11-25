@@ -95,7 +95,7 @@
 
         <!-- Hidden Input To Grab The Selected Value  -->
         <select class="hidden invisible" <?= $attributes; ?> x-ref="hiddenInput">
-            <option value=""></option>
+            
             <?php foreach ($options as $group => $optionList)  { ?>
                 <optgroup label="<?= $group ?>">
 
@@ -106,6 +106,8 @@
                 </optgroup>
 
             <?php } ?>
+
+            <option value=""></option>
         </select>
         
         <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full min-w-52 overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.100ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
@@ -120,7 +122,7 @@
             </div>
 
             <!-- Options  -->
-            <ul class="list-none flex max-h-52 flex-col overflow-y-auto m-0 p-1 border border-t-0 rounded-b-md">
+            <ul class="list-none flex max-h-60 flex-col overflow-y-auto m-0 p-1 border border-t-0 rounded-b-md">
                 <li class="hidden px-4 py-2 text-sm text-on-surface dark:text-on-surface-dark" x-ref="noResultsMessage">
                     <span><?= __('No results') ?></span>
                 </li>

@@ -103,7 +103,7 @@
             </div>
 
             <!-- Options  -->
-            <ul class="person-select flex max-h-52 flex-col overflow-y-auto m-0 p-1 border border-t-0 rounded-b-md">
+            <ul class="person-select flex max-h-60 flex-col overflow-y-auto m-0 p-1 border border-t-0 rounded-b-md">
                 <li class="hidden px-3 py-2 text-sm text-on-surface dark:text-on-surface-dark" x-ref="noResultsMessage">
                     <span><?= __('No results') ?></span>
                 </li>

@@ -7,7 +7,7 @@ $I->amOnModulePage('Data Updater', 'data_family.php');
 // Select ------------------------------------------------
 $I->seeBreadcrumb('Update Family Data');
 
-$I->selectFromDropdown('gibbonFamilyID', 2);
+$I->selectFromDropdown('gibbonFamilyID', 1);
 $I->click('Submit');
 
 // Update ------------------------------------------------

@@ -187,7 +187,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
 
         {% if form.hasMeta and form.getMeta.getElementCount > 0 %}
-        <aside class="hidden xl:flex flex-col col-span-2 h-min bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
+        <aside class="hidden xl:flex flex-col col-span-2 sticky top-0 h-min bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
             {% for element in form.getMeta.getElements %}
                 {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
             
