@@ -103,11 +103,9 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $n = intval($n);
 
-        if ($n < 0) {
-            $option = $this->grabTextFrom('#content select[name='.$selector.'] option:nth-last-of-type('.abs($n).')');
-        } else {
-            $option = $this->grabTextFrom('#content select[name='.$selector.'] option:nth-of-type('.$n.')');
-        }
+        $option = $n < 0
+            ? $this->grabTextFrom('#content select[name='.$selector.'] option:not([value=""]):nth-last-of-type('.abs($n).')')
+            : $this->grabTextFrom('#content select[name='.$selector.'] option:not([value=""]):nth-of-type('.$n.')');
 
         $this->selectOption('#content #'.$selector, $option);
     }
