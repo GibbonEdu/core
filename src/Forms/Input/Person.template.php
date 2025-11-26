@@ -61,14 +61,20 @@
 
     <div class="relative">
 
+        <!-- Hidden Input To Grab The Selected Value  -->
+        <select class="hidden invisible personSelect" <?= $attributes; ?> x-ref="hiddenInput">
+            <option value=""></option>
+            <?php foreach ($options as $option)  { ?>
+                <option value="<?= $option['value'] ?>" <?= $option['value'] == $selected? 'selected' : '' ?>><?= $option['label'] ?></option>
+            <?php } ?>
+        </select>
+
         <!-- trigger button  -->
         <button type="button" class="<?= $class; ?> <?= $groupClass; ?> inline-flex w-full items-center justify-start min-w-16 bg-white border border-outline py-2 px-3 text-gray-900  placeholder:text-gray-500 focus:border-blue-500 focus-within:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5 transition  " role="combobox" aria-controls="<?= $id ?>List" aria-haspopup="<?= $id ?>List listbox" x-on:click="toggleSelect(!isOpen)" x-on:keydown.down.prevent="openedWithKeyboard = true" x-on:keydown.enter.prevent="openedWithKeyboard = true" x-on:keydown.space.prevent="openedWithKeyboard = true" x-bind:aria-expanded="isOpen || openedWithKeyboard" x-bind:aria-label="selectedOption ? selectedOption.value : '<?= __($placeholder); ?>'" x-ref="searchSelect" >
 
             <div class="flex-none relative w-12 h-12 z-10 mr-4 overflow-hidden rounded-full bg-gray-200 border border-solid border-gray-400 bg-no-repeat" style="background-size: 70% 70%; background-position: 50% 50%;">
             <div class="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"><?= icon('solid', 'user', 'size-7 mt-2 text-gray-500') ?></div>
-                <img id="<?= $id ?>Photo" src="" x-ref="personPhoto">
-                
-                <div id="<?= $id ?>Count" class="hidden badge"></div>
+                <img id="<?= $id ?>Photo" x-bind:id="$refs.hiddenInput.id+'Photo'" src="" x-ref="personPhoto">
             </div>
 
             <span class="block flex-1 text-sm font-normal text-left" x-text="selectedOption ? selectedOption.label : ''"><?= $options[$selected] ?? __($placeholder); ?></span>
@@ -82,14 +88,6 @@
                 <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
             </svg>
         </button>
-
-        <!-- Hidden Input To Grab The Selected Value  -->
-        <select class="hidden invisible personSelect" <?= $attributes; ?> x-ref="hiddenInput">
-            <option value=""></option>
-            <?php foreach ($options as $option)  { ?>
-                <option value="<?= $option['value'] ?>" <?= $option['value'] == $selected? 'selected' : '' ?>><?= $option['label'] ?></option>
-            <?php } ?>
-        </select>
 
         <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.100ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
         style="display:none;">

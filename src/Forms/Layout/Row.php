@@ -35,7 +35,7 @@ use Gibbon\Forms\Traits\FormFieldsTrait;
  * 
  * {@inheritDoc}
  */
-class Row
+class Row implements OutputableInterface
 {
     use BasicAttributesTrait;
     use FormFieldsTrait;
@@ -193,6 +193,23 @@ class Row
         }
 
         return $this;
+    }
+
+    /**
+     * Iterate over each element in the collection and concatenate the output.
+     * @return  string
+     */
+    public function getOutput()
+    {
+        $output = '<div '.$this->getAttributeString().'>';
+
+        foreach ($this->getElements() as $element) {
+            $output .= $element->getOutput();
+        }
+
+        $output .= '</div>';
+
+        return $output;
     }
 
     /**

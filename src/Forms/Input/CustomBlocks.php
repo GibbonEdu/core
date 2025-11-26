@@ -27,6 +27,7 @@ use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 use Gibbon\View\Component;
 use Gibbon\Forms\Input\Editor;
+use Gibbon\Forms\Layout\NullElement;
 
 /**
  * Custom Blocks
@@ -57,14 +58,16 @@ class CustomBlocks implements OutputableInterface
      * @param  OutputableInterface  $form
      * @param  Session              $session
      */
-    public function __construct(FormFactoryInterface &$factory, $name, Session $session, bool $canDelete = true)
+    public function __construct(FormFactoryInterface &$factory, $name, ?Session $session = null, bool $canDelete = true)
     {
         $this->factory = $factory;
         $this->session = $session;
         $this->name = $name;
+        $this->setClass('my-4');
 
-        $this->toolsTable = $factory->createTable()->setClass('inputTools w-full');
-        $this->blockButtons = $factory->createGrid()->setClass('blockButtons inline-flex gap-2');
+        $this->toolsTable = $factory->createRow()->setClass('flex w-full items-center justify-start gap-2');
+        $this->blockButtons = $factory->createGrid()->setClass('flex flex-row-reverse items-center pr-1')->setAttribute('x-sort:ignore');
+        $this->blockTemplate = $factory->createRow()->setClass('w-full px-2 sm:px-3');
 
         $this->settings = [
             'placeholder'      => __('Blocks will appear here...'),
@@ -74,21 +77,31 @@ class CustomBlocks implements OutputableInterface
         ];
 
         if ($canDelete) {
-            $this->addBlockButton('delete', __('Delete'), 'garbage.png');
+            $this->addBlockButton('delete', __('Delete'));
+            $this->addBlockButton('copy', __('Duplicate'));
         }
     }
 
     /**
      * Set a predefined layout using OutputableInterface which will be cloned for each new block.
-     * TODO: add fromAjax option for loading in templates dynamically?
      * @param OutputableInterface $block
-     * @return void
+     * @return self
      */
     public function fromTemplate(OutputableInterface $block, $compact = false)
     {
-        $this->blockTemplate = $block->addClass('blank w-full');
+        $this->blockTemplate = $block->setClass('w-full noBorder');
         $this->compact = $compact;
         return $this;
+    }
+
+    public function getTemplate()
+    {
+        return $this->blockTemplate;
+    }
+
+    public function addTemplateRow()
+    {
+        return $this->blockTemplate->addRow()->setClass('w-full py-3 flex flex-col sm:flex-row content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start');
     }
 
     /**
@@ -121,8 +134,23 @@ class CustomBlocks implements OutputableInterface
     public function addToolInput(OutputableInterface $input)
     {
         $input->setAttribute('@click', 'handleToolClick($el)');
-        $this->toolsTable->addRow()->addElement($input);
+        $this->toolsTable->addElement($input);
         return $this;
+    }
+
+    /**
+     * Adds a pre-made button and returns the resulting element.
+     *
+     * @param string $label
+     * @param string $class
+     * @return Button
+     */
+    public function addToolButton(string $label, string $class = '')
+    {
+        $button = $this->factory->createButton($label)->addClass($class);
+        $this->addToolInput($button);
+
+        return $button;
     }
 
     /**
@@ -134,13 +162,14 @@ class CustomBlocks implements OutputableInterface
      * @param  string  $function
      * @return self
      */
-    public function addBlockButton($name, $title, $icon, $class = '')
+    public function addBlockButton($name, $title, $icon = '', $class = '')
     {
         $button = $this->factory->createAction($name, $title)
             ->modalWindow(false)
             ->setURL('#')
             ->addClass('blockButton')
             ->displayLabel(false)
+            ->setType('interface')
             ->setAttribute('@click', 'handleButtonClick($el, index)');
 
         if (!empty($name)) $button->addData('event', $name);
@@ -151,20 +180,29 @@ class CustomBlocks implements OutputableInterface
         return $this;
     }
 
-    public function removeBlockButton($name)
-    {
-
-    }
-
     /**
      * Adds a block from an array of data.
      * @param  string  $id
      * @param  array   $data
      * @return self
      */
-    public function addBlock($id, array $data = array())
+    public function addBlock($id, array $data = [])
     {
         $this->settings['currentBlocks'][$id] = $data;
+
+        return $this;
+    }
+
+    /**
+     * Adds multiple blocks from an array.
+     * @param  array   $blocks
+     * @return self
+     */
+    public function addBlocks(array $blocks = [])
+    {
+        foreach ($blocks as $id => $data) {
+            $this->settings['currentBlocks'][$id] = $data;
+        }
 
         return $this;
     }
@@ -192,21 +230,35 @@ class CustomBlocks implements OutputableInterface
 
         // TODO: predefined blocks
         // TODO: FL copy blocks
-        // TODO: better layout
+        // TODO: internal toggle states
+
+        $index = 1;
+        $blocks = [];
+        foreach ($this->settings['currentBlocks'] as $key => $block) {
+            $block['index'] = $index;
+            $blocks[$index] = $block;
+            $index++;
+        }
+
+        if ($this->toolsTable->getElementCount() == 0) {
+            $this->addToolButton(__('Add'))->addClass('addBlock')->setIcon('solid', 'add');
+        }
 
         return Component::render(CustomBlocks::class, [
+            'index'         => $index,
             'name'          => $this->name,
             'compact'       => $this->compact,
-            'sortable'      => $this->settings['sortable'] ?? false,
+            'currentBlocks' => $blocks,
+            'blockCount'    => count($blocks),
+            'sortable'      => $this->settings['sortable'] ?? true,
             'placeholder'   => $this->settings['placeholder'] ?? '',
             'deleteMessage' => $this->settings['deleteMessage'],
             'orderName'     => $this->settings['orderName'] ?? 'order',
-            'blockCount'    => count($this->settings['currentBlocks']),
-            'currentBlocks' => array_values($this->settings['currentBlocks'] ?? []),
             'blockTemplate' => $this->getTemplateOutput($this->blockTemplate),
-            'blockButtons'  => $this->blockButtons->addClass('flex gap-2')->getOutput(),
+            'blockButtons'  => $this->blockButtons->getOutput(),
             'editors'       => array_unique($this->settings['editors'] ?? []),
-            'hiddenInputs' => $this->settings['hiddenInputs'] ?? [],
+            'hiddenInputs'  => $this->settings['hiddenInputs'] ?? [],
+            'primaryInput'  => $this->settings['primaryInput'] ?? 'title',
             'toolsTable'    => $this->toolsTable->getOutput(),
         ] + $this->getAttributeArray());
     }
@@ -229,7 +281,7 @@ class CustomBlocks implements OutputableInterface
 
             $class = $element->getClass();
             if (!empty($class) && stripos($class, 'showHide') !== false) {
-                $element->setAttribute('x-show', 'block.hide');
+                $element->setAttribute('x-show', 'block.show');
                 $element->setAttribute('x-transition.opacity');
             }
 
@@ -241,14 +293,19 @@ class CustomBlocks implements OutputableInterface
                 $blockInputs[] = $element->getName();
                 $id = !empty($element->getID()) ? $element->getID() : $element->getName();
 
+                if (empty($this->settings['primaryInput']) && $element instanceof TextField) {
+                    $element->setAttribute('x-model', 'block.'.$element->getName());
+                    $this->settings['primaryInput'] = $element->getName();
+                } else {
+                    $element->setAttribute('x-bind:value', 'block.'.$element->getName());
+                }
+
                 if ($strategy == 'string') {
                     $element->setAttribute('x-bind:name', "'".$id."' + index");
                 } else {
                     $element->setAttribute('x-bind:name', "'".$this->name."[' + index + '][".$id."]'");
                 }
                 
-                $element->setAttribute('x-bind:value', 'block.'.$element->getName());
-
                 if ($element instanceof Radio) {
                     $element->setAttribute('x-bind:checked', 'block.'.$element->getName().' == $el.value');
                 }
@@ -277,11 +334,6 @@ class CustomBlocks implements OutputableInterface
                         media: {$media} }
                     )");
                 }
-            }
-
-            if ($element instanceof Input && $element->hasValidation()) {
-                // Trigger the output before getting validations: some Inputs add these on getOutput();
-                $elementOutput = $element->getOutput();
             }
         };
 

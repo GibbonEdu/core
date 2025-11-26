@@ -81,9 +81,10 @@ class Color extends Input
     protected function getElement()
     {
         return Component::render(Color::class, $this->getAttributeArray() + [
-            'color'     => !empty($this->getValue()) ? $this->getValue() : '',
-            'showField' => $this->showField,
-            'palette'   => $this->palette,
+            'outerClass' => $this->getOuterClass(),
+            'color'      => !empty($this->getValue()) ? $this->getValue() : '',
+            'showField'  => $this->showField,
+            'palette'    => $this->palette,
         ]);
     }
 }
