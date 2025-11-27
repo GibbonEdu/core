@@ -151,7 +151,17 @@ class StudentHistoryData
                     });
                 }
                 
-                $endOfDay = isset($logs[$dateYmd]) ? end($logs[$dateYmd]) : [];
+                // School logs only (non-class)
+				$schoolLogs = array_filter($logs[$dateYmd] ?? [], function ($log) {
+					return $log['context'] !== 'Class';
+				});
+
+				// Sort by timestampTaken
+				usort($schoolLogs, function ($a, $b) {
+					return strcmp($a['timestampTaken'], $b['timestampTaken']);
+				});
+
+				$endOfDay = !empty($schoolLogs) ? end($schoolLogs) : [];
 			
 				// Get all timetable periods for this student on this date, augment classLogs with timetable periods (including missing attendance)
 				$periods = $this->timetableGateway
