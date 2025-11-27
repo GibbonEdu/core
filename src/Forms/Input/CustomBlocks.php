@@ -287,6 +287,8 @@ class CustomBlocks implements OutputableInterface
 
             if (!empty($element->getID())) {
                 $element->setAttribute('x-bind:id', "'".$element->getID()."' + index");
+                $element->setPrepended('');
+                $element->setAppended('');
             }
 
             if ($element instanceof Input) {
