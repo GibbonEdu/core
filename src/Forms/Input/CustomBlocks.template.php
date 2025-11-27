@@ -52,14 +52,6 @@
         showHideBlock(index, show) {
             this.blocks[index].show = show;
             this.showAll = this.showAll || show;
-
-            this.editors.forEach((name) => {
-                var editor = tinymce.get(name+index);
-                if (editor) $nextTick(() => { 
-                    if (show) { editor.show() }
-                    else { editor.hide(); }
-                })
-            });
         }
     }"
     x-init="blocks = blockData<?= $name ?>; blockCount = Object.keys(blocks).length;"
@@ -83,7 +75,7 @@
 
                 <div class="flex  bg-blue-50 hover:bg-blue-50/50 rounded-t-md " :class="{'border-b': block.show, 'rounded-b-md' : !block.show}">
 
-                    <div x-sort:handle class="drag-sort-handle w-4 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
+                    <div x-sort:handle class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
 
                     <div @click="showHideBlock(block.index, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
                         <span x-text="block.<?= $primaryInput ?> ? block.<?= $primaryInput ?> : '<?= __('Untitled') ?>'" :class="!block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>

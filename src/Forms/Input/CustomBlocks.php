@@ -325,16 +325,9 @@ class CustomBlocks implements OutputableInterface
                     $media = $element->getData('media');
                     $rows = $element->getAttribute('rows') ?? 6;
 
-                    $element->setAttribute('hx-post', './modules/Planner/planner_editorAjax.php');
-                    $element->setAttribute('hx-trigger', 'load');
-                    $element->setAttribute('hx-swap', 'outerHTML');
-                    $element->setAttribute('x-bind:hx-target', '"#"+$el.id');
-                    $element->setAttribute('x-bind:hx-vals', "JSON.stringify({
-                        id: \$el.id, 
-                        value: block.{$element->getName()}, 
-                        rows: {$rows},
-                        media: {$media} }
-                    )");
+                    $element->setAttribute('x-init', "tinymce.init( {...gibbonTinyMCEDefaults, ...{
+                        selector: '#'+\$el.id,
+                    } })");
                 }
             }
         };

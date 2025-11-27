@@ -401,6 +401,10 @@ input[type="color"]::-moz-color-swatch {
     opacity: .4 !important;
 }
 
+.tox-tinymce {
+    border: 1px solid hsl(220 14% 84%) !important;
+}
+
 /*
  --------------------------------------------------------------------------
   TinyMCE
