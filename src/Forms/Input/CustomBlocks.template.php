@@ -67,7 +67,12 @@
 
     <input type="hidden" class="blockCount" name="<?= $name ?>Count" x-bind:value="blockCount" />
 
-    <div x-show="blockCount == 0" class="text-xl text-gray-400 pb-2" ><?= $placeholder ?></div>
+    <div x-show="blockCount == 0" class="flex justify-center items-center h-24 mb-2 border border-dashed border-gray-400 rounded-md">
+        <span class="text-xl text-gray-400">
+            <?= $placeholder ?>
+        </span>
+        
+    </div>
 
 
     <div <?= $sortable ? 'x-sort.ghost' : '' ?> class="blocks flex flex-col transition-all gap-2" >
@@ -76,9 +81,9 @@
             
             <div x-sort:item="index" class="relative <?= $compact ? 'compact h-min' : '' ?> border rounded-md bg-gray-50" x-bind:id="'<?= $name ?>' + index">
 
-                <div class="flex  bg-blue-50 rounded-t-md " :class="{'border-b': block.show, 'rounded-b-md' : !block.show}">
+                <div class="flex  bg-blue-50 hover:bg-blue-50/50 rounded-t-md " :class="{'border-b': block.show, 'rounded-b-md' : !block.show}">
 
-                    <div x-sort:handle class="drag-sort-handle w-4 ltr:border-r rtl:border-l hover:bg-gray-100 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
+                    <div x-sort:handle class="drag-sort-handle w-4 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
 
                     <div @click="showHideBlock(block.index, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
                         <span x-text="block.<?= $primaryInput ?> ? block.<?= $primaryInput ?> : '<?= __('Untitled') ?>'" :class="!block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
