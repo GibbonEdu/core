@@ -396,6 +396,26 @@ input[type="color"]::-moz-color-swatch {
     @apply border-gray-400;
 }
 
+.tox-tinymce {
+    border: 1px solid hsl(220 14% 84%) !important;
+}
+
+.tox-promotion {
+    display: none;
+}
+
+.editor-minimal .tox-edit-area::before {
+    border-radius: 9px !important;
+}
+
+.editor-full .tox .tox-menubar {
+    display: none;
+}
+
+.editor-full .tox .tox-menubar .tox-mbtn:last-child {
+    margin-left: auto;
+}
+
 /*
  --------------------------------------------------------------------------
   Validation

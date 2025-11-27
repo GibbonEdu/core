@@ -53,3 +53,135 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+const gibbonTinyMCEDefaults = {
+    license_key: 'gpl',
+    width: '100%',
+    resize: true,
+    branding: false,
+    onboarding: false,
+    promotion: false,
+    browser_spellcheck: true,
+    convert_urls: false,
+    relative_urls: false,
+    default_link_target: "_blank",
+    
+    valid_elements: Gibbon.config.tinymce.valid_elements,
+    extended_valid_elements : Gibbon.config.tinymce.extended_valid_elements,
+    invalid_elements: '',
+    
+    init_instance_callback: (editor) => {
+        // Enable validation checking
+        editor.on('blur', (e) => {
+            tinymce.triggerSave();
+            e.target.targetElm.dispatchEvent(new Event('blur'));
+        });
+    }
+};
+
+const gibbonTinyMCEMinimal = {
+    menubar : false,
+    toolbar: false,
+    statusbar: false,
+    contextmenu: 'link code preview image table',
+
+    plugins: 'autoresize table lists link image media quickbars code preview',
+    quickbars_selection_toolbar: 'bold italic underline quicklink | blocks | alignleft aligncenter alignright | bullist numlist |  code',
+    quickbars_insert_toolbar: 'quickimage media quicktable blockquote hr',
+    quickbars_image_toolbar: 'alignleft aligncenter alignright',
+
+    autoresize_bottom_margin: 0,
+    images_upload_url: '#',
+};
+
+const gibbonTinyMCEInline = {
+    inline: true,
+    plugins: 'table lists link image media quickbars',
+};
+
+const gibbonTinyMCEFull = {
+    statusbar: true,
+    menubar : 'file edit view insert format table html',
+    contextmenu: 'link code preview image table',
+
+    toolbar_mode: 'sliding',
+    toolbar: 'togglemenubar | bold italic underline  forecolor backcolor |  alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink  | code preview fullscreen  | styleselect fontselect fontsizeselect removeformat | table  | subscript superscript | cut copy paste undo redo | hr charmap | image media | restoredraft',
+    plugins: 'autosave table lists link image media quickbars charmap fullscreen code preview',
+    
+    menu: {
+        view: { title: 'View', items: 'code | preview fullscreen' },
+        html: { title: 'HTML', items: 'code' },
+    },
+
+    quickbars_selection_toolbar: false,
+    quickbars_insert_toolbar: 'quickimage media quicktable',
+    quickbars_image_toolbar: 'alignleft aligncenter alignright',
+
+    apply_source_formatting : true,
+    autosave_restore_when_empty: true,
+    
+    image_advtab: true,
+    images_upload_url: '#',
+    
+
+    color_map: [
+        "#BFEDD2", "Light Green", 
+        "#FBEEB8", "Light Yellow", 
+        "#F8CAC6", "Light Red", 
+        "#ECCAFA", "Light Purple", 
+        "#C2E0F4", "Light Blue", 
+        "#2DC26B", "Green", 
+        "#F1C40F", "Yellow", 
+        "#FF0000", "Red", 
+        "#B96AD9", "Purple", 
+        "#3598DB", "Blue", 
+        "#169179", "Dark Turquoise", 
+        "#E67E23", "Orange", 
+        "#BA372A", "Dark Red", 
+        "#843FA1", "Dark Purple", 
+        "#236FA1", "Dark Blue", 
+        "#ECF0F1", "Light Gray", 
+        "#CED4D9", "Medium Gray", 
+        "#95A5A6", "Gray", 
+        "#7E8C8D", "Dark Gray", 
+        "#34495E", "Navy Blue", 
+        "#000000", "Black", 
+        "#ffffff", "White", 
+    ],
+
+    setup: function (editor) {
+        editor.ui.registry.addButton("togglemenubar", {
+          tooltip: "Settings",
+          icon: "settings",
+          onAction: function () {
+            const menubar = editor.getContainer().querySelector('.tox-menubar');
+            if (menubar) {
+                menubar.style.display = menubar.style.display == 'flex' ? 'none' : 'flex';
+            }
+          },
+        });
+      },
+
+    init_instance_callback: (editor) => {
+        // Enable quick save from within tinymce
+        editor.addShortcut("meta+s", "Custom Ctrl+S", function (e) {
+            editor.formElement.dispatchEvent(new Event('quicksave'));
+        });
+
+        // Enable validation checking
+        editor.on('blur', (e) => {
+            tinymce.triggerSave();
+            e.target.targetElm.dispatchEvent(new Event('blur'));
+        });
+
+        // Autosave trigger
+        if (editor.targetElm.hasAttribute('data-autosave')) {
+            setTimeout(function () {
+                editor.on('keydown', function () {
+                    tinymce.triggerSave();
+                    gibbonFormSubmitQuiet(document.getElementById(editor.formElement.id), editor.targetElm.getAttribute('data-autosave'))
+                })
+            }, 100);
+        }
+    }
+};
