@@ -127,7 +127,7 @@
 
         scrollToActiveItem(){
             if(this.timeSelected){
-                activeElement = document.getElementById('<?= $id; ?>Option-' + this.timeSelected);
+                activeElement = document.getElementById(this.$refs.timeValue.id+'Option-' + this.timeSelected);
                 newScrollPos = (activeElement.offsetTop + activeElement.offsetHeight) - ((this.$refs.timeList.offsetHeight ) / 2);
                 this.$refs.timeList.scrollTop=newScrollPos > 0 ? newScrollPos : 0;
             }
@@ -136,13 +136,14 @@
     x-on:keydown.esc.window="isOpen=false"
     x-init="setupTimePicker()"
     x-trap="isOpen"
+    x-on:click.outside="isOpen=false" 
     >
 
     <span class="pointer-events-none absolute top-0.5 right-2">
         <?= icon('outline', 'clock', 'pointer-events-none size-8 mt-px p-1.5 rounded text-gray-600 hover:text-gray-800'); ?>
     </span>
 
-    <input type="text" id="<?= $id; ?>Time" name="<?= $name; ?>Time" 
+    <input type="text" :id="$refs.timeValue.id + 'Time'" :name="$refs.timeValue.id + 'Time'" 
         @click="isOpen=true; setAvailableTimes(); $focus.focus($refs.timePicker); $nextTick(() => scrollToActiveItem() )"
         @input="updateActiveItem()"
         x-model="time"
@@ -164,7 +165,6 @@
 
     <div x-cloak x-show="isOpen" :id="$refs.timeValue.id+'List'"
         class="absolute mt-10 top-0 left-0 z-50 w-full h-60 rounded-md border bg-white shadow-lg" 
-        x-on:click.outside="isOpen=false" 
         x-on:keydown.down.prevent="$focus.wrap().next()" 
         x-on:keydown.up.prevent="$focus.wrap().previous()" 
         x-transition:enter.opacity.duration.100ms 
