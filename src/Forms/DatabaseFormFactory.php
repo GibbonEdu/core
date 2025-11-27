@@ -638,7 +638,7 @@ class DatabaseFormFactory extends FormFactory
             }
 
             if ($params['labelMode'] == 'both') {
-                $value = $item['value'] == $item['descriptor'] ? $item['value'] : $item['value'].' - '.$item['descriptor'];
+                $value = $item['value'] == $item['descriptor'] ? $item['value'] : $item['value'].' | '.$item['descriptor'];
             }
 
             $group[$item[$identifier]] = $value;

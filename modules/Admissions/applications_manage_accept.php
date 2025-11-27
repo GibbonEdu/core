@@ -125,6 +125,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable();
     echo $detailsTable->render([$application]);
 
+    // Get the milestones
+    $milestonesList = $container->get(SettingGateway::class)->getSettingByScope('Application Form', 'milestones');
+    $milestonesList = array_map('trim', explode(',', $milestonesList));
+    $milestones = array_keys(json_decode($application['milestones'] ?? '', true)?? []);
+
+    if (!empty($milestonesList) && count($milestones) < count($milestonesList)) {
+        $missingMilestones = array_diff($milestonesList, $milestones);
+        echo Format::alert(__('There are currently {count} incomplete admissions milestones for this application form.', ['count' => Format::bold(count($milestonesList) - count($milestones)) ]).Format::list($missingMilestones, 'ul', 'text-xs'), 'warning');
+    }
+
     // FORM
     $form = Form::create('application', $session->get('absoluteURL').'/modules/Admissions/applications_manage_acceptProcess.php');
 

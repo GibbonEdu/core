@@ -20,11 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Library\LibraryReportGateway;
-use Gibbon\Domain\DataSet;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -58,11 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
             ->selected($gibbonLibraryTypeID)
             ->placeholder();
 
-        $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+        $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
         $row = $form->addRow();
             $row->addLabel('gibbonDepartmentID', __('Department'));
             $row->addSelect('gibbonDepartmentID')
-                ->fromQuery($pdo, $sql)
+                ->fromResults($results)
                 ->selected($gibbonDepartmentID)
                 ->placeholder();
 

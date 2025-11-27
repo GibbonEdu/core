@@ -288,6 +288,10 @@ class Locale implements LocaleInterface
             return $text;
         }
 
+        if (mb_strlen($text) > 2048) {
+            return $text;
+        }
+
         if (empty($this->i18ncode)) {
             return $text;
         }

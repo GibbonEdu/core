@@ -92,6 +92,14 @@ class RubricGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectRowsByRubricInSequence($gibbonRubricID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID];
+        $sql = 'SELECT * FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber';
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectCellsByRubric($gibbonRubricID)
     {
         $data = ['gibbonRubricID' => $gibbonRubricID];
@@ -107,6 +115,54 @@ class RubricGateway extends QueryableGateway
         JOIN gibbonScaleGrade ON (gibbonRubricColumn.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
         JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonScaleGrade.gibbonScaleID)
         WHERE gibbonRubricColumn.gibbonRubricID=:gibbonRubricID";
+
+        return $this->db()->select($sql, $data);
+    }
+    
+    public function selectDistinctRubricCategories()
+    {
+        $data = [];
+        $sql = "SELECT DISTINCT category FROM gibbonRubric ORDER BY category";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectLARubricsByStaffAndDepartment($gibbonRubricID, $gibbonPersonID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT * FROM gibbonRubric JOIN gibbonDepartment ON (gibbonRubric.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonRubric.gibbonDepartmentID IS NULL WHERE gibbonRubricID=:gibbonRubricID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function getColumnByRubricAndColumnID($gibbonRubricID, $gibbonRubricColumnID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID, 'gibbonRubricColumnID' => $gibbonRubricColumnID];
+        $sql = 'SELECT * FROM gibbonRubric JOIN gibbonRubricColumn ON (gibbonRubricColumn.gibbonRubricID=gibbonRubric.gibbonRubricID) WHERE gibbonRubricColumn.gibbonRubricID=:gibbonRubricID AND gibbonRubricColumnID=:gibbonRubricColumnID';
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getRowByRubricAndRowID($gibbonRubricID, $gibbonRubricRowID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID, 'gibbonRubricRowID' => $gibbonRubricRowID];
+        $sql = 'SELECT * FROM gibbonRubric JOIN gibbonRubricRow ON (gibbonRubricRow.gibbonRubricID=gibbonRubric.gibbonRubricID) WHERE gibbonRubricRow.gibbonRubricID=:gibbonRubricID AND gibbonRubricRowID=:gibbonRubricRowID';
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectRowsInfoByRubric($gibbonRubricID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID];
+		$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID, backgroundColor FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+                    
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectsColumnsInfoByRubric($gibbonRubricID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID];
+		$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise, backgroundColor FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
 
         return $this->db()->select($sql, $data);
     }

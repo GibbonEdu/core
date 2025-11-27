@@ -29,9 +29,13 @@ v31.0.00
     Changes With Important Notices
 
     Tweaks & Additions
-		Attendance: student attendance history now ordered by timetable period
+        Admissions: added a progress bar for admissions milestones to Manage Applications
+        Admissions: added a warning to Accept Application when milestones have not been completed
+        Attendance: student attendance history now ordered by timetable period
 
     Bug Fixes
+        System: added a upper character limit of 2048 to translation strings, to prevent gettext errors
+        Attendance: fixed empty list in Set Future Absence when using Select Students for Multiple Students
 
     Deprecations
 

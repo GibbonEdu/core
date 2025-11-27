@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             } else {
                 //Write to database
                 try {
-                    $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
+                    $data = ['scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID')];
                     $sql = 'INSERT INTO gibbonRubric SET scope=:scope, gibbonDepartmentID=:gibbonDepartmentID, name=:name, active=:active, category=:category, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, gibbonScaleID=:gibbonScaleID, gibbonPersonIDCreator=:gibbonPersonIDCreator';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -83,14 +83,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 //Create rows & columns
                 for ($i = 1; $i <= $_POST['rows'] ?? ''; ++$i) {
 
-                        $data = array('gibbonRubricID' => $AI, 'title' => "Row $i", 'sequenceNumber' => $i);
+                        $data = ['gibbonRubricID' => $AI, 'title' => "Row $i", 'sequenceNumber' => $i];
                         $sql = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                 }
                 for ($i = 1; $i <= $_POST['columns'] ?? ''; ++$i) {
 
-                        $data = array('gibbonRubricID' => $AI, 'title' => "Column $i", 'sequenceNumber' => $i);
+                        $data = ['gibbonRubricID' => $AI, 'title' => "Column $i", 'sequenceNumber' => $i];
                         $sql = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

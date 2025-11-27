@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Rubrics\RubricGateway;
 
 //Rubric includes
 require_once __DIR__ . '/../Rubrics/moduleFunctions.php';
@@ -75,12 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             if ($result2->rowCount() != 1) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-
-                    $data3 = array('gibbonRubricID' => $gibbonRubricID);
-                    $sql3 = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
-                    $result3 = $connection2->prepare($sql3);
-                    $result3->execute($data3);
-
+                    $result3 = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
+                    
                 if ($result3->rowCount() != 1) {
                     $page->addError(__('The specified record does not exist.'));
                 } else {

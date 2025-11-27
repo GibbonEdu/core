@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\FamilyGateway;
 
@@ -39,6 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $search = $_GET['search'] ?? '';
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+
+    // Get the milestones
+    $milestonesList = $container->get(SettingGateway::class)->getSettingByScope('Application Form', 'milestones');
+    $milestonesList = array_map('trim', explode(',', $milestonesList));
 
     // SEARCH
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php','get');
@@ -184,11 +189,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->format(function($application) {
             return Format::bold(__($application['status']));
         })
-        ->formatDetails(function ($application) {
+
+        ->formatDetails(function ($application) use (&$page, $milestonesList) {
+            if ($application['status'] != 'Pending' && $application['status'] != 'Waiting List') return '';
+            if (empty($milestonesList)) return '';
+
             $milestones = array_keys(json_decode($application['milestones'] ?? '', true)?? []);
-            if ($application['status'] == 'Pending' || $application['status'] == 'Waiting List') {
-                return Format::small(implode('<br/>', $milestones));
-            }
+            return $page->fetchFromTemplate('ui/progress.twig.html', [
+                'progressCount'  => count($milestones),
+                'totalCount'     => count($milestonesList),
+                'leftCount'      => count($milestonesList) - count($milestones),
+                'width'          => 'w-32',
+                'class'          => 'mt-1',
+                'title'          => __('Milestones'),
+            ]);
         });
 
     $table->addColumn('priority', __('Priority'));

@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 $page->breadcrumbs->add(__('View Markbook'));
 
@@ -87,12 +88,12 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
 
-    $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+    $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
     $rowFilter = $form->addRow();
         $rowFilter->addLabel('gibbonDepartmentID', __('Learning Areas'));
         $rowFilter->addSelect('gibbonDepartmentID')
             ->fromArray(array('*' => __('All Learning Areas')))
-            ->fromQuery($pdo, $sqlSelect)
+            ->fromResults($results)
             ->selected($gibbonDepartmentID);
 
     $dataSelect = array('gibbonPersonID' => $session->get('gibbonPersonID'));

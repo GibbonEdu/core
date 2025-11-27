@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Rubrics\RubricGateway;
 
 require_once '../../gibbon.php';
 
@@ -55,14 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             } else {
                 try {
                     if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID);
-                        $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
+                        $result = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
                     } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = "SELECT * FROM gibbonRubric JOIN gibbonDepartment ON (gibbonRubric.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonRubric.gibbonDepartmentID IS NULL WHERE gibbonRubricID=:gibbonRubricID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
+                        $result = $container->get(RubricGateway::class)->selectLARubricsByStaffAndDepartment($gibbonRubricID, $session->get('gibbonPersonID'));
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
@@ -75,23 +72,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                 } else {
                     //Check for existence and association of column
                     try {
-                        $dataColumn = array('gibbonRubricID' => $gibbonRubricID, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
-                        $sqlColumn = 'SELECT * FROM gibbonRubric JOIN gibbonRubricColumn ON (gibbonRubricColumn.gibbonRubricID=gibbonRubric.gibbonRubricID) WHERE gibbonRubricColumn.gibbonRubricID=:gibbonRubricID AND gibbonRubricColumnID=:gibbonRubricColumnID';
-                        $resultColumn = $connection2->prepare($sqlColumn);
-                        $resultColumn->execute($dataColumn);
+                        $resultColumn = $container->get(RubricGateway::class)->getColumnByRubricAndColumnID($gibbonRubricID, $gibbonRubricColumnID);
+                        
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
                     }
 
-                    if ($resultColumn->rowCount() != 1) {
+                    if (empty($resultColumn)) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                     } else {
                         //Combined delete of column and cells
                         try {
-                            $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
+                            $data = ['gibbonRubricID' => $gibbonRubricID, 'gibbonRubricColumnID' => $gibbonRubricColumnID];
                             $sql = 'DELETE FROM gibbonRubricColumn WHERE gibbonRubricColumn.gibbonRubricID=:gibbonRubricID AND gibbonRubricColumn.gibbonRubricColumnID=:gibbonRubricColumnID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -102,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                         }
 
 
-                            $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
+                            $data = ['gibbonRubricID' => $gibbonRubricID, 'gibbonRubricColumnID' => $gibbonRubricColumnID];
                             $sql = 'DELETE FROM gibbonRubricCell WHERE gibbonRubricCell.gibbonRubricID=:gibbonRubricID AND gibbonRubricCell.gibbonRubricColumnID=:gibbonRubricColumnID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);

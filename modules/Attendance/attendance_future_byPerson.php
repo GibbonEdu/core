@@ -60,9 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $gibbonPersonIDList = is_array($gibbonPersonIDList)
             ? array_unique($gibbonPersonIDList)
             : explode(",", $gibbonPersonIDList);
-    } else {
-        $gibbonPersonIDList = [];
     }
+
+    if (empty($gibbonPersonIDList)) $gibbonPersonIDList = [];
 
     $target = $_GET['target'] ?? '';
     $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
@@ -141,8 +141,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $studentList = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'));
     $studentList = array_reduce($studentList->toArray(), function ($group, $student) use ($gibbonPersonIDList) {
-        if (empty($gibbonPersonIDList)) return $group;
-
         $list = in_array($student['gibbonPersonID'], $gibbonPersonIDList) ? 'destination' : 'source';
         $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup'];
         $group['form'][$student['gibbonPersonID']] = $student['formGroup'];
