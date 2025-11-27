@@ -30,6 +30,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 
 /**
  * Student History Data
@@ -42,17 +43,20 @@ class StudentHistoryData
     protected $pdo;
     protected $termGateway;
     protected $attendanceLogGateway;
+	protected $timetableGateway;
     protected $settingGateway;
 
     public function __construct(
         Connection $pdo,
         SchoolYearTermGateway $termGateway,
         AttendanceLogPersonGateway $attendanceLogGateway,
+		TimetableDayDateGateway $timetableGateway,
         SettingGateway $settingGateway
     ) {
         $this->pdo = $pdo;
         $this->termGateway = $termGateway;
         $this->attendanceLogGateway = $attendanceLogGateway;
+		$this->timetableGateway = $timetableGateway;
         $this->settingGateway = $settingGateway;
     }
 
@@ -71,11 +75,9 @@ class StudentHistoryData
         $firstDayOfTheWeek = $this->settingGateway->getSettingByScope('System', 'firstDayOfTheWeek');
 
         // Get Logs
-        $attendanceOrdering = $this->settingGateway->getSettingByScope('Attendance', 'attendanceOrdering');
-
-		$logs = $this->attendanceLogGateway
-			->selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID, $attendanceOrdering)
-			->fetchGrouped();
+        $logs = $this->attendanceLogGateway
+            ->selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID)
+            ->fetchGrouped();
 
         // Get Weekdays
         $sql = "SELECT nameShort, name FROM gibbonDaysOfWeek where schoolDay='Y' ORDER BY sequenceNumber";
@@ -150,59 +152,55 @@ class StudentHistoryData
                 }
                 
                 $endOfDay = isset($logs[$dateYmd]) ? end($logs[$dateYmd]) : [];
+			
+				// Get all timetable periods for this student on this date, augment classLogs with timetable periods (including missing attendance)
+				$periods = $this->timetableGateway
+					->selectTimetablePeriodsByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $dateYmd)
+					->fetchAll();
 
-				// If ordering by period, augment classLogs with timetable periods (including missing attendance)
-				if ($attendanceOrdering === 'period') {
-					// Get all timetable periods for this student on this date
-					$periods = $this->attendanceLogGateway
-						->selectTimetablePeriodsByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $dateYmd)
-						->fetchAll();
+				// Existing class logs for this day (may be empty)
+				$classLogsForDay = $classLogs[$dateYmd] ?? [];
 
-					// Existing class logs for this day (may be empty)
-					$classLogsForDay = $classLogs[$dateYmd] ?? [];
-
-					// Index existing logs by timetable row, if available
-					$logsByTT = [];
-					foreach ($classLogsForDay as $log) {
-						if (!empty($log['gibbonTTDayRowClassID'])) {
-							$logsByTT[$log['gibbonTTDayRowClassID']] = $log;
-						}
+				// Index existing logs by timetable row, if available
+				$logsByTT = [];
+				foreach ($classLogsForDay as $log) {
+					if (!empty($log['gibbonTTDayRowClassID'])) {
+						$logsByTT[$log['gibbonTTDayRowClassID']] = $log;
 					}
-
-					$mergedClassLogs = [];
-
-					foreach ($periods as $period) {
-						$ttID = $period['gibbonTTDayRowClassID'] ?? null;
-
-						if ($ttID !== null && isset($logsByTT[$ttID])) {
-							// Real attendance log exists for this period
-							$log = $logsByTT[$ttID];
-
-							// Ensure periodName is set even if it wasn't returned in the main query
-							if (empty($log['periodName'])) {
-								$log['periodName'] = $period['periodName'];
-							}
-						} else {
-							// No attendance taken for this period: create a synthetic log
-							$log = [
-								'periodName'     => $period['periodName'],
-								'context'        => 'Class',
-								'contextName'    => $period['courseName'].'.'.$period['className'],
-								'type'           => 'Not Taken',
-								'reason'         => '',
-								'status'         => 'notTaken',
-								'statusClass'    => 'dull', // grey background
-								'timestampTaken' => null,
-							];
-						}
-
-						$mergedClassLogs[] = $log;
-					}
-
-					// Replace classLogs for this day with the merged list
-					$classLogs[$dateYmd] = $mergedClassLogs;
 				}
 
+				$mergedClassLogs = [];
+
+				foreach ($periods as $period) {
+					$ttID = $period['gibbonTTDayRowClassID'] ?? null;
+
+					if ($ttID !== null && isset($logsByTT[$ttID])) {
+						// Real attendance log exists for this period
+						$log = $logsByTT[$ttID];
+
+						// Ensure periodName is set even if it wasn't returned in the main query
+						if (empty($log['periodName'])) {
+							$log['periodName'] = $period['periodName'];
+						}
+					} else {
+						// No attendance taken for this period: create a synthetic log
+						$log = [
+							'periodName'     => $period['periodName'],
+							'context'        => 'Class',
+							'contextName'    => $period['courseName'].'.'.$period['className'],
+							'type'           => 'Not Taken',
+							'reason'         => '',
+							'status'         => 'notTaken',
+							'statusClass'    => 'dull', // grey background
+							'timestampTaken' => null,
+						];
+					}
+
+					$mergedClassLogs[] = $log;
+				}
+
+				// Replace classLogs for this day with the merged list
+				$classLogs[$dateYmd] = $mergedClassLogs;
 
                 // Handle cases where school-wide attendance does not exist, but class attendance does
                 if (empty($endOfDay) && !empty($classLogs)) {
@@ -235,7 +233,6 @@ class StudentHistoryData
                     'presentCount'    => $presentCount,
                     'partialCount'    => $partialCount,
                     'gibbonPersonID'  => $gibbonPersonID,
-					'attendanceOrdering' => $attendanceOrdering,
                 ];
 
                 $terms[$index]['daysOfWeek'] = $daysOfWeek;

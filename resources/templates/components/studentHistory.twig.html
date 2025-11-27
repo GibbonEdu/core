@@ -157,37 +157,22 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {%if day.classLogs %}
             <li class='text-xxs  font-bold mt-2'>{{ __('Class Attendance') }}:</li>
-            {% if day.attendanceOrdering == 'period' %}
-				{# <!--- PERIOD VIEW ---> #}
-				{% for log in day.classLogs %}
-					<li class='{{ log.statusClass }} leading-relaxed'>
-						{% if log.periodName %}
-							<strong>{{ log.periodName }}</strong> -
-						{% endif %}
+			{% for log in day.classLogs %}
+				<li class='{{ log.statusClass }} leading-relaxed'>
+					{% if log.periodName %}
+						<strong>{{ log.periodName }}</strong> -
+					{% endif %}
 
-						{{ log.contextName ? log.contextName : __(log.context) }} -
-						{{ __(log.type) }}{{ log.reason ? ', ' ~ __(log.reason) }}
+					{{ log.contextName ? log.contextName : __(log.context) }} -
+					{{ __(log.type) }}{{ log.reason ? ', ' ~ __(log.reason) }}
 
-						{% if log.timestampTaken %}
-							({{ log.timestampTaken|date(
-								log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'Y-m-d H:i'
-							) }})
-						{% endif %}
-					</li>
-				{% endfor %}
-
-			{% else %}
-				{# <!--- TIMESTAMP VIEW (original Gibbon layout) ---> #}
-				{% for log in day.classLogs %}
-					<li class='{{ log.statusClass }} leading-relaxed'>
-						{{ log.timestampTaken|date(
+					{% if log.timestampTaken %}
+						({{ log.timestampTaken|date(
 							log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'Y-m-d H:i'
-						) }} -
-						{{ __(log.type) }}{{ log.reason ? ', ' ~ __(log.reason) }} -
-						{{ log.contextName ? log.contextName : __(log.context) }}
-					</li>
-				{% endfor %}
-			{% endif %}
+						) }})
+					{% endif %}
+				</li>
+			{% endfor %}
         {% endif %}
     </section>
 {% endmacro tooltip %}

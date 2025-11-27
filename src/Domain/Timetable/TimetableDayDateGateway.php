@@ -152,4 +152,51 @@ class TimetableDayDateGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+	
+	/**
+     * Get all timetable periods for a given student on a specific date.
+     *
+     * @param string $gibbonSchoolYearID
+     * @param string $gibbonPersonID
+     * @param string $date  Y-m-d
+     * @return \Gibbon\Domain\DataSet|array
+     */	
+	public function selectTimetablePeriodsByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $date)
+	{
+		$query = $this
+			->newSelect()
+			->from('gibbonTTDayRowClass')
+			->cols([
+				'gibbonTTDayRowClass.gibbonTTDayRowClassID',
+				'gibbonTTColumnRow.name AS periodName',
+				'gibbonTTColumnRow.timeStart',
+				'gibbonTTColumnRow.timeEnd',
+				'gibbonCourseClass.nameShort AS className',
+				'gibbonCourse.nameShort AS courseName',
+			])
+			->innerJoin('gibbonTTDay', 
+				'gibbonTTDay.gibbonTTDayID = gibbonTTDayRowClass.gibbonTTDayID')
+			->innerJoin('gibbonTTDayDate', 
+				'gibbonTTDayDate.gibbonTTDayID = gibbonTTDay.gibbonTTDayID')
+			->innerJoin('gibbonTTColumnRow', 
+				'gibbonTTColumnRow.gibbonTTColumnRowID = gibbonTTDayRowClass.gibbonTTColumnRowID')
+			->innerJoin('gibbonCourseClass', 
+				'gibbonCourseClass.gibbonCourseClassID = gibbonTTDayRowClass.gibbonCourseClassID')
+			->innerJoin('gibbonCourse', 
+				'gibbonCourse.gibbonCourseID = gibbonCourseClass.gibbonCourseID')
+			->innerJoin(
+				'gibbonCourseClassPerson',
+				'gibbonCourseClassPerson.gibbonCourseClassID = gibbonCourseClass.gibbonCourseClassID'
+			)
+			->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
+			->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+			->where('gibbonCourseClassPerson.gibbonPersonID = :gibbonPersonID')
+			->bindValue('gibbonPersonID', $gibbonPersonID)
+			->where('gibbonTTDayDate.date = :date')
+			->bindValue('date', $date)
+			->orderBy(['gibbonTTColumnRow.timeStart ASC']);
+
+		return $this->runSelect($query);
+	}
+
 }

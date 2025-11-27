@@ -110,7 +110,14 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID, $attendanceOrdering = 'timestamp')
+	/**
+     * Select all attendance logs for a person within a school year.
+     *
+     * @param string $gibbonSchoolYearID
+     * @param string $gibbonPersonID
+     * @return \Gibbon\Domain\DataSet|array
+     */
+    public function selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID)
     {
         $query = $this
             ->newSelect()
@@ -138,57 +145,15 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID')
-            ->bindValue('gibbonPersonID', $gibbonPersonID);
-            
-			// option for changing the ordering of attendance history
-			if ($attendanceOrdering === 'period') {
-				$query->orderBy([
-					'gibbonAttendanceLogPerson.date ASC',
-					'gibbonTTColumnRow.timeStart ASC',
-					'gibbonAttendanceLogPerson.timestampTaken ASC'
-				]);
-			} else {
-				$query->orderBy(['timestampTaken ASC']);
-			}
-
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+			->orderBy([
+				'gibbonAttendanceLogPerson.date ASC',
+				'gibbonTTColumnRow.timeStart ASC',
+				'gibbonAttendanceLogPerson.timestampTaken ASC'
+			]);
 
         return $this->runSelect($query);
     }
-	
-	public function selectTimetablePeriodsByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $date)
-{
-    $query = $this
-        ->newSelect()
-        ->from('gibbonTTDayRowClass')
-        ->cols([
-            'gibbonTTDayRowClass.gibbonTTDayRowClassID',
-            'gibbonTTColumnRow.name AS periodName',
-            'gibbonTTColumnRow.timeStart',
-            'gibbonTTColumnRow.timeEnd',
-            'gibbonCourseClass.nameShort AS className',
-            'gibbonCourse.nameShort AS courseName',
-        ])
-        ->innerJoin('gibbonTTDay', 'gibbonTTDay.gibbonTTDayID = gibbonTTDayRowClass.gibbonTTDayID')
-        ->innerJoin('gibbonTTDayDate', 'gibbonTTDayDate.gibbonTTDayID = gibbonTTDay.gibbonTTDayID')
-        ->innerJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnRowID = gibbonTTDayRowClass.gibbonTTColumnRowID')
-        ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID = gibbonTTDayRowClass.gibbonCourseClassID')
-        ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID = gibbonCourseClass.gibbonCourseID')
-        ->innerJoin(
-            'gibbonCourseClassPerson',
-            'gibbonCourseClassPerson.gibbonCourseClassID = gibbonCourseClass.gibbonCourseClassID'
-        )
-        ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
-        ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-        ->where('gibbonCourseClassPerson.gibbonPersonID = :gibbonPersonID')
-        ->bindValue('gibbonPersonID', $gibbonPersonID)
-        ->where('gibbonTTDayDate.date = :date')
-        ->bindValue('date', $date)
-        ->orderBy([
-            'gibbonTTColumnRow.timeStart ASC',
-        ]);
-
-    return $this->runSelect($query);
-}
 
     public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $formGroups, $dateStart, $dateEnd, $countClassAsSchool)
     {

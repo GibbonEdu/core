@@ -114,19 +114,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
-		
-	$setting = $settingGateway->getSettingByScope('Attendance', 'attendanceOrdering', true);
-	$row = $form->addRow();
-    $row->addLabel($setting['name'], __($setting['nameDisplay']))
-        ->description(__($setting['description']));
-    $row->addSelect($setting['name'])
-        ->fromArray([
-            'timestamp' => __('Ordered by time attendance taken'),
-            'period'    => __('Ordered by timetable period'),
-        ])
-        ->selected($setting['value'])
-        ->required();
-
 
     $sql = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
     $setting = $settingGateway->getSettingByScope('Attendance', 'defaultFormGroupAttendanceType', true);

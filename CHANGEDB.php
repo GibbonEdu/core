@@ -405,5 +405,4 @@ ALTER TABLE `gibbonCalendarEventType` CHANGE `color` `color` VARCHAR(7) NULL, CH
 ++$count;
 $sql[$count][0] = '31.0.00';
 $sql[$count][1] = "
-INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'attendanceOrdering', 'Attendance History Ordering', 'Choose whether student attendance history is shown in time register taken order or timetable period order.', 'timestamp');end
 ";
