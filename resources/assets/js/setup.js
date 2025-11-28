@@ -121,7 +121,8 @@ const gibbonTinyMCEFull = {
     autosave_restore_when_empty: true,
     
     image_advtab: true,
-    images_upload_url: '#',
+    images_upload_url: './modules/User/form_editor_uploadAjaxProcess.php',
+    images_upload_credentials: true,
     
 
     color_map: [

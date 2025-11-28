@@ -309,7 +309,11 @@ class FileUploader
 
         $imageInfo = getimagesize($sourcePath);
         if ($imageInfo === false) {
-            return false;
+            return $sourcePath;
+        }
+
+        if ($imageInfo[0] <= $maxSize && $imageInfo[1] <= $maxSize) {
+            return $sourcePath;
         }
 
         // If the extension is empty for a temporary file, detect the image type and assign the correct extension

@@ -16,7 +16,7 @@
                 tinymce.init( {...gibbonTinyMCEDefaults, ...gibbonTinyMCE<?= ucfirst($mode) ?>, ...{
                     selector: '#'+element.id,
                     height: '<?= (intval($rows ?? 2) * 18) + 40 ?>px',
-                    min_height: '<?= (intval($rows ?? 2) * 18) + 40 ?>px',
+                    min_height: <?= (intval($rows ?? 2) * 18) + 40 ?>,
                 } });
             }
         }"
