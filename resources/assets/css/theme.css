@@ -396,6 +396,12 @@ input[type="color"]::-moz-color-swatch {
     @apply border-gray-400;
 }
 
+/*
+ --------------------------------------------------------------------------
+  TinyMCE
+ --------------------------------------------------------------------------
+*/
+
 .tox-tinymce {
     border: 1px solid hsl(220 14% 84%) !important;
 }
@@ -412,8 +418,17 @@ input[type="color"]::-moz-color-swatch {
     display: none;
 }
 
+.editor-full .tox.tox-fullscreen .tox-menubar {
+    display: flex !important;
+}
+
 .editor-full .tox .tox-menubar .tox-mbtn:last-child {
     margin-left: auto;
+}
+
+.editor-full .tox-toolbar__primary .tox-toolbar__group:first-child[aria-label] {
+    position: absolute;
+    right: 0;
 }
 
 /*

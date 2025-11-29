@@ -64,11 +64,18 @@ const gibbonTinyMCEDefaults = {
     browser_spellcheck: true,
     convert_urls: false,
     relative_urls: false,
-    default_link_target: "_blank",
     
     valid_elements: Gibbon.config.tinymce.valid_elements,
     extended_valid_elements : Gibbon.config.tinymce.extended_valid_elements,
     invalid_elements: '',
+
+    link_default_target: "_blank",
+    link_context_toolbar: true,
+    link_quicklink: true,
+
+    image_advtab: true,
+    images_upload_url: './modules/User/form_editor_uploadAjaxProcess.php',
+    images_upload_credentials: true,
     
     init_instance_callback: (editor) => {
         // Enable validation checking
@@ -83,15 +90,14 @@ const gibbonTinyMCEMinimal = {
     menubar : false,
     toolbar: false,
     statusbar: false,
-    contextmenu: 'link code preview image table',
+    contextmenu: 'cut copy paste pastetext | searchreplace | link | table styles fontfamily fontsize lineheight | forecolor backcolor | removeformat | code preview',
 
-    plugins: 'autoresize table lists link image media quickbars code preview',
-    quickbars_selection_toolbar: 'bold italic underline quicklink | blocks | alignleft aligncenter alignright | bullist numlist |  code',
+    plugins: 'autoresize table lists link image media quickbars code preview searchreplace',
+    quickbars_selection_toolbar: 'bold italic underline | quicklink | h1 h2 h3 | alignleft aligncenter alignright | bullist numlist |  code',
     quickbars_insert_toolbar: 'quickimage media quicktable blockquote hr',
     quickbars_image_toolbar: 'alignleft aligncenter alignright',
 
     autoresize_bottom_margin: 0,
-    images_upload_url: '#',
 };
 
 const gibbonTinyMCEInline = {
@@ -102,29 +108,43 @@ const gibbonTinyMCEInline = {
 const gibbonTinyMCEFull = {
     statusbar: true,
     menubar : 'file edit view insert format table html',
-    contextmenu: 'link code preview image table',
-
-    toolbar_mode: 'sliding',
-    toolbar: 'togglemenubar | bold italic underline  forecolor backcolor |  alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink  | code preview fullscreen  | styleselect fontselect fontsizeselect removeformat | table  | subscript superscript | cut copy paste undo redo | hr charmap | image media | restoredraft',
-    plugins: 'autosave table lists link image media quickbars charmap fullscreen code preview',
+    contextmenu: 'cut copy paste pastetext | searchreplace | link | table | removeformat | code preview ',
+    plugins: 'autosave table lists link image media quickbars wordcount charmap fullscreen code preview searchreplace',
     
     menu: {
-        view: { title: 'View', items: 'code | preview fullscreen' },
-        html: { title: 'HTML', items: 'code' },
+        view: { title: 'View', items: 'code wordcount | preview fullscreen' },
+        html: { title: 'HTML', items: 'code preview' },
     },
 
+    toolbar_mode: 'floating',
+    toolbar_groups: {
+        formatting: {
+          icon: 'typography',
+          items: 'forecolor backcolor | h1 h2 h3 strikethrough blockquote | superscript subscript | removeformat'
+        },
+        styling: {
+            icon: 'paragraph',
+            items: 'blocks fontfamily fontsizeinput'
+        },
+        alignment: {
+            icon: 'align-left',
+            tooltip: 'Align and indent',
+            items: 'alignleft aligncenter alignright alignjustify | indent outdent'
+        },
+        upload: {
+            icon: 'add-file',
+            items: 'image media'
+        },
+    },
+    toolbar: 'togglemenubar | bold italic underline formatting | styling link | alignment bullist numlist | upload table | charmap hr | code preview fullscreen',
+
     quickbars_selection_toolbar: false,
-    quickbars_insert_toolbar: 'quickimage media quicktable',
+    quickbars_insert_toolbar: false,
     quickbars_image_toolbar: 'alignleft aligncenter alignright',
 
     apply_source_formatting : true,
     autosave_restore_when_empty: true,
     
-    image_advtab: true,
-    images_upload_url: './modules/User/form_editor_uploadAjaxProcess.php',
-    images_upload_credentials: true,
-    
-
     color_map: [
         "#BFEDD2", "Light Green", 
         "#FBEEB8", "Light Yellow", 
@@ -152,7 +172,7 @@ const gibbonTinyMCEFull = {
 
     setup: function (editor) {
         editor.ui.registry.addButton("togglemenubar", {
-          tooltip: "Settings",
+          tooltip: "Advanced",
           icon: "settings",
           onAction: function () {
             const menubar = editor.getContainer().querySelector('.tox-menubar');
