@@ -57,6 +57,8 @@
 !/Timetable Admin/**
 !/Tracking
 !/Tracking/**
+!/User
+!/User/**
 !/User Admin
 !/User Admin/**
 
