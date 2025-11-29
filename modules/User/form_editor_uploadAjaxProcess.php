@@ -65,13 +65,18 @@ if (is_uploaded_file($file['tmp_name'])) {
     }
 
     // Verify extension
-    if (!in_array(strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)), ['gif', 'jpg', 'png'] )) {
+    $fileUploader = $container->get(FileUploader::class);
+    $fileTypes = ['pdf', 'doc', 'docx'];
+    $imageTypes = ['gif', 'jpg', 'png', 'pdf', 'doc'];
+
+    if (in_array(strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)), $imageTypes )) {
+        $attachment = $fileUploader->uploadAndResizeImage($file, '', 2048, 85);
+    } elseif (in_array(strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)), $fileTypes )) {
+        $attachment = $fileUploader->uploadFromPost($file);
+    } else {
         header("HTTP/1.1 400 Invalid extension.");
         exit;
     }
-
-    // Upload the file, return the /uploads relative path
-    $attachment = $container->get(FileUploader::class)->uploadAndResizeImage($file, '', 400, 85);
 
     if (!empty($attachment)) {
         echo json_encode(['location' => $session->get('absoluteURL') . '/' . $attachment], JSON_FORCE_OBJECT);

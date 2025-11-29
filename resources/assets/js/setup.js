@@ -54,6 +54,132 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+const gibbonTinyMCEFileUpload = {
+    title: "Insert File",
+    body: {
+        type: "panel",
+        items: [
+            {
+                type: "urlinput",
+                name: "file_upload",
+                filetype: "file",
+                label: "Enter a URL or choose a file",
+                picker_text: 'Browse files',
+            },
+        ],
+    },
+    buttons: [
+        {
+            type: "cancel",
+            name: "closeButton",
+            text: "Cancel",
+        },
+        {
+            type: "submit",
+            name: "submitButton",
+            text: "Upload",
+            buttonType: "primary",
+        },
+    ],
+    onSubmit: (api) => {
+        const data = api.getData();
+
+        if (data.file_upload.value == '') {
+            tinymce.activeEditor.notificationManager.open({ text: 'Nothing selected', type: 'warning' });
+            api.close();
+            return;
+        }
+
+        const notification = tinymce.activeEditor.notificationManager.open({ text: 'Uploading', progressBar: true });
+        tinymce.activeEditor.setProgressState(true);
+
+        const success = function (location) {
+            const filename = location.split('/').pop();
+            tinymce.activeEditor.setProgressState(false);
+            tinymce.activeEditor.notificationManager.close();
+            tinymce.activeEditor.execCommand("mceInsertContent", false, `<p><a href="${location}" data-fileupload="${data.file_upload.meta.title ?? location}">${data.file_upload.meta.title ?? filename}</a></p>`);
+
+            api.close();
+        };
+
+        const failure = function (message) {
+            tinymce.activeEditor.setProgressState(false);
+            tinymce.activeEditor.notificationManager.close();
+            tinymce.activeEditor.notificationManager.open({ text: message, type: 'error' });
+            api.close();
+        };
+
+        var xhr, formData;
+        xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        // If a value is provided, check that it exists
+        if (!data.file_upload.meta.title) {
+            try {
+                xhr.open('HEAD', data.file_upload.value, false); 
+                xhr.send(null);
+
+                if (xhr.status === 200) {
+                    success(data.file_upload.value);
+                    return;
+                } else {
+                    failure("HTTP Error: " + xhr.status);
+                    return;
+                }
+            } catch (error) {
+                failure("HTTP Error: " + error);
+                return;
+            }
+        }
+
+        
+        xhr.open("POST", "./modules/User/form_editor_uploadAjaxProcess.php");
+
+        xhr.upload.onprogress = function (e) {
+            notification.progressBar.value((e.loaded / e.total) * 100);
+        };
+
+        xhr.onload = function () {
+            var json;
+
+            if (xhr.status === 403) {
+                failure("HTTP Error: " + xhr.status);
+                return;
+            }
+
+            if (xhr.status < 200 || xhr.status >= 300) {
+                failure("HTTP Error: " + xhr.status);
+                return;
+            }
+
+            json = JSON.parse(xhr.responseText);
+
+            if (!json || typeof json.location != "string") {
+                failure("Invalid JSON: " + xhr.responseText);
+                return;
+            }
+
+            success(json.location);
+        };
+
+        xhr.onerror = function () {
+            failure("XHR Error Code: " +xhr.status);
+        };
+
+        try {
+            const blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+            const blobInfo = blobCache.get(data.file_upload.meta.id);
+
+            formData = new FormData();
+            formData.append("file", blobInfo.blob(), data.file_upload.meta.title );
+
+            xhr.send(formData);
+        } catch (e) {
+            failure("Unreadable file type");
+        }
+    },
+};
+
 const gibbonTinyMCEDefaults = {
     license_key: 'gpl',
     width: '100%',
@@ -76,7 +202,14 @@ const gibbonTinyMCEDefaults = {
     image_advtab: true,
     images_upload_url: './modules/User/form_editor_uploadAjaxProcess.php',
     images_upload_credentials: true,
-    
+    // image_class_list: [
+    //     { title: 'None', value: '' },
+    //     { title: 'No border', value: 'img_no_border' },
+    //     { title: 'Green border', value: 'img_green_border' },
+    //     { title: 'Blue border', value: 'img_blue_border' },
+    //     { title: 'Red border', value: 'img_red_border' }
+    //   ],
+
     init_instance_callback: (editor) => {
         // Enable validation checking
         editor.on('blur', (e) => {
@@ -124,7 +257,7 @@ const gibbonTinyMCEFull = {
         },
         styling: {
             icon: 'paragraph',
-            items: 'blocks fontfamily fontsizeinput'
+            items: 'blocks fontfamily fontsizeinput lineheight'
         },
         alignment: {
             icon: 'align-left',
@@ -133,17 +266,51 @@ const gibbonTinyMCEFull = {
         },
         upload: {
             icon: 'add-file',
-            items: 'image media'
+            items: 'image media fileupload'
         },
     },
     toolbar: 'togglemenubar | bold italic underline formatting | styling link | alignment bullist numlist | upload table | charmap hr | code preview fullscreen',
 
     quickbars_selection_toolbar: false,
     quickbars_insert_toolbar: false,
-    quickbars_image_toolbar: 'alignleft aligncenter alignright',
+    quickbars_image_toolbar: 'image | alignleft aligncenter alignright | imagedownload imagedelete',
 
     apply_source_formatting : true,
     autosave_restore_when_empty: true,
+
+    file_picker_types: 'file image media',
+
+    /* and here's our custom image picker*/
+    file_picker_callback: (cb, value, meta) => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+
+        if (meta.filetype == 'file') {
+            input.setAttribute('accept', '.jpg,.jpeg,.gif,.png,.pdf,.doc,.docx');
+        }
+        if (meta.filetype == 'image') {
+            input.setAttribute('accept', 'image/*');
+        }
+
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                const id = 'blobid' + (new Date()).getTime();
+                const blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+                const base64 = reader.result.split(',')[1];
+                const blobInfo = blobCache.create(id, file, base64);
+                blobCache.add(blobInfo);
+
+                /* call the callback and populate the Title field with the file name */
+                cb(blobInfo.blobUri(), { title: file.name, id: id });
+            });
+            reader.readAsDataURL(file);
+        });
+
+        input.click();
+    },
     
     color_map: [
         "#BFEDD2", "Light Green", 
@@ -181,6 +348,99 @@ const gibbonTinyMCEFull = {
             }
           },
         });
+
+        editor.ui.registry.addButton('fileupload', {
+            icon: 'new-document',
+            tooltip: 'Insert File',
+            onAction: () => editor.windowManager.open(gibbonTinyMCEFileUpload)
+        });
+
+        editor.ui.registry.addButton('imagedownload', {
+            icon: 'save',
+            tooltip: 'Download',
+            onAction: function() {
+                const node = editor.selection.getNode();
+                downloadLink = document.createElement('a');
+                downloadLink.href = node.src;
+                downloadLink.setAttribute('download', '');
+                downloadLink.target = 'downloadIframe';
+                downloadLink.click();
+            }
+        });
+
+        editor.ui.registry.addButton('imagedelete', {
+            icon: 'remove',
+            tooltip: 'Delete',
+            onAction: function() {
+                const node = editor.selection.getNode();
+                editor.dom.remove(node);
+            }
+        });
+
+        const isFileLinkElement = (node) => {
+            return node.nodeName.toLowerCase() === 'a' && node.href && node.dataset.fileupload;
+          }
+      
+          const getFileLinkElement = () => {
+            const node = editor.selection.getNode();
+            return isFileLinkElement(node) ? node : null;
+          };
+      
+          editor.ui.registry.addContextForm("fileedit", {
+              launch: {
+                  type: "contextformbutton",
+                  icon: "new-document",
+              },
+              label: "File",
+              predicate: isFileLinkElement,
+              initValue: () => {
+                  const elm = getFileLinkElement();
+                  return !!elm ? elm.dataset.fileupload : "";
+              },
+              commands: [
+                  {
+                      type: "contextformbutton",
+                      icon: "new-tab",
+                      tooltip: "Open",
+                      primary: true,
+                      onAction: (formApi) => {
+                          const elm = getFileLinkElement();
+                          window.open(elm.href, "_blank");
+                          formApi.hide();
+                      },
+                  },
+                  {
+                      type: "contextformbutton",
+                      icon: "save",
+                      tooltip: "Download",
+                      onAction: (formApi) => {
+                            const elm = getFileLinkElement();
+
+                            downloadLink = document.createElement('a');
+                            downloadLink.href = elm.href;
+                            downloadLink.setAttribute('download', '');
+                            downloadLink.target = 'downloadIframe';
+                            downloadLink.click();
+
+                            formApi.hide();
+                      },
+                  },
+                  {
+                      type: "contextformbutton",
+                      icon: "remove",
+                      tooltip: "Delete",
+                      onAction: (formApi) => {
+                        editor.windowManager.confirm('Are you sure you want to delete this item?', (state) => {
+                            if (!state) return;
+                            const elm = getFileLinkElement();
+                            editor.dom.remove(elm);
+                          });
+                          
+                          formApi.hide();
+                      },
+                  },
+              ],
+          });
       },
 
     init_instance_callback: (editor) => {
