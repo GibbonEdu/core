@@ -20,5 +20,5 @@
                 } });
             }
         }"
-        x-init="loadEditor($el)"><?= $value ?? '' ?></textarea>
+        x-init="loadEditor($el)"><?= htmlentities($value ?? '') ?></textarea>
 </div>
