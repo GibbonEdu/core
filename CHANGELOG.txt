@@ -23,12 +23,14 @@ v31.0.00
 --------
 
     Headlines
+        Improved text editing with drag-drop image uploads and more formatting options
 
     Security
 
     Changes With Important Notices
 
     Tweaks & Additions
+        System: updated TinyMCE to version 8 and added a minimal mode to Editor fields
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
 
