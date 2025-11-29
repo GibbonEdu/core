@@ -1,4 +1,4 @@
-<div class="editor-<?= $mode ?> my-2 bg-white ring-1 ring-inset ring-gray-200" style="min-height: <?= (intval($rows ?? 2) * 18) + 40 ?>px; border-radius: 10px; --tw-ring-color:rgb(208, 212, 220)">
+<div class="editor-<?= $mode ?> relative my-2 bg-white ring-1 ring-inset ring-gray-200" style="min-height: <?= (intval($rows ?? 2) * 18) + 40 ?>px; border-radius: 10px; --tw-ring-color:rgb(208, 212, 220)">
     <textarea class="tinymce w-full focus:shadow-none focus:border-gray-500 hidden" 
         name="<?= $name ?>" 
         id="<?= $id ?>" 
