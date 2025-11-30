@@ -66,8 +66,8 @@ if (is_uploaded_file($file['tmp_name'])) {
 
     // Verify extension
     $fileUploader = $container->get(FileUploader::class);
-    $fileTypes = ['pdf', 'doc', 'docx'];
-    $imageTypes = ['gif', 'jpg', 'png', 'pdf', 'doc'];
+    $fileTypes = $fileUploader->getFileExtensions('Document');
+    $imageTypes = $fileUploader->getFileExtensions('Graphics/Design');
 
     if (in_array(strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)), $imageTypes )) {
         $attachment = $fileUploader->uploadAndResizeImage($file, '', 2048, 85);

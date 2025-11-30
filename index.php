@@ -262,6 +262,7 @@ if ($isLoggedIn) {
  * Allow the URL to override system default from the i18l param
  */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
+$localeCode = preg_replace('/[^a-zA-Z\-]/', '', $localeCode);
 
 // Allow the URL to override system default from the i18l param
 if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
@@ -277,6 +278,17 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
     }
 }
 
+// Check for TinyMCE locale file and load it if available
+if (!empty($localeCode)) {
+    $localeBaseCode = substr($localeCode, 0, 2);
+    $tinyMCELocale = null;
+    if (file_exists($session->get('absolutePath')."/lib/tinymce/langs/{$localeCode}.js")) {
+        $tinyMCELocale = $localeCode;
+    } elseif (file_exists($session->get('absolutePath')."/lib/tinymce/langs/{$localeBaseCode}.js")) {
+        $tinyMCELocale = $localeBaseCode;
+    }
+}
+
 /**
  * JAVASCRIPT
  *
@@ -286,7 +298,25 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
 $javascriptConfig = [
     'config' => [
         'tinymce' => [
-            'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
+            'locale'            => $tinyMCELocale,
+            'locale_rtl'        => $session->get('i18n')['rtl'] == 'Y' ? 'rtl' : 'ltr',
+            'valid_elements'    => $settingGateway->getSettingByScope('System', 'allowableHTML'),
+            'delete_confirm'    => __('Are you sure you want to delete this item?'),
+            'advanced_options'  => __('Advanced Options'),
+            'select_file_label' => __('Enter a URL or select a file'),
+            'select_file'       => __('Select File'),
+            'upload_file'       => __('Upload File'),
+            'invalid_file'      => __('Invalid File Type'),
+            'uploading'         => __('Uploading'),
+            'upload'            => __('Upload'),
+            'download'          => __('Download'),
+            'cancel'            => __('Cancel'),
+            'delete'            => __('Delete'),
+            'view'              => __('View'),
+            'html'              => __('HTML'),
+            'file'              => __('File'),
+            'open'              => __('Open'),
+            'error'             => __('Error'),
         ],
         'htmx' => [
             'unload_confirm' => __("Are you sure you want to leave this page? Information you've entered may not be saved."),

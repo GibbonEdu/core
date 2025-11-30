@@ -54,8 +54,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+/**
+ * TinyMCE
+ *
+ * Create pre-configured objects for different Editor modes, to be loaded 
+ * as needed in the Editor.template.php file. Hook into settings using 
+ * Gibbon.config.tinymce from index.php.
+ */
 const gibbonTinyMCEFileUpload = {
-    title: "Insert File",
+    title: Gibbon.config.tinymce.upload_file,
     body: {
         type: "panel",
         items: [
@@ -63,8 +70,8 @@ const gibbonTinyMCEFileUpload = {
                 type: "urlinput",
                 name: "file_upload",
                 filetype: "file",
-                label: "Enter a URL or choose a file",
-                picker_text: 'Browse files',
+                label: Gibbon.config.tinymce.select_file_label,
+                picker_text: Gibbon.config.tinymce.select_file,
             },
         ],
     },
@@ -72,12 +79,12 @@ const gibbonTinyMCEFileUpload = {
         {
             type: "cancel",
             name: "closeButton",
-            text: "Cancel",
+            text: Gibbon.config.tinymce.cancel,
         },
         {
             type: "submit",
             name: "submitButton",
-            text: "Upload",
+            text: Gibbon.config.tinymce.upload,
             buttonType: "primary",
         },
     ],
@@ -85,12 +92,12 @@ const gibbonTinyMCEFileUpload = {
         const data = api.getData();
 
         if (data.file_upload.value == '') {
-            tinymce.activeEditor.notificationManager.open({ text: 'Nothing selected', type: 'warning' });
+            tinymce.activeEditor.notificationManager.open({ text: Gibbon.config.tinymce.invalid_file, type: 'warning' });
             api.close();
             return;
         }
 
-        const notification = tinymce.activeEditor.notificationManager.open({ text: 'Uploading', progressBar: true });
+        const notification = tinymce.activeEditor.notificationManager.open({ text: Gibbon.config.tinymce.uploading, progressBar: true });
         tinymce.activeEditor.setProgressState(true);
 
         const success = function (location) {
@@ -123,15 +130,14 @@ const gibbonTinyMCEFileUpload = {
                     success(data.file_upload.value);
                     return;
                 } else {
-                    failure("HTTP Error: " + xhr.status);
+                    failure(Gibbon.config.tinymce.error + ": " + xhr.status);
                     return;
                 }
             } catch (error) {
-                failure("HTTP Error: " + error);
+                failure(Gibbon.config.tinymce.error + ": " + error);
                 return;
             }
         }
-
         
         xhr.open("POST", "./modules/User/form_editor_uploadAjaxProcess.php");
 
@@ -143,19 +149,19 @@ const gibbonTinyMCEFileUpload = {
             var json;
 
             if (xhr.status === 403) {
-                failure("HTTP Error: " + xhr.status);
+                failure(Gibbon.config.tinymce.error + ": " + xhr.status);
                 return;
             }
 
             if (xhr.status < 200 || xhr.status >= 300) {
-                failure("HTTP Error: " + xhr.status);
+                failure(Gibbon.config.tinymce.error + ": " + xhr.status);
                 return;
             }
 
             json = JSON.parse(xhr.responseText);
 
             if (!json || typeof json.location != "string") {
-                failure("Invalid JSON: " + xhr.responseText);
+                failure(Gibbon.config.tinymce.error + ": " + xhr.responseText);
                 return;
             }
 
@@ -163,7 +169,7 @@ const gibbonTinyMCEFileUpload = {
         };
 
         xhr.onerror = function () {
-            failure("XHR Error Code: " +xhr.status);
+            failure(Gibbon.config.tinymce.error + ": " + +xhr.status);
         };
 
         try {
@@ -175,12 +181,14 @@ const gibbonTinyMCEFileUpload = {
 
             xhr.send(formData);
         } catch (e) {
-            failure("Unreadable file type");
+            failure(Gibbon.config.tinymce.invalid_file);
         }
     },
 };
 
 const gibbonTinyMCEDefaults = {
+    language: Gibbon.config.tinymce.locale,
+    directionality: Gibbon.config.tinymce.locale_rtl,
     license_key: 'gpl',
     width: '100%',
     resize: true,
@@ -245,8 +253,8 @@ const gibbonTinyMCEFull = {
     plugins: 'autosave table lists link image media quickbars wordcount charmap fullscreen code preview searchreplace',
     
     menu: {
-        view: { title: 'View', items: 'code wordcount | preview fullscreen' },
-        html: { title: 'HTML', items: 'code preview' },
+        view: { title: Gibbon.config.tinymce.view, items: 'code wordcount | preview fullscreen' },
+        html: { title: Gibbon.config.tinymce.html, items: 'code preview' },
     },
 
     toolbar_mode: 'floating',
@@ -261,7 +269,6 @@ const gibbonTinyMCEFull = {
         },
         alignment: {
             icon: 'align-left',
-            tooltip: 'Align and indent',
             items: 'alignleft aligncenter alignright alignjustify | indent outdent'
         },
         upload: {
@@ -285,9 +292,6 @@ const gibbonTinyMCEFull = {
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
 
-        if (meta.filetype == 'file') {
-            input.setAttribute('accept', '.jpg,.jpeg,.gif,.png,.pdf,.doc,.docx');
-        }
         if (meta.filetype == 'image') {
             input.setAttribute('accept', 'image/*');
         }
@@ -339,7 +343,7 @@ const gibbonTinyMCEFull = {
 
     setup: function (editor) {
         editor.ui.registry.addButton("togglemenubar", {
-          tooltip: "Advanced",
+          tooltip: Gibbon.config.tinymce.advanced_options,
           icon: "settings",
           onAction: function () {
             const menubar = editor.getContainer().querySelector('.tox-menubar');
@@ -351,13 +355,13 @@ const gibbonTinyMCEFull = {
 
         editor.ui.registry.addButton('fileupload', {
             icon: 'new-document',
-            tooltip: 'Insert File',
+            tooltip: Gibbon.config.tinymce.upload_file,
             onAction: () => editor.windowManager.open(gibbonTinyMCEFileUpload)
         });
 
         editor.ui.registry.addButton('imagedownload', {
             icon: 'save',
-            tooltip: 'Download',
+            tooltip: Gibbon.config.tinymce.download,
             onAction: function() {
                 const node = editor.selection.getNode();
                 downloadLink = document.createElement('a');
@@ -370,7 +374,7 @@ const gibbonTinyMCEFull = {
 
         editor.ui.registry.addButton('imagedelete', {
             icon: 'remove',
-            tooltip: 'Delete',
+            tooltip: Gibbon.config.tinymce.delete,
             onAction: function() {
                 const node = editor.selection.getNode();
                 editor.dom.remove(node);
@@ -391,7 +395,7 @@ const gibbonTinyMCEFull = {
                   type: "contextformbutton",
                   icon: "new-document",
               },
-              label: "File",
+              label: Gibbon.config.tinymce.file,
               predicate: isFileLinkElement,
               initValue: () => {
                   const elm = getFileLinkElement();
@@ -401,7 +405,7 @@ const gibbonTinyMCEFull = {
                   {
                       type: "contextformbutton",
                       icon: "new-tab",
-                      tooltip: "Open",
+                      tooltip: Gibbon.config.tinymce.open,
                       primary: true,
                       onAction: (formApi) => {
                           const elm = getFileLinkElement();
@@ -412,7 +416,7 @@ const gibbonTinyMCEFull = {
                   {
                       type: "contextformbutton",
                       icon: "save",
-                      tooltip: "Download",
+                      tooltip: Gibbon.config.tinymce.download,
                       onAction: (formApi) => {
                             const elm = getFileLinkElement();
 
@@ -428,9 +432,9 @@ const gibbonTinyMCEFull = {
                   {
                       type: "contextformbutton",
                       icon: "remove",
-                      tooltip: "Delete",
+                      tooltip: Gibbon.config.tinymce.delete,
                       onAction: (formApi) => {
-                        editor.windowManager.confirm('Are you sure you want to delete this item?', (state) => {
+                        editor.windowManager.confirm(Gibbon.config.tinymce.delete_confirm, (state) => {
                             if (!state) return;
                             const elm = getFileLinkElement();
                             editor.dom.remove(elm);
