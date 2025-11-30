@@ -100,7 +100,7 @@ class DatabaseFormFactory extends FormFactory
         }
         $results = $this->pdo->select($sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSearchSelect($name)->fromResults($results)->placeholder();
     }
 
     /*
@@ -245,7 +245,7 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
-        return $this->createSelect($name)->fromArray($classes)->placeholder();
+        return $this->createSearchSelect($name)->fromArray($classes)->placeholder();
     }
 
     public function createCheckboxYearGroup($name)
@@ -739,9 +739,9 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql);
 
         if (!$all)
-            return $this->createSelect($name)->fromResults($results)->placeholder();
+            return $this->createSearchSelect($name)->fromResults($results)->placeholder();
         else
-            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
+            return $this->createSearchSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
     public function createSelectSpace($name, $params = [])

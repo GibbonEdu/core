@@ -349,7 +349,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         }
 
         $row = $form->addRow()->addClass('flex');
-            $row->addSelect('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
+            $row->addSearchSelect('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
                 ->setID('gibbonCourseClassIDSidebar')
                 ->fromArray($classes)
                 ->selected($gibbonCourseClassID)
@@ -437,7 +437,7 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
         $form->addHiddenValue('viewBy', 'class');
 
         $row = $form->addRow()->addClass('flex');
-            $row->addSelect('gibbonCourseID')
+            $row->addSearchSelect('gibbonCourseID')
                 ->setID('gibbonCourseIDSidebar')
                 ->fromArray($courses)
                 ->selected($gibbonCourseID)
