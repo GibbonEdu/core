@@ -68,10 +68,13 @@ if (is_uploaded_file($file['tmp_name'])) {
     $fileUploader = $container->get(FileUploader::class);
     $fileTypes = $fileUploader->getFileExtensions('Document');
     $imageTypes = $fileUploader->getFileExtensions('Graphics/Design');
+    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-    if (in_array(strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)), $imageTypes )) {
+    if (in_array($fileExtension, $imageTypes)) {
+        $fileUploader->setFileExtensions($imageTypes);
         $attachment = $fileUploader->uploadAndResizeImage($file, '', 2048, 85);
-    } elseif (in_array(strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)), $fileTypes )) {
+    } elseif (in_array($fileExtension, $fileTypes)) {
+        $fileUploader->setFileExtensions($fileTypes);
         $attachment = $fileUploader->uploadFromPost($file);
     } else {
         header("HTTP/1.1 400 Invalid extension.");
