@@ -112,7 +112,7 @@
             
         </select>
         
-        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full min-w-52 overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.100ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
+        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full min-w-52 overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.75ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
         style="display:none;">
 
             <!-- Search  -->
@@ -133,12 +133,12 @@
 
                     <ul class="list-none flex flex-col m-0 p-1">
                         <template x-if="group.label != ''">
-                            <li x-text="group.label" class="px-3 py-1.5 text-sm text-gray-700 font-semibold"></li>
+                            <li x-text="group.label" class="px-3 py-1 text-sm  font-semibold"></li>
                         </template>
 
                         <template x-for="(item, index) in group.options" x-bind:key="item.value">
 
-                            <li class="combobox-option inline-flex justify-between rounded px-3 py-1.5 text-sm text-gray-700 hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
+                            <li class="combobox-option inline-flex justify-between rounded px-3 py-1 text-sm  hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
 
                                 <!-- Label  -->
                                 <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label"></span>

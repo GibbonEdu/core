@@ -427,6 +427,7 @@ input[type="color"]::-moz-color-swatch {
     margin-left: auto;
 }
 
+.editor-full .tox-toolbar .tox-toolbar__group:first-child[aria-label],
 .editor-full .tox-toolbar__primary .tox-toolbar__group:first-child[aria-label] {
     position: absolute;
     right: 0;
