@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
 			$row = $form->addRow();
 				$row->addLabel('gibbonDepartmentID', __('Learning Area'));
-				$row->addSelect('gibbonDepartmentID')->fromResults($results)->placeholder();
+				$row->addSearchSelect('gibbonDepartmentID')->fromResults($results)->placeholder();
 			
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));

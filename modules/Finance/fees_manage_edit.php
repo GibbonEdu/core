@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
             $sql = "SELECT gibbonFinanceFeeCategoryID AS value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('gibbonFinanceFeeCategoryID', __('Category'));
-                $row->addSelect('gibbonFinanceFeeCategoryID')->fromQuery($pdo, $sql, $data)->fromArray(array('1' => __('Other')))->required()->placeholder();
+                $row->addSearchSelect('gibbonFinanceFeeCategoryID')->fromQuery($pdo, $sql, $data)->fromArray(array('1' => __('Other')))->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('fee', __('Fee'))

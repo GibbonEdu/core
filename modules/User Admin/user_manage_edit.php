@@ -500,10 +500,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             // MISCELLANEOUS
             $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
-            $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('gibbonHouseID', __('House'));
-                $row->addSelect('gibbonHouseID')->fromQuery($pdo, $sql)->placeholder();
+                $row->addSelectHouse('gibbonHouseID')->placeholder();
 
             if ($student) {
                 $row = $form->addRow();

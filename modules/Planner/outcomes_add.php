@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             }
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
-                $row->addSelect('gibbonDepartmentID')->fromResults($results)->required()->placeholder();
+                $row->addSearchSelect('gibbonDepartmentID')->fromResults($results)->required()->placeholder();
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'));

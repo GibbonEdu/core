@@ -48,12 +48,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     $sql = "SELECT gibbonModuleID as value, name FROM gibbonModule WHERE active='Y' ORDER BY name";
     $row = $form->addRow();
         $row->addLabel('gibbonModuleID', __('Module'));
-        $row->addSelect('gibbonModuleID')->fromQuery($pdo, $sql)->selected($gibbonModuleID)->placeholder();
+        $row->addSearchSelect('gibbonModuleID')->fromQuery($pdo, $sql)->selected($gibbonModuleID)->placeholder();
 
     $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole ORDER BY type, nameShort";
     $row = $form->addRow();
         $row->addLabel('gibbonRoleID', __('Role'));
-        $row->addSelect('gibbonRoleID')->fromQuery($pdo, $sql)->selected($gibbonRoleID)->placeholder();
+        $row->addSearchSelect('gibbonRoleID')->fromQuery($pdo, $sql)->selected($gibbonRoleID)->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($session, __('Clear Filters'));

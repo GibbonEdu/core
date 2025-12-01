@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = $settingGateway->getSettingByScope('System', 'defaultAssessmentScale', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selected($setting['value']);
+        $row->addSearchSelect($setting['name'])->fromQuery($pdo, $sql)->selected($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();

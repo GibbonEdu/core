@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $stylesheets = $prototypeSectionGateway->selectPrototypeStylesheets();
     $row = $form->addRow();
     $row->addLabel('stylesheet', __('Stylesheet'));
-    $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
+    $row->addSearchSelect('stylesheet')->fromResults($stylesheets)->placeholder();
 
     $fontFamilies = $templateFontGateway->selectFontFamilies();
     $row = $form->addRow();

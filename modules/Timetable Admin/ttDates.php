@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
             $table = $form->addRow()->addTable()->setClass('w-full smallIntBorder');
             $row = $table->addRow();
                 $row->addLabel('gibbonTTDayID', __('Day'));
-                $row->addSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->addClass('mediumWidth');
+                $row->addSearchSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->addClass('mediumWidth');
 
             $row = $table->addRow();
                 $row->addLabel('overwrite', __('Overwrite'))->description(__('Should existing timetable days be replaced by the new ones?'));

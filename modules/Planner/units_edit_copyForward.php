@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                             $form->addRow()->addHeading('Target', __('Target'));
                             $row = $form->addRow();
                                 $row->addLabel('gibbonSchoolYearIDCopyTo', __('Year'));
-                                $row->addSelect('gibbonSchoolYearIDCopyTo')->fromQuery($pdo, $sql)->placeholder()->isRequired();
+                                $row->addSearchSelect('gibbonSchoolYearIDCopyTo')->fromQuery($pdo, $sql)->placeholder()->isRequired();
 
 
                                             try {

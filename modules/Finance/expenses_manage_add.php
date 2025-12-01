@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 			$sql = "SELECT gibbonFinanceBudgetID as value, name FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name";
 			$row = $form->addRow();
 				$row->addLabel('gibbonFinanceBudgetID', __('Budget'));
-				$row->addSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->required()->placeholder();
+				$row->addSearchSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->required()->placeholder();
 
 			$row = $form->addRow();
 				$row->addLabel('title', __('Title'));

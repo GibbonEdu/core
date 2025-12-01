@@ -199,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
                 $row = $form->addRow();
                     $row->addLabel('gibbonCourseClassID', __('Class'));
-                    $row->addSelect('gibbonCourseClassID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+                    $row->addSearchSelect('gibbonCourseClassID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
                 $sql = "SELECT GROUP_CONCAT(gibbonCourseClassID SEPARATOR ' ') AS chainedTo, gibbonUnit.gibbonUnitID as value, name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE active='Y' AND running='Y'  GROUP BY gibbonUnit.gibbonUnitID ORDER BY ordering, name";
                 $row = $form->addRow();

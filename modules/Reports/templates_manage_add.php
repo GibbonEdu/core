@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
     $stylesheets = $container->get(ReportPrototypeSectionGateway::class)->selectPrototypeStylesheets();
     $row = $form->addRow();
     $row->addLabel('stylesheet', __('Stylesheet'));
-    $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
+    $row->addSearchSelect('stylesheet')->fromResults($stylesheets)->placeholder();
 
     $flags = ['001' => __('mPDF Renderer - Slower, Better HTML Support'), '000' => __('TCPDF Renderer - Faster, Limited HTML'),];
     $row = $form->addRow();

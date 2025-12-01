@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
-                $row->addSelect('gibbonDepartmentID')->fromResults($results)->required()->placeholder();
+                $row->addSearchSelect('gibbonDepartmentID')->fromResults($results)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
             $row = $form->addRow();
                 $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Link columns to grades on a scale?'));
-                $row->addSelect('gibbonScaleID')->fromResults($results)->placeholder();
+                $row->addSearchSelect('gibbonScaleID')->fromResults($results)->placeholder();
 
             $form->addRow()->addHeading('Rubric Design', __('Rubric Design'));
 

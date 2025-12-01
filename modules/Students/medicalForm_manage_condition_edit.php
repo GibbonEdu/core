@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('name', __('Condition Name'));
-                $row->addSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
+                $row->addSearchSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('gibbonAlertLevelID', __('Risk'));

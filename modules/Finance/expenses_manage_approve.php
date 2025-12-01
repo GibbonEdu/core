@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                 $sql = "SELECT gibbonFinanceBudgetID as value, name FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name";
                                 $row = $form->addRow();
                                     $row->addLabel('gibbonFinanceBudgetID', __('Budget'));
-                                    $row->addSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->required()->placeholder()->selected($values['gibbonFinanceBudgetID']);
+                                    $row->addSearchSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->required()->placeholder()->selected($values['gibbonFinanceBudgetID']);
                             } else {
                                 $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
 

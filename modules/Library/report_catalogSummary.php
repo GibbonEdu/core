@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibbonSpaceID', __('Location'));
-            $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, array())->selected($gibbonSpaceID)->placeholder();
+            $row->addSearchSelect('gibbonSpaceID')->fromQuery($pdo, $sql, array())->selected($gibbonSpaceID)->placeholder();
 
         $options = array("Available" => __("Available"), "Decommissioned" => __("Decommissioned"), "In Use" => __("In Use"), "Lost" => __("Lost"), "On Loan" => __("On Loan"), "Repair" => __("Repair"), "Reserved" => __("Reserved"));
         $row = $form->addRow();

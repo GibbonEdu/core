@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
         $students = $container->get(StudentGateway::class)->selectUnenrolledStudentsBySchoolYear($gibbonSchoolYearID);
         $row = $form->addRow();
            $row->addLabel('gibbonPersonID', __('Student'))->description(__('Only includes students not enrolled in specified year.'));
-           $row->addSelect('gibbonPersonID')->fromResults($students)->required()->placeholder();
+           $row->addSearchSelect('gibbonPersonID')->fromResults($students)->required()->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));

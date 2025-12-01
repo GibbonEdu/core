@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 }
                 $row = $form->addRow();
                     $row->addLabel('gibbonCourseClassID', __('Class'));
-                    $row->addSelect('gibbonCourseClassID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+                    $row->addSearchSelect('gibbonCourseClassID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
             }
 
             if ($viewBy == 'class') {

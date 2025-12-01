@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
                 ORDER BY gibbonSpace.name";
             $row = $form->addRow();
                 $row->addLabel('gibbonSpaceID', __('Facility'));
-                $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, $data)->placeholder()->required();
+                $row->addSearchSelect('gibbonSpaceID')->fromQuery($pdo, $sql, $data)->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('usageType', __('Usage Type'));

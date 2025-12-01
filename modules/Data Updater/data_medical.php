@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 								$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 								$row = $form->addRow();
 									$row->addLabel('name'.$count, __('Condition Name'));
-									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->required()->placeholder()->selected($rowCond['name']);
+									$row->addSearchSelect('name'.$count)->fromQuery($pdo, $sql)->required()->placeholder()->selected($rowCond['name']);
 
 								$row = $form->addRow();
 									$row->addLabel('gibbonAlertLevelID'.$count, __('Risk'));
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('name', __('Condition Name'));
-							$row->addSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
+							$row->addSearchSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
 
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('gibbonAlertLevelID', __('Risk'));

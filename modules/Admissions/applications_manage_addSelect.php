@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $row = $form->addRow()->addClass('typeAccount');
         $row->addLabel('gibbonAdmissionsAccountID', __('Admissions Account'));
-        $row->addSelect('gibbonAdmissionsAccountID')->fromArray($accounts)->required()->placeholder();
+        $row->addSearchSelect('gibbonAdmissionsAccountID')->fromArray($accounts)->required()->placeholder();
 
     $sql = "SELECT gibbonRole.category as groupBy, gibbonPersonID as value, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName, ' (', gibbonPerson.username, ')') as name
             FROM gibbonPerson
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $row = $form->addRow()->addClass('typePerson');
         $row->addLabel('gibbonPersonID', __('Person'));
-        $row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql, [], 'groupBy')->required();
+        $row->addSearchSelect('gibbonPersonID')->fromQuery($pdo, $sql, [], 'groupBy')->required();
 
     $row = $form->addRow();
         $row->addFooter();

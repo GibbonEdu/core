@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $results = $container->get(GradeScaleGateway::class)->selectActiveGradeScales();
             $row = $form->addRow();
                 $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Grade scale used to control values that can be assigned.'));
-                $row->addSelect('gibbonScaleID')->fromResults($results)->required()->placeholder();
+                $row->addSearchSelect('gibbonScaleID')->fromResults($results)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('yearGroups', __('Year Groups'))->description(__('Year groups to which this field is relevant.'));

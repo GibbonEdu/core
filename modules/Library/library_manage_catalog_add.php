@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $sql = "SELECT gibbonDepartmentID AS value, name FROM gibbonDepartment ORDER BY name";
     $row = $form->addRow()->addClass('general');
         $row->addLabel('gibbonDepartmentID', __('Department'))->description(__('Which department is responsible for the item?'));
-        $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, array())->placeholder();
+        $row->addSearchSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, array())->placeholder();
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('bookable', __('Bookable As Facility?'))->description(__('Can item be booked via Facility Booking in Timetable? Useful for laptop carts, etc.'));

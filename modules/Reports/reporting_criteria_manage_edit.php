@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         $criteriaTypes = $container->get(ReportingCriteriaTypeGateway::class)->selectActiveCriteriaTypes();
         $row = $form->addRow();
             $row->addLabel('gibbonReportingCriteriaTypeID', __('Type'));
-            $row->addSelect('gibbonReportingCriteriaTypeID')->fromResults($criteriaTypes)->required()->placeholder();
+            $row->addSearchSelect('gibbonReportingCriteriaTypeID')->fromResults($criteriaTypes)->required()->placeholder();
 
         $targets = ['Per Student' => __('Per Student'), 'Per Group' => __('Per Group')];
         $row = $form->addRow();

@@ -134,7 +134,7 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectHouse($name)
     {
-        $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse;";
+        $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
         $results = $this->pdo->select($sql)->fetchKeyPair();
         $results = $this->localeFriendlySort($results);
 
