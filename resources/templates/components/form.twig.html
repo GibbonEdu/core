@@ -153,7 +153,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
                         {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
-                        {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end items-center' : '' %}
+                        {% set class = loop.last and loop.length == 2 and 'flex-col' not in element.getClass ? 'flex-1 relative flex justify-end items-center' : '' %}
                     {% elseif loop.last and (loop.length == 2 or "noIntBorder" in form.getClass) %}
                         {% set class = 'flex-1 relative flex justify-end items-center' %}
                     {% else %}
