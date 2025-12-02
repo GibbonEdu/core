@@ -253,17 +253,22 @@ class FormFactory implements FormFactoryInterface
 
     public function createCheckbox($name)
     {
-        return (new Input\Checkbox($name));
+        return new Input\Checkbox($name);
     }
 
     public function createRadio($name)
     {
-        return (new Input\Radio($name));
+        return new Input\Radio($name);
     }
 
     public function createToggle($name)
     {
-        return (new Input\Toggle($name));
+        return new Input\Toggle($name);
+    }
+
+    public function createToggleButton($name)
+    {
+        return new Input\ToggleButton($name);
     }
 
     /**
