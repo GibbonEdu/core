@@ -63,8 +63,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 <script>
 $('button.paginate').on('click', function() {
-    console.log(this);
-
     window.location = '{{ url|raw }}&page=' + $(this).data('page');
 });
 </script>

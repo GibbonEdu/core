@@ -368,8 +368,6 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
 //Encode strring using htmlentities with the ENT_QUOTES option
 function htmlPrep($str)
 {
-    if (is_array($str)) return $str;
-
     return htmlentities($str ?? '', ENT_QUOTES, 'UTF-8');
 }
 

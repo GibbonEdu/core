@@ -410,8 +410,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 $('.statusInput input[type="radio"]').change(function() {
     var details = $(this).parents('details').first();
     var textarea = details.find('textarea.commentEditor');
-    console.log(textarea);
-
+    
     if ($(this).val() == 'Done' || $(this).val() == 'Accepted') {
         details.removeClass('message bg-blue-100').removeClass('error bg-red-100').removeClass('bg-gray-100');
         details.addClass('success bg-green-100');

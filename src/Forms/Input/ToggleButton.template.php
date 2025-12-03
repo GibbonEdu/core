@@ -25,7 +25,7 @@
         },
     }"
     
-    x-init="tabSelected = Object.keys(options).indexOf(selected) + 1; console.log(tabSelected);" class="relative w-full" >
+    x-init="tabSelected = Object.keys(options).indexOf(selected) + 1;" class="relative w-full" >
 
     <div class="relative flex items-center justify-center w-full text-gray-500  bg-gray-200  ring-1 ring-inset ring-gray-300 rounded-md select-none">
 
