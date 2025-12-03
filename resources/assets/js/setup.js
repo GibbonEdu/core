@@ -46,9 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         $(document).trigger('gibbon-setup');
-
-        // Initialize latex
-        $(".latex").latex();
     });
 
 });

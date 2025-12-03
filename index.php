@@ -365,7 +365,6 @@ $page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptCon
 
 // Set page scripts: foot - jquery
 $page->scripts->addMultiple([
-    'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
