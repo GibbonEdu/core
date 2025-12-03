@@ -131,14 +131,14 @@
 
                 <template x-for="(group, groupIndex) in options" x-bind:key="group.label">
 
-                    <ul class="list-none flex flex-col m-0 p-1">
+                    <ul x-from-template class="list-none flex flex-col m-0 p-1">
                         <template x-if="group.label != ''">
-                            <li x-text="group.label" class="px-3 py-1 text-sm  font-semibold"></li>
+                            <li x-from-template x-text="group.label" class="px-3 py-1 text-sm  font-semibold"></li>
                         </template>
 
                         <template x-for="(item, index) in group.options" x-bind:key="item.value">
 
-                            <li class="combobox-option inline-flex justify-between rounded px-3 py-1 text-sm  hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
+                            <li x-from-template class="combobox-option inline-flex justify-between rounded px-3 py-1 text-sm  hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
 
                                 <!-- Label  -->
                                 <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label"></span>

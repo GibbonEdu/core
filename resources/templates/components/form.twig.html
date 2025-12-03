@@ -198,13 +198,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endfor %}
 
             <template x-if="invalid">
-                <div class="p-4 border-t">
+                <div x-from-template class="p-4 border-t">
                     <span class="tag error">{{ __('Please check these fields') }}:</span>
 
                     <ul class="ml-6">
                     <template x-for="v in $validate.data($refs.form)" >
                         <template x-if="!v.valid && v.node.labels.length > 0">
-                        <li class="py-0.5">
+                        <li x-from-template class="py-0.5">
                             <a x-bind:href="'#' + v.name" target="_self" x-text="v.node.labels[0].ariaLabel" :aria-label="v.name" class="text-sm hover:underline"></a>
                         </li>
                         </template>

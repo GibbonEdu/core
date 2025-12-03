@@ -108,7 +108,7 @@
                     <span><?= __('No results') ?></span>
                 </li>
                 <template x-for="(item, index) in options" x-bind:key="item.value">
-                    <li class="combobox-option inline-flex justify-between rounded px-3 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item); $focus.focus($refs.searchSelect)" x-on:keydown.enter="setSelectedOption(item); $focus.focus($refs.searchSelect)" x-bind:id="'option-' + index" tabindex="0" :class="selectedOption == item ? 'bg-gray-300 text-gray-900 hover:text-white' : ''">
+                    <li x-from-template class="combobox-option inline-flex justify-between rounded px-3 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item); $focus.focus($refs.searchSelect)" x-on:keydown.enter="setSelectedOption(item); $focus.focus($refs.searchSelect)" x-bind:id="'option-' + index" tabindex="0" :class="selectedOption == item ? 'bg-gray-300 text-gray-900 hover:text-white' : ''">
                         <!-- Label  -->
                         <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label"></span>
                         <!-- Screen reader 'selected' indicator  -->

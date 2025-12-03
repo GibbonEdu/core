@@ -53,7 +53,5 @@
     // Remove the existing editor before htmx swaps to a new page
     document.addEventListener('htmx:beforeRequest', function (event) {
         ace.edit("editor<?= $id; ?>").destroy();
-        $editor = $("#editor<?= $id; ?>")
-        $editor.remove();
     }, { once: true });
 </script>
