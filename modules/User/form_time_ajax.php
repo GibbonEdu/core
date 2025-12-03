@@ -36,17 +36,19 @@ if (!isset($_SESSION[$guid]) || !$session->exists('gibbonPersonID')) {
         return $item;
     }, $periods);
 
+    $endOfDay = end($periods);
+    $periods[] = ['period' => Format::small(__('End of Day')), 'time' => Format::time($endOfDay['timeEnd'])];
+
     if (empty($periods)) die(__('Unknown'));
 
     foreach ($periods as $period) {
         echo <<<HTML
-            <li :value="time" role="option" tabindex="0"
+            <li x-from-template :value="time" role="option" tabindex="0"
             x-on:click="time = '{$period['time']}'; isOpen = false"
             x-on:keydown.enter="time = '{$period['time']}'; isOpen = false"
-            class="px-3 py-1 text-sm text-gray-700 hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap"
+            class="px-3 py-1 text-sm text-gray-700 rounded hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap"
             >
             <span>{$period['period']}</span>
-            <span class="ml-1 text-xs text-gray-500"></span>
             </li>
         HTML;
     }

@@ -180,7 +180,7 @@
             </button>
 
             <button @click="timePickerView=2" type="button" class="bg-gray-200 px-4 py-1 text-center text-xxs hover:bg-gray-400 text-gray-600 rounded-md" 
-                hx-post="<?= $absoluteURL ?>/modules/User/forms_time_ajax.php" x-bind:hx-target="'#'+$refs.timeValue.id+'PeriodList'" hx-include="<?= !empty($date) ? '#'.$date : '' ?>" hx-vals='{"key": "<?= $date ?>"}'
+                hx-post="<?= $absoluteURL ?>/modules/User/form_time_ajax.php" x-bind:hx-target="'#'+$refs.timeValue.id+'PeriodList'" hx-include="<?= !empty($date) ? '#'.$date : '' ?>" hx-vals='{"key": "<?= $date ?>"}'
                 :class="{'bg-gray-400 text-gray-800' : timePickerView==2}">
                 <?= __('Period') ?>
             </button>
@@ -192,12 +192,12 @@
             <ul class="flex max-h-52 flex-col overflow-y-auto overflow-x-hidden m-0 p-1 rounded-b-md" x-ref="timeList">
         
             <template x-for="(value, index) in availableTimes" :key="index" >
-                <li :value="time" role="option" tabindex="0" 
+                <li x-from-template :value="time" role="option" tabindex="0" 
                 x-bind:id="$refs.timeValue.id+'Option-' + index"
                 x-on:click="time = value.time; timeSelected = index; isOpen = false"
                 x-on:keydown.enter="time = value.time; isOpen = false"
                 :class="timeSelected == index ? 'bg-gray-300 text-gray-900 hover:text-white' : ''"
-                class="px-3 py-1 text-sm text-gray-700 hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap"
+                class="px-3 py-1 text-sm text-gray-700 rounded hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap"
                 >
                 <span x-text="value.time"></span>
                 <span x-text="value.label" class="ml-1 text-xs text-gray-500"></span>
