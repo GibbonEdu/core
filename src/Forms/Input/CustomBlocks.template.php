@@ -15,7 +15,7 @@
             if (element.dataset.event == 'delete') {
                 if (confirm('<?= $deleteMessage ?>')) {
                     this.blocks.splice(index, 1);
-                    this.blockCount = blocks.length;
+                    this.blockCount = this.blocks.length;
                 }
             }
 
@@ -47,10 +47,10 @@
         },
         showHide() {
             this.showAll = !this.blocks.some((block) => block.show);
-            this.blocks.forEach(([index, block]) => this.showHideBlock(index, this.showAll) );
+            this.blocks.forEach((block) => this.showHideBlock(block, this.showAll) );
         },
-        showHideBlock(index, show) {
-            this.blocks[index].show = show;
+        showHideBlock(block, show) {
+            block.show = show;
             this.showAll = this.showAll || show;
         }
     }"
@@ -67,7 +67,7 @@
     </div>
 
 
-    <div <?= $sortable ? 'x-sort.ghost="handleSort"' : '' ?> class="blocks flex flex-col transition-all gap-2" x-data="{
+    <div <?= $sortable ? 'x-sort.ghost="handleSort"' : '' ?>  class="blocks flex flex-col transition-all gap-2" x-data="{
         handleSort: (item, position) => {
             const itemPos = blocks.findIndex((r) => r.id == item)
             let itemToMove = blocks.splice(itemPos, 1)[0];
@@ -78,13 +78,13 @@
 
         <template x-for="(block, index) in blocks" x-bind:key="block.id" x-ref="blockList">
             
-            <div x-sort:item="block.id" class="relative <?= $compact ? 'compact h-min' : '' ?> border rounded-md bg-gray-50" x-bind:id="'<?= $name ?>' + index">
+            <div x-sort:item="block.id" class="relative <?= $compact ? 'compact h-min' : '' ?> border rounded-md bg-gray-50" x-bind:id="block.id">
 
                 <div class="flex  bg-blue-50 hover:bg-blue-50/50 rounded-t-md " :class="{'border-b': block.show, 'rounded-b-md' : !block.show}">
 
                     <div x-sort:handle class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
 
-                    <div @click="showHideBlock(index, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
+                    <div @click="showHideBlock(block, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
                         <span x-text="block.primaryInput ?? block.<?= $primaryInput ?> ?? '<?= __('Untitled') ?>'" :class="!block.primaryInput && !block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
                     </div>
 
@@ -106,7 +106,11 @@
             
         </template>
 
-        <nav class="flex">
+        
+
+    </div>
+
+    <nav class="flex mt-2">
             <?= $toolsTable ?>
 
             <button x-show="blockCount > 0" @click="showHide()" class="inline-flex rounded-md text-sm sm:leading-5 bg-gray-100 hover:bg-gray-200 text-gray-800 align-middle items-center border border-gray-400 gap-2 px-3 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500" type="button">
@@ -114,8 +118,6 @@
                 <span x-cloak x-show="showAll" title="<?= __('Collapse All') ?>" class="inline-flex"><?= icon('basic', 'collapse-lines', 'size-5 text-gray-600') ?></span>
             </button>
         </nav>
-
-    </div>
     
     
 </div>

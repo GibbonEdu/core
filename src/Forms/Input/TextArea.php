@@ -116,8 +116,9 @@ class TextArea extends Input
         $this->setAttribute('value', '');
 
         return Component::render(TextArea::class, $this->getAttributeArray() + [
-            'text'     => htmlentities((string) $text, ENT_QUOTES, 'UTF-8'),
-            'autosize' => $this->autosize,
+            'outerClass' => $this->getOuterClass(),
+            'text'       => htmlentities((string) $text, ENT_QUOTES, 'UTF-8'),
+            'autosize'   => $this->autosize,
         ]);
     }
 }

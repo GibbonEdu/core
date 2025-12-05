@@ -321,10 +321,19 @@ class CustomBlocks implements OutputableInterface
                     $element->setAttribute('x-init', '$data.colorSelected = $el.value');
                 }
 
+                if ($element instanceof Time) {
+                    $element->setAttribute('x-init', "$(\$el).timepicker({
+                    'scrollDefault': 'now',
+                    'timeFormat': 'H:i',
+                    })");
+                }
+
                 if ($element instanceof Editor || $element->getData('tinymce') !== null) {
                     $this->settings['editors'][] = $element->getName();
                     $media = $element->getData('media');
                     $rows = $element->getAttribute('rows') ?? 6;
+                    $element->addClass('tinymce');
+                    $element->setOuterClass('editor-full');
 
                     $element->setAttribute('x-init', "tinymce.init( {...gibbonTinyMCEDefaults, ...{
                         selector: '#'+\$el.id,
