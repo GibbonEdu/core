@@ -78,7 +78,7 @@
                     <div x-sort:handle class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
 
                     <div @click="showHideBlock(block.index, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
-                        <span x-text="block.<?= $primaryInput ?> ? block.<?= $primaryInput ?> : '<?= __('Untitled') ?>'" :class="!block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
+                        <span x-text="block.primaryInput ?? block.<?= $primaryInput ?> ?? '<?= __('Untitled') ?>'" :class="$el.value == '<?= __('Untitled') ?>' ? 'text-gray-500' : ''"></span>
                     </div>
 
                     <?= $blockButtons ?>

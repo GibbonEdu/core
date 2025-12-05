@@ -297,6 +297,7 @@ class CustomBlocks implements OutputableInterface
 
                 if (empty($this->settings['primaryInput']) && $element instanceof TextField) {
                     $element->setAttribute('x-model', 'block.'.$element->getName());
+                    $element->setAttribute('value', 'block.'.$element->getName());
                     $this->settings['primaryInput'] = $element->getName();
                 } else {
                     $element->setAttribute('x-bind:value', 'block.'.$element->getName());
