@@ -1,11 +1,11 @@
 <script type="text/javascript">
-    var blockData<?= $name ?> = <?= json_encode($currentBlocks, JSON_FORCE_OBJECT) ?>;
+    var blockData<?= $name ?> = <?= json_encode($currentBlocks) ?>;
     var blockEditors<?= $name ?> = <?= json_encode($editors) ?>;
 </script>
 
 <div <?= $attributes ?>
     x-data="{
-        blocks: {},
+        blocks: [],
         blockCount: 0,
         editors: blockEditors<?= $name ?>,
         showAll: false,
@@ -14,8 +14,8 @@
 
             if (element.dataset.event == 'delete') {
                 if (confirm('<?= $deleteMessage ?>')) {
-                    delete this.blocks[index];
-                    this.blockCount = Object.keys(this.blocks).length;
+                    this.blocks.splice(index, 1);
+                    this.blockCount = blocks.length;
                 }
             }
 
@@ -31,13 +31,13 @@
         },
         createBlock(block) {
             var index = this.nextIndex;
-            block.index = index;
+            block.id = '<?= $name ?>' + index;
             block.show = true;
-            this.blocks[index] = block;
-            
+            this.blocks.push(block);
+
             $nextTick(() => { htmx.process(htmx.find('#<?= $name ?>' + index)); this.showHideBlock(index, true); });
 
-            this.blockCount = Object.keys(this.blocks).length;
+            this.blockCount = this.blocks.length;
             this.nextIndex++;
         },
         handleToolClick(element) {
@@ -46,15 +46,15 @@
             }
         },
         showHide() {
-            this.showAll = !Object.values(this.blocks).some((block) => block.show);
-            Object.entries(this.blocks).forEach(([index, block]) => this.showHideBlock(index, this.showAll) );
+            this.showAll = !this.blocks.some((block) => block.show);
+            this.blocks.forEach(([index, block]) => this.showHideBlock(index, this.showAll) );
         },
         showHideBlock(index, show) {
             this.blocks[index].show = show;
             this.showAll = this.showAll || show;
         }
     }"
-    x-init="blocks = blockData<?= $name ?>; blockCount = Object.keys(blocks).length;"
+    x-init="blocks = blockData<?= $name ?>; blockCount = blocks.length;"
 >
 
     <input type="hidden" class="blockCount" name="<?= $name ?>Count" x-bind:value="blockCount" />
@@ -67,18 +67,25 @@
     </div>
 
 
-    <div <?= $sortable ? 'x-sort.ghost' : '' ?> class="blocks flex flex-col transition-all gap-2" >
+    <div <?= $sortable ? 'x-sort.ghost="handleSort"' : '' ?> class="blocks flex flex-col transition-all gap-2" x-data="{
+        handleSort: (item, position) => {
+            const itemPos = blocks.findIndex((r) => r.id == item)
+            let itemToMove = blocks.splice(itemPos, 1)[0];
+            blocks.splice(position, 0, itemToMove);
+            $refs.blockList._x_prevKeys = blocks.map((item) => item.id);
+        }
+    }">
 
-        <template x-for="(block, index) in blocks" x-bind:key="block.index">
+        <template x-for="(block, index) in blocks" x-bind:key="block.id" x-ref="blockList">
             
-            <div x-sort:item="index" class="relative <?= $compact ? 'compact h-min' : '' ?> border rounded-md bg-gray-50" x-bind:id="'<?= $name ?>' + index">
+            <div x-sort:item="block.id" class="relative <?= $compact ? 'compact h-min' : '' ?> border rounded-md bg-gray-50" x-bind:id="'<?= $name ?>' + index">
 
                 <div class="flex  bg-blue-50 hover:bg-blue-50/50 rounded-t-md " :class="{'border-b': block.show, 'rounded-b-md' : !block.show}">
 
                     <div x-sort:handle class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
 
-                    <div @click="showHideBlock(block.index, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
-                        <span x-text="block.primaryInput ?? block.<?= $primaryInput ?> ?? '<?= __('Untitled') ?>'" :class="$el.value == '<?= __('Untitled') ?>' ? 'text-gray-500' : ''"></span>
+                    <div @click="showHideBlock(index, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
+                        <span x-text="block.primaryInput ?? block.<?= $primaryInput ?> ?? '<?= __('Untitled') ?>'" :class="!block.primaryInput && !block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
                     </div>
 
                     <?= $blockButtons ?>

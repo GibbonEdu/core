@@ -232,11 +232,11 @@ class CustomBlocks implements OutputableInterface
         // TODO: FL copy blocks
         // TODO: internal toggle states
 
-        $index = 1;
+        $index = 0;
         $blocks = [];
         foreach ($this->settings['currentBlocks'] as $key => $block) {
-            $block['index'] = $index;
-            $blocks[$index] = $block;
+            $block['id'] = $this->name.$index;
+            $blocks[] = $block;
             $index++;
         }
 
