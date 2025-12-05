@@ -236,6 +236,7 @@ class CustomBlocks implements OutputableInterface
         $blocks = [];
         foreach ($this->settings['currentBlocks'] as $key => $block) {
             $block['id'] = $this->name.$index;
+            $block['index'] = $index;
             $blocks[] = $block;
             $index++;
         }
@@ -286,7 +287,7 @@ class CustomBlocks implements OutputableInterface
             }
 
             if (!empty($element->getID())) {
-                $element->setAttribute('x-bind:id', "'".$element->getID()."' + index");
+                $element->setAttribute('x-bind:id', "'".$element->getID()."' + block.index");
                 $element->setPrepended('');
                 $element->setAppended('');
             }
@@ -299,14 +300,16 @@ class CustomBlocks implements OutputableInterface
                     $element->setAttribute('x-model', 'block.'.$element->getName());
                     $element->setAttribute('value', 'block.'.$element->getName());
                     $this->settings['primaryInput'] = $element->getName();
+                } elseif ($element->getData('tinymce') !== null) {
+                    $element->setAttribute('x-text', 'block.'.$element->getName());
                 } else {
                     $element->setAttribute('x-bind:value', 'block.'.$element->getName());
                 }
 
                 if ($strategy == 'string') {
-                    $element->setAttribute('x-bind:name', "'".$id."' + index");
+                    $element->setAttribute('x-bind:name', "'".$id."' + block.index");
                 } else {
-                    $element->setAttribute('x-bind:name', "'".$this->name."[' + index + '][".$id."]'");
+                    $element->setAttribute('x-bind:name', "'".$this->name."[' + block.index + '][".$id."]'");
                 }
                 
                 if ($element instanceof Radio) {
@@ -335,9 +338,7 @@ class CustomBlocks implements OutputableInterface
                     $element->addClass('tinymce');
                     $element->setOuterClass('editor-full');
 
-                    $element->setAttribute('x-init', "tinymce.init( {...gibbonTinyMCEDefaults, ...{
-                        selector: '#'+\$el.id,
-                    } })");
+                    $element->setAttribute('x-init', 'editorInit($el)');
                 }
             }
         };

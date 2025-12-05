@@ -10,12 +10,15 @@
         editors: blockEditors<?= $name ?>,
         showAll: false,
         nextIndex: <?= $index ?>,
+        sorting: false,
         handleButtonClick(element, index) {
 
             if (element.dataset.event == 'delete') {
                 if (confirm('<?= $deleteMessage ?>')) {
-                    this.blocks.splice(index, 1);
-                    this.blockCount = this.blocks.length;
+                    $nextTick(() => {
+                        this.blocks.splice(index, 1);
+                        this.blockCount = this.blocks.length;
+                    });
                 }
             }
 
@@ -32,10 +35,11 @@
         createBlock(block) {
             var index = this.nextIndex;
             block.id = '<?= $name ?>' + index;
+            block.index = index;
             block.show = true;
             this.blocks.push(block);
 
-            $nextTick(() => { htmx.process(htmx.find('#<?= $name ?>' + index)); this.showHideBlock(index, true); });
+            $nextTick(() => { htmx.process(htmx.find('#<?= $name ?>' + index)); this.showHideBlock(block, true); });
 
             this.blockCount = this.blocks.length;
             this.nextIndex++;
@@ -52,6 +56,13 @@
         showHideBlock(block, show) {
             block.show = show;
             this.showAll = this.showAll || show;
+        },
+        editorInit(element) {
+            if (this.sorting) return;
+
+            tinymce.init( {...gibbonTinyMCEDefaults, ...gibbonTinyMCEFull, ...{
+                selector: '#'+element.id,
+            } });
         }
     }"
     x-init="blocks = blockData<?= $name ?>; blockCount = blocks.length;"
@@ -67,13 +78,33 @@
     </div>
 
 
-    <div <?= $sortable ? 'x-sort.ghost="handleSort"' : '' ?>  class="blocks flex flex-col transition-all gap-2" x-data="{
+    <div <?= $sortable ? 'x-sort.ghost="handleSort"' : '' ?> x-sort:config="{onStart: beforeSort, onEnd: afterSort, }" class="blocks flex flex-col transition-all gap-2" x-data="{
         handleSort: (item, position) => {
             const itemPos = blocks.findIndex((r) => r.id == item)
             let itemToMove = blocks.splice(itemPos, 1)[0];
             blocks.splice(position, 0, itemToMove);
             $refs.blockList._x_prevKeys = blocks.map((item) => item.id);
-        }
+        },
+        beforeSort: function (event) {
+            sorting = true;
+
+            var editors = event.from.querySelectorAll('textarea.tinymce');
+            editors.forEach((textarea) => {
+                var editor = tinymce.get(textarea.id);
+                if (editor) {
+                    editor.save();
+                    editor.destroy();
+                }
+            });
+        },
+        afterSort: function (event) {
+            sorting = false;
+            
+            $nextTick(() => {
+                var editors = event.from.querySelectorAll('textarea.tinymce');
+                editors.forEach((textarea) => editorInit(textarea) );
+            });
+        },
     }">
 
         <template x-for="(block, index) in blocks" x-bind:key="block.id" x-ref="blockList">
@@ -96,7 +127,7 @@
                     <?= $blockTemplate ?>
                 </div>
 
-                <input type="hidden" name="<?= $orderName ?>[]" x-bind:value="index" x-validate.required="">
+                <input type="hidden" name="<?= $orderName ?>[]" x-bind:value="index">
 
                 <?php foreach ($hiddenInputs as $inputName => $nameFormat) { ?>
                     <input type="hidden" x-bind:name="<?= $nameFormat ?>" x-bind:value="block.<?= $inputName ?>">
@@ -105,7 +136,6 @@
             </div>
             
         </template>
-
         
 
     </div>
@@ -118,6 +148,5 @@
                 <span x-cloak x-show="showAll" title="<?= __('Collapse All') ?>" class="inline-flex"><?= icon('basic', 'collapse-lines', 'size-5 text-gray-600') ?></span>
             </button>
         </nav>
-    
     
 </div>
