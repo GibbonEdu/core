@@ -29,7 +29,7 @@
             }
 
             if (element.dataset.event == 'showHide') {
-                this.showHideBlock(index, !this.blocks[index].show);
+                this.showHideBlock(this.blocks[index], !this.blocks[index].show);
             }
         },
         createBlock(block) {
