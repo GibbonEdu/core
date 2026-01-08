@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
 
     $criteria = $calendarEventGateway->newQueryCriteria()
         ->searchBy($calendarEventGateway->getSearchableColumns(), $search)
-        ->sortBy(['dateStart', 'timeStart'])
+        ->sortBy(['dateStart', 'timeStart'], 'DESC')
         ->fromPOST();
 
     // SEARCH

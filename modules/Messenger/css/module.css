@@ -23,3 +23,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     font-family: -apple-system, Helvetica, Arial, sans-serif;
     font-size: 13px;
 }
+
+#messages iframe {
+    max-width: 100%;
+}
+
+#messages img {
+    max-width: 100%;
+    height: auto;
+}

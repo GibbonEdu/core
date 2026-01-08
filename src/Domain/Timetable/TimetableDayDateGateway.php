@@ -87,7 +87,7 @@ class TimetableDayDateGateway extends QueryableGateway
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
 
-        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTDay.gibbonTTID, gibbonTTDayDate.date, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonSpace.phoneInternal as phone, gibbonSpace.name AS roomName, gibbonTTSpaceChange.gibbonTTSpaceChangeID as spaceChanged, spaceChange.name as roomNameChange, spaceChange.phoneInternal as phoneChange, gibbonStaffCoverage.status as coverageStatus, gibbonStaffCoverage.gibbonStaffCoverageID as coverageID, gibbonStaffCoverage.gibbonPersonIDCoverage as coveragePerson, CONCAT(gibbonCourseClass.gibbonCourseClassID, gibbonTTDayDate.date, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd) as lessonID
+        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTDay.gibbonTTID, gibbonTTDayDate.date, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonSpace.phoneInternal as phone, gibbonSpace.name AS roomName, gibbonTTSpaceChange.gibbonTTSpaceChangeID as spaceChanged, spaceChange.name as roomNameChange, spaceChange.phoneInternal as phoneChange, coverage.status as coverageStatus, coverage.gibbonStaffCoverageID as coverageID, coverage.gibbonPersonIDCoverage as coveragePerson, CONCAT(gibbonCourseClass.gibbonCourseClassID, gibbonTTDayDate.date, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd) as lessonID
         FROM gibbonCourse 
         JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
         JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
@@ -99,14 +99,17 @@ class TimetableDayDateGateway extends QueryableGateway
         LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
         LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) 
         LEFT JOIN gibbonSpace as spaceChange ON (spaceChange.gibbonSpaceID=gibbonTTSpaceChange.gibbonSpaceID) 
-        LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.foreignTable='gibbonTTDayRowClass' AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date)
-        LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
+        LEFT JOIN (
+            SELECT gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverage.status, gibbonStaffCoverage.gibbonPersonIDCoverage, gibbonStaffCoverageDate.foreignTableID, gibbonStaffCoverageDate.foreignTable, gibbonStaffCoverageDate.date FROM gibbonStaffCoverageDate 
+            JOIN gibbonStaffCoverage ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
+            WHERE gibbonStaffCoverage.status <> 'Declined' AND gibbonStaffCoverage.status <> 'Cancelled'
+        ) AS coverage ON (coverage.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND coverage.foreignTable='gibbonTTDayRowClass' AND coverage.date=gibbonTTDayDate.date)
         WHERE gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
             AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
             AND NOT role LIKE '% - Left' 
             AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
         GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTDayDate.gibbonTTDayDateID
-        ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC, gibbonCourse.name, gibbonCourseClass.nameShort, gibbonStaffCoverage.status
+        ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC, gibbonCourse.name, gibbonCourseClass.nameShort, coverage.status
         ";
 
         return $this->db()->select($sql, $data);

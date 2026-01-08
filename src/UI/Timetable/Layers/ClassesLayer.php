@@ -142,10 +142,17 @@ class ClassesLayer extends AbstractTimetableLayer
 
             // Handle covered class
             if ($canViewCoverage && !empty($class['coverageID'])) {
-                $person = $this->userGateway->getByID($class['coveragePerson'], ['title', 'surname', 'preferredName']);
-                $description = !empty($person)
-                    ? __('Covered by {name}', ['name' => Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, true)])
-                    : __('Coverage').': '.$class['coverageStatus'];
+                
+
+                if ($class['coverageStatus'] == 'Accepted') {
+                    $person = $this->userGateway->getByID($class['coveragePerson'], ['title', 'surname', 'preferredName']);
+                    $description = !empty($person)
+                        ? __('Covered by {name}', ['name' => Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, true)])
+                        : __('Coverage').': '.$class['coverageStatus'];
+                } else {
+                    $person = '';
+                    $description = $class['coverageStatus'];
+                }
 
                 $item->addStatus('covered')
                     ->set('description', $description);

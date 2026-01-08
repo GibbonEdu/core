@@ -84,7 +84,7 @@
         </button>
 
         <!-- Hidden Input To Grab The Selected Value  -->
-        <select class="hidden invisible" <?= $attributes; ?> x-ref="hiddenInput">
+        <select class="hidden invisible personSelect" <?= $attributes; ?> x-ref="hiddenInput">
             <option value=""></option>
             <?php foreach ($options as $option)  { ?>
                 <option value="<?= $option['value'] ?>" <?= $option['value'] == $selected? 'selected' : '' ?>><?= $option['label'] ?></option>
