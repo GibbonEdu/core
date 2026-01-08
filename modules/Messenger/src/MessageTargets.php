@@ -2191,16 +2191,16 @@ class MessageTargets
                             $partialFail=TRUE;
                         }
 
-                        //Get email addresses
+                        // Get email addresses
                         try {
-                            $dataEmail=array("gibbonMessengerMailingListID"=>$t);
-                            $sqlEmail="SELECT DISTINCT email, gibbonMessengerMailingListRecipientID, `key` FROM gibbonMessengerMailingList JOIN gibbonMessengerMailingListRecipient ON (gibbonMessengerMailingListRecipient.gibbonMessengerMailingListIDList LIKE CONCAT('%', gibbonMessengerMailingList.gibbonMessengerMailingListID, '%')) WHERE NOT email='' AND gibbonMessengerMailingList.gibbonMessengerMailingListID=:gibbonMessengerMailingListID" ;
+                            $dataEmail = ["gibbonMessengerMailingListID"=>$t];
+                            $sqlEmail = "SELECT DISTINCT email, gibbonMessengerMailingListRecipientID, `key` FROM gibbonMessengerMailingList JOIN gibbonMessengerMailingListRecipient ON (gibbonMessengerMailingListRecipient.gibbonMessengerMailingListIDList LIKE CONCAT('%', gibbonMessengerMailingList.gibbonMessengerMailingListID, '%')) WHERE NOT email='' AND gibbonMessengerMailingList.gibbonMessengerMailingListID=:gibbonMessengerMailingListID" ;
                             $resultEmail=$connection2->prepare($sqlEmail);
                             $resultEmail->execute($dataEmail);
                         }
                         catch(\PDOException $e) {}
                         while ($rowEmail=$resultEmail->fetch()) {
-                            $this->reportAdd($emailReceipt, $rowEmail['gibbonMessengerMailingListRecipientID'], 'Mailing List', $t, 'Email', $rowEmail["email"], null, null, $rowEmail["key"]);
+                            $this->reportAdd($emailReceipt, null, 'Mailing List', $t, 'Email', $rowEmail["email"], null, null, $rowEmail["key"]);
                         }
                     }       
                 }
