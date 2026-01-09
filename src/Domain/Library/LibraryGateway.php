@@ -415,27 +415,7 @@ class LibraryGateway extends QueryableGateway
 
         return $this->db()->update($sql, $data);
     }
-
-    public function selectItemsByTypeFields($libraryType, $field, $fieldValue)
-    {
-        if ($field == 'Search Terms') {
-            $fieldValue = '"%'.$fieldValue.'%"';
-        }
-        $field = '$."'.$field.'"';
-        $data = array('libraryType' => $libraryType, 'field' => $field, 'fieldValue' => $fieldValue);
-        $sql = "SELECT gibbonLibraryItemID FROM gibbonLibraryItem
-                JOIN gibbonLibraryType ON (gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID)
-                WHERE gibbonLibraryItem.gibbonLibraryTypeID = :libraryType
-                AND gibbonLibraryItem.gibbonLibraryItemIDParent IS NULL";
-        if($field == '$."Search Terms"') {
-            $sql .= " AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) LIKE :fieldValue;";
-        } else {
-            $sql .= " AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue;";
-        }
-
-        return $this->db()->select($sql, $data);
-    }
-
+    
     public function queryItemsForShelves(QueryCriteria $criteria)
     {
       

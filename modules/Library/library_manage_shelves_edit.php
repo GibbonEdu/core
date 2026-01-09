@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
 
     $page->breadcrumbs
         ->add(__('Manage Library Shelves'), 'library_manage_shelves.php')
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $form->addRow()->addHeading('Shelf Details', __('Shelf Details'));
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
-
+        
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')
@@ -93,16 +93,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     } elseif($values['type'] == 'Manual') {
         $row = $form->addRow();
-        $row->addLabel('fieldValue', __('Custom Sub-Category'));
-        $row->addTextField('fieldValue')->setValue($values['fieldValue'])->readOnly();
+            $row->addLabel('addItems', __('Add More Items'));
+            $row->addFinder('addItems')
+                ->fromAjax($session->get('absoluteURL').'/modules/Library/library_searchAjax.php')
+                ->setParameter('resultsLimit', 10)
+                ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.imageLocation + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
     }
-    
-    $row = $form->addRow();
-        $row->addLabel('addItems', __('Add More Items'));
-        $row->addFinder('addItems')
-            ->fromAjax($session->get('absoluteURL').'/modules/Library/library_searchAjax.php')
-            ->setParameter('resultsLimit', 10)
-            ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.imageLocation + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
 
     $row = $form->addRow();
         $row->addFooter();
@@ -112,40 +108,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     echo $form->getOutput();
 
-    // QUERY
-    $criteria = $itemGateway->newQueryCriteria(true)
-    ->pageSize(10)
-    ->sortBy('name')
-    ->filterBy('imageType',)
-    ->fromPOST();
+    if($values['type'] == 'Manual') {
 
-    $items = $itemGateway->queryItemsByShelf($gibbonLibraryShelfID, $criteria);//->toDataSet();
+        // QUERY
+        $criteria = $itemGateway->newQueryCriteria(true)
+        ->pageSize(10)
+        ->sortBy('name')
+        ->filterBy('imageType',)
+        ->fromPOST();
 
-    // FORM
-    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Library/library_shelves_editProcessBulk.php');
-    $form->addHiddenValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
-    $col = $form->createBulkActionColumn([
-        'Delete' => __('Delete'),
-    ]);
-    $col->addSubmit(__('Go'));
+        $items = $itemGateway->queryItemsByShelfID($gibbonLibraryShelfID, $criteria);
 
-    // DATA TABLE
-    $table = $form->addRow()->addDataTable('items', $criteria)->withData($items);
-    $table->setTitle(__('Current Items'));
-    $table->addMetaData('bulkActions', $col);
-    $table->addColumn('name', __('Name'));
-    $table->addColumn('producer', __('Producer'));
-    
-    // ACTIONS
-    $table->addActionColumn()
-        ->addParam('gibbonLibraryShelfID', $gibbonLibraryShelfID)
-        ->format(function ($item, $actions) {
-            $actions->addAction('delete', __('Delete'))
-                        ->addParam('gibbonLibraryShelfItemID', $item['gibbonLibraryShelfItemID'])
-                        ->setURL('/modules/Library/library_manage_shelves_edit_items_delete.php');
-        });
+        // FORM
+        $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Library/library_shelves_editProcessBulk.php');
+        $form->addHiddenValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
+        $col = $form->createBulkActionColumn([
+            'Delete' => __('Delete'),
+        ]);
+        $col->addSubmit(__('Go'));
 
-    $table->addCheckboxColumn('gibbonLibraryShelfItemID');
+        // DATA TABLE
+        $table = $form->addRow()->addDataTable('items', $criteria)->withData($items);
+        $table->setTitle(__('Current Items'));
+        $table->addMetaData('bulkActions', $col);
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('producer', __('Producer'));
+        
+        // ACTIONS
+        $table->addActionColumn()
+            ->addParam('gibbonLibraryShelfID', $gibbonLibraryShelfID)
+            ->format(function ($item, $actions) {
+                $actions->addAction('delete', __('Delete'))
+                            ->addParam('gibbonLibraryShelfItemID', $item['gibbonLibraryShelfItemID'])
+                            ->setURL('/modules/Library/library_manage_shelves_edit_items_delete.php');
+            });
 
-    echo $form->getOutput();
+        $table->addCheckboxColumn('gibbonLibraryShelfItemID');
+
+        echo $form->getOutput();
+    }
 }

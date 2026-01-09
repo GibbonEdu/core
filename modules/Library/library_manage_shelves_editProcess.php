@@ -40,17 +40,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     exit;
 } else {
     // Proceed!
-    $shelfGateway = $container->get(LibraryShelfGateway::class);
-    $itemGateway = $container->get(LibraryShelfItemGateway::class);
+    $libraryShelfGateway = $container->get(LibraryShelfGateway::class);
+    $libraryShelfItemGateway = $container->get(LibraryShelfItemGateway::class);
 
     $data = [
-        'name'    => $_POST['name'] ?? '',
-        'active' => $_POST['active'] ?? '',
-        'type'   => $_POST['type'] ?? '',
+        'name'      => $_POST['name'] ?? '',
+        'active'    => $_POST['active'] ?? '',
+        'type'      => $_POST['type'] ?? '',
         'field'     => $_POST['field'] ?? '',
-        'fieldValue'    => $_POST['fieldValue'] ?? '',
-        'shuffle'    => $_POST['shuffle'] ?? '',
+        'shuffle'   => $_POST['shuffle'] ?? '',
     ];
+
+    if ($data['type'] == 'Automatic') {
+        $data['fieldValue'] = $_POST['fieldValue'] ?? '';
+    } else {
+        $data['fieldValue'] = 'Custom';
+    }
 
     if (empty($data['name']) || empty($data['active']) || empty($data['field']) || empty($data['shuffle'])) {
         $URL .= '&return=error1';
@@ -58,18 +63,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         exit;
     }
 
-    $criteria = $itemGateway->newQueryCriteria(true)
+    $updated = $libraryShelfGateway->update($gibbonLibraryShelfID, $data);
+
+    $shelfItems = isset($_POST['addItems']) ? explode(',', $_POST['addItems']) : [];
+
+    $criteria = $libraryShelfItemGateway->newQueryCriteria(true)
     ->sortBy('name')
     ->fromPOST();
-    $updated = $shelfGateway->update($gibbonLibraryShelfID, $data);
 
-    $shelfItems = isset($_POST['addItems'])? explode(',', $_POST['addItems']) : [];
-
-    $currentItems = $itemGateway->queryItemsByShelf($gibbonLibraryShelfID, $criteria)->getColumn('gibbonLibraryItemID');
+    $currentItems = $libraryShelfItemGateway->queryItemsByShelfID($gibbonLibraryShelfID, $criteria)->getColumn('gibbonLibraryItemID');
     if(!empty($shelfItems)) {
         foreach($shelfItems as $item) {
             if(!in_array($item, $currentItems)) {
-                $itemGateway->insertShelfItem($item, $gibbonLibraryShelfID);
+                $libraryShelfItemGateway->insertShelfItem($item, $gibbonLibraryShelfID);
             }
         }
     }

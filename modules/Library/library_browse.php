@@ -35,11 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
-    //Get display settings
+    // Proceed!
+    // Get display settings
     $settingGateway = $container->get(SettingGateway::class);
 
-    //Get current filter values
+    // Get current filter values
     $name = trim($_REQUEST['name'] ?? '');
     $producer = trim($_REQUEST['producer'] ?? '');
     $type = trim($_REQUEST['type'] ?? '');
@@ -55,8 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
     $result = $pdo->select($sql);
 
-    $typeList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
-    $collections = $collectionsChained = array();
+    $typeList = ($result->rowCount() > 0) ? $result->fetchAll() : [];
+    $collections = $collectionsChained = [];
     $types = array_reduce($typeList, function ($group, $item) use (&$collections, &$collectionsChained) {
         $group[$item['value']] = __($item['name']);
         foreach (json_decode($item['fields'], true) as $field) {
@@ -69,8 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             }
         }
         return $group;
-    }, array());
-
+    }, []);
 
     $form = Form::createBlank('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -125,7 +124,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
     $row->addCheckBox('locationToggle')->description(__('Include Books Outside of Library?'))->checked($locationToggle)->setValue('on')->setLabelClass('text-xs');
 
-
     echo $form->getOutput();
 
     if(empty($everything) && empty($collection) && empty($producer) && empty($name) && empty($location) && empty($readerAge)){
@@ -133,43 +131,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $libraryShelves = [];
         $shelfNames = [];
 
-        $shelfGateway = $container->get(LibraryShelfGateway::class);
-        $itemGateway = $container->get(LibraryShelfItemGateway::class);
+        $libraryShelfGateway = $container->get(LibraryShelfGateway::class);
+        $libraryShelfItemGateway = $container->get(LibraryShelfItemGateway::class);
 
         // Add a default shelf with Top 20
-        $topItems = $itemGateway->selectDefaultShelfTopBorrowed()->fetchAll();
+        $topItems = $libraryShelfItemGateway->selectDefaultShelfTopBorrowed()->fetchAll();
         if (!empty($topItems)) {
             $libraryShelves['top'] = $topItems;
             $shelfNames['top'] = __('Monthly Top 20');
         }
 
         // Add a default shelf with New Titles
-        $newItems = $itemGateway->selectDefaultShelfNewItems()->fetchAll();
+        $newItems = $libraryShelfItemGateway->selectDefaultShelfNewItems()->fetchAll();
         if (!empty($newItems)) {
             $libraryShelves['new'] = $newItems;
             $shelfNames['new'] = __('New Titles');
         }
 
         // Add all other shelves
-        $criteria = $shelfGateway->newQueryCriteria()
+        $criteria = $libraryShelfGateway->newQueryCriteria()
             ->sortBy(['sequenceNumber', 'name'])
             ->filterBy('active', 'Y')
             ->fromPOST();
 
-        $activeShelves = $shelfGateway->queryLibraryShelves($criteria)->toArray();
-        $criteria = $itemGateway->newQueryCriteria()
+        $activeShelves = $libraryShelfGateway->queryLibraryShelves($criteria)->toArray();
+        
+        $criteria = $libraryShelfItemGateway->newQueryCriteria()
             ->sortBy('name')
             ->pageSize(30)
             ->fromPOST();
 
         foreach($activeShelves as $shelf) {
-            if($shelf['type'] == 'Automatic') {
-                $itemGateway->updateShelfContents($shelf['gibbonLibraryShelfID'], $shelf['field'], $shelf['fieldValue']);
+            if (!empty($shelf['gibbonLibraryTypeID']) && $shelf['type'] == 'Automatic') {
+                $autoItems = $libraryShelfGateway->selectItemsByTypeAndFields($shelf['gibbonLibraryTypeID'], $shelf['field'], $shelf['fieldValue'])->fetchAll();
+
+                $libraryShelves[$shelf['gibbonLibraryShelfID']] = $autoItems;
+            } else {
+                $libraryShelves[$shelf['gibbonLibraryShelfID']] = $libraryShelfItemGateway->queryItemsByShelfID($shelf['gibbonLibraryShelfID'], $criteria)->toArray();
             }
-            $libraryShelves[$shelf['gibbonLibraryShelfID']] = $itemGateway->queryItemsByShelf($shelf['gibbonLibraryShelfID'], $criteria)->toArray();
+
             $shelfNames[$shelf['gibbonLibraryShelfID']] = $shelf['name'];
 
-            //Shuffle shelf items on load if necessary
+            // Shuffle shelf items on load if necessary
             if($shelf['shuffle'] == 'Y') {
                 shuffle($libraryShelves[$shelf['gibbonLibraryShelfID']]);
             }
@@ -179,6 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             'libraryShelves' => $libraryShelves,
             'shelfNames' => $shelfNames,
         ]);
+
     } else {
         // Otherwise display the search results
         $gateway = $container->get(LibraryGateway::class);
@@ -213,5 +217,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             'searchTerms' => $searchTerms,
             ]);
     }
-
 }

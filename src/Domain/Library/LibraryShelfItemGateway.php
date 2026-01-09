@@ -22,7 +22,7 @@ class LibraryShelfItemGateway extends QueryableGateway
     }
 
 
-    public function queryItemsByShelf($gibbonLibraryShelfID, QueryCriteria $criteria)
+    public function queryItemsByShelfID($gibbonLibraryShelfID, QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
@@ -81,32 +81,5 @@ class LibraryShelfItemGateway extends QueryableGateway
             ORDER BY timestampCreator DESC LIMIT 0, 20";
 
         return $this->db()->select($sql);
-    }
-
-    public function updateShelfContents($libraryShelfID, $field, $fieldValue)
-    {
-        $field = '$."'.$field.'"';
-        $data = array('libraryShelfID' => $libraryShelfID, 'field' => $field, 'fieldValue' => $fieldValue);
-        $sql = "SELECT gibbonLibraryItemID
-        FROM gibbonLibraryItem
-        WHERE gibbonLibraryItemID NOT IN
-            (SELECT gibbonLibraryItemID 
-             FROM gibbonLibraryShelfItem
-            WHERE gibbonLibraryShelfID = :libraryShelfID)
-        AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue
-        AND gibbonLibraryItem.status IN ('Available','On Loan','Repair')
-        AND gibbonLibraryItem.ownershipType <> 'Individual'
-        AND gibbonLibraryItem.borrowable = 'Y'
-        AND gibbonLibraryItem.gibbonLibraryItemIDParent IS NULL;";
-
-        $newItems = $this->db()->select($sql, $data)->fetchAll();
-
-        if(!empty($newItems)) {foreach($newItems as $item) {
-            $this->insert([
-                'gibbonLibraryItemID' 	    => $item['gibbonLibraryItemID'],
-                'gibbonLibraryShelfID'  	=> $libraryShelfID
-            ]);
-        }}
-        return $newItems;
     }
 }

@@ -27,6 +27,7 @@ class LibraryShelfGateway extends QueryableGateway
                 'gibbonLibraryShelf.field',
                 'gibbonLibraryShelf.fieldValue',
                 'gibbonLibraryShelf.type',
+                 'gibbonLibraryShelf.gibbonLibraryTypeID',
                 'gibbonLibraryShelf.sequenceNumber',
             ]);
 
@@ -42,12 +43,14 @@ class LibraryShelfGateway extends QueryableGateway
                     ->bindValue('active', $active);
             }
         ]);
+
         return $this->runQuery($query, $criteria);
     }
 
     public function getShelfByID($id) {
         $data = ['id' => $id];
         $sql = "SELECT * FROM gibbonLibraryShelf WHERE gibbonLibraryShelfID=:id";
+
         return $this->db()->selectOne($sql, $data);
     }
 
@@ -78,7 +81,7 @@ class LibraryShelfGateway extends QueryableGateway
                 }
             }
             return $group;
-        }, array());
+        }, []);
 
         return ['category' => $category, 
                 'categoryChained' => $categoryChained, 
@@ -86,5 +89,23 @@ class LibraryShelfGateway extends QueryableGateway
                 'subCategoryChained' => $subCategoryChained, 
                 'types' => $types];
     }
+    
+    public function selectItemsByTypeAndFields($gibbonLibraryTypeID, $field, $fieldValue)
+    {
+        if ($field == 'Search Terms') {
+            $fieldValue = '"%'.$fieldValue.'%"';
+        }
 
+        $field = '$."'.$field.'"';
+        $data = ['gibbonLibraryTypeID' => $gibbonLibraryTypeID, 'field' => $field, 'fieldValue' => $fieldValue];
+        $sql = "SELECT gibbonLibraryItem.gibbonLibraryItemID, gibbonLibraryItem.name, gibbonLibraryItem.producer, gibbonLibraryItem.imageLocation, gibbonLibraryItem.status, gibbonLibraryItem.locationDetail, JSON_EXTRACT(gibbonLibraryItem.fields, '$.Description') as description, gibbonSpace.name as spaceName FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID) JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID = gibbonLibraryItem.gibbonSpaceID) WHERE gibbonLibraryItem.gibbonLibraryTypeID = :gibbonLibraryTypeID AND gibbonLibraryItem.gibbonLibraryItemIDParent IS NULL";
+
+        if($field == '$."Search Terms"') {
+            $sql .= " AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) LIKE :fieldValue;";
+        } else {
+            $sql .= " AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue;";
+        }
+        
+        return $this->db()->select($sql, $data);
+    }
 }
