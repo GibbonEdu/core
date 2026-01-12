@@ -30,38 +30,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-
     $page->breadcrumbs
         ->add(__('Manage Library Shelves'), 'library_manage_shelves.php')
         ->add(__('Edit Shelf'));
 
     $gibbonLibraryShelfID = $_GET['gibbonLibraryShelfID'] ?? '';
-    $shelfGateway = $container->get(LibraryShelfGateway::class);
-    $itemGateway = $container->get(LibraryShelfItemGateway::class);
-    $categories = $shelfGateway->selectDisplayableCategories();
+    $libraryShelfGateway = $container->get(LibraryShelfGateway::class);
+    $libraryShelfItemGateway = $container->get(LibraryShelfItemGateway::class);
+    $categories = $libraryShelfGateway->selectDisplayableCategories();
 
     if (empty($gibbonLibraryShelfID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    $values = $shelfGateway->getShelfByID($gibbonLibraryShelfID);
+    $values = $libraryShelfGateway->getShelfByID($gibbonLibraryShelfID);
 
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
+    $categories = $libraryShelfGateway->selectDisplayableCategories();
+
     $form = Form::create('libraryShelf', $session->get('absoluteURL').'/modules/Library/library_manage_shelves_editProcess.php');
-        $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->addRow()->addHeading('Shelf Details', __('Shelf Details'));
-        $form->addHiddenValue('address', $session->get('address'));
-        $form->addHiddenValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
-        
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->addRow()->addHeading('Shelf Details', __('Shelf Details'));
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
+
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')
-            ->placeholder()
             ->required()
             ->setValue($values['name']);
 
@@ -81,17 +81,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $row->addLabel('type', __('Fill Option'));
         $row->addTextField('type')->setValue($values['type'])->readOnly();
 
-    $row = $form->addRow();
-        $row->addLabel('field', __('Category'));
-        $row->addTextField('field')->setValue($values['field'])->readOnly();
-
-    if($values['type'] == 'Automatic') {
+    if ($values['type'] == 'Automatic') {
         $row = $form->addRow();
-        $row->addLabel('fieldValue', __('Sub-Category'));
-        $row->addTextField('fieldValue')->setValue($values['fieldValue'])->readOnly()
-            ->required();
+            $row->addLabel('gibbonLibraryTypeID', __('Catalog Type'));
+            $row->addSelect('gibbonLibraryTypeID')
+                ->fromArray($categories['types'])
+                ->selected($values['gibbonLibraryTypeID'])
+                ->readOnly();
 
-    } elseif($values['type'] == 'Manual') {
+        $row = $form->addRow()->addClass('autoFill');
+            $row->addLabel('field', __('Category'));
+            $row->addSelect('field')
+                ->fromArray(array_keys($categories['categoryChained']))
+                ->chainedTo('gibbonLibraryTypeID', $categories['categoryChained'])
+                ->placeholder('Please select...')
+                ->selected($values['field'])
+                ->required();
+
+        $form->toggleVisibilityByClass('searchTerm')->onSelect('field')->when('Search Terms');
+        $form->toggleVisibilityByClass('autoFillSelect')->onSelect('field')->whenNot('Search Terms');
+
+        $row = $form->addRow()->addClass('autoFillSelect');
+            $row->addLabel('fieldValue', __('Sub-Category'));
+            $row->addSelect('fieldValue')
+                ->fromArray($categories['subCategory'])
+                ->chainedTo('field', $categories['subCategoryChained'])
+                ->placeholder('Please select...')
+                ->selected($values['fieldValue']);
+
+        $row = $form->addRow()->addClass('searchTerm');
+            $row->addLabel('fieldValue', __('Search Term'));
+            $row->addTextField('fieldValue')
+                ->setValue($values['fieldValue'])
+                ->placeholder('Enter Term Name...');
+
+    } else {
         $row = $form->addRow();
             $row->addLabel('addItems', __('Add More Items'));
             $row->addFinder('addItems')
@@ -108,16 +132,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     echo $form->getOutput();
 
-    if($values['type'] == 'Manual') {
+    if ($values['type'] == 'Manual') {
 
         // QUERY
-        $criteria = $itemGateway->newQueryCriteria(true)
+        $criteria = $libraryShelfItemGateway->newQueryCriteria(true)
         ->pageSize(10)
         ->sortBy('name')
         ->filterBy('imageType',)
         ->fromPOST();
 
-        $items = $itemGateway->queryItemsByShelfID($gibbonLibraryShelfID, $criteria);
+        $items = $libraryShelfItemGateway->queryItemsByShelfID($gibbonLibraryShelfID, $criteria);
 
         // FORM
         $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Library/library_shelves_editProcessBulk.php');

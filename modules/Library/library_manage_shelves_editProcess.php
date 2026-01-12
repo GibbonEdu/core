@@ -47,15 +47,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         'name'      => $_POST['name'] ?? '',
         'active'    => $_POST['active'] ?? '',
         'type'      => $_POST['type'] ?? '',
-        'field'     => $_POST['field'] ?? '',
         'shuffle'   => $_POST['shuffle'] ?? '',
+        'field'     => $_POST['field'] ?? 'Custom',
+        'fieldValue' => $_POST['fieldValue'] ?? 'Custom',
+        'gibbonLibraryTypeID' => $_POST['gibbonLibraryTypeID'] ?? NULL,
     ];
-
-    if ($data['type'] == 'Automatic') {
-        $data['fieldValue'] = $_POST['fieldValue'] ?? '';
-    } else {
-        $data['fieldValue'] = 'Custom';
-    }
 
     if (empty($data['name']) || empty($data['active']) || empty($data['field']) || empty($data['shuffle'])) {
         $URL .= '&return=error1';

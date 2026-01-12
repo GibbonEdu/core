@@ -45,16 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         'active'     => $_POST['active'] ?? '',
         'shuffle'    => $_POST['shuffle'] ?? '',
         'type'       => $_POST['type'] ?? '',
+        'field'     => $_POST['field'] ?? 'Custom',
+        'fieldValue' => $_POST['fieldValue'] ?? 'Custom',
+        'gibbonLibraryTypeID' => $_POST['gibbonLibraryTypeID'] ?? NULL,
     ];
-
-    if ($data['type'] == 'Automatic') {
-        $data['field']      = $_POST['field'] ?? '';
-        $data['fieldValue'] = $_POST['fieldValue'] ?? '';
-        $data['gibbonLibraryTypeID'] = $_POST['gibbonLibraryTypeID'] ?? '';
-    } else {
-        $data['field']      = 'Custom';
-        $data['fieldValue'] = 'Custom';
-    }
 
     // Validate the required values are present
     if (empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['field'])|| empty($data['shuffle'])) {
