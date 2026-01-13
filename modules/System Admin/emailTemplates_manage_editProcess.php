@@ -82,8 +82,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
 
         $twig->createTemplate($data['templateBody']);
         
+    } catch (\Twig\Error\SyntaxError $e) {
+        $URL .= '&return=error10';
+        header("Location: {$URL}");
+        exit;
     } catch (Exception $e) {
-        $URL .= '&return=error1';
+        $URL .= '&return=error11';
         header("Location: {$URL}");
         exit;
     }
