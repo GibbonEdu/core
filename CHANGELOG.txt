@@ -35,6 +35,7 @@ v31.0.00
         Admissions: added a warning to Accept Application when milestones have not been completed
         Attendance: student attendance history now ordered by timetable period
         Calendar: switched default sorting of Manage Events to newest first
+        Staff: updated the staff absence message for partial day absence
         User Admin: linked user names to Student and Staff profiles in Manage Users
         User Admin: fix the bug to display user's personal address if turned on
 
