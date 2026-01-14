@@ -26,13 +26,13 @@ use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
-    // Acess denied
+    // Access denied
     $page->addError(__("You do not have access to this action."));
 }
 else {
-    // Get action with highest precendence
-    $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
-    if ($highestAction==FALSE) {
+    // Get action with highest precedence
+    $highestAction = getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
+    if ($highestAction == FALSE) {
         $page->addError(__("The highest grouped action cannot be determined."));
     }
     else {
@@ -182,32 +182,27 @@ else {
             } else {
                 $confirmationRequired = [];
 
-                //Store receipt for this message data in an array
+                // Store receipt for this message data in an array
                 $dataReceipts = ['gibbonMessengerID' => $gibbonMessengerID];
                 $sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, sent, `key`, targetType, targetID, gibbonPersonIDListStudent FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
                 $resultReceipts = $connection2->prepare($sqlReceipts);
                 $resultReceipts->execute($dataReceipts);
-                $receipetRows = $resultReceipts->fetchAll();
+                $receiptRows = $resultReceipts->fetchAll();
 
                 $receipts = [];
-                $receiptsByReceiptID = [];
-                $externalReceipts = [];
 
-                foreach ($receipetRows as $receipetRow) {
-                    $receipetRow['gibbonPersonIDListStudent'] = empty($receipetRow['gibbonPersonIDListStudent'])
+                foreach ($receiptRows as $receiptRow) {
+                    $receiptRow['gibbonPersonIDListStudent'] = empty($receiptRow['gibbonPersonIDListStudent'])
                         ? null
-                        : explode(',', $receipetRow['gibbonPersonIDListStudent']);
+                        : explode(',', $receiptRow['gibbonPersonIDListStudent']);
 
-                    $receiptsByReceiptID[$receipetRow['gibbonMessengerReceiptID']] = $receipetRow;
-
-                    if (!empty($receipetRow['gibbonPersonID'])) {
-                        $receipts[$receipetRow['gibbonPersonID']] = $receipetRow;
+                    if (!empty($receiptRow['gibbonPersonID'])) {
+                        $receipts[$receiptRow['gibbonPersonID']] = $receiptRow;
                     } else {
-                        $externalReceipts[$receipetRow['gibbonMessengerReceiptID']] = $receipetRow;
-                        $receipts['ext_'.$receipetRow['gibbonMessengerReceiptID']] = $receipetRow;
+                        $receipts['ext_'.$receiptRow['gibbonMessengerReceiptID']] = $receiptRow;
                     }
                 }
-
+                
                 $form = BulkActionForm::create('resendByRecipient', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
                 $form->addHiddenValue('address', $session->get('address'));
 
@@ -227,26 +222,20 @@ else {
                 $formGroups = $result->fetchAll(\PDO::FETCH_GROUP);
                 $countTotal = 0;
 
-                // Merge gibbonPersonIDListStudent into $receipts as an array
-                // $receipts = array_map(function ($item) {
-                //     $item['gibbonPersonIDListStudent'] = (empty($item['gibbonPersonIDListStudent'])) ? null : explode(',', $item['gibbonPersonIDListStudent']);
-                //     return $item;
-                // }, $receipts);
-
                 foreach ($formGroups as $formGroupName => $recipients) {
                     $count = 0;
 
                     // Filter the array for only those individuals involved in the message (student or parent)
                     $recipients = array_filter($recipients, function($recipient) use (&$receipts) {
-                        if (!empty($recipient['gibbonPersonID']) && array_key_exists($recipient['gibbonPersonID'], $receipts)) {
+                       if (!empty($recipient['gibbonPersonID']) && !empty($receipts[$recipient['gibbonPersonID']])) {
                             return true;
                         }
 
-                        if (!empty($recipient['parent1gibbonPersonID']) && array_key_exists($recipient['parent1gibbonPersonID'], $receipts) && (is_null($receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']))) {
+                        if (!empty($recipient['parent1gibbonPersonID']) && !empty($receipts[$recipient['parent1gibbonPersonID']]) && (is_null($receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']))) {
                             return true;
                         }
 
-                        if (!empty($recipient['parent2gibbonPersonID']) && array_key_exists($recipient['parent2gibbonPersonID'], $receipts) && (is_null($receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']))) {
+                        if (!empty($recipient['parent2gibbonPersonID']) && !empty($receipts[$recipient['parent2gibbonPersonID']]) && (is_null($receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']))) {
                             return true;
                         }
 
@@ -275,10 +264,11 @@ else {
                         $parent2Name = Format::name('', $recipient['parent2preferredName'], $recipient['parent2surname'], 'Parent', true);
 
                         // Tests for row completion, to set colour
-                        $studentComplete = (!empty($recipient['gibbonPersonID']) && isset($receipts[$recipient['gibbonPersonID']]) && $receipts[$recipient['gibbonPersonID']]['confirmed'] == "Y");
-                        $parent1Complete = (!empty($recipient['parent1gibbonPersonID']) && isset($receipts[$recipient['parent1gibbonPersonID']]) && $receipts[$recipient['parent1gibbonPersonID']]['confirmed'] == "Y");
-                        $parent2Complete = (!empty($recipient['parent2gibbonPersonID']) && isset($receipts[$recipient['parent2gibbonPersonID']]) && $receipts[$recipient['parent2gibbonPersonID']]['confirmed'] == "Y");
-                            
+                        $studentComplete = (!empty($receipts[$recipient['gibbonPersonID']]) && $receipts[$recipient['gibbonPersonID']]['confirmed'] == "Y");
+                        
+                        $parent1Complete = (!empty($receipts[$recipient['parent1gibbonPersonID']]) && $receipts[$recipient['parent1gibbonPersonID']]['confirmed'] == "Y");
+                        $parent2Complete = (!empty($receipts[$recipient['parent2gibbonPersonID']]) && $receipts[$recipient['parent2gibbonPersonID']]['confirmed'] == "Y");
+
                         $bothParentsComplete = $parent1Complete && $parent2Complete;
                         $anyParentComplete = $parent1Complete || $parent2Complete;
 
@@ -303,7 +293,7 @@ else {
                             $row->addContent($countTotal);
                             $row->addContent($count);
 
-                            $studentReceipt = (!empty($recipient['gibbonPersonID']) && isset($receipts[$recipient['gibbonPersonID']]) ? $receipts[$recipient['gibbonPersonID']] : null);
+                            $studentReceipt = $receipts[$recipient['gibbonPersonID']] ?? null;
                             $col = $row->addColumn()->setClass('')->addClass(!empty($studentReceipt) && $studentReceipt['confirmed'] != 'Y' && $studentReceipt['sent'] != 'Y' ? 'bg-orange-200' : '');
                                 $col->addContent($confirmationIndicator($studentReceipt, $values['emailReceipt'], $confirmationRequired[$recipient['gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($studentReceipt) && ($studentReceipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
@@ -313,7 +303,7 @@ else {
                                     ->alignLeft();
                                 $col->addContent(!empty($studentName)? $studentName : __('N/A'))->addClass('w-auto inline-block align-middle');
 
-                            $parent1Receipt = (!empty($recipient['parent1gibbonPersonID']) && isset($receipts[$recipient['parent1gibbonPersonID']])? $receipts[$recipient['parent1gibbonPersonID']] : null);
+                            $parent1Receipt = $receipts[$recipient['parent1gibbonPersonID']] ?? null;
                             $col = $row->addColumn()->setClass('')->addClass(!empty($parent1Receipt) && $parent1Receipt['confirmed'] != 'Y' && $parent1Receipt['sent'] != 'Y' ? 'bg-orange-200' : '');
                                 $col->addContent($confirmationIndicator($parent1Receipt, $values['emailReceipt'], $confirmationRequired[$recipient['parent1gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($parent1Receipt) && ($parent1Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
@@ -323,7 +313,7 @@ else {
                                     ->alignLeft();
                                 $col->addContent(!empty($recipient['parent1surname'])? $parent1Name : __('N/A'))->addClass('w-auto inline-block align-middle');
 
-                            $parent2Receipt = (!empty($recipient['parent2gibbonPersonID']) && isset($receipts[$recipient['parent2gibbonPersonID']])? $receipts[$recipient['parent2gibbonPersonID']] : null);
+                            $parent2Receipt = $receipts[$recipient['parent2gibbonPersonID']] ?? null;
                             $col = $row->addColumn()->setClass('')->addClass(!empty($parent2Receipt) && $parent2Receipt['confirmed'] != 'Y' && $parent2Receipt['sent'] != 'Y' ? 'bg-orange-200' : '');
                                 $col->addContent($confirmationIndicator($parent2Receipt, $values['emailReceipt'], $confirmationRequired[$recipient['parent2gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($parent2Receipt) && ($parent2Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
@@ -355,7 +345,7 @@ else {
                     JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
                     LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     LEFT JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
-                    LEFT JOIN gibbonMessengerMailingListRecipient ON (gibbonMessengerReceipt.targetType = 'Mailing List' AND ((gibbonMessengerReceipt.unsubscribeKey IS NOT NULL AND gibbonMessengerReceipt.unsubscribeKey <> '' AND gibbonMessengerMailingListRecipient.key = gibbonMessengerReceipt.unsubscribeKey) OR (gibbonMessengerMailingListRecipient.email = gibbonMessengerReceipt.contactDetail)))
+                    LEFT JOIN gibbonMessengerMailingListRecipient ON (gibbonMessengerMailingListRecipient.email = gibbonMessengerReceipt.contactDetail AND gibbonMessengerReceipt.targetType = 'Mailing List')
                     WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY FIELD(confirmed, 'Y','N',NULL), confirmedTimestamp, surname, preferredName, contactType";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
