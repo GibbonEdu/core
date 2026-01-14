@@ -57,7 +57,7 @@ x-tooltip.white="
     
     <a href="{{ item.link }}" class="flex flex-col items-center cursor-pointer h-full px-2 {{ duration >= 40 ? 'justify-start' : 'justify-center' }} {{ color.text }} {{ color.textHover }} overflow-y-hidden">
         {% if duration >= 15 %}
-        <div class="inline-block font-bold {{ duration > 30 and item.title|length <= 20 ? 'text-sm' : 'text-xs mt-1' }}" style="{{ color.textStyle }}">
+        <div class="inline-block font-bold text-center {{ duration > 30 and item.title|length <= 20 ? 'text-sm' : 'text-xs mt-1' }}" style="{{ color.textStyle }}">
             {{ duration >= 40 ? item.title|slice(0,40) : item.title|slice(0,22) }}
         </div>
         {% endif %}

@@ -37,6 +37,7 @@ v31.0.00
         Calendar: switched default sorting of Manage Events to newest first
         User Admin: linked user names to Student and Staff profiles in Manage Users
         User Admin: fix the bug to display user's personal address if turned on
+        Staff: fixed the issue to allow editing coverage request
 
     Bug Fixes
         Messenger: fixed overflowing images and iframes on Message Wall
