@@ -39,6 +39,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
+    
+    $page->return->addReturns([
+        'error10' => __('A syntax error was detected in the Twig template. Please review the template and resubmit.'),
+        'error11' => __('An error occurred while processing the template. Please review the template and try again.'),
+    ]);
 
     $values = $container->get(EmailTemplateGateway::class)->getByID($gibbonEmailTemplateID);
 

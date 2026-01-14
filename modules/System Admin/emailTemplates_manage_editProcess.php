@@ -69,6 +69,29 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         exit;
     }
 
+    try {
+        $loader = new \Twig\Loader\ArrayLoader([
+            'template' => $data['templateBody'],
+        ]);
+        
+        $twig = new \Twig\Environment($loader, [
+            'autoescape' => false,
+            'debug' => false,
+            'strict_variables' => false,
+        ]);
+
+        $twig->createTemplate($data['templateBody']);
+        
+    } catch (\Twig\Error\SyntaxError $e) {
+        $URL .= '&return=error10';
+        header("Location: {$URL}");
+        exit;
+    } catch (Exception $e) {
+        $URL .= '&return=error11';
+        header("Location: {$URL}");
+        exit;
+    }
+
     // Update the record
     $updated = $emailTemplateGateway->update($gibbonEmailTemplateID, $data);
 
