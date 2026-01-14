@@ -37,6 +37,7 @@ v31.0.00
         Calendar: switched default sorting of Manage Events to newest first
         Library: updated automatic shelf lists so that lists are queried dynamically in Browse Library
         Library: added the option to edit the category and sub-category for an automatic shelf
+        Reports: added error detection while editing twig templates
         System Admin: added a validation to check for error in email twig templates
         Staff: updated the staff absence message for partial day absence
         User Admin: linked user names to Student and Staff profiles in Manage Users

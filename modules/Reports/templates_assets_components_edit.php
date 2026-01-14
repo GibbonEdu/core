@@ -42,6 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         return;
     }
 
+    $page->return->addReturns([
+        'error10' => __('A syntax error was detected in the Twig template. Please review the template and resubmit.'),
+        'error11' => __('An error occurred while processing the template. Please review the template and try again.'),
+    ]);
+    
     $values = $prototypeGateway->getByID($gibbonReportPrototypeSectionID);
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));

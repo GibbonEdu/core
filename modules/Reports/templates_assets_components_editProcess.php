@@ -57,14 +57,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         header("Location: {$URL}");
         exit;
     }
-    
+
+    $templateContent = $_POST['templateContent'] ?? '';
+
+    try {
+        $loader = new \Twig\Loader\ArrayLoader([
+            'template' => $templateContent,
+        ]);
+        
+        $twig = new \Twig\Environment($loader, [
+            'autoescape' => false,
+            'debug' => false,
+            'strict_variables' => false,
+        ]);
+
+        $twig->createTemplate($templateContent);
+
+    } catch (\Twig\Error\SyntaxError $e) {
+        $URL .= '&return=error10';
+        header("Location: {$URL}");
+        exit;
+    } catch (Exception $e) {
+        $URL .= '&return=error11';
+        header("Location: {$URL}");
+        exit;
+    }
+
     // Update file contents
     $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
     $templatePath = $absolutePath.$customAssetPath.'/templates';
-
-    $templateContent = $_POST['templateContent'] ?? '';
-
+    
     $fileUpdated = file_put_contents($templatePath.'/'.$values['templateFile'], $templateContent);
     $partialFail &= !$fileUpdated;
 
