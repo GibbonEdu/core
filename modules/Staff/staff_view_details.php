@@ -158,13 +158,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         $criteria = $staffAbsenceGateway->newQueryCriteria(true)->filterBy('date', 'Today')->filterBy('status', 'Approved');
                         $absences = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
-
-                        if (count($absences) > 0) {
-                            $absenceMessage = __('{name} is absent today.', [
-                                'name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff', false, true),
-                            ]);
-                            $absenceMessage .= '<br/><br/><ul>';
+                        
+                        if (count($absences) > 0) {                          
                             foreach ($absences as $absence) {
+                                $absenceMessage = $absence['allDay'] == 'Y' ? __('{name} is absent all day today.', [
+                                'name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff', false, true)]) : __('{name} is partially absent today.', [
+                                'name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff', false, true)]);
+
+                                $absenceMessage .= '<br/><br/><ul>';
+
                                 $details = $staffAbsenceDateGateway->getByAbsenceAndDate($absence['gibbonStaffAbsenceID'], date('Y-m-d'));
                                 $time = $details['allDay'] == 'N' ? Format::timeRange($details['timeStart'], $details['timeEnd']) : __('All Day');
 
@@ -175,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
                             $absenceMessage .= '</ul>';
 
-                            echo Format::alert($absenceMessage, 'warning');
+                            echo $details['allDay'] == 'Y' ? Format::alert($absenceMessage, 'warning') : Format::alert($absenceMessage, 'message');
                         }
 
                         // Overview
