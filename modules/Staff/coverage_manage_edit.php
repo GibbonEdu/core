@@ -91,12 +91,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
             ->readonly()
             ->setValue(Format::relativeTime($coverage['timestampStatus'], false))
             ->setTitle($coverage['timestampStatus']);
-
-    
+            
     $row = $form->addRow();
-        $row->addLabel('notesStatusLabel', __('Notes'));
+        $row->addLabel('notesStatus', __('Notes'));
         $row->addTextArea('notesStatus')->setRows(3)->setValue($coverage['notesStatus']);
-    
     
     $form->addRow()->addHeading('Substitute', __('Substitute'));
 
