@@ -306,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $form->addRow()->addHeading('Smart Blocks', __('Smart Blocks'))->append(__('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.'));
                         $blockCreator = $form->getFactory()
                             ->createButton('addNewFee')
-                            ->setValue(__('Click to create a new block'))
+                            ->setValue(__('Add Block'))
                             ->addClass('addBlock');
 
                         $row = $form->addRow();

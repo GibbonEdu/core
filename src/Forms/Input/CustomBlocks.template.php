@@ -55,11 +55,19 @@
                 this.createBlock(this.predefined[element.value]); 
             }
         },
-        showHide() {
-            this.showAll = !this.blocks.some((block) => block.show);
+        showHide(show = null) {
+            this.showAll = show ?? !this.blocks.some((block) => block.show);
             this.blocks.forEach((block) => this.showHideBlock(block, this.showAll) );
         },
         showHideBlock(block, show) {
+            var element = document.getElementById(block.id);
+            var editors = element.querySelectorAll('textarea.tinymce');
+            if (editors && show) {
+                editors.forEach((textarea) => this.editorInit(textarea) );
+            } else if (editors && !show) {
+                editors.forEach((textarea) => this.editorRemove(textarea) );
+            }
+
             block.show = show;
             this.showAll = this.showAll || show;
         },
@@ -69,6 +77,13 @@
             tinymce.init( {...gibbonTinyMCEDefaults, ...gibbonTinyMCEFull, ...{
                 selector: '#'+element.id,
             } });
+        },
+        editorRemove(element) {
+            var editor = tinymce.get(element.id);
+            if (editor) {
+                editor.save();
+                editor.destroy();
+            }
         }
     }"
     x-init="blocks = blockData<?= $name ?>; blockCount = blocks.length; predefined = predefinedData<?= $name ?>;"
@@ -93,23 +108,10 @@
         },
         beforeSort: function (event) {
             sorting = true;
-
-            var editors = event.from.querySelectorAll('textarea.tinymce');
-            editors.forEach((textarea) => {
-                var editor = tinymce.get(textarea.id);
-                if (editor) {
-                    editor.save();
-                    editor.destroy();
-                }
-            });
+            showHide(false);
         },
         afterSort: function (event) {
             sorting = false;
-            
-            $nextTick(() => {
-                var editors = event.from.querySelectorAll('textarea.tinymce');
-                editors.forEach((textarea) => editorInit(textarea) );
-            });
         },
     }">
 
