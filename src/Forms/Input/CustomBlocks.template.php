@@ -1,13 +1,13 @@
 <script type="text/javascript">
     var blockData<?= $name ?> = <?= json_encode($currentBlocks) ?>;
-    var blockEditors<?= $name ?> = <?= json_encode($editors) ?>;
+    var predefinedData<?= $name ?> = <?= json_encode($predefinedBlocks) ?>;
 </script>
 
 <div <?= $attributes ?>
     x-data="{
         blocks: [],
+        predefined: [],
         blockCount: 0,
-        editors: blockEditors<?= $name ?>,
         showAll: false,
         nextIndex: <?= $index ?>,
         sorting: false,
@@ -49,6 +49,12 @@
                 this.createBlock({}); 
             }
         },
+        handleToolChange(element) {
+            console.log(element.value);
+            if (element.value != '' && element.classList.contains('addBlock')) {
+                this.createBlock(this.predefined[element.value]); 
+            }
+        },
         showHide() {
             this.showAll = !this.blocks.some((block) => block.show);
             this.blocks.forEach((block) => this.showHideBlock(block, this.showAll) );
@@ -65,7 +71,7 @@
             } });
         }
     }"
-    x-init="blocks = blockData<?= $name ?>; blockCount = blocks.length;"
+    x-init="blocks = blockData<?= $name ?>; blockCount = blocks.length; predefined = predefinedData<?= $name ?>;"
 >
 
     <input type="hidden" class="blockCount" name="<?= $name ?>Count" x-bind:value="blockCount" />
@@ -127,7 +133,7 @@
                     <?= $blockTemplate ?>
                 </div>
 
-                <input type="hidden" name="<?= $orderName ?>[]" x-bind:value="index">
+                <input type="hidden" name="<?= $orderName ?>[]" x-bind:value="block.index">
 
                 <?php foreach ($hiddenInputs as $inputName => $nameFormat) { ?>
                     <input type="hidden" x-bind:name="<?= $nameFormat ?>" x-bind:value="block.<?= $inputName ?>">

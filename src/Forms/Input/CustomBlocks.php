@@ -74,6 +74,7 @@ class CustomBlocks implements OutputableInterface
             'deleteMessage'    => __('Are you sure you want to delete this record?'),
             'duplicateMessage' => __('This element has already been selected!'),
             'currentBlocks'    => [],
+            'addOnEvent'       => 'click',
         ];
 
         if ($canDelete) {
@@ -133,7 +134,12 @@ class CustomBlocks implements OutputableInterface
      */
     public function addToolInput(OutputableInterface $input)
     {
-        $input->setAttribute('@click', 'handleToolClick($el)');
+        if ($input instanceof Button || $this->settings['addOnEvent'] == 'click') {
+            $input->setAttribute('@click', 'handleToolClick($el)');
+        } elseif ($input instanceof Input) {
+            $input->setAttribute('@change', 'handleToolChange($el)');
+        }
+        
         $this->toolsTable->addElement($input);
         return $this;
     }
@@ -228,7 +234,6 @@ class CustomBlocks implements OutputableInterface
     {
         $this->setID($this->name);
 
-        // TODO: predefined blocks
         // TODO: FL copy blocks
         // TODO: internal toggle states
 
@@ -241,26 +246,27 @@ class CustomBlocks implements OutputableInterface
             $index++;
         }
 
-        if ($this->toolsTable->getElementCount() == 0) {
-            $this->addToolButton(__('Add'))->addClass('addBlock')->setIcon('solid', 'add');
-        }
+        // if ($this->toolsTable->getElementCount() == 0) {
+        //     $this->addToolButton(__('Add'))->addClass('addBlock')->setIcon('solid', 'add');
+        // }
 
         return Component::render(CustomBlocks::class, [
-            'index'         => $index,
-            'name'          => $this->name,
-            'compact'       => $this->compact,
-            'currentBlocks' => $blocks,
-            'blockCount'    => count($blocks),
-            'sortable'      => $this->settings['sortable'] ?? true,
-            'placeholder'   => $this->settings['placeholder'] ?? '',
-            'deleteMessage' => $this->settings['deleteMessage'],
-            'orderName'     => $this->settings['orderName'] ?? 'order',
-            'blockTemplate' => $this->getTemplateOutput($this->blockTemplate),
-            'blockButtons'  => $this->blockButtons->getOutput(),
-            'editors'       => array_unique($this->settings['editors'] ?? []),
-            'hiddenInputs'  => $this->settings['hiddenInputs'] ?? [],
-            'primaryInput'  => $this->settings['primaryInput'] ?? 'title',
-            'toolsTable'    => $this->toolsTable->getOutput(),
+            'index'            => $index,
+            'name'             => $this->name,
+            'compact'          => $this->compact,
+            'currentBlocks'    => $blocks,
+            'blockCount'       => count($blocks),
+            'predefinedBlocks' => $this->settings['predefinedBlocks'] ?? [],
+            'sortable'         => $this->settings['sortable'] ?? true,
+            'placeholder'      => $this->settings['placeholder'] ?? '',
+            'deleteMessage'    => $this->settings['deleteMessage'],
+            'orderName'        => $this->settings['orderName'] ?? 'order',
+            'blockTemplate'    => $this->getTemplateOutput($this->blockTemplate),
+            'blockButtons'     => $this->blockButtons->getOutput(),
+            'editors'          => array_unique($this->settings['editors'] ?? []),
+            'hiddenInputs'     => $this->settings['hiddenInputs'] ?? [],
+            'primaryInput'     => $this->settings['primaryInput'] ?? 'title',
+            'toolsTable'       => $this->toolsTable->getOutput(),
         ] + $this->getAttributeArray());
     }
 
@@ -295,15 +301,16 @@ class CustomBlocks implements OutputableInterface
             if ($element instanceof Input) {
                 $blockInputs[] = $element->getName();
                 $id = !empty($element->getID()) ? $element->getID() : $element->getName();
+                $name = $element->getName();
 
                 if (empty($this->settings['primaryInput']) && $element instanceof TextField) {
-                    $element->setAttribute('x-model', 'block.'.$element->getName());
-                    $element->setAttribute('value', 'block.'.$element->getName());
-                    $this->settings['primaryInput'] = $element->getName();
+                    $element->setAttribute('x-model', 'block.'.$name);
+                    $element->setAttribute('value', 'block.'.$name);
+                    $this->settings['primaryInput'] = $name;
                 } elseif ($element->getData('tinymce') !== null) {
-                    $element->setAttribute('x-text', 'block.'.$element->getName());
+                    $element->setAttribute('x-text', 'block.'.$name);
                 } else {
-                    $element->setAttribute('x-bind:value', 'block.'.$element->getName());
+                    $element->setAttribute('x-bind:value', 'block.'.$name);
                 }
 
                 if ($strategy == 'string') {
@@ -313,7 +320,7 @@ class CustomBlocks implements OutputableInterface
                 }
                 
                 if ($element instanceof Radio) {
-                    $element->setAttribute('x-bind:checked', 'block.'.$element->getName().' == $el.value');
+                    $element->setAttribute('x-bind:checked', 'block.'.$name.' == $el.value');
                 }
 
                 if ($element instanceof Person || $element instanceof SearchSelect) {
@@ -332,7 +339,7 @@ class CustomBlocks implements OutputableInterface
                 }
 
                 if ($element instanceof Editor || $element->getData('tinymce') !== null) {
-                    $this->settings['editors'][] = $element->getName();
+                    $this->settings['editors'][] = $name;
                     $media = $element->getData('media');
                     $rows = $element->getAttribute('rows') ?? 6;
                     $element->addClass('tinymce');
@@ -350,6 +357,7 @@ class CustomBlocks implements OutputableInterface
             $hiddenInputs = array_diff(array_keys($blockFields), $blockInputs);
 
             foreach ($hiddenInputs as $inputName) {
+                if (empty($inputName)) continue;
                 $this->settings['hiddenInputs'][$inputName] = $strategy == 'string' 
                     ? "'".$inputName."' + index"
                     : "'".$this->name."[' + index + '][".$inputName."]'";
