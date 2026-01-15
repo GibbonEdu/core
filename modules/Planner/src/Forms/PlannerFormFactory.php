@@ -137,10 +137,12 @@ class PlannerFormFactory extends DatabaseFormFactory
             ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
 
         // Add predefined block data (for creating new blocks, triggered with the outcome selector)
-        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, gibbonOutcome.name as outcometitle, category as outcomecategory, description as outcomecontents
+        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonDepartmentID' => $gibbonDepartmentID];
+        $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, gibbonOutcome.name as outcometitle, category as outcomecategory, description as outcomecontents, scope
                 FROM gibbonOutcome JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
-                WHERE FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)";
+                WHERE FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
+                AND (scope='School' OR (scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID))
+                AND gibbonOutcome.active='Y'";
         $outcomeData = $this->pdo->select($sql, $data)->fetchAll();
 
         foreach ($outcomeData as $outcome) {
@@ -176,7 +178,7 @@ class PlannerFormFactory extends DatabaseFormFactory
                 FROM gibbonOutcome
                 JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
-                WHERE active='Y' AND scope='Learning Area'
+                WHERE gibbonOutcome.active='Y' AND scope='Learning Area'
                 AND gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID
                 AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
                 GROUP BY gibbonOutcome.gibbonOutcomeID
@@ -184,8 +186,9 @@ class PlannerFormFactory extends DatabaseFormFactory
 
         $col = $this->createColumn($name.'Col')->setClass('');
 
-        $col->addSelect($name)
+        $select = $col->addSelect($name)
             ->setClass('addBlock floatNone standardWidth')
+            ->setAttribute('@change', 'handleToolChange($el)')
             ->fromArray(['' => __('Choose an outcome to add it to this lesson')])
             ->fromArray([__('SCHOOL OUTCOMES') => []])
             ->fromQueryChained($this->pdo, $sql, $data, $name.'Filter', 'groupBy')
@@ -193,15 +196,17 @@ class PlannerFormFactory extends DatabaseFormFactory
             ->fromQueryChained($this->pdo, $sql2, $data2, $name.'Filter', 'groupBy');
 
         // Get Categories by Year Group
-        $data3 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'noCategory' => '['.__('No Category').']'];
+        $data3 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'noCategory' => '['.__('No Category').']', 'gibbonDepartmentID' => $gibbonDepartmentID];
         $sql3 = "SELECT category as value, (CASE WHEN category='' THEN :noCategory ELSE category END) as name
                 FROM gibbonOutcome
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
                 WHERE active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
-                GROUP BY gibbonOutcome.category";
+                AND (scope='School' OR (scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID))
+                GROUP BY gibbonOutcome.category
+                HAVING COUNT(*) > 0";
 
         $col->addSelect($name.'Filter')
-            ->setClass('floatNone standardWidth mt-px')
+            ->setClass('floatNone standardWidth')
             ->fromArray(['all' => __('View All')])
             ->fromQuery($this->pdo, $sql3, $data3);
 
@@ -216,22 +221,21 @@ class PlannerFormFactory extends DatabaseFormFactory
      */
     public function createOutcomeBlockTemplate($allowOutcomeEditing) : OutputableInterface
     {
-        $blockTemplate = $this->createTable()->setClass('blank w-full');
-            $row = $blockTemplate->addRow();
+        $blockTemplate = $this->createRow();
+            $row = $blockTemplate->addRow()->setClass('w-full p-4 flex items-center gap-2');
             $row->addTextField('outcometitle')
-                ->setClass('w-3/4 title readonly')
+                ->setOuterClass('w-3/4 title readonly')
                 ->readonly()
                 ->placeholder(__('Outcome Name'))
                 ->append('<input type="hidden" id="outcomegibbonOutcomeID" name="outcomegibbonOutcomeID" value="">');
 
-            $row = $blockTemplate->addRow();
             $row->addTextField('outcomecategory')
-                ->setClass('w-3/4 readonly mt-1')
+                ->setOuterClass('w-1/4 readonly')
                 ->readonly();
 
-            $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
+            $col = $blockTemplate->addRow()->addClass('w-full px-4 showHide w-full')->addColumn();
             if ($allowOutcomeEditing == 'Y') {
-                $col->addEditor('outcomecontents')->setRows(10);
+                $col->addEditor('outcomecontents')->setRows(4)->minimalMode();
             } else {
                 $col->addContent('')->wrap('<label for="outcomecontents" class="block pt-2">', '</label>')
                     ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');
