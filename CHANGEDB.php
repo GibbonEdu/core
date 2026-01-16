@@ -414,4 +414,5 @@ UPDATE `gibbonSetting` SET value='br[style|class],strong[style|class],b[style|cl
 UPDATE `gibbonAction` SET URLList='calendar_view.php,calendar_event_view.php' WHERE name='View Calendar' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar');end
 UPDATE `gibbonAction` SET URLList='coverage_my.php,coverage_view_details.php,coverage_availability.php,coverage_view_cancel.php,coverage_view_edit.php,coverage_view.php,coverage_view_accept.php,coverage_view_decline.php' WHERE name='My Coverage' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff');end
 ALTER TABLE `gibbonLibraryShelf` ADD `gibbonLibraryTypeID` INT(10) unsigned zerofill DEFAULT NULL AFTER `type`;end
+UPDATE `gibbonLibraryShelf` SET `gibbonLibraryTypeID`=0000000004 WHERE `type`='Automatic' AND `gibbonLibraryTypeID` IS NULL;end
 ";
