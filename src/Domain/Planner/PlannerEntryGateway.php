@@ -183,10 +183,11 @@ class PlannerEntryGateway extends QueryableGateway
     public function getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID)
     {
         $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'gibbonTTDayDateID' => $gibbonTTDayDateID];
-        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDayDate.date
+        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDayDate.date, gibbonSpace.name as spaceName 
             FROM gibbonTTDayRowClass
             JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
             JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+            LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID)
             WHERE gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID
             AND gibbonTTDayDate.gibbonTTDayDateID=:gibbonTTDayDateID";
         

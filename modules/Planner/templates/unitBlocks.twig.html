@@ -17,7 +17,7 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
 <section id="unitBlocks" class="h-full flex font-sans"
 
     x-data="{
-        blocks: unitBlocks,
+        unitBlocks: unitBlocks,
         dragging: false,
         selected: [],
         handleDragStart(event, block) {
@@ -39,23 +39,29 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
             this.dragging = false;
             this.selected = [];
             
-            var block = JSON.parse(event.dataTransfer.getData('text/plain'));
-
-            console.log(lesson);
-            console.log(block);
-            
             var items = event.currentTarget.getElementsByClassName('customBlocks');
             if (items[0]) {
-                const blockDropEvent = new CustomEvent('add-block', {
-                    detail: block,
-                    bubbles: false, 
-                    cancelable: true,
+                const blockDropEvent = new CustomEvent('add-blocks', {
+                    detail: JSON.parse(event.dataTransfer.getData('text/plain')),
                 });
                 items[0].dispatchEvent(blockDropEvent);
             }
         },
         isSelected(value) {
             return this.selected.includes(value);
+        },
+        moveBlocks(source, indexFrom, indexTo) {
+            var nextBlock = document.getElementById('blocks' + indexTo);
+            nextBlock.dispatchEvent(new CustomEvent('add-blocks', {
+                detail: source,
+            }));
+
+            console.log(source);
+
+            var thisBlock = document.getElementById('blocks' + indexFrom);
+            thisBlock.dispatchEvent(new CustomEvent('remove-blocks', {
+                detail: source.map((block) => block.index),
+            }));
         },
     }"
 
@@ -65,7 +71,7 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
     {% if lessons %}
 
     <div id="lessons" class="lessonsContainer w-3/4">
-        {% for lesson in lessons %}
+        {% for index, lesson in lessons %}
         
         <div class="bg-gray-50 border p-3 mb-4 mr-4 rounded-md" 
             x-on:drop.prevent="handleDrop(event, '{{ lesson.gibbonPlannerEntryID }}' )"
@@ -74,14 +80,15 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
         <input type="hidden" name="blocks[lesson{{ loop.index }}]" value="{{ lesson.gibbonPlannerEntryID }}">
 
 
-            <div class="flex justify-between gap-2 items-center mb-2 text-xs text-gray-600">
-                <a class="inline-flex items-center text-gray-600 gap-1 no-underline cursor-pointer" href="{{ absoluteURL}}/index.php?q=/modules/Planner/planner_view_full.php&gibbonCourseClassID={{ lesson.gibbonCourseClassID }}&gibbonPlannerEntryID={{ lesson.gibbonPlannerEntryID }}&viewBy=class" target="_blank">
-                    {{ icon('outline', 'book-open', 'size-5 text-gray-500 hover:text-blue-500') }}
+            <div class="flex justify-between gap-2 items-center mb-3 text-xs text-gray-600">
+                <a x-data="{ hover: false }" class="inline-flex mt-1 items-center text-gray-600 gap-1 no-underline cursor-pointer" href="{{ absoluteURL }}/index.php?q=/modules/Planner/planner_view_full.php&gibbonCourseClassID={{ lesson.gibbonCourseClassID }}&gibbonPlannerEntryID={{ lesson.gibbonPlannerEntryID }}&viewBy=class" target="_blank" @mouseover="hover = true" @mouseleave="hover = false">
+                    <div x-show="hover == false">{{ icon('outline', 'book-open', 'size-5 text-gray-500 hover:text-blue-500') }}</div>
+                    <div x-cloak x-show="hover == true">{{ icon('solid', 'book-open', 'size-5 text-gray-500 hover:text-blue-500') }}</div>
 
-                    {{ loop.index }}
+                    <div class="h-5">{{ loop.index }}</div>
                 </a>
 
-                <input type="text" name="lessons[{{ lesson.gibbonPlannerEntryID }}]" value="{{ lesson.name }}"
+                <input type="text" name="lessons[{{ lesson.gibbonPlannerEntryID }}]" value="{{ lesson.name }}" placeholder="{{ __('Lesson') ~' '~ loop.index }}"
                 class="flex-1 min-w-0 py-2 font-bold text-base text-gray-800 bg-transparent placeholder:text-gray-500 rounded-md sm:text-sm sm:leading-5 text-gray-900 border-transparent focus:border-gray-300 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:bg-white cursor-text" />
 
                 <div class="w-1/4 flex items-center gap-2">
@@ -90,23 +97,25 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
                 </div>
                 <div class="w-1/4 flex items-center gap-2">
                     {{ icon('outline', 'clock', 'inline-block size-4 text-gray-500') }}
-                    <span><strong>{{ lesson.times.period }}</strong> ({{ formatUsing('timeRange', lesson.timeStart, lesson.timeEnd) }})</span>
+                    <span><strong>{{ lesson.period }}</strong> ({{ formatUsing('timeRange', lesson.timeStart, lesson.timeEnd) }})</span>
                 </div>
+                {% if lesson.spaceName %}
                 <div class="w-24 text-right">
-                    <span class="tag text-xxs ml-2">{{ lesson.times.spaceName }}</span>
+                    <span class="tag text-xxs ml-2">{{ lesson.spaceName }}</span>
                 </div>
+                {% endif %}
                 
 
             </div>
 
-            <div class="relative min-h-24" >
+            <div class="relative min-h-16" >
 
                 <div x-show="dragging" class="absolute flex justify-center items-center w-full h-full mb-2 border-2 border-dashed bg-gray-200 border-gray-400 rounded-md">
                     <span class="text-xl text-gray-400">
                         {{ __('Drop Here') }}
                     </span>
                 </div>
-                
+
                 {{ smartBlocks[lesson.gibbonPlannerEntryID].getOutput|raw }}
 
             </div>
@@ -126,17 +135,16 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
                 </h5>
 
                 <div class="w-24 text-right">
-                    <span x-text="blocks.length"></span>
+                    <span x-text="unitBlocks.length"></span>
                 </div>
             </div>
 
 
             <div class="blockGroup h-full flex flex-col gap-2" data-group="0" style="min-height: 8rem;">
 
-        
-                <template x-for="(block, index) in blocks" x-bind:key="block.gibbonUnitBlockID" >
+                <template x-for="(block, index) in unitBlocks" x-bind:key="block.gibbonUnitBlockID" >
 
-                    <div x-data="{draggingSelf: false}"
+                    <div x-from-template x-data="{draggingSelf: false}"
                     :draggable="true" 
                     x-on:dragstart="dragging = true;"
                     x-on:dragstart.self="draggingSelf = true; handleDragStart(event, block);" 

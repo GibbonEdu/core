@@ -147,6 +147,20 @@ $icons = [
     </svg>
     HTML,
 
+    // Heroicons: arrow-up-circle
+    'arrow-up-circle' => <<<HTML
+    <svg class="{$class}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm-.75-4.75a.75.75 0 0 0 1.5 0V8.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L6.2 9.74a.75.75 0 1 0 1.1 1.02l1.95-2.1v4.59Z" clip-rule="evenodd" />
+    </svg>
+    HTML,
+
+    // Heroicons: arrow-down-circle
+    'arrow-down-circle' => <<<HTML
+    <svg class="{$class}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v4.59L7.3 9.24a.75.75 0 0 0-1.1 1.02l3.25 3.5a.75.75 0 0 0 1.1 0l3.25-3.5a.75.75 0 1 0-1.1-1.02l-1.95 2.1V6.75Z" clip-rule="evenodd" />
+    </svg>
+    HTML,
+
     // Heroicons: archive' || $icon == 'quicksave' || $icon == 'delivery2
     'archive' => <<<HTML
     <svg class="{$class}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

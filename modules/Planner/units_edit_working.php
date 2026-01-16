@@ -103,25 +103,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     // Get unit blocks
     $unitBlocks = $unitBlockGateway->selectBlocksByUnit($gibbonUnitID)->fetchAll();
 
-    $blockCount = 1;
-    $blockSelect = array_reduce($unitBlocks, function ($group, $item) use (&$blockCount) {
-        $group[$item['gibbonUnitBlockID']] = $blockCount.') '.$item['title'];
-        $blockCount++;
-        return $group;
-    }, []);
-
     // FORM
     $form = Form::createBlank('blocks', $session->get('absoluteURL').'/modules/Planner/units_edit_workingProcess.php?'.http_build_query($urlParams));
     
     $form->setTitle(__('Lessons & Blocks'));
-
-    $addAll = $form->getFactory()->createRow()
-        ->setClass('-mt-4')
-        ->addSelect('blockAddAll')
-        ->fromArray($blockSelect)
-        ->placeholder()
-        ->setClass('blockAddAll float-right w-32')
-        ->prepend(Format::small(__('Add Block to All').':'));
 
     $form->setDescription('<p>'.__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.').'</p>'.Format::alert(__('Deploying lessons only works for units with smart blocks. If you have duplicated a unit from a past year that does not have smart blocks, be sure to edit the lessons manually and assign a new date to them.'), 'message'));
 
@@ -137,9 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         $row = $blockTemplate->addRow();
         $row->addTextField('title')
             ->setClass('title focus:bg-white')
-            ->placeholder(__('Title'))
-            ->append('<input type="hidden" id="gibbonUnitClassBlockID" name="gibbonUnitClassBlockID" value="">')
-            ->append('<input type="hidden" id="gibbonUnitBlockID" name="gibbonUnitBlockID" value="">');
+            ->placeholder(__('Title'));
 
         $row = $blockTemplate->addRow()->addClass('flex justify-between mt-1');
             $row->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
@@ -161,7 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $blockCount = 0;
 
     $lessons = array_map(function($lesson) use ($plannerEntryGateway) {
-        $lesson['times'] = $plannerEntryGateway->getPlannerTTByClassTimes($lesson['gibbonCourseClassID'], $lesson['date'], $lesson['timeStart'], $lesson['timeEnd']);
+        $times = $plannerEntryGateway->getPlannerTTByClassTimes($lesson['gibbonCourseClassID'], $lesson['date'], $lesson['timeStart'], $lesson['timeEnd']);
+        $lesson = array_merge($lesson, $times);
         return $lesson;
     }, $lessons);
 
@@ -192,7 +176,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             ->placeholder('')
             ->addBlocks($blocks);
 
-        // $customBlocks->addToolButton('')->addClass('addBlock')->setTitle(__('Add Block'))->setIcon('outline', 'add', '', ['strokeWidth' => 2]);
+        $customBlocks->addToolButton('')->addClass('addBlock')->setTitle(__('Add Block'))->setIcon('solid', 'add', '', ['strokeWidth' => 2]);
+
+        if ($index > 0) {
+            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-up-circle')->setTitle(__('Copy Back'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index - 1).')');
+        }
+        if ($index < count($lessons) - 1 ) {
+            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-down-circle')->setTitle(__('Copy Forward'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index + 1).')');
+        }
 
         $smartBlocks[$lesson['gibbonPlannerEntryID']] = $customBlocks;
         $indexStart += count($blocks);
@@ -206,73 +197,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         'smartBlocks'  => $smartBlocks,
     ]));
 
-    // foreach ($lessons as $index => $lesson) {
+    $form->addHiddenValue('unitBlockCount', count($unitBlocks));
 
-    //     // Setup header links for this lesson
-    //     $lessonLink = $form->getFactory()->createWebLink(($index+1).'. '.$lesson['name'])
-    //         ->setURL($session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php')
-    //         ->addParam('gibbonCourseClassID', $lesson['gibbonCourseClassID'])
-    //         ->addParam('gibbonPlannerEntryID', $lesson['gibbonPlannerEntryID'])
-    //         ->addParam('viewBy', 'class')
-    //         ->addConfirmation(__('Are you sure you want to jump to this lesson? Any unsaved changes will be lost.'))
-    //         ->addClass('text-gray-800 underline')
-    //         ->getOutput();
-
-    //     $deleteLink = $form->getFactory()->createWebLink('<img title="'.__('Delete').'" src="./themes/'.$session->get('gibbonThemeName').'/img/garbage.png">')
-    //         ->setURL($session->get('absoluteURL').'/modules/Planner/units_edit_working_lessonDelete.php')
-    //         ->addParams($urlParams)
-    //         ->addParam('gibbonCourseClassID', $lesson['gibbonCourseClassID'])
-    //         ->addParam('gibbonPlannerEntryID', $lesson['gibbonPlannerEntryID'])
-    //         ->addParam('address', $_GET['q'])
-    //         ->addClass('float-right ml-2')
-    //         ->addConfirmation(__('Are you sure you want to delete this record? Any unsaved changes will be lost.'))
-    //         ->getOutput();
-
-    //     $times = $plannerEntryGateway->getPlannerTTByClassTimes($gibbonCourseClassID, $lesson['date'], $lesson['timeStart'], $lesson['timeEnd']);
-    //     $lessonTiming = !empty($times)
-    //         ? Format::small($times['period'].' ('.Format::timeRange($times['timeStart'], $times['timeEnd']).')')
-    //         : Format::small(Format::timeRange($lesson['timeStart'], $lesson['timeEnd']));
-
-    //     // Display the heading
-    //     $heading = $form->addRow()->addHeading('lesson'.$lesson['gibbonPlannerEntryID'], $lessonLink . $deleteLink)
-    //         ->append(Format::small(Format::dateReadable($lesson['date'], Format::FULL)).'<br/>')
-    //         ->append($lessonTiming.'<br/>')
-    //         ->append(Format::small($times['spaceName'] ?? ''));
-
-    //     $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');
-
-    //     $col->addContent('<input type="hidden" name="order[]" value="lessonHeader-'.$index.'">');
-    //     $form->addHiddenValue('gibbonPlannerEntryID'.$index, $lesson['gibbonPlannerEntryID']);
-    //     $form->addHiddenValue('date'.$index, $lesson['date']);
-    //     $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
-    //     $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-
-    //     $col->addColumn()
-    //         ->setClass('-mt-4')
-    //         ->addSelect('blockAdd')
-    //         ->fromArray($blockSelect)
-    //         ->placeholder()
-    //         ->setClass('blockAdd float-right w-48')
-    //         ->prepend(Format::small(__('Add Block').':'));
-
-    //     $content = '';
-    //     $classBlocks = $unitClassBlockGateway->selectBlocksByLessonAndClass($lesson['gibbonPlannerEntryID'], $gibbonCourseClassID);
-
-    //     foreach ($classBlocks as $block) {
-    //         ob_start();
-    //         //makeBlock($guid,  $connection2, $blockCount, $mode = 'workingEdit', $block['title'], $block['type'], $block['length'], $block['contents'], $block['complete'], $block['gibbonUnitBlockID'], $block['gibbonUnitClassBlockID'], $block['teachersNotes'], true);
-    //         $blockContent = ob_get_clean();
-    //         $blockCount++;
-
-    //         $content .= '<div class="draggable z-100">'.$blockContent.'</div>';
-    //     }
-
-    //     $col->addContent('<div class="sortableArea py-2 mt-16">'.$content.'</div>');
-
-    // }
-
-    $row = $form->addRow();
-    // $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
+    $row = $form->addRow()->setClass('flex justify-between');
+    $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
     $row->addSubmit();
 
     echo $form->getOutput();
@@ -280,20 +208,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     // Print sidebar
     $page->addSidebarExtra(sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
-?>
-
-<script>
-var count = <?php echo $blockCount ?? 0; ?>;
-
-
-$('.blockAddAll').change(function () {
-    var gibbonUnitBlockID = $(this).val();
-    if (gibbonUnitBlockID == '') return;
-
-    var sortable = $('.sortableArea').each(function (index, element) {
-        $(element).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingEdit&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + gibbonUnitBlockID, "id=" + count) );
-        count++;
-    });
-});
-
-</script>

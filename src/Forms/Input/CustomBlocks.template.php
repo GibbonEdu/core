@@ -43,13 +43,18 @@
             block.show = showBlock;
             this.blocks.push(block);
 
-            $nextTick(() => { this.showHideBlock(block, showBlock); htmx.process(htmx.find('#<?= $name ?>' + index));  });
+            $nextTick(() => { this.showHideBlock(block, showBlock); htmx.process(htmx.find('#<?= $id ?>' + index));  });
 
             this.blockCount = this.blocks.length;
             indexNext<?= $sortGroup ?>++;
         },
-        handleBlockEvent(data) {
+        handleBlockAdd(data) {
             data.forEach((block) => this.createBlock(block, false));
+        },
+        handleBlockRemove(data) {
+            console.log(data);
+            this.blocks = this.blocks.filter((block) => !data.includes(block.index));
+            this.blockCount = this.blocks.length;
         },
         handleToolClick(element) {
             if (element.classList.contains('addBlock')) {
@@ -57,7 +62,6 @@
             }
         },
         handleToolChange(element) {
-            console.log(element.value);
             if (element.value != '' && element.classList.contains('addBlock')) {
                 this.createBlock(this.predefined[element.value]); 
             }
@@ -68,6 +72,7 @@
         },
         showHideBlock(block, show) {
             var element = document.getElementById(block.id);
+            if (!element) return;
             var editors = element.querySelectorAll('textarea.tinymce');
             if (editors && show) {
                 editors.forEach((textarea) => this.editorInit(textarea) );
@@ -83,6 +88,7 @@
 
             tinymce.init( {...gibbonTinyMCEDefaults, ...gibbonTinyMCEFull, ...{
                 selector: '#'+element.id,
+                height: (element.dataset.rows * 20) + 110,
             } });
         },
         editorRemove(element) {
@@ -94,8 +100,9 @@
         }
     }"
     x-init="blocks = blockData<?= $id ?>; blockCount = blocks.length; predefined = predefinedData<?= $id ?>;"
-    @add-block="handleBlockEvent(event.detail)"
     x-on:dragleave.self="$dispatch('dragging')"
+    @add-blocks="handleBlockAdd(event.detail)"
+    @remove-blocks="handleBlockRemove(event.detail)"
 >
 
     <input type="hidden" class="blockCount" name="<?= $name ?>Count" x-bind:value="blockCount" />
@@ -134,7 +141,7 @@
 
         <template x-for="(block, index) in blocks" x-bind:key="block.id" x-ref="blockList">
             
-            <div x-sort:item="block.id" class="relative <?= $compact ? 'compact h-min' : '' ?> border rounded-md bg-gray-50" x-bind:id="block.id">
+            <div x-from-template x-sort:item="block.id" class="relative <?= $compact ? 'compact h-min' : '' ?> border rounded-md bg-gray-50" x-bind:id="block.id">
 
                 <div class="flex  bg-blue-50 hover:bg-blue-50/50 rounded-t-md " :class="{'border-b': block.show, 'rounded-b-md' : !block.show}">
 

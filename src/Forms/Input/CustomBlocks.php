@@ -343,8 +343,7 @@ class CustomBlocks implements OutputableInterface
                     $this->settings['editors'][] = $name;
                     $element->setClass('tinymce');
                     $element->setOuterClass('editor-full');
-
-                    //$element->setAttribute('x-init', 'editorInit($el)');
+                    $element->setAttribute('data-rows', $element->getAttribute('rows'));
                 }
             }
         };
