@@ -52,7 +52,6 @@
             data.forEach((block) => this.createBlock(block, false));
         },
         handleBlockRemove(data) {
-            console.log(data);
             this.blocks = this.blocks.filter((block) => !data.includes(block.index));
             this.blockCount = this.blocks.length;
         },
@@ -72,7 +71,7 @@
         },
         showHideBlock(block, show) {
             var element = document.getElementById(block.id);
-            if (!element) return;
+            if (!element || block.show == show) return;
             var editors = element.querySelectorAll('textarea.tinymce');
             if (editors && show) {
                 editors.forEach((textarea) => this.editorInit(textarea) );
@@ -129,6 +128,7 @@
                     draggedOutside.querySelectorAll('a[data-event=\'copy\']').forEach((item) => item.remove() );
                 }
             }
+            
         },
         beforeSort: function (event) {
             sorting = true;
@@ -136,6 +136,7 @@
         },
         afterSort: function (event) {
             sorting = false;
+            $refs.blockList._x_prevKeys = blocks.map((item) => item.id);
         },
     }">
 

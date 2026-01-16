@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         $blocks = $lessonBlocks[$lesson['gibbonPlannerEntryID']] ?? [];
         $customBlocks = $form->getFactory()->createCustomBlocks('blocks', $session)
             ->fromTemplate($blockTemplate)
-            ->setID('blocks'.$index)
+            ->setID('blocks'.$index.'_')
             ->addClass('lesson'.$lesson['gibbonPlannerEntryID'])
             ->settings([
                 'inputNameStrategy' => 'object',
@@ -179,10 +179,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         $customBlocks->addToolButton('')->addClass('addBlock')->setTitle(__('Add Block'))->setIcon('solid', 'add', '', ['strokeWidth' => 2]);
 
         if ($index > 0) {
-            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-up-circle')->setTitle(__('Copy Back'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index - 1).')');
+            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-up-circle')->setTitle(__('Move Back'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index - 1).')');
         }
         if ($index < count($lessons) - 1 ) {
-            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-down-circle')->setTitle(__('Copy Forward'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index + 1).')');
+            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-down-circle')->setTitle(__('Move Forward'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index + 1).')');
         }
 
         $smartBlocks[$lesson['gibbonPlannerEntryID']] = $customBlocks;

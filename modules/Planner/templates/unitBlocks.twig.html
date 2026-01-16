@@ -51,14 +51,12 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
             return this.selected.includes(value);
         },
         moveBlocks(source, indexFrom, indexTo) {
-            var nextBlock = document.getElementById('blocks' + indexTo);
+            var nextBlock = document.getElementById('blocks' + indexTo + '_');
             nextBlock.dispatchEvent(new CustomEvent('add-blocks', {
                 detail: source,
             }));
 
-            console.log(source);
-
-            var thisBlock = document.getElementById('blocks' + indexFrom);
+            var thisBlock = document.getElementById('blocks' + indexFrom + '_');
             thisBlock.dispatchEvent(new CustomEvent('remove-blocks', {
                 detail: source.map((block) => block.index),
             }));
@@ -108,10 +106,10 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
 
             </div>
 
-            <div class="relative min-h-16" >
+            <div class="relative min-h-24 flex flex-col justify-end" >
 
-                <div x-show="dragging" class="absolute flex justify-center items-center w-full h-full mb-2 border-2 border-dashed bg-gray-200 border-gray-400 rounded-md">
-                    <span class="text-xl text-gray-400">
+                <div x-show="dragging" class="absolute z-10 flex justify-center items-center w-full h-full border-2 border-dashed bg-gray-500/20 border-gray-500 rounded-md pointer-events-none">
+                    <span class="text-xl text-gray-500">
                         {{ __('Drop Here') }}
                     </span>
                 </div>
