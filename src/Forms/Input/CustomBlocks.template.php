@@ -1,16 +1,19 @@
 <script type="text/javascript">
-    var blockData<?= $name ?> = <?= json_encode($currentBlocks) ?>;
-    var predefinedData<?= $name ?> = <?= json_encode($predefinedBlocks) ?>;
+    var blockData<?= $id ?> = <?= json_encode($currentBlocks) ?>;
+    var predefinedData<?= $id ?> = <?= json_encode($predefinedBlocks) ?>;
+    var indexNext<?= $sortGroup ?> = <?= $indexNext ?>;
 </script>
 
 <div <?= $attributes ?>
+    class="customBlocks"
     x-data="{
         blocks: [],
         predefined: [],
         blockCount: 0,
         showAll: false,
-        nextIndex: <?= $index ?>,
+        indexNext: <?= $indexNext ?>,
         sorting: false,
+        dragging: false,
         handleButtonClick(element, index) {
 
             if (element.dataset.event == 'delete') {
@@ -25,24 +28,28 @@
             if (element.dataset.event == 'copy') {
                 var block = {...this.blocks[index] };
                 block.<?= $primaryInput ?> += ' (<?= __('Copy') ?>)';
-                this.createBlock(block);
+                block.<?= $uniqueID ?> = null;
+                this.createBlock(block, false);
             }
 
             if (element.dataset.event == 'showHide') {
                 this.showHideBlock(this.blocks[index], !this.blocks[index].show);
             }
         },
-        createBlock(block) {
-            var index = this.nextIndex;
-            block.id = '<?= $name ?>' + index;
+        createBlock(block, showBlock = true) {
+            var index = indexNext<?= $sortGroup ?>;
+            block.id = '<?= $id ?>' + index;
             block.index = index;
-            block.show = true;
+            block.show = showBlock;
             this.blocks.push(block);
 
-            $nextTick(() => { htmx.process(htmx.find('#<?= $name ?>' + index)); this.showHideBlock(block, true); });
+            $nextTick(() => { this.showHideBlock(block, showBlock); htmx.process(htmx.find('#<?= $name ?>' + index));  });
 
             this.blockCount = this.blocks.length;
-            this.nextIndex++;
+            indexNext<?= $sortGroup ?>++;
+        },
+        handleBlockEvent(data) {
+            data.forEach((block) => this.createBlock(block, false));
         },
         handleToolClick(element) {
             if (element.classList.contains('addBlock')) {
@@ -86,25 +93,35 @@
             }
         }
     }"
-    x-init="blocks = blockData<?= $name ?>; blockCount = blocks.length; predefined = predefinedData<?= $name ?>;"
+    x-init="blocks = blockData<?= $id ?>; blockCount = blocks.length; predefined = predefinedData<?= $id ?>;"
+    @add-block="handleBlockEvent(event.detail)"
+    x-on:dragleave.self="$dispatch('dragging')"
 >
 
     <input type="hidden" class="blockCount" name="<?= $name ?>Count" x-bind:value="blockCount" />
 
+    <?php if ($placeholder) { ?>
     <div x-show="blockCount == 0" class="flex justify-center items-center h-24 mb-2 border border-dashed border-gray-400 rounded-md">
         <span class="text-xl text-gray-400">
             <?= $placeholder ?>
         </span>
-        
     </div>
+    <?php } ?>
 
 
-    <div <?= $sortable ? 'x-sort.ghost="handleSort"' : '' ?> x-sort:config="{onStart: beforeSort, onEnd: afterSort, }" class="blocks flex flex-col transition-all gap-2" x-data="{
+    <div <?= $sortable ? 'x-sort.ghost="handleSort" x-sort:config="{onStart: beforeSort, onEnd: afterSort, }"' : '' ?> <?= $sortGroup ? 'x-sort:group="'.$sortGroup.'"' : '' ?>   class="blocks flex flex-col transition-all gap-2" x-data="{
         handleSort: (item, position) => {
-            const itemPos = blocks.findIndex((r) => r.id == item)
-            let itemToMove = blocks.splice(itemPos, 1)[0];
-            blocks.splice(position, 0, itemToMove);
-            $refs.blockList._x_prevKeys = blocks.map((item) => item.id);
+            const itemPos = blocks.findIndex((r) => r.id == item);
+            if (itemPos >= 0) {
+                let itemToMove = blocks.splice(itemPos, 1)[0];
+                blocks.splice(position, 0, itemToMove);
+                $refs.blockList._x_prevKeys = blocks.map((item) => item.id);
+            } else {
+                var draggedOutside = document.getElementById(item);
+                if (draggedOutside) {
+                    draggedOutside.querySelectorAll('a[data-event=\'copy\']').forEach((item) => item.remove() );
+                }
+            }
         },
         beforeSort: function (event) {
             sorting = true;
@@ -124,7 +141,7 @@
                     <div x-sort:handle class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
 
                     <div @click="showHideBlock(block, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
-                        <span x-text="block.primaryInput ?? block.<?= $primaryInput ?> ?? '<?= __('Untitled') ?>'" :class="!block.primaryInput && !block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
+                        <span x-text="block.primaryInput ?? (block.<?= $primaryInput ?>  ? block.<?= $primaryInput ?> : '<?= __('Untitled') ?>' )" :class="!block.primaryInput && !block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
                     </div>
 
                     <?= $blockButtons ?>

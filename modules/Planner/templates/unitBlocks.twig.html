@@ -1,0 +1,175 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<script type="text/javascript">
+
+var unitBlocks = {{ unitBlocks|json_encode|raw }};
+
+</script>
+
+<section id="unitBlocks" class="h-full flex font-sans"
+
+    x-data="{
+        blocks: unitBlocks,
+        dragging: false,
+        selected: [],
+        handleDragStart(event, block) {
+            this.dragging = true;
+            if (this.selected.length == 0) this.selected = [block];
+            event.dataTransfer.effectAllowed='move';
+            event.dataTransfer.setData('text/plain', JSON.stringify(this.selected));
+        },
+        handleDragEnd() {
+            this.dragging = false;
+            this.selected = [];
+        },
+        handleDrop(event, lesson) {
+            if (!this.dragging || this.selected.length == 0) {
+                this.dragging = false;
+                return; 
+            }
+
+            this.dragging = false;
+            this.selected = [];
+            
+            var block = JSON.parse(event.dataTransfer.getData('text/plain'));
+
+            console.log(lesson);
+            console.log(block);
+            
+            var items = event.currentTarget.getElementsByClassName('customBlocks');
+            if (items[0]) {
+                const blockDropEvent = new CustomEvent('add-block', {
+                    detail: block,
+                    bubbles: false, 
+                    cancelable: true,
+                });
+                items[0].dispatchEvent(blockDropEvent);
+            }
+        },
+        isSelected(value) {
+            return this.selected.includes(value);
+        },
+    }"
+
+    @dragging="dragging = true"
+>
+
+    {% if lessons %}
+
+    <div id="lessons" class="lessonsContainer w-3/4">
+        {% for lesson in lessons %}
+        
+        <div class="bg-gray-50 border p-3 mb-4 mr-4 rounded-md" 
+            x-on:drop.prevent="handleDrop(event, '{{ lesson.gibbonPlannerEntryID }}' )"
+            x-on:dragover.prevent="" 
+        >
+        <input type="hidden" name="blocks[lesson{{ loop.index }}]" value="{{ lesson.gibbonPlannerEntryID }}">
+
+
+            <div class="flex justify-between gap-2 items-center mb-2 text-xs text-gray-600">
+                <a class="inline-flex items-center text-gray-600 gap-1 no-underline cursor-pointer" href="{{ absoluteURL}}/index.php?q=/modules/Planner/planner_view_full.php&gibbonCourseClassID={{ lesson.gibbonCourseClassID }}&gibbonPlannerEntryID={{ lesson.gibbonPlannerEntryID }}&viewBy=class" target="_blank">
+                    {{ icon('outline', 'book-open', 'size-5 text-gray-500 hover:text-blue-500') }}
+
+                    {{ loop.index }}
+                </a>
+
+                <input type="text" name="lessons[{{ lesson.gibbonPlannerEntryID }}]" value="{{ lesson.name }}"
+                class="flex-1 min-w-0 py-2 font-bold text-base text-gray-800 bg-transparent placeholder:text-gray-500 rounded-md sm:text-sm sm:leading-5 text-gray-900 border-transparent focus:border-gray-300 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:bg-white cursor-text" />
+
+                <div class="w-1/4 flex items-center gap-2">
+                    {{ icon('solid', 'calendar', 'inline-block size-4 text-gray-500') }} 
+                    <span><strong>{{ formatUsing('dayOfWeekName', lesson.date) }}</strong>, {{ formatUsing('dateReadable', lesson.date) }}</span>
+                </div>
+                <div class="w-1/4 flex items-center gap-2">
+                    {{ icon('outline', 'clock', 'inline-block size-4 text-gray-500') }}
+                    <span><strong>{{ lesson.times.period }}</strong> ({{ formatUsing('timeRange', lesson.timeStart, lesson.timeEnd) }})</span>
+                </div>
+                <div class="w-24 text-right">
+                    <span class="tag text-xxs ml-2">{{ lesson.times.spaceName }}</span>
+                </div>
+                
+
+            </div>
+
+            <div class="relative min-h-24" >
+
+                <div x-show="dragging" class="absolute flex justify-center items-center w-full h-full mb-2 border-2 border-dashed bg-gray-200 border-gray-400 rounded-md">
+                    <span class="text-xl text-gray-400">
+                        {{ __('Drop Here') }}
+                    </span>
+                </div>
+                
+                {{ smartBlocks[lesson.gibbonPlannerEntryID].getOutput|raw }}
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="sticky h-full top-0 w-1/4">
+        <div id="unassigned"
+            class="unassignedContainer w-full bg-gray-50 border p-3 mb-4 pb-4 rounded-md h-full max-h-screen overflow-y-scroll"
+            @click.away="selected = [];"
+            >
+
+            <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
+                <h5 class="mt-0 p-0">
+                    {{ __('Unit Blocks') }}
+                </h5>
+
+                <div class="w-24 text-right">
+                    <span x-text="blocks.length"></span>
+                </div>
+            </div>
+
+
+            <div class="blockGroup h-full flex flex-col gap-2" data-group="0" style="min-height: 8rem;">
+
+        
+                <template x-for="(block, index) in blocks" x-bind:key="block.gibbonUnitBlockID" >
+
+                    <div x-data="{draggingSelf: false}"
+                    :draggable="true" 
+                    x-on:dragstart="dragging = true;"
+                    x-on:dragstart.self="draggingSelf = true; handleDragStart(event, block);" 
+                    x-on:dragend="draggingSelf = false; handleDragEnd();" 
+
+                    @click.stop="$event.shiftKey || $event.metaKey ? selected.push(block) : selected = [block];"
+
+                    :class="{'opacity-50': draggingSelf, 'ring-2': isSelected(block) }"
+                    
+                    class="unitBlock flex border bg-white hover:bg-blue-50 rounded-md hover:bg-blue-100 hover:border-blue-500 cursor-move group"  >
+
+                        <div class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-l-md" ></div>
+
+                        <div class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-r-md cursor-pointer">
+                            <span x-text="block.title"></span>
+                        </div>
+
+                        
+                    </div>
+
+                </template>
+
+
+            </div>
+
+            <div class="text-xxs text-gray-600 pt-6">
+
+                {{ __('Press {shortcut} to {action}', {shortcut: '<kbd class="bg-white text-xxs">Shift</kbd> or <kbd class="bg-white text-xxs">⌘ Cmd</kbd>', action: __('Select Multiple')} )|raw }}
+            </div>
+
+        </div>
+    </div>
+
+    {% endif %}
+
+</section>

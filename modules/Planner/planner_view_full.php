@@ -1134,7 +1134,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
                         echo '</table>';
 
-                        if ($highestAction != 'Lesson Planner_viewOnly') {
+                        // Temporarily disabled
+                        if (false && $highestAction != 'Lesson Planner_viewOnly') {
 
                           echo "<a name='chat'></a>";
                           echo "<h2 style='padding-top: 30px'>".__('Chat').'</h2>';
@@ -1247,7 +1248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         }
 
-                        $grid = $form->addRow()->addGrid('attendance')->setClass('border bg-blue-50 rounded p-2 ')->setBreakpoints('w-1/2');
+                        $grid = $form->addRow()->addGrid('attendance')->addClass('border bg-blue-50 rounded p-2 ')->setBreakpoints('w-1/2');
 
                         // Display attendance grid
                         $count = 0;

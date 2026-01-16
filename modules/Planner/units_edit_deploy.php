@@ -258,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                     } else {
                         if (($length - $blocks[$deployIndex]['length']) >= 0) {
                             ob_start();
-                            makeBlock($guid,  $connection2, $deployed, $mode = 'workingDeploy', $blocks[$deployIndex]['title'], $blocks[$deployIndex]['type'], $blocks[$deployIndex]['length'], $blocks[$deployIndex]['contents'], 'N', $blocks[$deployIndex]['gibbonUnitBlockID'], '', $blocks[$deployIndex]['teachersNotes'], true);
+                            //makeBlock($guid,  $connection2, $deployed, $mode = 'workingDeploy', $blocks[$deployIndex]['title'], $blocks[$deployIndex]['type'], $blocks[$deployIndex]['length'], $blocks[$deployIndex]['contents'], 'N', $blocks[$deployIndex]['gibbonUnitBlockID'], '', $blocks[$deployIndex]['teachersNotes'], true);
                             $blockContent = ob_get_clean();
 
                             $content .= '<div class="draggable z-100">'.$blockContent.'</div>';
@@ -301,23 +301,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 <script>
 var count = <?php echo $deployed ?? 0; ?>;
 
-$('.sortableArea').sortable({
-    revert: false,
-    tolerance: 25,
-    connectWith: ".sortableArea",
-    items: "div.draggable",
-    receive: function(event,ui) {
+// $('.sortableArea').sortable({
+//     revert: false,
+//     tolerance: 25,
+//     connectWith: ".sortableArea",
+//     items: "div.draggable",
+//     receive: function(event,ui) {
 
-    },
-    beforeStop: function (event, ui) {
-        newItem=ui.item;
-    }
-});
+//     },
+//     beforeStop: function (event, ui) {
+//         newItem=ui.item;
+//     }
+// });
 
-$( ".draggable" ).draggable({
-    connectToSortable: ".sortableArea",
-    // helper: "clone"
-});
+// $( ".draggable" ).draggable({
+//     connectToSortable: ".sortableArea",
+//     // helper: "clone"
+// });
 
 $('.blockAdd').change(function () {
     if ($(this).val() == '') return;

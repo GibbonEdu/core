@@ -63,6 +63,7 @@ class CustomBlocks implements OutputableInterface
         $this->factory = $factory;
         $this->session = $session;
         $this->name = $name;
+        $this->setID($name);
         $this->setClass('my-4');
 
         $this->toolsTable = $factory->createRow()->setClass('flex w-full items-center justify-start gap-2');
@@ -232,15 +233,13 @@ class CustomBlocks implements OutputableInterface
      */
     public function getOutput()
     {
-        $this->setID($this->name);
-
         // TODO: FL copy blocks
         // TODO: internal toggle states
 
-        $index = 0;
+        $index = $this->settings['indexStart'] ?? 0;
         $blocks = [];
         foreach ($this->settings['currentBlocks'] as $key => $block) {
-            $block['id'] = $this->name.$index;
+            $block['id'] = $this->getID().$index;
             $block['index'] = $index;
             $blocks[] = $block;
             $index++;
@@ -251,19 +250,21 @@ class CustomBlocks implements OutputableInterface
         // }
 
         return Component::render(CustomBlocks::class, [
-            'index'            => $index,
+            'indexNext'        => $this->settings['indexNext'] ?? $index,
             'name'             => $this->name,
             'compact'          => $this->compact,
             'currentBlocks'    => $blocks,
             'blockCount'       => count($blocks),
             'predefinedBlocks' => $this->settings['predefinedBlocks'] ?? [],
             'sortable'         => $this->settings['sortable'] ?? true,
+            'sortGroup'        => $this->settings['sortGroup'] ?? null,
             'placeholder'      => $this->settings['placeholder'] ?? '',
             'deleteMessage'    => $this->settings['deleteMessage'],
             'orderName'        => $this->settings['orderName'] ?? 'order',
             'blockTemplate'    => $this->getTemplateOutput($this->blockTemplate),
             'blockButtons'     => $this->blockButtons->getOutput(),
             'editors'          => array_unique($this->settings['editors'] ?? []),
+            'uniqueID'         => $this->settings['uniqueID'] ?? 'unique',
             'hiddenInputs'     => $this->settings['hiddenInputs'] ?? [],
             'primaryInput'     => $this->settings['primaryInput'] ?? 'title',
             'toolsTable'       => $this->toolsTable->getOutput(),
@@ -340,9 +341,7 @@ class CustomBlocks implements OutputableInterface
 
                 if ($element instanceof Editor || $element->getData('tinymce') !== null) {
                     $this->settings['editors'][] = $name;
-                    $media = $element->getData('media');
-                    $rows = $element->getAttribute('rows') ?? 6;
-                    $element->addClass('tinymce');
+                    $element->setClass('tinymce');
                     $element->setOuterClass('editor-full');
 
                     //$element->setAttribute('x-init', 'editorInit($el)');
@@ -352,18 +351,21 @@ class CustomBlocks implements OutputableInterface
 
         $addValidation($template);
 
-        if (!empty($this->settings['currentBlocks'])) {
-            $blockFields = current($this->settings['currentBlocks']);
-            $hiddenInputs = array_diff(array_keys($blockFields), $blockInputs);
 
-            foreach ($hiddenInputs as $inputName) {
-                if (empty($inputName)) continue;
-                $this->settings['hiddenInputs'][$inputName] = $strategy == 'string' 
-                    ? "'".$inputName."' + index"
-                    : "'".$this->name."[' + index + '][".$inputName."]'";
-            }
-            
+        $blockFields = !empty($this->settings['currentBlocks']) ? current($this->settings['currentBlocks']) : [];
+        $hiddenInputList = !empty($this->settings['hiddenInputs']) ? explode(',', $this->settings['hiddenInputs']) : [];
+        $hiddenInputs = array_merge(array_diff(array_keys($blockFields), $blockInputs), $hiddenInputList);
+        $indexStart = $this->settings['indexStart'] ?? 0;
+
+        $this->settings['hiddenInputs'] = [];
+        foreach ($hiddenInputs as $inputName) {
+            if (empty($inputName)) continue;
+            $this->settings['hiddenInputs'][$inputName] = $strategy == 'string' 
+                ? "'".$inputName."' + block.index "
+                : "'".$this->name."[' + block.index + '][".$inputName."]'";
         }
+        
+    
 
         return $template->getOutput();
     }
