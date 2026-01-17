@@ -28,6 +28,7 @@ use Gibbon\Domain\Planner\UnitBlockGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Planner\UnitClassBlockGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -113,8 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $form->addHiddenValue('address', $session->get('address'));
 
     $form->addHeaderAction('add', __('Add Lessons'))
-        ->setURL('/modules/Planner/units_edit_working_add.php')
-        ->addParams($urlParams)
+        ->setURL(Url::fromModuleRoute('Planner', 'units_edit_working_add.php')->withQueryParams($urlParams)->withFragment('now'))
         ->displayLabel();
 
     // Smart Block Template
@@ -138,6 +138,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
             $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'));
             $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(5);
+
+    $toolbar = $form->getFactory()->createRow()->addClass('flex flex-wrap items-center gap-2');
+    $toolbar->addButton(__('Deploy Blocks'))->setSize('sm')->setIcon('solid', 'arrow-left-circle')->setAttribute('@click', "console.log('clicked')");
+    $toolbar->addButton(__('Copy Back'))->setSize('sm')->setIcon('solid', 'arrow-right-circle')->setAttribute('@click', "console.log('clicked')");
+    $toolbar->addButton(__('View Planner'))->setSize('sm')->setIcon('solid', 'planner')->setAttribute('@click', "console.log('clicked')");
+    $toolbar->addButton(__('Clear All'))->setSize('sm')->setIcon('solid', 'delete')->setAttribute('@click', "console.log('clicked')");
 
     // Display lessons and blocks
     $lessons = $plannerEntryGateway->selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)->fetchAll();
@@ -176,13 +182,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             ->placeholder('')
             ->addBlocks($blocks);
 
-        $customBlocks->addToolButton('')->addClass('addBlock')->setTitle(__('Add Block'))->setIcon('solid', 'add', '', ['strokeWidth' => 2]);
+        $customBlocks->addToolButton('')->setSize('sm')->addClass('addBlock')->setTitle(__('Add Block'))->setIcon('solid', 'add', '', ['strokeWidth' => 2]);
 
         if ($index > 0) {
-            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-up-circle')->setTitle(__('Move Back'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index - 1).')');
+            $customBlocks->addToolButton('')->setSize('sm')->setIcon('solid', 'arrow-up-circle')->setTitle(__('Move Back'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index - 1).')');
         }
         if ($index < count($lessons) - 1 ) {
-            $customBlocks->addToolButton('')->setIcon('solid', 'arrow-down-circle')->setTitle(__('Move Forward'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index + 1).')');
+            $customBlocks->addToolButton('')->setSize('sm')->setIcon('solid', 'arrow-down-circle')->setTitle(__('Move Forward'))->setAttribute('@click', 'moveBlocks(blocks, '.$index.', '.($index + 1).')');
         }
 
         $smartBlocks[$lesson['gibbonPlannerEntryID']] = $customBlocks;
@@ -191,6 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     // Display the drag-drop block editor
     $form->addRow()->addContent($page->fetchFromTemplate('unitBlocks.twig.html', [
+        'toolbar'      => $toolbar,
         'lessons'      => $lessons,
         'unitBlocks'   => $unitBlocks,
         'lessonBlocks' => $lessonBlocks,

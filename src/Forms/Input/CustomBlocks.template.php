@@ -71,7 +71,7 @@
         },
         showHideBlock(block, show) {
             var element = document.getElementById(block.id);
-            if (!element || block.show == show) return;
+            if (!element) return;
             var editors = element.querySelectorAll('textarea.tinymce');
             if (editors && show) {
                 editors.forEach((textarea) => this.editorInit(textarea) );
@@ -99,7 +99,6 @@
         }
     }"
     x-init="blocks = blockData<?= $id ?>; blockCount = blocks.length; predefined = predefinedData<?= $id ?>;"
-    x-on:dragleave.self="$dispatch('dragging')"
     @add-blocks="handleBlockAdd(event.detail)"
     @remove-blocks="handleBlockRemove(event.detail)"
 >

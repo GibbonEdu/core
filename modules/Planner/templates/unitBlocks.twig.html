@@ -62,8 +62,6 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
             }));
         },
     }"
-
-    @dragging="dragging = true"
 >
 
     {% if lessons %}
@@ -71,19 +69,19 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
     <div id="lessons" class="lessonsContainer w-3/4">
         {% for index, lesson in lessons %}
         
-        <div class="bg-gray-50 border p-3 mb-4 mr-4 rounded-md" 
+        <div class="bg-gray-50 border  mb-4 mr-4 rounded-md" 
             x-on:drop.prevent="handleDrop(event, '{{ lesson.gibbonPlannerEntryID }}' )"
             x-on:dragover.prevent="" 
         >
         <input type="hidden" name="blocks[lesson{{ loop.index }}]" value="{{ lesson.gibbonPlannerEntryID }}">
 
 
-            <div class="flex justify-between gap-2 items-center mb-3 text-xs text-gray-600">
-                <a x-data="{ hover: false }" class="inline-flex mt-1 items-center text-gray-600 gap-1 no-underline cursor-pointer" href="{{ absoluteURL }}/index.php?q=/modules/Planner/planner_view_full.php&gibbonCourseClassID={{ lesson.gibbonCourseClassID }}&gibbonPlannerEntryID={{ lesson.gibbonPlannerEntryID }}&viewBy=class" target="_blank" @mouseover="hover = true" @mouseleave="hover = false">
-                    <div x-show="hover == false">{{ icon('outline', 'book-open', 'size-5 text-gray-500 hover:text-blue-500') }}</div>
-                    <div x-cloak x-show="hover == true">{{ icon('solid', 'book-open', 'size-5 text-gray-500 hover:text-blue-500') }}</div>
+            <div class="flex justify-between gap-2 items-center text-xs text-gray-600 bg-gray-150 px-3 py-2 rounded-t-md border-b">
+                <a x-data="{ hover: false }" class="inline-flex mt-1 items-center text-gray-500 hover:text-blue-500 gap-1 no-underline cursor-pointer" href="{{ absoluteURL }}/index.php?q=/modules/Planner/planner_view_full.php&gibbonCourseClassID={{ lesson.gibbonCourseClassID }}&gibbonPlannerEntryID={{ lesson.gibbonPlannerEntryID }}&viewBy=class" target="_blank" @mouseover="hover = true" @mouseleave="hover = false">
+                    <div x-show="hover == false">{{ icon('outline', 'book-open', 'size-5', {strokeWidth: 1.6}) }}</div>
+                    <div x-cloak x-show="hover == true">{{ icon('solid', 'book-open', 'size-5') }}</div>
 
-                    <div class="h-5">{{ loop.index }}</div>
+                    <div class="h-5 font-semibold">{{ loop.index }}</div>
                 </a>
 
                 <input type="text" name="lessons[{{ lesson.gibbonPlannerEntryID }}]" value="{{ lesson.name }}" placeholder="{{ __('Lesson') ~' '~ loop.index }}"
@@ -91,24 +89,29 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
 
                 <div class="w-1/4 flex items-center gap-2">
                     {{ icon('solid', 'calendar', 'inline-block size-4 text-gray-500') }} 
-                    <span><strong>{{ formatUsing('dayOfWeekName', lesson.date) }}</strong>, {{ formatUsing('dateReadable', lesson.date) }}</span>
+                    <span><strong class="text-gray-700">{{ formatUsing('dayOfWeekName', lesson.date) }}</strong>, {{ formatUsing('dateReadable', lesson.date) }}</span>
                 </div>
                 <div class="w-1/4 flex items-center gap-2">
-                    {{ icon('outline', 'clock', 'inline-block size-4 text-gray-500') }}
-                    <span><strong>{{ lesson.period }}</strong> ({{ formatUsing('timeRange', lesson.timeStart, lesson.timeEnd) }})</span>
+                    {{ icon('outline', 'clock', 'inline-block size-4 text-gray-500', {strokeWidth: 2.0}) }}
+                    <span><strong class="text-gray-700">{{ lesson.period }}</strong> ({{ formatUsing('timeRange', lesson.timeStart, lesson.timeEnd) }})</span>
                 </div>
                 {% if lesson.spaceName %}
                 <div class="w-24 text-right">
-                    <span class="tag text-xxs ml-2">{{ lesson.spaceName }}</span>
+                    <span class="tag text-xxs ml-2 {{ lesson.gibbonTTSpaceChangeID ? 'error' : '' }}">
+                        {% if lesson.gibbonTTSpaceChangeID %}
+                        {{ icon('basic', 'arrow-move', 'size-3 text-red-700 inline align-sub') }}
+                        {% endif %}
+                        {{ lesson.spaceName }}
+                    </span>
                 </div>
                 {% endif %}
                 
 
             </div>
 
-            <div class="relative min-h-24 flex flex-col justify-end" >
+            <div class="relative min-h-24 flex flex-col justify-end p-3 " >
 
-                <div x-show="dragging" class="absolute z-10 flex justify-center items-center w-full h-full border-2 border-dashed bg-gray-500/20 border-gray-500 rounded-md pointer-events-none">
+                <div x-cloak x-show="dragging" class="absolute z-10 flex justify-center items-center w-full h-full border-2 border-dashed bg-gray-500/20 border-gray-500 rounded-md pointer-events-none">
                     <span class="text-xl text-gray-500">
                         {{ __('Drop Here') }}
                     </span>
@@ -123,7 +126,7 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
 
     <div class="sticky h-full top-0 w-1/4">
         <div id="unassigned"
-            class="unassignedContainer w-full bg-gray-50 border p-3 mb-4 pb-4 rounded-md h-full max-h-screen overflow-y-scroll"
+            class="w-full bg-gray-50 border p-3 mb-4 pb-4 rounded-md h-full max-h-screen overflow-y-scroll"
             @click.away="selected = [];"
             >
 
@@ -156,8 +159,8 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
 
                         <div class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-l-md" ></div>
 
-                        <div class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-r-md cursor-pointer">
-                            <span x-text="block.title"></span>
+                        <div class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-r-md cursor-pointer" :class="{'text-gray-800': block.title, 'text-gray-500': !block.title}">
+                            <span x-text="block.title  ? block.title : '{{ __('Untitled') }}'"></span>
                         </div>
 
                         
@@ -173,6 +176,17 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
                 {{ __('Press {shortcut} to {action}', {shortcut: '<kbd class="bg-white text-xxs">Shift</kbd> or <kbd class="bg-white text-xxs">⌘ Cmd</kbd>', action: __('Select Multiple')} )|raw }}
             </div>
 
+        </div>
+
+        <div class="w-full bg-gray-50 border p-3 mb-4 rounded-md text-xs text-gray-600">
+
+            <h5 class="mt-0 mb-2 p-0 ">
+                {{ __('Tools') }}
+            </h5>
+
+
+            {{ toolbar.getOutput|raw }}
+           
         </div>
     </div>
 
