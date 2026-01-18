@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener('htmx:beforeHistorySave', (event) => {
     document.querySelectorAll('[x-from-template]').forEach((e) => e.remove());
     document.querySelectorAll('.tox-tinymce').forEach((e) => e.remove());
+    document.querySelectorAll('ul.token-input-list-facebook').forEach((e) => e.remove());
 });
 
 

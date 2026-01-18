@@ -35,7 +35,6 @@ $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
-$lessonNameReplace = $_POST['lessonNameReplace'] ?? 'N';
 $unitBlockCount = $_POST['unitBlockCount'] ?? 0;
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
@@ -87,8 +86,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     $partialFail = false;
     
-    
-    
     $blockIDs = [];
     $blocks = $_POST['blocks'] ?? [];
     $lessons = $_POST['lessons'] ?? [];
@@ -102,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         if (substr($blockIndex, 0, 6) == 'lesson') {
             $gibbonPlannerEntryID = $block;
             if (!empty($lessons[$gibbonPlannerEntryID])) {
-                $plannerGateway->update($gibbonPlannerEntryID, ['name' => $lessons[$gibbonPlannerEntryID]]);
+                $lessonDetails[$gibbonPlannerEntryID]['name'] = $lessons[$gibbonPlannerEntryID];
             }
             continue;
         }
@@ -143,9 +140,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         if (empty($lessonDetails[$gibbonPlannerEntryID])) {
             $contents = strip_tags($data['contents']);
             $lessonDetails[$gibbonPlannerEntryID]['summary'] = strlen($contents) > 72 ? substr($contents, 0, 72) : $contents;
-            if ($lessonNameReplace == 'Y') {
-                $lessonDetails[$gibbonPlannerEntryID]['name'] = $data['title'];
-            }
         }
 
         if (!empty($gibbonUnitClassBlockID)) {

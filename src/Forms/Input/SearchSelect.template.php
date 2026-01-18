@@ -112,11 +112,11 @@
             
         </select>
         
-        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full min-w-52 overflow-hidden rounded-md bg-white shadow-lg" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.75ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
+        <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full min-w-52 rounded-md bg-white " role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.75ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
         style="display:none;">
 
             <!-- Search  -->
-            <div class="relative flex gap-2">
+            <div class="relative flex gap-2 max-w-full ">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" class="absolute ml-3 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50" aria-hidden="true" >
                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
                 </svg>
@@ -124,7 +124,7 @@
             </div>
 
             <!-- Options  -->
-            <ul class="list-none flex max-h-60 flex-col overflow-y-auto m-0 p-1 border border-t-0 rounded-b-md">
+            <ul class="list-none flex w-fit min-w-full max-h-80 flex-col overflow-x-hidden overflow-y-auto m-0 p-1 border -mt-px rounded-b-md bg-white shadow-lg" style="max-width: max(100%, 24rem);">
                 <li class="hidden px-4 py-2 text-sm text-on-surface dark:text-on-surface-dark" x-ref="noResultsMessage">
                     <span><?= __('No results') ?></span>
                 </li>
@@ -138,10 +138,10 @@
 
                         <template x-for="(item, index) in group.options" x-bind:key="item.value">
 
-                            <li x-from-template class="combobox-option inline-flex justify-between rounded px-3 py-1 text-sm  hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
+                            <li x-from-template class="combobox-option inline-flex justify-between rounded px-3 py-1 text-sm  hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
 
                                 <!-- Label  -->
-                                <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label"></span>
+                                <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label" class="overflow-hidden text-ellipsis"></span>
 
                                 <!-- Screen reader 'selected' indicator  -->
                                 <span class="sr-only" x-text="selectedOption == item ? 'selected' : null"></span>

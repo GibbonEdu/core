@@ -36,7 +36,6 @@ $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
-$lessonNameReplace = $_POST['lessonNameReplace'] ?? 'N';
 $orders = $_POST['order'] ?? [];
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
@@ -78,7 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     } 
 
     // Check existence of specified unit
-    if (!$unitGateway->exists($gibbonUnitID) || !$courseGateway->exists($gibbonCourseID)) {
+    $unit = $unitGateway->getByID($gibbonUnitID);
+    if (empty($unit) || !$courseGateway->exists($gibbonCourseID)) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
         exit;
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     $lessonDetails = [];
 
     $gibbonPlannerEntryID = 0;
-    $lessonNumber = 0;
+    $lessonNumber = 1;
     $sequenceNumber = 0;
 
     foreach ($blocks as $blockIndex => $block) {
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                 'timeStart'              => $lessonData['timeStart'],
                 'timeEnd'                => $lessonData['timeEnd'],
                 'gibbonUnitID'           => $gibbonUnitID,
-                'name'                   => !empty($lessons[$block]) ? $lessons[$block] : __('Lesson').' '.$lessonNumber,
+                'name'                   => !empty($lessons[$block]) ? $lessons[$block] : trim($unit['name']).' '.$lessonNumber,
                 'summary'                => $summary ?? '',
                 'viewableParents'        => $_POST['viewableParents'] ?? 'N',
                 'viewableStudents'       => $_POST['viewableStudents'] ?? 'N',
@@ -140,9 +140,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         if (empty($lessonDetails[$gibbonPlannerEntryID])) {
             $contents = strip_tags($data['contents']);
             $lessonDetails[$gibbonPlannerEntryID]['summary'] = strlen($contents) > 72 ? substr($contents, 0, 72) : $contents;
-            if ($lessonNameReplace == 'Y') {
-                $lessonDetails[$gibbonPlannerEntryID]['name'] = $data['title'];
-            }
         }
 
         if (!empty($gibbonUnitClassBlockID)) {

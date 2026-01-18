@@ -58,7 +58,7 @@ class CustomBlocks implements OutputableInterface
      * @param  OutputableInterface  $form
      * @param  Session              $session
      */
-    public function __construct(FormFactoryInterface &$factory, $name, ?Session $session = null, bool $canDelete = true)
+    public function __construct(FormFactoryInterface &$factory, $name, ?Session $session = null, bool $canDelete = true, bool $canCopy = true, bool $canAdd = false)
     {
         $this->factory = $factory;
         $this->session = $session;
@@ -78,10 +78,10 @@ class CustomBlocks implements OutputableInterface
             'addOnEvent'       => 'click',
         ];
 
-        if ($canDelete) {
-            $this->addBlockButton('delete', __('Delete'));
-            $this->addBlockButton('copy', __('Duplicate'));
-        }
+        if ($canDelete) $this->addBlockButton('delete', __('Delete'));
+        if ($canCopy) $this->addBlockButton('copy', __('Duplicate'));
+        if ($canAdd) $this->addToolButton(__('Add'))->addClass('addBlock')->setIcon('solid', 'add');
+        
     }
 
     /**
@@ -245,10 +245,6 @@ class CustomBlocks implements OutputableInterface
             $index++;
         }
 
-        // if ($this->toolsTable->getElementCount() == 0) {
-        //     $this->addToolButton(__('Add'))->addClass('addBlock')->setIcon('solid', 'add');
-        // }
-
         return Component::render(CustomBlocks::class, [
             'indexNext'        => $this->settings['indexNext'] ?? $index,
             'name'             => $this->name,
@@ -257,7 +253,7 @@ class CustomBlocks implements OutputableInterface
             'blockCount'       => count($blocks),
             'predefinedBlocks' => $this->settings['predefinedBlocks'] ?? [],
             'sortable'         => $this->settings['sortable'] ?? true,
-            'sortGroup'        => $this->settings['sortGroup'] ?? null,
+            'sortGroup'        => $this->settings['sortGroup'] ?? $this->name,
             'placeholder'      => $this->settings['placeholder'] ?? '',
             'deleteMessage'    => $this->settings['deleteMessage'],
             'orderName'        => $this->settings['orderName'] ?? 'order',
@@ -320,6 +316,13 @@ class CustomBlocks implements OutputableInterface
                     $element->setAttribute('x-bind:name', "'".$this->name."[' + block.index + '][".$id."]'");
                 }
                 
+                if ($element instanceof Checkbox && $element->getOptionCount() > 0) {
+                    $element->setAttribute('x-bind:name', $strategy == 'string'
+                        ? "'".$id."' + block.index + '[]'"
+                        : "'".$this->name."[' + block.index + '][".$id."][]'"
+                    );
+                }
+
                 if ($element instanceof Radio) {
                     $element->setAttribute('x-bind:checked', 'block.'.$name.' == $el.value');
                 }
@@ -343,6 +346,7 @@ class CustomBlocks implements OutputableInterface
                     $this->settings['editors'][] = $name;
                     $element->setClass('tinymce');
                     $element->setOuterClass('editor-full');
+                    $element->setAttribute('data-name', $name);
                     $element->setAttribute('data-rows', $element->getAttribute('rows'));
                 }
             }

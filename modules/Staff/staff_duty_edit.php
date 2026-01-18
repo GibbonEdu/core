@@ -54,8 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
         $row = $blockTemplate->addRow();
             $row->addLabel('name', __('Name'));
             $row->addTextField('name')
-                ->addClass('mb-2')
-                ->append('<input type="hidden" id="gibbonStaffDutyID" name="gibbonStaffDutyID" value="">');
+                ->addClass('mb-2');
 
             $row->addLabel('nameShort', __('Short Name'));
             $row->addTextField('nameShort')
@@ -84,7 +83,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
     $row = $form->addRow();
     $customBlocks = $row->addCustomBlocks('dutyList', $session)
         ->fromTemplate($blockTemplate)
-        ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true))
+        ->settings([
+            'inputNameStrategy' => 'object',
+            'addOnEvent' => 'click',
+            'sortable' => true,
+            'uniqueID' => 'gibbonStaffDutyID',
+        ])
         ->placeholder(__('Time Slots will appear here...'))
         ->addToolInput($addBlockButton);
 

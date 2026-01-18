@@ -237,22 +237,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('description', __('Lesson Details'));
-                    $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
+                    $column->addEditor('description', $guid)->setRows(20)->showMedia()->setValue($description);
 
                 $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
-                    $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
+                    $column->addEditor('teachersNotes', $guid)->setRows(5)->showMedia()->setValue($teachersNotes);
 
                 //SMART BLOCKS
                 if (!empty($values['gibbonUnitID'])) {
-                    $form->addRow()->addHeading('Smart Blocks', __('Smart Blocks'));
-
-                    $form->addRow()->addContent("<div class='float-right'><a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=".$values['gibbonCourseID'].'&gibbonUnitID='.$values['gibbonUnitID'].'&gibbonSchoolYearID='.$session->get('gibbonSchoolYearID')."&gibbonUnitClassID=$gibbonUnitClassID'>".__('Edit Unit').'</a></div>');
+                    $row = $form->addRow()->setClass('sm:items-center');
+                    $row->addHeading('Smart Blocks', __('Smart Blocks'));
+                    $row->addContent();
+                    $row->addAction('edit', __('Edit Unit'))
+                        ->addClass('text-right')
+                        ->setURL('/modules/Planner/units_edit_working.php')
+                        ->setAttribute('target', '_blank')
+                        ->addParams(['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseID' => $values['gibbonCourseID'], 'gibbonUnitID' => $values['gibbonUnitID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonUnitClassID' => $gibbonUnitClassID]);
 
                     $row = $form->addRow();
-                        $customBlocks = $row->addPlannerSmartBlocks('smart', $session, $guid);
+                        $customBlocks = $row->addPlannerSmartBlocks('smart', $session, false);
 
                     $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                     $sqlBlocks = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
@@ -297,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $row = $form->addRow()->addClass('homework');
                     $column = $row->addColumn();
                     $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
-                    $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
+                    $column->addEditor('homeworkDetails', $guid)->setRows(5)->showMedia()->setValue($description)->required();
 
                 $form->toggleVisibilityByClass('homeworkSubmission')->onClick('homeworkSubmission')->when('Y');
                 $row = $form->addRow()->addClass('homework');
@@ -367,13 +372,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $resultBlocks = $pdo->select($sqlBlocks, $dataBlocks);
 
                 while ($rowBlocks = $resultBlocks->fetch()) {
-                    $outcome = array(
+                    $customBlocks->addBlock($rowBlocks['gibbonOutcomeID'], [
                         'outcometitle' => $rowBlocks['name'],
                         'outcomegibbonOutcomeID' => $rowBlocks['gibbonOutcomeID'],
                         'outcomecategory' => $rowBlocks['category'],
-                        'outcomecontents' => $rowBlocks['content']
-                    );
-                    $customBlocks->addBlock($rowBlocks['gibbonOutcomeID'], $outcome);
+                        'outcomecontents' => $rowBlocks['content'],
+                        'outcomegibbonPlannerEntryOutcomeID' => $rowBlocks['gibbonPlannerEntryOutcomeID'],
+                    ]);
                 }
                 
 

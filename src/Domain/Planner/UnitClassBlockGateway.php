@@ -73,6 +73,16 @@ class UnitClassBlockGateway extends QueryableGateway
 
         return $this->db()->delete($sql, $data);
     }
+
+    public function deletePlannerBlocksNotInList($gibbonPlannerEntryID, $gibbonUnitClassBlockIDList)
+    {
+        $gibbonUnitClassBlockIDList = is_array($gibbonUnitClassBlockIDList) ? implode(',', $gibbonUnitClassBlockIDList) : $gibbonUnitClassBlockIDList;
+
+        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonUnitClassBlockIDList' => $gibbonUnitClassBlockIDList];
+        $sql = "DELETE FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
+
+        return $this->db()->delete($sql, $data);
+    }
     
 
 }

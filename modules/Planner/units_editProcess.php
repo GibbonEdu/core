@@ -158,56 +158,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $sequenceNumber = 0;
                         $dataRemove = array();
                         $whereRemove = '';
-                        if (count($order) < 0) {
-                            $URL .= '&return=error1';
-                            header("Location: {$URL}");
-                        } else {
-                            if (is_array($order)) {
-                                foreach ($order as $i) {
-                                    $title = '';
-                                    if ($_POST["title$i"] != "Block $i") {
-                                        $title = $_POST["title$i"] ?? '';
-                                    }
-                                    $type2 = '';
-                                    if ($_POST["type$i"] != 'type (e.g. discussion, outcome)') {
-                                        $type2 = $_POST["type$i"] ?? '';
-                                    }
-                                    $length = '';
-                                    if ($_POST["length$i"] != 'length (min)') {
-                                        $length = $_POST["length$i"] ?? '';
-                                    }
-                                    $contents = $_POST["contents$i"] ?? '';
-                                    $teachersNotes = $_POST["teachersNotes$i"] ?? '';
-                                    $gibbonUnitBlockID = $_POST["gibbonUnitBlockID$i"] ?? '';
 
-                                    if ($gibbonUnitBlockID != '') {
-                                        try {
-                                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $title, 'type' => $type2, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber, 'gibbonUnitBlockID' => $gibbonUnitBlockID);
-                                            $sqlBlock = 'UPDATE gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
-                                            $resultBlock = $connection2->prepare($sqlBlock);
-                                            $resultBlock->execute($dataBlock);
-                                        } catch (PDOException $e) {
-                                            $partialFail = true;
-                                        }
-                                        $dataRemove["gibbonUnitBlockID$sequenceNumber"] = $gibbonUnitBlockID;
-                                        $whereRemove .= "AND NOT gibbonUnitBlockID=:gibbonUnitBlockID$sequenceNumber ";
-                                    } else {
-                                        try {
-                                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $title, 'type' => $type2, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
-                                            $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber';
-                                            $resultBlock = $connection2->prepare($sqlBlock);
-                                            $resultBlock->execute($dataBlock);
-                                        } catch (PDOException $e) {
-                                            $partialFail = true;
-                                        }
-                                        $dataRemove["gibbonUnitBlockID$sequenceNumber"] = $connection2->lastInsertId();
-                                        $whereRemove .= "AND NOT gibbonUnitBlockID=:gibbonUnitBlockID$sequenceNumber ";
-                                    }
-
-                                    ++$sequenceNumber;
+                        if (!empty($order) && is_array($order)) {
+                            foreach ($order as $i) {
+                                $title = '';
+                                if ($_POST["title$i"] != "Block $i") {
+                                    $title = $_POST["title$i"] ?? '';
                                 }
+                                $type2 = '';
+                                if ($_POST["type$i"] != 'type (e.g. discussion, outcome)') {
+                                    $type2 = $_POST["type$i"] ?? '';
+                                }
+                                $length = '';
+                                if ($_POST["length$i"] != 'length (min)') {
+                                    $length = $_POST["length$i"] ?? '';
+                                }
+                                $contents = $_POST["contents$i"] ?? '';
+                                $teachersNotes = $_POST["teachersNotes$i"] ?? '';
+                                $gibbonUnitBlockID = $_POST["gibbonUnitBlockID$i"] ?? '';
+
+                                if ($gibbonUnitBlockID != '') {
+                                    try {
+                                        $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $title, 'type' => $type2, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber, 'gibbonUnitBlockID' => $gibbonUnitBlockID);
+                                        $sqlBlock = 'UPDATE gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
+                                        $resultBlock = $connection2->prepare($sqlBlock);
+                                        $resultBlock->execute($dataBlock);
+                                    } catch (PDOException $e) {
+                                        $partialFail = true;
+                                    }
+                                    $dataRemove["gibbonUnitBlockID$sequenceNumber"] = $gibbonUnitBlockID;
+                                    $whereRemove .= "AND NOT gibbonUnitBlockID=:gibbonUnitBlockID$sequenceNumber ";
+                                } else {
+                                    try {
+                                        $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $title, 'type' => $type2, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
+                                        $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber';
+                                        $resultBlock = $connection2->prepare($sqlBlock);
+                                        $resultBlock->execute($dataBlock);
+                                    } catch (PDOException $e) {
+                                        $partialFail = true;
+                                    }
+                                    $dataRemove["gibbonUnitBlockID$sequenceNumber"] = $connection2->lastInsertId();
+                                    $whereRemove .= "AND NOT gibbonUnitBlockID=:gibbonUnitBlockID$sequenceNumber ";
+                                }
+
+                                ++$sequenceNumber;
                             }
                         }
+                        
 
                         //Remove orphaned blocks
                         if ($whereRemove != '(') {

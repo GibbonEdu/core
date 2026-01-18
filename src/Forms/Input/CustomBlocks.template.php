@@ -11,7 +11,6 @@
         predefined: [],
         blockCount: 0,
         showAll: false,
-        indexNext: <?= $indexNext ?>,
         sorting: false,
         dragging: false,
         handleButtonClick(element, index) {
@@ -26,8 +25,9 @@
             }
 
             if (element.dataset.event == 'copy') {
+                this.editorSave(this.blocks[index]);
                 var block = {...this.blocks[index] };
-                block.<?= $primaryInput ?> += ' (<?= __('Copy') ?>)';
+                block.<?= $primaryInput ?> = (block.<?= $primaryInput ?> ? block.<?= $primaryInput ?> : '<?= __('Untitled') ?>') + ' (<?= __('Copy') ?>)';
                 block.<?= $uniqueID ?> = null;
                 this.createBlock(block, false);
             }
@@ -43,7 +43,7 @@
             block.show = showBlock;
             this.blocks.push(block);
 
-            $nextTick(() => { this.showHideBlock(block, showBlock); htmx.process(htmx.find('#<?= $id ?>' + index));  });
+            //$nextTick(() => { this.showHideBlock(block, showBlock);  });
 
             this.blockCount = this.blocks.length;
             indexNext<?= $sortGroup ?>++;
@@ -52,7 +52,7 @@
             data.forEach((block) => this.createBlock(block, false));
         },
         handleBlockRemove(data) {
-            this.blocks = this.blocks.filter((block) => !data.includes(block.index));
+            this.blocks = data === -1 ? [] : this.blocks.filter((block) => !data.includes(block.index));
             this.blockCount = this.blocks.length;
         },
         handleToolClick(element) {
@@ -70,32 +70,37 @@
             this.blocks.forEach((block) => this.showHideBlock(block, this.showAll) );
         },
         showHideBlock(block, show) {
-            var element = document.getElementById(block.id);
-            if (!element) return;
-            var editors = element.querySelectorAll('textarea.tinymce');
-            if (editors && show) {
-                editors.forEach((textarea) => this.editorInit(textarea) );
-            } else if (editors && !show) {
-                editors.forEach((textarea) => this.editorRemove(textarea) );
-            }
-
+            if (show) this.editorInit(block);
+            else if (!show) this.editorRemove(block);
+            
             block.show = show;
             this.showAll = this.showAll || show;
         },
-        editorInit(element) {
+        editorInit(block) {
             if (this.sorting) return;
 
-            tinymce.init( {...gibbonTinyMCEDefaults, ...gibbonTinyMCEFull, ...{
-                selector: '#'+element.id,
-                height: (element.dataset.rows * 20) + 110,
-            } });
+            document.getElementById(block.id)?.querySelectorAll('textarea.tinymce')?.forEach((textarea) => {
+                tinymce.init( {...gibbonTinyMCEDefaults, ...gibbonTinyMCEFull, ...{
+                    selector: '#'+textarea.id,
+                    height: (textarea.dataset.rows * 20) + 110,
+                } });
+            } );
+            
         },
-        editorRemove(element) {
-            var editor = tinymce.get(element.id);
-            if (editor) {
-                editor.save();
-                editor.destroy();
-            }
+        editorSave(block) {
+            document.getElementById(block.id)?.querySelectorAll('textarea.tinymce')?.forEach((textarea) => {
+                var editor = tinymce.get(textarea.id);
+                block[textarea.dataset.name] = editor ? editor.save() : textarea.value;
+            });
+        },
+        editorRemove(block) {
+            document.getElementById(block.id)?.querySelectorAll('textarea.tinymce')?.forEach((textarea) => {
+                var editor = tinymce.get(textarea.id);
+                if (editor) {
+                    editor.save();
+                    editor.destroy();
+                }
+            });
         }
     }"
     x-init="blocks = blockData<?= $id ?>; blockCount = blocks.length; predefined = predefinedData<?= $id ?>;"
@@ -148,7 +153,7 @@
                     <div x-sort:handle class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-tl-md" :class="{'rounded-bl-md': !block.show}"></div>
 
                     <div @click="showHideBlock(block, !block.show)" class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-tr-md cursor-pointer">
-                        <span x-text="block.primaryInput ?? (block.<?= $primaryInput ?>  ? block.<?= $primaryInput ?> : '<?= __('Untitled') ?>' )" :class="!block.primaryInput && !block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
+                        <span x-text="block.primaryInput ?? (block.<?= $primaryInput ?> ? block.<?= $primaryInput ?> : '<?= __('Untitled') ?>' )" class="primaryInput" :class="!block.primaryInput && !block.<?= $primaryInput ?> ? 'text-gray-500' : ''"></span>
                     </div>
 
                     <?= $blockButtons ?>

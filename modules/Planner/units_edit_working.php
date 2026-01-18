@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     // Proceed!
     // Check if course & school year specified
-    if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
+    if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $unitBlockGateway = $container->get(UnitBlockGateway::class);
     $unitClassBlockGateway = $container->get(UnitClassBlockGateway::class);
     $courseGateway = $container->get(CourseGateway::class);
+    $unitGateway = $container->get(UnitGateway::class);
 
     // Check access to specified course
     if ($highestAction == 'Unit Planner_all') {
@@ -84,10 +85,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $values = $result->fetch();
 
     // Get the unit details
-    $unit = $container->get(UnitGateway::class)->getByID($urlParams['gibbonUnitID'], ['name']);
+    $unit = $unitGateway->getByID($urlParams['gibbonUnitID'], ['name']);
     $values['unit'] = $unit['name'] ?? '';
 
-    if (empty($unit)) {
+    if (empty($gibbonUnitClassID)) {
+        $urlParams['gibbonUnitClassID'] = $unitGateway->getUnitClassIDByUnit($urlParams['gibbonUnitID'], $urlParams['gibbonCourseClassID']);
+    }
+
+    if (empty($unit) || empty($urlParams['gibbonUnitClassID'])) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
@@ -115,6 +120,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     $form->addHeaderAction('add', __('Add Lessons'))
         ->setURL(Url::fromModuleRoute('Planner', 'units_edit_working_add.php')->withQueryParams($urlParams)->withFragment('now'))
+
+        ->displayLabel();
+    $form->addHeaderAction('planner', __('View Planner'))
+        ->setURL(Url::fromModuleRoute('Planner', 'planner.php')->withQueryParams($urlParams + ['viewBy' => 'class']))
         ->displayLabel();
 
     // Smart Block Template
@@ -140,10 +149,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(5);
 
     $toolbar = $form->getFactory()->createRow()->addClass('flex flex-wrap items-center gap-2');
-    $toolbar->addButton(__('Deploy Blocks'))->setSize('sm')->setIcon('solid', 'arrow-left-circle')->setAttribute('@click', "console.log('clicked')");
-    $toolbar->addButton(__('Copy Back'))->setSize('sm')->setIcon('solid', 'arrow-right-circle')->setAttribute('@click', "console.log('clicked')");
-    $toolbar->addButton(__('View Planner'))->setSize('sm')->setIcon('solid', 'planner')->setAttribute('@click', "console.log('clicked')");
-    $toolbar->addButton(__('Clear All'))->setSize('sm')->setIcon('solid', 'delete')->setAttribute('@click', "console.log('clicked')");
+    $toolbar->addButton(__('Deploy All'))->setSize('sm')->setIcon('solid', 'arrow-down-on-square')->setAttribute('@click', 'handleDeployAll()');
+    $toolbar->addButton(__('Deploy Each'))->setSize('sm')->setIcon('solid', 'arrow-down-on-square-stack')->setAttribute('@click', 'handleDeployEach()');
+    $toolbar->addButton(__('Rename Lessons'))->setSize('sm')->setIcon('solid', 'pencil-square')->setAttribute('@click', 'handleRenameLessons()');
+    $toolbar->addButton(__('Clear All'))->setSize('sm')->setIcon('solid', 'delete')->setAttribute('@click', 'handleClearAll()');
 
     // Display lessons and blocks
     $lessons = $plannerEntryGateway->selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)->fetchAll();
@@ -199,6 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $form->addRow()->addContent($page->fetchFromTemplate('unitBlocks.twig.html', [
         'toolbar'      => $toolbar,
         'lessons'      => $lessons,
+        'unitName'     => $unit['name'],
         'unitBlocks'   => $unitBlocks,
         'lessonBlocks' => $lessonBlocks,
         'smartBlocks'  => $smartBlocks,
@@ -206,9 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     $form->addHiddenValue('unitBlockCount', count($unitBlocks));
 
-    $row = $form->addRow()->setClass('flex justify-between');
-    $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
-    $row->addSubmit();
+    $row = $form->addRow()->addSubmit();
 
     echo $form->getOutput();
 

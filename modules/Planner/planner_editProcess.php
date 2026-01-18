@@ -24,6 +24,8 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\Planner\UnitClassBlockGateway;
+use Gibbon\Domain\Planner\UnitBlockGateway;
 
 require_once '../../gibbon.php';
 
@@ -268,14 +270,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         }
 
                         //Deal with smart unit
+                        $unitClassBlockGateway = $container->get(UnitClassBlockGateway::class);
                         $partialFail = false;
                         $order = $_POST['order'] ?? [];
-                        $seq = $_POST['minSeq'] ?? 0;
+                        $sequenceNumber = $_POST['minSeq'] ?? 0;
                         $idList = [];
 
-                        if (is_array($order)) {
+                        if (is_array($order) && !empty($gibbonUnitID)) {
                             foreach ($order as $i) {
-                                $id = $_POST["gibbonUnitClassBlockID$i"] ?? '';
+                                $gibbonUnitClassBlockID = $_POST["gibbonUnitClassBlockID$i"] ?? '';
                                 $title = $_POST["title$i"] ?? '';
                                 $summaryBlocks .= $title.', ';
                                 $type = $_POST["type$i"] ?? '';
@@ -285,53 +288,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                 $complete = isset($_POST["complete$i"]) && $_POST["complete$i"] == 'on' ? 'Y' : 'N';
 
                                 //Write to database
-                                $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
-                                $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
+                                $data = ['title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $sequenceNumber];
                                 
-                                $updated = $pdo->update($sql, $data);
-                                $partialFail &= !$updated;
-
-                                $idList[] = $id;
-                                ++$seq;
-                            }
-
-                            //Remove orphaned blocks
-
-                            $dataRemove = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonUnitClassBlockIDList' => implode(',', $idList)];
-                            $sqlRemove = "DELETE FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
-                            $pdo->delete($sqlRemove, $dataRemove);
-                        }
-
-                        //Delete all outcomes
-                        try {
-                            $dataDelete = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                            $sqlDelete = 'DELETE FROM gibbonPlannerEntryOutcome WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                            $resultDelete = $connection2->prepare($sqlDelete);
-                            $resultDelete->execute($dataDelete);
-                        } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
-                            exit();
-                        }
-                        //Insert outcomes
-                        $count = 0;
-                        if (isset($_POST['outcomeorder'])) {
-                            if (count($_POST['outcomeorder']) > 0) {
-                                foreach ($_POST['outcomeorder'] as $outcome) {
-                                    if ($_POST["outcomegibbonOutcomeID$outcome"] != '') {
-                                        try {
-                                            $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonOutcomeID' => $_POST["outcomegibbonOutcomeID$outcome"], 'content' => $_POST["outcomecontents$outcome"], 'count' => $count);
-                                            $sqlInsert = 'INSERT INTO gibbonPlannerEntryOutcome SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count';
-                                            $resultInsert = $connection2->prepare($sqlInsert);
-                                            $resultInsert->execute($dataInsert);
-                                        } catch (PDOException $e) {
-                                            $partialFail = true;
-                                        }
-                                    }
-                                    ++$count;
+                                if (!empty($gibbonUnitClassBlockID)) {
+                                    $updated = $unitClassBlockGateway->update($gibbonUnitClassBlockID, $data);
+                                    $partialFail &= !$updated;
                                 }
+
+                                $idList[] = $gibbonUnitClassBlockID;
+                                $sequenceNumber++;
+                            }
+
+                            // Remove deleted blocks
+                            $unitClassBlockGateway->deletePlannerBlocksNotInList($gibbonPlannerEntryID, $idList);
+                        }
+
+                        //Insert outcomes
+                        $outcomeIDs = [];
+                        if (!empty($_POST['outcomeorder'])) {
+             
+                            foreach ($_POST['outcomeorder'] as $count => $outcome) {
+                                if (empty($_POST["outcomegibbonOutcomeID$outcome"])) continue;
+
+                                $gibbonPlannerEntryOutcomeID = $_POST["outcomegibbonPlannerEntryOutcomeID$outcome"] ?? '';
+
+                                $dataOutcome = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonOutcomeID' => $_POST["outcomegibbonOutcomeID$outcome"] ?? '', 'content' => $_POST["outcomecontents$outcome"] ?? '', 'count' => $count);
+                                
+                                if (!empty($gibbonPlannerEntryOutcomeID)) {
+                                    $sqlOutcome = 'UPDATE gibbonPlannerEntryOutcome SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count WHERE gibbonPlannerEntryOutcomeID=:gibbonPlannerEntryOutcomeID';
+                                    $resultInsert = $pdo->insert($sqlOutcome, $dataOutcome + ['gibbonPlannerEntryOutcomeID' => $gibbonPlannerEntryOutcomeID]);
+                                } else {
+                                    $sqlOutcome = 'INSERT INTO gibbonPlannerEntryOutcome SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count';
+                                    $resultInsert = $pdo->insert($sqlOutcome, $dataOutcome);
+                                }
+                                
+                                $outcomeIDs[] = $_POST["outcomegibbonOutcomeID$outcome"] ?? '';
                             }
                         }
+                        
+
+                        // Remove deleted outcomes
+                        $dataRemove = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonOutcomeIDList' => implode(',', $outcomeIDs)];
+                        $sqlRemove = "DELETE FROM gibbonPlannerEntryOutcome WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonOutcomeID, :gibbonOutcomeIDList)";
+                        $pdo->delete($sqlRemove, $dataRemove);
+                        
 
                         $summaryBlocks = substr($summaryBlocks, 0, -2);
                         if (strlen($summaryBlocks) > 75) {

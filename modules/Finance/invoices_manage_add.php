@@ -119,9 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         // Block template
         $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
             $row = $blockTemplate->addRow();
-                $row->addTextField('name')->setClass('w-full pr-10 title')->required()->placeholder(__('Fee Name'))
-                    ->append('<input type="hidden" id="gibbonFinanceFeeID" name="gibbonFinanceFeeID" value="">')
-                    ->append('<input type="hidden" id="feeType" name="feeType" value="">');
+                $row->addTextField('name')->setClass('w-full pr-10 title')->required()->placeholder(__('Fee Name'));
 
             $col = $blockTemplate->addRow()->addColumn()->addClass('flex mt-1');
                 $col->addSelectFeeCategory('gibbonFinanceFeeCategoryID')
@@ -140,7 +138,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         $row = $form->addRow();
             $customBlocks = $row->addCustomBlocks('feesBlock', $session)
                 ->fromTemplate($blockTemplate)
-                ->settings(array('inputNameStrategy' => 'string', 'addOnEvent' => 'change', 'sortable' => true))
+                ->settings([
+                    'inputNameStrategy' => 'string',
+                    'addOnEvent'        => 'change',
+                    'sortable'          => true,
+                    'uniqueID'          => 'gibbonFinanceInvoiceFeeID',
+                    'hiddenInputs'      => 'gibbonFinanceFeeID,feeType',
+                    ])
                 ->placeholder(__('Fees will be listed here...'))
                 ->addToolInput($feeSelector)
                 ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');

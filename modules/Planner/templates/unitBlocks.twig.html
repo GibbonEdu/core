@@ -11,13 +11,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 <script type="text/javascript">
 
 var unitBlocks = {{ unitBlocks|json_encode|raw }};
+var lessonIDs = {{ lessons|column('gibbonPlannerEntryID')|json_encode|raw }};
 
 </script>
 
 <section id="unitBlocks" class="h-full flex font-sans"
 
     x-data="{
-        unitBlocks: unitBlocks,
         dragging: false,
         selected: [],
         handleDragStart(event, block) {
@@ -39,12 +39,51 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
             this.dragging = false;
             this.selected = [];
             
-            var items = event.currentTarget.getElementsByClassName('customBlocks');
+            this.dispatchBlockEvent(event.currentTarget.id, 'add-blocks', JSON.parse(event.dataTransfer.getData('text/plain')));
+        },
+        handleDeployAll() {
+            if (confirm('{{ __('This will deploy one unit block to each lesson, in order from top to bottom.') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    if (unitBlocks[i]) {
+                        this.dispatchBlockEvent('lessonBlock'+lessonIDs[i], 'add-blocks', [unitBlocks[i]]);
+                    }
+                }
+            }
+        },
+        handleDeployEach() {
+            if (!this.selected || this.selected.length == 0) {
+                alert('{{ __('Nothing selected.') }} {{ __('Use Control, Command and/or Shift to select multiple.') }}');
+                return;
+            }
+            if (confirm('{{ __('This will deploy all selected blocks to each lesson.') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    this.dispatchBlockEvent('lessonBlock'+lessonIDs[i], 'add-blocks', this.selected.map((block) => block = {...block}));
+                }
+            }
+        },
+        handleRenameLessons() {
+            if (confirm('{{ __('Replace the lesson name with the smart block name?') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    var input = document.getElementById('lessonName'+lessonIDs[i]);
+                    var blocks = document.getElementById('lessonBlock'+lessonIDs[i])?.getElementsByClassName('primaryInput');
+                    if (input && blocks[0]) {
+                        input.value = blocks[0].innerText;
+                    }
+                    
+                }
+            }
+        },
+        handleClearAll() {
+            if (confirm('{{ __('Warning') }}! {{ __('This will clear all deployed blocks from each lesson. If you have edited your lesson blocks, these changes will be lost.') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    this.dispatchBlockEvent('lessonBlock'+lessonIDs[i], 'remove-blocks', -1);
+                }
+            }
+        },
+        dispatchBlockEvent(targetID, eventName, data) {
+            var items = document.getElementById(targetID)?.getElementsByClassName('customBlocks');
             if (items[0]) {
-                const blockDropEvent = new CustomEvent('add-blocks', {
-                    detail: JSON.parse(event.dataTransfer.getData('text/plain')),
-                });
-                items[0].dispatchEvent(blockDropEvent);
+                items[0].dispatchEvent(new CustomEvent(eventName, {detail: data}));
             }
         },
         isSelected(value) {
@@ -69,7 +108,7 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
     <div id="lessons" class="lessonsContainer w-3/4">
         {% for index, lesson in lessons %}
         
-        <div class="bg-gray-50 border  mb-4 mr-4 rounded-md" 
+        <div id="lessonBlock{{ lesson.gibbonPlannerEntryID }}" class="bg-gray-50 border  mb-4 mr-4 rounded-md" 
             x-on:drop.prevent="handleDrop(event, '{{ lesson.gibbonPlannerEntryID }}' )"
             x-on:dragover.prevent="" 
         >
@@ -84,8 +123,8 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
                     <div class="h-5 font-semibold">{{ loop.index }}</div>
                 </a>
 
-                <input type="text" name="lessons[{{ lesson.gibbonPlannerEntryID }}]" value="{{ lesson.name }}" placeholder="{{ __('Lesson') ~' '~ loop.index }}"
-                class="flex-1 min-w-0 py-2 font-bold text-base text-gray-800 bg-transparent placeholder:text-gray-500 rounded-md sm:text-sm sm:leading-5 text-gray-900 border-transparent focus:border-gray-300 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:bg-white cursor-text" />
+                <input type="text" id="lessonName{{ lesson.gibbonPlannerEntryID }}" name="lessons[{{ lesson.gibbonPlannerEntryID }}]" value="{{ lesson.name }}" placeholder="{{ unitName ~' '~ loop.index }}"
+                class="flex-1 min-w-0 py-2 font-bold text-base text-gray-800 bg-transparent placeholder:text-gray-500 rounded-md sm:text-sm sm:leading-5 text-gray-900 border-transparent hover:border-blue-500 focus:border-gray-300 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:bg-white cursor-text" />
 
                 <div class="w-1/4 flex items-center gap-2">
                     {{ icon('solid', 'calendar', 'inline-block size-4 text-gray-500') }} 
@@ -109,7 +148,7 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
 
             </div>
 
-            <div class="relative min-h-24 flex flex-col justify-end p-3 " >
+            <div class="relative min-h-24 flex flex-col justify-end  " >
 
                 <div x-cloak x-show="dragging" class="absolute z-10 flex justify-center items-center w-full h-full border-2 border-dashed bg-gray-500/20 border-gray-500 rounded-md pointer-events-none">
                     <span class="text-xl text-gray-500">
@@ -117,7 +156,9 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
                     </span>
                 </div>
 
+                <div class="p-3">
                 {{ smartBlocks[lesson.gibbonPlannerEntryID].getOutput|raw }}
+                </div>
 
             </div>
         </div>
@@ -178,6 +219,7 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
 
         </div>
 
+        {% if toolbar %}
         <div class="w-full bg-gray-50 border p-3 mb-4 rounded-md text-xs text-gray-600">
 
             <h5 class="mt-0 mb-2 p-0 ">
@@ -188,6 +230,7 @@ var unitBlocks = {{ unitBlocks|json_encode|raw }};
             {{ toolbar.getOutput|raw }}
            
         </div>
+        {% endif %}
     </div>
 
     {% endif %}

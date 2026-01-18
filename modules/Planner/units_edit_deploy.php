@@ -236,6 +236,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'));
             $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(5);
 
+        $toolbar = $form->getFactory()->createRow()->addClass('flex flex-wrap items-center gap-2');
+        $toolbar->addButton(__('Deploy All'))->setSize('sm')->setIcon('solid', 'arrow-down-on-square')->setAttribute('@click', 'handleDeployAll()');
+        $toolbar->addButton(__('Deploy Each'))->setSize('sm')->setIcon('solid', 'arrow-down-on-square-stack')->setAttribute('@click', 'handleDeployEach()');
+        $toolbar->addButton(__('Rename Lessons'))->setSize('sm')->setIcon('solid', 'pencil-square')->setAttribute('@click', 'handleRenameLessons()');
+        $toolbar->addButton(__('Clear All'))->setSize('sm')->setIcon('solid', 'delete')->setAttribute('@click', 'handleClearAll()');
+
         // Smart blocks
         $smartBlocks = [];
         $indexStart = 0;
@@ -262,9 +268,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         // Display the drag-drop block editor
         $form->addRow()->addContent($page->fetchFromTemplate('unitBlocks.twig.html', [
-            'lessons'      => $lessons,
-            'unitBlocks'   => $unitBlocks ?? [],
-            'smartBlocks'   => $smartBlocks ?? [],
+            'toolbar'     => $toolbar,
+            'lessons'     => $lessons,
+            'unitName'    => $unit['name'],
+            'unitBlocks'  => $unitBlocks ?? [],
+            'smartBlocks' => $smartBlocks ?? [],
         ]));
 
         // foreach ($lessons as $index => $lesson) {
@@ -329,9 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $row->addLabel('viewableParents', __('Viewable by Parents'));
             $row->addYesNo('viewableParents')->required();
 
-        $row = $form->addRow()->setClass('flex justify-between');
-        $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
-        $row->addSubmit();
+        $row = $form->addRow()->addSubmit();
 
         echo $form->getOutput();
     }

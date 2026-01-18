@@ -52,18 +52,19 @@ class PlannerFormFactory extends DatabaseFormFactory
      * @param string $guid
      * @return OutputableInterface
      */
-    public function createPlannerSmartBlocks($name, $session, $guid) : OutputableInterface
+    public function createPlannerSmartBlocks($name, $session, $canAdd) : OutputableInterface
     {
-        $blockTemplate = $this->createSmartBlockTemplate($guid);
+        $blockTemplate = $this->createSmartBlockTemplate();
 
         // Create and initialize the Custom Blocks
-        $customBlocks = $this->createCustomBlocks($name, $session)
+        $customBlocks = $this->createCustomBlocks($name, $session, true, $canAdd, $canAdd)
             ->fromTemplate($blockTemplate)
             ->settings([
                 'inputNameStrategy' => 'string',
                 'addOnEvent'        => 'click',
                 'sortable'          => true,
                 'orderName'         => 'order',
+                'uniqueID'          => 'gibbonUnitBlockID',
             ])
             ->placeholder(__('Smart Blocks listed here...'))
             ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
@@ -77,7 +78,7 @@ class PlannerFormFactory extends DatabaseFormFactory
      * @param string $guid
      * @return OutputableInterface
      */
-    public function createSmartBlockTemplate($guid) : OutputableInterface
+    public function createSmartBlockTemplate() : OutputableInterface
     {
         global $container;
 
@@ -85,15 +86,13 @@ class PlannerFormFactory extends DatabaseFormFactory
             $row = $blockTemplate->addRow();
             $row->addTextField('title')
                 ->setClass('w-3/4 title focus:bg-white')
-                ->placeholder(__('Title'))
-                ->append('<input type="hidden" id="gibbonUnitClassBlockID" name="gibbonUnitClassBlockID" value="">')
-                ->append('<input type="hidden" id="gibbonUnitBlockID" name="gibbonUnitBlockID" value="">');
+                ->placeholder(__('Title'));
 
             $row = $blockTemplate->addRow()->addClass('w-3/4 flex justify-between mt-1');
                 $row->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
-                    ->setClass('w-full focus:bg-white mr-1');
+                    ->setClass('flex-1 focus:bg-white mr-1');
                 $row->addTextField('length')->placeholder(__('length (min)'))
-                    ->setClass('w-24 focus:bg-white')->prepend('');
+                    ->setClass('w-48 focus:bg-white')->prepend('');
 
             $smartBlockTemplate = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'smartBlockTemplate');
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
@@ -102,7 +101,7 @@ class PlannerFormFactory extends DatabaseFormFactory
 
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'));
-                $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(20);
+                $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(5);
 
         return $blockTemplate;
     }
@@ -123,7 +122,7 @@ class PlannerFormFactory extends DatabaseFormFactory
         $blockTemplate = $this->createOutcomeBlockTemplate($allowOutcomeEditing);
 
         // Create and initialize the Custom Blocks
-        $customBlocks = $this->createCustomBlocks($name, $session)
+        $customBlocks = $this->createCustomBlocks($name, $session, true, false, false)
             ->fromTemplate($blockTemplate)
             ->settings([
                 'inputNameStrategy' => 'string',
@@ -131,6 +130,8 @@ class PlannerFormFactory extends DatabaseFormFactory
                 'preventDuplicates' => true,
                 'sortable'          => true,
                 'orderName'         => 'outcomeorder',
+                'hiddenInputs'      => 'outcomegibbonOutcomeID',
+                'uniqueID'          => 'outcomegibbonOutcomeID',
             ])
             ->placeholder(__('Key outcomes listed here...'))
             ->addToolInput($outcomeSelector)
@@ -226,8 +227,7 @@ class PlannerFormFactory extends DatabaseFormFactory
             $row->addTextField('outcometitle')
                 ->setOuterClass('w-3/4 title readonly')
                 ->readonly()
-                ->placeholder(__('Outcome Name'))
-                ->append('<input type="hidden" id="outcomegibbonOutcomeID" name="outcomegibbonOutcomeID" value="">');
+                ->placeholder(__('Outcome Name'));
 
             $row->addTextField('outcomecategory')
                 ->setOuterClass('w-1/4 readonly')
@@ -235,10 +235,7 @@ class PlannerFormFactory extends DatabaseFormFactory
 
             $col = $blockTemplate->addRow()->addClass('w-full px-4 showHide w-full')->addColumn();
             if ($allowOutcomeEditing == 'Y') {
-                $col->addEditor('outcomecontents')->setRows(4)->minimalMode();
-            } else {
-                $col->addContent('')->wrap('<label for="outcomecontents" class="block pt-2">', '</label>')
-                    ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');
+                $col->addTextArea('outcomecontents')->setRows(3);
             }
 
         return $blockTemplate;

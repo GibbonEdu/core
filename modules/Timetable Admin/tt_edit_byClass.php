@@ -103,8 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
                     ->fromResults($dayResults)
                     ->required()
                     ->selected($gibbonTTDayID)
-                    ->addClass('float-left')
-                    ->append('<input type="hidden" id="gibbonTTDayRowClassID" name="gibbonTTDayRowClassID" value="">');
+                    ->addClass('float-left');
 
                 $row->addLabel('gibbonTTColumnRowID', __('Period'))->addClass('ml-4');
                 $row->addSelect('gibbonTTColumnRowID')
@@ -124,7 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
             $ttBlocks = $row->addCustomBlocks('ttBlocks', $session)
                 ->fromTemplate($ttBlock)
                 ->settings([
-                    'placeholder' => __('Timetable Entries will appear here.')
+                    'placeholder' => __('Timetable Entries will appear here.'),
+                    'uniqueID'    => 'gibbonTTDayRowClassID',
                 ])
                 ->addToolInput($addTTButton);
 
@@ -133,6 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
         while ($ttDay = $ttResults->fetch()) {
             $ttDay['gibbonTTColumnRowID'] .= '-' . $ttDay['gibbonTTDayID'];
             $ttDay['gibbonTTSpaceID'] = $ttDay['gibbonSpaceID'];
+            $ttDay['primaryInput'] = $ttDay['dayName'].' - '.$ttDay['periodName'];
             $ttBlocks->addBlock($ttDay['gibbonTTDayRowClassID'], $ttDay);
         }
 

@@ -14,11 +14,11 @@ if ($disabled) {
 }
 
 if ($size == 'sm') {
-    $sizeClass = ($value ? 'px-3' : 'px-2').' py-2 text-xs sm:leading-4';
-    $sizeClassIcon = ($value ? ' lg:-ml-0.5 lg:mr-1 ' : '') . ' size-4';
+    $sizeClass = ($value ? 'px-3' : 'px-2').' py-2 text-xs sm:leading-4 ';
+    $sizeClassIcon = ($value ? ' lg:-ml-0.5 lg:mr-1 ' : '') . ' size-4 ';
 } else {
-    $sizeClass = ($value ? 'px-4' : 'px-3').' py-2 text-sm sm:leading-5';
-    $sizeClassIcon = ($value ? ' lg:-ml-0.5 lg:mr-1.5 ' : '') . ' size-5';
+    $sizeClass = ($value ? 'px-4' : 'px-3').' py-2 text-sm sm:leading-5 ';
+    $sizeClassIcon = ($value ? ' lg:-ml-0.5 lg:mr-1.5 ' : '') . ' size-5 ';
 }
 ?>
 <?php if ($type == 'blank') { ?>

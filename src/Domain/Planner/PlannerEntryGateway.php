@@ -188,7 +188,7 @@ class PlannerEntryGateway extends QueryableGateway
             JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
             JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
             LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID)
-            LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClass AND gibbonTTSpaceChange.date=gibbonTTDayDate.date)
+            LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date)
             LEFT JOIN gibbonSpace AS spaceChange ON (spaceChange.gibbonSpaceID=gibbonTTSpaceChange.gibbonSpaceID)
             WHERE gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID
             AND gibbonTTDayDate.gibbonTTDayDateID=:gibbonTTDayDateID";
@@ -383,7 +383,12 @@ class PlannerEntryGateway extends QueryableGateway
     public function selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonUnitID' => $gibbonUnitID];
-        $sql = "SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart";
+        $sql = "SELECT * 
+            FROM gibbonPlannerEntry 
+            WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID 
+            AND gibbonPlannerEntry.gibbonUnitID=:gibbonUnitID 
+            AND gibbonPlannerEntry.date IS NOT NULL 
+            ORDER BY gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart";
 
         return $this->db()->select($sql, $data);
     }
