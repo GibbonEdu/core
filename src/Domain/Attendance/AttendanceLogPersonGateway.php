@@ -525,4 +525,22 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectConsecutiveAbsencesByPersonAndDates($datesList, $gibbonSchoolYearID, $threshold) {
+
+        $datesList = is_array($datesList) ? implode(',', $datesList) : $datesList;
+
+        $data = ['datesList' => $datesList, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'threshold' => $threshold];
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.nameShort AS formGroup FROM gibbonPerson INNER JOIN gibbonStudentEnrolment ON gibbonStudentEnrolment.gibbonPersonID = gibbonPerson.gibbonPersonID INNER JOIN gibbonFormGroup ON gibbonFormGroup.gibbonFormGroupID = gibbonStudentEnrolment.gibbonFormGroupID WHERE gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID AND gibbonPerson.status = 'Full' AND gibbonPerson.gibbonPersonID IN (
+        SELECT gibbonAttendanceLogPerson.gibbonPersonID
+        FROM gibbonAttendanceLogPerson
+        WHERE FIND_IN_SET (gibbonAttendanceLogPerson.date, :datesList)
+        AND gibbonAttendanceLogPerson.direction = 'Out'
+        AND gibbonAttendanceLogPerson.type = 'Absent'
+        GROUP BY gibbonAttendanceLogPerson.gibbonPersonID
+        HAVING COUNT(DISTINCT gibbonAttendanceLogPerson.date) = :threshold)
+        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.nameShort;";
+
+        return $this->db()->select($sql, $data);
+    }
 }

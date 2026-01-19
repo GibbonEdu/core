@@ -19,15 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-use Gibbon\Comms\EmailTemplate;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Finance\PettyCashGateway;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 require getcwd().'/../gibbon.php';
 
@@ -47,83 +45,58 @@ ini_set('max_execution_time', 1800);
 set_time_limit(1800);
 
 $threshold = 3;
-$date = date('Y-m-d');
-$timestamp = Format::timestamp($date);
+$today = date('Y-m-d');
+$timestamp = Format::timestamp($today);
+$count = 0;
+$spin = 0;
+$max = 100;
+$schoolDays  = [];
 
-
-    
-    if ($inclusive == true)  $timestamp += 86400;
-
-    $count = 0;
-    $spin = 1;
-    $max = max($n, 100);
-    $lastNSchoolDays = array();
-    while ($count < $n and $spin <= $max) {
-        $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
-        if (isSchoolOpen($guid, $date, $connection2 )) {
-            $lastNSchoolDays[$count] = $date;
-            ++$count;
-        }
-        ++$spin;
+while ($count < $threshold and $spin <= $max) {
+    $checkDate = date('Y-m-d', ($timestamp - ($spin * 86400)));
+    if (isSchoolOpen($guid, $checkDate, $connection2 )) {
+        $schoolDays[] = $checkDate;
+        ++$count;
     }
+    ++$spin;
+}
 
-    return $lastNSchoolDays;
+if ((empty($schoolDays)) ) {
+    print __("No school days found.") ;
+    return;
+}
 
+$absentStudents = $container->get(AttendanceLogPersonGateway::class)->selectConsecutiveAbsencesByPersonAndDates($schoolDays, $session->get('gibbonSchoolYearID'), $threshold);
 
-    // Initialize the notification sender & gateway objects
-    // $pettyCashGateway = $container->get(PettyCashGateway::class);
-    // $familyGateway = $container->get(FamilyGateway::class);
+if (empty($absentStudents)) {
+    print __("No absent students found.") ;
+    return;
+}
 
-    // // Prepare the mailer & email template
-    // $template = $container->get(EmailTemplate::class)->setTemplate('Staff Petty Cash');
+// Initialize the notification sender & gateway objects
+$notificationGateway = $container->get(NotificationGateway::class);
+$notificationSender = $container->get(NotificationSender::class);
 
-    // $mail = $container->get(Mailer::class);
-    // $mail->SMTPKeepAlive = true;
+// Raise a new notification event
+$event = new NotificationEvent('Attendance', 'Consecutive Absences Notification');
+$studentsList = [];
 
-    // // Get a list of students with an outstanding balance
-    // $staff = $pettyCashGateway->selectPettyCashBalanceByStaff($session->get('gibbonSchoolYearID'))->fetchAll();
-    // $emails = [];
-    // $emailIndex = 1;
+if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
+    if ($absentStudents->rowCount() > 0) {
+        while ($row = $absentStudents->fetch()) { // For every staff
+            $studentName = $row['surname']. ', ' . $row['preferredName'] . ' - ' . $row['formGroup'];
+            $url = Url::fromModuleRoute('Attendance', 'report_studentHistory.php')->withQueryParams(['gibbonPersonID' => $row['gibbonPersonID']]);
+            $studentsList[] = Format::link($url, $studentName);
+        }
+    }
+}
 
-    // foreach ($staff as $templateData) {
-    //     // Setup the email recipients
-    //     $mail->ClearAddresses();
-    //     $mail->AddAddress($templateData['email']);
+$event->setNotificationText(__('The following students have been consecutively absent for the last 3 or more school days (including today)').'<br/></br>'.Format::list($studentsList));
+$event->setActionLink('/index.php?q=/modules/Attendance/report_consecutiveAbsences.php&numberOfSchoolDays='.$threshold);
 
-    //     $mail->SetFrom($session->get('organisationEmail'), $session->get('organisationName'));
-    //     $mail->AddReplyTo($session->get('organisationEmail'));
-    //     $mail->setDefaultSender($template->renderSubject($templateData));
+$event->pushNotifications($notificationGateway, $notificationSender);
+// Send all notifications
+$sendReport = $notificationSender->sendNotifications();
 
-    //     $mail->renderBody('mail/message.twig.html', [
-    //         'title'  => $template->renderSubject($templateData),
-    //         'body'   => $template->renderBody($templateData),
-    //     ]);
-
-    //     // Send email and record the result
-    //     $sent = $mail->Send();
-
-    //     $emails[$emailIndex] = Format::name($templateData['title'], $templateData['preferredName'], $templateData['surname'], 'Staff').': '.$templateData['email'].' ($'.$templateData['amount'].') - '. ($sent ? __('Sent') : __('Failed') );
-    //     $emailIndex++;
-    // }
-
-
-    // Initialize the notification sender & gateway objects
-    $notificationGateway = $container->get(NotificationGateway::class);
-    $notificationSender = $container->get(NotificationSender::class);
-
-    // Raise a new notification event
-    $event = new NotificationEvent('Attendance', 'Consecutive Absences Notification');
-
-    $event->setNotificationText(__('A Notify Consecutive Absences CLI script has run, sending {count} emails.', ['count' => count($emails)]));
-    $event->setNotificationDetails($emails);
-    $event->setActionLink('/index.php?q=/modules/Finance/pettyCash.php');
-
-    // Notify admin
-    $event->addRecipient($session->get('organisationAdministrator'));
-
-    // Push the event to the notification sender
-    $sendReport = $event->sendNotifications($pdo, $session);
-
-    // Output the result to terminal
-    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
-
+ // Output the result to terminal
+echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
