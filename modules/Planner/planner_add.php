@@ -250,13 +250,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Lesson Details'));
-                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description)->enableAutoSave($autoSaveUrl, $formId);
+                $column->addEditor('description', $guid)->setRows(20)->showMedia()->setValue($description)->enableAutoSave($autoSaveUrl, $formId);
 
             $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
-                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes)->enableAutoSave($autoSaveUrl, $formId);
+                $column->addEditor('teachersNotes', $guid)->setRows(5)->showMedia()->setValue($teachersNotes)->enableAutoSave($autoSaveUrl, $formId);
 
             //HOMEWORK
             $form->addRow()->addHeading('Homework', __($homeworkNameSingular));

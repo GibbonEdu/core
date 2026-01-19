@@ -25,6 +25,9 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
+use Gibbon\View\Component;
+use Gibbon\Forms\Input\Editor;
+use Gibbon\Forms\Layout\NullElement;
 
 /**
  * Custom Blocks
@@ -55,38 +58,52 @@ class CustomBlocks implements OutputableInterface
      * @param  OutputableInterface  $form
      * @param  Session              $session
      */
-    public function __construct(FormFactoryInterface &$factory, $name, Session $session, bool $canDelete = true)
+    public function __construct(FormFactoryInterface &$factory, $name, ?Session $session = null, bool $canDelete = true, bool $canCopy = true, bool $canAdd = false)
     {
         $this->factory = $factory;
         $this->session = $session;
         $this->name = $name;
+        $this->setID($name);
+        $this->setClass('my-4');
 
-        $this->toolsTable = $factory->createTable()->setClass('inputTools w-full');
-        $this->blockButtons = $factory->createGrid()->setClass('blockButtons inline-flex gap-2');
+        $this->toolsTable = $factory->createRow()->setClass('flex w-full items-center justify-start gap-2');
+        $this->blockButtons = $factory->createGrid()->setClass('flex flex-row-reverse items-center pr-1')->setAttribute('x-sort:ignore');
+        $this->blockTemplate = $factory->createRow()->setClass('w-full px-2 sm:px-3');
 
         $this->settings = [
             'placeholder'      => __('Blocks will appear here...'),
             'deleteMessage'    => __('Are you sure you want to delete this record?'),
             'duplicateMessage' => __('This element has already been selected!'),
             'currentBlocks'    => [],
+            'addOnEvent'       => 'click',
         ];
 
-        if ($canDelete) {
-            $this->addBlockButton('delete', __('Delete'), 'garbage.png');
-        }
+        if ($canDelete) $this->addBlockButton('delete', __('Delete'));
+        if ($canCopy) $this->addBlockButton('copy', __('Duplicate'));
+        if ($canAdd) $this->addToolButton(__('Add'))->addClass('addBlock')->setIcon('solid', 'add');
+        
     }
 
     /**
      * Set a predefined layout using OutputableInterface which will be cloned for each new block.
-     * TODO: add fromAjax option for loading in templates dynamically?
      * @param OutputableInterface $block
-     * @return void
+     * @return self
      */
     public function fromTemplate(OutputableInterface $block, $compact = false)
     {
-        $this->blockTemplate = $block->addClass('blank w-full');
+        $this->blockTemplate = $block->setClass('w-full noBorder');
         $this->compact = $compact;
         return $this;
+    }
+
+    public function getTemplate()
+    {
+        return $this->blockTemplate;
+    }
+
+    public function addTemplateRow()
+    {
+        return $this->blockTemplate->addRow()->setClass('w-full py-3 flex flex-col sm:flex-row content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start');
     }
 
     /**
@@ -118,8 +135,29 @@ class CustomBlocks implements OutputableInterface
      */
     public function addToolInput(OutputableInterface $input)
     {
-        $this->toolsTable->addRow()->addElement($input)->addClass('');
+        if ($input instanceof Button || $this->settings['addOnEvent'] == 'click') {
+            $input->setAttribute('@click', 'handleToolClick($el)');
+        } elseif ($input instanceof Input) {
+            $input->setAttribute('@change', 'handleToolChange($el)');
+        }
+        
+        $this->toolsTable->addElement($input);
         return $this;
+    }
+
+    /**
+     * Adds a pre-made button and returns the resulting element.
+     *
+     * @param string $label
+     * @param string $class
+     * @return Button
+     */
+    public function addToolButton(string $label, string $class = '')
+    {
+        $button = $this->factory->createButton($label)->addClass($class);
+        $this->addToolInput($button);
+
+        return $button;
     }
 
     /**
@@ -131,31 +169,22 @@ class CustomBlocks implements OutputableInterface
      * @param  string  $function
      * @return self
      */
-    public function addBlockButton($name, $title, $icon, $class = '')
+    public function addBlockButton($name, $title, $icon = '', $class = '')
     {
-        $iconPath = './themes/'.$this->session->get("gibbonThemeName").'/img/';
-        $iconSrc = stripos($icon, '/') === false? $iconPath.$icon : $icon;
-        
         $button = $this->factory->createAction($name, $title)
             ->modalWindow(false)
             ->setURL('#')
-            ->addClass('blockButton');
+            ->addClass('blockButton')
+            ->displayLabel(false)
+            ->setType('interface')
+            ->setAttribute('@click', 'handleButtonClick($el, index)');
 
         if (!empty($name)) $button->addData('event', $name);
         if (!empty($class)) $button->addClass($class);
-
-        if ($name == 'showHide') {
-            $button->addData('on', $iconPath.'minus.png');
-            $button->addData('off', $iconPath.'plus.png');
-        }
+        if ($name == 'showHide') $button->setIcon('view');
 
         $this->blockButtons->addCell()->addElement($button);
         return $this;
-    }
-
-    public function removeBlockButton($name)
-    {
-
     }
 
     /**
@@ -164,9 +193,23 @@ class CustomBlocks implements OutputableInterface
      * @param  array   $data
      * @return self
      */
-    public function addBlock($id, array $data = array())
+    public function addBlock($id, array $data = [])
     {
         $this->settings['currentBlocks'][$id] = $data;
+
+        return $this;
+    }
+
+    /**
+     * Adds multiple blocks from an array.
+     * @param  array   $blocks
+     * @return self
+     */
+    public function addBlocks(array $blocks = [])
+    {
+        foreach ($blocks as $id => $data) {
+            $this->settings['currentBlocks'][$id] = $data;
+        }
 
         return $this;
     }
@@ -190,60 +233,142 @@ class CustomBlocks implements OutputableInterface
      */
     public function getOutput()
     {
-        $output = '';
+        // TODO: FL copy blocks
+        // TODO: internal toggle states
 
-        $output .= '<div class="customBlocks '.($this->compact ? 'compact' : '').'" id="' . $this->name. '">';
+        $index = $this->settings['indexStart'] ?? 0;
+        $blocks = [];
+        foreach ($this->settings['currentBlocks'] as $key => $block) {
+            $block['id'] = $this->getID().$index;
+            $block['index'] = $index;
+            $blocks[] = $block;
+            $index++;
+        }
 
-            $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
-            if (!empty($this->settings['placeholder'])) {
-                $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
-            }
-   
-            $output .= '<div class="blockTemplate relative '.($this->compact ? 'compact h-min' : '').'" style="display: none;">';
-                $output .= '<div class="blockInputs flex py-3 pr-4">';
-                $output .= $this->getTemplateOutput($this->blockTemplate);
-                $output .= '</div>';
-
-                $output .= '<div class="blockSidebar absolute top-0 right-0 mt-2 mr-2">';
-                    $output .= $this->blockButtons->addClass('flex gap-2')->getOutput();
-                $output .= '</div>';
-            $output .= '</div>';
-
-            $output .= '<div class="blocks">';
-            $output .= '</div>';
-            
-            $output .= $this->toolsTable->getOutput();
-        $output .= '</div>';
-
-        $output .= '<script type="text/javascript">
-            $("#'.$this->name.'").gibbonCustomBlocks('.json_encode($this->settings).');
-        </script>';
-
-        return $output;
+        return Component::render(CustomBlocks::class, [
+            'indexNext'        => $this->settings['indexNext'] ?? $index,
+            'name'             => $this->name,
+            'compact'          => $this->compact,
+            'currentBlocks'    => $blocks,
+            'blockCount'       => count($blocks),
+            'predefinedBlocks' => $this->settings['predefinedBlocks'] ?? [],
+            'sortable'         => $this->settings['sortable'] ?? true,
+            'sortGroup'        => $this->settings['sortGroup'] ?? $this->name,
+            'placeholder'      => $this->settings['placeholder'] ?? '',
+            'deleteMessage'    => $this->settings['deleteMessage'],
+            'orderName'        => $this->settings['orderName'] ?? 'order',
+            'blockTemplate'    => $this->getTemplateOutput($this->blockTemplate),
+            'blockButtons'     => $this->blockButtons->getOutput(),
+            'editors'          => array_unique($this->settings['editors'] ?? []),
+            'uniqueID'         => $this->settings['uniqueID'] ?? 'unique',
+            'hiddenInputs'     => $this->settings['hiddenInputs'] ?? [],
+            'primaryInput'     => $this->settings['primaryInput'] ?? 'title',
+            'toolsTable'       => $this->toolsTable->getOutput(),
+        ] + $this->getAttributeArray());
     }
 
     /**
-     * Adds the validation settings for each input as JSON data attributes so they can be added dynamically for each block.
      * @param  OutputableInterface $template
      * @return string 
      */
     protected function getTemplateOutput(OutputableInterface $template)
     {
-        // Look for and jsonify all nested validations recursivly
-        $addValidation = function($element) use (&$addValidation) {
+        $blockInputs = ['orderName'];
+        $strategy = $this->settings['inputNameStrategy'] ?? 'object';
+
+        $addValidation = function($element) use (&$addValidation, &$blockInputs, &$strategy) {
             if (method_exists($element, 'getElements')) {
                 foreach ($element->getElements() as $innerElement) {
                     $addValidation($innerElement);
                 }
             }
 
-            if ($element instanceof Input && $element->hasValidation()) {
-                // Trigger the output before getting validations: some Inputs add these on getOutput();
-                $elementOutput = $element->getOutput();
+            $class = $element->getClass();
+            if (!empty($class) && stripos($class, 'showHide') !== false) {
+                $element->setAttribute('x-show', 'block.show');
+                $element->setAttribute('x-transition.opacity');
+            }
+
+            if (!empty($element->getID())) {
+                $element->setAttribute('x-bind:id', "'".$element->getID()."' + block.index");
+                $element->setPrepended('');
+                $element->setAppended('');
+            }
+
+            if ($element instanceof Input) {
+                $blockInputs[] = $element->getName();
+                $id = !empty($element->getID()) ? $element->getID() : $element->getName();
+                $name = $element->getName();
+
+                if (empty($this->settings['primaryInput']) && $element instanceof TextField) {
+                    $element->setAttribute('x-model', 'block.'.$name);
+                    $element->setAttribute('value', 'block.'.$name);
+                    $this->settings['primaryInput'] = $name;
+                } elseif ($element->getData('tinymce') !== null) {
+                    $element->setAttribute('x-text', 'block.'.$name);
+                } else {
+                    $element->setAttribute('x-bind:value', 'block.'.$name);
+                }
+
+                if ($strategy == 'string') {
+                    $element->setAttribute('x-bind:name', "'".$id."' + block.index");
+                } else {
+                    $element->setAttribute('x-bind:name', "'".$this->name."[' + block.index + '][".$id."]'");
+                }
+                
+                if ($element instanceof Checkbox && $element->getOptionCount() > 0) {
+                    $element->setAttribute('x-bind:name', $strategy == 'string'
+                        ? "'".$id."' + block.index + '[]'"
+                        : "'".$this->name."[' + block.index + '][".$id."][]'"
+                    );
+                }
+
+                if ($element instanceof Radio) {
+                    $element->setAttribute('x-bind:checked', 'block.'.$name.' == $el.value');
+                }
+
+                if ($element instanceof Person || $element instanceof SearchSelect) {
+                    $element->setAttribute('x-init', '$data.setSelectedOption($el.selectedOptions[0])');
+                }
+
+                if ($element instanceof Color) {
+                    $element->setAttribute('x-init', '$data.colorSelected = $el.value');
+                }
+
+                if ($element instanceof Time) {
+                    $element->setAttribute('x-init', "$(\$el).timepicker({
+                    'scrollDefault': 'now',
+                    'timeFormat': 'H:i',
+                    })");
+                }
+
+                if ($element instanceof Editor || $element->getData('tinymce') !== null) {
+                    $this->settings['editors'][] = $name;
+                    $element->setClass('tinymce');
+                    $element->setOuterClass('editor-full');
+                    $element->setAttribute('data-name', $name);
+                    $element->setAttribute('data-rows', $element->getAttribute('rows'));
+                }
             }
         };
 
         $addValidation($template);
+
+
+        $blockFields = !empty($this->settings['currentBlocks']) ? current($this->settings['currentBlocks']) : [];
+        $hiddenInputList = !empty($this->settings['hiddenInputs']) ? explode(',', $this->settings['hiddenInputs']) : [];
+        $hiddenInputs = array_merge(array_diff(array_keys($blockFields), $blockInputs), $hiddenInputList);
+        $indexStart = $this->settings['indexStart'] ?? 0;
+
+        $this->settings['hiddenInputs'] = [];
+        foreach ($hiddenInputs as $inputName) {
+            if (empty($inputName)) continue;
+            $this->settings['hiddenInputs'][$inputName] = $strategy == 'string' 
+                ? "'".$inputName."' + block.index "
+                : "'".$this->name."[' + block.index + '][".$inputName."]'";
+        }
+        
+    
 
         return $template->getOutput();
     }

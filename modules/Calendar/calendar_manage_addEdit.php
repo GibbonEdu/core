@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Calendar\CalendarGateway;
 use Gibbon\Domain\Calendar\CalendarEditorGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_addEdit.php') == false) {
     // Access denied
@@ -114,15 +115,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_a
     $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
     $row = $blockTemplate->addRow()->addClass('w-full max-w-lg flex justify-between items-center mt-1 ml-2');
         $row->addSelectStaff('gibbonPersonID')->photo(false)->setClass('flex-1 mr-1')->required()->placeholder();
-        $row->addCheckbox('editAllEvents')->setLabelClass('w-32')->alignLeft()->setValue('Y')->description(__('Edit All Events?'))
-            ->append("<input type='hidden' id='gibbonCalendarEditorID' name='gibbonCalendarEditorID' value=''/>");
+        $row->addCheckbox('editAllEvents')->setLabelClass('w-32')->alignLeft()->setValue('Y')->description(__('Edit All Events?'));
 
     // Custom Blocks
     $col = $form->addRow()->addColumn();
     $col->addLabel('editors', __('Editors'));
     $customBlocks = $col->addCustomBlocks('editors', $session)
         ->fromTemplate($blockTemplate)
-        ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click'))
+        ->settings(['inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'uniqueID' => 'gibbonCalendarEditorID'])
         ->placeholder(__('Add a person...'))
         ->addToolInput($addBlockButton);
 
@@ -132,6 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_a
             'gibbonCalendarEditorID' => $person['gibbonCalendarEditorID'],
             'gibbonPersonID'         => $person['gibbonPersonID'],
             'editAllEvents'          => $person['editAllEvents'] ?? 'N',
+            'primaryInput' => Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true)
         ]);
     }
 

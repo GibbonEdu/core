@@ -46,6 +46,8 @@ v31.0.00
         Staff: fixed the issue to allow editing coverage request
 
     Bug Fixes
+        School Admin: fixed inactive grade scales not selectable in Manage External Assessment
+        Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data 
         Messenger: fixed overflowing images and iframes on Message Wall
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment 

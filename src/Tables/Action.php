@@ -72,6 +72,14 @@ class Action extends WebLink
     protected $icon;
 
     /**
+     * The display type for this action.
+     * Options: button, interface
+     *
+     * @var string
+     */
+    protected $type = 'button';
+
+    /**
      * The icon css class
      *
      * @var string
@@ -163,6 +171,19 @@ class Action extends WebLink
 
         $this->setAttribute('target', mb_stripos($url, '://') !== false ? '_blank' : '');
         $this->setAttribute('download', $downloadable);
+
+        return $this;
+    }
+
+    /**
+     * Sets the action display type.
+     *
+     * @param string $type
+     * @return self
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
 
         return $this;
     }
@@ -337,6 +358,7 @@ class Action extends WebLink
         return Component::render(Action::class, $this->getAttributeArray() + [
             'action'       => $this->name,
             'modal'        => $this->modal,
+            'type'         => $this->type,
             'icon'         => $this->icon,
             'iconClass'    => $this->iconClass,
             'iconLibrary'  => $this->iconLibrary,

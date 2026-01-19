@@ -51,5 +51,38 @@ class UnitClassBlockGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
     
+    public function selectBlocksByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)
+    {
+        $data = ['gibbonUnitID' => $gibbonUnitID, 'gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = 'SELECT gibbonUnitClassBlock.gibbonPlannerEntryID as groupBy, gibbonUnitClassBlock.*  
+                FROM gibbonUnitClassBlock 
+                JOIN gibbonUnitClass ON (gibbonUnitClassBlock.gibbonUnitClassID=gibbonUnitClass.gibbonUnitClassID) 
+                WHERE gibbonUnitClass.gibbonUnitID=:gibbonUnitID 
+                AND gibbonUnitClass.gibbonCourseClassID=:gibbonCourseClassID 
+                ORDER BY sequenceNumber';
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function deleteBlocksNotInList($gibbonUnitClassID, $gibbonUnitClassBlockIDList)
+    {
+        $gibbonUnitClassBlockIDList = is_array($gibbonUnitClassBlockIDList) ? implode(',', $gibbonUnitClassBlockIDList) : $gibbonUnitClassBlockIDList;
+
+        $data = ['gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonUnitClassBlockIDList' => $gibbonUnitClassBlockIDList];
+        $sql = "DELETE FROM gibbonUnitClassBlock WHERE gibbonUnitClassID=:gibbonUnitClassID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
+
+        return $this->db()->delete($sql, $data);
+    }
+
+    public function deletePlannerBlocksNotInList($gibbonPlannerEntryID, $gibbonUnitClassBlockIDList)
+    {
+        $gibbonUnitClassBlockIDList = is_array($gibbonUnitClassBlockIDList) ? implode(',', $gibbonUnitClassBlockIDList) : $gibbonUnitClassBlockIDList;
+
+        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonUnitClassBlockIDList' => $gibbonUnitClassBlockIDList];
+        $sql = "DELETE FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
+
+        return $this->db()->delete($sql, $data);
+    }
+    
 
 }

@@ -8,19 +8,16 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
+<p>
+    <strong>Date:</strong> {{ formatUsing('dayOfWeekName', event.dateStart) }}, {{ formatUsing('dateRangeReadable', event.dateStart, event.dateEnd) }}<br>
+    <strong>Time:</strong> {{ event.allDay == 'Y' ? 'All Day' : formatUsing('timeRange', event.timeStart, event.timeEnd) }}<br>
+    <strong>Sender:</strong> {{ formatUsing('name', sender.title, sender.preferredName, sender.surname, 'Staff', false, true) }}
+</p>
+
 {% if notes is not empty %}
-    <p>
-        <strong>Date:</strong> {{ formatUsing('dayOfWeekName', event.dateStart) }}, {{ formatUsing('dateRangeReadable', event.dateStart, event.dateEnd) }}<br>
-        <strong>Time:</strong> {{ event.allDay == 'Y' ? 'All Day' : formatUsing('timeRange', event.timeStart, event.timeEnd) }}<br>
-        <strong>Sender:</strong> {{ formatUsing('name', sender.title, sender.preferredName, sender.surname, 'Staff', false, true) }}
-    </p>
     <p>
         {{ notes|raw }}
     </p>
-{% else %}
-<p>
-    {{ __('{sender} has sent a notification about {eventName} on {eventDate}, {eventTime}.', {'sender': formatUsing('name', sender.title, sender.preferredName, sender.surname, 'Staff', false, true), 'eventName': event.name , 'eventDate': formatUsing('dateRangeReadable', event.dateStart, event.dateEnd), 'eventTime': event.allDay == 'Y' ? 'All Day' : formatUsing('timeRange', event.timeStart, event.timeEnd) }) }}
-</p>
 {% endif %}
 
 <h4>{{ __('Participants') }}</h4>

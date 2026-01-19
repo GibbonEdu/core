@@ -104,18 +104,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 if ($viewBy == 'date') {
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
                         $data = array('date' => $date, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                        $sql = 'SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                        $sql = 'SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonDepartmentID, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                     } else {
                         $data = array('date' => $date, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
+                        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonDepartmentID, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
                     }
                 } else {
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                        $sql = 'SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonDepartmentID, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                        $sql = 'SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonDepartmentID, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                     } else {
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonDepartmentID, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
+                        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonDepartmentID, gibbonPlannerEntry.*, gibbonCourse.gibbonYearGroupIDList FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
                     }
                 }
                 $result = $connection2->prepare($sql);
@@ -134,8 +134,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $extra = Format::date($date);
                 } else {
                     $extra = $values['course'].'.'.$values['class'];
-                    $gibbonDepartmentID = $values['gibbonDepartmentID'];
+                    
                 }
+                $gibbonDepartmentID = $values['gibbonDepartmentID'] ?? '';
                 $gibbonYearGroupIDList = $values['gibbonYearGroupIDList'];
 
                 $page->breadcrumbs
@@ -236,22 +237,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('description', __('Lesson Details'));
-                    $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
+                    $column->addEditor('description', $guid)->setRows(20)->showMedia()->setValue($description);
 
                 $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
-                    $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
+                    $column->addEditor('teachersNotes', $guid)->setRows(5)->showMedia()->setValue($teachersNotes);
 
                 //SMART BLOCKS
                 if (!empty($values['gibbonUnitID'])) {
-                    $form->addRow()->addHeading('Smart Blocks', __('Smart Blocks'));
-
-                    $form->addRow()->addContent("<div class='float-right'><a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=".$values['gibbonCourseID'].'&gibbonUnitID='.$values['gibbonUnitID'].'&gibbonSchoolYearID='.$session->get('gibbonSchoolYearID')."&gibbonUnitClassID=$gibbonUnitClassID'>".__('Edit Unit').'</a></div>');
+                    $row = $form->addRow()->setClass('sm:items-center');
+                    $row->addHeading('Smart Blocks', __('Smart Blocks'));
+                    $row->addContent();
+                    $row->addAction('edit', __('Edit Unit'))
+                        ->addClass('text-right')
+                        ->setURL('/modules/Planner/units_edit_working.php')
+                        ->setAttribute('target', '_blank')
+                        ->addParams(['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseID' => $values['gibbonCourseID'], 'gibbonUnitID' => $values['gibbonUnitID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonUnitClassID' => $gibbonUnitClassID]);
 
                     $row = $form->addRow();
-                        $customBlocks = $row->addPlannerSmartBlocks('smart', $session, $guid);
+                        $customBlocks = $row->addPlannerSmartBlocks('smart', $session, false);
 
                     $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                     $sqlBlocks = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
@@ -296,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $row = $form->addRow()->addClass('homework');
                     $column = $row->addColumn();
                     $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
-                    $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
+                    $column->addEditor('homeworkDetails', $guid)->setRows(5)->showMedia()->setValue($description)->required();
 
                 $form->toggleVisibilityByClass('homeworkSubmission')->onClick('homeworkSubmission')->when('Y');
                 $row = $form->addRow()->addClass('homework');
@@ -353,32 +359,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
 
                 // OUTCOMES
-                if ($viewBy == 'date') {
-                    $form->addRow()->addHeading('Outcomes', __('Outcomes'));
-                    $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning');
-                } else {
-                    $form->addRow()->addHeading('Outcomes', __('Outcomes'));
-                    $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
+                $form->addRow()->addHeading('Outcomes', __('Outcomes'));
+                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
 
-                    $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
+                $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
 
-                    $row = $form->addRow();
-                        $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+                $row = $form->addRow();
+                    $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
-                    $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sqlBlocks = 'SELECT gibbonPlannerEntryOutcome.*, scope, name, category FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryOutcome.gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
-                    $resultBlocks = $pdo->select($sqlBlocks, $dataBlocks);
+                $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                $sqlBlocks = 'SELECT gibbonPlannerEntryOutcome.*, scope, name, category FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryOutcome.gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
+                $resultBlocks = $pdo->select($sqlBlocks, $dataBlocks);
 
-                    while ($rowBlocks = $resultBlocks->fetch()) {
-                        $outcome = array(
-                            'outcometitle' => $rowBlocks['name'],
-                            'outcomegibbonOutcomeID' => $rowBlocks['gibbonOutcomeID'],
-                            'outcomecategory' => $rowBlocks['category'],
-                            'outcomecontents' => $rowBlocks['content']
-                        );
-                        $customBlocks->addBlock($rowBlocks['gibbonOutcomeID'], $outcome);
-                    }
+                while ($rowBlocks = $resultBlocks->fetch()) {
+                    $customBlocks->addBlock($rowBlocks['gibbonOutcomeID'], [
+                        'outcometitle' => $rowBlocks['name'],
+                        'outcomegibbonOutcomeID' => $rowBlocks['gibbonOutcomeID'],
+                        'outcomecategory' => $rowBlocks['category'],
+                        'outcomecontents' => $rowBlocks['content'],
+                        'outcomegibbonPlannerEntryOutcomeID' => $rowBlocks['gibbonPlannerEntryOutcomeID'],
+                    ]);
                 }
+                
 
                 //Access
                 $form->addRow()->addHeading('Access', __('Access'));

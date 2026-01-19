@@ -81,8 +81,8 @@ if (!isActionAccessible($guid, $connection2, "/modules/Student Alerts/studentAle
                 ->selected($params['gibbonCourseClassID'])
                 ->required()
                 ->setAttribute('hx-post', Url::fromModuleRoute('Student Alerts', 'studentAlerts_addAjax')->directLink())
-                ->setAttribute('hx-trigger', 'load,input from:#gibbonCourseClassID changed delay:500ms')
-                ->setAttribute('hx-target', '.studentSelect .personSelect')
+                ->setAttribute('hx-trigger', 'load,change from:#gibbonCourseClassID changed delay:200ms')
+                ->setAttribute('hx-target', '#gibbonPersonIDPersonSelect')
                 ->setAttribute('hx-include', '[name="gibbonCourseClassID"],[name="gibbonPersonID"]');
 
         $form->toggleVisibilityByClass('studentSelect')->onSelect('gibbonCourseClassID')->whenNot('');

@@ -32,7 +32,7 @@ if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDP
     $gibbonPersonID = $_POST['gibbonPersonID'] ?? $_POST[$fieldName] ?? '';
 
     $user = $container->get(UserGateway::class)->getByID($gibbonPersonID, ['image_240']);
-    $url = $session->get('absoluteURL').'/'.$user['image_240'];
+    $url = $session->get('absoluteURL').'/'.($user['image_240'] ?? '');
 
     if (empty($user['image_240']) || !file_exists($session->get('absolutePath').'/'.$user['image_240'])) {
         $url = '';

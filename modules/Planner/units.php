@@ -198,6 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->addParam('gibbonCourseID', $gibbonCourseID)
+        ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
         ->addParam('gibbonUnitID')
         ->format(function ($unit, $actions) {
             $actions->addAction('edit', __('Edit'))

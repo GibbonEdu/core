@@ -33,12 +33,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 // common variables
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 
 $page->breadcrumbs
     ->add(__('Unit Planner'), 'units.php', [
         'gibbonSchoolYearID' => $gibbonSchoolYearID,
         'gibbonCourseID' => $gibbonCourseID,
+        'gibbonCourseClassID' => $gibbonCourseClassID,
     ])
     ->add(__('Edit Unit'));
 
@@ -98,6 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                         $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/units_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&address=".$_GET['q']);
                         $form->setFactory(PlannerFormFactory::create($pdo));
+                        $form->addMeta()->addDefaultContent('editProcess');
 
                         $form->addHiddenValue('address', $session->get('address'));
 
@@ -175,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $resultClass->transform(function (&$class) use ($pdo, &$classCount, &$form) {
                                     if ($class['running'] == 'Y') {
                                         $dataDate = array('gibbonCourseClassID' => $class['gibbonCourseClassID'], 'gibbonUnitID' => $class['gibbonUnitID']);
-                                        $sqlDate = "SELECT date FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart";
+                                        $sqlDate = "SELECT date FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID AND date IS NOT NULL ORDER BY date, timeStart";
                                         $class['firstLesson'] = $pdo->selectOne($sqlDate, $dataDate);
                                     }
 
@@ -304,14 +307,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                         //SMART BLOCKS
                         $form->addRow()->addHeading('Smart Blocks', __('Smart Blocks'))->append(__('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.'));
-                        $blockCreator = $form->getFactory()
-                            ->createButton('addNewFee')
-                            ->setValue(__('Click to create a new block'))
-                            ->addClass('addBlock');
 
                         $row = $form->addRow();
-                            $customBlocks = $row->addPlannerSmartBlocks('smart', $session, $guid)
-                                ->addToolInput($blockCreator);
+                            $customBlocks = $row->addPlannerSmartBlocks('smart', $session, true);
 
                         $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
                         $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';

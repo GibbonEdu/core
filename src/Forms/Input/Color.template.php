@@ -1,4 +1,4 @@
-<div class="flex-grow relative inline-flex items-center gap-2" x-data="{'colorSelected': '<?= $color; ?>', isOpen: false, colors: [
+<div class="relative inline-flex items-center gap-2 <?= $outerClass ?? 'flex-grow' ?>" x-data="{'colorSelected': '<?= $color; ?>', isOpen: false, colors: [
     <?php if ($palette == 'background') { ?>
         '#ffffff','#f5f5f5','#e5e5e5','#d4d4d4','#a3a3a3','#737373','#525252',
         '#fca5a5','#fdba74','#fde047','#86efac','#5eead4','#93c5fd','#c4b5fd','#f9a8d4',
@@ -21,7 +21,7 @@
     </button>
 
     <input type="text" <?= $attributes; ?>
-        class="<?= $class; ?> <?= $showField ? '' : 'hidden'; ?> rounded-md flex-grow font-sans py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5" x-model="colorSelected">
+        class="<?= $class; ?> <?= $showField ? '' : 'hidden'; ?> rounded-md flex-1 font-sans py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5" x-model="colorSelected" size=7>
 
     <div x-show="isOpen" @click.away="isOpen = false" x-transition:enter="transition ease-out duration-100 transform"
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"

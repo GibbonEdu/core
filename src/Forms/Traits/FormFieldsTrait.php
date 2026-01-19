@@ -51,6 +51,7 @@ use Gibbon\Forms\RowDependancyInterface;
  * @method \Gibbon\Forms\Input\CustomField addCustomField(string $name, array $fields = []) {@see \Gibbon\Forms\Input\CustomField}
  * @method \Gibbon\Forms\Input\TextArea addTextArea(string $name) {@see \Gibbon\Forms\Input\TextArea}
  * @method \Gibbon\Forms\Input\TextField addTextField(string $name, string $label) {@see \Gibbon\Forms\Input\TextField}
+ * @method \Gibbon\Forms\Input\TokenList addTokenList(string $name, string $label) {@see \Gibbon\Forms\Input\TokenList}
  * @method \Gibbon\Forms\Input\Range addRange() {@see \Gibbon\Forms\Input\Range}
  * @method \Gibbon\Forms\Input\Color addColor(string $name) {@see \Gibbon\Forms\Input\Color}
  * @method \Gibbon\Forms\Input\Finder addFinder(string $name) {@see \Gibbon\Forms\Input\Finder}

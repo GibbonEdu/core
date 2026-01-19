@@ -225,6 +225,14 @@ table.smallIntBorder td {
     padding: 0.5rem !important ;
 }
 
+table.noBorder,
+table.noBorder td,
+table.noBorder th {
+    border: none !important;
+    background-color: none;
+}
+
+
 tr.break td {
     background-color: #eaebec;
 }
@@ -772,60 +780,16 @@ table.smallIntBorder td.noPadding {
 }
 
 /* CUSTOM BLOCKS v16 */
-.customBlocks .sortHighlight {
-    margin-bottom: 5px;
-    min-height: 80px;
-    line-height: 1.2em;
-    width: 100%;
-    border: 1px solid #fcd3a1;
-    background: #fbf8ee;
-    color: #444444;
-}
 
-.customBlocks.compact .sortHighlight {
-    min-height: 56px !important;
-}
 
-.customBlocks .sortHandle {
-    width: 2px;
-    height: 64px;
-    margin: 5px;
-    border-color: #c7dae9;
-    border-style: dotted;
-    border-width: 0px 3px 0px 3px;
+.drag-sort-handle {
+    flex: none;
     cursor: move;
+    background-image:  url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3IDE3Ij48ZyBmaWxsPSIjQjZCNkI2IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxyZWN0IHdpZHRoPSIyIiBoZWlnaHQ9IjIiIHJ4PSIxIi8+PHJlY3Qgd2lkdGg9IjIiIGhlaWdodD0iMiIgeT0iNSIgcng9IjEiLz48cmVjdCB3aWR0aD0iMiIgaGVpZ2h0PSIyIiB5PSIxMCIgcng9IjEiLz48cmVjdCB3aWR0aD0iMiIgaGVpZ2h0PSIyIiB5PSIxNSIgcng9IjEiLz48cmVjdCB3aWR0aD0iMiIgaGVpZ2h0PSIyIiB4PSI1IiByeD0iMSIvPjxyZWN0IHdpZHRoPSIyIiBoZWlnaHQ9IjIiIHg9IjUiIHk9IjUiIHJ4PSIxIi8+PHJlY3Qgd2lkdGg9IjIiIGhlaWdodD0iMiIgeD0iNSIgeT0iMTAiIHJ4PSIxIi8+PHJlY3Qgd2lkdGg9IjIiIGhlaWdodD0iMiIgeD0iNSIgeT0iMTUiIHJ4PSIxIi8+PC9nPjwvc3ZnPiAg');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 7px 17px;
 }
-
-.customBlocks .compact .sortHandle {
-    height: 44px !important;
-}
-
-.blockPlaceholder {
-    color: #ddd;
-    font-size: 230%;
-    padding: 15px 0 15px 6px;
-}
-
-.blockTemplate {
-    background: #edf7ff;
-    border: 1px solid #d8dcdf;
-    margin: 0 0 5px;
-}
-
-.blockTemplate.ui-sortable-helper {
-    max-height: 74px !important;
-}
-
-.blockInputs input:not([type=submit]):not([type=checkbox]):not([type=radio]),
-.blockInputs select,
-.blockInputs textarea:not(.tinymce) {
-    background: transparent;
-}
-
-.blockInputs input:not([readonly]):not([type=submit]):not([type=checkbox]) {
-    border: 1px solid #d2e4f2;
-}
-
 
 .blockInputs .title {
     font-style: normal;
@@ -833,13 +797,6 @@ table.smallIntBorder td.noPadding {
     font-size: 16px;
 }
 
-.blockInputs .LV_validation_message {
-    background-color: #edf7ff;
-}
-
-.blockInputs .LV_invalid_field {
-    border-color: #c53030 !important;
-}
 
 /* v16 NEW CLASSES */
 

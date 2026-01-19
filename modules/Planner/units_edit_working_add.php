@@ -112,6 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     $lastTerm = '';
     $lastTermDay = '';
+    
     $table->modifyRows(function ($lesson, $row) use (&$lastTerm, &$lastTermDay) {
         $format = '<tr class="dull"><td class="font-bold">%1$s</td><td colspan="9">%2$s</td></tr>';
 
@@ -132,17 +133,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             $row->append(sprintf($format, $lesson['specialDay'], Format::date($lesson['date'])));
         }
 
-        if ($lesson['date'] < date('Y-m-d')) $row->addClass('error');
+        if ($lesson['date'] < date('Y-m-d')) {
+            $row->addClass('error');
+        }
+
         return $row;
     });
 
     $count = 0;
+    $lastDate = '';
     $table->addColumn('lessonNum', __('Lesson Number'))
         ->notSortable()
-        ->format(function($lesson) use (&$count) {
+        ->format(function($lesson) use (&$count, &$lastDate) {
             if (!empty($lesson['specialDay'])) return '';
+            $anchor = $lesson['date'] >= date('Y-m-d') && $lastDate < date('Y-m-d') 
+                ? '<a id="now"></a>'
+                : '';
+            $lastDate = $lesson['date'];
             $count++;
-            return __('Lesson {count}', ['count' => $count]);
+            return __('Lesson {count}', ['count' => $count]).$anchor;
         });
 
     $table->addColumn('date', __('Date'))

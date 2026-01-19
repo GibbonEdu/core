@@ -133,6 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             $data = ['gibbonMessengerID' => $values['gibbonMessengerID']];
             $sql = "SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id";
             $targets = $pdo->select($sql, $data)->fetchAll();
+            
             $targetTypeCount = [];
             $targetTypeThreshold = 8;
 
@@ -173,6 +174,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                     }
                 } elseif ($target['type']=='Role Category') {
                     $output .= '<b>' . __($target['type']) . '</b> - ' . __($target['id']) . '<br/>';
+                } elseif ($target['type']=='Mailing List') {
+                    $data = ['gibbonMessengerMailingListID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonMessengerMailingList WHERE gibbonMessengerMailingListID=:gibbonMessengerMailingListID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . __($targetData['name']) . '<br/>';
+                    }
                 } elseif ($target['type']=='Form Group') {
                    
                     $data = ['gibbonFormGroupID'=>$target['id']];

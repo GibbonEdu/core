@@ -127,7 +127,7 @@ class TimetableDayGateway extends QueryableGateway
 
     public function selectTTDayRowClassesByClass($gibbonTTID, $gibbonCourseClassID) {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID];
-        $sql = "SELECT gibbonTTDayRowClassID, gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTColumnRowID, gibbonTTDayRowClass.gibbonSpaceID
+        $sql = "SELECT gibbonTTDayRowClassID, gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTColumnRowID, gibbonTTDayRowClass.gibbonSpaceID, gibbonTTDay.name as dayName, gibbonTTColumnRow.name as periodName
                 FROM gibbonTTDayRowClass
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
                 JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)

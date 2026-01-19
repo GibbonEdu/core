@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                 $col->addButton(__('Edit'))
                     ->addClass('editColumn text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
-                    ->setIcon('edit')
+                    ->setIcon('solid', 'edit')
                     ->setType('blank')
                     ->addData('checked', '')
                     ->addData('column', strval($i))
@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             } else {
                 $col->addButton(__('Add'))
                     ->addClass('editColumn text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
-                    ->setIcon('add')
+                    ->setIcon('solid', 'add')
                     ->setType('blank')
                     ->addData('checked', 'checked')
                     ->addData('column', strval($i))
@@ -238,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
             $col->addButton(__('Clear'))
                 ->addClass('clearColumn hidden text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
-                ->setIcon('delete')
+                ->setIcon('solid', 'delete')
                 ->setType('blank')
                 ->addData('column', strval($i));
 

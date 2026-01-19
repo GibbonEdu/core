@@ -60,6 +60,7 @@ class Grid implements OutputableInterface
         $this->factory = $factory;
         $this->setBreakpoints($breakpoints);
         $this->setID($id);
+        $this->setClass('w-full flex flex-wrap items-stretch');
     }
 
     /**
@@ -102,8 +103,6 @@ class Grid implements OutputableInterface
      */
     public function getOutput()
     {
-        $this->addClass('w-full flex flex-wrap items-stretch');
-
         $output = '<div '.$this->getAttributeString().'>';
 
         foreach ($this->getElements() as $cell) {

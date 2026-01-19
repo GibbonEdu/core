@@ -311,11 +311,11 @@ class LibraryBorrowingView
         }
 
         if ($action == 'SignOut' || $action == 'SignOutOther') {
-            $row->addSubmit(__('SignOut'))->setIcon('page_right')->setType('quickSubmit')->groupAlign('right');
+            $row->addSubmit(__('SignOut'))->setIcon('solid', 'page_right')->setType('quickSubmit')->groupAlign('right');
         } elseif ($action == 'Return') {
-            $row->addSubmit(__('Return'))->setIcon('page_left')->setType('quickSubmit')->groupAlign('right');
+            $row->addSubmit(__('Return'))->setIcon('solid', 'page_left')->setType('quickSubmit')->groupAlign('right');
         } elseif ($action == 'Reserve') {
-            $row->addSubmit(__('Reserve'))->setIcon('bookmark')->setType('quickSubmit')->groupAlign('right');
+            $row->addSubmit(__('Reserve'))->setIcon('solid', 'bookmark')->setType('quickSubmit')->groupAlign('right');
         }
 
         return $form;

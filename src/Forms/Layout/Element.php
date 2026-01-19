@@ -118,6 +118,18 @@ class Element implements OutputableInterface
     }
 
     /**
+     * Set the currently appended string.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setPrepended(string $value)
+    {
+        $this->prepended = $value;
+        return $this;
+    }
+
+    /**
      * Get the currently prepended string.
      *
      * @return string
@@ -135,6 +147,18 @@ class Element implements OutputableInterface
     public function append($value)
     {
         $this->appended .= $value;
+        return $this;
+    }
+
+    /**
+     * Set the currently appended string.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setAppended(string $value)
+    {
+        $this->appended = $value;
         return $this;
     }
 

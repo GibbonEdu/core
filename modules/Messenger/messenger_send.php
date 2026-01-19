@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_send.p
         ->sortBy(['targetType', 'role',  'surname', 'preferredName'])
         ->fromPOST();
     $recipients = $messengerReceiptGateway->queryMessageRecipients($criteria, $gibbonMessengerID, $session->get('gibbonSchoolYearID'));
-
+    
     // FORM
     $form = Form::create('messengerPreview', $session->get('absoluteURL').'/modules/Messenger/messenger_sendProcess.php');
     $form->addHiddenValue('address', $session->get('address'));

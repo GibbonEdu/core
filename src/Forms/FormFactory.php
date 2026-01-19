@@ -174,6 +174,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createTokenList($name)
+    {
+        return new Input\TokenList($name);
+    }
+
     public function createRange($name, $min, $max, $step = null)
     {
         return new Input\Range($name, $min, $max, $step);
@@ -294,9 +299,9 @@ class FormFactory implements FormFactoryInterface
         return new Input\Button($label, 'button', $onClick, $id);
     }
 
-    public function createCustomBlocks($name, Session $session, bool $canDelete = true)
+    public function createCustomBlocks($name, ?Session $session = null, bool $canDelete = true, bool $canCopy = true, bool $canAdd = false)
     {
-        return new Input\CustomBlocks($this, $name, $session, $canDelete);
+        return new Input\CustomBlocks($this, $name, $session, $canDelete, $canCopy, $canAdd);
     }
 
     public function createDocuments($name, $documents, $view, $absoluteURL, $mode = '')

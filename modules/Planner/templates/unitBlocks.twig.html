@@ -1,0 +1,238 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<script type="text/javascript">
+
+var unitBlocks = {{ unitBlocks|json_encode|raw }};
+var lessonIDs = {{ lessons|column('gibbonPlannerEntryID')|json_encode|raw }};
+
+</script>
+
+<section id="unitBlocks" class="h-full flex font-sans"
+
+    x-data="{
+        dragging: false,
+        selected: [],
+        handleDragStart(event, block) {
+            this.dragging = true;
+            if (this.selected.length == 0) this.selected = [block];
+            event.dataTransfer.effectAllowed='move';
+            event.dataTransfer.setData('text/plain', JSON.stringify(this.selected));
+        },
+        handleDragEnd() {
+            this.dragging = false;
+            this.selected = [];
+        },
+        handleDrop(event, lesson) {
+            if (!this.dragging || this.selected.length == 0) {
+                this.dragging = false;
+                return; 
+            }
+
+            this.dragging = false;
+            this.selected = [];
+            
+            this.dispatchBlockEvent(event.currentTarget.id, 'add-blocks', JSON.parse(event.dataTransfer.getData('text/plain')));
+        },
+        handleDeployAll() {
+            if (confirm('{{ __('This will deploy one unit block to each lesson, in order from top to bottom.') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    if (unitBlocks[i]) {
+                        this.dispatchBlockEvent('lessonBlock'+lessonIDs[i], 'add-blocks', [unitBlocks[i]]);
+                    }
+                }
+            }
+        },
+        handleDeployEach() {
+            if (!this.selected || this.selected.length == 0) {
+                alert('{{ __('Nothing selected.') }} {{ __('Use Control, Command and/or Shift to select multiple.') }}');
+                return;
+            }
+            if (confirm('{{ __('This will deploy all selected blocks to each lesson.') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    this.dispatchBlockEvent('lessonBlock'+lessonIDs[i], 'add-blocks', this.selected.map((block) => block = {...block}));
+                }
+            }
+        },
+        handleRenameLessons() {
+            if (confirm('{{ __('Replace the lesson name with the smart block name?') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    var input = document.getElementById('lessonName'+lessonIDs[i]);
+                    var blocks = document.getElementById('lessonBlock'+lessonIDs[i])?.getElementsByClassName('primaryInput');
+                    if (input && blocks[0]) {
+                        input.value = blocks[0].innerText;
+                    }
+                    
+                }
+            }
+        },
+        handleClearAll() {
+            if (confirm('{{ __('Warning') }}! {{ __('This will clear all deployed blocks from each lesson. If you have edited your lesson blocks, these changes will be lost.') }}\n\n{{ __('Changes will only be saved when you press submit.') }}')) {
+                for (var i = 0; i < lessonIDs.length; i++) {
+                    this.dispatchBlockEvent('lessonBlock'+lessonIDs[i], 'remove-blocks', -1);
+                }
+            }
+        },
+        dispatchBlockEvent(targetID, eventName, data) {
+            var items = document.getElementById(targetID)?.getElementsByClassName('customBlocks');
+            if (items[0]) {
+                items[0].dispatchEvent(new CustomEvent(eventName, {detail: data}));
+            }
+        },
+        isSelected(value) {
+            return this.selected.includes(value);
+        },
+        moveBlocks(source, indexFrom, indexTo) {
+            var nextBlock = document.getElementById('blocks' + indexTo + '_');
+            nextBlock.dispatchEvent(new CustomEvent('add-blocks', {
+                detail: source,
+            }));
+
+            var thisBlock = document.getElementById('blocks' + indexFrom + '_');
+            thisBlock.dispatchEvent(new CustomEvent('remove-blocks', {
+                detail: source.map((block) => block.index),
+            }));
+        },
+    }"
+>
+
+    {% if lessons %}
+
+    <div id="lessons" class="lessonsContainer w-3/4">
+        {% for index, lesson in lessons %}
+        
+        <div id="lessonBlock{{ lesson.gibbonPlannerEntryID }}" class="bg-gray-50 border  mb-4 mr-4 rounded-md" 
+            x-on:drop.prevent="handleDrop(event, '{{ lesson.gibbonPlannerEntryID }}' )"
+            x-on:dragover.prevent="" 
+        >
+        <input type="hidden" name="blocks[lesson{{ loop.index }}]" value="{{ lesson.gibbonPlannerEntryID }}">
+
+
+            <div class="flex justify-between gap-2 items-center text-xs text-gray-600 bg-gray-150 px-3 py-2 rounded-t-md border-b">
+                <a x-data="{ hover: false }" class="inline-flex mt-1 items-center text-gray-500 hover:text-blue-500 gap-1 no-underline cursor-pointer" href="{{ absoluteURL }}/index.php?q=/modules/Planner/planner_view_full.php&gibbonCourseClassID={{ lesson.gibbonCourseClassID }}&gibbonPlannerEntryID={{ lesson.gibbonPlannerEntryID }}&viewBy=class" target="_blank" @mouseover="hover = true" @mouseleave="hover = false">
+                    <div x-show="hover == false">{{ icon('outline', 'book-open', 'size-5', {strokeWidth: 1.6}) }}</div>
+                    <div x-cloak x-show="hover == true">{{ icon('solid', 'book-open', 'size-5') }}</div>
+
+                    <div class="h-5 font-semibold">{{ loop.index }}</div>
+                </a>
+
+                <input type="text" id="lessonName{{ lesson.gibbonPlannerEntryID }}" name="lessons[{{ lesson.gibbonPlannerEntryID }}]" value="{{ lesson.name }}" placeholder="{{ unitName ~' '~ loop.index }}"
+                class="flex-1 min-w-0 py-2 font-bold text-base text-gray-800 bg-transparent placeholder:text-gray-500 rounded-md sm:text-sm sm:leading-5 text-gray-900 border-transparent hover:border-blue-500 focus:border-gray-300 focus:ring-1 focus:ring-inset focus:ring-blue-500 focus:bg-white cursor-text" />
+
+                <div class="w-1/4 flex items-center gap-2">
+                    {{ icon('solid', 'calendar', 'inline-block size-4 text-gray-500') }} 
+                    <span><strong class="text-gray-700">{{ formatUsing('dayOfWeekName', lesson.date) }}</strong>, {{ formatUsing('dateReadable', lesson.date) }}</span>
+                </div>
+                <div class="w-1/4 flex items-center gap-2">
+                    {{ icon('outline', 'clock', 'inline-block size-4 text-gray-500', {strokeWidth: 2.0}) }}
+                    <span><strong class="text-gray-700">{{ lesson.period }}</strong> ({{ formatUsing('timeRange', lesson.timeStart, lesson.timeEnd) }})</span>
+                </div>
+                {% if lesson.spaceName %}
+                <div class="w-24 text-right">
+                    <span class="tag text-xxs ml-2 {{ lesson.gibbonTTSpaceChangeID ? 'error' : '' }}">
+                        {% if lesson.gibbonTTSpaceChangeID %}
+                        {{ icon('basic', 'arrow-move', 'size-3 text-red-700 inline align-sub') }}
+                        {% endif %}
+                        {{ lesson.spaceName }}
+                    </span>
+                </div>
+                {% endif %}
+                
+
+            </div>
+
+            <div class="relative min-h-24 flex flex-col justify-end  " >
+
+                <div x-cloak x-show="dragging" class="absolute z-10 flex justify-center items-center w-full h-full border-2 border-dashed bg-gray-500/20 border-gray-500 rounded-md pointer-events-none">
+                    <span class="text-xl text-gray-500">
+                        {{ __('Drop Here') }}
+                    </span>
+                </div>
+
+                <div class="p-3">
+                {{ smartBlocks[lesson.gibbonPlannerEntryID].getOutput|raw }}
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="sticky h-full top-0 w-1/4">
+        <div id="unassigned"
+            class="w-full bg-gray-50 border p-3 mb-4 pb-4 rounded-md h-full max-h-screen overflow-y-scroll"
+            @click.away="selected = [];"
+            >
+
+            <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
+                <h5 class="mt-0 p-0">
+                    {{ __('Unit Blocks') }}
+                </h5>
+
+                <div class="w-24 text-right">
+                    <span x-text="unitBlocks.length"></span>
+                </div>
+            </div>
+
+
+            <div class="blockGroup h-full flex flex-col gap-2" data-group="0" style="min-height: 8rem;">
+
+                <template x-for="(block, index) in unitBlocks" x-bind:key="block.gibbonUnitBlockID" >
+
+                    <div x-from-template x-data="{draggingSelf: false}"
+                    :draggable="true" 
+                    x-on:dragstart="dragging = true;"
+                    x-on:dragstart.self="draggingSelf = true; handleDragStart(event, block);" 
+                    x-on:dragend="draggingSelf = false; handleDragEnd();" 
+
+                    @click.stop="$event.shiftKey || $event.metaKey ? selected.push(block) : selected = [block];"
+
+                    :class="{'opacity-50': draggingSelf, 'ring-2': isSelected(block) }"
+                    
+                    class="unitBlock flex border bg-white hover:bg-blue-50 rounded-md hover:bg-blue-100 hover:border-blue-500 cursor-move group"  >
+
+                        <div class="drag-sort-handle w-6 ltr:border-r rtl:border-l hover:bg-gray-200 rounded-l-md" ></div>
+
+                        <div class="flex-1 flex items-center text-sm text-gray-800 w-full py-3 px-3 rounded-r-md cursor-pointer" :class="{'text-gray-800': block.title, 'text-gray-500': !block.title}">
+                            <span x-text="block.title  ? block.title : '{{ __('Untitled') }}'"></span>
+                        </div>
+
+                        
+                    </div>
+
+                </template>
+
+
+            </div>
+
+            <div class="text-xxs text-gray-600 pt-6">
+
+                {{ __('Press {shortcut} to {action}', {shortcut: '<kbd class="bg-white text-xxs">Shift</kbd> or <kbd class="bg-white text-xxs">⌘ Cmd</kbd>', action: __('Select Multiple')} )|raw }}
+            </div>
+
+        </div>
+
+        {% if toolbar %}
+        <div class="w-full bg-gray-50 border p-3 mb-4 rounded-md text-xs text-gray-600">
+
+            <h5 class="mt-0 mb-2 p-0 ">
+                {{ __('Tools') }}
+            </h5>
+
+
+            {{ toolbar.getOutput|raw }}
+           
+        </div>
+        {% endif %}
+    </div>
+
+    {% endif %}
+
+</section>

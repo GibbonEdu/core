@@ -27,6 +27,7 @@ use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\UnitBlockGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -190,105 +191,153 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $lessonsChecked = $_POST['lessons'] ?? [];
 
         // Get unit blocks
-        $blocks = $unitBlockGateway->selectBlocksByUnit($gibbonUnitID)->fetchAll();
-
-        $blockCount = 1;
-        $blockSelect = array_reduce($blocks, function ($group, $item) use (&$blockCount) {
-            $group[$item['gibbonUnitBlockID']] = $blockCount.') '.$item['title'];
-            $blockCount++;
-            return $group;
-        }, []);
+        $unitBlocks = $unitBlockGateway->selectBlocksByUnit($gibbonUnitID)->fetchAll();
 
         // Get date and period information for each lesson
         foreach ($lessonsChecked as $lesson) {
             list($gibbonTTDayRowClassID, $gibbonTTDayDateID) = explode('-', $lesson);
-            $lessons[] = $plannerEntryGateway->getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID);
+            $lessonData = $plannerEntryGateway->getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID);
+            $lessonData['gibbonPlannerEntryID'] = $lesson;
+            $lessons[] = $lessonData;
         }
 
         // FORM
-        $form = Form::create('action', $session->get('absoluteURL').'/modules/Planner/units_edit_deployProcess.php?'.http_build_query($urlParams));
+        $form = Form::createBlank('blocks', $session->get('absoluteURL').'/modules/Planner/units_edit_deployProcess.php?'.http_build_query($urlParams));
         $form->setFactory(PlannerFormFactory::create($pdo));
         $form->setTitle(__('Step 2 - Distribute Blocks'));
 
-        $addAll = $form->getFactory()->createRow()
-        ->setClass('-mt-4')
-        ->addSelect('blockAddAll')
-        ->fromArray($blockSelect)
-        ->placeholder()
-        ->setClass('blockAddAll float-right w-32')
-        ->prepend(Format::small(__('Add Block to All').':'));
 
-        $form->setDescription('<div class="float-right w-32 -mt-8">'.$addAll->getOutput().'</div>'.__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
+        $form->setDescription('<p>'.__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.').'</p>');
         
         $form->addHiddenValue('address', $session->get('address'));
 
         $deployIndex = 0;
         $deployed = 0;
 
+        // Smart Block Template
+        $blockTemplate = $form->getFactory()->createTable()->setClass('blank w-full');
+        $row = $blockTemplate->addRow();
+        $row->addTextField('title')
+            ->setClass('title focus:bg-white')
+            ->placeholder(__('Title'));
+
+        $row = $blockTemplate->addRow()->addClass('flex justify-between mt-1');
+            $row->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
+                ->setClass('flex-1 focus:bg-white mr-1');
+            $row->addTextField('length')->placeholder(__('length (min)'))
+                ->setClass('w-48 focus:bg-white')->prepend('');
+
+        $smartBlockTemplate = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'smartBlockTemplate');
+        $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
+            $col->addLabel('contentsLabel', __('Block Contents'));
+            $col->addTextArea('contents')->addData('tinymce')->addData('media', '1')->setRows(20)->setValue($smartBlockTemplate);
+
+        $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
+            $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'));
+            $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(5);
+
+        $toolbar = $form->getFactory()->createRow()->addClass('flex flex-wrap items-center gap-2');
+        $toolbar->addButton(__('Deploy All'))->setSize('sm')->setIcon('solid', 'arrow-down-on-square')->setAttribute('@click', 'handleDeployAll()');
+        $toolbar->addButton(__('Deploy Each'))->setSize('sm')->setIcon('solid', 'arrow-down-on-square-stack')->setAttribute('@click', 'handleDeployEach()');
+        $toolbar->addButton(__('Rename Lessons'))->setSize('sm')->setIcon('solid', 'pencil-square')->setAttribute('@click', 'handleRenameLessons()');
+        $toolbar->addButton(__('Clear All'))->setSize('sm')->setIcon('solid', 'delete')->setAttribute('@click', 'handleClearAll()');
+
+        // Smart blocks
+        $smartBlocks = [];
+        $indexStart = 0;
         foreach ($lessons as $index => $lesson) {
+            $customBlocks = $form->getFactory()->createCustomBlocks('blocks', $session)
+                ->fromTemplate($blockTemplate)
+                ->setID('blocks'.$index)
+                ->addClass('lesson'.$index)
+                ->settings([
+                    'inputNameStrategy' => 'object',
+                    'addOnEvent'        => 'click',
+                    'sortable'          => true,
+                    'sortGroup'         => 'unitBlocks',
+                    'uniqueID'          => 'gibbonUnitClassBlockID',
+                    'orderName'         => 'order',
+                    'hiddenInputs'      => 'gibbonUnitBlockID,gibbonTTDayRowClassID,gibbonTTDayDateID',
+                ])
+                ->placeholder('');
 
-            $form->addRow()->addHeading(($index+1).'. '.Format::dateReadable($lesson['date'], Format::FULL))
-                ->append(Format::small($lesson['period'].' ('.Format::timeRange($lesson['timeStart'], $lesson['timeEnd']).')'));
+            // $customBlocks->addToolButton('')->addClass('addBlock')->setTitle(__('Add Block'))->setIcon('outline', 'add', '', ['strokeWidth' => 2]);
 
-            $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');
-
-            $col->addContent('<input type="hidden" name="order[]" value="lessonHeader-'.$index.'">');
-            $form->addHiddenValue('date'.$index, $lesson['date']);
-            $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
-            $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-
-            $col->addColumn()
-                ->setClass('-mt-4')
-                ->addSelect('blockAdd')
-                ->fromArray($blockSelect)
-                ->placeholder()
-                ->setClass('blockAdd float-right w-48')
-                ->prepend(Format::small(__('Add Block').':'));
-
-            $content = '';
-
-            // Attempt auto deploy
-            $spinCount = 0;
-            $length = ((strtotime($lesson['date'].' '.$lesson['timeEnd']) - strtotime($lesson['date'].' '.$lesson['timeStart'])) / 60);
-
-            while ($spinCount < count($blocks) and $length > 0) {
-                if (isset($blocks[$deployIndex])) {
-                    if (empty($blocks[$deployIndex]['length'])) {
-                        ++$deployIndex;
-                    } else {
-                        if (($length - $blocks[$deployIndex]['length']) >= 0) {
-                            ob_start();
-                            makeBlock($guid,  $connection2, $deployed, $mode = 'workingDeploy', $blocks[$deployIndex]['title'], $blocks[$deployIndex]['type'], $blocks[$deployIndex]['length'], $blocks[$deployIndex]['contents'], 'N', $blocks[$deployIndex]['gibbonUnitBlockID'], '', $blocks[$deployIndex]['teachersNotes'], true);
-                            $blockContent = ob_get_clean();
-
-                            $content .= '<div class="draggable z-100">'.$blockContent.'</div>';
-
-                            $length = $length - $blocks[$deployIndex]['length'];
-                            ++$deployIndex;
-                        }
-                    }
-                }
-
-                ++$spinCount;
-                ++$deployed;
-            }
-
-            $col->addContent('<div class="sortableArea py-2 mt-16">'.$content.'</div>');
+            $smartBlocks[$lesson['gibbonPlannerEntryID']] = $customBlocks;
         }
 
-        $form->addRow()->addHeading('Access', __('Access'));
+        // Display the drag-drop block editor
+        $form->addRow()->addContent($page->fetchFromTemplate('unitBlocks.twig.html', [
+            'toolbar'     => $toolbar,
+            'lessons'     => $lessons,
+            'unitName'    => $unit['name'],
+            'unitBlocks'  => $unitBlocks ?? [],
+            'smartBlocks' => $smartBlocks ?? [],
+        ]));
 
-        $row = $form->addRow();
+        // foreach ($lessons as $index => $lesson) {
+
+        //     $form->addRow()->addHeading(($index+1).'. '.Format::dateReadable($lesson['date'], Format::FULL))
+        //         ->append(Format::small($lesson['period'].' ('.Format::timeRange($lesson['timeStart'], $lesson['timeEnd']).')'));
+
+        //     $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');
+
+        //     $col->addContent('<input type="hidden" name="order[]" value="lessonHeader-'.$index.'">');
+        //     $form->addHiddenValue('date'.$index, $lesson['date']);
+        //     $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
+        //     $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
+
+        //     $col->addColumn()
+        //         ->setClass('-mt-4')
+        //         ->addSelect('blockAdd')
+        //         ->fromArray($blockSelect)
+        //         ->placeholder()
+        //         ->setClass('blockAdd float-right w-48')
+        //         ->prepend(Format::small(__('Add Block').':'));
+
+        //     $content = '';
+
+        //     // Attempt auto deploy
+        //     $spinCount = 0;
+        //     $length = ((strtotime($lesson['date'].' '.$lesson['timeEnd']) - strtotime($lesson['date'].' '.$lesson['timeStart'])) / 60);
+
+        //     while ($spinCount < count($blocks) and $length > 0) {
+        //         if (isset($blocks[$deployIndex])) {
+        //             if (empty($blocks[$deployIndex]['length'])) {
+        //                 ++$deployIndex;
+        //             } else {
+        //                 if (($length - $blocks[$deployIndex]['length']) >= 0) {
+        //                     ob_start();
+        //                     //makeBlock($guid,  $connection2, $deployed, $mode = 'workingDeploy', $blocks[$deployIndex]['title'], $blocks[$deployIndex]['type'], $blocks[$deployIndex]['length'], $blocks[$deployIndex]['contents'], 'N', $blocks[$deployIndex]['gibbonUnitBlockID'], '', $blocks[$deployIndex]['teachersNotes'], true);
+        //                     $blockContent = ob_get_clean();
+
+        //                     $content .= '<div class="draggable z-100">'.$blockContent.'</div>';
+
+        //                     $length = $length - $blocks[$deployIndex]['length'];
+        //                     ++$deployIndex;
+        //                 }
+        //             }
+        //         }
+
+        //         ++$spinCount;
+        //         ++$deployed;
+        //     }
+
+        //     $col->addContent('<div class="sortableArea py-2 mt-16">'.$content.'</div>');
+        // }
+
+        $section = $form->addRow()->addClass('bg-gray-50 border px-4 sm:px-8 py-4 mb-4 mr-4 rounded-md');
+        $section->addRow()->addHeading('Access', __('Access'));
+
+        $row = $section->addRow()->setClass('flex w-full justify-between items-center py-2');
             $row->addLabel('viewableStudents', __('Viewable by Students'));
             $row->addYesNo('viewableStudents')->required();
 
-        $row = $form->addRow();
+        $row = $section->addRow()->setClass('flex w-full justify-between items-center py-2');
             $row->addLabel('viewableParents', __('Viewable by Parents'));
             $row->addYesNo('viewableParents')->required();
 
-        $row = $form->addRow();
-        $row->addCheckbox('lessonNameReplace')->setValue('Y')->alignLeft()->description(__('Replace the lesson name with the smart block name?'));
-        $row->addSubmit();
+        $row = $form->addRow()->addSubmit();
 
         echo $form->getOutput();
     }
@@ -296,47 +345,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     // Print sidebar
     $page->addSidebarExtra(sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
-?>
-
-<script>
-var count = <?php echo $deployed ?? 0; ?>;
-
-$('.sortableArea').sortable({
-    revert: false,
-    tolerance: 25,
-    connectWith: ".sortableArea",
-    items: "div.draggable",
-    receive: function(event,ui) {
-
-    },
-    beforeStop: function (event, ui) {
-        newItem=ui.item;
-    }
-});
-
-$( ".draggable" ).draggable({
-    connectToSortable: ".sortableArea",
-    // helper: "clone"
-});
-
-$('.blockAdd').change(function () {
-    if ($(this).val() == '') return;
-
-    var parent = $(this).parents('.blockLesson');
-    var sortable = $('.sortableArea', parent);
-
-    $(sortable).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
-    count++;
-});
-
-$('.blockAddAll').change(function () {
-    var gibbonUnitBlockID = $(this).val();
-    if (gibbonUnitBlockID == '') return;
-
-    var sortable = $('.sortableArea').each(function (index, element) {
-        $(element).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + gibbonUnitBlockID, "id=" + count) );
-        count++;
-    });
-});
-
-</script>

@@ -69,7 +69,7 @@ class MessengerReceiptGateway extends QueryableGateway
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonMessenger', 'gibbonMessenger.gibbonMessengerID=gibbonMessengerReceipt.gibbonMessengerID')
-            ->innerJoin('gibbonMessengerMailingListRecipient', 'gibbonMessengerMailingListRecipient.gibbonMessengerMailingListRecipientID=gibbonMessengerReceipt.gibbonPersonID')
+            ->innerJoin('gibbonMessengerMailingListRecipient', 'gibbonMessengerMailingListRecipient.email=gibbonMessengerReceipt.contactDetail AND gibbonMessengerReceipt.unsubscribeKey=gibbonMessengerMailingListRecipient.key')
             ->where('gibbonMessenger.gibbonMessengerID=:gibbonMessengerID')
             ->bindValue('gibbonMessengerID', $gibbonMessengerID)
             ->where("gibbonMessengerReceipt.targetType='Mailing List'");

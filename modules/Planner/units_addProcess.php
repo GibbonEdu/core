@@ -127,13 +127,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     }
 
                     //ADD BLOCKS
-                    $blockCount = ($_POST['blockCount'] ?? 0) - 1;
+                    $order = $_POST['order'] ?? [];
                     $sequenceNumber = 0;
-                    if ($blockCount > 0) {
-                        $order = array();
-                        if (isset($_POST['order'])) {
-                            $order = $_POST['order'] ?? [];
-                        }
+                    if (!empty($order) && is_array($order)) {
                         foreach ($order as $i) {
                             $title = '';
                             if ($_POST["title$i"] != "Block $i") {
