@@ -51,10 +51,7 @@ use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Students\StudentAttendanceStatus;
-use Gibbon\Domain\Timetable\TimetableDayDateGateway;
-use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Module\Students\View\LibraryBorrowingView;
-use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 //Module includes for User Admin (for custom fields)
