@@ -41,11 +41,11 @@ if (!isset($_SESSION[$guid]) || !$session->exists('gibbonPersonID')) {
 
     if (empty($periods)) die(__('Unknown'));
 
-    foreach ($periods as $period) {
+    foreach ($periods as $index => $period) {
         echo <<<HTML
             <li x-from-template :value="time" role="option" tabindex="0"
-            x-on:click="time = '{$period['time']}'; isOpen = false"
-            x-on:keydown.enter="time = '{$period['time']}'; isOpen = false"
+            x-on:click="selectTime({$index}, '{$period['time']}', '{$periods[$index+1]['time']}')"
+            x-on:keydown.enter="selectTime({$index}, '{$period['time']}', '{$periods[$index+1]['time']}')"
             class="px-3 py-1 text-sm text-gray-700 rounded hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap"
             >
             <span>{$period['period']}</span>

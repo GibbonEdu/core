@@ -40,7 +40,8 @@ class Time extends TextField
     protected $min;
     protected $max;
     protected $dateID;
-    protected $chainedID;
+    protected $chainedTo;
+    protected $chainedFrom;
     protected $showDuration;
 
     /**
@@ -53,7 +54,7 @@ class Time extends TextField
 
         // Update the time format based on system settings
         $timeFormatPHP = $session->get('timeFormatPHP', 'H:i');
-        $this->clock = $timeFormatPHP == 'g:i a' ? '12' : '24';
+        $this->clock = $timeFormatPHP == 'H:i' ? '24' : '12';
 
         parent::__construct($name);
     }
@@ -120,9 +121,21 @@ class Time extends TextField
      * @param   string  $chained
      * @return  self
      */
-    public function chainedTo($chainedID, $showDuration = true)
+    public function chainedTo($chainedTo, $showDuration = true)
     {
-        $this->chainedID = $chainedID;
+        $this->chainedTo = $chainedTo;
+        
+        return $this;
+    }
+
+    /**
+     * Provide the ID of another time input to connect the input values.
+     * @param   string  $chained
+     * @return  self
+     */
+    public function chainedFrom($chainedFrom, $showDuration = true)
+    {
+        $this->chainedFrom = $chainedFrom;
         $this->showDuration = $showDuration;
         
         return $this;
@@ -170,14 +183,15 @@ class Time extends TextField
 
 
         return Component::render(Time::class, $this->getAttributeArray() + [
-            'groupClass'       => $this->getGroupClass(),
-            'unique'           => $this->unique ? json_encode($this->unique) : '',
-            'minimum'          => $this->min ?? '00:00',
-            'maximum'          => $this->max ?? '23:59',
-            'chained'          => $this->chainedID,
-            'date'             => $this->dateID,
-            'value'            => $this->getValue(),
-            'clock'            => $this->clock,
+            'groupClass'  => $this->getGroupClass(),
+            'unique'      => $this->unique ? json_encode($this->unique) : '',
+            'minimum'     => $this->min ?? '00:00',
+            'maximum'     => $this->max ?? '23:59',
+            'chainedTo'   => $this->chainedTo,
+            'chainedFrom' => $this->chainedFrom,
+            'date'        => $this->dateID,
+            'value'       => $this->getValue(),
+            'clock'       => $this->clock,
         ]);
     }
 }

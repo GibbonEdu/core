@@ -4,7 +4,8 @@
         time: '<?= $value ?>',
         timeSelected: null,
         timeOptions: { hour: '<?= $clock == '12' ? 'numeric' : '2-digit' ?>', minute: '2-digit', hour12: <?= $clock == '12' ? 'true' : 'false' ?> },
-        chained: null,
+        chainedTo: null,
+        chainedFrom: null,
         isOpen: false, 
         selectedItem: '',
         timePickerView: 1,
@@ -66,7 +67,8 @@
         unAvailableTimes: [], 
         setupTimePicker() {
             this.time = this.clock == '12' ? this.convertTo12HourFormat(this.time) : this.convertTo24HourFormat(this.time);
-            this.chained = '<?= $chained ?>' != '' ? document.getElementById('<?= $chained ?>') : null;
+            this.chainedTo = '<?= $chainedTo ?>' != '' ? document.getElementById('<?= $chainedTo ?>') : null;
+            this.chainedFrom = '<?= $chainedFrom ?>' != '' ? document.getElementById('<?= $chainedFrom ?>') : null;
             this.setAvailableTimes();
         },
 
@@ -82,7 +84,7 @@
                 let time = `${hours}:${mins}`;
 
                 let itemTime = this.convertToMinutes(time);
-                let chainedTime = this.convertToMinutes(this.chained?.value ?? '');
+                let chainedFromTime = this.convertToMinutes(this.chainedFrom?.value ?? '');
                 let relativeTime = itemTime - currentTime;
                 let label = '';
 
@@ -90,15 +92,15 @@
                     this.timeSelected = this.availableTimes.length;
                 }
 
-                if (this.chained && itemTime < chainedTime ) {
+                if (this.chainedFrom && itemTime < chainedFromTime ) {
                     continue;
                 }
 
-                if (this.chained && itemTime - chainedTime >= 0) {
+                if (this.chainedFrom && itemTime - chainedFromTime >= 0) {
 
                     const rtf = new Intl.RelativeTimeFormat(navigator.language, { numeric: 'always' });
-                    let diff = itemTime - chainedTime;
-                    label = ' (' + rtf.format(diff >= 60 ? ((itemTime - chainedTime) / 60).toFixed(2) : (itemTime - chainedTime), diff >= 60 ? 'hour' : 'minute').replace('in ', '') +')';
+                    let diff = itemTime - chainedFromTime;
+                    label = ' (' + rtf.format(diff >= 60 ? ((itemTime - chainedFromTime) / 60).toFixed(2) : (itemTime - chainedFromTime), diff >= 60 ? 'hour' : 'minute').replace('in ', '') +')';
                 }
 
                 if (this.clock == '12') {
@@ -108,6 +110,17 @@
                 if (!this.unAvailableTimes.includes(time)) {
                     this.availableTimes.push({time: time, label: label});
                 }
+            }
+        },
+
+        selectTime(index, time, nextTime) {
+            this.time = time; 
+            this.timeSelected = index; 
+            this.isOpen = false;
+
+            if (this.chainedTo) {
+                this.chainedTo.value = nextTime ? nextTime : this.time;
+                this.chainedTo.dispatchEvent(new Event('input', { bubbles: true }));
             }
         },
 
@@ -160,11 +173,12 @@
         value="<?= $value; ?>" 
         :value="time ? convertTo24HourFormat(time) : $el.value"
         x-ref="timeValue"
+        @input="time = $el.value"
         tabindex="-1"
     />
 
     <div x-cloak x-show="isOpen" :id="$refs.timeValue.id+'List'"
-        class="absolute mt-10 top-0 left-0 z-50 w-full h-60 rounded-md border bg-white shadow-lg" 
+        class="absolute mt-10 top-0 left-0 z-50 w-full max-w-64 h-60 rounded-md border bg-white shadow-lg" 
         x-on:keydown.down.prevent="$focus.wrap().next()" 
         x-on:keydown.up.prevent="$focus.wrap().previous()" 
         x-transition:enter.opacity.duration.100ms 
@@ -194,8 +208,8 @@
             <template x-for="(value, index) in availableTimes" :key="index" >
                 <li x-from-template :value="time" role="option" tabindex="0" 
                 x-bind:id="$refs.timeValue.id+'Option-' + index"
-                x-on:click="time = value.time; timeSelected = index; isOpen = false"
-                x-on:keydown.enter="time = value.time; isOpen = false"
+                x-on:click="selectTime(index, value.time, null)"
+                x-on:keydown.enter="selectTime(index, value.time, null)"
                 :class="timeSelected == index ? 'bg-gray-300 text-gray-900 hover:text-white' : ''"
                 class="px-3 py-1 text-sm text-gray-700 rounded hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap"
                 >
