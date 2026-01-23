@@ -14,7 +14,7 @@
             var item = value.trim();
             if (item == '') return;
 
-            var items = item.split(',').map(item => item.trim());
+            var items = item.split(',').map(item => item.trim()).filter((item) => item != '');
             items.forEach((item) => this.list.push(item));
             
             this.$refs.textInput.value = '';
@@ -53,6 +53,7 @@
 
         @keydown.backspace="removeItem()" @keydown.right="$focus.wrap().next()" @keydown.left="$focus.wrap().previous()" 
         @keydown.meta.a.prevent="selected = list"
+        @click="$focus.focus($refs.textInput)"
         />
 
         <div x-sort.ghost="updateList($el)"  class="flex flex-wrap items-center justify-start gap-1" x-ref="listList">
@@ -66,11 +67,13 @@
                 </div>
             </template>
 
-        </div>
-
-        <input x-sort.ignore type="text" class="w-auto overflow-x-visible border-0 bg-transparent focus:ring-0 text-gray-900 sm:text-sm sm:leading-5 px-1 py-0" 
+            <input x-sort.ignore type="text" class="w-auto overflow-x-visible border-0 bg-transparent focus:ring-0 text-gray-900 sm:text-sm sm:leading-5 px-1 py-0" 
             x-ref="textInput"  @click.away="addItem($el.value); selected = [];" @keydown.enter.prevent="addItem($el.value)"
         />
+        
+        </div>
+
+        
 
     </div>
 
