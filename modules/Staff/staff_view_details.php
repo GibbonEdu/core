@@ -20,21 +20,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Timetable\Timetable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\School\HouseGateway;
+use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
+use Gibbon\Module\Staff\StaffAttendanceStatus;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
-use Gibbon\Forms\Form;
-use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\UI\Timetable\Timetable;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -152,34 +153,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     echo '</h2>';
 
                     if ($subpage == 'Overview') {
+
                         // Display a message if the staff member is absent today.
-                        $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
-                        $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
+                        $currentStaffAttendanceStatus = $container->get(StaffAttendanceStatus::class)->getCurrentAttendanceStatus($gibbonPersonID, $row['title'], $row['preferredName'], $row['surname']);
 
-                        $criteria = $staffAbsenceGateway->newQueryCriteria(true)->filterBy('date', 'Today')->filterBy('status', 'Approved');
-                        $absences = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
+                        echo $currentStaffAttendanceStatus;
                         
-                        if (count($absences) > 0) {                          
-                            foreach ($absences as $absence) {
-                                $absenceMessage = $absence['allDay'] == 'Y' ? __('{name} is absent all day today.', [
-                                'name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff', false, true)]) : __('{name} is partially absent today.', [
-                                'name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff', false, true)]);
-
-                                $absenceMessage .= '<br/><br/><ul>';
-
-                                $details = $staffAbsenceDateGateway->getByAbsenceAndDate($absence['gibbonStaffAbsenceID'], date('Y-m-d'));
-                                $time = $details['allDay'] == 'N' ? Format::timeRange($details['timeStart'], $details['timeEnd']) : __('All Day');
-
-                                $absenceMessage .= '<li>'.Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']).'  '.$time.'</li>';
-                                if ($details['coverage'] == 'Accepted') {
-                                    $absenceMessage .= '<li>'.__('Coverage').': '.Format::name($details['titleCoverage'], $details['preferredNameCoverage'], $details['surnameCoverage'], 'Staff', false, true).'</li>';
-                                }
-                            }
-                            $absenceMessage .= '</ul>';
-
-                            echo $details['allDay'] == 'Y' ? Format::alert($absenceMessage, 'warning') : Format::alert($absenceMessage, 'message');
-                        }
-
                         // Overview
                         $table = DataTable::createDetails('overview');
 
