@@ -33,19 +33,20 @@ if (!isset($_SESSION[$guid]) || !$session->exists('gibbonPersonID')) {
     $periods = $container->get(TimetableDayDateGateway::class)->selectTimetabledPeriodsByDate($date)->fetchAll();
     $periods = array_map(function($item) {
         $item['time'] = Format::time($item['timeStart']);
+        $item['timeEnd'] = Format::time($item['timeEnd']);
         return $item;
     }, $periods);
+
+    if (empty($periods)) die(__('Unknown'));
 
     $endOfDay = end($periods);
     $periods[] = ['period' => Format::small(__('End of Day')), 'time' => Format::time($endOfDay['timeEnd'])];
 
-    if (empty($periods)) die(__('Unknown'));
-
     foreach ($periods as $index => $period) {
         echo <<<HTML
             <li x-from-template :value="time" role="option" tabindex="0"
-            x-on:click="selectTime({$index}, '{$period['time']}', '{$periods[$index+1]['time']}')"
-            x-on:keydown.enter="selectTime({$index}, '{$period['time']}', '{$periods[$index+1]['time']}')"
+            x-on:click="selectTime({$index}, '{$period['time']}', '{$period['timeEnd']}')"
+            x-on:keydown.enter="selectTime({$index}, '{$period['time']}', '{$period['timeEnd']}')"
             class="px-3 py-1 text-sm text-gray-700 rounded hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap"
             >
             <span>{$period['period']}</span>

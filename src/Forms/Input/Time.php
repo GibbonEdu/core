@@ -52,11 +52,13 @@ class Time extends TextField
     {
         global $session;
 
+        parent::__construct($name);
+
         // Update the time format based on system settings
         $timeFormatPHP = $session->get('timeFormatPHP', 'H:i');
         $this->clock = $timeFormatPHP == 'H:i' ? '24' : '12';
 
-        parent::__construct($name);
+        $this->setAttribute('type', 'time');
     }
 
     /**
@@ -161,7 +163,7 @@ class Time extends TextField
     {
         if (stristr($label->getDescription(), 'Format') === false) {
             return $this->clock == '12'
-                ? __('Format: h:mm am/pm (12hr)')
+                ? __('Format: h:mm am/pm')
                 : __('Format: hh:mm (24hr)');
         }
 

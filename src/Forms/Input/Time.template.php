@@ -19,7 +19,7 @@
             let x = event.target.value.replace(/[^0-9: apm]/g, '').match(/^(\d{0,2}):?(\d{0,2})\s?(.*)/);
             event.target.value = !x[1] && !x[2]
                 ? ''
-                : String(!x[1] ? '0' : x[1]).padStart(this.clock == 12 ? 1 : 2, '0') + ':' + String(!x[2] ? '00' : x[2]).padStart(2, '0') + (!x[3] ? '' : ' '+x[3]);
+                : String(!x[1] ? '0' : x[1]).padStart(this.clock == 12 ? 1 : 2, '0') + ':' + String(!x[2] ? '00' : x[2]).padStart(2, '0') + (!x[3] || this.clock == 24 ? '' : ' '+x[3]);
         },
 
         convertToMinutes(timeString) {
@@ -113,6 +113,15 @@
             }
         },
 
+        setTime(time) { 
+            this.time = this.clock == '12' ? this.convertTo12HourFormat(time) : this.convertTo24HourFormat(time);
+            this.timeSelected = this.availableTimes.find( (item) => item.time == this.time);
+
+            console.log(time);
+            console.log(this.time);
+            console.log(this.timeSelected);
+        },
+
         selectTime(index, time, nextTime) {
             this.time = time; 
             this.timeSelected = index; 
@@ -156,6 +165,15 @@
         <?= icon('outline', 'clock', 'pointer-events-none size-8 mt-px p-1.5 rounded text-gray-600 hover:text-gray-800'); ?>
     </span>
 
+    <input x-cloak type="time" <?= $attributes; ?> maxlength="5"
+        class="hidden"
+        value="<?= $value; ?>" 
+        :value="time ?? $el.value"
+        x-ref="timeValue"
+        @input="setTime($el.value)"
+        tabindex="-1"
+    />
+
     <input type="text" :id="$refs.timeValue.id + 'Time'" :name="$refs.timeValue.id + 'Time'" 
         @click="isOpen=true; setAvailableTimes(); $focus.focus($refs.timePicker); $nextTick(() => scrollToActiveItem() )"
         @input="updateActiveItem()"
@@ -168,14 +186,7 @@
         <?= !empty($readonly) ? 'border-dashed text-gray-600 cursor-not-allowed focus:ring-0 focus:border-gray-400' : 'text-gray-900 focus:ring-1 focus:ring-inset focus:ring-blue-500'; ?>
     "/>
 
-    <input x-cloak type="time" <?= $attributes; ?> maxlength="5"
-        class="hidden"
-        value="<?= $value; ?>" 
-        :value="time ? convertTo24HourFormat(time) : $el.value"
-        x-ref="timeValue"
-        @input="time = $el.value"
-        tabindex="-1"
-    />
+    
 
     <div x-cloak x-show="isOpen" :id="$refs.timeValue.id+'List'"
         class="absolute mt-10 top-0 left-0 z-50 w-full max-w-64 h-60 rounded-md border bg-white shadow-lg" 
@@ -194,7 +205,10 @@
             </button>
 
             <button @click="timePickerView=2" type="button" class="bg-gray-200 px-4 py-1 text-center text-xxs hover:bg-gray-400 text-gray-600 rounded-md" 
-                hx-post="<?= $absoluteURL ?>/modules/User/form_time_ajax.php" x-bind:hx-target="'#'+$refs.timeValue.id+'PeriodList'" hx-include="<?= !empty($date) ? '#'.$date : '' ?>" hx-vals='{"key": "<?= $date ?>"}'
+                hx-post="<?= $absoluteURL ?>/modules/User/form_time_ajax.php" 
+                x-bind:hx-target="'#'+$refs.timeValue.id+'PeriodList'" 
+                hx-include="<?= !empty($date) ? '#'.$date : '' ?>" 
+                hx-vals='{"key": "<?= $date ?>"}'
                 :class="{'bg-gray-400 text-gray-800' : timePickerView==2}">
                 <?= __('Period') ?>
             </button>
