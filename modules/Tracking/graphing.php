@@ -41,10 +41,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         echo '<h2>';
         echo __('Filter');
         echo '</h2>';
-
-        $gibbonPersonIDs = (isset($_POST['gibbonPersonIDs']))? $_POST['gibbonPersonIDs'] : null;
-        $gibbonDepartmentIDs = (isset($_POST['gibbonDepartmentIDs']))? $_POST['gibbonDepartmentIDs'] : null;
+        
+        $gibbonPersonIDs = (isset($_POST['gibbonPersonIDs'])) ? $_POST['gibbonPersonIDs'] : null;
+        $gibbonDepartmentIDs = (isset($_POST['gibbonDepartmentIDs'])) ? $_POST['gibbonDepartmentIDs'] : null;
         $dataType = (isset($_POST['dataType']))? $_POST['dataType'] : null;
+
+        // Sanitize the gibbonPersonIDs and gibbonDepartmentIDs List
+        if (!empty($gibbonPersonIDs)) {
+            $gibbonPersonIDs = array_filter($gibbonPersonIDs, function($gibbonPersonID) {
+                return is_numeric($gibbonPersonID) && ctype_digit((string)$gibbonPersonID);
+            });
+        }
+
+        if (!empty($gibbonDepartmentIDs)) {
+            $gibbonDepartmentIDs = array_filter($gibbonDepartmentIDs, function($gibbonDepartmentID) {
+                return is_numeric($gibbonDepartmentID) && ctype_digit((string)$gibbonDepartmentID);
+            });
+        }
 
         $settingGateway = $container->get(SettingGateway::class);
         $attainmentAlt = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
