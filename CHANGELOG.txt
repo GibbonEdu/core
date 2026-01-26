@@ -44,6 +44,7 @@ v31.0.00
         Staff: updated the staff absence message for partial day absence
         Staff: fixed the issue to allow editing coverage request
         System Admin: added a validation to check for error in email twig templates
+        User: added the 'User" module to the Module table
         User Admin: linked user names to Student and Staff profiles in Manage Users
         User Admin: fixed the bug to display user's personal address if turned on
         User Admin: fix the bug to display user's personal address if turned on

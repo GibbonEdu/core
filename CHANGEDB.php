@@ -417,4 +417,5 @@ ALTER TABLE `gibbonLibraryShelf` ADD `gibbonLibraryTypeID` INT(10) unsigned zero
 UPDATE `gibbonLibraryShelf` SET `gibbonLibraryTypeID`=0000000004 WHERE `type`='Automatic' AND `gibbonLibraryTypeID` IS NULL;end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Consecutive Absences Notification', 'Attendance', 'Consecutive Absences', 'CLI', 'All', 'Y');end
 ALTER TABLE `gibbonLibraryItem` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+INSERT INTO `gibbonModule` (`name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('User', 'Manage user details.', '', 'Core', 'Y', 'Other', '', 'Gibbon Foundation', 'https://gibbonedu.org');end
 ";
