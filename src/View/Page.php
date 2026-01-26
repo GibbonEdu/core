@@ -444,7 +444,7 @@ class Page extends View
      */
     public function isAddressValid($address, bool $strictPHP = true) : bool
     {
-        if ($strictPHP && stripos($address, '.php') === false) {
+        if ($strictPHP && strtolower(substr($address, -4)) !== '.php') {
             return false;
         }
 

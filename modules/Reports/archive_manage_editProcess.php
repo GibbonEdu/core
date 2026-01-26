@@ -38,18 +38,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_edi
 } else {
     // Proceed!
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
+    
+    $requestedPath = $_POST['path'] ?? '';
+    $requestedPathFiltered = str_replace(['..', './', '..\\'], '', $requestedPath);
+    $requestedPathFiltered = trim($requestedPathFiltered, '/');
+
+    if (strpos($requestedPathFiltered, 'uploads') !== 0) {
+        $requestedPathFiltered = 'uploads/' . $requestedPathFiltered;
+    }
+
+    $securePath = '/' . $requestedPathFiltered;
 
     $data = [
         'name'             => $_POST['name'] ?? '',
-        'path'             => $_POST['path'] ?? '',
+        'path'             => $securePath ?? '',
         'readonly'         => $_POST['readonly'] ?? 'Y',
         'viewableStaff'    => $_POST['viewableStaff'] ?? 'N',
         'viewableStudents' => $_POST['viewableStudents'] ?? 'N',
         'viewableParents'  => $_POST['viewableParents'] ?? 'N',
         'viewableOther'    => $_POST['viewableOther'] ?? 'N',
     ];
-
-    $data['path'] = '/'.trim($data['path'], '/');
 
     // Validate the required values are present
     if (empty($gibbonReportArchiveID) || empty($data['name'])) {

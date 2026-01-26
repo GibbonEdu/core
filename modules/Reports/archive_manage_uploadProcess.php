@@ -46,25 +46,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $fileSeparator = $_POST['fileSeparator'] ?? '';
     $fileSection = $_POST['fileSection'] ?? '';
 
-    if (empty($file) || empty($gibbonReportArchiveID) || empty($gibbonSchoolYearID) || empty($reportIdentifier) || empty($reportDate)) {
+    if (empty($gibbonReportArchiveID) || empty($gibbonSchoolYearID) || empty($reportIdentifier) || empty($reportDate)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
-    $absolutePath = $session->get('absolutePath');
-    if (!is_file($absolutePath.'/'.$file)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
-    
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
 
     $archive = $reportArchiveGateway->getByID($gibbonReportArchiveID);
     if (empty($archive)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $secureFileName = basename($file);
+    $allowedPath = $archive['path'] . '/temp/' . $secureFileName;
+
+    $absolutePath = $session->get('absolutePath');
+    if (empty($secureFileName) || !is_file($absolutePath.'/'.$allowedPath)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -77,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     }
 
     $fileUploader = new FileUploader($pdo, $session);
-    $reports = $fileUploader->uploadFromZIP($absolutePath.'/'.$file, $destinationFolder, ['pdf']);
+    $reports = $fileUploader->uploadFromZIP($absolutePath.'/'.$allowedPath, $destinationFolder, ['pdf']);
 
     $partialFail = false;
     $count = 0;
@@ -137,7 +140,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         }
     }
 
-    unlink($absolutePath.'/'.$file);
+    if (file_exists($absolutePath.'/'.$allowedPath)) {
+        unlink($absolutePath.'/'.$allowedPath);
+    }
 
     $URL .= $partialFail
         ? "&return=warning1"

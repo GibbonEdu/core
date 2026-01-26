@@ -41,6 +41,7 @@ v31.0.00
         Library: added the option to edit the category and sub-category for an automatic shelf
         Planner: improved the Deploy Unit page with a drag-drop interface and new tools
         Reports: added error detection while editing twig templates
+        Reports: improved the file path checking while managing archives and uploading bulk reports
         Staff: updated the staff absence message for partial day absence
         Staff: fixed the issue to allow editing coverage request
         System Admin: added a validation to check for error in email twig templates
