@@ -183,13 +183,10 @@ class PlannerEntryGateway extends QueryableGateway
     public function getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID)
     {
         $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'gibbonTTDayDateID' => $gibbonTTDayDateID];
-        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDayDate.date, gibbonTTSpaceChangeID, (CASE WHEN gibbonTTSpaceChangeID IS NOT NULL THEN spaceChange.name ELSE gibbonSpace.name END) as spaceName 
+        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDayDate.date
             FROM gibbonTTDayRowClass
             JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
             JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
-            LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID)
-            LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date)
-            LEFT JOIN gibbonSpace AS spaceChange ON (spaceChange.gibbonSpaceID=gibbonTTSpaceChange.gibbonSpaceID)
             WHERE gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID
             AND gibbonTTDayDate.gibbonTTDayDateID=:gibbonTTDayDateID";
         
@@ -199,20 +196,18 @@ class PlannerEntryGateway extends QueryableGateway
     public function getPlannerTTByClassTimes($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
         $data = ['date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonCourseClassID' => $gibbonCourseClassID];
-        $sql = 'SELECT timeStart, timeEnd, gibbonTTDayDate.date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTDayDateID, gibbonTTSpaceChangeID, (CASE WHEN gibbonTTSpaceChangeID IS NOT NULL THEN spaceChange.name ELSE gibbonSpace.name END) as spaceName 
+        $sql = 'SELECT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClassID, gibbonTTDayDateID, gibbonSpace.name as spaceName 
                 FROM gibbonTTDayRowClass 
                 JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
                 JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) 
                 JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
                 LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID)
-                LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date)
-                LEFT JOIN gibbonSpace AS spaceChange ON (spaceChange.gibbonSpaceID=gibbonTTSpaceChange.gibbonSpaceID)
-                WHERE gibbonTTDayDate.date=:date 
+                WHERE date=:date 
                 AND timeStart=:timeStart 
                 AND timeEnd=:timeEnd AND 
                 gibbonCourseClassID=:gibbonCourseClassID 
-                ORDER BY gibbonTTDayDate.date, timeStart';
+                ORDER BY date, timestart';
         
         return $this->db()->selectOne($sql, $data);
     }
@@ -346,31 +341,86 @@ class PlannerEntryGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function selectPlannerEntriesByPersonAndDateRange($gibbonPersonID, $dateStart, $dateEnd)
-    {
-        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT CONCAT(gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd) as lessonID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonUnit.gibbonUnitID, gibbonUnit.name as unitName, gibbonTTColumnRow.name as period
-        FROM gibbonCourse 
-        JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-        JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
-        JOIN gibbonPlannerEntry ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-        LEFT JOIN gibbonUnit ON (gibbonUnit.gibbonUnitID=gibbonPlannerEntry.gibbonUnitID)
+public function selectPlannerEntriesByPersonAndDateRange($gibbonPersonID, $dateStart, $dateEnd)
+{
+    $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonPersonID' => $gibbonPersonID];
 
-        LEFT JOIN gibbonTTDayDate ON (gibbonTTDayDate.date=gibbonPlannerEntry.date)
-        LEFT JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
-        LEFT JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID AND gibbonTTColumnRow.timeStart=gibbonPlannerEntry.timeStart AND gibbonTTColumnRow.timeEnd=gibbonPlannerEntry.timeEnd)
-        LEFT JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID AND gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID AND gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
-        LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+    $sql = "SELECT 
+            CONCAT(gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd) as lessonID,
+            gibbonPlannerEntry.gibbonPlannerEntryID,
+            gibbonPlannerEntry.name,
+            gibbonPlannerEntry.date,
+            gibbonPlannerEntry.timeStart,
+            gibbonPlannerEntry.timeEnd,
+            gibbonCourse.gibbonSchoolYearID,
+            gibbonCourse.gibbonCourseID,
+            gibbonCourseClass.gibbonCourseClassID,
+            gibbonCourse.name as courseName,
+            gibbonCourse.nameShort AS courseNameShort,
+            gibbonCourseClass.nameShort AS classNameShort,
+            gibbonUnit.gibbonUnitID,
+            gibbonUnit.name as unitName,
 
-        WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
+            gibbonPlannerEntry.gibbonSpaceID,
+            gibbonSpace.name AS plannerRoomName,
+            gibbonSpace.phoneInternal AS plannerRoomPhone,
+
+            gibbonTTColumnRow.name as period,
+
+            gibbonPerson.title AS teachers_title,
+            gibbonPerson.preferredName AS teachers_preferredName,
+            gibbonPerson.surname AS teachers_surname
+
+        FROM gibbonCourse
+        JOIN gibbonCourseClass 
+            ON (gibbonCourse.gibbonCourseID = gibbonCourseClass.gibbonCourseID)
+        JOIN gibbonCourseClassPerson 
+            ON (gibbonCourseClass.gibbonCourseClassID = gibbonCourseClassPerson.gibbonCourseClassID)
+        JOIN gibbonPlannerEntry 
+            ON (gibbonPlannerEntry.gibbonCourseClassID = gibbonCourseClass.gibbonCourseClassID)
+
+        LEFT JOIN gibbonUnit 
+            ON (gibbonUnit.gibbonUnitID = gibbonPlannerEntry.gibbonUnitID)
+
+        LEFT JOIN gibbonSpace
+            ON gibbonSpace.gibbonSpaceID = gibbonPlannerEntry.gibbonSpaceID
+
+        LEFT JOIN gibbonCourseClassPerson AS teacherMap
+            ON teacherMap.gibbonCourseClassID = gibbonPlannerEntry.gibbonCourseClassID
+            AND teacherMap.role = 'Teacher'
+
+        LEFT JOIN gibbonPerson
+            ON gibbonPerson.gibbonPersonID = teacherMap.gibbonPersonID
+
+        LEFT JOIN gibbonTTDayDate 
+            ON (gibbonTTDayDate.date = gibbonPlannerEntry.date)
+        LEFT JOIN gibbonTTDay 
+            ON (gibbonTTDay.gibbonTTDayID = gibbonTTDayDate.gibbonTTDayID)
+        LEFT JOIN gibbonTTColumnRow 
+            ON (gibbonTTColumnRow.gibbonTTColumnID = gibbonTTDay.gibbonTTColumnID 
+                AND gibbonTTColumnRow.timeStart = gibbonPlannerEntry.timeStart 
+                AND gibbonTTColumnRow.timeEnd = gibbonPlannerEntry.timeEnd)
+        LEFT JOIN gibbonTTDayRowClass 
+            ON (gibbonTTDayRowClass.gibbonCourseClassID = gibbonPlannerEntry.gibbonCourseClassID 
+                AND gibbonTTDayRowClass.gibbonTTDayID = gibbonTTDayDate.gibbonTTDayID 
+                AND gibbonTTDayRowClass.gibbonTTColumnRowID = gibbonTTColumnRow.gibbonTTColumnRowID)
+        LEFT JOIN gibbonTTDayRowClassException 
+            ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID = gibbonTTDayRowClass.gibbonTTDayRowClassID 
+                AND gibbonTTDayRowClassException.gibbonPersonID = gibbonCourseClassPerson.gibbonPersonID)
+
+        WHERE gibbonCourseClassPerson.gibbonPersonID = :gibbonPersonID
         AND gibbonPlannerEntry.date BETWEEN :dateStart AND :dateEnd
         AND gibbonCourseClassPerson.role NOT LIKE '%- Left'
-        GROUP BY gibbonPlannerEntry.gibbonPlannerEntryID
-        HAVING COUNT(gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID) = 0
-        ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC";
 
-        return $this->db()->select($sql, $data);
-    }
+        GROUP BY gibbonPlannerEntry.gibbonPlannerEntryID
+
+        HAVING COUNT(gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID) = 0
+
+        ORDER BY timeStart, timeEnd, 
+            FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC";
+
+    return $this->db()->select($sql, $data);
+}
 
     public function getPlannerEntryByClassTimes($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
@@ -383,12 +433,7 @@ class PlannerEntryGateway extends QueryableGateway
     public function selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonUnitID' => $gibbonUnitID];
-        $sql = "SELECT * 
-            FROM gibbonPlannerEntry 
-            WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID 
-            AND gibbonPlannerEntry.gibbonUnitID=:gibbonUnitID 
-            AND gibbonPlannerEntry.date IS NOT NULL 
-            ORDER BY gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart";
+        $sql = "SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart";
 
         return $this->db()->select($sql, $data);
     }
