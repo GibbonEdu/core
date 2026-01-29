@@ -23,7 +23,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-//$role can be teacher, student or parent. If no role is specified, the default is teacher.
+// $role can be teacher, student or parent. If no role is specified, the default is teacher.
 function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role = 'teacher')
 {
     global $session, $container;
@@ -31,13 +31,13 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
     $output = '';
 
     $settingGateway = $container->get(SettingGateway::class);
-    //Get alternative header names
+    // Get alternative header names
     $attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
     $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 
-    //Get school years in reverse order
+    // Get school years in reverse order
     try {
-        $dataYears = array('gibbonPersonID' => $gibbonPersonID);
+        $dataYears = ['gibbonPersonID' => $gibbonPersonID];
         $sqlYears = "SELECT * FROM gibbonSchoolYear JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (status='Current' OR status='Past') AND gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
         $resultYears = $connection2->prepare($sqlYears);
         $resultYears->execute($dataYears);
@@ -50,12 +50,13 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
         $output .= '</div>';
     } else {
         $results = false;
+        $currentDate = date('Y-m-d');
         while ($rowYears = $resultYears->fetch()) {
-            //Get and output Internal Assessments
+            // Get and output Internal Assessments
             try {
-                $dataInternalAssessment = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
+                $dataInternalAssessment = ['gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']];
                 if ($role == 'teacher') {
-                    $sqlInternalAssessment = "SELECT gibbonInternalAssessmentColumn.*, gibbonInternalAssessmentEntry.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name AS courseFull FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonInternalAssessmentEntry ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND gibbonInternalAssessmentEntry.gibbonPersonIDStudent=:gibbonPersonID2 AND gibbonSchoolYearID=:gibbonSchoolYearID AND completeDate<='".date('Y-m-d')."' ORDER BY completeDate DESC, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+                    $sqlInternalAssessment = "SELECT gibbonInternalAssessmentColumn.*, gibbonInternalAssessmentEntry.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name AS courseFull FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonInternalAssessmentEntry ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND gibbonInternalAssessmentEntry.gibbonPersonIDStudent=:gibbonPersonID2 AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY completeDate DESC, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
                 } elseif ($role == 'student') {
                     $sqlInternalAssessment = "SELECT gibbonInternalAssessmentColumn.*, gibbonInternalAssessmentEntry.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name AS courseFull FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonInternalAssessmentEntry ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND gibbonInternalAssessmentEntry.gibbonPersonIDStudent=:gibbonPersonID2 AND gibbonSchoolYearID=:gibbonSchoolYearID AND completeDate<='".date('Y-m-d')."' AND viewableStudents='Y' ORDER BY completeDate DESC, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
                 } elseif ($role == 'parent') {
@@ -108,18 +109,32 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     }
                     ++$count;
 
-                    $output .= "<tr class=$rowNum>";
+                    if (!empty($rowInternalAssessment['completeDate']) && $currentDate < $rowInternalAssessment['completeDate']) {
+                        $rowNum .= ' dull';
+                        if ($role != 'teacher') {
+                            continue;
+                        }
+                    }
+
+                    $output .= "<tr class='$rowNum'>";
                     $output .= '<td>';
                     $output .= "<span title='".htmlPrep($rowInternalAssessment['description'])."'><b><u>".$rowInternalAssessment['name'].'</u></b></span><br/>';
                     $output .= "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
+
                     if ($rowInternalAssessment['completeDate'] != '') {
                         $output .= __('Marked on').' '.Format::date($rowInternalAssessment['completeDate']).'<br/>';
                     } else {
                         $output .= __('Unmarked').'<br/>';
                     }
+
+                    if (!empty($rowInternalAssessment['completeDate']) && $currentDate < $rowInternalAssessment['completeDate']) {
+                        $output .= Format::tag(__('Unpublished'), 'text-xxs bg-gray-400 ml-2');
+                    }
+
                     if ($rowInternalAssessment['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$rowInternalAssessment['attachment'])) {
                         $output .= " | <a target='_blank' title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
                     }
+
                     $output .= '</span>';
                     $output .= '</td>';
                     $output .= "<td>";
@@ -133,7 +148,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         $output .= "<td style='text-align: center'>";
                         $attainmentExtra = '';
                         try {
-                            $dataAttainment = array('gibbonScaleID' => $rowInternalAssessment['gibbonScaleIDAttainment']);
+                            $dataAttainment = ['gibbonScaleID' => $rowInternalAssessment['gibbonScaleIDAttainment']];
                             $sqlAttainment = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                             $resultAttainment = $connection2->prepare($sqlAttainment);
                             $resultAttainment->execute($dataAttainment);
@@ -159,7 +174,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         $output .= "<td style='text-align: center'>";
                         $effortExtra = '';
                         try {
-                            $dataEffort = array('gibbonScaleID' => $rowInternalAssessment['gibbonScaleIDEffort']);
+                            $dataEffort = ['gibbonScaleID' => $rowInternalAssessment['gibbonScaleIDEffort']];
                             $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                             $resultEffort = $connection2->prepare($sqlEffort);
                             $resultEffort->execute($dataEffort);
@@ -220,9 +235,9 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
 
     $output .= '<div class="column-no-break">';
 
-    $classes = array();
+    $classes = [];
 
-    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
+    $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID')];
     $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
     $result = $connection2->prepare($sql);
     $result->execute($data);
@@ -235,7 +250,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     }
 
     if ($mode == 'manage' or ($mode == 'write' and getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_write_data.php', $connection2) == 'Write Internal Assessments_all')) {
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+        $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
         $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
         $result = $connection2->prepare($sql);
         $result->execute($data);
