@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     if ($subpage == 'Overview') {
 
                         // Display a message if the staff member is absent today.
-                        $currentStaffAttendanceStatus = $container->get(StaffAttendanceStatus::class)->getCurrentAttendanceStatus($gibbonPersonID, $row['title'], $row['preferredName'], $row['surname']);
+                        $currentStaffAttendanceStatus = $container->get(StaffAttendanceStatus::class)->getCurrentAttendanceStatus($session->get('gibbonSchoolYearID'), $gibbonPersonID, $row['title'], $row['preferredName'], $row['surname']);
 
                         echo $currentStaffAttendanceStatus;
                         

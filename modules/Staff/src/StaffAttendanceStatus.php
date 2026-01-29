@@ -22,8 +22,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Staff;
 
 use Gibbon\Services\Format;
+use Gibbon\Module\Reports\Sources\School;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 /**
  * Staff Attendance Status
@@ -35,21 +38,29 @@ class StaffAttendanceStatus
 {
     protected $staffAbsenceGateway;
     protected $staffAbsenceDateGateway;
+    protected $timetableDayDateGateway;
+    protected $schoolYearSpecialDayGateway;
+
 
     public function __construct(
         StaffAbsenceGateway $staffAbsenceGateway,
 		StaffAbsenceDateGateway $staffAbsenceDateGateway,
+        TimetableDayDateGateway $timetableDayDateGateway,
+        SchoolYearSpecialDayGateway $schoolYearSpecialDayGateway
     ) {
         $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->staffAbsenceDateGateway = $staffAbsenceDateGateway;
+        $this->timetableDayDateGateway = $timetableDayDateGateway;
+        $this->schoolYearSpecialDayGateway = $schoolYearSpecialDayGateway;
     }
 
-    public function getCurrentAttendanceStatus($gibbonPersonID, $title, $preferredName, $surname)
+    public function getCurrentAttendanceStatus($gibbonSchoolYearID, $gibbonPersonID, $title, $preferredName, $surname)
     {
 
         // Display a message if the staff member is absent today.
         $criteria =  $this->staffAbsenceGateway->newQueryCriteria(true)->filterBy('date', 'Today')->filterBy('status', 'Approved');
         $absences = $this->staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
+        $today = date('Y-m-d');
 
         if (count($absences) > 0) {                          
             foreach ($absences as $absence) {
@@ -70,9 +81,69 @@ class StaffAttendanceStatus
             $absenceMessage .= '</ul>';
 
             return $details['allDay'] == 'Y' ? Format::alert($absenceMessage, 'warning') : Format::alert($absenceMessage, 'message');
+        } else {
+            // Staff is present today    
+            $presentMessage = '';
+
+            // Check if today is a special day
+            $specialDay =  $this->schoolYearSpecialDayGateway->getSpecialDayByDate($today);
+
+            if (!empty($specialDay['cancelClasses']) && $specialDay['cancelClasses'] == 'Y') {
+                $presentMessage .= __('{name} is present today but classes are cancelled for {reason}.', [
+                    'name' => Format::name($title, $preferredName, $surname, 'Staff', false, true),
+                    'reason' => $specialDay['name']]);
+            } else {
+                // Get all staff classes for today
+                $classes = $this->timetableDayDateGateway->selectTimetabledPeriodsByPersonAndDateRange($gibbonPersonID, $today, $today)->fetchAll();
+                $currentTime = date('H:i:s');
+                $currentClass = null;
+
+                // Find the current ongoing class
+                foreach ($classes as $class) {
+                    if ($class['timeStart'] <= $currentTime and $class['timeEnd'] > $currentTime) {
+                        $currentClass = $class;
+                        break;
+                    }
+                }
+
+                if ($currentClass) {
+                    // Check if the class location has changed
+                    if (!empty($currentClass['spaceChanged'])) {
+                        $currentClass['roomName'] = $currentClass['roomNameChange'] ?? '';
+                    }
+
+                    // Check if the current class is scheduled to be off timetable today
+                    if (!empty($specialDay) && $specialDay['type'] == 'Off TimeTable' && $this->schoolYearSpecialDayGateway->getIsClassOffTimetableByDate($gibbonSchoolYearID, $currentClass['gibbonCourseClassID'], $today)) {
+                        $presentMessage .= __('Currently, {name} is present today but the isclass off timetable', [
+                            'name'  => Format::name($title, $preferredName, $surname, 'Staff', false, true),
+                            'class' => Format::courseClassName($currentClass['courseNameShort'], $class['classNameShort']),
+                            ]);
+                    } else {
+                        // Display staff's current class with location
+                        $presentMessage .= __('Currently, {name} is in {class}, {room}.', [
+                        'name'  => Format::name($title, $preferredName, $surname, 'Staff', false, true),
+                        'class' => Format::courseClassName($currentClass['courseNameShort'], $class['classNameShort']),
+                        'room'  => $currentClass['roomName']
+                        ]);
+                    }
+                } else {
+                
+                    // Check if staff is in duty
+                    if (!empty($specialDay['cancelDuty']) && $specialDay['cancelDuty'] == 'Y') {
+                           $presentMessage .= __('{name} is present today but all duties are cancelled for {reason}.', [
+                        'name' => Format::name($title, $preferredName, $surname, 'Staff', false, true),
+                        'reason' => $specialDay['name']]);
+                    } else {
+
+                    }
+
+
+                }
+            }
+
+            return Format::alert($presentMessage, 'success');
         }
+
         return '';
     }
 }
-
-
