@@ -418,4 +418,5 @@ UPDATE `gibbonLibraryShelf` SET `gibbonLibraryTypeID`=0000000004 WHERE `type`='A
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Consecutive Absences Notification', 'Attendance', 'Consecutive Absences', 'CLI', 'All', 'Y');end
 ALTER TABLE `gibbonLibraryItem` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 INSERT INTO `gibbonModule` (`name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('User', 'User preferences and settings.', '', 'Core', 'Y', 'Other', '', 'Gibbon Foundation', 'https://gibbonedu.org');end
+UPDATE `gibbonCountry` SET `printable_name` = 'North Macedonia' WHERE `printable_name` = 'Macedonia, the Former Yugoslav Republic of';end
 ";
