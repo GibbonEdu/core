@@ -47,7 +47,8 @@ v31.0.00
         Reports: improved the file path checking while managing archives and uploading bulk reports
         Staff: updated the staff absence message for partial day absence
         Staff: fixed the issue to allow editing coverage request
-        Students: added an indicator at the top of view student profile to indicate attendance status and location of the student
+        Staff: added an indicator at the top of view staff profile to indicate the attendance status and current location location of the staff
+        Students: added an indicator at the top of view student profile to indicate attendance status and current location of the student
         System Admin: added a validation to check for error in email twig templates
         Timetable: added class and location details to non-timetabled lessons in the Timetable
         Tracking: fixed the post variable validation

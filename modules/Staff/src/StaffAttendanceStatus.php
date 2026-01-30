@@ -22,8 +22,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Staff;
 
 use Gibbon\Services\Format;
-use Gibbon\Module\Reports\Sources\School;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\Staff\StaffDutyPersonGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
@@ -40,110 +43,187 @@ class StaffAttendanceStatus
     protected $staffAbsenceDateGateway;
     protected $timetableDayDateGateway;
     protected $schoolYearSpecialDayGateway;
-
+    protected $staffDutyPersonGateway;
+    protected $activityGateway;
+    protected $settingGateway;
+    protected $staffCoverageGateway;
 
     public function __construct(
         StaffAbsenceGateway $staffAbsenceGateway,
-		StaffAbsenceDateGateway $staffAbsenceDateGateway,
+        StaffAbsenceDateGateway $staffAbsenceDateGateway,
         TimetableDayDateGateway $timetableDayDateGateway,
-        SchoolYearSpecialDayGateway $schoolYearSpecialDayGateway
+        SchoolYearSpecialDayGateway $schoolYearSpecialDayGateway,
+        StaffDutyPersonGateway $staffDutyPersonGateway,
+        ActivityGateway $activityGateway,
+        SettingGateway $settingGateway,
+        StaffCoverageGateway $staffCoverageGateway
     ) {
         $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->staffAbsenceDateGateway = $staffAbsenceDateGateway;
         $this->timetableDayDateGateway = $timetableDayDateGateway;
         $this->schoolYearSpecialDayGateway = $schoolYearSpecialDayGateway;
+        $this->staffDutyPersonGateway = $staffDutyPersonGateway;
+        $this->activityGateway = $activityGateway;
+        $this->settingGateway = $settingGateway;
+        $this->staffCoverageGateway = $staffCoverageGateway;
     }
 
     public function getCurrentAttendanceStatus($gibbonSchoolYearID, $gibbonPersonID, $title, $preferredName, $surname)
     {
+        $today = date('Y-m-d');
+        $currentTime = date('H:i:s');
+        $staffName = Format::name($title, $preferredName, $surname, 'Staff', false, true);
 
-        // Display a message if the staff member is absent today.
+        // Check if the staff member is absent today
         $criteria =  $this->staffAbsenceGateway->newQueryCriteria(true)->filterBy('date', 'Today')->filterBy('status', 'Approved');
         $absences = $this->staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
-        $today = date('Y-m-d');
 
-        if (count($absences) > 0) {                          
+        if (count($absences) > 0) {                    
+            $absenceMessage = '';
+            $isFullDayAbsent = false;
+            $isPartiallyAbsent = false;
+
             foreach ($absences as $absence) {
-                $absenceMessage = $absence['allDay'] == 'Y' ? __('{name} is absent all day today.', [
-                'name' => Format::name($title, $preferredName, $surname, 'Staff', false, true)]) : __('{name} is partially absent today.', [
-                'name' => Format::name($title, $preferredName, $surname, 'Staff', false, true)]);
+                $absenceDetails = $this->staffAbsenceDateGateway->getByAbsenceAndDate($absence['gibbonStaffAbsenceID'], $today);
 
-                $absenceMessage .= '<br/><br/><ul>';
-
-                $details = $this->staffAbsenceDateGateway->getByAbsenceAndDate($absence['gibbonStaffAbsenceID'], date('Y-m-d'));
-                $time = $details['allDay'] == 'N' ? Format::timeRange($details['timeStart'], $details['timeEnd']) : __('All Day');
-
-                $absenceMessage .= '<li>'.Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']).'  '.$time.'</li>';
-                if ($details['coverage'] == 'Accepted') {
-                    $absenceMessage .= '<li>'.__('Coverage').': '.Format::name($details['titleCoverage'], $details['preferredNameCoverage'], $details['surnameCoverage'], 'Staff', false, true).'</li>';
-                }
-            }
-            $absenceMessage .= '</ul>';
-
-            return $details['allDay'] == 'Y' ? Format::alert($absenceMessage, 'warning') : Format::alert($absenceMessage, 'message');
-        } else {
-            // Staff is present today    
-            $presentMessage = '';
-
-            // Check if today is a special day
-            $specialDay =  $this->schoolYearSpecialDayGateway->getSpecialDayByDate($today);
-
-            if (!empty($specialDay['cancelClasses']) && $specialDay['cancelClasses'] == 'Y') {
-                $presentMessage .= __('{name} is present today but classes are cancelled for {reason}.', [
-                    'name' => Format::name($title, $preferredName, $surname, 'Staff', false, true),
-                    'reason' => $specialDay['name']]);
-            } else {
-                // Get all staff classes for today
-                $classes = $this->timetableDayDateGateway->selectTimetabledPeriodsByPersonAndDateRange($gibbonPersonID, $today, $today)->fetchAll();
-                $currentTime = date('H:i:s');
-                $currentClass = null;
-
-                // Find the current ongoing class
-                foreach ($classes as $class) {
-                    if ($class['timeStart'] <= $currentTime and $class['timeEnd'] > $currentTime) {
-                        $currentClass = $class;
-                        break;
+                 if ($absenceDetails['allDay'] == 'Y') {
+                    $isFullDayAbsent = true;
+                    $absenceMessage = __('{name} is absent all day today.', ['name' => $staffName]);
+                } else {
+                    if ($currentTime >= $absenceDetails['timeStart'] && $currentTime < $absenceDetails['timeEnd']) {
+                        $isPartiallyAbsent = true;
+                        $absenceMessage = __('{name} is partially absent today.', ['name' => $staffName]);
                     }
                 }
 
-                if ($currentClass) {
-                    // Check if the class location has changed
+                if ($isFullDayAbsent || $isPartiallyAbsent) {
+                    $absenceMessage .= '<br/><br/><ul>';
+                    $time = $absenceDetails['allDay'] == 'N' ? Format::timeRange($absenceDetails['timeStart'], $absenceDetails['timeEnd']) : __('All Day');
+                    $absenceMessage .= '<li>'.Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']).' - '.$time.'</li>';
+                    
+                    if ($absenceDetails['coverage'] == 'Accepted') {
+                        $absenceMessage .= '<li>'.__('Coverage').': '.Format::name($absenceDetails['titleCoverage'], $absenceDetails['preferredNameCoverage'], $absenceDetails['surnameCoverage'], 'Staff', false, true).'</li>';
+                    }
+                    $absenceMessage .= '</ul>';
+
+                    return Format::alert($absenceMessage, 'warning');
+                }
+            }
+        }
+
+        // Staff is present today
+        $presentMessage = __('{name} is present today.', ['name' => $staffName]);
+        $presentMessage .= '<br/><br/><ul>';
+        $locationDetermined = false;
+
+        // Check if today is a special day
+        $specialDay =  $this->schoolYearSpecialDayGateway->getSpecialDayByDate($today);
+
+        // Check if staff is in class now
+        if (!$locationDetermined && (empty($specialDay['cancelClasses']) || $specialDay['cancelClasses'] != 'Y')) {
+            $classes = $this->timetableDayDateGateway->selectTimetabledPeriodsByPersonAndDateRange($gibbonPersonID, $today, $today)->fetchAll();
+            $currentClass = null;
+
+            // Find the current ongoing class
+            foreach ($classes as $class) {
+                if ($class['timeStart'] <= $currentTime && $class['timeEnd'] > $currentTime) {
+                    $currentClass = $class;
+                    break;
+                }
+            }
+
+            if ($currentClass) {
+                // Check if the current class is off timetable
+                if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && 
+                    $this->schoolYearSpecialDayGateway->getIsClassOffTimetableByDate($gibbonSchoolYearID, $currentClass['gibbonCourseClassID'], $today)) {
+                    $presentMessage .= '<li>'.__('Current class is off timetable for {reason}.', ['reason' => $specialDay['name']]).'</li>';
+                    $locationDetermined = true;
+                } else {
+                    // Find any room changes
                     if (!empty($currentClass['spaceChanged'])) {
                         $currentClass['roomName'] = $currentClass['roomNameChange'] ?? '';
                     }
 
-                    // Check if the current class is scheduled to be off timetable today
-                    if (!empty($specialDay) && $specialDay['type'] == 'Off TimeTable' && $this->schoolYearSpecialDayGateway->getIsClassOffTimetableByDate($gibbonSchoolYearID, $currentClass['gibbonCourseClassID'], $today)) {
-                        $presentMessage .= __('Currently, {name} is present today but the isclass off timetable', [
-                            'name'  => Format::name($title, $preferredName, $surname, 'Staff', false, true),
-                            'class' => Format::courseClassName($currentClass['courseNameShort'], $class['classNameShort']),
-                            ]);
-                    } else {
-                        // Display staff's current class with location
-                        $presentMessage .= __('Currently, {name} is in {class}, {room}.', [
-                        'name'  => Format::name($title, $preferredName, $surname, 'Staff', false, true),
-                        'class' => Format::courseClassName($currentClass['courseNameShort'], $class['classNameShort']),
-                        'room'  => $currentClass['roomName']
-                        ]);
-                    }
-                } else {
-                
-                    // Check if staff is in duty
-                    if (!empty($specialDay['cancelDuty']) && $specialDay['cancelDuty'] == 'Y') {
-                           $presentMessage .= __('{name} is present today but all duties are cancelled for {reason}.', [
-                        'name' => Format::name($title, $preferredName, $surname, 'Staff', false, true),
-                        'reason' => $specialDay['name']]);
-                    } else {
-
-                    }
-
-
+                    // Current class location
+                    $presentMessage .= '<li>'.__('Currently in {class}, {room}.', [
+                        'class' => Format::courseClassName($currentClass['courseNameShort'], $currentClass['classNameShort']),
+                        'room'  => $currentClass['roomName'] ?? __('No Facility')
+                    ]).'</li>';
+                    $locationDetermined = true;
                 }
             }
-
-            return Format::alert($presentMessage, 'success');
         }
 
-        return '';
+        // Check if staff is in Duty now
+        if (!$locationDetermined && (empty($specialDay['cancelDuty']) || $specialDay['cancelDuty'] != 'Y')) {
+            $staffDutyList = $this->staffDutyPersonGateway->selectDutyByPerson($gibbonPersonID)->fetchAll();
+            $weekday = date('l');
+
+            foreach ($staffDutyList as $duty) {
+                if ($duty['dayOfWeek'] == $weekday && $duty['timeStart'] <= $currentTime && $duty['timeEnd'] > $currentTime) {
+                    $presentMessage .= '<li>'.__('Currently on duty in {dutyLocation}.', ['duty' => $duty['name']]).'</li>';
+                    $locationDetermined = true;
+                    break;
+                }
+            }
+        }
+
+        // Check if staff is in an activity now
+        if (!$locationDetermined) {
+            $dateType = $this->settingGateway->getSettingByScope('Activities', 'dateType');
+            $activities = $this->activityGateway->selectActiveEnrolledActivities($gibbonSchoolYearID, $gibbonPersonID, $dateType, $today)->fetchAll();
+            $weekday = date('l');
+
+            foreach ($activities as $activity) {
+                if ($activity['dayOfWeek'] == $weekday && $activity['timeStart'] <= $currentTime && $activity['timeEnd'] > $currentTime) {
+                    $location = !empty($activity['space']) ? $activity['space'] : (!empty($activity['locationExternal']) ? $activity['locationExternal'] : __('No Location'));
+
+                    $presentMessage .= '<li>'.__('Currently in activity: {activity}, {location}.', ['activity' => $activity['name'], 'location' => $location
+                    ]).'</li>';
+                    $locationDetermined = true;
+                    break;
+                }
+            }
+        }
+
+        // Check if staff is covering another class now
+        if (!$locationDetermined) {
+            $criteria = $this->staffCoverageGateway->newQueryCriteria()
+                ->filterBy('dateStart', $today)
+                ->filterBy('dateEnd', $today)
+                ->filterBy('status', 'Accepted');
+            
+            $coverage = $this->staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonSchoolYearID, $gibbonPersonID, false);
+
+            foreach ($coverage as $cover) {
+                if ($cover['date'] == $today && $cover['timeStart'] <= $currentTime && $cover['timeEnd'] > $currentTime) {
+                    $coveringFor = !empty($cover['surnameAbsence']) ? Format::name($cover['titleAbsence'], $cover['preferredNameAbsence'], $cover['surnameAbsence'], 'Staff', false, true) : Format::name($cover['titleStatus'], $cover['preferredNameStatus'], $cover['surnameStatus'], 'Staff', false, true);
+                    
+                    $location = $cover['roomName'] ?? __('No Facility');
+
+                    // Handle room changes
+                    if (!empty($cover['spaceChanged'])) {
+                        $location = $cover['roomNameChange'] ?? __('No Facility');
+                    }
+
+                    $presentMessage .= '<li>'.__('Currently covering {context} for {person} in{room}.', [
+                        'context' => __($cover['contextName']),
+                        'person'  => $coveringFor,
+                        'room'    => $location
+                    ]).'</li>';
+                    $locationDetermined = true;
+                    break;
+                }
+            }
+        }
+
+        // If no current location found
+        if (!$locationDetermined) {
+            $presentMessage .= '<li>'.__('Check Timetable to find their current location.').'</li>';
+        }
+
+        $presentMessage .= '</ul>';
+
+        return Format::alert($presentMessage, 'success');
     }
 }

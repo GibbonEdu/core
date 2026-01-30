@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\UI\Timetable\Timetable;
@@ -30,21 +29,19 @@ use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\School\HouseGateway;
 use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Module\Staff\StaffAttendanceStatus;
 use Gibbon\Domain\User\PersonalDocumentGateway;
-use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
-//Module includes for User Admin (for custom fields)
+// Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     $highestActionManage = getHighestGroupedAction($guid, "/modules/Staff/staff_manage.php", $connection2);
     if ($highestAction == false) {
@@ -62,8 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
             $hook = $_GET['hook'] ?? '';
 
             if ($highestAction == 'Staff Directory_brief') {
-                //Proceed!
-                $data = array('gibbonPersonID' => $gibbonPersonID);
+                // Proceed!
+                $data = ['gibbonPersonID' => $gibbonPersonID];
                 $sql = "SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website, countryOfOrigin, qualifications, biography, image_240 FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -195,8 +192,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             $col->addColumn('houseName', __('House'));
                         }
 
-                        
-
                         $col = $table->addColumn('Biography', __('Biography'));
 
                         $col->addColumn('countryOfOrigin', __('Country Of Origin'));
@@ -313,7 +308,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $col->addColumn('website', __('Website'))
                             ->format(Format::using('link', ['website', 'website']));
 
-
                         $col = $table->addColumn('First Aid', __('First Aid'));
 
                         $col->addColumn('firstAidQualified', __('First Aid Qualified'))
@@ -425,11 +419,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo __('Adult Family Members');
                             echo '</h4>';
 
-
-                                $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
-                                $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-                                $resultFamily = $connection2->prepare($sqlFamily);
-                                $resultFamily->execute($dataFamily);
+                            $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
+                            $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
+                            $resultFamily = $connection2->prepare($sqlFamily);
+                            $resultFamily->execute($dataFamily);
 
                             if ($resultFamily->rowCount() != 1) {
                                 echo "<div class='error'>";
@@ -438,12 +431,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             } else {
                                 $rowFamily = $resultFamily->fetch();
                                 $count = 1;
-                                //Get adults
-
-                                    $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-                                    $resultMember = $connection2->prepare($sqlMember);
-                                    $resultMember->execute($dataMember);
+                                // Get adults
+                                $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
+                                $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+                                $resultMember = $connection2->prepare($sqlMember);
+                                $resultMember->execute($dataMember);
 
                                 while ($rowMember = $resultMember->fetch()) {
                                     $table = DataTable::createDetails('family' . $count);
