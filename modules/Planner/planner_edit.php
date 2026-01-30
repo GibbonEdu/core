@@ -207,6 +207,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addLabel('gibbonUnitID', __('Unit'));
                     $row->addSelect('gibbonUnitID')->fromQueryChained($pdo, $sql, [], 'gibbonCourseClassID')->placeholder();
 
+                $sql = "SELECT gibbonSpace.gibbonSpaceID AS value, gibbonSpace.name AS name FROM gibbonSpace WHERE active='Y' ORDER BY gibbonSpace.name";
+
+                $row = $form->addRow();
+                    $row->addLabel('gibbonSpaceID', __('Location'));
+                    $row->addSelectSpace('gibbonSpaceID')
+                         ->placeholder();
+
                 $row = $form->addRow();
                     $row->addLabel('name', __('Lesson Name'));
                     $row->addTextField('name')->setValue()->maxLength(50)->required();

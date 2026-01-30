@@ -419,4 +419,5 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 ALTER TABLE `gibbonLibraryItem` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 INSERT INTO `gibbonModule` (`name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('User', 'User preferences and settings.', '', 'Core', 'Y', 'Other', '', 'Gibbon Foundation', 'https://gibbonedu.org');end
 UPDATE `gibbonCountry` SET `printable_name` = 'North Macedonia' WHERE `printable_name` = 'Macedonia, the Former Yugoslav Republic of';end
+ALTER TABLE gibbonPlannerEntry ADD COLUMN gibbonSpaceID INT(10) UNSIGNED NULL AFTER gibbonUnitID;end
 ";

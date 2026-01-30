@@ -349,13 +349,13 @@ class PlannerEntryGateway extends QueryableGateway
     public function selectPlannerEntriesByPersonAndDateRange($gibbonPersonID, $dateStart, $dateEnd)
     {
         $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT CONCAT(gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd) as lessonID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonUnit.gibbonUnitID, gibbonUnit.name as unitName, gibbonTTColumnRow.name as period
+        $sql = "SELECT CONCAT(gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd) as lessonID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonUnit.gibbonUnitID, gibbonUnit.name as unitName, gibbonPlannerEntry.gibbonSpaceID, gibbonSpace.name AS plannerRoomName, gibbonSpace.phoneInternal AS plannerRoomPhone, gibbonTTColumnRow.name as period
         FROM gibbonCourse 
         JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
         JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
         JOIN gibbonPlannerEntry ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
         LEFT JOIN gibbonUnit ON (gibbonUnit.gibbonUnitID=gibbonPlannerEntry.gibbonUnitID)
-
+        LEFT JOIN gibbonSpace ON gibbonSpace.gibbonSpaceID = gibbonPlannerEntry.gibbonSpaceID
         LEFT JOIN gibbonTTDayDate ON (gibbonTTDayDate.date=gibbonPlannerEntry.date)
         LEFT JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
         LEFT JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID AND gibbonTTColumnRow.timeStart=gibbonPlannerEntry.timeStart AND gibbonTTColumnRow.timeEnd=gibbonPlannerEntry.timeEnd)

@@ -41,7 +41,6 @@ use Gibbon\Contracts\Services\Session;
 class ClassesLayer extends AbstractTimetableLayer
 {
     protected $session;
-
     protected $plannerEntryGateway;
     protected $timetableDayGateway;
     protected $timetableDayDateGateway;
@@ -222,18 +221,49 @@ class ClassesLayer extends AbstractTimetableLayer
             $specialDay = $specialDays[$lesson['date']] ?? [];
             if (!empty($specialDay['cancelClasses']) && $specialDay['cancelClasses'] == 'Y') continue;
 
-            $item = $this->createItem($lesson['date'])->loadData([
-                'type'          => __('Lesson'),
-                'title'         => $lesson['name'],
-                'period'        => $lesson['period'],
-                'label'         => $lesson['name'],
-                'description'   => __('Course').': ' .$lesson['courseName'].'<br>'.__('Class').': '.Format::courseClassName($lesson['courseNameShort'], $lesson['classNameShort']),
-                'subtitle'      => $lesson['unitName'] ?? '',
-                'timeStart'     => $lesson['timeStart'],
-                'timeEnd'       => $lesson['timeEnd'],
-                'link'          => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $lesson['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $lesson['gibbonPlannerEntryID']]),
-            ]);
+            // Build class shortcode prefix (same as slotted lessons)
+            $prefix = Format::courseClassName(
+                $lesson['courseNameShort'] ?? '',
+                $lesson['classNameShort'] ?? ''
+            );
 
+            // Look up teachers using gibbonCourseClassID (correct for loose lessons)
+            // Convert flat teacher fields into an array
+            $teachers = [];
+
+            if (!empty($lesson['teachers_surname'])) {
+                $teachers[] = [
+                    'title' => $lesson['teachers_title'],
+                    'preferredName' => $lesson['teachers_preferredName'],
+                    'surname' => $lesson['teachers_surname'],
+                ];
+            }
+
+            $teacherList = !empty($teachers)
+                ? __n('Teacher', 'Teachers', count($teachers)).': '.Format::nameList($teachers, 'Staff', false, true, ', ')
+                : '';
+
+            // Build enriched description
+            $description =
+                (!empty($teacherList) ? $teacherList.'<br>' : '');
+
+            $item = $this->createItem($lesson['date'])->loadData([
+                'type'        => __('Lesson'),
+                'title'       => $prefix,
+                'label'       => $lesson['courseName'],
+                'description' => $description,
+                'subtitle'    => $lesson['plannerRoomName'] ?? '',
+                'location'    => $lesson['plannerRoomName'] ?? '',
+                'phone'       => $lesson['plannerRoomPhone'] ?? '',
+                'timeStart'   => $lesson['timeStart'],
+                'timeEnd'     => $lesson['timeEnd'],
+                'link'        => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
+                    'viewBy'              => 'class',
+                    'gibbonCourseClassID' => $lesson['gibbonCourseClassID'],
+                    'gibbonPlannerEntryID'=> $lesson['gibbonPlannerEntryID']
+                ]),
+            ]);
+ 
             // Add a button for the lesson plan
             $item->set('primaryAction', [
                 'name'      => 'view',
@@ -280,6 +310,15 @@ class ClassesLayer extends AbstractTimetableLayer
 
         $ttRowClassIDs = array_column($classes, 'gibbonTTDayRowClassID');
         $classTeachers = $this->timetableDayGateway->selectTTDayRowClassTeachersByID($ttRowClassIDs)->fetchGrouped();
+        // Build a teacher map indexed by gibbonCourseClassID for loose lessons
+        $teachersByCourseClass = [];
+        foreach ($classTeachers as $rowClassID => $teachers) {
+            foreach ($teachers as $t) {
+                if (!empty($t['gibbonCourseClassID'])) {
+                    $teachersByCourseClass[$t['gibbonCourseClassID']][] = $t;
+                }
+            }
+        }
 
         $canViewClasses = Access::allows('Departments', 'department_course_class');
         $canAddChanges = Access::allows('Timetable', 'spaceChange_manage_add');
