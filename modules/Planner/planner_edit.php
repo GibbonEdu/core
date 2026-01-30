@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonSpaceID', __('Location'));
-                    $row->addSelectSpace('gibbonSpaceID')
+                    $row->addSelect('gibbonSpaceID') ->fromQuery($pdo, $sql)
                          ->placeholder();
 
                 $row = $form->addRow();
