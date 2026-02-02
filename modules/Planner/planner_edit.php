@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -57,10 +58,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
         }
-        $date = null;
+        $date = $_GET['date'] ?? '';
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             $params += [
                 'viewBy' => 'class',
-                'date' => $class,
+                'date' => $date,
                 'gibbonCourseClassID' => $gibbonCourseClassID,
                 'subView' => $subView,
             ];
@@ -187,6 +187,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     ->setIcon('plus')
                     ->displayLabel();
 
+                // Try and find the gibbonTTDayRowClassID for this lesson
+                if (empty($values['gibbonTTDayRowClassID']) && !empty($values['date']) && !empty($values['timeStart']) && !empty($values['timeEnd'])) {
+                    $lesson = $container->get(PlannerEntryGateway::class)->getPlannerTTByClassTimes($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
+                    $values['gibbonTTDayRowClassID'] = $lesson['gibbonTTDayRowClassID'] ?? '';
+                    $form->addHiddenValue('gibbonTTDayRowClassID', $values['gibbonTTDayRowClassID']);
+                }
+
                 
                 //BASIC INFORMATION
                 $form->addRow()->addHeading('Basic Information', __('Basic Information'));
@@ -228,6 +235,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $row = $form->addRow();
                     $row->addLabel('timeEnd', __('End Time'));
                     $row->addTime('timeEnd')->required();
+
+                if (empty($values['gibbonTTDayRowClassID'])) {
+                    $row = $form->addRow();
+                        $row->addLabel('gibbonSpaceID', __('Location'));
+                        $row->addSelectSpace('gibbonSpaceID')
+                            ->placeholder();
+                }
 
 
                 //LESSON
