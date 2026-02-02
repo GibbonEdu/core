@@ -294,6 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         // Show student's attendance and Current Location
                         $currentAttendanceStatus = $container->get(StudentAttendanceStatus::class)->getCurrentAttendanceStatus($session->get('gibbonSchoolYearID'), $gibbonPersonID, $row['preferredName'], $row['surname']);
+                        
                         echo $currentAttendanceStatus ?? '';
 
                         $table = DataTable::createDetails('generalInfo');
