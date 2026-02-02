@@ -20,8 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Domain\Staff\StaffApplicationFormGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage.php') == false) {
@@ -69,8 +71,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     $applications = $applicationGateway->queryApplications($criteria);
 
+    //BULK ACTION FORM
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manageProcessBulk.php');
+    $form->addHiddenValue('address', $session->get('address'));
+
+    $bulkActions = [
+        'Reject' => __('Reject'),
+    ];
+
+    $templates = $container->get(EmailTemplateGateway::class)->selectTemplatesByModule('Staff', 'Staff Application Form Rejection%')->fetchAll();
+    $templateOptions = [__('Email Templates') => array_combine(array_column($templates, 'templateName'), array_column($templates, 'templateName'))];
+    array_unshift($templateOptions, ['' => __('Do not send email')]);
+
+    $col = $form->createBulkActionColumn($bulkActions);
+        $col->addSelect('templateName')
+            ->fromArray($templateOptions)
+            ->required()
+            ->placeholder();
+        $col->addSubmit(__('Go'));
+
     // DATA TABLE
-    $table = DataTable::createPaginated('applicationsManage', $criteria);
+    $table = $form->addRow()->addDataTable('applicationsManage', $criteria)->withData($applications);
 
     $table->modifyRows(function($application, $row) {
         // Highlight rows based on status
@@ -82,9 +103,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         return $row;
     });
 
+    $table->addMetaData('bulkActions', $col);
+
     // COLUMNS
     $table->addColumn('gibbonStaffApplicationFormID', __('ID'))
-        
         ->format(Format::using('number', 'gibbonStaffApplicationFormID'));
 
     $table->addColumn('person', __('Applicant'))
@@ -137,5 +159,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     ->setURL('/modules/Staff/applicationForm_manage_delete.php');
         });
 
-    echo $table->render($applications);
+    $table->addCheckboxColumn('identifiers', 'gibbonStaffApplicationFormID')
+        ->format(function ($application) {
+            if ($application['status'] == 'Rejected') {
+                return Format::small(__(''));
+            }
+        });
+
+    echo $form->getOutput();
 }
