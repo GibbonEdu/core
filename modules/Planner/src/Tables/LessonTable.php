@@ -168,6 +168,14 @@ class LessonTable
                 ->addParam('date', $date)
                 ->addParam('viewBy', $viewBy)
                 ->displayLabel();
+
+            // Import action: opens the Planner import UI
+            $table->addHeaderAction('import', __('Import'))
+                ->setURL('/modules/Planner/planner_import.php')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->addParam('viewBy', $viewBy)
+                ->setIcon('upload')
+                ->displayLabel();
         }
 
         if ($viewBy == 'year') {
