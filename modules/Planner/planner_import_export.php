@@ -53,13 +53,9 @@ if ($action === 'downloadTemplate') {
         preg_match('/function getHeaderLookup\(.*?\n    \}\n\}/s', $processFile, $matches);
         if (!empty($matches)) eval($matches[0]);
         
-        error_log('[Planner Import Export] Starting template generation');
-        
         $core = getPlannerColumns($pdo);
-        error_log('[Planner Import Export] Got core columns: ' . count($core));
         
         $lookup = getHeaderLookup($container, $pdo);
-        error_log('[Planner Import Export] Got header lookup');
         
         $dbToUser = $lookup['dbToUser'];
         $coreOrder = $lookup['coreOrder'];
@@ -93,8 +89,6 @@ if ($action === 'downloadTemplate') {
         foreach ($hookFields as $header => $label) {
             $headers[] = $label;
         }
-
-        error_log('[Planner Import Export] Generated headers: ' . json_encode($headers));
 
         // Generate example row
         $examples = [];
@@ -140,11 +134,9 @@ if ($action === 'downloadTemplate') {
             fputcsv($out, $headers);
             fputcsv($out, $examples);
             fclose($out);
-            error_log('[Planner Import Export] CSV generated successfully');
         }
         exit;
     } catch (Exception $e) {
-        error_log('[Planner Import Export] ERROR: ' . $e->getMessage());
         $URL = $URL.'&return=error1';
         header("Location: {$URL}");
         exit;

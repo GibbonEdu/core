@@ -225,13 +225,9 @@ function getHeaderLookup($container, $pdo)
 // Template download: core + custom + hook fields
 if ($action === 'downloadTemplate') {
     try {
-        error_log('[Planner Import] Starting downloadTemplate action');
-        
         $core = getPlannerColumns($pdo);
-        error_log('[Planner Import] Got core columns: ' . json_encode($core));
         
         $lookup = getHeaderLookup($container, $pdo);
-        error_log('[Planner Import] Got header lookup successfully');
         
         $dbToUser = $lookup['dbToUser'];
         $userToDb = $lookup['userToDb'];
@@ -262,8 +258,6 @@ if ($action === 'downloadTemplate') {
         foreach ($hookFields as $header => $label) {
             $headers[] = $label;
         }
-
-        error_log('[Planner Import] Generated headers: ' . json_encode($headers));
 
         $examples = [];
         foreach ($headers as $h) {
@@ -331,8 +325,6 @@ if ($action === 'downloadTemplate') {
 
         $filename = 'planner_template_'.date('Y-m-d').'.csv';
 
-        error_log('[Planner Import] Outputting CSV directly');
-
         // Output CSV directly (Gibbon pattern)
         header('Pragma: public');
         header('Expires: 0');
@@ -346,18 +338,13 @@ if ($action === 'downloadTemplate') {
             fputcsv($out, $headers);
             fputcsv($out, $examples);
             fclose($out);
-            error_log('[Planner Import] CSV generated successfully');
         }
         exit;
     } catch (Exception $e) {
-        error_log('[Planner Import] ERROR in downloadTemplate: ' . $e->getMessage());
-        error_log('[Planner Import] Stack trace: ' . $e->getTraceAsString());
         $_SESSION['planner_import_errors'] = [__('Template download failed: ') . $e->getMessage()];
         header('Location: '.$URL.'&return=error1');
         exit;
     } catch (Throwable $e) {
-        error_log('[Planner Import] FATAL ERROR in downloadTemplate: ' . $e->getMessage());
-        error_log('[Planner Import] Stack trace: ' . $e->getTraceAsString());
         $_SESSION['planner_import_errors'] = [__('Template download failed: ') . $e->getMessage()];
         header('Location: '.$URL.'&return=error1');
         exit;
