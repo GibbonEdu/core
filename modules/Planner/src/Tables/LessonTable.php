@@ -160,7 +160,7 @@ class LessonTable
                 ->displayLabel();
         }
 
-        if ($editAccess) {
+        if ($editAccess) { 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Planner/planner_add.php')
                 ->addParam('gibbonCourseClassID', $gibbonCourseClassID)

@@ -314,7 +314,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $col->addColumn('class', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));
                         $col->addColumn('date', __('Date'))->format(Format::using('date', 'date'));
                         $col->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
-                        $col->addColumn('location', __('Location'))->format(function ($values) {return !empty($values['spaceName']) ? $values['spaceName'] : '';});
+                        $col->addColumn('location', __('Location'))->addClass('col-span-3')->format(function ($values) {
+                            // Lesson plan location takes precedence as override
+                            if (!empty($values['spaceName'])) {
+                                return $values['spaceName'];
+                            }
+                            return '';
+                        });
 
                         $col->addColumn('summary', __('Summary'))->addClass('col-span-3');
 

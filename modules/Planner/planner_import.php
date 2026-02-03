@@ -14,7 +14,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 }
 
 $page->breadcrumbs
-    ->add(__('Planner'), 'planner.php')
+    ->add(__('Planner'), 'planner.php') 
     ->add(__('Bulk Import Lessons'));
 
 // Display any import messages or errors stored in session BEFORE the form
@@ -32,19 +32,25 @@ if (!empty($importMsg)) {
     unset($_SESSION['planner_import_message']);
 }
 
-$form = Form::create('plannerImport', $session->get('absoluteURL').'/modules/'.$session->get('module').'/planner_importProcess.php');
+$form = Form::create('plannerImport', $session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_importProcess.php');
 $form->setClass('w-full max-w-3xl');
 $form->setFactory(DatabaseFormFactory::create($pdo));
 
-$row = $form->addRow();
-    $row->addLabel('template', __('CSV Template'));
-    $row->addContent('<a class="button" href="'.$session->get('absoluteURL').'/modules/'.$session->get('module').'/planner_importProcess.php?action=downloadTemplate">'.__('Download CSV Template').'</a>');
+$form->addHeaderAction('download', __('Download Template'))
+    ->setIcon('download')
+    ->setURL('/modules/Planner/planner_import_export.php')
+    ->addParam('action', 'downloadTemplate')
+    ->directLink()
+    ->displayLabel();
+
+$form->addRow()->addHeading(__('Import Lessons from CSV'));
 
 $row = $form->addRow();
-    $row->addLabel('file', __('Upload CSV'));
+    $row->addLabel('file', __('Upload CSV'))->description(__('Select the CSV file containing lesson data to import.'));
     $row->addFileUpload('file')->required();
 
 $row = $form->addRow();
+    $row->addFooter();
     $row->addSubmit(__('Import'));
 
 echo $form->getOutput();

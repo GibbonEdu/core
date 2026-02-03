@@ -1,5 +1,5 @@
 <?php
-require_once '../../gibbon.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 // Redirect target for errors/success (process scripts should redirect)
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/planner_import.php';
@@ -11,7 +11,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php'
     exit();
 }
 
-$action = $_GET['action'] ?? '';
+$action = $_GET['action'] ?? ''; 
 
 // Debug endpoint: output discovered custom fields and aliases
 if ($action === 'debugFields') {
@@ -24,13 +24,17 @@ if ($action === 'debugFields') {
 // Helper: discover core planner columns
 function getPlannerColumns($pdo)
 {
+    global $pdo;
     $cols = [];
     try {
         $stmt = $pdo->select("DESCRIBE gibbonPlannerEntry");
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($rows as $row) $cols[] = $row['Field'];
     } catch (Exception $e) {
-        return [];
+        // If we can't query, just return the default core order columns
+        return ['gibbonUnitID','date','timeStart','timeEnd','name','summary','description','teachersNotes','gibbonSpaceID',
+                'homework','homeworkDueDateTime','homeworkTimeCap','homeworkDetails','homeworkSubmission','homeworkSubmissionDateOpen',
+                'homeworkSubmissionDrafts','homeworkSubmissionType','homeworkSubmissionRequired','viewableStudents','viewableParents'];
     }
     $exclude = ['gibbonPlannerEntryID', 'dateCreated', 'dateModified', 'createdBy', 'modifiedBy', 'dateDeleted'];
     // Use a blacklist: return all planner columns except internal/system fields so future fields
@@ -81,39 +85,9 @@ function getCustomFieldMap($container)
         }
     }
 
-    // Fallback: include any remaining Lesson Plan custom fields (including inactive)
-    try {
-        $all = $customFieldGateway->selectBy(['context' => 'Lesson Plan'])->fetchAll();
-    } catch (Exception $e) {
-        $all = [];
-    }
-
-    foreach ($all as $f) {
-        $fieldType = strtolower($f['type'] ?? 'text');
-        if (in_array($fieldType, $excludeTypes)) continue;
-
-        $context = $f['context'] ?? 'custom';
-        $contextSlug = preg_replace('/[^a-z0-9]+/', '_', strtolower($context));
-        $nameSlug = preg_replace('/[^a-z0-9]+/', '_', strtolower($f['name'] ?? ''));
-        $canonical = $contextSlug.'_custom_'.$f['gibbonCustomFieldID'].'_'.($nameSlug ?: $f['gibbonCustomFieldID']);
-
-        if (isset($map[$canonical])) continue;
-
-        $map[$canonical] = [
-            'id' => $f['gibbonCustomFieldID'],
-            'type' => $f['type'] ?? 'text',
-            'name' => $f['name'] ?? '',
-            'context' => $context,
-        ];
-
-        $simple = preg_replace('/[^a-z0-9]+/', '_', strtolower($f['name'] ?? ''));
-        $aliases[$simple] = $canonical;
-        $aliases[strtolower($f['name'] ?? '')] = $canonical;
-        $aliases[$contextSlug.'_'.$simple] = $canonical;
-        $aliases[str_replace('_', ' ', $simple)] = $canonical;
-        $aliases[preg_replace('/[^a-z0-9]+/', '', strtolower($f['name'] ?? ''))] = $canonical;
-    }
-
+    // Do NOT include a fallback for inactive fields - selectCustomFields() already filters by active='Y'
+    // This ensures the CSV template only includes fields that are currently active
+    
     return ['map' => $map, 'aliases' => $aliases];
 
 }
@@ -131,22 +105,34 @@ function getHookFields($container)
         $include = $container->get('session')->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
         if (!file_exists($include)) continue;
 
+        // Skip hooks that are designed for viewing (not importing)
+        // They won't provide import fields and can cause fatal errors
+        if (strpos($hook['sourceModuleInclude'], 'hook_lessonPlannerView') !== false) {
+            continue;
+        }
+
         ob_start();
         try {
             include $include;
         } catch (Exception $e) {
             // ignore
+        } catch (Throwable $e) {
+            // catch fatal errors and other issues
         }
         ob_end_clean();
 
         $fn = $hook['sourceModuleName'].'_lessonPlannerImportFields';
         if (function_exists($fn)) {
-            $fields = $fn();
-            if (is_array($fields)) {
-                foreach ($fields as $key => $label) {
-                    $header = 'hook_'.$hook['sourceModuleName'].'_'.$key;
-                    $hookFields[$header] = $label;
+            try {
+                $fields = $fn();
+                if (is_array($fields)) {
+                    foreach ($fields as $key => $label) {
+                        $header = 'hook_'.$hook['sourceModuleName'].'_'.$key;
+                        $hookFields[$header] = $label;
+                    }
                 }
+            } catch (Throwable $e) {
+                // ignore errors from hook function
             }
             continue;
         }
@@ -169,7 +155,7 @@ function getHeaderLookup($container, $pdo)
 {
     // Core DB -> User labels (ordered)
     $coreOrder = [
-        'gibbonCourseClassID','gibbonUnitID','date','timeStart','timeEnd','name','summary','description','teachersNotes',
+        'gibbonUnitID','date','timeStart','timeEnd','name','summary','description','teachersNotes','gibbonSpaceID',
         'homework','homeworkDueDateTime','homeworkTimeCap','homeworkDetails','homeworkSubmission','homeworkSubmissionDateOpen',
         'homeworkSubmissionDrafts','homeworkSubmissionType','homeworkSubmissionRequired','viewableStudents','viewableParents',
     ];
@@ -180,6 +166,7 @@ function getHeaderLookup($container, $pdo)
         'timeStart' => 'Start Time',
         'timeEnd' => 'End Time',
         'name' => 'Lesson Name',
+        'gibbonSpaceID' => 'Location',
         'summary' => 'Summary',
         'description' => 'Lesson Details',
         'teachersNotes' => "Teacher's Notes",
@@ -237,109 +224,144 @@ function getHeaderLookup($container, $pdo)
 
 // Template download: core + custom + hook fields
 if ($action === 'downloadTemplate') {
-    $core = getPlannerColumns($pdo);
-    $lookup = getHeaderLookup($container, $pdo);
-    $dbToUser = $lookup['dbToUser'];
-    $userToDb = $lookup['userToDb'];
-    $customMap = $lookup['customMap'];
-    $customAliases = $lookup['customAliases'];
-    $hookFields = $lookup['hookFields'];
-    $coreOrder = $lookup['coreOrder'];
+    try {
+        error_log('[Planner Import] Starting downloadTemplate action');
+        
+        $core = getPlannerColumns($pdo);
+        error_log('[Planner Import] Got core columns: ' . json_encode($core));
+        
+        $lookup = getHeaderLookup($container, $pdo);
+        error_log('[Planner Import] Got header lookup successfully');
+        
+        $dbToUser = $lookup['dbToUser'];
+        $userToDb = $lookup['userToDb'];
+        $customMap = $lookup['customMap'];
+        $customAliases = $lookup['customAliases'];
+        $hookFields = $lookup['hookFields'];
+        $coreOrder = $lookup['coreOrder'];
 
-    // Build ordered headers using friendly labels
-    // Insert all custom fields immediately after `name` (Lesson Name) and before `summary`.
-    $headers = [];
-    $customInserted = false;
-    foreach ($coreOrder as $db) {
-        if (in_array($db, $core)) {
-            $headers[] = $dbToUser[$db] ?? $db;
+        // Build ordered headers using friendly labels
+        // Insert all custom fields immediately after `name` (Lesson Name) and before `summary`.
+        $headers = [];
+        $customInserted = false;
+        foreach ($coreOrder as $db) {
+            if (in_array($db, $core)) {
+                $headers[] = $dbToUser[$db] ?? $db;
 
-            // After the Lesson Name, insert all custom fields (friendly labels)
-            if (!$customInserted && $db === 'name') {
-                foreach ($customMap as $canonical => $info) {
-                    $label = $info['name'] ?? $canonical;
-                    $headers[] = $label;
+                // After the Lesson Name, insert all custom fields (friendly labels)
+                if (!$customInserted && $db === 'name') {
+                    foreach ($customMap as $canonical => $info) {
+                        $label = $info['name'] ?? $canonical;
+                        $headers[] = $label;
+                    }
+                    $customInserted = true;
                 }
-                $customInserted = true;
             }
         }
-    }
-    // Hook fields (labels)
-    foreach ($hookFields as $header => $label) {
-        $headers[] = $label;
-    }
+        // Hook fields (labels)
+        foreach ($hookFields as $header => $label) {
+            $headers[] = $label;
+        }
 
-    $examples = [];
-    foreach ($headers as $h) {
-        // Generate actual example values (not just format hints)
-        switch ($h) {
-            case 'Class': $examples[] = 'COURSE1.CLASSA'; break;
-            case 'Date': $examples[] = date('Y-m-d'); break;
-            case 'Start Time': $examples[] = '09:00'; break;
-            case 'End Time': $examples[] = '10:00'; break;
-            case 'Lesson Name': $examples[] = 'Introduction to Topic'; break;
-            case 'Unit': $examples[] = '1'; break;
-            case 'Summary': $examples[] = 'Key learning objectives'; break;
-            case 'Lesson Details': $examples[] = 'Detailed content and activities'; break;
-            case "Teacher's Notes": $examples[] = 'Notes for preparation'; break;
-            case 'Add Homework': $examples[] = 'Y'; break;
-            case 'Homework Due Date/Time': $examples[] = date('Y-m-d H:i:s'); break;
-            case 'Homework Details': $examples[] = 'Complete exercises 1-5'; break;
-            case 'Online Submission': $examples[] = 'Y'; break;
-            case 'Submission Required': $examples[] = 'Required'; break;
-            case 'Viewable by Students': $examples[] = 'Y'; break;
-            case 'Viewable by Parents': $examples[] = 'Y'; break;
-            default:
-                // Custom fields: use type to generate appropriate example
-                $type = null;
-                $fieldId = null;
-                
-                // Resolve custom field type
-                $internal = $userToDb[strtolower($h)] ?? $userToDb[$h] ?? null;
-                if ($internal && isset($customMap[$internal])) {
-                    $type = strtolower($customMap[$internal]['type'] ?? 'text');
-                } else {
-                    // Try by field name in custom map
-                    foreach ($customMap as $canonical => $info) {
-                        if (strtolower($info['name'] ?? '') === strtolower($h)) {
-                            $type = strtolower($info['type'] ?? 'text');
-                            break;
+        error_log('[Planner Import] Generated headers: ' . json_encode($headers));
+
+        $examples = [];
+        foreach ($headers as $h) {
+            // Generate actual example values (not just format hints)
+            switch ($h) {
+                case 'Class': $examples[] = 'COURSE1.CLASSA'; break;
+                case 'Date': $examples[] = date('Y-m-d'); break;
+                case 'Start Time': $examples[] = '09:00'; break;
+                case 'End Time': $examples[] = '10:00'; break;
+                case 'Lesson Name': $examples[] = 'Introduction to Topic'; break;
+                case 'Location': $examples[] = ''; break;
+                case 'Unit': $examples[] = '1'; break;
+                case 'Summary': $examples[] = 'Key learning objectives'; break;
+                case 'Lesson Details': $examples[] = 'Detailed content and activities'; break;
+                case "Teacher's Notes": $examples[] = 'Notes for preparation'; break;
+                case 'Add Homework': $examples[] = 'Y'; break;
+                case 'Homework Due Date/Time': $examples[] = date('Y-m-d H:i:s'); break;
+                case 'Homework Time Cap': $examples[] = '30'; break;
+                case 'Homework Details': $examples[] = 'Complete exercises 1-5'; break;
+                case 'Online Submission': $examples[] = 'Y'; break;
+                case 'Submission Open Date': $examples[] = date('Y-m-d'); break;
+                case 'Submission Drafts': $examples[] = '2'; break;
+                case 'Submission Type': $examples[] = 'Link'; break;
+                case 'Submission Required': $examples[] = 'Y'; break;
+                case 'Viewable by Students': $examples[] = 'Y'; break;
+                case 'Viewable by Parents': $examples[] = 'Y'; break;
+                default:
+                    // Custom fields: use type to generate appropriate example
+                    $type = null;
+                    $fieldId = null;
+                    
+                    // Resolve custom field type
+                    $internal = $userToDb[strtolower($h)] ?? $userToDb[$h] ?? null;
+                    if ($internal && isset($customMap[$internal])) {
+                        $type = strtolower($customMap[$internal]['type'] ?? 'text');
+                    } else {
+                        // Try by field name in custom map
+                        foreach ($customMap as $canonical => $info) {
+                            if (strtolower($info['name'] ?? '') === strtolower($h)) {
+                                $type = strtolower($info['type'] ?? 'text');
+                                break;
+                            }
                         }
                     }
-                }
 
-                // Generate example based on field type
-                switch ($type) {
-                    case 'date': $examples[] = date('Y-m-d'); break;
-                    case 'time':
-                    case 'timeofday': $examples[] = '14:00'; break;
-                    case 'number': $examples[] = '42'; break;
-                    case 'checkbox':
-                    case 'checkboxes':
-                    case 'yesno': $examples[] = 'Y'; break;
-                    case 'select':
-                    case 'dropdown': $examples[] = 'Option 1'; break;
-                    default: $examples[] = 'Sample value'; break;
-                }
+                    // Generate example based on field type
+                    switch ($type) {
+                        case 'date': $examples[] = date('Y-m-d'); break;
+                        case 'time':
+                        case 'timeofday': $examples[] = '14:00'; break;
+                        case 'number': $examples[] = '42'; break;
+                        case 'checkbox':
+                        case 'checkboxes':
+                        case 'yesno': $examples[] = 'Y'; break;
+                        case 'select':
+                        case 'dropdown': $examples[] = 'Option 1'; break;
+                        default: $examples[] = 'Sample value'; break;
+                    }
+            }
         }
+
+        // Prepend Class column (accepts COURSE.CLASS format like FL07.1)
+        array_unshift($headers, 'Class');
+        array_unshift($examples, 'COURSE1.CLASSA');
+
+        $filename = 'planner_template_'.date('Y-m-d').'.csv';
+
+        error_log('[Planner Import] Outputting CSV directly');
+
+        // Output CSV directly (Gibbon pattern)
+        header('Pragma: public');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Cache-Control: private', false);
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="'.preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename).'"');
+
+        $out = fopen('php://output', 'w');
+        if ($out) {
+            fputcsv($out, $headers);
+            fputcsv($out, $examples);
+            fclose($out);
+            error_log('[Planner Import] CSV generated successfully');
+        }
+        exit;
+    } catch (Exception $e) {
+        error_log('[Planner Import] ERROR in downloadTemplate: ' . $e->getMessage());
+        error_log('[Planner Import] Stack trace: ' . $e->getTraceAsString());
+        $_SESSION['planner_import_errors'] = [__('Template download failed: ') . $e->getMessage()];
+        header('Location: '.$URL.'&return=error1');
+        exit;
+    } catch (Throwable $e) {
+        error_log('[Planner Import] FATAL ERROR in downloadTemplate: ' . $e->getMessage());
+        error_log('[Planner Import] Stack trace: ' . $e->getTraceAsString());
+        $_SESSION['planner_import_errors'] = [__('Template download failed: ') . $e->getMessage()];
+        header('Location: '.$URL.'&return=error1');
+        exit;
     }
-
-    $filename = 'planner_template_'.date('Y-m-d').'.csv';
-
-    // Prepend Class column (accepts COURSE.CLASS format like FL07.1)
-    array_unshift($headers, 'Class');
-    array_unshift($examples, 'COURSE1.CLASSA');
-
-    // Store template in session and redirect to export endpoint (Query Builder pattern)
-    $hash = md5(serialize($headers).time());
-    $session->set($hash, [
-        'headers' => $headers,
-        'examples' => $examples,
-        'filename' => $filename,
-    ]);
-
-    header('Location: '.$session->get('absoluteURL').'/modules/Planner/planner_import_export.php?hash='.$hash);
-    exit;
 }
 
 // Otherwise: fall back to processing upload (existing behaviour)
@@ -470,11 +492,12 @@ foreach ($rows as $rowNumber => $row) {
     // --- 4. Extract optional fields and normalize enums ---
     $summary = $data['summary'] ?? '';
     $teachersNotes = $data['teachersNotes'] ?? '';
+    $gibbonSpaceID = resolveSpace($connection2, $data['gibbonSpaceID'] ?? '');
     $homework = normalizeEnum($data['homework'] ?? '', ['N', 'Y'], 'N');
     $homeworkDueDateTime = $data['homeworkDueDateTime'] ?? '';
     $homeworkDetails = $data['homeworkDetails'] ?? '';
     $homeworkSubmission = normalizeEnum($data['homeworkSubmission'] ?? '', ['N', 'Y'], 'N');
-    $homeworkSubmissionRequired = normalizeEnum($data['homeworkSubmissionRequired'] ?? '', ['Optional', 'Required']);
+    $homeworkSubmissionRequired = normalizeEnumYesNo($data['homeworkSubmissionRequired'] ?? '', 'Optional', 'Required');
     $homeworkSubmissionType = normalizeEnum($data['homeworkSubmissionType'] ?? '', ['', 'Link', 'File', 'Link/File'], '');
     $viewableStudents = normalizeEnum($data['viewableStudents'] ?? '', ['Y', 'N'], 'Y');
     $viewableParents = normalizeEnum($data['viewableParents'] ?? '', ['Y', 'N'], 'N');
@@ -490,6 +513,7 @@ foreach ($rows as $rowNumber => $row) {
             'description' => $description,
             'summary' => $summary,
             'teachersNotes' => $teachersNotes,
+            'gibbonSpaceID' => $gibbonSpaceID,
             'homework' => $homework,
             'homeworkDueDateTime' => $homeworkDueDateTime,
             'homeworkDetails' => $homeworkDetails,
@@ -512,6 +536,7 @@ foreach ($rows as $rowNumber => $row) {
             description=:description,
             summary=:summary,
             teachersNotes=:teachersNotes,
+            gibbonSpaceID=:gibbonSpaceID,
             homework=:homework,
             homeworkDueDateTime=:homeworkDueDateTime,
             homeworkDetails=:homeworkDetails,
@@ -564,6 +589,19 @@ function normalizeEnum($value, $validOptions = [], $default = '')
     return $default;
 }
 
+// Helper: map Y/N to custom enum values (e.g., Y → 'Required', N → 'Optional')
+function normalizeEnumYesNo($value, $noValue = '', $yesValue = '')
+{
+    if (empty($value)) return $noValue;
+    
+    $normalized = strtolower(trim($value));
+    if (in_array($normalized, ['y', 'yes', '1', 'true'])) {
+        return $yesValue;
+    } else {
+        return $noValue;
+    }
+}
+
 // ------------------------------------------------------------
 // Helper: resolve course/class
 // ------------------------------------------------------------
@@ -586,4 +624,24 @@ function resolveClass($connection2, $courseShort, $classShort)
     ]);
 
     return $stmt->fetchColumn() ?: false;
+}
+
+// Helper: resolve space name to gibbonSpaceID
+function resolveSpace($connection2, $spaceName)
+{
+    if (!$spaceName) {
+        return '';
+    }
+
+    // If it's already a number, assume it's a gibbonSpaceID
+    if (is_numeric($spaceName)) {
+        return $spaceName;
+    }
+
+    // Look up space by name
+    $sql = "SELECT gibbonSpaceID FROM gibbonSpace WHERE name = :name";
+    $stmt = $connection2->prepare($sql);
+    $stmt->execute(['name' => trim($spaceName)]);
+
+    return $stmt->fetchColumn() ?: '';
 }
