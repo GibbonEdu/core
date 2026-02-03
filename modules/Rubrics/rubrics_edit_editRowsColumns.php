@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							} else {
                                 $results = $container->get(GradeScaleGateway::class)->selectGradesByScale($values['gibbonScaleID']);
                                 
-								$col->addSelect('gibbonScaleGradeID['.$count.']')
+								$row->addSelect('gibbonScaleGradeID['.$count.']')
 									->setID('gibbonScaleGradeID'.$count)
 									->fromResults($results)
                                     ->required()

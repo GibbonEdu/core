@@ -48,6 +48,7 @@ v31.0.00
         Staff: updated the staff absence message for partial day absence
         Staff: fixed the issue to allow editing coverage request
         Staff: added an indicator at the top of view staff profile to indicate the attendance status and current location location of the staff
+        Staff: added a bulk action to reject multiple staff application forms
         Students: added an indicator at the top of view student profile to indicate attendance status and current location of the student
         System Admin: added a validation to check for error in email twig templates
         Timetable: added class and location details to non-timetabled lessons in the Timetable
@@ -57,6 +58,7 @@ v31.0.00
         User Admin: fix the bug to display user's personal address if turned on
 
     Bug Fixes
+        System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data 
         Messenger: fixed overflowing images and iframes on Message Wall

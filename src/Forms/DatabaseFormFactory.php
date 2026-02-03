@@ -796,9 +796,9 @@ class DatabaseFormFactory extends FormFactory
         if (static::$intlCollatorAvailable) {
             $locale = \Locale::getDefault();
             $collator = new \Collator($locale);
-            $collator->sort($values);
+            $collator->asort($values);
         } else {
-            usort($values, 'strcoll');
+            uasort($values, 'strcoll');
         }
 
         return $values;
