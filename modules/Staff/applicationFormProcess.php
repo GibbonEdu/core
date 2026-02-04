@@ -20,12 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Comms\EmailTemplate;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Domain\System\EmailTemplateGateway;
 
 require_once '../../gibbon.php';
 
@@ -216,6 +218,9 @@ if ($proceed == false) {
 
                         $event->sendNotifications($pdo, $session);
 
+                        $mail = $container->get(Mailer::class);
+                        $mail->SMTPKeepAlive = true;
+
                         //Email reference form link to referee
                         $applicationFormRefereeLink = unserialize($settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink'));
                         if (is_array($applicationFormRefereeLink) && !empty($applicationFormRefereeLink[$type]) and ($referenceEmail1 != '' or $refereeEmail2 != '') and $session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
@@ -223,7 +228,6 @@ if ($proceed == false) {
                             $subject = __('Request For Reference');
                             $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), Format::name('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $session->get('organisationHRName'), '<br/><br/>', $jobTitle);
 
-                            $mail = $container->get(Mailer::class);
                             $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
                             if ($referenceEmail1 != '') {
                                 $mail->AddBCC($referenceEmail1);
@@ -243,7 +247,36 @@ if ($proceed == false) {
                             ]);
 
                             $mail->Send();
+                            $mail->ClearAllRecipients();
                         }
+
+                        // Send a FORM SUBMISSION confirmation email to the applicant
+                        $emailTemplate = $container->get(EmailTemplateGateway::class)->selectTemplatesByModule('Staff', 'Staff Application Form Confirmation')->fetch();
+                        $template = $container->get(EmailTemplate::class)->setTemplate($emailTemplate['templateName']);
+
+                         $data = [
+                            'preferredName'     => $preferredName ?? '',
+                            'surname'           => $surname ?? '',
+                            'date'              => Format::date(date('Y-m-d')),
+                            'jobPosition'          => $jobTitle,
+                            'applicationID'      => $AI,
+                        ];
+
+                        // Render the email
+                        $subject = $template->renderSubject($data);
+                        $body = $template->renderBody($data);
+
+                        $mail->AddAddress($email, Format::name('', $preferredName, $surname, 'Staff', false, true));
+
+                        $mail->setDefaultSender($subject);
+                        $mail->renderBody('mail/email.twig.html', [
+                            'title'  => $subject,
+                            'body'   => $body,
+                        ]);
+
+                        $mail->Send();
+                        $mail->ClearAllRecipients();
+                        $mail->smtpClose();
                     }
                 }
             }
