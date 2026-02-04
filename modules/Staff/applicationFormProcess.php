@@ -28,6 +28,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\EmailTemplateGateway;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 require_once '../../gibbon.php';
 
@@ -157,6 +158,10 @@ if ($proceed == false) {
                 }
             }
 
+            // Initialise the mailer
+            $mail = $container->get(Mailer::class);
+            $mail->SMTPKeepAlive = true;
+
             //Submit one copy for each job opening checking
             foreach ($gibbonStaffJobOpeningIDs as $gibbonStaffJobOpeningID) {
                 $thisFail = false;
@@ -176,7 +181,7 @@ if ($proceed == false) {
                     $jobTitle = $row['jobTitle'];
                     $type = $row['type'];
 
-                    //Write to database
+                    // Write to database
                     try {
                         $data = array('gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID, 'questions' => $questions, 'gibbonPersonID' => $gibbonPersonID, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'referenceEmail1' => $referenceEmail1, 'referenceEmail2' => $referenceEmail2, 'agreement' => $agreement, 'staffFields' => $staffFields, 'fields' => $fields, 'timestamp' => date('Y-m-d H:i:s'));
                         $sql = 'INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, gibbonPersonID=:gibbonPersonID, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, referenceEmail1=:referenceEmail1, referenceEmail2=:referenceEmail2, agreement=:agreement, fields=:fields, staffFields=:staffFields, timestamp=:timestamp';
@@ -218,68 +223,99 @@ if ($proceed == false) {
 
                         $event->sendNotifications($pdo, $session);
 
-                        $mail = $container->get(Mailer::class);
-                        $mail->SMTPKeepAlive = true;
-
-                        //Email reference form link to referee
+                        // Email reference form link to referee
                         $applicationFormRefereeLink = unserialize($settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink'));
+
                         if (is_array($applicationFormRefereeLink) && !empty($applicationFormRefereeLink[$type]) and ($referenceEmail1 != '' or $refereeEmail2 != '') and $session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
-                            //Prep message
-                            $subject = __('Request For Reference');
-                            $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), Format::name('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $session->get('organisationHRName'), '<br/><br/>', $jobTitle);
+                            // Prep template 
+                            $emailTemplateRef = $container->get(EmailTemplateGateway::class)->selectTemplatesByModule('Staff', 'Staff Application Form Reference Request')->fetch();
+                            $templateRef = $container->get(EmailTemplate::class)->setTemplate($emailTemplateRef['templateName']);
 
-                            $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
-                            if ($referenceEmail1 != '') {
-                                $mail->AddBCC($referenceEmail1);
-                            }
-                            if ($referenceEmail2 != '') {
-                                $mail->AddBCC($referenceEmail2);
-                            }
-                            $mail->Subject = $subject;
-                            $mail->renderBody('mail/email.twig.html', [
-                                'title'  => $subject,
-                                'body'   => $body,
-                                'button' => [
-                                    'url'  => $applicationFormRefereeLink[$type],
-                                    'text' => __('Click Here'),
-                                    'external' => true,
-                                ],
-                            ]);
+                            $dataRef = [
+                                'preferredName'     => $preferredName ?? '',
+                                'surname'           => $surname ?? '',
+                                'date'              => Format::date(date('Y-m-d')),
+                                'jobTitle'          => $jobTitle,
+                                'applicationID'     => $AI,
+                                'applicationRefereeLink'  => $applicationFormRefereeLink[$type],
+                                'organisationHRName' => $session->get('organisationHRName'),
+                            ];
 
-                            $mail->Send();
-                            $mail->ClearAllRecipients();
+                            // Render the email
+                            $subjectRef = $templateRef->renderSubject($dataRef);
+                            $bodyRef = $templateRef->renderBody($dataRef);
+
+                            // Send individual emails to each referee
+                            if (!empty($referenceEmail1)) {
+                                $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
+                                $mail->AddAddress($referenceEmail1);
+                                $mail->setDefaultSender($subjectRef);
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subjectRef,
+                                    'body'   => $bodyRef,
+                                    'button' => [
+                                        'url'  => $applicationFormRefereeLink[$type],
+                                        'text' => __('Click Here'),
+                                        'external' => true,
+                                    ],
+                                ]);
+                                if ($mail->Send()) {
+                                    $mail->ClearAllRecipients();
+                                }
+                            }
+
+                            if (!empty($referenceEmail2)) {
+                                $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
+                                $mail->AddAddress($referenceEmail2);
+                                $mail->setDefaultSender($subjectRef);
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subjectRef,
+                                    'body'   => $bodyRef,
+                                    'button' => [
+                                        'url'  => $applicationFormRefereeLink[$type],
+                                        'text' => __('Click Here'),
+                                        'external' => true,
+                                    ],
+                                ]);
+
+                                if ($mail->Send()) {
+                                    $mail->ClearAllRecipients();
+                                }
+                            }
                         }
 
                         // Send a FORM SUBMISSION confirmation email to the applicant
                         $emailTemplate = $container->get(EmailTemplateGateway::class)->selectTemplatesByModule('Staff', 'Staff Application Form Confirmation')->fetch();
                         $template = $container->get(EmailTemplate::class)->setTemplate($emailTemplate['templateName']);
 
-                         $data = [
+                        $data = [
                             'preferredName'     => $preferredName ?? '',
                             'surname'           => $surname ?? '',
                             'date'              => Format::date(date('Y-m-d')),
-                            'jobPosition'          => $jobTitle,
-                            'applicationID'      => $AI,
+                            'jobTitle'          => $jobTitle,
+                            'applicationID'     => $AI,
                         ];
 
                         // Render the email
                         $subject = $template->renderSubject($data);
                         $body = $template->renderBody($data);
 
+                        $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
                         $mail->AddAddress($email, Format::name('', $preferredName, $surname, 'Staff', false, true));
-
                         $mail->setDefaultSender($subject);
                         $mail->renderBody('mail/email.twig.html', [
                             'title'  => $subject,
                             'body'   => $body,
                         ]);
 
-                        $mail->Send();
-                        $mail->ClearAllRecipients();
-                        $mail->smtpClose();
+                        if ($mail->Send()) {
+                            $mail->ClearAllRecipients();
+                        }
                     }
                 }
             }
+
+            $mail->smtpClose();
 
             if ($ids != '') {
                 $ids = substr($ids, 0, -2);
