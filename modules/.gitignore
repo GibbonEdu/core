@@ -4,7 +4,7 @@
 # allowlist .gitignore file
 !.gitignore
 
-# whitelist all core modules
+# allowlist all core modules
 !/Activities
 !/Activities/**
 !/Admissions
