@@ -337,7 +337,7 @@ class CustomBlocks implements OutputableInterface
                 }
 
                 if ($element instanceof Time) {
-                    $element->setAttribute('x-init', '$data.setTime($el.value)');
+                    $element->setAttribute('x-init', '$data.setTime(block.'.$name.')');
                 }
 
                 if ($element instanceof Editor || $element->getData('tinymce') !== null) {

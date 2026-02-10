@@ -118,6 +118,8 @@
         setTime(time) { 
             this.time = this.clock == '12' ? this.convertTo12HourFormat(time) : this.convertTo24HourFormat(time);
             this.timeSelected = this.availableTimes.find( (item) => item.time == this.time);
+
+            this.$refs.hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
         },
 
         selectTime(index, time, nextTime) {
