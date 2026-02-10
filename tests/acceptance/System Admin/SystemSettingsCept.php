@@ -15,21 +15,22 @@ $I->seeInFormFields('#content form', $originalFormValues);
 // Make Changes ------------------------------------------------
 
 $newFormValues = array(
-    'systemName'                    => 'Gibbon Test',
-    'indexText'                     => 'The following is a test of the Emergency Testing System. Beware! The gibbons may escape ...',
-    'installType'                   => 'Testing',
-    'statsCollection'               => 'N',
-    'organisationName'              => 'Syndicate of Wordwide Gibbon Testers',
-    'organisationNameShort'         => 'SWGT',
-    'organisationEmail'             => 'test@testing.test',
-    'country'                       => 'Antarctica',
-    'firstDayOfTheWeek'             => 'Sunday',
-    'timezone'                      => 'UTC',
-    'currency'                      => 'BTC',
-    'emailLink'                     => 'http://email.test',
-    'webLink'                       => 'http://web.test',
-    'pagination'                    => '100',
-    'analytics'                     => '<script></script>',
+    'systemName'            => 'Gibbon Test',
+    'indexText'             => 'The following is a test of the Emergency Testing System. Beware! The gibbons may escape ...',
+    'installType'           => 'Testing',
+    'statsCollection'       => 'N',
+    'organisationName'      => 'Syndicate of Wordwide Gibbon Testers',
+    'organisationNameShort' => 'SWGT',
+    'organisationEmail'     => 'test@testing.test',
+    'country'               => 'Antarctica',
+    'firstDayOfTheWeek'     => 'Sunday',
+    'timezone'              => 'UTC',
+    'timeFormatPHP'         => 'H:i',
+    'currency'              => 'BTC',
+    'emailLink'             => 'http://email.test',
+    'webLink'               => 'http://web.test',
+    'pagination'            => '100',
+    'analytics'             => '<script></script>',
 );
 
 $I->selectFromDropdown('organisationAdministrator', 2);
