@@ -169,7 +169,7 @@ class Trigger implements OutputableInterface
         $output .= "$(document).on('change showhide', '{$this->sourceSelector}', function(event){ \n";
             $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && {$comparisons}) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
-                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput, [type=\"hidden\"], [x-model], .invisible')) { $(this).prop('disabled', element.disabledState !== undefined ? element.disabledState : false); } });";
+                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput, [type=\"hidden\"], [x-model], .hidden, .invisible')) { $(this).prop('disabled', element.disabledState !== undefined ? element.disabledState : false); } });";
             $output .= "} else { \n";
                 $output .= "$('{$this->targetSelector}').hide(); \n";
                 $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";

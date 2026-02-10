@@ -20,6 +20,8 @@
             event.target.value = !x[1] && !x[2]
                 ? ''
                 : String(!x[1] ? '0' : x[1]).padStart(this.clock == 12 ? 1 : 2, '0') + ':' + String(!x[2] ? '00' : x[2]).padStart(2, '0') + (!x[3] || this.clock == 24 ? '' : ' '+x[3]);
+
+            this.$refs.hiddenInput.dispatchEvent(new Event('blur', { bubbles: true }));
         },
 
         convertToMinutes(timeString) {
@@ -116,16 +118,14 @@
         setTime(time) { 
             this.time = this.clock == '12' ? this.convertTo12HourFormat(time) : this.convertTo24HourFormat(time);
             this.timeSelected = this.availableTimes.find( (item) => item.time == this.time);
-
-            console.log(time);
-            console.log(this.time);
-            console.log(this.timeSelected);
         },
 
         selectTime(index, time, nextTime) {
             this.time = time; 
             this.timeSelected = index; 
             this.isOpen = false;
+
+            this.$refs.hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
 
             if (this.chainedTo) {
                 this.chainedTo.value = nextTime ? nextTime : this.time;
@@ -144,12 +144,14 @@
                 }
             }
 
+            this.$refs.hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+
             this.scrollToActiveItem();
         },
 
         scrollToActiveItem(){
             if(this.timeSelected){
-                activeElement = document.getElementById(this.$refs.timeValue.id+'Option-' + this.timeSelected);
+                activeElement = document.getElementById(this.$refs.hiddenInput.id+'Option-' + this.timeSelected);
                 newScrollPos = (activeElement.offsetTop + activeElement.offsetHeight) - ((this.$refs.timeList.offsetHeight ) / 2);
                 this.$refs.timeList.scrollTop=newScrollPos > 0 ? newScrollPos : 0;
             }
@@ -166,29 +168,28 @@
     </span>
 
     <input x-cloak type="time" <?= $attributes; ?> maxlength="5"
-        class="hidden"
+        class="hidden invisible"
         value="<?= $value; ?>" 
-        :value="time ?? $el.value"
-        x-ref="timeValue"
-        @input="setTime($el.value)"
-        tabindex="-1"
+        :value="convertTo24HourFormat(time)"
+        x-ref="hiddenInput"
     />
+    <!-- @input="setTime($el.value)" -->
 
-    <input type="text" :id="$refs.timeValue.id + 'Time'" :name="$refs.timeValue.id + 'Time'" 
+    <input type="text" :id="$refs.hiddenInput.id + 'Time'" :name="$refs.hiddenInput.id + 'Time'" 
         @click="isOpen=true; setAvailableTimes(); $focus.focus($refs.timePicker); $nextTick(() => scrollToActiveItem() )"
         @input="updateActiveItem()"
+        @blur="formatTime"
         x-model="time"
         x-ref="timePicker"
-        x-on:blur="formatTime"
         placeholder="--:--"
         value="<?= $value ? date($clock == '12' ? 'g:i a' : 'H:i', strtotime($value)) : ''; ?>" 
-        class="<?= $class; ?> <?= $groupClass; ?> w-full min-w-0 py-2 font-sans placeholder:text-gray-500  sm:text-sm sm:leading-6 <?= $type != 'text' ? 'input-icon' : ''; ?>
+        class="<?= $class; ?> <?= $groupClass; ?> inner-input w-full min-w-0 py-2 font-sans placeholder:text-gray-500  sm:text-sm sm:leading-6 <?= $type != 'text' ? 'input-icon' : ''; ?>
         <?= !empty($readonly) ? 'border-dashed text-gray-600 cursor-not-allowed focus:ring-0 focus:border-gray-400' : 'text-gray-900 focus:ring-1 focus:ring-inset focus:ring-blue-500'; ?>
     "/>
 
     
 
-    <div x-cloak x-show="isOpen" :id="$refs.timeValue.id+'List'"
+    <div x-cloak x-show="isOpen" :id="$refs.hiddenInput.id+'List'"
         class="absolute mt-10 top-0 left-0 z-50 w-full max-w-64 h-60 rounded-md border bg-white shadow-lg" 
         x-on:keydown.down.prevent="$focus.wrap().next()" 
         x-on:keydown.up.prevent="$focus.wrap().previous()" 
@@ -206,7 +207,7 @@
 
             <button @click="timePickerView=2" type="button" class="bg-gray-200 px-4 py-1 text-center text-xxs hover:bg-gray-400 text-gray-600 rounded-md" 
                 hx-post="<?= $absoluteURL ?>/modules/User/form_time_ajax.php" 
-                x-bind:hx-target="'#'+$refs.timeValue.id+'PeriodList'" 
+                x-bind:hx-target="'#'+$refs.hiddenInput.id+'PeriodList'" 
                 hx-include="<?= !empty($date) ? '#'.$date : '' ?>" 
                 hx-vals='{"key": "<?= $date ?>"}'
                 :class="{'bg-gray-400 text-gray-800' : timePickerView==2}">
@@ -221,7 +222,7 @@
         
             <template x-for="(value, index) in availableTimes" :key="index" >
                 <li x-from-template :value="time" role="option" tabindex="0" 
-                x-bind:id="$refs.timeValue.id+'Option-' + index"
+                x-bind:id="$refs.hiddenInput.id+'Option-' + index"
                 x-on:click="selectTime(index, value.time, null)"
                 x-on:keydown.enter="selectTime(index, value.time, null)"
                 :class="timeSelected == index ? 'bg-gray-300 text-gray-900 hover:text-white' : ''"
@@ -237,7 +238,7 @@
         </div>
 
         <div x-cloak x-show="timePickerView==2" class="absolute w-full h-full" role="listbox" aria-label="list">
-            <ul :id="$refs.timeValue.id+'PeriodList'" class="flex max-h-52 flex-col overflow-y-auto overflow-x-hidden m-0 p-1 rounded-b-md">
+            <ul :id="$refs.hiddenInput.id+'PeriodList'" class="flex max-h-52 flex-col overflow-y-auto overflow-x-hidden m-0 p-1 rounded-b-md">
             </ul>
         </div>
 

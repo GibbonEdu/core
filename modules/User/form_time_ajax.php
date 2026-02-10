@@ -40,7 +40,7 @@ if (!isset($_SESSION[$guid]) || !$session->exists('gibbonPersonID')) {
     if (empty($periods)) die(__('Unknown'));
 
     $endOfDay = end($periods);
-    $periods[] = ['period' => Format::small(__('End of Day')), 'time' => Format::time($endOfDay['timeEnd'])];
+    $periods[] = ['period' => Format::small(__('End of Day')), 'time' => Format::time($endOfDay['timeEnd']), 'timeEnd' => Format::time($endOfDay['timeEnd'])];
 
     foreach ($periods as $index => $period) {
         echo <<<HTML

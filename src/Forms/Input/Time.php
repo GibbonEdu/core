@@ -176,14 +176,6 @@ class Time extends TextField
      */
     protected function getElement()
     {
-        if ($this->clock == '12') {
-            $timeFormatRegex = 'pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use h:mm"';
-        } else {
-            $timeFormatRegex = 'pattern: /^(0?[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9]\s*[am|pm]+)/i, failureMessage: "Use hh:mm"';
-        }
-        $this->addValidation('Validate.Format', $timeFormatRegex);
-
-
         return Component::render(Time::class, $this->getAttributeArray() + [
             'groupClass'  => $this->getGroupClass(),
             'unique'      => $this->unique ? json_encode($this->unique) : '',
