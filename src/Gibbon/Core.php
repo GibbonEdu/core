@@ -126,6 +126,7 @@ class Core
      */
     public function isInstalled()
     {
+        clearstatcache(true, $this->basePath . '/config.php');    
         return (file_exists($this->basePath . '/config.php') && filesize($this->basePath . '/config.php') > 0);
     }
 
