@@ -20,12 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-//Module includes
+// Module includes
 include './moduleFunctions.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -47,26 +48,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Check if planner specified
     if ($gibbonPersonID == '' or $gibbonAttendanceLogPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        //UPDATE
-        try {
-            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID);
-            $sql = 'DELETE FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+        //Proceed!
+        //Check if planner specified
+        $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+
+        $record = $attendanceLogGateway->getByID($gibbonAttendanceLogPersonID);
+
+        if (empty($record) || $record['gibbonPersonID'] != $gibbonPersonID) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        //Success 0
+        $deleted = $attendanceLogGateway->delete($gibbonAttendanceLogPersonID);
+
+        if (!$deleted) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
         $URL .= '&return=success0';
-        header("Location: {$URL}");
+        header("Location: {$URL}");        
     }
 }
