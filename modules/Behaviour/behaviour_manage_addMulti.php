@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->addParam('type', $_GET['type']);
     }
 
-    //Student
+    // Student
     $row = $form->addRow();
         $col = $row->addColumn();
             $col->addLabel('gibbonPersonIDMulti', __('Students'));
@@ -101,17 +101,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $multiSelect->source()->fromArray($students['students']);
             
 
-    //Date
+    // Date
     $row = $form->addRow();
         $row->addLabel('date', __('Date'));
         $row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required();
 
-    //Type
+    // Type
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive'), 'Observation' => __('Observation')])->selected($type)->required();
 
-    //Descriptor
+    // Descriptor
     if ($enableDescriptors == 'Y') {
         $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
         $negativeDescriptors = (!empty($negativeDescriptors)) ? explode(',', $negativeDescriptors) : [];
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ->placeholder();
     }
 
-    //Level
+    // Level
     if ($enableLevels == 'Y') {
         $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
         if ($optionsLevels != '') {
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     $form->addRow()->addHeading('Details', __('Details'));
 
-    //Incident
+    // Incident
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('comment', __('Incident'));
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->setRows(5)
             ->setClass('w-full');
 
-    //Follow Up
+    // Follow Up
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('followup', __('Follow Up'));
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // CUSTOM FIELDS
     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);
 
-    //Copy to Notes
+    // Copy to Notes
     $row = $form->addRow();
         $row->addLabel('copyToNotes', __('Copy To Notes'));
         $row->addCheckbox('copyToNotes');

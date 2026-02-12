@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    // Get action with highest precendence
+    // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));

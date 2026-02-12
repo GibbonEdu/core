@@ -19,19 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
-use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\IndividualNeeds\INGateway;
-use Gibbon\Domain\Behaviour\BehaviourGateway;
-use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\FormGroups\FormGroupGateway;
-use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Data\Validator;
 use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Services\Format;
 use Gibbon\UI\Components\Alert;
 
 include '../../gibbon.php';
@@ -59,199 +60,200 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $URL .= '&return=error0&step=1';
         header("Location: {$URL}");
     } else {
-
         $step = $_GET['step'] ?? null;
 
         if ($step != 1 and $step != 2) {
             $step = 1;
         }
         $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? null;
+        $behaviourGateway = $container->get(BehaviourGateway::class);
 
-
-        //Step 1
+        // Step 1
         if ($step == 1 or $gibbonBehaviourID == null) {
-            //Proceed!
-            $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $date = $_POST['date'] ?? '';
-            $type = $_POST['type'] ?? '';
-            $descriptor = $_POST['descriptor'] ?? null;
-            $level = $_POST['level'] ?? null;
-
-            $comment = $_POST['comment'] ?? '';
-            $followUp = $_POST['followUp'] ?? '';
-            $copyToNotes = $_POST['copyToNotes'] ?? null;
+            // Proceed!
+            $data = [
+                'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID') ?? '',    
+                'gibbonPersonID' => $_POST['gibbonPersonID'] ?? '',
+                'date' => Format::dateConvert($_POST['date'])  ?? '',
+                'type' => $_POST['type'] ?? '',
+                'descriptor' => $_POST['descriptor'] ?? null,
+                'level' => $_POST['level'] ?? null,
+                'comment' => $_POST['comment'] ?? '',
+                'gibbonPersonIDCreator' => $session->get('gibbonPersonID') ?? '',
+               
+            ];
 
             $customRequireFail = false;
             $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Behaviour', [], $customRequireFail);
+            $data['fields'] = $fields ?? '';
 
-            if ($gibbonPersonID == '' or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
+            // Validate the required values are present
+            if (empty($data['gibbonPersonID']) || empty($data['date']) || empty($data['type']) || (empty($data['descriptor'] && $enableDescriptors == 'Y') || $customRequireFail)) {
                 $URL .= '&return=error1&step=1';
                 header("Location: {$URL}");
-            } else {
-                //Write to database
-                try {
-                    $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sql = 'INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, fields=:fields, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=erorr2&step=1';
+                exit;
+            }
+
+            // Write to database
+            $gibbonBehaviourID = $behaviourGateway->insert($data);
+
+            if (empty($gibbonBehaviourID)) {
+                $URL .= '&return=error2&step=1';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            $copyToNotes = $_POST['copyToNotes'] ?? null;
+            $followUp = $_POST['followUp'] ?? '';
+          
+            // ALERTS: possible change to Behaviour alert status, recalculate alerts
+            $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
+                
+            // Add a follow up log
+            if (!empty($followUp)) {
+                $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+
+                $data = [
+                    'gibbonBehaviourID' => $gibbonBehaviourID,
+                    'gibbonPersonID' => $session->get('gibbonPersonID'),
+                    'followUp' => $followUp,
+                ];
+
+                $inserted = $behaviourFollowUpGateway->insert($data);
+
+                if (!$inserted) {
+                    $URL .= '&return=error2';
                     header("Location: {$URL}");
-                    exit();
+                    exit;
+                }
+            } 
+
+            // Attempt to notify tutor(s) and EA(s) of negative behaviour
+            $resultDetail = $container->get(FormGroupGateway::class)->selectTutorsByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+            $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
+
+            if (!empty($resultDetail) && !empty($student)) {
+                $rowDetail = $resultDetail->fetch();
+
+                // Initialize the notification sender & gateway objects
+                $notificationGateway = $container->get(NotificationGateway::class);
+                $notificationSender = $container->get(NotificationSender::class);;
+
+                $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
+                $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+                $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
+
+                // Add extra details to the notification
+                $details = [__('Date') => Format::date($data['date']), __('Time') => date('H:i'), __('Type') => $data['type']];
+                if (!empty($data['descriptor'])) $details[__('Descriptor')] = $data['descriptor'];
+                if (!empty($data['level'])) $details[__('Level')] = $data['level'];
+
+                // Raise a new notification event
+                $eventType = '';
+                $type = $data['type'] ?? '';
+                switch ($type) {
+                    case 'Positive':
+                        $eventType = 'New Positive Record';
+                        break;
+                    case 'Negative':
+                        $eventType = 'New Negative Record';
+                        break;
+                    case 'Observation':
+                        $eventType = 'New Observation Record';
+                        break;
+                }
+                $event = new NotificationEvent('Behaviour', $eventType);
+                $event->setNotificationDetails($details);
+                $event->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
+                    'type' => strtolower($type),
+                    'person' => $staffName,
+                    'student' => $studentName,
+                ]));
+                    
+                $event->setActionLink($actionLink);
+                $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+
+                // Add notifications for Educational Assistants
+                if ($settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                    $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
+                    foreach ($educationalAssistants as $ea) {
+                        $event->addRecipient($ea['gibbonPersonID']);
+                    }
                 }
 
-                //Last insert ID
-                $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
+                // Add event listeners to the notification sender
+                $event->pushNotifications($notificationGateway, $notificationSender);
 
-                $gibbonBehaviourID = $connection2->lastInsertID();
+                // Add direct notifications to form group tutors
+                if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
+                    if ($settingGateway->getSettingByScope('Behaviour', 'notifyTutors') == 'Y') {
 
-                // ALERTS: possible change to Behaviour alert status, recalculate alerts
-                $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
-                
-                // Add a follow up log
-                if (!empty($followUp)) {
-                    $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+                        $notificationText = __('{person} has created a {type} behaviour record for your tutee, {student}.', [
+                            'type' => strtolower($type),
+                            'person' => $staffName,
+                            'student' => $studentName,
+                        ]);
 
-                    $data = [
-                        'gibbonBehaviourID' => $gibbonBehaviourID,
-                        'gibbonPersonID' => $session->get('gibbonPersonID'),
-                        'followUp' => $followUp,
-                    ];
-
-                    $inserted = $behaviourFollowUpGateway->insert($data);
-
-                    if (!$inserted) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit;
+                        if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
+                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink, $details);
+                        }
+                        if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
+                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink, $details);
+                        }
+                        if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
+                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink, $details);
+                        }
                     }
-                } 
+                }
 
-                // Attempt to notify tutor(s) and EA(s) of negative behaviour
-                $resultDetail = $container->get(FormGroupGateway::class)->selectTutorsByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
-
-                if ($resultDetail->rowCount() == 1) {
-                    $rowDetail = $resultDetail->fetch();
-
-                    // Initialize the notification sender & gateway objects
-                    $notificationGateway = $container->get(NotificationGateway::class);
-                    $notificationSender = $container->get(NotificationSender::class);;
-
-                    $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
-                    $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
-                    $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
-
-                    // Add extra details to the notification
-                    $details = [__('Date') => Format::date($date), __('Time') => date('H:i'), __('Type') => $type];
-                    if (!empty($descriptor)) $details[__('Descriptor')] = $descriptor;
-                    if (!empty($level)) $details[__('Level')] = $level;
-
-                    // Raise a new notification event
-                    $eventType = '';
-                    switch ($type) {
-                        case 'Positive':
-                            $eventType = 'New Positive Record';
-                            break;
-                        case 'Negative':
-                            $eventType = 'New Negative Record';
-                            break;
-                        case 'Observation':
-                            $eventType = 'New Observation Record';
-                            break;
-                    }
-                    $event = new NotificationEvent('Behaviour', $eventType);
-                    $event->setNotificationDetails($details);
-                    $event->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
+                // Check if this is an IN student
+                $studentIN = $container->get(INGateway::class)->selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)->fetchAll();
+                if (!empty($studentIN)) {
+                    // Raise a notification event for IN students
+                    $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
+                    $eventIN->setNotificationDetails($details);
+                    $eventIN->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
                         'type' => strtolower($type),
-                        'person' => $staffName,
+                        'person' => $staffName, 
                         'student' => $studentName,
                     ]));
-                    
-                    $event->setActionLink($actionLink);
-                    $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
-                    $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+                    $eventIN->setActionLink($actionLink);
 
-                    // Add notifications for Educational Assistants
-                    if ($settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants') == 'Y') {
-                        $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
-                        foreach ($educationalAssistants as $ea) {
-                            $event->addRecipient($ea['gibbonPersonID']);
-                        }
-                    }
+                    $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                    $eventIN->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
 
                     // Add event listeners to the notification sender
-                    $event->pushNotifications($notificationGateway, $notificationSender);
-
-                    // Add direct notifications to form group tutors
-                    if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                        if ($settingGateway->getSettingByScope('Behaviour', 'notifyTutors') == 'Y') {
-
-                            $notificationText = __('{person} has created a {type} behaviour record for your tutee, {student}.', [
-                                'type' => strtolower($type),
-                                'person' => $staffName,
-                                'student' => $studentName,
-                            ]);
-
-                            if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink, $details);
-                            }
-                            if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink, $details);
-                            }
-                            if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink, $details);
-                            }
-                        }
-                    }
-
-                    // Check if this is an IN student
-                    $studentIN = $container->get(INGateway::class)->selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)->fetchAll();
-                    if (!empty($studentIN)) {
-                        // Raise a notification event for IN students
-                        $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
-                        $eventIN->setNotificationDetails($details);
-                        $eventIN->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
-                            'type' => strtolower($type),
-                            'person' => $staffName, 
-                            'student' => $studentName,
-                        ]));
-                        $eventIN->setActionLink($actionLink);
-
-                        $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
-                        $eventIN->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
-
-                        // Add event listeners to the notification sender
-                        $eventIN->pushNotifications($notificationGateway, $notificationSender);
-                    }
-                    
-                    // Send all notifications
-                    $notificationSender->sendNotifications();
+                    $eventIN->pushNotifications($notificationGateway, $notificationSender);
                 }
-
-                if ($copyToNotes == 'on') {
-                    //Write to notes
-                    $noteGateway = $container->get(StudentNoteGateway::class);
-                    $note = [
-                        'title'                       => __('Behaviour').': '.$descriptor,
-                        'note'                        => empty($followup) ? $comment : $comment.' <br/><br/>'.$followup,
-                        'gibbonPersonID'              => $gibbonPersonID,
-                        'gibbonPersonIDCreator'       => $session->get('gibbonPersonID'),
-                        'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Behaviour') ?? null,
-                        'timestamp'                   => date('Y-m-d H:i:s', time()),
-                    ];
-
-                    $inserted = $noteGateway->insert($note);
-
-                    if (!$inserted) {
-                        $URL .= "&return=warning1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
-                        header("Location: {$URL}");
-                        exit;
-                    }
-                }
-
-                $URL .= "&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
-                header("Location: {$URL}");
+                
+                // Send all notifications
+                $notificationSender->sendNotifications();
             }
+
+            if ($copyToNotes == 'on') {
+                // Write to notes
+                $noteGateway = $container->get(StudentNoteGateway::class);
+                $note = [
+                    'title'                       => __('Behaviour').': '.$data['descriptor'],
+                    'note'                        => empty($followUp) ? $data['comment'] : $data['comment'].' <br/><br/>'.$followUp,
+                    'gibbonPersonID'              => $gibbonPersonID,
+                    'gibbonPersonIDCreator'       => $session->get('gibbonPersonID'),
+                    'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Behaviour') ?? null,
+                    'timestamp'                   => date('Y-m-d H:i:s', time()),
+                ];
+
+                $inserted = $noteGateway->insert($note);
+
+                if (!$inserted) {
+                    $URL .= "&return=warning1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
+                    header("Location: {$URL}");
+                    exit;
+                }
+            }
+
+            $URL .= "&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
+            header("Location: {$URL}");
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             // Proceed!
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
@@ -262,20 +264,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                $result = $container->get(BehaviourGateway::class)->getBehaviourRecordByID($gibbonBehaviourID);
+                $result = $behaviourGateway->getBehaviourRecordByID($gibbonBehaviourID);
 
                 if (empty($result)) {
                     $URL .= '&return=error2&step=2';
                     header("Location: {$URL}");
                     exit();
                 } else {
-                    // Write to database
-                    try {
-                        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonBehaviourID' => $gibbonBehaviourID];
-                        $sql = 'UPDATE gibbonBehaviour SET gibbonPlannerEntryID=:gibbonPlannerEntryID WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
+                    // Update to database                       
+                    $updated = $behaviourGateway->update($gibbonBehaviourID, ['gibbonPlannerEntryID' => $gibbonPlannerEntryID]);
+
+                    if (!$updated) {
                         $URL .= '&return=warning0&step=2';
                         header("Location: {$URL}");
                         exit();

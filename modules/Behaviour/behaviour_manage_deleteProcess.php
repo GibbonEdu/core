@@ -30,6 +30,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $type = $_GET['type'] ?? '';
+
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_delete.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 
@@ -42,26 +43,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
     } else {
-        //Proceed!
+        // Proceed!
         if ($gibbonBehaviourID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
             $result = $container->get(BehaviourGateway::class)->getByID($gibbonBehaviourID);
 
-            if (!empty($result)) {
+            if (empty($result)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
                 $row = $result;
 
                 // Write to database
-                try {
-                    $data = ['gibbonBehaviourID' => $gibbonBehaviourID];
-                    $sql = 'DELETE FROM gibbonBehaviour WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
+                $deleted = $container->get(BehaviourGateway::class)->delete($gibbonBehaviourID);
+
+                if (!$deleted) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();

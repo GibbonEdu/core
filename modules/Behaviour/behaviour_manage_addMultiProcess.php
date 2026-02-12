@@ -19,18 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
-use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\IndividualNeeds\INGateway;
-use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Data\Validator;
 use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Services\Format;
 use Gibbon\UI\Components\Alert;
 
 require_once '../../gibbon.php';
@@ -57,7 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
+    // Proceed!
+    $behaviourGateway = $container->get(BehaviourGateway::class);
+    
     $gibbonPersonIDMulti = $_POST['gibbonPersonIDMulti'] ?? [];
     $date = $_POST['date'] ?? '';
     $type = $_POST['type'] ?? '';
@@ -70,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $customRequireFail = false;
     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Behaviour', [], $customRequireFail);
 
-    if (empty($gibbonPersonIDMulti) or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
+    if (empty($gibbonPersonIDMulti) || $date == '' || $type == '' || ($descriptor == '' && $enableDescriptors == 'Y') || $customRequireFail) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -81,17 +85,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $notificationSender = $container->get(NotificationSender::class);
 
         foreach ($gibbonPersonIDMulti as $gibbonPersonID) {
-            //Write to database
-            try {
-                $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date),'gibbonMultiIncidentID' => $gibbonMultiIncidentID, 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
-                $sql = 'INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, gibbonMultiIncidentID=:gibbonMultiIncidentID, descriptor=:descriptor, level=:level, comment=:comment, fields=:fields, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
+            // Write to database
+            $data = [
+                'gibbonPersonID' => $gibbonPersonID,
+                'date' => Format::dateConvert($date),
+                'gibbonMultiIncidentID' => $gibbonMultiIncidentID,
+                'type' => $type,
+                'descriptor' => $descriptor,
+                'level' => $level,
+                'comment' => $comment,
+                'fields' => $fields,
+                'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
+                'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+            ];
+
+            $gibbonBehaviourID = $behaviourGateway->insert($data);
+
+            if (empty($gibbonBehaviourID)) {
                 $partialFail = true;
             }
-
-            $gibbonBehaviourID = $connection2->lastInsertID();
 
             // ALERTS: possible change to Behaviour alert status, recalculate alerts
             $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
@@ -99,13 +111,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             // Add a follow up log
             if (!empty($followUp)) {
                 $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
-                $data = [
-                            'gibbonBehaviourID' => $gibbonBehaviourID,
-                            'gibbonPersonID' => $session->get('gibbonPersonID'),
-                            'followUp' => $followUp,
-                        ];
+                $followUpData = [
+                    'gibbonBehaviourID' => $gibbonBehaviourID,
+                    'gibbonPersonID' => $session->get('gibbonPersonID'),
+                    'followUp' => $followUp,
+                ];
 
-                $inserted = $behaviourFollowUpGateway->insert($data);
+                $inserted = $behaviourFollowUpGateway->insert($followUpData);
                 if (!$inserted) {
                     $partialFail = true;
                 }
@@ -113,11 +125,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
             // Attempt to notify tutor(s) and EA(s) of negative behaviour
             $resultDetail = $container->get(FormGroupGateway::class)->selectTutorsByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+            $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
-            if (!empty($resultDetail)) {
+            if (!empty($resultDetail) && !empty($student)) {
                 $rowDetail = $resultDetail->fetch();
 
-                $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
+                $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
                 $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
                 $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
 
@@ -206,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
 
             if ($copyToNotes == 'on') {
-                //Write to notes
+                // Write to notes
                 $noteGateway = $container->get(StudentNoteGateway::class);
                 $note = [
                     'title'                       => __('Behaviour').': '.$descriptor,
