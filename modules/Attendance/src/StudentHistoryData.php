@@ -73,6 +73,25 @@ class StudentHistoryData
     {
         $countClassAsSchool = $this->settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
         $firstDayOfTheWeek = $this->settingGateway->getSettingByScope('System', 'firstDayOfTheWeek');
+		
+		// Get showIncompleteAttendance setting from gibbonSetting
+		$showIncomplete = $this->settingGateway->getSettingByScope('Attendance', 'showIncompleteAttendance');
+		
+		// Determine current role category from gibbonRoleIDCurrent
+		global $session;
+		$roleCategory = '';
+		$gibbonRoleIDCurrent = $session->get('gibbonRoleIDCurrent');
+
+		if (!empty($gibbonRoleIDCurrent)) {
+			$data = ['gibbonRoleID' => $gibbonRoleIDCurrent];
+			$sql = "SELECT category FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
+			$roleCategory = $this->pdo->selectOne($sql, $data) ?? '';
+		}
+
+		// Hide incomplete attendance for students and parents regardless of setting
+		if ($roleCategory === 'Student' || $roleCategory === 'Parent') {
+			$showIncomplete = 'N';
+		}
 
         // Get Logs
         $logs = $this->attendanceLogGateway
@@ -195,19 +214,29 @@ class StudentHistoryData
 						if (empty($log['periodName'])) {
 							$log['periodName'] = $period['periodName'];
 						}
-					} else if (!empty($endOfDay['type']) && stripos($endOfDay['type'], 'Present') !== false) {
-						// No attendance taken for this period: create a synthetic log
-						$log = [
-							'periodName'     => $period['periodName'],
-							'context'        => 'Class',
-							'contextName'    => $period['courseName'].'.'.$period['className'],
-							'type'           => __('Not Available'),
-							'reason'         => '',
-							'status'         => 'notTaken',
-							'statusClass'    => 'dull', // grey background
-							'timestampTaken' => null,
-						];
+					} else if ($showIncomplete === 'Y') {
+
+						if (!empty($endOfDay['type']) &&
+							stripos($endOfDay['type'], 'Present') !== false) {
+
+							$log = [
+								'periodName'     => $period['periodName'],
+								'context'        => 'Class',
+								'contextName'    => $period['courseName'].'.'.$period['className'],
+								'type'           => __('Not Available'),
+								'reason'         => '',
+								'status'         => 'notTaken',
+								'statusClass'    => 'dull',
+								'timestampTaken' => null,
+							];
+						} else {
+							$log = [];
+						}
 					}
+					else {
+						$log = [];
+					}
+
 
 					$mergedClassLogs[] = $log;
 				}
@@ -216,7 +245,7 @@ class StudentHistoryData
 				$classLogs[$dateYmd] = array_filter($mergedClassLogs);
 
                 // Handle cases where school-wide attendance does not exist, but class attendance does
-                if (empty($endOfDay) && !empty($classLogs)) {
+                if (empty($endOfDay) && !empty($classLogs[$dateYmd])) {
                     $endOfDay = [
                         'date'        => $dateYmd,
                         'type'        => 'Incomplete',

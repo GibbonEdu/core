@@ -131,6 +131,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             ->fromQuery($pdo, $sql)
             ->selected($setting['value'])
             ->required();
+			
+	$setting = $settingGateway->getSettingByScope('Attendance', 'showIncompleteAttendance', true);
+	$row = $form->addRow();
+		$row->addLabel($setting['name'], __($setting['nameDisplay']))
+			->description(__($setting['description']));
+		$row->addYesNo($setting['name'])
+			->selected($setting['value'])
+			->required();
 
 
     $row = $form->addRow()->addHeading('Student Self Registration', __('Student Self Registration'));
