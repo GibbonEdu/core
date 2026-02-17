@@ -81,15 +81,10 @@ class StudentHistoryData
 		// Get showIncompleteAttendance setting from gibbonSetting
 		$showIncomplete = $this->settingGateway->getSettingByScope('Attendance', 'showIncompleteAttendance');
 		
-		// Determine current role category from gibbonRoleIDCurrent
+		// Determine current user's role category
 		global $session;
-		$roleCategory = '';
-		$gibbonRoleIDCurrent = $session->get('gibbonRoleIDCurrent');
-
-		if (!empty($gibbonRoleIDCurrent)) {
-			$role = $this->roleGateway->getByID($gibbonRoleIDCurrent);
-			$roleCategory = $role['category'] ?? '';
-		}
+		$role = $this->roleGateway->getByID($session->get('gibbonRoleIDCurrent'));
+		$roleCategory = $role['category'] ?? '';
 
 		// Hide incomplete attendance for non-Staff (e.g. students and parents) regardless of setting
 		if ($roleCategory !== 'Staff') {
