@@ -31,6 +31,7 @@ use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 /**
  * Student History Data
@@ -45,19 +46,22 @@ class StudentHistoryData
     protected $attendanceLogGateway;
 	protected $timetableGateway;
     protected $settingGateway;
+	protected $roleGateway;
 
     public function __construct(
         Connection $pdo,
         SchoolYearTermGateway $termGateway,
         AttendanceLogPersonGateway $attendanceLogGateway,
 		TimetableDayDateGateway $timetableGateway,
-        SettingGateway $settingGateway
+        SettingGateway $settingGateway,
+		RoleGateway $roleGateway
     ) {
         $this->pdo = $pdo;
         $this->termGateway = $termGateway;
         $this->attendanceLogGateway = $attendanceLogGateway;
 		$this->timetableGateway = $timetableGateway;
         $this->settingGateway = $settingGateway;
+		$this->roleGateway = $roleGateway;
     }
 
     /**
@@ -83,13 +87,12 @@ class StudentHistoryData
 		$gibbonRoleIDCurrent = $session->get('gibbonRoleIDCurrent');
 
 		if (!empty($gibbonRoleIDCurrent)) {
-			$data = ['gibbonRoleID' => $gibbonRoleIDCurrent];
-			$sql = "SELECT category FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
-			$roleCategory = $this->pdo->selectOne($sql, $data) ?? '';
+			$role = $this->roleGateway->getByID($gibbonRoleIDCurrent);
+			$roleCategory = $role['category'] ?? '';
 		}
 
-		// Hide incomplete attendance for students and parents regardless of setting
-		if ($roleCategory === 'Student' || $roleCategory === 'Parent') {
+		// Hide incomplete attendance for non-Staff (e.g. students and parents) regardless of setting
+		if ($roleCategory !== 'Staff') {
 			$showIncomplete = 'N';
 		}
 
