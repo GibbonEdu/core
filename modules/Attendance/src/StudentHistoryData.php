@@ -212,29 +212,21 @@ class StudentHistoryData
 						if (empty($log['periodName'])) {
 							$log['periodName'] = $period['periodName'];
 						}
-					} else if ($showIncomplete === 'Y') {
+					} 
+					elseif ($showIncomplete === 'Y' && !empty($endOfDay['type']) && stripos($endOfDay['type'], 'Present') !== false) 
+					{
 
-						if (!empty($endOfDay['type']) &&
-							stripos($endOfDay['type'], 'Present') !== false) {
-
-							$log = [
-								'periodName'     => $period['periodName'],
-								'context'        => 'Class',
-								'contextName'    => $period['courseName'].'.'.$period['className'],
-								'type'           => __('Not Available'),
-								'reason'         => '',
-								'status'         => 'notTaken',
-								'statusClass'    => 'dull',
-								'timestampTaken' => null,
-							];
-						} else {
-							$log = [];
-						}
+						$log = [
+							'periodName'     => $period['periodName'],
+							'context'        => 'Class',
+							'contextName'    => $period['courseName'].'.'.$period['className'],
+							'type'           => __('Not Available'),
+							'reason'         => '',
+							'status'         => 'notTaken',
+							'statusClass'    => 'dull',
+							'timestampTaken' => null,
+						];
 					}
-					else {
-						$log = [];
-					}
-
 
 					$mergedClassLogs[] = $log;
 				}
