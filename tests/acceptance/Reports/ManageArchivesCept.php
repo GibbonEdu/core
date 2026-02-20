@@ -17,24 +17,27 @@ $I->click('Add');
 $I->seeBreadcrumb('Add Archive');
 $I->dontSeeErrors();
 
-$I->amOnModulePage('Reports', 'archive_manage.php');
+$I->fillField('name', 'Test Archive');
+$I->fillField('path', '/temp');
 
-// Edit Default archive
-$I->click('Edit');
-$I->seeBreadcrumb('Edit Archive');
-
-$gibbonReportArchiveID = $I->grabValueFromURL('gibbonReportArchiveID');
-
-$I->seeInField('name', 'Default Archive');
-$I->fillField('name', 'Updated Archive');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
-// Restore original value
-$I->fillField('name', 'Default Archive');
+$gibbonReportArchiveID = $I->grabEditIDFromURL();
+
+// Edit Default archive
+$I->amOnModulePage('Reports', 'archive_manage_edit.php', ['gibbonReportArchiveID' => $gibbonReportArchiveID]);
+$I->seeBreadcrumb('Edit Archive');
+
+$I->seeInField('name', 'Test Archive');
+$I->fillField('name', 'Updated Archive');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
 // Delete the archive
 $I->amOnModulePage('Reports', 'archive_manage_delete.php', ['gibbonReportArchiveID' => $gibbonReportArchiveID]);
 $I->dontSeeErrors();
+
+$I->fillField('confirm', 'Delete');
+$I->click('Delete');
+$I->see('Your request was completed successfully.', '.success');
