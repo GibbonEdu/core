@@ -1,9 +1,9 @@
 <?php
 $I = new AcceptanceTester($scenario);
-$I->wantTo('check System Overview');
+$I->wantTo('check tie days to dates');
 $I->loginAsAdmin();
-
-$I->amOnModulePage('System Admin', 'systemOverview.php');
+$I->amOnModulePage('Timetable Admin', 'ttDates.php');
+$I->seeBreadcrumb('Tie Days to Dates');
 
 // Basic Check -----------------------------------------
 
