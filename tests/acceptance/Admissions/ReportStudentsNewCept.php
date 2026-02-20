@@ -9,6 +9,8 @@ $I->amOnModulePage('Admissions', 'report_students_new.php');
 
 $I->dontSeeErrors();
 
+$I->click('Go');
+
 // Report Print Test -----------------------------------
 
 $I->click('Print');
