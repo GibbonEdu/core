@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/User Admin/userSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update User Settings');
 $I->loginAsAdmin();

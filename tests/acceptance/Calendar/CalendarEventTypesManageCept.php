@@ -1,4 +1,9 @@
 <?php
+/**
+ * @covers modules/Calendar/calendar_eventTypes_manage.php
+ * @covers modules/Calendar/calendar_eventTypes_manage_addEdit.php
+ * @covers modules/Calendar/calendar_eventTypes_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a calendar event type');
 $I->loginAsAdmin();

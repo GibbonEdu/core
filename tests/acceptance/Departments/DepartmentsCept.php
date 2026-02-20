@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Departments/departments.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view all departments');
 $I->loginAsAdmin();

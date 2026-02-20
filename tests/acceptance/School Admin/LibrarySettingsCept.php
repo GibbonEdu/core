@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/librarySettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Library Settings');
 $I->loginAsAdmin();

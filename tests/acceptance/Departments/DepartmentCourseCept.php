@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Departments/department_course.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view a department course');
 $I->loginAsAdmin();

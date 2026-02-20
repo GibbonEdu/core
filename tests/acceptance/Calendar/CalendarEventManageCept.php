@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Calendar/calendar_event_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Manage Events');
 $I->loginAsAdmin();

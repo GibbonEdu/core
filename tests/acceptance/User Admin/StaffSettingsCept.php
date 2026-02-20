@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/User Admin/staffSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Manage Staff Settings');
 $I->loginAsAdmin();

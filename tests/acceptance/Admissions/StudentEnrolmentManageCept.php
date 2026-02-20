@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Admissions/studentEnrolment_manage.php
+ * @covers modules/Admissions/studentEnrolment_manage_add.php
+ * @covers modules/Admissions/studentEnrolment_manage_edit.php
+ * @covers modules/Admissions/studentEnrolment_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a student enrolment');
 $I->loginAsAdmin();

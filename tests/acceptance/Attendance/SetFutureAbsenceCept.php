@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Attendance/attendance_future_byPerson.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('set future absence');
 $I->loginAsAdmin();

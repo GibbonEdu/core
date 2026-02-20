@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_transport_student.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Student Transport');
 $I->loginAsAdmin();

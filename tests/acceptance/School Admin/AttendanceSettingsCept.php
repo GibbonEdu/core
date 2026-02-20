@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/School Admin/attendanceSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Attendance Settings');
 $I->loginAsAdmin();

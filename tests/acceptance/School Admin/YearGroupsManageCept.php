@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/School Admin/yearGroup_manage.php
+ * @covers modules/School Admin/yearGroup_manage_add.php
+ * @covers modules/School Admin/yearGroup_manage_edit.php
+ * @covers modules/School Admin/yearGroup_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete year groups');
 $I->loginAsAdmin();

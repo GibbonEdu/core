@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/ttColumn.php
+ * @covers modules/Timetable Admin/ttColumn_add.php
+ * @covers modules/Timetable Admin/ttColumn_edit.php
+ * @covers modules/Timetable Admin/ttColumn_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a timetable column');
 $I->loginAsAdmin();

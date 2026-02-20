@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/report_activityChoices_byFormGroup.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view activity choices by form group report');
 $I->loginAsAdmin();

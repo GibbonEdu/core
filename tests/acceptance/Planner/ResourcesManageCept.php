@@ -1,4 +1,9 @@
 <?php
+/**
+ * @covers modules/Planner/resources_manage.php
+ * @covers modules/Planner/resources_manage_add.php
+ * @covers modules/Planner/resources_manage_edit.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete resources');
 $I->loginAsAdmin();

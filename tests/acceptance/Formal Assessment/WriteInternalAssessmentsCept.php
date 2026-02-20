@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Formal Assessment/internalAssessment_write.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Write internal assessments');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/alertLevelSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Alert Level Settings');
 $I->loginAsAdmin();

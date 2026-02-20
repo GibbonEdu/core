@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/explore.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('explore activities');
 $I->loginAsStudent();

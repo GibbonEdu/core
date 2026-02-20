@@ -1,4 +1,11 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/courseEnrolment_sync.php
+ * @covers modules/Timetable Admin/courseEnrolment_sync_add.php
+ * @covers modules/Timetable Admin/courseEnrolment_sync_edit.php
+ * @covers modules/Timetable Admin/courseEnrolment_sync_run.php
+ * @covers modules/Timetable Admin/courseEnrolment_sync_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage sync course enrolment');
 $I->loginAsAdmin();

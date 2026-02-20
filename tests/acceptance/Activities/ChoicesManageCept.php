@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/choices_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage activity choices');
 $I->loginAsAdmin();

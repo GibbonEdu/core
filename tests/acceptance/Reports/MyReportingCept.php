@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Reports/reporting_my.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View my reporting');
 $I->loginAsAdmin();

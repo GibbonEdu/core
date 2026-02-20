@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Reports/reporting_cycles_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage reporting cycles');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_students_ageGenderSummary.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Student Age Gender Summary');
 $I->loginAsAdmin();

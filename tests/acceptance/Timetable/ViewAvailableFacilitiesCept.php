@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Timetable/report_viewAvailableSpaces.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View available facilities');
 $I->loginAsAdmin();

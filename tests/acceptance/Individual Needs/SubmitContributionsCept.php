@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Individual Needs/investigations_submit.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Submit contributions');
 $I->loginAsAdmin();

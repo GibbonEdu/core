@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Data Updater/data_updates.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check My Data Updates');
 $I->loginAsAdmin();

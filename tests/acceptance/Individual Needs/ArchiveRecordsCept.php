@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Individual Needs/in_archive.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Archive records');
 $I->loginAsAdmin();

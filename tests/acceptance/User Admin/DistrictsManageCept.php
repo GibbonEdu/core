@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/User Admin/district_manage.php
+ * @covers modules/User Admin/district_manage_add.php
+ * @covers modules/User Admin/district_manage_edit.php
+ * @covers modules/User Admin/district_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a district');
 $I->loginAsAdmin();

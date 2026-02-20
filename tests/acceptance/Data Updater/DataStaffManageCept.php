@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Data Updater/data_staff_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage staff data updates');
 $I->loginAsAdmin();

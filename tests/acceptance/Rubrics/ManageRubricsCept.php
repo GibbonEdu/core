@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Rubrics/rubrics.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage rubrics');
 $I->loginAsAdmin();

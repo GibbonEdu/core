@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Messenger/groups_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage groups');
 $I->loginAsAdmin();

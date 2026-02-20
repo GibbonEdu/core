@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Finance/expenses_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage expenses');
 $I->loginAsAdmin();

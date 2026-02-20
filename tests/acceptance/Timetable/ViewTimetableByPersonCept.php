@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Timetable/tt.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View timetable by person');
 $I->loginAsAdmin();

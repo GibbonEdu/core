@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/System Admin/displaySettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Display Settings');
 $I->loginAsAdmin();

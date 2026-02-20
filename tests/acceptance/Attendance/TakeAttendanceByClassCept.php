@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Attendance/attendance_take_byCourseClass.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('take attendance by class');
 $I->loginAsAdmin();

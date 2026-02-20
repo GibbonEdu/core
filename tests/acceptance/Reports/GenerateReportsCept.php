@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Reports/reports_generate.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Generate reports');
 $I->loginAsAdmin();

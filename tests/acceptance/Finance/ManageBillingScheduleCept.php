@@ -1,4 +1,9 @@
 <?php
+/**
+ * @covers modules/Finance/billingSchedule_manage.php
+ * @covers modules/Finance/billingSchedule_manage_add.php
+ * @covers modules/Finance/billingSchedule_manage_edit.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a billing schedule');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Student Alerts/studentAlerts_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage student alerts');
 $I->loginAsAdmin();

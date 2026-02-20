@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Planner/resources_manage_add.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add a new Resource with a valid filetype');
 $I->loginAsAdmin();

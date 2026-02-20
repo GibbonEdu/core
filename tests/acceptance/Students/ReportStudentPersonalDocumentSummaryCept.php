@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_student_personalDocumentSummary.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Student Personal Document Summary');
 $I->loginAsAdmin();

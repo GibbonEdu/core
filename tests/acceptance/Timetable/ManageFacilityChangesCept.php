@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Timetable/spaceChange_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage facility changes');
 $I->loginAsAdmin();

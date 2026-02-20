@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Behaviour/behaviour_view.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check View Behaviour Records');
 $I->loginAsAdmin();

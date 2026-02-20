@@ -1,4 +1,13 @@
 <?php
+/**
+ * @covers modules/Activities/activities_manage.php
+ * @covers modules/Activities/activities_manage_add.php
+ * @covers modules/Activities/activities_manage_edit.php
+ * @covers modules/Activities/activities_manage_enrolment.php
+ * @covers modules/Activities/activities_manage_enrolment_add.php
+ * @covers modules/Activities/activities_manage_delete.php
+ * @covers modules/Activities/activities_my.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete an activity as an admin and test the enrollment and view of a student');
 $I->loginAsAdmin();

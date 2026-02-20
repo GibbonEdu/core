@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/activities_attendance.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('enter activity attendance');
 $I->loginAsAdmin();

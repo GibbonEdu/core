@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Individual Needs/in_view.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View student records');
 $I->loginAsAdmin();

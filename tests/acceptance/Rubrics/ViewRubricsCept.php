@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Rubrics/rubrics_view.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View rubrics');
 $I->loginAsAdmin();

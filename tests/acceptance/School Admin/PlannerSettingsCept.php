@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/plannerSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Planner Settings');
 $I->loginAsAdmin();

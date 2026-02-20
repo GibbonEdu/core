@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Finance/expenseApprovers_manage.php
+ * @covers modules/Finance/expenseApprovers_manage_add.php
+ * @covers modules/Finance/expenseApprovers_manage_edit.php
+ * @covers modules/Finance/expenseApprovers_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete an expense approver');
 $I->loginAsAdmin();

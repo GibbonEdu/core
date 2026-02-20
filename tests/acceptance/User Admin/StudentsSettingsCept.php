@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/User Admin/studentsSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Student Settings');
 $I->loginAsAdmin();

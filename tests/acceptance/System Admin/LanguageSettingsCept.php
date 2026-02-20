@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/System Admin/i18n_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Language Settings');
 $I->loginAsAdmin();

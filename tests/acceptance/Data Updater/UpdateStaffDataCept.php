@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Data Updater/data_staff.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Update Staff Data');
 $I->loginAsAdmin();

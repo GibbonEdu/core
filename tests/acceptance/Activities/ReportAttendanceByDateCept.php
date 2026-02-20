@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/report_attendance_byDate.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Attendance by Date');
 $I->loginAsAdmin();

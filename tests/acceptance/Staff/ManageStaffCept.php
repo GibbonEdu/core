@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/staff_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage staff');
 $I->loginAsAdmin();

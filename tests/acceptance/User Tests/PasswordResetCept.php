@@ -1,4 +1,7 @@
-<?php 
+<?php
+/**
+ * @covers preferences.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('reset my password');
 $I->loginAsAdmin();

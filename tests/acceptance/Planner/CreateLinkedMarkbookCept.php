@@ -1,4 +1,11 @@
 <?php
+/**
+ * @covers modules/Planner/planner_add.php
+ * @covers modules/Markbook/markbook_edit_add.php
+ * @covers modules/Markbook/markbook_edit_edit.php
+ * @covers modules/Markbook/markbook_edit_delete.php
+ * @covers modules/Planner/planner_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('create a lesson with a linked markbook column');
 $I->loginAsAdmin();

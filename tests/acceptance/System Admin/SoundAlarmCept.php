@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/System Admin/alarm.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('trigger an alarm');
 $I->loginAsAdmin();

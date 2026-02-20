@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Admissions/report_students_left.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Left Students');
 $I->loginAsAdmin();

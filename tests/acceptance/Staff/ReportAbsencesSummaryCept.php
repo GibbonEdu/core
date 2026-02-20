@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/report_absences_summary.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Absences Summary');
 $I->loginAsAdmin();

@@ -1,4 +1,9 @@
 <?php 
+/**
+ * @covers modules/Data Updater/data_medical.php
+ * @covers modules/Data Updater/data_medical_manage_edit.php
+ * @covers modules/Data Updater/data_medical_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit and approve a medical data update');
 $I->loginAsAdmin();

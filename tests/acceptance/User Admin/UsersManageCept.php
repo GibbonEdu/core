@@ -1,4 +1,12 @@
 <?php
+/**
+ * @covers modules/User Admin/user_manage.php
+ * @covers modules/User Admin/user_manage_add.php
+ * @covers modules/User Admin/user_manage_edit.php
+ * @covers modules/User Admin/user_manage_delete.php
+ * @covers modules/User Admin/userSettings.php
+ * @covers modules/User Admin/studentsSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a user');
 $I->loginAsAdmin();

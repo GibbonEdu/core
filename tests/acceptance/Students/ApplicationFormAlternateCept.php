@@ -1,4 +1,11 @@
 <?php
+/**
+ * @covers modules/Students/applicationForm.php
+ * @covers modules/Students/applicationForm_manage_edit.php
+ * @covers modules/Students/applicationForm_manage_delete.php
+ * @covers modules/User Admin/applicationFormSettings.php
+ * @covers modules/User Admin/userSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit a student application form with most settings disabled');
 $I->loginAsAdmin();

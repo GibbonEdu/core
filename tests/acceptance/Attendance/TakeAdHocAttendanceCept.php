@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Attendance/attendance_take_adHoc.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('take ad hoc attendance');
 $I->loginAsAdmin();

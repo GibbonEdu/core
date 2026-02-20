@@ -1,4 +1,13 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/course_manage.php
+ * @covers modules/Timetable Admin/course_manage_add.php
+ * @covers modules/Timetable Admin/course_manage_edit.php
+ * @covers modules/Timetable Admin/course_manage_class_add.php
+ * @covers modules/Timetable Admin/course_manage_class_edit.php
+ * @covers modules/Timetable Admin/course_manage_class_delete.php
+ * @covers modules/Timetable Admin/course_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete courses and classes');
 $I->loginAsAdmin();

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Finance/budgetCycles_manage.php
+ * @covers modules/Finance/budgetCycles_manage_add.php
+ * @covers modules/Finance/budgetCycles_manage_edit.php
+ * @covers modules/Finance/budgetCycles_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete something');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Reports/reports_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage reports');
 $I->loginAsAdmin();

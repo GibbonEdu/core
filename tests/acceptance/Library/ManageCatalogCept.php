@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Library/library_manage_catalog.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage catalog');
 $I->loginAsAdmin();

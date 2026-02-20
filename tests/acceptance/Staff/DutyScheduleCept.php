@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/staff_duty.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View duty schedule');
 $I->loginAsAdmin();

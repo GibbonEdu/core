@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/User Admin/role_manage.php
+ * @covers modules/User Admin/role_manage_add.php
+ * @covers modules/User Admin/role_manage_edit.php
+ * @covers modules/User Admin/role_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a role');
 $I->loginAsAdmin();

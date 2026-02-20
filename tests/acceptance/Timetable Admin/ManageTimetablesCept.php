@@ -1,4 +1,15 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/tt.php
+ * @covers modules/Timetable Admin/tt_add.php
+ * @covers modules/Timetable Admin/tt_edit.php
+ * @covers modules/Timetable Admin/tt_edit_day_add.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit_class.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit_class_add.php
+ * @covers modules/Timetable Admin/tt_edit_day_delete.php
+ * @covers modules/Timetable Admin/tt_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage timetables with nested days and periods');
 $I->loginAsAdmin();

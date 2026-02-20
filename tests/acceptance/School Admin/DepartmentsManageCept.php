@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/School Admin/department_manage.php
+ * @covers modules/School Admin/department_manage_add.php
+ * @covers modules/School Admin/department_manage_edit.php
+ * @covers modules/School Admin/department_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete something');
 $I->loginAsAdmin();

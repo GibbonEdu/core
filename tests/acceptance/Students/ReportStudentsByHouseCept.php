@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_students_byHouse.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Students by House');
 $I->loginAsAdmin();

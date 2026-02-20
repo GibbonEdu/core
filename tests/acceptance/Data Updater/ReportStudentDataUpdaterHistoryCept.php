@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Data Updater/report_student_dataUpdaterHistory.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Student Data Updater History report');
 $I->loginAsAdmin();

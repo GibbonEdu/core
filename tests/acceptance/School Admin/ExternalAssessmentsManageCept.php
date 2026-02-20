@@ -1,4 +1,12 @@
 <?php
+/**
+ * @covers modules/School Admin/externalAssessments_manage.php
+ * @covers modules/School Admin/externalAssessments_manage_add.php
+ * @covers modules/School Admin/externalAssessments_manage_edit.php
+ * @covers modules/School Admin/externalAssessments_manage_edit_field_add.php
+ * @covers modules/School Admin/externalAssessments_manage_edit_field_delete.php
+ * @covers modules/School Admin/externalAssessments_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete something');
 $I->loginAsAdmin();

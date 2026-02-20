@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Crowd Assessment/crowdAssess_view.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view a specific crowd assessment');
 $I->loginAsAdmin();

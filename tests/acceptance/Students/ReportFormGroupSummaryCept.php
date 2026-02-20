@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_formGroupSummary.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Form Group Summary');
 $I->loginAsAdmin();

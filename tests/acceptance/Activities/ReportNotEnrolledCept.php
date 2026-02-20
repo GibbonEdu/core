@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/report_notEnrolled.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Students Not Enrolled');
 $I->loginAsAdmin();

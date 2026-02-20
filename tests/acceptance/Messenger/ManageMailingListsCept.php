@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Messenger/mailingLists_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage mailing lists');
 $I->loginAsAdmin();

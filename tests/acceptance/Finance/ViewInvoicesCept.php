@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Finance/invoices_view.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view invoices');
 $I->loginAsParent();

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Finance/feeCategories_manage.php
+ * @covers modules/Finance/feeCategories_manage_add.php
+ * @covers modules/Finance/feeCategories_manage_edit.php
+ * @covers modules/Finance/feeCategories_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a fee category');
 $I->loginAsAdmin();

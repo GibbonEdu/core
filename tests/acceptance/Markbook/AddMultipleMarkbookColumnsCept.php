@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Markbook/markbook_view.php
+ * @covers modules/Markbook/markbook_edit_addMulti.php
+ * @covers modules/Markbook/markbook_edit.php
+ * @covers modules/Markbook/markbook_edit_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add multiple markbook columns across classes');
 $I->loginAsAdmin();

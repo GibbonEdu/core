@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/User Admin/dataUpdaterSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Data Updater Settings');
 $I->loginAsAdmin();

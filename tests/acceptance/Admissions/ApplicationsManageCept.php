@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Admissions/applications_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Manage Applications');
 $I->loginAsAdmin();

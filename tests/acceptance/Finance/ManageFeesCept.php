@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Finance/fees_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage fees');
 $I->loginAsAdmin();

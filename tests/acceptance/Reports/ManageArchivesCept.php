@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Reports/archive_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage archives');
 $I->loginAsAdmin();

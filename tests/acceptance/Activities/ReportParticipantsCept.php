@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/report_participants.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view participants by activity report');
 $I->loginAsAdmin();

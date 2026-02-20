@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/School Admin/schoolYear_manage.php
+ * @covers modules/School Admin/schoolYear_manage_add.php
+ * @covers modules/School Admin/schoolYear_manage_edit.php
+ * @covers modules/School Admin/schoolYear_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a school year');
 $I->loginAsAdmin();

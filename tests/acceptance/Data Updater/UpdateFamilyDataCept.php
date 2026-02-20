@@ -1,4 +1,10 @@
 <?php 
+/**
+ * @covers modules/Data Updater/data_family.php
+ * @covers modules/Data Updater/data_family_manage_edit.php
+ * @covers modules/Data Updater/data_family_manage_delete.php
+ * @covers modules/User Admin/family_manage_edit.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit and approve a family data update');
 $I->loginAsParent();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Messenger/messenger_postQuickWall.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Create a new quick wall message');
 $I->loginAsAdmin();

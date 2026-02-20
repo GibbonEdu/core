@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/User Admin/permission_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage permissions');
 $I->loginAsAdmin();

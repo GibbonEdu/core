@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_privacy_student.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Student Privacy');
 $I->loginAsAdmin();

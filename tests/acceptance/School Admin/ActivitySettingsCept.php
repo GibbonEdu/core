@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/School Admin/activitySettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Activity Settings');
 $I->loginAsAdmin();

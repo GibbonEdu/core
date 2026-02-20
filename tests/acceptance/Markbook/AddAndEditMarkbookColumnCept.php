@@ -1,4 +1,12 @@
 <?php
+/**
+ * @covers modules/Markbook/markbook_view.php
+ * @covers modules/Markbook/markbook_edit_add.php
+ * @covers modules/Markbook/markbook_edit_edit.php
+ * @covers modules/Markbook/markbook_edit_data.php
+ * @covers modules/Markbook/markbook_edit_delete.php
+ * @covers modules/School Admin/markbookSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('create a markbook column and enter data');
 $I->loginAsAdmin();

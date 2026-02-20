@@ -1,4 +1,13 @@
 <?php
+/**
+ * @covers modules/School Admin/gradeScales_manage.php
+ * @covers modules/School Admin/gradeScales_manage_add.php
+ * @covers modules/School Admin/gradeScales_manage_edit.php
+ * @covers modules/School Admin/gradeScales_manage_edit_grade_add.php
+ * @covers modules/School Admin/gradeScales_manage_edit_grade_edit.php
+ * @covers modules/School Admin/gradeScales_manage_edit_grade_delete.php
+ * @covers modules/School Admin/gradeScales_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete grade scales');
 $I->loginAsAdmin();

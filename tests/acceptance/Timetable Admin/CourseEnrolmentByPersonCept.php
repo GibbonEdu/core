@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/courseEnrolment_manage_byPerson.php
+ * @covers modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php
+ * @covers modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php
+ * @covers modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check course enrolment by person');
 $I->loginAsAdmin();

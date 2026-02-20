@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/report_overview.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view activities overview report');
 $I->loginAsAdmin();

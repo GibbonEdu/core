@@ -1,4 +1,10 @@
 <?php 
+/**
+ * @covers modules/Data Updater/data_finance.php
+ * @covers modules/Data Updater/data_finance_manage_edit.php
+ * @covers modules/Data Updater/data_finance_manage_delete.php
+ * @covers modules/Finance/invoicees_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit and approve a family data update');
 $I->loginAsAdmin();

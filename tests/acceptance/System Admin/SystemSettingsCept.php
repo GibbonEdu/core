@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/System Admin/systemSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update System Settings');
 $I->loginAsAdmin();

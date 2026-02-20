@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/System Admin/thirdPartySettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Third Party Settings');
 $I->loginAsAdmin();

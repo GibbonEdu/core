@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/School Admin/formGroup_manage.php
+ * @covers modules/School Admin/formGroup_manage_add.php
+ * @covers modules/School Admin/formGroup_manage_edit.php
+ * @covers modules/School Admin/formGroup_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete form groups');
 $I->loginAsAdmin();

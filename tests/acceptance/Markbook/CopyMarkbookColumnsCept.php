@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Markbook/markbook_view.php
+ * @covers modules/Markbook/markbook_edit_add.php
+ * @covers modules/Markbook/markbook_edit.php
+ * @covers modules/Markbook/markbook_edit_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view markbook column copy page');
 $I->loginAsAdmin();

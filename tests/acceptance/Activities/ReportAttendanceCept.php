@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/report_attendance.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view attendance history by activity report');
 $I->loginAsAdmin();

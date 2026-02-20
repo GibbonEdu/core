@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Data Updater/data_personal_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage personal data updates');
 $I->loginAsAdmin();

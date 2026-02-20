@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/User Admin/family_manage.php
+ * @covers modules/User Admin/family_manage_add.php
+ * @covers modules/User Admin/family_manage_edit.php
+ * @covers modules/User Admin/family_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a family');
 $I->loginAsAdmin();

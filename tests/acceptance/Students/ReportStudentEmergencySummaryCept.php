@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_student_emergencySummary.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Student Emergency Summary');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Planner/report_workSummary_byFormGroup.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Work Summary by Form Group');
 $I->loginAsAdmin();

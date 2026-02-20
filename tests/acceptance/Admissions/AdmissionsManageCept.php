@@ -1,4 +1,9 @@
 <?php
+/**
+ * @covers modules/Admissions/admissions_manage.php
+ * @covers modules/Admissions/admissions_manage_edit.php
+ * @covers modules/Admissions/admissions_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage admissions accounts');
 $I->loginAsAdmin();

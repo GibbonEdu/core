@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/User Admin/rollover.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View rollover');
 $I->loginAsAdmin();

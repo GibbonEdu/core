@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Finance/invoices_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage invoices');
 $I->loginAsAdmin();

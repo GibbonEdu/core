@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/jobOpenings_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View job openings');
 $I->loginAsAdmin();

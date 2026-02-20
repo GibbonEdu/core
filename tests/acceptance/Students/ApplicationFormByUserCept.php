@@ -1,4 +1,12 @@
 <?php
+/**
+ * @covers modules/Students/applicationForm.php
+ * @covers modules/Students/applicationForm_manage_edit.php
+ * @covers modules/Students/applicationForm_manage_delete.php
+ * @covers modules/User Admin/applicationFormSettings.php
+ * @covers modules/User Admin/userSettings.php
+ * @covers modules/User Admin/studentsSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit a student application form logged in as a user');
 $I->loginAsAdmin();

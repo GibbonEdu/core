@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Attendance/attendance.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view daily attendance');
 $I->loginAsAdmin();

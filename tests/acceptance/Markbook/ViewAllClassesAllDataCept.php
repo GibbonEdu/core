@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Markbook/markbook_view.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view all classes all data markbook page');
 $I->loginAsAdmin();

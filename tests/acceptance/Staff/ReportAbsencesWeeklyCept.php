@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/report_absences_weekly.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Weekly Absences');
 $I->loginAsAdmin();

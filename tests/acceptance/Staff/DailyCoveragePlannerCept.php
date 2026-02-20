@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/coverage_planner.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View daily coverage planner');
 $I->loginAsAdmin();

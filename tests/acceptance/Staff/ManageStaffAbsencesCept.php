@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/absences_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage staff absences');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Admissions/applicationFormSelect.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Admissions Welcome');
 $I->loginAsAdmin();

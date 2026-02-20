@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/ttSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update timetable settings');
 $I->loginAsAdmin();

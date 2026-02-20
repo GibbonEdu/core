@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/enrolment_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage activity enrolment');
 $I->loginAsAdmin();

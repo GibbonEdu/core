@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Finance/pettyCash.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view petty cash');
 $I->loginAsAdmin();

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/courseEnrolment_manage.php
+ * @covers modules/Timetable Admin/courseEnrolment_manage_class_edit.php
+ * @covers modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php
+ * @covers modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage course enrolment by class');
 $I->loginAsAdmin();

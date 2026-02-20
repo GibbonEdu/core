@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/System Admin/stringReplacement_manage.php
+ * @covers modules/System Admin/stringReplacement_manage_add.php
+ * @covers modules/System Admin/stringReplacement_manage_edit.php
+ * @covers modules/System Admin/stringReplacement_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete string replacements');
 $I->loginAsAdmin();

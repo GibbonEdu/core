@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_student_medicalSummary.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Student Medical Summary');
 $I->loginAsAdmin();

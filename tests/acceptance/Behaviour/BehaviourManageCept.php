@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Behaviour/behaviour_manage.php
+ * @covers modules/Behaviour/behaviour_manage_add.php
+ * @covers modules/Behaviour/behaviour_manage_edit.php
+ * @covers modules/Behaviour/behaviour_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a behaviour record');
 $I->loginAsAdmin();

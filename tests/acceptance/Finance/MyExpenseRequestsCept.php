@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Finance/expenseRequest_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view my expense requests');
 $I->loginAsAdmin();

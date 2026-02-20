@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Library/library_manage_shelves.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage library shelves');
 $I->loginAsAdmin();

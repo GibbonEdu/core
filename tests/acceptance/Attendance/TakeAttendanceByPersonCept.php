@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Attendance/attendance_take_byPerson.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('take attendance by person');
 $I->loginAsAdmin();

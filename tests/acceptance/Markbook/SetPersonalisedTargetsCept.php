@@ -1,4 +1,8 @@
 <?php
+/**
+ * @covers modules/Markbook/markbook_view.php
+ * @covers modules/Markbook/markbook_edit_targets.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view personalised attainment targets page');
 $I->loginAsAdmin();

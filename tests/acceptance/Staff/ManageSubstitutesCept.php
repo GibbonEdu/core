@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Staff/substitutes_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage substitutes');
 $I->loginAsAdmin();

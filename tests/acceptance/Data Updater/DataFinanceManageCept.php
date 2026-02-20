@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Data Updater/data_finance_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage finance data updates');
 $I->loginAsAdmin();

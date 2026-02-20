@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/User Admin/staffApplicationFormSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Staff Application Form Settings');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Students/report_myStudentHistory.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check My Student History');
 $I->loginAsAdmin();

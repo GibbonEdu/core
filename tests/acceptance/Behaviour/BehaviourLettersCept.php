@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Behaviour/behaviour_letters.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check View Behaviour Letters');
 $I->loginAsAdmin();

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Activities/activities_categories.php
+ * @covers modules/Activities/activities_categories_add.php
+ * @covers modules/Activities/activities_categories_edit.php
+ * @covers modules/Activities/activities_categories_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage activity categories');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Form Groups/formGroups.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view form groups');
 $I->loginAsAdmin();

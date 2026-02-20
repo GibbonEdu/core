@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Library/report_viewOverdueItems.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View overdue items');
 $I->loginAsAdmin();

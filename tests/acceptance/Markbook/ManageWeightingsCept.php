@@ -1,4 +1,12 @@
 <?php
+/**
+ * @covers modules/School Admin/markbookSettings.php
+ * @covers modules/Markbook/markbook_view.php
+ * @covers modules/Markbook/weighting_manage.php
+ * @covers modules/Markbook/weighting_manage_add.php
+ * @covers modules/Markbook/weighting_manage_edit.php
+ * @covers modules/Markbook/weighting_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage markbook weightings');
 $I->loginAsAdmin();
@@ -25,11 +33,11 @@ $gibbonCourseClassID = $I->grabValueFromURL('gibbonCourseClassID');
 
 // Navigate to Manage Weightings
 $I->amOnModulePage('Markbook', 'weighting_manage.php', array('gibbonCourseClassID' => $gibbonCourseClassID));
-$I->see('Weightings');
+$I->seeBreadcrumb('Weightings');
 
 // Add Weighting ------------------------------------------------
 $I->clickNavigation('Add');
-$I->see('Add Weighting');
+$I->seeBreadcrumb('Add Weighting');
 
 $formValues = array(
     'type'                     => 'Test Weighting',
@@ -49,7 +57,7 @@ $I->amOnModulePage('Markbook', 'weighting_manage_edit.php', array(
     'gibbonMarkbookWeightID' => $gibbonMarkbookWeightID,
     'gibbonCourseClassID' => $gibbonCourseClassID
 ));
-$I->see('Edit Weighting');
+$I->seeBreadcrumb('Edit Weighting');
 
 $I->seeInFormFields('#content form', array(
     'description' => 'This is a test weighting.',

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/report_notSignedUp.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Students Not Signed Up');
 $I->loginAsAdmin();

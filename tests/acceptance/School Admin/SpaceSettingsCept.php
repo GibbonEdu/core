@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/spaceSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Facility Settings');
 $I->loginAsAdmin();

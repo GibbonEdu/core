@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/Activities/activities_manage.php
+ * @covers modules/Activities/activities_manage_add.php
+ * @covers modules/Activities/activities_manage_enrolment.php
+ * @covers modules/Activities/activities_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('manage activity enrolment for a specific activity');
 $I->loginAsAdmin();

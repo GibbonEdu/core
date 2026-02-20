@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Timetable Admin/tt.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check timetable editing by class');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Activities/activities_view.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view activities as a student');
 $I->loginAsStudent();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Admissions/report_students_new.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check New Students');
 $I->loginAsAdmin();

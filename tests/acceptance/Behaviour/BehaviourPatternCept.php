@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/Behaviour/behaviour_pattern.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Find Behaviour Patterns');
 $I->loginAsAdmin();
