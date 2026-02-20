@@ -12,7 +12,7 @@ $I->amOnModulePage('Messenger', 'cannedResponse_manage.php');
 $I->seeBreadcrumb('Manage Canned Responses');
 
 // Add a new canned response
-$I->clickLink('Add');
+$I->click('Add');
 $I->seeBreadcrumb('Add');
 $I->fillField('subject', 'Test Canned Response');
 $I->fillField('body', 'This is a test canned response body.');

@@ -12,7 +12,7 @@ $I->amOnModulePage('Reports', 'templates_manage.php');
 $I->seeBreadcrumb('Template Builder');
 
 // Add a new template
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Template');
 $I->selectFromDropdown('context', 2);

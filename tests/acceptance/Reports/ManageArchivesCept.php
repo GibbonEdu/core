@@ -12,7 +12,7 @@ $I->amOnModulePage('Reports', 'archive_manage.php');
 $I->seeBreadcrumb('Manage Archives');
 
 // Add a new archive
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Archive');
 $I->selectFromDropdown('gibbonSchoolYearID', 2);

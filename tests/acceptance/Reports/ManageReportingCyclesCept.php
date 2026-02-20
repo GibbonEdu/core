@@ -12,7 +12,7 @@ $I->amOnModulePage('Reports', 'reporting_cycles_manage.php');
 $I->seeBreadcrumb('Manage Reporting Cycles');
 
 // Add a new reporting cycle
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Reporting Cycle');
 $I->selectFromDropdown('gibbonSchoolYearID', 2);

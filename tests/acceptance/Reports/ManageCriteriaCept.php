@@ -12,7 +12,7 @@ $I->amOnModulePage('Reports', 'reporting_criteria_manage.php');
 $I->seeBreadcrumb('Manage Criteria');
 
 // Add new criteria
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Criteria');
 $I->selectFromDropdown('gibbonReportingCycleID', 2);

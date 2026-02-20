@@ -12,7 +12,7 @@ $I->amOnModulePage('Messenger', 'mailingListRecipients_manage.php');
 $I->seeBreadcrumb('Manage Mailing List Recipients');
 
 // Add a new recipient
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('email', 'test@example.com');
 $I->fillField('name', 'Test Recipient');

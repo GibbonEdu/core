@@ -12,7 +12,7 @@ $I->amOnModulePage('Messenger', 'groups_manage.php');
 $I->seeBreadcrumb('Manage Groups');
 
 // Add a new group
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Group');
 $I->click('Submit');

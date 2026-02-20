@@ -12,7 +12,7 @@ $I->amOnModulePage('Staff', 'coverage_manage.php');
 $I->seeBreadcrumb('Manage Staff Coverage');
 
 // Add new coverage
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->selectFromDropdown('gibbonPersonIDStatus', 2);
 $I->selectFromDropdown('gibbonPersonIDCoverage', 3);

@@ -12,7 +12,7 @@ $I->amOnModulePage('Individual Needs', 'investigations_manage.php');
 $I->seeBreadcrumb('Manage Investigations');
 
 // Add a new investigation
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Investigation');
 $I->click('Submit');

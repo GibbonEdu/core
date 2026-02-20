@@ -12,7 +12,7 @@ $I->amOnModulePage('Reports', 'reports_manage.php');
 $I->seeBreadcrumb('Manage Reports');
 
 // Add a new report
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Report');
 $I->selectFromDropdown('gibbonSchoolYearID', 2);

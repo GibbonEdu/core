@@ -12,9 +12,9 @@ $I->amOnModulePage('Staff', 'jobOpenings_manage.php');
 $I->seeBreadcrumb('Job Openings');
 
 // Add a new job opening
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
-$I->fillField('type', 'Test Position');
+$I->selectFromDropdown('type', 1);
 $I->fillField('jobTitle', 'Test Job Title');
 $I->click('Submit');
 $I->seeSuccessMessage();

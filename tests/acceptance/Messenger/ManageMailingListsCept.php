@@ -12,7 +12,7 @@ $I->amOnModulePage('Messenger', 'mailingLists_manage.php');
 $I->seeBreadcrumb('Manage Mailing Lists');
 
 // Add a new mailing list
-$I->clickLink('Add');
+$I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Mailing List');
 $I->click('Submit');
