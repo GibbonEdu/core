@@ -130,6 +130,8 @@ class AcceptanceTester extends \Codeception\Actor
             $url .= '&'.http_build_query($params);
         }
 
-        return $this->amOnPage($url);
+        $this->amOnPage($url);
+
+        $this->dontSeeErrors();
     }
 }
