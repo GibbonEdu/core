@@ -45,12 +45,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             if (empty($result)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/behaviour_manage_deleteProcess.php?type=".$_GET['type'], true, false);
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/behaviour_manage_deleteProcess.php?type=".($_GET['type'] ?? ''), true, false);
 
                 $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
-                $form->addHiddenValue('gibbonPersonID', $_GET['gibbonPersonID']);
-                $form->addHiddenValue('gibbonFormGroupID', $_GET['gibbonFormGroupID']);
-                $form->addHiddenValue('gibbonYearGroupID', $_GET['gibbonYearGroupID']);          
+                $form->addHiddenValue('gibbonPersonID', $_GET['gibbonPersonID'] ?? '');
+                $form->addHiddenValue('gibbonFormGroupID', $_GET['gibbonFormGroupID'] ?? '');
+                $form->addHiddenValue('gibbonYearGroupID', $_GET['gibbonYearGroupID'] ?? '');          
 
 	            $form->addRow()->addConfirmSubmit();
                 echo $form->getOutput();

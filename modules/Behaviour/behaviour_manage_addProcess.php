@@ -246,13 +246,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $inserted = $noteGateway->insert($note);
 
                 if (!$inserted) {
-                    $URL .= "&return=warning1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
+                    $URL .= "&return=warning1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$gibbonBehaviourID";
                     header("Location: {$URL}");
                     exit;
                 }
             }
 
-            $URL .= "&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
+            $URL .= "&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$gibbonBehaviourID";
             header("Location: {$URL}");
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             // Proceed!
