@@ -8,3 +8,9 @@ $I->amOnModulePage('Admissions', 'report_students_left.php');
 // Basic Check -----------------------------------------
 
 $I->dontSeeErrors();
+
+// Report Print Test -----------------------------------
+
+$I->click('Print');
+$I->seeInCurrentUrl('format=print');
+$I->dontSeeErrors();
