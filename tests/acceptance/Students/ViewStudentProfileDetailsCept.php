@@ -1,20 +1,17 @@
 <?php
 /**
- * @covers modules/Timetable/tt_view.php
+ * @covers modules/Students/student_view_details.php
  */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('View timetable by person');
+$I->wantTo('View student profile details');
 $I->loginAsAdmin();
 
-$I->amOnModulePage('Timetable', 'tt.php');
-$I->seeBreadcrumb('View Timetable by Person');
-
-// Get a person with a timetable
+// Get a student
 $gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
 $gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
 
-$I->amOnModulePage('Timetable', 'tt_view.php', [
+$I->amOnModulePage('Students', 'student_view_details.php', [
     'gibbonPersonID' => $gibbonPersonID,
     'gibbonSchoolYearID' => $gibbonSchoolYearID
 ]);
-$I->seeBreadcrumb('View Timetable');
+$I->seeBreadcrumb('View Student Profile');
