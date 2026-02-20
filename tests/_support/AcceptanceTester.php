@@ -89,6 +89,14 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->see($text, '.warning');
     }
 
+    public function dontSeeErrors()
+    {
+        $this->dontSee('PHP Deprecated');
+        $this->dontSee('PHP Fatal error');
+        $this->dontSee('Uncaught Exception');
+        $this->dontSee('Warning: Undefined');
+    }
+
     public function grabValueFromURL($param)
     {
         return $this->grabFromCurrentUrl('/'.$param.'=([^=&\s]+)/');
