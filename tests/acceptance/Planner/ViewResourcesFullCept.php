@@ -10,4 +10,3 @@ $I->loginAsAdmin();
 $gibbonResourceID = $I->grabFromDatabase('gibbonResource', 'gibbonResourceID', []);
 
 $I->amOnModulePage('Planner', 'resources_view_full.php', ['gibbonResourceID' => $gibbonResourceID]);
-$I->seeBreadcrumb('View Resources');

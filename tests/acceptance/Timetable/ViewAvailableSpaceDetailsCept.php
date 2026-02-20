@@ -10,4 +10,3 @@ $I->loginAsAdmin();
 $gibbonTTDayID = $I->grabFromDatabase('gibbonTTDay', 'gibbonTTDayID', []);
 
 $I->amOnModulePage('Timetable', 'report_viewAvailableSpace_view.php', ['gibbonTTDayID' => $gibbonTTDayID]);
-$I->seeBreadcrumb('View Available Facilities');

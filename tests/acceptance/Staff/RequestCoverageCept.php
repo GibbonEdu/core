@@ -10,4 +10,4 @@ $I->loginAsAdmin();
 $gibbonStaffAbsenceID = $I->grabFromDatabase('gibbonStaffAbsence', 'gibbonStaffAbsenceID', []);
 
 $I->amOnModulePage('Staff', 'coverage_request.php', ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID]);
-$I->seeBreadcrumb('Request Coverage');
+

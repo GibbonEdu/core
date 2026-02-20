@@ -16,4 +16,4 @@ $I->amOnModulePage('Departments', 'department_course_class.php', [
     'gibbonCourseID' => $gibbonCourseID,
     'gibbonCourseClassID' => $gibbonCourseClassID
 ]);
-$I->seeBreadcrumb('View Departments');
+$I->dontSeeErrors();

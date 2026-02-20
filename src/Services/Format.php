@@ -620,8 +620,6 @@ class Format
      */
     public static function link($url, $text = '', $attr = [])
     {
-        $isExternal = stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url;
-
         if (empty($url)) {
             return $text;
         }
@@ -640,6 +638,7 @@ class Format
             $url = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $url);
         }
 
+        $isExternal = stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url;
         $url = str_replace(['"', "'"], ['%22', '%27'], $url);
         
         if (substr($url, 0, 2) == './') {

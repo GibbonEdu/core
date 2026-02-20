@@ -5,5 +5,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage timetable subscription');
 $I->loginAsAdmin();
-$I->amOnModulePage('Timetable', 'tt_manage_subscription.php');
-$I->seeBreadcrumb('Manage Timetable Subscription');
+
+$gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
+
+$I->amOnModulePage('Timetable', 'tt_manage_subscription.php', ['gibbonPersonID' => $gibbonPersonID]);

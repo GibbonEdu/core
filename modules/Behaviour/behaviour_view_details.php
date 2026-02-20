@@ -54,6 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Behaviour', 'behaviour_view.php')->withQueryParam('search', $search));
         }
 
+        if (empty($gibbonPersonID)) {
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+            return;
+        }
+
         if ($highestAction == 'View Behaviour Records_myself' && $gibbonPersonID != $session->get('gibbonPersonID')) {
             $page->addError(__('You do not have access to this action.'));
             return;

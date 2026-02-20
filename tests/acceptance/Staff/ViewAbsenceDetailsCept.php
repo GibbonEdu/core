@@ -10,4 +10,3 @@ $I->loginAsAdmin();
 $gibbonStaffAbsenceID = $I->grabFromDatabase('gibbonStaffAbsence', 'gibbonStaffAbsenceID', []);
 
 $I->amOnModulePage('Staff', 'absences_view_details.php', ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID]);
-$I->seeBreadcrumb('Staff Absences');

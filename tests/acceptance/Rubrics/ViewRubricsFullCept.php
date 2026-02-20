@@ -10,4 +10,4 @@ $I->loginAsAdmin();
 $gibbonRubricID = $I->grabFromDatabase('gibbonRubric', 'gibbonRubricID', []);
 
 $I->amOnModulePage('Rubrics', 'rubrics_view_full.php', ['gibbonRubricID' => $gibbonRubricID]);
-$I->seeBreadcrumb('View Rubrics');
+

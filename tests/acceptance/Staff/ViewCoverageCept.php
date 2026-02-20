@@ -10,4 +10,4 @@ $I->loginAsAdmin();
 $gibbonStaffCoverageID = $I->grabFromDatabase('gibbonStaffCoverage', 'gibbonStaffCoverageID', []);
 
 $I->amOnModulePage('Staff', 'coverage_view.php', ['gibbonStaffCoverageID' => $gibbonStaffCoverageID]);
-$I->seeBreadcrumb('Coverage');
+$I->seeBreadcrumb('Open Requests');

@@ -10,4 +10,4 @@ $I->loginAsAdmin();
 $gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
 
 $I->amOnModulePage('Staff', 'coverage_availability.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
-$I->seeBreadcrumb('Coverage Availability');
+$I->seeBreadcrumb('Edit Availability');

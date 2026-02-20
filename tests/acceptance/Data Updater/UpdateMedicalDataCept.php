@@ -20,7 +20,7 @@ $I->see('Update Data');
 
 $editFormValues = array(
     'longTermMedication'        => 'Y',
-    'longTermMedicationDetails' => 'Test',
+    'longTermMedicationDetails' => 'Test ' . date('Y-m-d'),
 );
 
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');

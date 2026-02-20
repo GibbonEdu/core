@@ -31,6 +31,7 @@ $I->fillField('jobTitle', 'Updated Job Title');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
+
 // Delete the job opening
 $I->amOnModulePage('Staff', 'jobOpenings_manage_delete.php', ['gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID]);
 $I->click('Delete');

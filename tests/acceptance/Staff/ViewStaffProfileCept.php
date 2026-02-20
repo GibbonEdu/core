@@ -6,8 +6,11 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('View staff profile');
 $I->loginAsAdmin();
 
-// Get a staff member
-$gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
+$I->amOnModulePage('Staff', 'staff_view.php');
+$I->seeBreadcrumb('Staff Directory');
 
-$I->amOnModulePage('Staff', 'staff_view.php', ['gibbonPersonID' => $gibbonPersonID]);
-$I->seeBreadcrumb('View Staff');
+// Get a staff member
+$gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['username' => 'testingadmin']);
+
+$I->amOnModulePage('Staff', 'staff_view_details.php', ['gibbonPersonID' => $gibbonPersonID]);
+$I->seeBreadcrumb('Staff Directory');

@@ -10,4 +10,4 @@ $I->loginAsAdmin();
 $gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
 
 $I->amOnModulePage('Planner', 'scopeAndSequence.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
-$I->seeBreadcrumb('Scope & Sequence');
+$I->seeBreadcrumb('Scope And Sequence');

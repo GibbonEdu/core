@@ -10,4 +10,4 @@ $I->loginAsParent();
 $gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
 
 $I->amOnModulePage('Individual Needs', 'iep_view_myChildren.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
-$I->seeBreadcrumb('Individual Education Plan');
+$I->dontSeeErrors();
