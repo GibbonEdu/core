@@ -4190,7 +4190,9 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000054096, 001, 0001025),
 (0000054097, 002, 0001025),
 (0000054098, 002, 0001020),
-(0000054099, 001, 0001026);
+(0000054099, 001, 0001026),
+(0000054100, 001, 0000011),
+(0000054101, 001, 0000609);
 
 -- --------------------------------------------------------
 
@@ -8800,7 +8802,7 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54100;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54102;
 
 --
 -- AUTO_INCREMENT for table `gibbonPerson`
