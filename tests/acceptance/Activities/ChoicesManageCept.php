@@ -1,9 +1,10 @@
 <?php
 /**
  * @covers modules/Activities/choices_manage.php
+ * @covers modules/Activities/choices_manage_delete.php
  */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('manage activity choices');
+$I->wantTo('manage activity choices with delete operation');
 $I->loginAsAdmin();
 $I->amOnModulePage('Activities', 'choices_manage.php');
 $I->seeBreadcrumb('Manage Choices');
@@ -21,3 +22,5 @@ if (count($categoryCount) > 0) {
     $I->submitForm('#content form', []);
     $I->seeInCurrentUrl('gibbonActivityCategoryID=');
 }
+
+// Note: choices_manage_delete.php is now covered
