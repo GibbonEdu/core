@@ -20,7 +20,7 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-    protected $breadcrumbEnd = '.trailEnd';
+    protected $breadcrumbEnd = '.breadcrumb';
 
    /**
     * Define custom actions here
