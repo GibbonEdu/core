@@ -15,7 +15,8 @@ $I->seeBreadcrumb('Manage Archives');
 $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Archive');
-$I->selectFromDropdown('gibbonSchoolYearID', 2);
+$I->fillField('path', 'reports');
+
 $I->click('Submit');
 $I->seeSuccessMessage();
 
@@ -30,6 +31,5 @@ $I->seeSuccessMessage();
 
 // Delete the archive
 $I->amOnModulePage('Reports', 'archive_manage_delete.php', ['gibbonReportArchiveID' => $gibbonReportArchiveID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

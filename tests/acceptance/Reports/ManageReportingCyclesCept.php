@@ -12,10 +12,13 @@ $I->amOnModulePage('Reports', 'reporting_cycles_manage.php');
 $I->seeBreadcrumb('Manage Reporting Cycles');
 
 // Add a new reporting cycle
-$I->click('Add', 'a');
+$I->click('Add');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Reporting Cycle');
-$I->selectFromDropdown('gibbonSchoolYearID', 2);
+$I->fillField('nameShort', 'Test');
+$I->fillField('dateStart', date('Y-m-d'));
+$I->fillField('dateEnd', date('Y-m-d'));
+
 $I->click('Submit');
 $I->seeSuccessMessage();
 
@@ -30,6 +33,5 @@ $I->seeSuccessMessage();
 
 // Delete the reporting cycle
 $I->amOnModulePage('Reports', 'reporting_cycles_manage_delete.php', ['gibbonReportingCycleID' => $gibbonReportingCycleID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

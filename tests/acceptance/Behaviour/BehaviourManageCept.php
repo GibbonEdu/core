@@ -25,7 +25,7 @@ $I->selectFromDropdown('type', 1);
 $I->selectFromDropdown('descriptor', 1);
 
 $formValues = array(
-    'date'    => date('d/m/Y'),
+    'date'    => date('Y-m-d'),
     'comment' => 'Test behaviour incident',
 );
 

@@ -15,6 +15,7 @@ $I->seeBreadcrumb('Manage Mailing Lists');
 $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Mailing List');
+$I->fillField('active', 'Y');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
@@ -29,6 +30,5 @@ $I->seeSuccessMessage();
 
 // Delete the mailing list
 $I->amOnModulePage('Messenger', 'mailingLists_manage_delete.php', ['gibbonMessengerMailingListID' => $gibbonMessengerMailingListID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

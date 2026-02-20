@@ -8,28 +8,52 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage staff coverage with full CRUD operations');
 $I->loginAsAdmin();
+
+// Change Staff Settings -----------------------------------
+$I->amOnModulePage('User Admin', 'staffSettings.php');
+$originalFormValues = $I->grabAllFormValues();
+
+$newFormValues = array(
+    'coverageInternal'          => 'Y',
+);
+
+$I->submitForm('#content form', $newFormValues, 'Submit');
+
+// Manage Coverage -----------------------------------
+
 $I->amOnModulePage('Staff', 'coverage_manage.php');
 $I->seeBreadcrumb('Manage Staff Coverage');
+
+$today = date('Y-m-d');
 
 // Add new coverage
 $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
-$I->selectFromDropdown('gibbonPersonIDStatus', 2);
-$I->selectFromDropdown('gibbonPersonIDCoverage', 3);
-$I->fillField('date', date('d/m/Y'));
-$I->click('Submit');
+$I->fillField('dateStart', $today);
+$I->fillField('dateEnd', $today);
+$I->selectFromDropdown('gibbonPersonIDCoverage', 1);
+$I->selectFromDropdown('gibbonPersonID', 1);
+$I->selectFromDropdown('status', 1);
+$I->fillField('reason', 'Test coverage');
+
+$I->submitForm('#content form', ['requestDates' => [$today]]);
 $I->seeSuccessMessage();
 
 // Edit the coverage
 $gibbonStaffCoverageID = $I->grabEditIDFromURL();
 $I->amOnModulePage('Staff', 'coverage_manage_edit.php', ['gibbonStaffCoverageID' => $gibbonStaffCoverageID]);
 $I->seeBreadcrumb('Edit');
-$I->fillField('notesCoverage', 'Updated coverage notes');
+$I->fillField('notesStatus', 'Updated coverage notes');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
 // Delete the coverage
 $I->amOnModulePage('Staff', 'coverage_manage_delete.php', ['gibbonStaffCoverageID' => $gibbonStaffCoverageID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
+
+// Restore Original Settings -----------------------------------
+$I->amOnModulePage('User Admin', 'staffSettings.php');
+$I->submitForm('#content form', $originalFormValues, 'Submit');
+$I->see('Your request was completed successfully.', '.success');
+$I->seeInFormFields('#content form', $originalFormValues);

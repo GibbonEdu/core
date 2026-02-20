@@ -21,11 +21,13 @@ $I->selectFromDropdown('gibbonSpaceID', 1);
 $formValues = array(
     'name' => 'Test Catalog Item',
     'producer' => 'Test Producer',
-    'id' => 'TEST001',
-    'fields' => 'Test field data',
+    'idCheck' => 'TEST001',
     'vendor' => 'Test Vendor',
     'purchaseDate' => date('Y-m-d'),
     'invoiceNumber' => 'INV001',
+    'borrowable' => 'Y',
+    'status' => 'Available',
+    'replacement' => 'N',
 );
 
 $I->submitForm('#content form', $formValues, 'Submit');
@@ -56,5 +58,5 @@ $I->amOnModulePage('Library', 'library_manage_catalog_delete.php', array(
     'gibbonLibraryItemID' => $gibbonLibraryItemID
 ));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

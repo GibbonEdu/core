@@ -16,6 +16,9 @@ $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->selectFromDropdown('type', 1);
 $I->fillField('jobTitle', 'Test Job Title');
+$I->fillField('dateOpen', date('Y-m-d'));
+$I->fillField('active', 'Y');
+$I->fillField('description', 'Test job description');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
@@ -30,6 +33,5 @@ $I->seeSuccessMessage();
 
 // Delete the job opening
 $I->amOnModulePage('Staff', 'jobOpenings_manage_delete.php', ['gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

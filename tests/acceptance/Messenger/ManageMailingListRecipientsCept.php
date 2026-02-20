@@ -14,8 +14,9 @@ $I->seeBreadcrumb('Manage Mailing List Recipients');
 // Add a new recipient
 $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
+$I->fillField('surname', 'Test');
+$I->fillField('preferredName', 'Recipient');
 $I->fillField('email', 'test@example.com');
-$I->fillField('name', 'Test Recipient');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
@@ -24,12 +25,11 @@ $gibbonMessengerMailingListRecipientID = $I->grabEditIDFromURL();
 $I->amOnModulePage('Messenger', 'mailingListRecipients_manage_edit.php', ['gibbonMessengerMailingListRecipientID' => $gibbonMessengerMailingListRecipientID]);
 $I->seeBreadcrumb('Edit');
 $I->seeInField('email', 'test@example.com');
-$I->fillField('name', 'Updated Recipient');
+$I->fillField('preferredName', 'Updated');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
 // Delete the recipient
 $I->amOnModulePage('Messenger', 'mailingListRecipients_manage_delete.php', ['gibbonMessengerMailingListRecipientID' => $gibbonMessengerMailingListRecipientID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

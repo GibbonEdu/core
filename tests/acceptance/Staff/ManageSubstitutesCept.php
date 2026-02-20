@@ -18,7 +18,8 @@ $I->seeBreadcrumb('Add');
 $I->selectFromDropdown('gibbonPersonID', 2);
 
 $formValues = array(
-    'type' => 'Internal',
+    'active' => 'Y',
+    'type' => 'Internal Substitute',
     'details' => 'Test substitute details',
     'priority' => '1',
 );
@@ -35,11 +36,11 @@ $I->amOnModulePage('Staff', 'substitutes_manage_edit.php', array(
 $I->seeBreadcrumb('Edit');
 
 $I->seeInFormFields('#content form', array(
-    'type' => 'Internal',
+    'type' => 'Internal Substitute',
 ));
 
 $formValues = array(
-    'type' => 'External',
+    'type' => 'External Substitute',
     'details' => 'Updated substitute details',
     'priority' => '2',
 );
@@ -52,5 +53,5 @@ $I->amOnModulePage('Staff', 'substitutes_manage_delete.php', array(
     'gibbonSubstituteID' => $gibbonSubstituteID
 ));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

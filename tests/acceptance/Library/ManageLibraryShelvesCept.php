@@ -19,7 +19,9 @@ $I->selectFromDropdown('type', 1);
 $I->selectFromDropdown('field', 1);
 
 $formValues = array(
-    'name' => 'Test Shelf',
+    'shelfName' => 'Test Shelf',
+    'active' => 'Y',
+    'shuffle' => 'N',
 );
 
 $I->submitForm('#content form', $formValues, 'Submit');
@@ -49,5 +51,5 @@ $I->amOnModulePage('Library', 'library_manage_shelves_delete.php', array(
     'gibbonLibraryShelfID' => $gibbonLibraryShelfID
 ));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

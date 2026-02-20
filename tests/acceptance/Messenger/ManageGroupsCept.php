@@ -15,7 +15,8 @@ $I->seeBreadcrumb('Manage Groups');
 $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Group');
-$I->click('Submit');
+$I->submitForm('#content form', ['members' => ['0000002746']]);
+
 $I->seeSuccessMessage();
 
 // Edit the group
@@ -29,6 +30,5 @@ $I->seeSuccessMessage();
 
 // Delete the group
 $I->amOnModulePage('Messenger', 'groups_manage_delete.php', ['gibbonGroupID' => $gibbonGroupID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

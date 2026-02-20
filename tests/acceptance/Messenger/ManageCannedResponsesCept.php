@@ -30,6 +30,5 @@ $I->seeSuccessMessage();
 
 // Delete the canned response
 $I->amOnModulePage('Messenger', 'cannedResponse_manage_delete.php', ['gibbonMessengerCannedResponseID' => $gibbonMessengerCannedResponseID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

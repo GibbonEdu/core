@@ -15,7 +15,10 @@ $I->seeBreadcrumb('Template Builder');
 $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
 $I->fillField('name', 'Test Template');
-$I->selectFromDropdown('context', 2);
+$I->selectFromDropdown('context', 1);
+$I->selectFromDropdown('flags', 1);
+$I->selectFromDropdown('orientation', 1);
+$I->selectFromDropdown('pageSize', 1);
 $I->click('Submit');
 $I->seeSuccessMessage();
 
@@ -25,11 +28,11 @@ $I->amOnModulePage('Reports', 'templates_manage_edit.php', ['gibbonReportTemplat
 $I->seeBreadcrumb('Edit');
 $I->seeInField('name', 'Test Template');
 $I->fillField('name', 'Updated Template');
+$I->fillField('active', 'N');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
 // Delete the template
 $I->amOnModulePage('Reports', 'templates_manage_delete.php', ['gibbonReportTemplateID' => $gibbonReportTemplateID]);
-$I->seeBreadcrumb('Delete');
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
