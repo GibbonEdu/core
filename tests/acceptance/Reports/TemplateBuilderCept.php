@@ -2,6 +2,7 @@
 /**
  * @covers modules/Reports/templates_manage.php
  * @covers modules/Reports/templates_manage_add.php
+ * @covers modules/Reports/templates_manage_duplicate.php
  * @covers modules/Reports/templates_manage_edit.php
  * @covers modules/Reports/templates_manage_delete.php
  */
@@ -36,3 +37,20 @@ $I->seeSuccessMessage();
 $I->amOnModulePage('Reports', 'templates_manage_delete.php', ['gibbonReportTemplateID' => $gibbonReportTemplateID]);
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Test Duplicate Template -----------------------------------
+
+// Create a new template to duplicate
+$gibbonReportTemplateID = $I->haveInDatabase('gibbonReportTemplate', [
+    'name' => 'Template to Duplicate',
+    'context' => 'Student Enrolment',
+]);
+
+$I->amOnModulePage('Reports', 'templates_manage_duplicate.php', [
+    'gibbonReportTemplateID' => $gibbonReportTemplateID,
+]);
+$I->seeBreadcrumb('Duplicate');
+$I->dontSeeErrors();
+
+// Clean up
+$I->deleteFromDatabase('gibbonReportTemplate', ['gibbonReportTemplateID' => $gibbonReportTemplateID]);

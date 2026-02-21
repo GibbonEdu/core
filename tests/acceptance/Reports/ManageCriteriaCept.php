@@ -2,6 +2,7 @@
 /**
  * @covers modules/Reports/reporting_criteria_manage.php
  * @covers modules/Reports/reporting_criteria_manage_add.php
+ * @covers modules/Reports/reporting_criteria_manage_addMultiple.php
  * @covers modules/Reports/reporting_criteria_manage_edit.php
  * @covers modules/Reports/reporting_criteria_manage_delete.php
  */
@@ -41,3 +42,16 @@ $I->seeSuccessMessage();
 $I->amOnModulePage('Reports', 'reporting_criteria_manage_delete.php', ['gibbonReportingCriteriaID' => $gibbonReportingCriteriaID]);
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Test Add Multiple Criteria -------------------------------
+
+// Get the reporting cycle and scope IDs from the manage page
+$gibbonReportingCycleID = $I->grabValueFromURL('gibbonReportingCycleID');
+$gibbonReportingScopeID = $I->grabValueFromURL('gibbonReportingScopeID');
+
+$I->amOnModulePage('Reports', 'reporting_criteria_manage_addMultiple.php', [
+    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+    'gibbonReportingScopeID' => $gibbonReportingScopeID,
+]);
+$I->seeBreadcrumb('Add Multiple Criteria');
+$I->dontSeeErrors();
