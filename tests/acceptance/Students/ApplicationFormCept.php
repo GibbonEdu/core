@@ -1,6 +1,7 @@
 <?php
 /**
  * @covers modules/Students/applicationForm.php
+ * @covers modules/Students/applicationForm_payFee.php
  * @covers modules/Students/applicationForm_manage_edit.php
  * @covers modules/Students/applicationForm_manage_delete.php
  * @covers modules/User Admin/applicationFormSettings.php
@@ -214,8 +215,16 @@ $I->see(basename($file0path));
 $I->see('FileUpload1');
 $I->see(basename($file1path));
 
+// Test Payment Page -----------------------------------------
+
+$I->click('Logout', 'a');
+$I->amOnModulePage('Students', 'applicationForm_payFee.php', array('key' => $applicationFormHash, 'gibbonApplicationFormID' => $gibbonApplicationFormID));
+$I->seeBreadcrumb('Application Fee');
+$I->dontSeeErrors();
+
 // Cleanup ------------------------------------------------
 
+$I->loginAsAdmin();
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
 $I->amOnModulePage('Students', 'applicationForm_manage_delete.php', $urlParams );
 
