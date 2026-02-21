@@ -12,7 +12,15 @@ $I->amOnModulePage('System Admin', 'emailTemplates_manage.php');
 $I->seeBreadcrumb('Email Templates');
 
 // Get an existing email template
-$gibbonEmailTemplateID = $I->grabFromDatabase('gibbonEmailTemplate', 'gibbonEmailTemplateID', []);
+$gibbonEmailTemplateID = $I->haveInDatabase('gibbonEmailTemplate', [
+    'type' => 'Core',
+    'templateType' => 'Testing Template',
+    'moduleName' => 'System',
+    'templateName' => 'Testing Template',
+    'templateSubject' => 'Test Subject',
+    'templateBody' => 'Test',
+    'variables' => '{}',
+]);
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('System Admin', 'emailTemplates_manage_edit.php', [
@@ -20,7 +28,7 @@ $I->amOnModulePage('System Admin', 'emailTemplates_manage_edit.php', [
 ]);
 $I->seeBreadcrumb('Edit Email Template');
 
-$I->seeInField('templateName', $I->grabValueFrom('#templateName'));
+$I->seeInField('templateName', 'Testing Template');
 
 $formValues = [
     'templateName' => 'Updated Template Name',

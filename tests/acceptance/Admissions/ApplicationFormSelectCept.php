@@ -6,31 +6,31 @@
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('check Admissions Welcome and Application Form');
-$I->loginAsAdmin();
 
-$I->amOnModulePage('Admissions', 'applicationFormSelect.php');
+$I->updateInDatabase('gibbonForm', ['active' => 'Y', 'public' => 'Y'], ['name' => 'Sample Application Form']);
 
 // Basic Check -----------------------------------------
+$I->amOnModulePage('Admissions', 'applicationFormSelect.php');
 
+$I->see('Sample Application Form');
 $I->dontSeeErrors();
 
-// Test Application Form (requires accessID and gibbonFormID) ----
+$I->fillField('admissionsLoginEmail', 'testnew' . time() . '@example.com');
+$I->click('Next');
 
-// Get an active form
-$gibbonFormID = $I->grabFromDatabase('gibbonForm', 'gibbonFormID', [
-    'type' => 'Application',
-    'active' => 'Y'
+$I->seeBreadcrumb('Application Form');
+$I->dontSeeErrors();
+
+// Test Application Form access link ----
+$gibbonFormID = $I->grabValueFromURL('gibbonFormID');
+$accessID = $I->grabValueFromURL('accessID');
+
+$gibbonAdmissionsAccountID = $I->grabFromDatabase('gibbonAdmissionsAccount', 'gibbonAdmissionsAccountID', [
+    'accessID' => $accessID
 ]);
 
-// Create a test admissions account
-$gibbonAdmissionsAccountID = $I->haveInDatabase('gibbonAdmissionsAccount', [
-    'email' => 'testapp' . time() . '@example.com',
-    'accessID' => 'TEST' . time(),
-    'timestampCreated' => date('Y-m-d H:i:s'),
-]);
-
-$accessID = $I->grabFromDatabase('gibbonAdmissionsAccount', 'accessID', [
-    'gibbonAdmissionsAccountID' => $gibbonAdmissionsAccountID
+$accessToken = $I->grabFromDatabase('gibbonAdmissionsAccount', 'accessToken', [
+    'accessID' => $accessID
 ]);
 
 // Test Application Form page
@@ -55,15 +55,15 @@ $gibbonAdmissionsApplicationID = $I->haveInDatabase('gibbonAdmissionsApplication
 
 $I->amOnModulePage('Admissions', 'applicationForm_payFee.php', [
     'accessID' => $accessID,
+    'tok' => $accessToken,
     'gibbonFormID' => $gibbonFormID,
-    'identifier' => $identifier
+    'identifier' => $identifier,
 ]);
 $I->seeBreadcrumb('Application Fee');
 $I->dontSeeErrors();
 
-// Cleanup
-$I->amOnModulePage('Admissions', 'admissions_manage_delete.php', [
-    'gibbonAdmissionsAccountID' => $gibbonAdmissionsAccountID
-]);
-$I->click('Delete');
-$I->seeSuccessMessage();
+
+$I->deleteFromDatabase('gibbonAdmissionsAccount', ['gibbonAdmissionsAccountID' => $gibbonAdmissionsAccountID]);
+$I->deleteFromDatabase('gibbonAdmissionsApplication', ['gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID]);
+
+$I->updateInDatabase('gibbonForm', ['active' => 'N', 'public' => 'N'], ['name' => 'Sample Application Form']);

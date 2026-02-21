@@ -13,9 +13,7 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('manage applications with full CRUD operations');
 $I->loginAsAdmin();
 
-$gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', [
-    'status' => 'Current'
-]);
+$gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
 
 $I->amOnModulePage('Admissions', 'applications_manage.php', [
     'gibbonSchoolYearID' => $gibbonSchoolYearID
@@ -33,14 +31,14 @@ $I->dontSeeErrors();
 
 // Test View Application -------------------------------
 
+$I->updateInDatabase('gibbonForm', ['active' => 'Y', 'public' => 'Y'], ['name' => 'Sample Application Form']);
+
 // Create test data for viewing
 $gibbonFormID = $I->grabFromDatabase('gibbonForm', 'gibbonFormID', [
-    'type' => 'Application',
-    'active' => 'Y'
+    'name' => 'Sample Application Form'
 ]);
 
 $gibbonAdmissionsAccountID = $I->haveInDatabase('gibbonAdmissionsAccount', [
-    'gibbonSchoolYearID' => $gibbonSchoolYearID,
     'email' => 'testview@example.com',
     'accessID' => 'TESTVIEW' . time(),
     'timestampCreated' => date('Y-m-d H:i:s'),
@@ -64,14 +62,17 @@ $I->amOnModulePage('Admissions', 'applications_manage_view.php', [
 $I->seeBreadcrumb('View & Print Application');
 $I->dontSeeErrors();
 
-// Test Accept Application -----------------------------
+// Test Reject Application -----------------------------
 
-$I->amOnModulePage('Admissions', 'applications_manage_accept.php', [
+$I->amOnModulePage('Admissions', 'applications_manage_edit.php', [
     'gibbonSchoolYearID' => $gibbonSchoolYearID,
     'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID
 ]);
-$I->seeBreadcrumb('Accept Application');
+$I->seeBreadcrumb('Edit Application');
 $I->dontSeeErrors();
+
+$I->click('Submit');
+$I->seeSuccessMessage();
 
 // Test Reject Application -----------------------------
 
@@ -81,6 +82,18 @@ $I->amOnModulePage('Admissions', 'applications_manage_reject.php', [
 ]);
 $I->seeBreadcrumb('Reject Application');
 $I->dontSeeErrors();
+
+// Test Accept Application -----------------------------
+
+$I->amOnModulePage('Admissions', 'applications_manage_accept.php', [
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID
+]);
+$I->seeBreadcrumb('Accept Application');
+$I->dontSeeErrors();
+
+$I->submitForm('#content form', [], 'Accept');
+$I->see('Applicant has been successfully accepted');
 
 // Cleanup ---------------------------------------------
 
