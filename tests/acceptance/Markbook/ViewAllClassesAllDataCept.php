@@ -1,6 +1,7 @@
 <?php
 /**
  * @covers modules/Markbook/markbook_view.php
+ * @covers modules/Markbook/markbook_view_allClassesAllData.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view all classes all data markbook page');

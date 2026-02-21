@@ -3,6 +3,7 @@
  * @covers modules/Markbook/markbook_view.php
  * @covers modules/Markbook/markbook_edit_add.php
  * @covers modules/Markbook/markbook_edit.php
+ * @covers modules/Markbook/markbook_edit_copy.php
  * @covers modules/Markbook/markbook_edit_delete.php
  */
 $I = new AcceptanceTester($scenario);
@@ -45,6 +46,18 @@ $I->amOnModulePage('Markbook', 'markbook_edit.php', array('gibbonCourseClassID' 
 // Verify the copy form exists
 $I->see('Copy Markbook Columns');
 $I->seeElement('select[name="gibbonMarkbookCopyClassID"]');
+
+// Test Copy Action ------------------------------------
+
+// Select a different class to copy to
+$I->selectFromDropdown('gibbonMarkbookCopyClassID', 1);
+
+// Submit the copy form
+$I->submitForm('#content form', [], 'Submit');
+
+// Should redirect to markbook_edit_copy.php
+$I->seeInCurrentUrl('markbook_edit_copy.php');
+$I->dontSeeErrors();
 
 // Clean up - Delete the column
 $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', array(

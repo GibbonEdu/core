@@ -1,6 +1,7 @@
 <?php
 /**
  * @covers modules/Markbook/markbook_view.php
+ * @covers modules/Markbook/markbook_view_myMarks.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('view my marks as a student');
