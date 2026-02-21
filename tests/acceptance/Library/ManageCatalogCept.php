@@ -4,6 +4,7 @@
  * @covers modules/Library/library_manage_catalog_add.php
  * @covers modules/Library/library_manage_catalog_edit.php
  * @covers modules/Library/library_manage_catalog_delete.php
+ * @covers modules/Library/library_manage_catalog_duplicate.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a catalog item');
@@ -51,6 +52,24 @@ $formValues = array(
 );
 
 $I->submitForm('#content form', $formValues, 'Submit');
+$I->seeSuccessMessage();
+
+// Duplicate ------------------------------------------------
+$I->amOnModulePage('Library', 'library_manage_catalog_duplicate.php', array(
+    'gibbonLibraryItemID' => $gibbonLibraryItemID
+));
+$I->seeBreadcrumb('Duplicate');
+
+// Step 1 - Select number of copies
+$I->selectFromDropdown('number', 1);
+$I->submitForm('#content form', [], 'Submit');
+
+// Step 2 - Enter IDs for duplicates
+$duplicateValues = array(
+    'id1' => 'DUP' . time(),
+);
+
+$I->submitForm('#content form', $duplicateValues, 'Submit');
 $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
