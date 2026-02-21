@@ -1,6 +1,7 @@
 <?php
 /**
  * @covers modules/Staff/staff_view.php
+ * @covers modules/Staff/staff_view_details.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('View staff profile');
