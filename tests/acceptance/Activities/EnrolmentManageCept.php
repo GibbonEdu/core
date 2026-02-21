@@ -1,9 +1,10 @@
 <?php
 /**
  * @covers modules/Activities/enrolment_manage.php
+ * @covers modules/Activities/enrolment_manage_staffing.php
  */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('manage activity enrolment');
+$I->wantTo('manage activity enrolment and staffing');
 $I->loginAsAdmin();
 $I->amOnModulePage('Activities', 'enrolment_manage.php');
 $I->seeBreadcrumb('Manage Enrolment');
@@ -15,3 +16,9 @@ if (count($categoryCount) > 0) {
     $I->submitForm('#content form', []);
     $I->seeInCurrentUrl('gibbonActivityCategoryID=');
 }
+
+// Test Staffing Action ----------------------------------
+$I->amOnModulePage('Activities', 'enrolment_manage.php');
+$I->click('Staffing');
+$I->seeBreadcrumb('Manage Staffing');
+$I->dontSeeErrors();
