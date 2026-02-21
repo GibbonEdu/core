@@ -10,8 +10,6 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('check templates assets components pages');
 $I->loginAsAdmin();
 
-touch('uploads/reports/templates/test.twig.html');
-
 // Create test data
 $gibbonReportTemplateID = $I->haveInDatabase('gibbonReportTemplate', [
     'name' => 'Test Component Template',
