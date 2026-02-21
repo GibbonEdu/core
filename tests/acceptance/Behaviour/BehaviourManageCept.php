@@ -4,6 +4,7 @@
  * @covers modules/Behaviour/behaviour_manage_add.php
  * @covers modules/Behaviour/behaviour_manage_edit.php
  * @covers modules/Behaviour/behaviour_manage_delete.php
+ * @covers modules/Behaviour/behaviour_manage_addMulti.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a behaviour record');
@@ -56,3 +57,14 @@ $I->fillField('confirm', 'Delete');
 $I->click('Yes');
 
 $I->see('Your request was completed successfully.', '.success');
+
+// Add Multiple ----------------------------------------
+$I->amOnModulePage('Behaviour', 'behaviour_manage_addMulti.php', array(
+    'gibbonPersonID' => '',
+    'gibbonFormGroupID' => '',
+    'gibbonYearGroupID' => '',
+    'type' => ''
+));
+$I->seeBreadcrumb('Add Multiple');
+$I->dontSeeErrors();
+
