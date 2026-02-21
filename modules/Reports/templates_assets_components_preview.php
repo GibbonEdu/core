@@ -63,6 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     // Build Mock Report
     $template = $reportBuilder->createTemplate();
 
+    if (empty($template)) {
+        $page->addError(__('The specified record cannot be found.'));
+        return;
+    }
+
     // Optionally add current template stylesheet, otherwise use the default
     if (!empty($gibbonReportTemplateID)) {
         $templateData = $container->get(ReportTemplateGateway::class)->getByID($gibbonReportTemplateID);

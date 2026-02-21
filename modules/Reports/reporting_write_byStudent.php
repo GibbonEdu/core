@@ -136,8 +136,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $keys = array_flip(array_keys($progress));
     $values = array_values($progress);
 
-    $prevStudent = $values[$keys[$gibbonPersonIDStudent] -1] ?? $values[count($values)-1];
-    $nextStudent = $values[$keys[$gibbonPersonIDStudent] +1] ?? $values[0];
+    if (!empty($keys[$gibbonPersonIDStudent])) {
+        $prevStudent = $values[$keys[$gibbonPersonIDStudent] -1] ?? $values[count($values)-1] ?? 0;
+        $nextStudent = $values[$keys[$gibbonPersonIDStudent] +1] ?? $values[0] ?? 0;
+    }
 
     echo $page->fetchFromTemplate('ui/reportingStudentHeader.twig.html', [
         'canWriteReport' => $canWriteReport,
@@ -145,8 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         'student' => $student,
         'scopeDetails' => $scopeDetails,
         'relatedReports' => $relatedReports,
-        'prevStudent' => $prevStudent,
-        'nextStudent' => $nextStudent,
+        'prevStudent' => $prevStudent ?? '',
+        'nextStudent' => $nextStudent ?? '',
         'params' => $urlParams,
     ]);
 
@@ -163,12 +165,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $form->addHiddenValue('gibbonReportingCycleID', $reportingScope['gibbonReportingCycleID']);
     $form->addHiddenValue('gibbonReportingScopeID', $reportingScope['gibbonReportingScopeID']);
     $form->addHiddenValue('gibbonPersonIDStudent', $gibbonPersonIDStudent);
-    $form->addHiddenValue('gibbonPersonIDNext', $nextStudent['gibbonPersonID']);
+    $form->addHiddenValue('gibbonPersonIDNext', $nextStudent['gibbonPersonID'] ?? '');
     $form->addHiddenValue('scopeTypeID', $urlParams['scopeTypeID']);
     $form->addHiddenValue('allStudents', $urlParams['allStudents']);
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
-    $form->addRow()->addClass('reportStatus')->addContent(Format::alert($scopeDetails['name'], 'empty'))->wrap('<h4 class="p-0">', '</h4>');
+    $form->addRow()->addClass('reportStatus')->addContent(Format::alert($scopeDetails['name'] ?? '', 'empty'))->wrap('<h4 class="p-0">', '</h4>');
 
     // HOOKS
     // Custom hooks can replace form fields by criteria type using a custom include.
@@ -324,8 +326,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         echo $page->fetchFromTemplate('ui/reportingStudentFooter.twig.html', [
             'student' => $student,
             'scopeDetails' => $scopeDetails,
-            'prevStudent' => $prevStudent,
-            'nextStudent' => $nextStudent,
+            'prevStudent' => $prevStudent ?? '',
+            'nextStudent' => $nextStudent ?? '',
             'params' => $urlParams,
         ]);
     }

@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_a
     }
 
     // Update the editors
-    $editors = $_POST['editors'] ?? '';
+    $editors = $_POST['editors'] ?? [];
     $editorIDs = [];
     foreach ($editors as $person) {
         $editorData = [

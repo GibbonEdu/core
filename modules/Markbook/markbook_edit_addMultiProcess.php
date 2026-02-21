@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         }
 
         $rowGrouping = $resultGrouping->fetch();
-        if (is_null($rowGrouping['groupingID'])) {
+        if (empty($rowGrouping['groupingID'])) {
             $groupingID = 1;
         } else {
             $groupingID = ($rowGrouping['groupingID'] + 1);
