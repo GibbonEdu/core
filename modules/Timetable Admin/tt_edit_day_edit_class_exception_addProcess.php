@@ -100,8 +100,9 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                     } else {
+                        $AI = $pdo->getConnection()->lastInsertID();
                         $URLSuccess .= '&return=success0';
-                        header("Location: {$URLSuccess}");
+                        header("Location: {$URLSuccess}&editID={$AI}");
                     }
                 }
             }

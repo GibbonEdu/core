@@ -71,7 +71,7 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
-                $URL .= "&return=success0&editID=$AI&gibbonCourseClassID=gibbonCourseClassID";
+                $URL .= "&return=success0&editID=$AI&gibbonCourseClassID=$gibbonCourseClassID";
                 header("Location: {$URL}");
             }
         }

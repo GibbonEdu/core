@@ -7,6 +7,11 @@
  * @covers modules/Timetable Admin/tt_edit_day_edit.php
  * @covers modules/Timetable Admin/tt_edit_day_edit_class.php
  * @covers modules/Timetable Admin/tt_edit_day_edit_class_add.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit_class_delete.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit_class_edit.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit_class_exception.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php
+ * @covers modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php
  * @covers modules/Timetable Admin/tt_edit_day_delete.php
  * @covers modules/Timetable Admin/tt_delete.php
  */
@@ -110,6 +115,77 @@ $I->selectFromDropdown('gibbonCourseClassID', 1);
 $I->selectFromDropdown('gibbonSpaceID', 1);
 
 $I->submitForm('#content form', []);
+$I->see('Your request was completed successfully.', '.success');
+
+$gibbonTTDayRowClassID = $I->grabEditIDFromURL();
+$gibbonCourseClassID = $I->grabValueFromURL('gibbonCourseClassID');
+$gibbonTTColumnRowID = $I->grabValueFromURL('gibbonTTColumnRowID');
+
+// Edit Class --------------------------------------------
+$I->amOnModulePage('Timetable Admin', 'tt_edit_day_edit_class_edit.php', array(
+    'gibbonTTDayID' => $gibbonTTDayID,
+    'gibbonTTID' => $gibbonTTID,
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+    'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+    'gibbonCourseClassID' => $gibbonCourseClassID
+));
+$I->seeBreadcrumb('Edit Class in Period');
+$I->dontSeeErrors();
+
+// Change location
+$I->selectFromDropdown('gibbonSpaceID', 2);
+$I->submitForm('#content form', [], 'Submit');
+$I->see('Your request was completed successfully.', '.success');
+
+// Manage Class Exceptions -------------------------------
+$I->amOnModulePage('Timetable Admin', 'tt_edit_day_edit_class_exception.php', array(
+    'gibbonTTDayID' => $gibbonTTDayID,
+    'gibbonTTID' => $gibbonTTID,
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+    'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+    'gibbonCourseClassID' => $gibbonCourseClassID
+));
+$I->seeBreadcrumb('Class List Exception');
+$I->dontSeeErrors();
+
+// Add Exception -----------------------------------------
+$I->click('Add');
+$I->seeBreadcrumb('Add Exception');
+$I->dontSeeErrors();
+
+// Select a participant to exclude
+$I->selectFromDropdown('Members', 1);
+$I->submitForm('#content form', [], 'Submit');
+$I->see('Your request was completed successfully.', '.success');
+
+$gibbonTTDayRowClassExceptionID = $I->grabEditIDFromURL();
+
+// Delete Exception --------------------------------------
+$I->amOnModulePage('Timetable Admin', 'tt_edit_day_edit_class_exception_delete.php', array(
+    'gibbonTTDayID' => $gibbonTTDayID,
+    'gibbonTTID' => $gibbonTTID,
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+    'gibbonCourseClassID' => $gibbonCourseClassID,
+    'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+    'gibbonTTDayRowClassExceptionID' => $gibbonTTDayRowClassExceptionID
+));
+
+$I->click('Delete');
+$I->see('Your request was completed successfully.', '.success');
+
+// Delete Class ------------------------------------------
+$I->amOnModulePage('Timetable Admin', 'tt_edit_day_edit_class_delete.php', array(
+    'gibbonTTDayID' => $gibbonTTDayID,
+    'gibbonTTID' => $gibbonTTID,
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+    'gibbonCourseClassID' => $gibbonCourseClassID
+));
+
+$I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
 
 // Delete Day --------------------------------------------
