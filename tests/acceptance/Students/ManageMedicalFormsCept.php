@@ -20,6 +20,8 @@ $I->fillField('search', 'test');
 $I->submitForm('#filter', []);
 $I->dontSeeErrors();
 
+$I->deleteFromDatabase('gibbonPersonMedical', ['gibbonPersonID' => '0000002746']);
+
 // Add Medical Form ------------------------------------
 
 $I->clickNavigation('Add');

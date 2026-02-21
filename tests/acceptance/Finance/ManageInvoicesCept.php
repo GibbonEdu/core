@@ -66,7 +66,7 @@ $I->amOnModulePage('Finance', 'invoices_manage_issue.php', [
 $I->seeBreadcrumb('Issue Invoice');
 
 $I->submitForm('#content form', [], 'Submit');
-$I->seeSuccessMessage();
+$I->see('Your request was completed successfully', '.success');
 
 // Delete Data ------------------------------------------------
 // (Note: Can only delete pending invoices, so create a new one)
