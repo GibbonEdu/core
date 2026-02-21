@@ -1,9 +1,10 @@
 <?php
 /**
  * @covers modules/Crowd Assessment/crowdAssess_view_discuss.php
+ * @covers modules/Crowd Assessment/crowdAssess_view_discuss_post.php
  */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('view crowd assessment discussion');
+$I->wantTo('view crowd assessment discussion and add post');
 $I->loginAsAdmin();
 
 // Get a planner entry homework record
@@ -18,3 +19,13 @@ $I->amOnModulePage('Crowd Assessment', 'crowdAssess_view_discuss.php', [
 ]);
 $I->seeBreadcrumb('Discuss');
 $I->see('Student');
+
+// Test Add Post Action -----------------------------------
+
+$I->amOnModulePage('Crowd Assessment', 'crowdAssess_view_discuss_post.php', [
+    'gibbonPlannerEntryID' => $gibbonPlannerEntryID,
+    'gibbonPersonID' => $gibbonPersonID,
+    'gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID
+]);
+$I->seeBreadcrumb('Add Post');
+$I->dontSeeErrors();
