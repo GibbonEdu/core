@@ -1,27 +1,10 @@
 <?php
 /**
- * @covers modules/Calendar/calendar_event_manage.php
- * @covers modules/Calendar/calendar_event_add.php
- * @covers modules/Calendar/calendar_event_edit.php
- * @covers modules/Calendar/calendar_event_delete.php
- * @covers modules/Calendar/calendar_event_notify.php
+ * @covers modules/Calendar/calendar_event_editStaff_delete.php
  */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('add, edit, notify and delete a calendar event');
+$I->wantTo('manage calendar event staff');
 $I->loginAsAdmin();
-
-$I->amOnModulePage('Calendar', 'calendar_event_manage.php');
-$I->seeBreadcrumb('Manage Events');
-
-// Basic Check -----------------------------------------
-
-$I->dontSeeErrors();
-
-// Search Test -----------------------------------------
-
-$I->fillField('search', 'test');
-$I->submitForm('#filters', []);
-$I->dontSeeErrors();
 
 // Create a calendar first if none exists
 $gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
@@ -29,7 +12,7 @@ $gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['usern
 
 $gibbonCalendarID = $I->haveInDatabase('gibbonCalendar', [
     'gibbonSchoolYearID' => $gibbonSchoolYearID,
-    'name' => 'Test Calendar',
+    'name' => 'Test Calendar for Staff',
     'color' => '#3A6CA8',
     'public' => 'Y',
     'sequenceNumber' => 1,
@@ -41,10 +24,9 @@ $I->haveInDatabase('gibbonCalendarEditor', [
     'gibbonPersonID' => $gibbonPersonID,
 ]);
 
-// Reload page to see Add button
+// Create a test event first
 $I->amOnModulePage('Calendar', 'calendar_event_manage.php');
-
-// Add ------------------------------------------------
+$I->seeBreadcrumb('Manage Events');
 
 $I->clickNavigation('Add');
 $I->seeBreadcrumb('Add Event');
@@ -53,12 +35,11 @@ $I->selectFromDropdown('gibbonCalendarID', 1);
 $I->selectFromDropdown('gibbonCalendarEventTypeID', 1);
 
 $formValues = [
-    'name' => 'Test Calendar Event',
+    'name' => 'Test Event for Staff',
     'status' => 'Confirmed',
     'dateStart' => date('Y-m-d'),
-    'dateEnd' => date('Y-m-d', strtotime('+1 day')),
+    'dateEnd' => date('Y-m-d'),
     'allDay' => 'Y',
-    'locationType' => 'Internal',
 ];
 
 $I->submitForm('#content form', $formValues, 'Submit');
@@ -66,40 +47,34 @@ $I->seeSuccessMessage();
 
 $gibbonCalendarEventID = $I->grabEditIDFromURL();
 
-// Edit ------------------------------------------------
-
+// Add staff to the event
 $I->amOnModulePage('Calendar', 'calendar_event_edit.php', [
     'gibbonCalendarEventID' => $gibbonCalendarEventID
 ]);
 $I->seeBreadcrumb('Edit Event');
 
-$I->seeInFormFields('#content form', [
-    'name' => 'Test Calendar Event',
-]);
+$I->selectFromDropdown('staff', 1);
+$I->selectFromDropdown('role', 1);
 
-$formValues = [
-    'name' => 'Updated Calendar Event',
-    'status' => 'Tentative',
-    'dateStart' => date('Y-m-d'),
-    'dateEnd' => date('Y-m-d', strtotime('+2 days')),
-    'allDay' => 'Y',
-];
-
-$I->submitForm('#content form', $formValues, 'Submit');
+$I->submitForm('#content form', [], 'Submit');
 $I->seeSuccessMessage();
 
-// Notify Staff ----------------------------------------
-
-$I->amOnModulePage('Calendar', 'calendar_event_notify.php', [
+// Get the staff person ID from the database
+$gibbonCalendarEventPersonID = $I->grabFromDatabase('gibbonCalendarEventPerson', 'gibbonCalendarEventPersonID', [
     'gibbonCalendarEventID' => $gibbonCalendarEventID
 ]);
-$I->seeBreadcrumb('Notify Staff');
 
-// This page requires attendees, so we just check it loads
-$I->dontSeeErrors();
+// Test Delete Staff Action ----------------------------
 
-// Delete ----------------------------------------------
+$I->amOnModulePage('Calendar', 'calendar_event_editStaff_delete.php', [
+    'gibbonCalendarEventID' => $gibbonCalendarEventID,
+    'gibbonCalendarEventPersonID' => $gibbonCalendarEventPersonID
+]);
 
+$I->click('Delete');
+$I->seeSuccessMessage();
+
+// Clean up - delete the event
 $I->amOnModulePage('Calendar', 'calendar_event_delete.php', [
     'gibbonCalendarEventID' => $gibbonCalendarEventID
 ]);
