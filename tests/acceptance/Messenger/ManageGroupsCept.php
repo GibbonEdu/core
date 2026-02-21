@@ -4,6 +4,7 @@
  * @covers modules/Messenger/groups_manage_add.php
  * @covers modules/Messenger/groups_manage_edit.php
  * @covers modules/Messenger/groups_manage_delete.php
+ * @covers modules/Messenger/groups_manage_edit_delete.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage groups with full CRUD operations');
@@ -27,6 +28,20 @@ $I->seeInField('name', 'Test Group');
 $I->fillField('name', 'Updated Group');
 $I->click('Submit');
 $I->seeSuccessMessage();
+
+// Test nested delete member (if members exist) -------
+
+$gibbonPersonID = $I->grabFromDatabase('gibbonGroupPerson', 'gibbonPersonID', ['gibbonGroupID' => $gibbonGroupID]);
+
+if ($gibbonPersonID) {
+    $I->amOnModulePage('Messenger', 'groups_manage_edit_delete.php', [
+        'gibbonGroupID' => $gibbonGroupID,
+        'gibbonPersonID' => $gibbonPersonID,
+    ]);
+
+    $I->click('Delete');
+    $I->seeSuccessMessage();
+}
 
 // Delete the group
 $I->amOnModulePage('Messenger', 'groups_manage_delete.php', ['gibbonGroupID' => $gibbonGroupID]);
