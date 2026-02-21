@@ -4,6 +4,7 @@
  * @covers modules/School Admin/house_manage_add.php
  * @covers modules/School Admin/house_manage_edit.php
  * @covers modules/School Admin/house_manage_delete.php
+ * @covers modules/School Admin/house_manage_assign.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete houses');
@@ -43,3 +44,20 @@ $I->amOnModulePage('School Admin', 'house_manage_delete.php', array('gibbonHouse
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Test Assign Houses ---------------------------------------
+$I->amOnModulePage('School Admin', 'house_manage_assign.php');
+$I->seeBreadcrumb('Assign Houses');
+
+$I->selectFromDropdown('gibbonYearGroupIDList', 1);
+$I->selectFromDropdown('gibbonHouseIDList', 1);
+
+$assignFormValues = array(
+    'balanceGender'    => 'Y',
+    'balanceYearGroup' => 'Y',
+    'overwrite'        => 'N',
+);
+
+$I->submitForm('#content form', $assignFormValues, 'Submit');
+$I->seeSuccessMessage();
+

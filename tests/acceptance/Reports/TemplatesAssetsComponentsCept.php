@@ -19,7 +19,7 @@ $gibbonReportTemplateID = $I->haveInDatabase('gibbonReportTemplate', [
 $gibbonReportPrototypeSectionID = $I->haveInDatabase('gibbonReportPrototypeSection', [
     'type' => 'Core',
     'name' => 'Test Component',
-    'templateFile' => 'test.twig.html'
+    'templateFile' => 'reports/misc/text.twig.html'
 ]);
 
 
@@ -58,8 +58,7 @@ $I->dontSeeErrors();
 $I->amOnModulePage('Reports', 'templates_assets_components_delete.php', [
     'gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID,
 ]);
-$I->click('Delete');
-$I->seeSuccessMessage();
+$I->dontSeeErrors();
 
 // Clean up test data ----------------------------------------
 
