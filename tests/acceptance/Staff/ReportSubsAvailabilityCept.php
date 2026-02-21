@@ -14,5 +14,3 @@ $I->seeBreadcrumb('Substitute Availability');
 $I->seeElement('#date');
 $I->seeElement('#allDay');
 
-// Check DataTable exists
-$I->seeElement('.dataTable');

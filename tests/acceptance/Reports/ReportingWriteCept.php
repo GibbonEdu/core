@@ -39,7 +39,7 @@ $I->dontSeeErrors();
 
 // Reporting Write by Student --------------------------------
 
-$gibbonPersonIDStudent = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
+$gibbonPersonIDStudent = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['username' => 'testingstudent']);
 
 $I->amOnModulePage('Reports', 'reporting_write_byStudent.php', [
     'gibbonSchoolYearID' => $gibbonSchoolYearID,

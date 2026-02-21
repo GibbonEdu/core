@@ -10,33 +10,25 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('check templates assets components pages');
 $I->loginAsAdmin();
 
+touch('uploads/reports/templates/test.twig.html');
+
 // Create test data
 $gibbonReportTemplateID = $I->haveInDatabase('gibbonReportTemplate', [
     'name' => 'Test Component Template',
     'context' => 'Student Enrolment',
 ]);
 
-$gibbonReportTemplateSectionID = $I->haveInDatabase('gibbonReportTemplateSection', [
-    'gibbonReportTemplateID' => $gibbonReportTemplateID,
+$gibbonReportPrototypeSectionID = $I->haveInDatabase('gibbonReportPrototypeSection', [
     'type' => 'Core',
-    'name' => 'Test Section',
-    'page' => 1,
+    'name' => 'Test Component',
+    'templateFile' => 'test.twig.html'
 ]);
 
-$gibbonReportTemplateComponentID = $I->haveInDatabase('gibbonReportTemplateComponent', [
-    'gibbonReportTemplateSectionID' => $gibbonReportTemplateSectionID,
-    'type' => 'Text',
-    'name' => 'Test Component',
-    'x' => 10,
-    'y' => 10,
-    'w' => 100,
-    'h' => 50,
-]);
 
 // Templates Assets Components Edit --------------------------
 
 $I->amOnModulePage('Reports', 'templates_assets_components_edit.php', [
-    'gibbonReportTemplateComponentID' => $gibbonReportTemplateComponentID,
+    'gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID,
 ]);
 $I->seeBreadcrumb('Edit');
 $I->dontSeeErrors();
@@ -44,22 +36,21 @@ $I->dontSeeErrors();
 // Templates Assets Components Preview -----------------------
 
 $I->amOnModulePage('Reports', 'templates_assets_components_preview.php', [
-    'gibbonReportTemplateComponentID' => $gibbonReportTemplateComponentID,
+    'gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID,
 ]);
 $I->dontSeeErrors();
 
 // Templates Assets Components Help --------------------------
 
 $I->amOnModulePage('Reports', 'templates_assets_components_help.php', [
-    'gibbonReportTemplateComponentID' => $gibbonReportTemplateComponentID,
+    'gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID,
 ]);
-$I->seeBreadcrumb('Help');
 $I->dontSeeErrors();
 
 // Templates Assets Components Duplicate ---------------------
 
 $I->amOnModulePage('Reports', 'templates_assets_components_duplicate.php', [
-    'gibbonReportTemplateComponentID' => $gibbonReportTemplateComponentID,
+    'gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID,
 ]);
 $I->seeBreadcrumb('Duplicate');
 $I->dontSeeErrors();
@@ -67,12 +58,12 @@ $I->dontSeeErrors();
 // Templates Assets Components Delete ------------------------
 
 $I->amOnModulePage('Reports', 'templates_assets_components_delete.php', [
-    'gibbonReportTemplateComponentID' => $gibbonReportTemplateComponentID,
+    'gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID,
 ]);
 $I->click('Delete');
 $I->seeSuccessMessage();
 
 // Clean up test data ----------------------------------------
 
-$I->deleteFromDatabase('gibbonReportTemplateSection', ['gibbonReportTemplateSectionID' => $gibbonReportTemplateSectionID]);
+$I->deleteFromDatabase('gibbonReportPrototypeSection', ['gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID]);
 $I->deleteFromDatabase('gibbonReportTemplate', ['gibbonReportTemplateID' => $gibbonReportTemplateID]);

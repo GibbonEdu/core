@@ -24,19 +24,17 @@ $I->submitForm('#content form', $newFormValues, 'Submit');
 $I->amOnModulePage('Staff', 'coverage_manage.php');
 $I->seeBreadcrumb('Manage Staff Coverage');
 
-$today = date('Y-m-d');
-
 // Add new coverage
 $I->click('Add', 'a');
 $I->seeBreadcrumb('Add');
-$I->fillField('dateStart', $today);
-$I->fillField('dateEnd', $today);
+$I->fillField('dateStart', '2026-02-20');
+$I->fillField('dateEnd', '2026-02-20');
 $I->selectFromDropdown('gibbonPersonIDCoverage', 1);
 $I->selectFromDropdown('gibbonPersonID', 1);
 $I->selectFromDropdown('status', 1);
 $I->fillField('reason', 'Test coverage');
 
-$I->submitForm('#content form', ['requestDates' => [$today]]);
+$I->submitForm('#content form', ['requestDates' => ['2026-02-20']]);
 $I->seeSuccessMessage();
 
 // Edit the coverage

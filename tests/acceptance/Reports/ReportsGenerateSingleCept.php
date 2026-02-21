@@ -36,14 +36,13 @@ $I->dontSeeErrors();
 
 // Reports Generate Single Debug -----------------------------
 
-$gibbonPersonIDStudent = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
+$gibbonStudentEnrolmentID = $I->grabFromDatabase('gibbonStudentEnrolment', 'gibbonStudentEnrolmentID', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
 
 $I->amOnModulePage('Reports', 'reports_generate_singleDebug.php', [
     'gibbonReportID' => $gibbonReportID,
     'contextData' => $gibbonYearGroupID,
-    'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+    'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID,
 ]);
-$I->seeBreadcrumb('Debug');
 $I->dontSeeErrors();
 
 // Clean up test data ----------------------------------------

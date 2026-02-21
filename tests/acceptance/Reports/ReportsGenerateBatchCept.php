@@ -44,22 +44,13 @@ $I->dontSeeErrors();
 
 // Reports Generate Cancel Confirm ---------------------------
 
-// Create a background process record to test cancel
-$gibbonBackgroundProcessID = $I->haveInDatabase('gibbonBackgroundProcess', [
-    'type' => 'reports',
-    'status' => 'Running',
-    'timeStart' => date('Y-m-d H:i:s'),
-]);
-
 $I->amOnModulePage('Reports', 'reports_generate_cancelConfirm.php', [
     'gibbonReportID' => $gibbonReportID,
-    'gibbonBackgroundProcessID' => $gibbonBackgroundProcessID,
+    'processID' => 1,
 ]);
 $I->dontSeeErrors();
 
 // Clean up test data ----------------------------------------
-
-$I->deleteFromDatabase('gibbonBackgroundProcess', ['gibbonBackgroundProcessID' => $gibbonBackgroundProcessID]);
 
 $I->deleteFromDatabase('gibbonReport', ['gibbonReportID' => $gibbonReportID]);
 $I->deleteFromDatabase('gibbonReportTemplate', ['gibbonReportTemplateID' => $gibbonReportTemplateID]);
