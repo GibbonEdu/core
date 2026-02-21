@@ -39,22 +39,17 @@ $I->dontSeeErrors();
 
 // Reporting Write by Student --------------------------------
 
-// Get a student from the database
-try {
-    $gibbonPersonIDStudent = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
-    
-    $I->amOnModulePage('Reports', 'reporting_write_byStudent.php', [
-        'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'gibbonReportingCycleID' => $gibbonReportingCycleID,
-        'gibbonReportingScopeID' => $gibbonReportingScopeID,
-        'scopeTypeID' => $gibbonYearGroupID,
-        'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
-    ]);
-    $I->seeBreadcrumb('By Student');
-    $I->dontSeeErrors();
-} catch (\Exception $e) {
-    $I->comment('Skipping by student test: No students available');
-}
+$gibbonPersonIDStudent = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
+
+$I->amOnModulePage('Reports', 'reporting_write_byStudent.php', [
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+    'gibbonReportingScopeID' => $gibbonReportingScopeID,
+    'scopeTypeID' => $gibbonYearGroupID,
+    'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+]);
+$I->seeBreadcrumb('By Student');
+$I->dontSeeErrors();
 
 // Clean up test data ----------------------------------------
 

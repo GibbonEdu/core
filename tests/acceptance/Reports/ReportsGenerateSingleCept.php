@@ -36,8 +36,15 @@ $I->dontSeeErrors();
 
 // Reports Generate Single Debug -----------------------------
 
-// Skip debug test as it requires specific student enrolment data
-$I->comment('Skipping debug test: Requires specific student enrolment data');
+$gibbonPersonIDStudent = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
+
+$I->amOnModulePage('Reports', 'reports_generate_singleDebug.php', [
+    'gibbonReportID' => $gibbonReportID,
+    'contextData' => $gibbonYearGroupID,
+    'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+]);
+$I->seeBreadcrumb('Debug');
+$I->dontSeeErrors();
 
 // Clean up test data ----------------------------------------
 

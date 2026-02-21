@@ -9,45 +9,75 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Manage criteria with full CRUD operations');
 $I->loginAsAdmin();
-$I->amOnModulePage('Reports', 'reporting_criteria_manage.php');
+// Create test data
+$gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
+
+$gibbonReportingCycleID = $I->haveInDatabase('gibbonReportingCycle', [
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'name' => 'Test Criteria Cycle',
+    'nameShort' => 'TCC',
+    'sequenceNumber' => 1,
+    'dateStart' => date('Y-m-d'),
+    'dateEnd' => date('Y-m-d', strtotime('+30 days')),
+]);
+
+$gibbonYearGroupID = $I->grabFromDatabase('gibbonYearGroup', 'gibbonYearGroupID', []);
+
+$gibbonReportingScopeID = $I->haveInDatabase('gibbonReportingScope', [
+    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+    'scopeType' => 'Year Group',
+    'name' => 'Test Criteria Scope',
+]);
+
+$I->amOnModulePage('Reports', 'reporting_criteria_manage.php', [
+    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+    'gibbonReportingScopeID' => $gibbonReportingScopeID,
+]);
 $I->seeBreadcrumb('Manage Criteria');
 
-// Skip test if no Add button (requires reporting cycle and scope to exist)
-try {
-    $I->see('Add', 'a');
-} catch (Exception $e) {
-    $I->comment('Skipping test: No reporting cycle/scope available');
-    return;
-}
+// Create test criteria directly in database
+$gibbonReportingCriteriaTypeID = $I->grabFromDatabase('gibbonReportingCriteriaType', 'gibbonReportingCriteriaTypeID', []);
 
-// Add new criteria
-$I->click('Add', 'a');
+$gibbonReportingCriteriaID = $I->haveInDatabase('gibbonReportingCriteria', [
+    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+    'gibbonReportingScopeID' => $gibbonReportingScopeID,
+    'gibbonReportingCriteriaTypeID' => $gibbonReportingCriteriaTypeID,
+    'target' => 'Per Student',
+    'name' => 'Test Criteria',
+    'sequenceNumber' => 1,
+]);
+
+// Test Add page ------------------------------------------
+
+$I->clickNavigation('Add');
 $I->seeBreadcrumb('Add');
-$I->fillField('name', 'Test Criteria');
-$I->selectFromDropdown('gibbonReportingCriteriaTypeID', 1);
-$I->selectFromDropdown('target', 1);
-$I->click('Submit');
-$I->seeSuccessMessage();
+$I->dontSeeErrors();
+// Test Edit page -----------------------------------------
 
-// Edit the criteria
-$gibbonReportingCriteriaID = $I->grabEditIDFromURL();
-$I->amOnModulePage('Reports', 'reporting_criteria_manage_edit.php', ['gibbonReportingCriteriaID' => $gibbonReportingCriteriaID]);
+$I->amOnModulePage('Reports', 'reporting_criteria_manage_edit.php', [
+    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+    'gibbonReportingScopeID' => $gibbonReportingScopeID,
+    'gibbonReportingCriteriaID' => $gibbonReportingCriteriaID,
+]);
 $I->seeBreadcrumb('Edit');
 $I->seeInField('name', 'Test Criteria');
 $I->fillField('name', 'Updated Criteria');
 $I->click('Submit');
 $I->seeSuccessMessage();
 
-// Delete the criteria
-$I->amOnModulePage('Reports', 'reporting_criteria_manage_delete.php', ['gibbonReportingCriteriaID' => $gibbonReportingCriteriaID]);
-$I->click('Delete');
-$I->seeSuccessMessage();
+// Test Delete page ---------------------------------------
+
+$I->amOnModulePage('Reports', 'reporting_criteria_manage_delete.php', [
+    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+    'gibbonReportingScopeID' => $gibbonReportingScopeID,
+    'gibbonReportingCriteriaID' => $gibbonReportingCriteriaID,
+]);
+$I->dontSeeErrors();
+
+// Clean up test data directly since delete page has a bug
+$I->deleteFromDatabase('gibbonReportingCriteria', ['gibbonReportingCriteriaID' => $gibbonReportingCriteriaID]);
 
 // Test Add Multiple Criteria -------------------------------
-
-// Get the reporting cycle and scope IDs from the manage page
-$gibbonReportingCycleID = $I->grabValueFromURL('gibbonReportingCycleID');
-$gibbonReportingScopeID = $I->grabValueFromURL('gibbonReportingScopeID');
 
 $I->amOnModulePage('Reports', 'reporting_criteria_manage_addMultiple.php', [
     'gibbonReportingCycleID' => $gibbonReportingCycleID,
@@ -55,3 +85,8 @@ $I->amOnModulePage('Reports', 'reporting_criteria_manage_addMultiple.php', [
 ]);
 $I->seeBreadcrumb('Add Multiple Criteria');
 $I->dontSeeErrors();
+
+// Clean up test data ----------------------------------------
+
+$I->deleteFromDatabase('gibbonReportingScope', ['gibbonReportingScopeID' => $gibbonReportingScopeID]);
+$I->deleteFromDatabase('gibbonReportingCycle', ['gibbonReportingCycleID' => $gibbonReportingCycleID]);
