@@ -3,6 +3,7 @@
  * @covers modules/Staff/coverage_manage.php
  * @covers modules/Staff/coverage_manage_add.php
  * @covers modules/Staff/coverage_manage_edit.php
+ * @covers modules/Staff/coverage_manage_edit_edit.php
  * @covers modules/Staff/coverage_manage_delete.php
  */
 $I = new AcceptanceTester($scenario);
@@ -43,6 +44,24 @@ $I->amOnModulePage('Staff', 'coverage_manage_edit.php', ['gibbonStaffCoverageID'
 $I->seeBreadcrumb('Edit');
 $I->fillField('notesStatus', 'Updated coverage notes');
 $I->click('Submit');
+$I->seeSuccessMessage();
+
+// Get coverage date ID for nested edit ----------------
+
+$gibbonStaffCoverageDateID = $I->grabFromDatabase('gibbonStaffCoverageDate', 'gibbonStaffCoverageDateID', [
+    'gibbonStaffCoverageID' => $gibbonStaffCoverageID
+]);
+
+// Edit Nested Coverage Date ---------------------------
+
+$I->amOnModulePage('Staff', 'coverage_manage_edit_edit.php', [
+    'gibbonStaffCoverageID' => $gibbonStaffCoverageID,
+    'gibbonStaffCoverageDateID' => $gibbonStaffCoverageDateID
+]);
+$I->seeBreadcrumb('Edit');
+
+$I->fillField('reason', 'Updated coverage date notes');
+$I->submitForm('#content form', [], 'Submit');
 $I->seeSuccessMessage();
 
 // Delete the coverage

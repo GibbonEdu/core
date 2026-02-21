@@ -76,8 +76,10 @@ if ($gibbonStaffID == '' or $gibbonPersonID == '') { echo 'Fatal error loading t
                         exit();
                     }
 
+                    $AI = $pdo->getConnection()->lastInsertID();
+
                     $URL .= "&return=success0";
-                    header("Location: {$URL}");
+                    header("Location: {$URL}&editID={$AI}");
                 }
             }
         }
