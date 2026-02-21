@@ -1,6 +1,7 @@
 <?php 
 /**
  * @covers modules/System Admin/thirdPartySettings.php
+ * @covers modules/System Admin/thirdPartySettings_ssoEdit.php
  */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Third Party Settings');
@@ -54,3 +55,9 @@ $I->submitForm('#content form', $resetFormValues, 'Submit');
 $I->submitForm('#content form', $originalFormValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $originalFormValues);
+
+// Test SSO Edit Page (DataTable action) -------------------
+
+$I->amOnModulePage('System Admin', 'thirdPartySettings_ssoEdit.php');
+$I->seeBreadcrumb('Edit');
+$I->dontSeeErrors();
