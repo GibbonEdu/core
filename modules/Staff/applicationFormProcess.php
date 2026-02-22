@@ -239,6 +239,7 @@ if ($proceed == false) {
                                 'applicationID'     => $AI,
                                 'applicationRefereeLink'  => $applicationFormRefereeLink[$type],
                                 'organisationHRName' => $session->get('organisationHRName'),
+                                'organisationNameShort'  => $session->get('organisationName'),
                             ];
 
                             // Render the email
@@ -293,6 +294,8 @@ if ($proceed == false) {
                             'date'              => Format::date(date('Y-m-d')),
                             'jobTitle'          => $jobTitle,
                             'applicationID'     => $AI,
+                            'organisationName'  => $session->get('organisationName'),
+                            'organisationEmail' => $session->get('organisationEmail'),
                         ];
 
                         // Render the email
