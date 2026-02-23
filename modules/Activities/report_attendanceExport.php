@@ -19,13 +19,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\School\SchoolYearTermGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Gibbon\Domain\System\SettingGateway;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\Activities\ActivityAttendanceGateway;
 
 //Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 600);
@@ -61,49 +66,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         // Get the activity info
         try {
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT gibbonActivity.name, description, programStart, programEnd, gibbonSchoolYearTermIDList, gibbonYearGroupIDList, gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name as schoolYearName FROM gibbonActivity, gibbonSchoolYear WHERE gibbonSchoolYear.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID AND gibbonActivityID=:gibbonActivityID';
-            $activityResult = $connection2->prepare($sql);
-            $activityResult->execute($data);
+            $activityResult = $container->get(ActivityGateway::class)->getActivityInfo($gibbonActivityID);
         } catch (PDOException $e) {
         }
         $activity = $activityResult->fetch();
 
         // Get the students
         try {
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-            $sql = "SELECT gibbonPerson.gibbonPersonID as gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
-            $studentResult = $connection2->prepare($sql);
-            $studentResult->execute($data);
+
+            $studentResult = $container->get(UserGateway::class)->selectStudentsByActivity($session->get('gibbonSchoolYearID'), $gibbonActivityID);
         } catch (PDOException $e) {
         }
         $students = $studentResult->fetchAll();
 
         // Get the recorded attendance
         try {
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT UNIX_TIMESTAMP(gibbonActivityAttendance.date) as date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID ORDER BY DATE ASC';
-            $resultAttendance = $connection2->prepare($sql);
-            $resultAttendance->execute($data);
+            $resultAttendance = $container->get(ActivityAttendanceGateway::class)->selectSortedStudentAttendanceByActivity($gibbonActivityID);
         } catch (PDOException $e) {
         }
         $sessions = $resultAttendance->fetchAll();
 
         // Get the time slots
         try {
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT nameShort, timeStart, timeEnd FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID';
-            $resultSlots = $connection2->prepare($sql);
-            $resultSlots->execute($data);
+            $resultSlots = $container->get(ActivitySlotGateway::class)->selectActivityTimeSlots($gibbonActivityID);
         } catch (PDOException $e) {
         }
 
         // Get the activity staff members
         try {
-            $dataStaff = array('gibbonActivityID' => $gibbonActivityID);
-            $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-            $resultStaff = $connection2->prepare($sqlStaff);
-            $resultStaff->execute($dataStaff);
+            $resultStaff = $container->get(ActivityStaffGateway::class)->selectStaffByOngoingActivity($gibbonActivityID);
         } catch (PDOException $e) {}
 
         $columnStart = 1;

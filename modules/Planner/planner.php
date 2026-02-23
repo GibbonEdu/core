@@ -19,9 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Module\Planner\Tables\LessonTable;
 use Gibbon\Domain\Students\StudentGateway;
@@ -100,6 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             
             $page->breadcrumbs->add(__('My Children\'s Classes'));
 
+            //Test data access field for permission
+            $result = $container->get(FamilyAdultGateway::class)->getFamilyAdult($session->get('gibbonPersonID'));
             $studentGateway = $container->get(StudentGateway::class);
             $children = $studentGateway
                 ->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))

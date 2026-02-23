@@ -71,4 +71,12 @@ class InvoiceeGateway extends QueryableGateway implements ScrubbableGateway
 
         return$this->db()->select($sql);
     }
+
+    public function selectStudentsInvoiceByActivity($gibbonActivityStudentID)
+    {
+        $dataCheck2 = ['gibbonActivityStudentID' => $gibbonActivityStudentID];
+        $sqlCheck2 = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonPersonID=(SELECT gibbonPersonID FROM gibbonActivityStudent WHERE gibbonActivityStudentID=:gibbonActivityStudentID)';
+
+        return$this->db()->select($sqlCheck2, $dataCheck2);
+    }
 }

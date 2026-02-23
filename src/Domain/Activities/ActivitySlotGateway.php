@@ -49,4 +49,28 @@ class ActivitySlotGateway extends QueryableGateway
 
         return $this->db()->delete($sql, $data);
     }
+
+    public function selectActivitySlots($gibbonActivityID)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS day, gibbonSpace.name AS space FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectWeekdayNamesByActivity($gibbonActivityID)
+    {
+        $data = array('gibbonActivityID' => $gibbonActivityID);
+        $sql = "SELECT DISTINCT nameShort FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectActivityTimeSlots($gibbonActivityID)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = 'SELECT nameShort, timeStart, timeEnd FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID';
+
+        return $this->db()->select($sql, $data);       
+    }
 }

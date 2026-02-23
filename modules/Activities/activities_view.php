@@ -19,12 +19,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyAdultGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\Students\StudentEnrolmentGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
+use Gibbon\Domain\Activities\ActivityTypeGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -85,10 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
                 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $result = $container->get(FamilyAdultGateway::class)->getFamilyAdult($session->get('gibbonPersonID'));
 
                 if ($result->rowCount() < 1) {
                     echo $page->getBlankSlate();
@@ -96,10 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $options = array();
                     while ($row = $result->fetch()) {
 
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => date('Y-m-d'));
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL OR dateEnd>=:date) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-                        $resultChild = $connection2->prepare($sqlChild);
-                        $resultChild->execute($dataChild);
+                        $resultChild = $container->get(FamilyChildGateway::class)->selectChildrenByFamilyAdult($row['gibbonFamilyID'], $session->get('gibbonSchoolYearID'), $gibbonPersonID);
+                     
                         if ($resultChild->rowCount() > 0) {
                             while ($rowChild = $resultChild->fetch()) {
                                 $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
@@ -154,10 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
                 $continue = false;
 
-                    $dataStudent = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $resultStudent = $connection2->prepare($sqlStudent);
-                    $resultStudent->execute($dataStudent);
+                    $resultStudent = $container->get(StudentEnrolmentGateway::class)->getStudentEnrolmentDetails($session->get('gibbonPersonID'), $session->get('gibbonSchoolYearID'));
 
                 if ($resultStudent->rowCount() == 1) {
                     $rowStudent = $resultStudent->fetch();
@@ -172,16 +170,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $continue = false;
 
                 //Confirm access to this student
-                $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'date' => date('Y-m-d'));
-                $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                $resultChild = $connection2->prepare($sqlChild);
-                $resultChild->execute($dataChild);
-                if ($resultChild->rowCount() == 1) {
+                $resultChild = $container->get(FamilyChildGateway::class)->getChildInfoByFamilyAdult($gibbonPersonID, $session->get('gibbonPersonID'));
 
-                    $dataStudent = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $resultStudent = $connection2->prepare($sqlStudent);
-                    $resultStudent->execute($dataStudent);
+                if ($resultChild->rowCount() == 1) {
+                    $resultStudent = $container->get(StudentEnrolmentGateway::class)->getStudentEnrolmentDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
                     if ($resultStudent->rowCount() == 1) {
                         $rowStudent = $resultStudent->fetch();
@@ -191,10 +183,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $and = " AND gibbonYearGroupIDList LIKE '%$gibbonYearGroupID%'";
                         }
                     }
-
+                    
                 } else {
                     echo '<div class="message">';
-                    echo __('Select a child in your family view their available activities.');
+                    echo __('Select a child in your family to view their available activities.');
                     echo '</div>';
                     $continue = true;
                 }
@@ -222,6 +214,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $paymentOn = $settingGateway->getSettingByScope('Activities', 'payment') != 'None' && $settingGateway->getSettingByScope('Activities', 'payment') != 'Single';
 
                 $activityGateway = $container->get(ActivityGateway::class);
+                $activityStudentGateway = $container->get(ActivityStudentGateway::class);
+                $activitySlotGateway = $container->get(ActivitySlotGateway::class);
 
                 // CRITERIA
                 $criteria = $activityGateway->newQueryCriteria()
@@ -245,13 +239,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         foreach ($terms as $termCount => $term) {
                             echo '<li>';
                             echo '<b>'.$term['name'].':</b> ';
-
-
-                                $dataActivityCount = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$term['gibbonSchoolYearTermID'].'%');
-                                $sqlActivityCount = "SELECT * FROM gibbonActivityStudent JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'";
-                                $resultActivityCount = $connection2->prepare($sqlActivityCount);
-                                $resultActivityCount->execute($dataActivityCount);
-
+                          
+                                $resultActivityCount = $container->get(ActivityStudentGateway::class)->selectCurrentActivityRegistrationsOfStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, $terms[$i]);
+                                
                             if ($resultActivityCount->rowCount() >= 0) {
                                 echo $resultActivityCount->rowCount().' activities';
                             }
@@ -260,8 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '</ul>';
                         echo '</div>';
                     } else if ($dateType == 'Date') {
-                        $sql = "SELECT gibbonActivityTypeID, name, maxPerStudent FROM gibbonActivityType WHERE access='Register' AND maxPerStudent > 0";
-                        $activitiesWithLimits = $pdo->select($sql);
+                        $activitiesWithLimits = $container->get(ActivityTypeGateway::class)->selectRegisterActivityType();
 
                         if ($activitiesWithLimits->rowCount() > 0) {
                             while ($activity = $activitiesWithLimits->fetch()) {
@@ -291,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 // Add enrolment details & row highlights only when viewing registerable activities
                 if ($canAccessRegistration && !empty($gibbonPersonID)) {
-                    $enroledActivities = $activityGateway->selectActivityEnrolmentByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchGroupedUnique();
+                    $enroledActivities = $activityStudentGateway->selectActivityEnrolmentByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchGroupedUnique();
 
                     $activities->transform(function (&$activity) use ($enroledActivities) {
                         $activity['enrolmentFull'] = $activity['waitingList'] != 'Y' && $activity['enrolment'] >= $activity['maxParticipants'];
@@ -329,7 +318,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     ->context('secondary')
                     ->width('18%')
                     ->sortable($dateType != 'Date' ? ['gibbonSchoolYearTermIDList'] : ['programStart', 'programEnd'])
-                    ->format(function ($activity) use ($dateType, $schoolTerms, $activityGateway) {
+                    ->format(function ($activity) use ($dateType, $schoolTerms, $activitySlotGateway) {
                         if (empty($schoolTerms)) return '';
 
                         $output = '';
@@ -341,9 +330,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         } else {
                             $output .= Format::dateRangeReadable($activity['programStart'], $activity['programEnd']);
                         }
+                      
+                        $output .= '<br/><span class="small emphasis">';
+                        $output .= implode(', ', $activitySlotGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN));
 
-                        $output .= '<br/><span class="text-xs italic">';
-                        $output .= implode(', ', $activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN));
                         $output .= '</span>';
 
                         return $output;

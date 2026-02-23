@@ -110,7 +110,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
         // Get children for this adult
         $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetchGroupedUnique();
-
+        
+      $result = $container->get(FamilyAdultGateway::class)->getFamilyAdult($session->get('gibbonPersonID'));
+        
+      if ($result->rowCount() < 1) {
         if (empty($children)) {
             echo $page->getBlankSlate();
         } elseif (count($children) == 1) {

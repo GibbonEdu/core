@@ -19,13 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\DaysOfWeekGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\Activities\ActivityTypeGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivityPhotoGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
@@ -93,13 +95,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         'External' => __('External')
                     ]);
 
+            $activityTypes = $container->get(ActivityTypeGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
+          
             $categories = $container->get(ActivityCategoryGateway::class)->selectCategoriesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
             $row = $form->addRow();
                 $row->addLabel('gibbonActivityCategoryID', __('Category'));
                 $row->addSelect('gibbonActivityCategoryID')->fromArray($categories)->placeholder();
-                
-            $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
-
+ 
             if (!empty($activityTypes)) {
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
@@ -232,13 +234,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $form->addRow()->addHeading('Time Slots', __('Time Slots'));
 
             //Block template
-            $sqlWeekdays = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
+            $result = $container->get(DaysOfWeekGateway::class)->selectDaysOfWeek();
 
             $slotBlock = $form->getFactory()->createTable()->setClass('blank');
                 $row = $slotBlock->addRow();
                     $row->addLabel('gibbonDaysOfWeekID', __('Slot Day'));
                     $row->addSelect('gibbonDaysOfWeekID')
-                        ->fromQuery($pdo, $sqlWeekdays)
+                        ->fromResults($result)
                         ->placeholder()
                         ->addClass('floatLeft');
 

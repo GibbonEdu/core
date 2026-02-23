@@ -1,4 +1,9 @@
 <?php
+
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -49,18 +54,15 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                 foreach ($activities AS $gibbonActivityID) { //For every activity to be copied
                     //Check existence of activity and fetch details
                     try {
-                        $data = ['gibbonActivityID' => $gibbonActivityID];
-                        $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                        $result = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
                     } catch (PDOException $e) {
                         $partialFail = true;
                     }
 
-                    if ($result->rowCount() != 1) {
+                    if (!empty($result)) {
                         $partialFail = true;
                     } else {
-                        $row = $result->fetch();
+                        $row = $result;
                         $name = $row['name'];
                         if ($gibbonSchoolYearIDCopyTo == $session->get('gibbonSchoolYearID')) {
                             $name .= ' (Copy)';
@@ -91,14 +93,9 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                         $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
                         //Check and create staff
-                        try {
-                            $dataParticipants = array('gibbonActivityID' => $gibbonActivityID);
-                            $sqlParticipants = 'SELECT * FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID';
-                            $resultParticipants = $connection2->prepare($sqlParticipants);
-                            $resultParticipants->execute($dataParticipants);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
+                        $resultParticipants = $container->get(ActivityStaffGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
+
+
                         while ($rowParticipants = $resultParticipants->fetch()) {
                             try {
                                 $dataParticipants2 = array('gibbonActivityID' => $AI, 'gibbonPersonID' => $rowParticipants['gibbonPersonID'], 'role' => $rowParticipants['role']);
@@ -111,14 +108,8 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                         }
 
                         //Check and create slots
-                        try {
-                            $dataParticipants = array('gibbonActivityID' => $gibbonActivityID);
-                            $sqlParticipants = 'SELECT * FROM gibbonActivitySlot WHERE gibbonActivityID=:gibbonActivityID';
-                            $resultParticipants = $connection2->prepare($sqlParticipants);
-                            $resultParticipants->execute($dataParticipants);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
+                            $resultParticipants = $container->get(ActivitySlotGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
+
                         while ($rowParticipants = $resultParticipants->fetch()) {
                             try {
                                 $dataParticipants2 = array('gibbonActivityID' => $AI, 'gibbonSpaceID' => $rowParticipants['gibbonSpaceID'], 'locationExternal' => $rowParticipants['locationExternal'], 'gibbonDaysOfWeekID' => $rowParticipants['gibbonDaysOfWeekID'], 'timeStart' => $rowParticipants['timeStart'], 'timeEnd' => $rowParticipants['timeEnd']);
@@ -133,14 +124,8 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                         //Deal with participants
                         if ($action == 'DuplicateParticipants') {
                             //Check and create staff
-                            try {
-                                $dataParticipants = array('gibbonActivityID' => $gibbonActivityID);
-                                $sqlParticipants = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID';
-                                $resultParticipants = $connection2->prepare($sqlParticipants);
-                                $resultParticipants->execute($dataParticipants);
-                            } catch (PDOException $e) {
-                                $partialFail = true;
-                            }
+                                $resultParticipants = $container->get(ActivityStudentGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
+                            
                             while ($rowParticipants = $resultParticipants->fetch()) {
                                 try {
                                     $dataParticipants2 = array('gibbonActivityID' => $AI, 'gibbonPersonID' => $rowParticipants['gibbonPersonID'], 'status' => $rowParticipants['status'], 'timestamp' => $rowParticipants['timestamp']);
@@ -167,10 +152,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                 foreach ($activities AS $gibbonActivityID) { //For every activity to be copied
                     //Check existence of activity and fetch details
                     try {
-                        $data = array('gibbonActivityID' => $gibbonActivityID);
-                        $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                        $result = $container->get(ActivityGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
                     } catch (PDOException $e) {
                         $partialFail = true;
                     }

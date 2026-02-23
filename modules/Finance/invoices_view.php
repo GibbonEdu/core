@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
@@ -49,6 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
         $page->breadcrumbs->add(__('View Invoices'));
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['search' => $search]);
 
+        if ($highestAction=="View Invoices_myChildren") {
+            // Test data access field for permission
+            $result = $container->get(FamilyAdultGateway::class)->getFamilyAdult($session->get('gibbonPersonID'));
+          
         // Online payment
         $settingGateway = $container->get(SettingGateway::class);
         $studentGateway = $container->get(StudentGateway::class);

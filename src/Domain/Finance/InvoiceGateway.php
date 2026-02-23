@@ -168,6 +168,14 @@ class InvoiceGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectStudentsWithPendingInvoices($gibbonFinanceBillingScheduleID, $gibbonFinanceInvoiceeID)
+    {
+        $dataCheck = ['gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID];
+        $sqlCheck = "SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND status='Pending'";
+
+        return$this->db()->select($sqlCheck, $dataCheck);
+    }
+  
     public function selectInvoicesByPersonID($gibbonSchoolYearID, $gibbonPersonID) 
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];

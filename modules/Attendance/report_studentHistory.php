@@ -24,6 +24,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 
@@ -115,10 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
             }
             //Test data access field for permission
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(FamilyAdultGateway::class)->getFamilyAdult($session->get('gibbonPersonID'));
             
             if ($result->rowCount() < 1) {
                 echo $page->getBlankSlate();
