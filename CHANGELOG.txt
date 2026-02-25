@@ -36,6 +36,7 @@ v31.0.00
         System: updated TinyMCE to version 8 and added a minimal mode to Editor fields
         System: added a User module to organise user preferences and settings
         System: enabled configuring the time format as 12-hour clock or 24-hour clock in System Settings
+        System: Added Peruvian Sol as a currency option
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
         Attendance: student attendance history now ordered by timetable period
