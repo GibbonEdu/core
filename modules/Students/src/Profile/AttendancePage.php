@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Module\Attendance\StudentHistoryData;
@@ -37,26 +38,20 @@ use Gibbon\Tables\DataTable;
  */
 class AttendancePage extends ProfilePage
 {
+    private Connection $pdo;
     private StudentHistoryData $attendanceData;
     private StudentHistoryView $attendanceView;
-    private $connection2;
-    private $guid;
-    private $container;
 
     public function __construct(
         Session $session,
+        Connection $pdo,
         StudentHistoryData $attendanceData,
-        StudentHistoryView $attendanceView,
-        $connection2,
-        $guid,
-        $container
+        StudentHistoryView $attendanceView
     ) {
         parent::__construct($session);
+        $this->pdo = $pdo;
         $this->attendanceData = $attendanceData;
         $this->attendanceView = $attendanceView;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
-        $this->container = $container;
     }
 
     /**
@@ -70,7 +65,7 @@ class AttendancePage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Attendance/report_studentHistory.php');
+        return Access::allows('Attendance', 'report_studentHistory');
     }
 
     /**
@@ -105,7 +100,7 @@ class AttendancePage extends ProfilePage
         );
 
         // DATA TABLE
-        $this->attendanceView->addData('canTakeAttendanceByPerson', isActionAccessible($this->guid, $this->connection2, '/modules/Attendance/attendance_take_byPerson.php'));
+        $this->attendanceView->addData('canTakeAttendanceByPerson', Access::allows('Attendance', 'attendance_take_byPerson'));
         $table = DataTable::create('studentHistory', $this->attendanceView);
         
         return $table->render($attendanceData);
@@ -132,8 +127,7 @@ class AttendancePage extends ProfilePage
                 AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
+        $result = $this->pdo->select($sql, $data);
         
         if ($result->rowCount() != 1) {
             return [];

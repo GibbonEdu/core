@@ -23,6 +23,7 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Database\Connection;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
@@ -40,21 +41,18 @@ class MedicalPage extends ProfilePage
 {
     private MedicalGateway $medicalGateway;
     private CustomFieldHandler $customFieldHandler;
-    private $connection2;
-    private $guid;
+    private Connection $pdo;
 
     public function __construct(
         Session $session,
         MedicalGateway $medicalGateway,
         CustomFieldHandler $customFieldHandler,
-        $connection2,
-        $guid
+        Connection $pdo
     ) {
         parent::__construct($session);
         $this->medicalGateway = $medicalGateway;
         $this->customFieldHandler = $customFieldHandler;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
+        $this->pdo = $pdo;
     }
 
     /**
@@ -164,7 +162,7 @@ class MedicalPage extends ProfilePage
         $table = DataTable::createDetails('medical');
 
         // Add header actions if user has permission
-        if (isActionAccessible($this->guid, $this->connection2, '/modules/Students/medicalForm_manage.php')) {
+        if (Access::allows('Students', 'Manage Medical Forms')) {
             if (empty($medical)) {
                 $table->addHeaderAction('add', __('Add Medical Form'))
                     ->setURL('/modules/Students/medicalForm_manage_add.php')

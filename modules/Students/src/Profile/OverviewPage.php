@@ -23,7 +23,9 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Database\Connection;
 use Gibbon\Domain\Students\MedicalGateway;
+use Psr\Container\ContainerInterface;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\User\RoleGateway;
@@ -58,9 +60,8 @@ class OverviewPage extends ProfilePage
     private HouseGateway $houseGateway;
     private SettingGateway $settingGateway;
     private StudentAttendanceStatus $attendanceStatus;
-    private $container;
-    private $connection2;
-    private $guid;
+    private Connection $pdo;
+    private ContainerInterface $container;
 
     public function __construct(
         Session $session,
@@ -73,9 +74,8 @@ class OverviewPage extends ProfilePage
         HouseGateway $houseGateway,
         SettingGateway $settingGateway,
         StudentAttendanceStatus $attendanceStatus,
-        $container,
-        $connection2,
-        $guid
+        Connection $pdo,
+        ContainerInterface $container
     ) {
         parent::__construct($session);
         $this->medicalGateway = $medicalGateway;
@@ -87,9 +87,8 @@ class OverviewPage extends ProfilePage
         $this->houseGateway = $houseGateway;
         $this->settingGateway = $settingGateway;
         $this->attendanceStatus = $attendanceStatus;
+        $this->pdo = $pdo;
         $this->container = $container;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
     }
 
     /**
@@ -165,8 +164,7 @@ class OverviewPage extends ProfilePage
                 AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
+        $result = $this->pdo->select($sql, $data);
         
         if ($result->rowCount() != 1) {
             return [];
@@ -302,8 +300,7 @@ class OverviewPage extends ProfilePage
                 if (isset($formGroup['gibbonPersonIDTutor'])) {
                     $dataDetail = ['gibbonFormGroupID' => $row['gibbonFormGroupID']];
                     $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonFormGroup JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName';
-                    $resultDetail = $this->connection2->prepare($sqlDetail);
-                    $resultDetail->execute($dataDetail);
+                    $resultDetail = $this->pdo->select($sqlDetail, $dataDetail);
 
                     while ($rowDetail = $resultDetail->fetch()) {
                         if (Access::allows('Staff', 'View Staff Profile_brief')) {
@@ -577,8 +574,7 @@ class OverviewPage extends ProfilePage
                     JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                     JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                 WHERE gibbonCourseClassPerson.role='Student' AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY course, class";
-            $resultDetail = $this->connection2->prepare($sqlDetail);
-            $resultDetail->execute($dataDetail);
+            $resultDetail = $this->pdo->select($sqlDetail, $dataDetail);
             
             if ($resultDetail->rowCount() < 1) {
                 $output .= '<div class="warning">'.__('There are no records to display.').'</div>';

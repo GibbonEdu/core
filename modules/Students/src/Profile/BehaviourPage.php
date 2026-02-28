@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Services\Format;
@@ -34,20 +35,14 @@ use Gibbon\Services\Format;
  */
 class BehaviourPage extends ProfilePage
 {
-    private $connection2;
-    private $guid;
-    private $container;
+    private Connection $pdo;
 
     public function __construct(
         Session $session,
-        $connection2,
-        $guid,
-        $container
+        Connection $pdo
     ) {
         parent::__construct($session);
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
-        $this->container = $container;
+        $this->pdo = $pdo;
     }
 
     /**
@@ -61,7 +56,7 @@ class BehaviourPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Behaviour/behaviour_view.php');
+        return Access::allows('Behaviour', 'behaviour_view');
     }
 
     /**
@@ -80,10 +75,7 @@ class BehaviourPage extends ProfilePage
         
         // Include module functions and render behaviour records
         $gibbonPersonID = $this->gibbonPersonID;
-        $connection2 = $this->connection2;
-        $guid = $this->guid;
-        $container = $this->container;
-        $session = $this->session;
+        $connection2 = $this->pdo;
         
         include './modules/Behaviour/moduleFunctions.php';
         
@@ -104,8 +96,7 @@ class BehaviourPage extends ProfilePage
                 AND type='Positive' 
                 ORDER BY date DESC, timestamp DESC";
         
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $result = $connection2->select($sql, $data);
         
         if ($result->rowCount() < 1) {
             echo '<div class="message">';
@@ -166,8 +157,7 @@ class BehaviourPage extends ProfilePage
                 AND type='Negative' 
                 ORDER BY date DESC, timestamp DESC";
         
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $result = $connection2->select($sql, $data);
         
         if ($result->rowCount() < 1) {
             echo '<div class="message">';

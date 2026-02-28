@@ -36,21 +36,15 @@ use Gibbon\Services\Format;
 class LibraryBorrowingPage extends ProfilePage
 {
     private LibraryBorrowingView $libraryBorrowing;
-    private $connection2;
-    private $guid;
-    private $page;
+    private \Gibbon\View\Page $page;
 
     public function __construct(
         Session $session,
         LibraryBorrowingView $libraryBorrowing,
-        $connection2,
-        $guid,
-        $page
+        \Gibbon\View\Page $page
     ) {
         parent::__construct($session);
         $this->libraryBorrowing = $libraryBorrowing;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
         $this->page = $page;
     }
 
@@ -65,7 +59,7 @@ class LibraryBorrowingPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Library/library_browse.php');
+        return Access::allows('Library', 'library_browse');
     }
 
     /**

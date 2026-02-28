@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\FamilyGateway;
@@ -28,6 +29,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Psr\Container\ContainerInterface;
 
 /**
  * FamilyPage
@@ -39,32 +41,23 @@ use Gibbon\Tables\DataTable;
  */
 class FamilyPage extends ProfilePage
 {
-    private FamilyGateway $familyGateway;
+    private Connection $pdo;
     private CustomFieldHandler $customFieldHandler;
-    private $connection2;
-    private $guid;
-    private $page;
-    private $container;
-    private $highestAction;
+    private ContainerInterface $container;
+    private \Gibbon\View\Page $page;
 
     public function __construct(
         Session $session,
-        FamilyGateway $familyGateway,
+        Connection $pdo,
         CustomFieldHandler $customFieldHandler,
-        $connection2,
-        $guid,
-        $page,
-        $container,
-        $highestAction
+        ContainerInterface $container,
+        \Gibbon\View\Page $page
     ) {
         parent::__construct($session);
-        $this->familyGateway = $familyGateway;
+        $this->pdo = $pdo;
         $this->customFieldHandler = $customFieldHandler;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
-        $this->page = $page;
         $this->container = $container;
-        $this->highestAction = $highestAction;
+        $this->page = $page;
     }
 
     /**
@@ -117,10 +110,7 @@ class FamilyPage extends ProfilePage
         $data = ['gibbonPersonID' => $this->gibbonPersonID];
         $sql = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
-        
-        return $result->fetchAll();
+        return $this->pdo->select($sql, $data)->fetchAll();
     }
 
     /**
@@ -134,7 +124,7 @@ class FamilyPage extends ProfilePage
         $output = '';
 
         // Add edit button if user has permission
-        if (isActionAccessible($this->guid, $this->connection2, '/modules/User Admin/family_manage.php') == true) {
+        if (Access::allows('User Admin', 'family_manage')) {
             $form = Form::createBlank('buttons');
             $form->addHeaderAction('edit', __('Edit Family'))
                 ->setURL('/modules/User Admin/family_manage_edit.php')
@@ -263,10 +253,7 @@ class FamilyPage extends ProfilePage
         $data = ['gibbonFamilyID' => $gibbonFamilyID];
         $sql = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
-        
-        return $result->fetchAll();
+        return $this->pdo->select($sql, $data)->fetchAll();
     }
 
     /**
@@ -356,7 +343,8 @@ class FamilyPage extends ProfilePage
         $output .= '</tr>';
 
         // Check to ensure only people with full profile access can view these comments
-        if ($adult['comment'] != '' && ($this->highestAction == 'View Student Profile_fullEditAllNotes' || $this->highestAction == 'View Student Profile_full' || $this->highestAction == 'View Student Profile_fullNoNotes')) {
+        $highestAction = Access::getHighestGroupedAction('Students', 'View Student Profile');
+        if ($adult['comment'] != '' && ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes')) {
             $output .= '<tr>';
             $output .= "<td $class style='width: 33%; vertical-align: top' colspan=3>";
             $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Comment').'</span><br/>';
@@ -390,8 +378,7 @@ class FamilyPage extends ProfilePage
         }
         
         $sql = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID';
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
+        $result = $this->pdo->select($sql, $data);
         
         if ($result->rowCount() == 1) {
             $relationship = $result->fetch();
@@ -568,9 +555,6 @@ class FamilyPage extends ProfilePage
         ];
         $sql = 'SELECT gibbonPerson.gibbonPersonID, image_240, preferredName, surname, status, gibbonStudentEnrolmentID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) WHERE gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
-        
-        return $result->fetchAll();
+        return $this->pdo->select($sql, $data)->fetchAll();
     }
 }

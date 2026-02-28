@@ -23,9 +23,9 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Services\Format;
+use Psr\Container\ContainerInterface;
 
 /**
  * HomeworkPage
@@ -36,22 +36,13 @@ use Gibbon\Services\Format;
  */
 class HomeworkPage extends ProfilePage
 {
-    private PlannerEntryGateway $plannerGateway;
-    private $connection2;
-    private $guid;
-    private $container;
+    private ContainerInterface $container;
 
     public function __construct(
         Session $session,
-        PlannerEntryGateway $plannerGateway,
-        $connection2,
-        $guid,
-        $container
+        ContainerInterface $container
     ) {
         parent::__construct($session);
-        $this->plannerGateway = $plannerGateway;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
         $this->container = $container;
     }
 
@@ -66,8 +57,8 @@ class HomeworkPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Planner/planner_edit.php') 
-            || isActionAccessible($this->guid, $this->connection2, '/modules/Planner/planner_view_full.php');
+        return Access::allows('Planner', 'planner_edit') 
+            || Access::allows('Planner', 'planner_view_full');
     }
 
     /**

@@ -37,19 +37,13 @@ use Gibbon\Tables\DataTable;
 class ReportsPage extends ProfilePage
 {
     private ReportArchiveEntryGateway $reportArchiveGateway;
-    private $connection2;
-    private $guid;
 
     public function __construct(
         Session $session,
-        ReportArchiveEntryGateway $reportArchiveGateway,
-        $connection2,
-        $guid
+        ReportArchiveEntryGateway $reportArchiveGateway
     ) {
         parent::__construct($session);
         $this->reportArchiveGateway = $reportArchiveGateway;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
     }
 
     /**
@@ -63,7 +57,7 @@ class ReportsPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Reports/archive_byStudent_view.php');
+        return Access::allows('Reports', 'archive_byStudent_view');
     }
 
     /**

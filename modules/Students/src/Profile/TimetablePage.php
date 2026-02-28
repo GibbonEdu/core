@@ -26,6 +26,7 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\UI\Timetable\Timetable;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Services\Format;
+use Psr\Container\ContainerInterface;
 
 /**
  * TimetablePage
@@ -36,19 +37,13 @@ use Gibbon\Services\Format;
  */
 class TimetablePage extends ProfilePage
 {
-    private $connection2;
-    private $guid;
-    private $container;
+    private ContainerInterface $container;
 
     public function __construct(
         Session $session,
-        $connection2,
-        $guid,
-        $container
+        ContainerInterface $container
     ) {
         parent::__construct($session);
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
         $this->container = $container;
     }
 
@@ -63,7 +58,7 @@ class TimetablePage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Timetable/tt_view.php');
+        return Access::allows('Timetable', 'tt_view');
     }
 
     /**

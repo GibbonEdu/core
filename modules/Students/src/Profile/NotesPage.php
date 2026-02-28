@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Students\StudentNoteGateway;
@@ -38,29 +39,20 @@ use Gibbon\Tables\DataTable;
  */
 class NotesPage extends ProfilePage
 {
+    private Connection $pdo;
     private StudentNoteGateway $noteGateway;
     private SettingGateway $settingGateway;
-    private $connection2;
-    private $guid;
-    private $pdo;
-    private $highestAction;
 
     public function __construct(
         Session $session,
+        Connection $pdo,
         StudentNoteGateway $noteGateway,
-        SettingGateway $settingGateway,
-        $connection2,
-        $guid,
-        $pdo,
-        $highestAction
+        SettingGateway $settingGateway
     ) {
         parent::__construct($session);
+        $this->pdo = $pdo;
         $this->noteGateway = $noteGateway;
         $this->settingGateway = $settingGateway;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
-        $this->pdo = $pdo;
-        $this->highestAction = $highestAction;
     }
 
     /**
@@ -79,7 +71,7 @@ class NotesPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Students/student_view_details_notes_add.php');
+        return Access::allows('Students', 'student_view_details_notes_add');
     }
 
     /**
@@ -128,8 +120,7 @@ class NotesPage extends ProfilePage
     {
         $dataCategories = [];
         $sqlCategories = "SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
-        $resultCategories = $this->connection2->prepare($sqlCategories);
-        $resultCategories->execute($dataCategories);
+        $resultCategories = $this->pdo->select($sqlCategories, $dataCategories);
 
         if ($resultCategories->rowCount() == 0) {
             return '';
@@ -231,6 +222,7 @@ class NotesPage extends ProfilePage
             ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
 
         // ACTIONS
+        $highestAction = Access::getHighestGroupedAction('Students', 'View Student Profile');
         $table->addActionColumn()
             ->addParam('gibbonStudentNoteID')
             ->addParam('gibbonPersonID', $this->gibbonPersonID)
@@ -238,13 +230,13 @@ class NotesPage extends ProfilePage
             ->addParam('search', $search)
             ->addParam('subpage', 'Notes')
             ->addParam('category', $category ?? '')
-            ->format(function ($note, $actions) {
-                if ($note['gibbonPersonIDCreator'] == $this->session->get('gibbonPersonID') || $this->highestAction == "View Student Profile_fullEditAllNotes") {
+            ->format(function ($note, $actions) use ($highestAction) {
+                if ($note['gibbonPersonIDCreator'] == $this->session->get('gibbonPersonID') || $highestAction == "View Student Profile_fullEditAllNotes") {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Students/student_view_details_notes_edit.php');
                 }
 
-                if ($this->highestAction == "View Student Profile_fullEditAllNotes") {
+                if ($highestAction == "View Student Profile_fullEditAllNotes") {
                     $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/Students/student_view_details_notes_delete.php');
                 }

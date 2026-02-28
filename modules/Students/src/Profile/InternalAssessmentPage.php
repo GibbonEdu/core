@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Services\Format;
@@ -34,20 +35,14 @@ use Gibbon\Services\Format;
  */
 class InternalAssessmentPage extends ProfilePage
 {
-    private $connection2;
-    private $guid;
-    private $container;
+    private Connection $pdo;
 
     public function __construct(
         Session $session,
-        $connection2,
-        $guid,
-        $container
+        Connection $pdo
     ) {
         parent::__construct($session);
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
-        $this->container = $container;
+        $this->pdo = $pdo;
     }
 
     /**
@@ -61,7 +56,7 @@ class InternalAssessmentPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Formal Assessment/internalAssessment_view.php');
+        return Access::allows('Formal Assessment', 'internalAssessment_view');
     }
 
     /**
@@ -80,10 +75,11 @@ class InternalAssessmentPage extends ProfilePage
         
         // Include module functions and render internal assessment
         $gibbonPersonID = $this->gibbonPersonID;
-        $connection2 = $this->connection2;
+        $connection2 = $this->pdo;
+        $guid = $this->session->get('guid');
         
         include './modules/Formal Assessment/moduleFunctions.php';
-        internalAssessmentDetails($this->guid, $gibbonPersonID, $connection2);
+        internalAssessmentDetails($guid, $gibbonPersonID, $connection2);
         
         return ob_get_clean();
     }

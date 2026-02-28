@@ -23,6 +23,7 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Database\Connection;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
@@ -54,9 +55,8 @@ class PersonalPage extends ProfilePage
     private SettingGateway $settingGateway;
     private PersonalDocumentGateway $personalDocumentGateway;
     private CustomFieldHandler $customFieldHandler;
-    private $connection2;
-    private $guid;
-    private $page;
+    private Connection $pdo;
+    private \Gibbon\View\Page $page;
 
     public function __construct(
         Session $session,
@@ -69,9 +69,8 @@ class PersonalPage extends ProfilePage
         SettingGateway $settingGateway,
         PersonalDocumentGateway $personalDocumentGateway,
         CustomFieldHandler $customFieldHandler,
-        $connection2,
-        $guid,
-        $page
+        Connection $pdo,
+        \Gibbon\View\Page $page
     ) {
         parent::__construct($session);
         $this->studentGateway = $studentGateway;
@@ -83,8 +82,7 @@ class PersonalPage extends ProfilePage
         $this->settingGateway = $settingGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->customFieldHandler = $customFieldHandler;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
+        $this->pdo = $pdo;
         $this->page = $page;
     }
 
@@ -144,8 +142,7 @@ class PersonalPage extends ProfilePage
                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
         $data['gibbonSchoolYearID'] = $this->gibbonSchoolYearID;
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
+        $result = $this->pdo->select($sql, $data);
         
         if ($result->rowCount() != 1) {
             return [];

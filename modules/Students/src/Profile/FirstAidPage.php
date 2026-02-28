@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Students\FirstAidGateway;
@@ -36,20 +37,17 @@ use Gibbon\Tables\DataTable;
  */
 class FirstAidPage extends ProfilePage
 {
+    private Connection $pdo;
     private FirstAidGateway $firstAidGateway;
-    private $connection2;
-    private $guid;
 
     public function __construct(
         Session $session,
-        FirstAidGateway $firstAidGateway,
-        $connection2,
-        $guid
+        Connection $pdo,
+        FirstAidGateway $firstAidGateway
     ) {
         parent::__construct($session);
+        $this->pdo = $pdo;
         $this->firstAidGateway = $firstAidGateway;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
     }
 
     /**
@@ -63,7 +61,7 @@ class FirstAidPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Students/firstAidRecord.php');
+        return Access::allows('Students', 'firstAidRecord');
     }
 
     /**
@@ -141,7 +139,7 @@ class FirstAidPage extends ProfilePage
             ->sortable(['timeIn', 'timeOut'])
             ->format(Format::using('timeRange', ['timeIn', 'timeOut']));
 
-        $highestActionFirstAid = getHighestGroupedAction($this->guid, '/modules/Students/firstAidRecord.php', $this->connection2);
+        $highestActionFirstAid = Access::getHighestGroupedAction('Students', 'firstAidRecord');
         $table->addActionColumn()
             ->addParam('gibbonPersonID', $this->gibbonPersonID)
             ->addParam('gibbonFormGroupID', $student['gibbonFormGroupID'])
@@ -181,8 +179,7 @@ class FirstAidPage extends ProfilePage
                 AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
+        $result = $this->pdo->select($sql, $data);
         
         if ($result->rowCount() != 1) {
             return [];

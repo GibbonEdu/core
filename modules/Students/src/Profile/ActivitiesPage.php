@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Services\Format;
@@ -35,19 +36,13 @@ use Gibbon\Tables\DataTable;
  */
 class ActivitiesPage extends ProfilePage
 {
-    private $connection2;
-    private $guid;
-    private $pdo;
+    private Connection $pdo;
 
     public function __construct(
         Session $session,
-        $connection2,
-        $guid,
-        $pdo
+        Connection $pdo
     ) {
         parent::__construct($session);
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
         $this->pdo = $pdo;
     }
 
@@ -62,9 +57,9 @@ class ActivitiesPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Activities/report_activityChoices_byStudent') 
-            || isActionAccessible($this->guid, $this->connection2, '/modules/Activities/activities_view_myChildren.php') 
-            || isActionAccessible($this->guid, $this->connection2, '/modules/Activities/activities_my.php');
+        return Access::allows('Activities', 'report_activityChoices_byStudent') 
+            || Access::allows('Activities', 'activities_view_myChildren') 
+            || Access::allows('Activities', 'activities_my');
     }
 
     /**

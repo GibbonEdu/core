@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\FamilyGateway;
@@ -42,31 +43,28 @@ use Gibbon\Domain\DataSet;
  */
 class EmergencyContactsPage extends ProfilePage
 {
+    private Connection $pdo;
     private FamilyGateway $familyGateway;
     private UserGateway $userGateway;
     private StudentGateway $studentGateway;
     private SettingGateway $settingGateway;
-    private $connection2;
-    private $guid;
-    private $page;
+    private \Gibbon\View\Page $page;
 
     public function __construct(
         Session $session,
+        Connection $pdo,
         FamilyGateway $familyGateway,
         UserGateway $userGateway,
         StudentGateway $studentGateway,
         SettingGateway $settingGateway,
-        $connection2,
-        $guid,
-        $page
+        \Gibbon\View\Page $page
     ) {
         parent::__construct($session);
+        $this->pdo = $pdo;
         $this->familyGateway = $familyGateway;
         $this->userGateway = $userGateway;
         $this->studentGateway = $studentGateway;
         $this->settingGateway = $settingGateway;
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
         $this->page = $page;
     }
 
@@ -103,7 +101,7 @@ class EmergencyContactsPage extends ProfilePage
         $output = '';
 
         // Add edit button if user has permission
-        if (isActionAccessible($this->guid, $this->connection2, '/modules/User Admin/user_manage.php') == true) {
+        if (Access::allows('User Admin', 'user_manage')) {
             $form = Form::createBlank('buttons');
             $form->addHeaderAction('edit', __('Edit User'))
                 ->setURL('/modules/User Admin/user_manage_edit.php')
@@ -149,8 +147,7 @@ class EmergencyContactsPage extends ProfilePage
                 AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
+        $result = $this->pdo->select($sql, $data);
         
         if ($result->rowCount() != 1) {
             return [];
@@ -172,8 +169,7 @@ class EmergencyContactsPage extends ProfilePage
 
         $dataFamily = ['gibbonPersonID' => $this->gibbonPersonID];
         $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-        $resultFamily = $this->connection2->prepare($sqlFamily);
-        $resultFamily->execute($dataFamily);
+        $resultFamily = $this->pdo->select($sqlFamily, $dataFamily);
 
         if ($resultFamily->rowCount() == 0) {
             return $output . $this->page->getBlankSlate();
@@ -182,8 +178,7 @@ class EmergencyContactsPage extends ProfilePage
         while ($rowFamily = $resultFamily->fetch()) {
             $dataMember = ['gibbonFamilyID' => $rowFamily['gibbonFamilyID']];
             $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-            $resultMember = $this->connection2->prepare($sqlMember);
-            $resultMember->execute($dataMember);
+            $resultMember = $this->pdo->select($sqlMember, $dataMember);
 
             while ($rowMember = $resultMember->fetch()) {
                 $output .= $this->renderAdultMember($rowMember, $rowFamily['gibbonFamilyID']);
@@ -217,8 +212,7 @@ class EmergencyContactsPage extends ProfilePage
             'gibbonFamilyID' => $gibbonFamilyID
         ];
         $sqlRelationship = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID';
-        $resultRelationship = $this->connection2->prepare($sqlRelationship);
-        $resultRelationship->execute($dataRelationship);
+        $resultRelationship = $this->pdo->select($sqlRelationship, $dataRelationship);
         
         if ($resultRelationship->rowCount() == 1) {
             $rowRelationship = $resultRelationship->fetch();

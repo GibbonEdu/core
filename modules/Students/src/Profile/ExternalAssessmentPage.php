@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Services\Format;
@@ -34,17 +35,14 @@ use Gibbon\Services\Format;
  */
 class ExternalAssessmentPage extends ProfilePage
 {
-    private $connection2;
-    private $guid;
+    private Connection $pdo;
 
     public function __construct(
         Session $session,
-        $connection2,
-        $guid
+        Connection $pdo
     ) {
         parent::__construct($session);
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
+        $this->pdo = $pdo;
     }
 
     /**
@@ -58,8 +56,8 @@ class ExternalAssessmentPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Formal Assessment/externalAssessment_details.php') 
-            || isActionAccessible($this->guid, $this->connection2, '/modules/Formal Assessment/externalAssessment_view.php');
+        return Access::allows('Formal Assessment', 'externalAssessment_details') 
+            || Access::allows('Formal Assessment', 'externalAssessment_view');
     }
 
     /**
@@ -86,11 +84,12 @@ class ExternalAssessmentPage extends ProfilePage
         
         // Include module functions and render external assessment
         $gibbonPersonID = $this->gibbonPersonID;
-        $connection2 = $this->connection2;
+        $connection2 = $this->pdo;
         $gibbonYearGroupID = $student['gibbonYearGroupID'];
+        $guid = $this->session->get('guid');
         
         include './modules/Formal Assessment/moduleFunctions.php';
-        externalAssessmentDetails($this->guid, $gibbonPersonID, $connection2, $gibbonYearGroupID);
+        externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID);
         
         return ob_get_clean();
     }
@@ -116,8 +115,7 @@ class ExternalAssessmentPage extends ProfilePage
                 AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
         
-        $result = $this->connection2->prepare($sql);
-        $result->execute($data);
+        $result = $this->pdo->select($sql, $data);
         
         if ($result->rowCount() != 1) {
             return [];

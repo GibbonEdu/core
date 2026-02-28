@@ -21,9 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
+use Gibbon\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Services\Format;
+use Psr\Container\ContainerInterface;
 
 /**
  * MarkbookPage
@@ -34,25 +36,19 @@ use Gibbon\Services\Format;
  */
 class MarkbookPage extends ProfilePage
 {
-    private $connection2;
-    private $guid;
-    private $container;
-    private $pdo;
-    private $page;
+    private Connection $pdo;
+    private ContainerInterface $container;
+    private \Gibbon\View\Page $page;
 
     public function __construct(
         Session $session,
-        $connection2,
-        $guid,
-        $container,
-        $pdo,
-        $page
+        Connection $pdo,
+        ContainerInterface $container,
+        \Gibbon\View\Page $page
     ) {
         parent::__construct($session);
-        $this->connection2 = $connection2;
-        $this->guid = $guid;
-        $this->container = $container;
         $this->pdo = $pdo;
+        $this->container = $container;
         $this->page = $page;
     }
 
@@ -67,7 +63,7 @@ class MarkbookPage extends ProfilePage
             return false;
         }
 
-        return isActionAccessible($this->guid, $this->connection2, '/modules/Markbook/markbook_view.php');
+        return Access::allows('Markbook', 'markbook_view');
     }
 
     /**
@@ -92,8 +88,7 @@ class MarkbookPage extends ProfilePage
         $gibbonPersonID = $this->gibbonPersonID;
         $gibbonSchoolYearID = $this->gibbonSchoolYearID;
         $session = $this->session;
-        $connection2 = $this->connection2;
-        $guid = $this->guid;
+        $connection2 = $this->pdo;
         $container = $this->container;
         $pdo = $this->pdo;
         $page = $this->page;
@@ -103,7 +98,7 @@ class MarkbookPage extends ProfilePage
         // Register scripts
         $page->scripts->add('chart');
 
-        $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
+        $highestAction2 = Access::getHighestGroupedAction('Markbook', 'markbook_view');
         if ($highestAction2 == false) {
             echo Format::alert(__('The highest grouped action cannot be determined.'));
         } else {
