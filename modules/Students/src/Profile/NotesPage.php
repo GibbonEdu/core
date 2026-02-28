@@ -75,6 +75,17 @@ class NotesPage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Notes');
+    }
+
+
+    /**
      * Generate HTML output for the notes page
      * 
      * @return string HTML content for display

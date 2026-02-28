@@ -66,6 +66,17 @@ class IndividualNeedsPage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Individual Needs');
+    }
+
+
+    /**
      * Generate HTML output for the individual needs page
      * 
      * @return string HTML content for display

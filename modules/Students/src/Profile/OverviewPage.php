@@ -102,6 +102,17 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Overview');
+    }
+
+
+    /**
      * Generate HTML output for the overview page
      * 
      * @return string HTML content for display

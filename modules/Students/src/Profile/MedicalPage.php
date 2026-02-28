@@ -65,6 +65,17 @@ class MedicalPage extends ProfilePage
         return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
     }
 
+    /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Medical');
+    }
+
+
 
     /**
      * Generate HTML output for the medical page

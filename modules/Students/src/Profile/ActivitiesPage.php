@@ -63,6 +63,17 @@ class ActivitiesPage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Activities');
+    }
+
+
+    /**
      * Generate HTML output for the activities page
      * 
      * @return string HTML content for display

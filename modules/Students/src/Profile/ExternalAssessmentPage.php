@@ -61,6 +61,17 @@ class ExternalAssessmentPage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('External Assessment');
+    }
+
+
+    /**
      * Generate HTML output for the external assessment page
      * 
      * @return string HTML content for display

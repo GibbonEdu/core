@@ -69,6 +69,17 @@ class AttendancePage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Attendance');
+    }
+
+
+    /**
      * Generate HTML output for the attendance page
      * 
      * @return string HTML content for display

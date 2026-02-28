@@ -65,6 +65,17 @@ class FirstAidPage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('First Aid');
+    }
+
+
+    /**
      * Generate HTML output for the first aid page
      * 
      * @return string HTML content for display

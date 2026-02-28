@@ -71,6 +71,17 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Family');
+    }
+
+
+    /**
      * Generate HTML output for the family page
      * 
      * @return string HTML content for display

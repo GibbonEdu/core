@@ -61,6 +61,17 @@ class ReportsPage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Reports');
+    }
+
+
+    /**
      * Generate HTML output for the reports page
      * 
      * @return string HTML content for display

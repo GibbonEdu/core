@@ -63,6 +63,17 @@ class LibraryBorrowingPage extends ProfilePage
     }
 
     /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        return __('Library Borrowing');
+    }
+
+
+    /**
      * Generate HTML output for the library borrowing page
      * 
      * @return string HTML content for display

@@ -48,5 +48,7 @@ abstract class ProfilePage
 
     public abstract function checkAccess(): bool;
 
+    public abstract function getPageName(): string;
+
     public abstract function getOutput(): string;
 }

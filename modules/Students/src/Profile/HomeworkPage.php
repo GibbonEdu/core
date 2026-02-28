@@ -21,10 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 
@@ -39,10 +40,14 @@ class HomeworkPage extends ProfilePage implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    protected SettingGateway $settingGateway;
+
     public function __construct(
-        Session $session
+        Session $session,
+        SettingGateway $settingGateway
     ) {
         parent::__construct($session);
+        $this->settingGateway = $settingGateway;
     }
 
     /**
@@ -59,6 +64,19 @@ class HomeworkPage extends ProfilePage implements ContainerAwareInterface
         return Access::allows('Planner', 'planner_edit') 
             || Access::allows('Planner', 'planner_view_full');
     }
+
+    /**
+     * Get the page name for display
+     *
+     * @return string Translated page name
+     */
+    public function getPageName(): string
+    {
+        $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
+
+        return !empty($homeworkNamePlural) ? __($homeworkNamePlural) : __('Homework');
+    }
+
 
     /**
      * Generate HTML output for the homework page
