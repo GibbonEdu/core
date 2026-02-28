@@ -30,16 +30,18 @@ abstract class ProfilePage
 
     protected string $gibbonSchoolYearID;
     protected string $gibbonPersonID;
+    protected string $studentImage;
 
     public function __construct(Session $session)
     {
         $this->session = $session;
     }
 
-    public function setStudent(string $gibbonSchoolYearID, string $gibbonPersonID): self
+    public function setStudent(string $gibbonSchoolYearID, string $gibbonPersonID, string $studentImage = ''): self
     {
         $this->gibbonSchoolYearID = $gibbonSchoolYearID;
         $this->gibbonPersonID = $gibbonPersonID;
+        $this->studentImage = $studentImage;
 
         return $this;
     }
