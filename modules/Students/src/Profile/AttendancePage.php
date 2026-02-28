@@ -61,7 +61,7 @@ class AttendancePage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'View Student Profile_full')) {
+        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
             return false;
         }
 

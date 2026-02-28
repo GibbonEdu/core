@@ -60,14 +60,9 @@ class MedicalPage extends ProfilePage
      * 
      * @return bool True if user has access, false otherwise
      */
-    /**
-     * Check if the current user has permission to view medical information
-     * 
-     * @return bool True if user has access, false otherwise
-     */
     public function checkAccess(): bool
     {
-        return Access::allows('Students', 'View Student Profile_full');
+        return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
     }
 
 

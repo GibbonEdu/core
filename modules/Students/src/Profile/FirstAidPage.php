@@ -57,7 +57,7 @@ class FirstAidPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'View Student Profile_full')) {
+        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
             return false;
         }
 
@@ -139,17 +139,17 @@ class FirstAidPage extends ProfilePage
             ->sortable(['timeIn', 'timeOut'])
             ->format(Format::using('timeRange', ['timeIn', 'timeOut']));
 
-        $highestActionFirstAid = Access::getHighestGroupedAction('Students', 'firstAidRecord');
+        $highestActionFirstAid = Access::get('Students', 'firstAidRecord');
         $table->addActionColumn()
             ->addParam('gibbonPersonID', $this->gibbonPersonID)
             ->addParam('gibbonFormGroupID', $student['gibbonFormGroupID'])
             ->addParam('gibbonYearGroupID', $student['gibbonYearGroupID'])
             ->addParam('gibbonFirstAidID')
             ->format(function ($person, $actions) use ($highestActionFirstAid) {
-                if ($highestActionFirstAid == 'First Aid Record_editAll') {
+                if ($highestActionFirstAid->allows('First Aid Record_editAll')) {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Students/firstAidRecord_edit.php');
-                } elseif ($highestActionFirstAid == 'First Aid Record_viewOnlyAddNotes') {
+                } elseif ($highestActionFirstAid->allows('First Aid Record_viewOnlyAddNotes')) {
                     $actions->addAction('view', __('View'))
                         ->setURL('/modules/Students/firstAidRecord_edit.php');
                 }

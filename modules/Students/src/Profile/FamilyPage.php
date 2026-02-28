@@ -67,7 +67,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     public function checkAccess(): bool
     {
-        return Access::allows('Students', 'View Student Profile_full');
+        return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
     }
 
     /**
@@ -343,8 +343,8 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
         $output .= '</tr>';
 
         // Check to ensure only people with full profile access can view these comments
-        $highestAction = Access::getHighestGroupedAction('Students', 'View Student Profile');
-        if ($adult['comment'] != '' && ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes')) {
+        $highestAction = Access::get('Students', 'student_view_details');
+        if ($adult['comment'] != '' && $highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
             $output .= '<tr>';
             $output .= "<td $class style='width: 33%; vertical-align: top' colspan=3>";
             $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Comment').'</span><br/>';

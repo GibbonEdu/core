@@ -62,7 +62,7 @@ class NotesPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'View Student Profile_full')) {
+        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
             return false;
         }
 
@@ -222,7 +222,7 @@ class NotesPage extends ProfilePage
             ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
 
         // ACTIONS
-        $highestAction = Access::getHighestGroupedAction('Students', 'View Student Profile');
+        $highestAction = Access::get('Students', 'student_view_details');
         $table->addActionColumn()
             ->addParam('gibbonStudentNoteID')
             ->addParam('gibbonPersonID', $this->gibbonPersonID)
@@ -231,12 +231,12 @@ class NotesPage extends ProfilePage
             ->addParam('subpage', 'Notes')
             ->addParam('category', $category ?? '')
             ->format(function ($note, $actions) use ($highestAction) {
-                if ($note['gibbonPersonIDCreator'] == $this->session->get('gibbonPersonID') || $highestAction == "View Student Profile_fullEditAllNotes") {
+                if ($note['gibbonPersonIDCreator'] == $this->session->get('gibbonPersonID') || $highestAction->allows('View Student Profile_fullEditAllNotes') ) {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Students/student_view_details_notes_edit.php');
                 }
 
-                if ($highestAction == "View Student Profile_fullEditAllNotes") {
+                if ($highestAction->allows('View Student Profile_fullEditAllNotes')) {
                     $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/Students/student_view_details_notes_delete.php');
                 }

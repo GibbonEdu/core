@@ -52,7 +52,7 @@ class ExternalAssessmentPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'View Student Profile_full')) {
+        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
             return false;
         }
 
@@ -83,13 +83,8 @@ class ExternalAssessmentPage extends ProfilePage
         ob_start();
         
         // Include module functions and render external assessment
-        $gibbonPersonID = $this->gibbonPersonID;
-        $connection2 = $this->pdo;
-        $gibbonYearGroupID = $student['gibbonYearGroupID'];
-        $guid = $this->session->get('guid');
-        
-        include './modules/Formal Assessment/moduleFunctions.php';
-        externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID);
+        include __DIR__.'/../../../Formal Assessment/moduleFunctions.php';
+        \externalAssessmentDetails($this->session->get('guid'), $this->gibbonPersonID, $this->pdo->getConnection(), $student['gibbonYearGroupID']);
         
         return ob_get_clean();
     }

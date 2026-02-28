@@ -98,7 +98,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
      */
     public function checkAccess(): bool
     {
-        return Access::allows('Students', 'View Student Profile_full');
+        return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
     }
 
     /**

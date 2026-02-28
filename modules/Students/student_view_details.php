@@ -19,63 +19,29 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-use Gibbon\Forms\Form;
-use Gibbon\Domain\DataSet;
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
-use Gibbon\UI\Components\Alert;
-use Gibbon\Tables\View\GridView;
-use Gibbon\UI\Timetable\Timetable;
-use Gibbon\Domain\User\RoleGateway;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
-use Gibbon\Domain\User\FamilyGateway;
-use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\Students\MedicalGateway;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Domain\Students\FirstAidGateway;
-use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\FormGroups\FormGroupGateway;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
-use Gibbon\Domain\Students\StudentNoteGateway;;
-use Gibbon\Domain\School\SchoolYearTermGateway;
-use Gibbon\Domain\User\PersonalDocumentGateway;
-use Gibbon\Module\Planner\Tables\HomeworkTable;
-use Gibbon\Domain\Departments\DepartmentGateway;
-use Gibbon\Module\Attendance\StudentHistoryData;
-use Gibbon\Module\Attendance\StudentHistoryView;
-use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
-use Gibbon\Module\Students\StudentAttendanceStatus;
-use Gibbon\Module\Students\View\LibraryBorrowingView;
-use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
+use Gibbon\Services\ModuleLoader;
 use Gibbon\Support\Facades\Access;
+use Gibbon\UI\Components\Alert;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (!Access::allows('Students', 'View Student Profile_brief') && 
-    !Access::allows('Students', 'View Student Profile_my') && 
-    !Access::allows('Students', 'View Student Profile_myChildren') && 
-    !Access::allows('Students', 'View Student Profile_full') && 
-    !Access::allows('Students', 'View Student Profile_fullNoNotes') && 
-    !Access::allows('Students', 'View Student Profile_fullEditAllNotes')) {
+if (!Access::allows('Students', 'student_view_details')) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     $page->scripts->add('chart');
 
-    /** @var RoleGateway */
     $roleGateway = $container->get(RoleGateway::class);
 
     //Get action with highest precendence
-    $highestAction = Access::getHighestGroupedAction('Students', 'View Student Profile');
-    if ($highestAction == false) {
+    $highestAction = Access::get('Students', 'student_view_details');
+    if (empty($highestAction)) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     } else {
@@ -94,12 +60,12 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
             $skipBrief = false;
 
             //Skip brief for those with _full or _fullNoNotes, and _brief
-            if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+            if ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
                 $skipBrief = true;
             }
 
             //Test if View Student Profile_myChildren is available and parent has access to this student...if so, skip brief, and go to full.
-            if (Access::allows('Students', 'View Student Profile_myChildren')) {
+            if (Access::allows('Students', 'student_view_details', 'View Student Profile_myChildren')) {
                     $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID')];
                     $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                     $result = $pdo->select($sql, $data);
@@ -108,11 +74,11 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
                 }
             }
 
-            if (Access::allows('Students', 'View Student Profile_my')) {
+            if (Access::allows('Students', 'student_view_details', 'View Student Profile_my')) {
                 if ($gibbonPersonID == $session->get('gibbonPersonID')) {
                     $skipBrief = true;
-                } elseif (Access::allows('Students', 'View Student Profile_brief')) {
-                    $highestAction = 'View Student Profile_brief';
+                } elseif (Access::allows('Students', 'student_view_details', 'View Student Profile_brief')) {
+                   $skipBrief = false;
                 } else {
                     //Acess denied
                     $page->addError(__('You do not have access to this action.'));
@@ -120,7 +86,7 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
                 }
             }
 
-            if (Access::allows('Students', 'View Student Profile_brief') and $skipBrief == false) {
+            if (Access::allows('Students', 'student_view_details', 'View Student Profile_brief') && $skipBrief == false) {
                 //Proceed!
                 $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID];
                 $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
@@ -193,7 +159,7 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
                 return;
             } else {
                 try {
-                    if ($highestAction == 'View Student Profile_myChildren') {
+                    if ($highestAction->allows('View Student Profile_myChildren') ) {
                         $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'today' => date('Y-m-d')];
                         $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonFamilyChild
                             JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
@@ -205,7 +171,7 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
                             AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1
                             AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2
                             AND childDataAccess='Y'";
-                    } elseif ($highestAction == 'View Student Profile_my') {
+                    } elseif ($highestAction->allows('View Student Profile_my')) {
                         $gibbonPersonID = $session->get('gibbonPersonID');
                         $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
                         $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
@@ -213,7 +179,7 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
-                    } elseif ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                    } elseif ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
                         if ($allStudents != 'on') {
                             $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
                             $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
@@ -324,9 +290,16 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
                             }
                         }
                     } elseif (isset($subpageClasses[$subpage])) {
+
+                        $container->get(ModuleLoader::class)->registerModuleNamespace('Attendance');
+                        $container->get(ModuleLoader::class)->registerModuleNamespace('Reports');
+                        $container->get(ModuleLoader::class)->registerModuleNamespace('Planner');
+
                         // Handle class-based subpages
                         $pageClass = $subpageClasses[$subpage];
                         $profilePage = $container->get($pageClass);
+
+                        
                         
                         // Set student context
                         $profilePage->setStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
@@ -348,7 +321,7 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
 
                     // Prepare alert bar
                     $alert = '';
-                    if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                    if ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
                         $alert = $container->get(Alert::class)->getAlertBar($gibbonPersonID, ['wrap' => false, 'large' => true]);
                     }
 
@@ -383,7 +356,7 @@ if (!Access::allows('Students', 'View Student Profile_brief') &&
                     ];
                     
                     // Medical - only show if NOT "View Student Profile_my"
-                    if (!Access::allows('Students', 'View Student Profile_my')) {
+                    if (!Access::allows('Students', 'student_view_details', 'View Student Profile_my')) {
                         $personalMenu[] = [
                             'name' => 'Medical',
                             'url' => $baseURL.'&subpage=Medical',

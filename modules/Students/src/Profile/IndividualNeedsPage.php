@@ -24,7 +24,10 @@ namespace Gibbon\Module\Students\Profile;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 /**
  * IndividualNeedsPage
@@ -36,13 +39,16 @@ use Gibbon\Services\Format;
 class IndividualNeedsPage extends ProfilePage
 {
     private Connection $pdo;
+    private CustomFieldHandler $customFieldHandler;
 
     public function __construct(
         Session $session,
-        Connection $pdo
+        Connection $pdo,
+        CustomFieldHandler $customFieldHandler
     ) {
         parent::__construct($session);
         $this->pdo = $pdo;
+        $this->customFieldHandler = $customFieldHandler;
     }
 
     /**
@@ -52,7 +58,7 @@ class IndividualNeedsPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'View Student Profile_full')) {
+        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
             return false;
         }
 
@@ -71,16 +77,128 @@ class IndividualNeedsPage extends ProfilePage
             return Format::alert(__('Invalid student ID.'));
         }
 
-        ob_start();
+        $output = '';
+
+        // Edit link button
+        if (Access::allows('Individual Needs', 'in_edit')) {
+            $form = Form::createBlank('buttons');
+            $form->addHeaderAction('edit', __('Edit Individual Needs Record'))
+                ->setURL('/modules/Individual Needs/in_edit.php')
+                ->addParam('gibbonPersonID', $this->gibbonPersonID)
+                ->displayLabel();
+            $output .= $form->getOutput();
+        }
+
+        // Include module functions for status table
+        include __DIR__.'/../../../Individual Needs/moduleFunctions.php';
+
+        // Display status table
+        $statusTable = printINStatusTable($this->pdo, $this->session->get('guid'), $this->gibbonPersonID, 'disabled');
+        if ($statusTable == false) {
+            $output .= Format::alert(__('Your request failed due to a database error.'));
+        } else {
+            $output .= $statusTable;
+        }
+
+        // Display Educational Assistants
+        $output .= $this->renderEducationalAssistants();
+
+        // Display Individual Education Plan
+        $output .= $this->renderIndividualEducationPlan();
+
+        return $output;
+    }
+
+    /**
+     * Render Educational Assistants section
+     * 
+     * @return string HTML for educational assistants
+     */
+    protected function renderEducationalAssistants(): string
+    {
+        $data = [
+            'gibbonPersonID1' => $this->gibbonPersonID,
+            'gibbonSchoolYearID' => $this->gibbonSchoolYearID,
+            'gibbonPersonID2' => $this->gibbonPersonID
+        ];
         
-        // Include module functions and render individual needs
-        $gibbonPersonID = $this->gibbonPersonID;
-        $connection2 = $this->pdo;
-        $guid = $this->session->get('guid');
+        $sql = "(SELECT DISTINCT surname, preferredName, email
+                FROM gibbonPerson
+                    JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE status='Full'
+                    AND gibbonPersonIDStudent=:gibbonPersonID1)
+            UNION
+            (SELECT DISTINCT surname, preferredName, email
+                FROM gibbonPerson
+                    JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
+            )
+            ORDER BY preferredName, surname, email";
         
-        include './modules/Individual Needs/moduleFunctions.php';
-        getINRecord($guid, $gibbonPersonID, $connection2, true);
+        $result = $this->pdo->select($sql, $data);
         
-        return ob_get_clean();
+        if ($result->rowCount() == 0) {
+            return '';
+        }
+
+        $output = '<h3>' . __('Educational Assistants') . '</h3>';
+        $output .= '<ul>';
+        
+        while ($row = $result->fetch()) {
+            $output .= '<li>' . htmlPrep(Format::name('', $row['preferredName'], $row['surname'], 'Student', false));
+            if ($row['email'] != '') {
+                $row['email'] = filter_var(trim($row['email']), FILTER_SANITIZE_EMAIL);
+                $output .= htmlPrep(' <' . $row['email'] . '>');
+            }
+            $output .= '</li>';
+        }
+        
+        $output .= '</ul>';
+        
+        return $output;
+    }
+
+    /**
+     * Render Individual Education Plan section
+     * 
+     * @return string HTML for individual education plan
+     */
+    protected function renderIndividualEducationPlan(): string
+    {
+        $output = '<h3>' . __('Individual Education Plan') . '</h3>';
+
+        $data = ['gibbonPersonID' => $this->gibbonPersonID];
+        $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
+        $rowIN = $this->pdo->select($sql, $data)->fetch();
+
+        if (empty($rowIN)) {
+            $output .= '<div class="error">' . __('There are no records to display.') . '</div>';
+            return $output;
+        }
+
+        // Targets
+        $output .= "<div style='font-weight: bold'>" . __('Targets') . '</div>';
+        $output .= '<p>' . $rowIN['targets'] . '</p>';
+
+        // Teaching Strategies
+        $output .= "<div style='font-weight: bold; margin-top: 30px'>" . __('Teaching Strategies') . '</div>';
+        $output .= '<p>' . $rowIN['strategies'] . '</p>';
+
+        // Notes & Review
+        $output .= "<div style='font-weight: bold; margin-top: 30px'>" . __('Notes & Review') . '</div>';
+        $output .= '<p>' . $rowIN['notes'] . '</p>';
+
+        // Custom fields
+        if (!empty($rowIN['fields'])) {
+            $table = DataTable::createDetails('inFields');
+            $this->customFieldHandler->addCustomFieldsToTable($table, 'Individual Needs', ['student' => 1], $rowIN['fields']);
+            $output .= $table->render([$rowIN]);
+        }
+
+        return $output;
     }
 }

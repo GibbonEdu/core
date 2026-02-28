@@ -52,7 +52,7 @@ class InternalAssessmentPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'View Student Profile_full')) {
+        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
             return false;
         }
 
@@ -71,16 +71,21 @@ class InternalAssessmentPage extends ProfilePage
             return Format::alert(__('Invalid student ID.'));
         }
 
-        ob_start();
-        
+        $highestAction = Access::get('Formal Assessment', 'internalAssessment_view');
+        $role = '';
+        if ($highestAction->allows('View Internal Assessments_all')) {
+            $role = 'teacher';
+        } elseif ($highestAction->allows('View Internal Assessments_myChildrens')) {
+            $role = 'teacher';
+        } elseif ($highestAction->allows('View Internal Assessments_mine')) {
+            $role = 'student';
+        }
+
+        if (empty($role)) return '';
+
         // Include module functions and render internal assessment
-        $gibbonPersonID = $this->gibbonPersonID;
-        $connection2 = $this->pdo;
-        $guid = $this->session->get('guid');
+        include __DIR__.'/../../../Formal Assessment/moduleFunctions.php';
         
-        include './modules/Formal Assessment/moduleFunctions.php';
-        internalAssessmentDetails($guid, $gibbonPersonID, $connection2);
-        
-        return ob_get_clean();
+        return \getInternalAssessmentRecord($this->session->get('guid'), $this->pdo->getConnection(), $this->gibbonPersonID, $role);
     }
 }
