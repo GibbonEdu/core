@@ -276,12 +276,14 @@ class ActivityGateway extends QueryableGateway
     public function selectActivityEnrolmentByStudent($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonActivity.gibbonActivityID AS groupBy, gibbonActivityStudent.* FROM gibbonActivityStudent 
+        $sql = "SELECT gibbonActivity.gibbonActivityID AS groupBy, gibbonActivity.*, gibbonActivityStudent.* FROM gibbonActivityStudent 
                 JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID)
-                JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID)
+                LEFT JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID)
                 WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID
-                AND CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate";
+                AND gibbonActivity.active='Y'
+                AND gibbonActivityStudent.status='Accepted'
+                AND (gibbonActivityCategory.gibbonActivityCategoryID IS NULL OR CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate)";
 
         return $this->db()->select($sql, $data);
     }
@@ -507,28 +509,6 @@ class ActivityGateway extends QueryableGateway
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND status='Accepted' AND active='Y' ORDER BY name";
         
-        return $this->db()->select($sql, $data);
-    }
-
-    /**
-     * Select activities by student for profile page
-     * 
-     * @param string $gibbonSchoolYearID
-     * @param string $gibbonPersonID
-     * @return Result
-     */
-    public function selectActivitiesByStudentForProfile($gibbonSchoolYearID, $gibbonPersonID)
-    {
-        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStudent.timestamp
-                FROM gibbonActivity 
-                JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
-                WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
-                AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND gibbonActivityStudent.status='Accepted'
-                AND active='Y' 
-                ORDER BY name";
-
         return $this->db()->select($sql, $data);
     }
 }

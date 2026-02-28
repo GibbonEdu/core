@@ -129,7 +129,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
     public function getUserDetails($gibbonPersonID, $gibbonSchoolYearID)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, image_240, gender, dateStart, dateEnd, status, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, gibbonRole.category as roleCategory
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, image_240, gender, dateStart, dateEnd, status, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.fields as enrolmentFields, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, gibbonRole.category as roleCategory
                 FROM gibbonPerson
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
@@ -280,24 +280,5 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         return $this->update($gibbonPersonID, [
             'preferences' => json_encode($preferences),
         ]);
-    }
-
-    /**
-     * Get person data with student enrollment fields
-     * 
-     * @param string $gibbonPersonID
-     * @param string $gibbonSchoolYearID
-     * @return array|false
-     */
-    public function getPersonWithEnrollmentFields($gibbonPersonID, $gibbonSchoolYearID)
-    {
-        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.fields as enrollmentFields 
-                FROM gibbonPerson 
-                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID 
-                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        
-        return $this->db()->selectOne($sql, $data);
     }
 }

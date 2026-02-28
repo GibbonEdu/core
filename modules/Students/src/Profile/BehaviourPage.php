@@ -25,6 +25,8 @@ use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Services\Format;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * BehaviourPage
@@ -33,8 +35,10 @@ use Gibbon\Services\Format;
  * 
  * @package Gibbon\Module\Students\Profile
  */
-class BehaviourPage extends ProfilePage
+class BehaviourPage extends ProfilePage implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+    
     private BehaviourGateway $behaviourGateway;
 
     public function __construct(
@@ -79,134 +83,22 @@ class BehaviourPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
-        ob_start();
-        
-        // Include module functions and render behaviour records
-        $gibbonPersonID = $this->gibbonPersonID;
-        
+        // Include module functions
         include './modules/Behaviour/moduleFunctions.php';
         
-        // Get behaviour records
-        $gibbonSchoolYearID = $this->gibbonSchoolYearID;
+        // Get highest action to determine view permissions
+        $highestAction = Access::get('Behaviour', 'behaviour_view');
         
-        // Render positive and negative behaviour
-        echo '<h3>';
-        echo __('Positive Behaviour');
-        echo '</h3>';
-        
-        $result = $this->behaviourGateway->selectBehaviourByStudentAndType(
-            $gibbonSchoolYearID,
-            $gibbonPersonID,
-            'Positive'
-        );
-        
-        if ($result->rowCount() < 1) {
-            echo '<div class="message">';
-            echo __('There are no records to display.');
-            echo '</div>';
+        // Render behaviour records using module function
+        if ($highestAction->allows('View Behaviour Records_my')) {
+            return \getBehaviourRecord($this->getContainer(), $this->gibbonPersonID, $this->session->get('gibbonPersonID'));
+        } elseif ($highestAction->allows('View Behaviour Records_all')) {
+            return \getBehaviourRecord($this->getContainer(), $this->gibbonPersonID);
         } else {
-            echo '<table class="fullWidth colorOddEven" cellspacing="0">';
-            echo '<tr class="head">';
-            echo '<th>';
-            echo __('Date');
-            echo '</th>';
-            echo '<th>';
-            echo __('Descriptor');
-            echo '</th>';
-            echo '<th>';
-            echo __('Level');
-            echo '</th>';
-            echo '<th>';
-            echo __('Teacher');
-            echo '</th>';
-            echo '<th>';
-            echo __('Comment');
-            echo '</th>';
-            echo '</tr>';
-            
-            while ($row = $result->fetch()) {
-                echo '<tr>';
-                echo '<td>';
-                echo Format::date($row['date']);
-                echo '</td>';
-                echo '<td>';
-                echo $row['descriptor'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['level'];
-                echo '</td>';
-                echo '<td>';
-                echo Format::name('', $row['preferredName'], $row['surname'], 'Staff');
-                echo '</td>';
-                echo '<td>';
-                echo $row['comment'];
-                echo '</td>';
-                echo '</tr>';
-            }
-            
-            echo '</table>';
+            return '';
         }
-        
-        echo '<h3>';
-        echo __('Negative Behaviour');
-        echo '</h3>';
-        
-        $result = $this->behaviourGateway->selectBehaviourByStudentAndType(
-            $gibbonSchoolYearID,
-            $gibbonPersonID,
-            'Negative'
-        );
-        
-        if ($result->rowCount() < 1) {
-            echo '<div class="message">';
-            echo __('There are no records to display.');
-            echo '</div>';
-        } else {
-            echo '<table class="fullWidth colorOddEven" cellspacing="0">';
-            echo '<tr class="head">';
-            echo '<th>';
-            echo __('Date');
-            echo '</th>';
-            echo '<th>';
-            echo __('Descriptor');
-            echo '</th>';
-            echo '<th>';
-            echo __('Level');
-            echo '</th>';
-            echo '<th>';
-            echo __('Teacher');
-            echo '</th>';
-            echo '<th>';
-            echo __('Comment');
-            echo '</th>';
-            echo '</tr>';
-            
-            while ($row = $result->fetch()) {
-                echo '<tr>';
-                echo '<td>';
-                echo Format::date($row['date']);
-                echo '</td>';
-                echo '<td>';
-                echo $row['descriptor'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['level'];
-                echo '</td>';
-                echo '<td>';
-                echo Format::name('', $row['preferredName'], $row['surname'], 'Staff');
-                echo '</td>';
-                echo '<td>';
-                echo $row['comment'];
-                echo '</td>';
-                echo '</tr>';
-            }
-            
-            echo '</table>';
-        }
-        
-        return ob_get_clean();
     }
 }

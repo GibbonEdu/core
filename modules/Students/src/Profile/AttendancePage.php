@@ -88,7 +88,7 @@ class AttendancePage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         // Fetch student data
@@ -124,7 +124,7 @@ class AttendancePage extends ProfilePage
      */
     protected function fetchStudentData(): array
     {
-        $result = $this->studentGateway->selectActiveStudentForProfile(
+        $result = $this->studentGateway->selectActiveStudentByPerson(
             $this->gibbonSchoolYearID,
             $this->gibbonPersonID
         );

@@ -256,7 +256,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID, $onlyFull = true)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, image_240, gender, dateStart, dateEnd, gibbonPerson.status, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy, gibbonStudentEnrolment.fields
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, dob, image_240, gender, dateStart, dateEnd, transport, studentAgreements, gibbonPerson.gibbonHouseID, gibbonPerson.status, gibbonPerson.fields, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.fields as enrolmentFields, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
                 FROM gibbonPerson
                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                 LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
@@ -426,7 +426,7 @@ class StudentGateway extends QueryableGateway
     public function selectStudentEnrolmentHistory($gibbonPersonID)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear, gibbonYearGroup.nameShort as studyYear
+        $sql = "SELECT gibbonStudentEnrolment.gibbonSchoolYearID, gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear, gibbonYearGroup.nameShort as studyYear
             FROM gibbonStudentEnrolment
             JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
             JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
@@ -446,33 +446,6 @@ class StudentGateway extends QueryableGateway
      * @return Result
      */
     public function selectActiveStudentWithEmergencyContacts($gibbonSchoolYearID, $gibbonPersonID)
-    {
-        $data = [
-            'gibbonSchoolYearID' => $gibbonSchoolYearID,
-            'gibbonPersonID' => $gibbonPersonID,
-            'today' => date('Y-m-d')
-        ];
-        
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID 
-                FROM gibbonPerson 
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND status='Full' 
-                AND (dateStart IS NULL OR dateStart<=:today) 
-                AND (dateEnd IS NULL OR dateEnd>=:today) 
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        
-        return $this->db()->select($sql, $data);
-    }
-
-    /**
-     * Select active student with year group and form group for profile page
-     * 
-     * @param string $gibbonSchoolYearID
-     * @param string $gibbonPersonID
-     * @return Result
-     */
-    public function selectActiveStudentForProfile($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = [
             'gibbonSchoolYearID' => $gibbonSchoolYearID,

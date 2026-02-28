@@ -79,24 +79,23 @@ class InternalAssessmentPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         $highestAction = Access::get('Formal Assessment', 'internalAssessment_view');
-        $role = '';
-        if ($highestAction->allows('View Internal Assessments_all')) {
-            $role = 'teacher';
-        } elseif ($highestAction->allows('View Internal Assessments_myChildrens')) {
-            $role = 'teacher';
-        } elseif ($highestAction->allows('View Internal Assessments_mine')) {
-            $role = 'student';
-        }
-
-        if (empty($role)) return '';
-
-        // Include module functions and render internal assessment
-        include __DIR__.'/../../../Formal Assessment/moduleFunctions.php';
         
-        return \getInternalAssessmentRecord($this->session->get('guid'), $this->pdo->getConnection(), $this->gibbonPersonID, $role);
+        // Include module functions
+        include './modules/Formal Assessment/moduleFunctions.php';
+        
+        // Determine which version to call based on permission level
+        if ($highestAction->allows('View Internal Assessments_all')) {
+            return \getInternalAssessmentRecord($this->session->get('guid'), $this->pdo->getConnection(), $this->gibbonPersonID);
+        } elseif ($highestAction->allows('View Internal Assessments_myChildrens')) {
+            return \getInternalAssessmentRecord($this->session->get('guid'), $this->pdo->getConnection(), $this->gibbonPersonID, 'parent');
+        } elseif ($highestAction->allows('View Internal Assessments_mine')) {
+            return \getInternalAssessmentRecord($this->session->get('guid'), $this->pdo->getConnection(), $this->session->get('gibbonPersonID'), 'student');
+        }
+        
+        return '';
     }
 }

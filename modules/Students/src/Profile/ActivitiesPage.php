@@ -24,6 +24,9 @@ namespace Gibbon\Module\Students\Profile;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
@@ -36,14 +39,23 @@ use Gibbon\Tables\DataTable;
  */
 class ActivitiesPage extends ProfilePage
 {
+    private SettingGateway $settingGateway;
     private ActivityGateway $activityGateway;
+    private StudentGateway $studentGateway;
+    private SchoolYearTermGateway $schoolYearTermGateway;
 
     public function __construct(
         Session $session,
-        ActivityGateway $activityGateway
+        SettingGateway $settingGateway,
+        ActivityGateway $activityGateway,
+        StudentGateway $studentGateway,
+        SchoolYearTermGateway $schoolYearTermGateway
     ) {
         parent::__construct($session);
+        $this->settingGateway = $settingGateway;
         $this->activityGateway = $activityGateway;
+        $this->studentGateway = $studentGateway;
+        $this->schoolYearTermGateway = $schoolYearTermGateway;
     }
 
     /**
@@ -82,42 +94,87 @@ class ActivitiesPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
-        $dateType = $_REQUEST['dateType'] ?? $this->session->get('gibbonSchoolYearIDCurrent') == $this->gibbonSchoolYearID ? 'Term' : 'Year';
+        $dateType = $this->settingGateway->getSettingByScope('Activities', 'dateType');
 
-        $result = $this->activityGateway->selectActivitiesByStudentForProfile(
-            $this->gibbonSchoolYearID,
-            $this->gibbonPersonID
-        );
+        $schoolYears = $this->studentGateway->selectStudentEnrolmentHistory($this->gibbonPersonID)->fetchAll();
+        $schoolYears = array_reverse($schoolYears);
+        $output = Format::paragraph(__('This report shows the current and historical activities that a student has enrolled in.'));
 
-        $table = DataTable::create('activities');
-        $table->setTitle(__('Activities'));
+        foreach ($schoolYears as $schoolYear) {
 
-        $table->addColumn('name', __('Activity'));
-        
-        $table->addColumn('type', __('Type'));
+            $result = $this->activityGateway->selectActivityEnrolmentByStudent(
+                $schoolYear['gibbonSchoolYearID'],
+                $this->gibbonPersonID
+            );
 
-        if ($dateType == 'Date') {
-            $table->addColumn('listingDates', __('Dates'))
-                ->format(function ($activity) {
+            $table = DataTable::create('activities');
+            $table->setTitle($schoolYear['schoolYear']);
+
+            $table->modifyRows(function ($values, $row) {
+                if ($values['status'] == 'Pending') $row->addClass('warning');
+                if ($values['status'] == 'Waiting List') $row->addClass('warning');
+                if ($values['status'] == 'Not Accepted') $row->addClass('dull');
+                if ($values['status'] == 'Left') $row->addClass('dull');
+                return $row;
+            });
+
+            $table->addColumn('name', __('Activity'));
+            
+            $table->addColumn('type', __('Type'));
+
+            $table->addColumn('date', $dateType != 'Date'? __('Term') : __('Dates'))
+                ->description(__('Days'))
+                ->context('secondary')
+                ->width('18%')
+                ->sortable($dateType != 'Date' ? ['gibbonSchoolYearTermIDList'] : ['programStart', 'programEnd'])
+                ->format(function ($activity) use ($dateType) {
                     $output = '';
-                    if ($activity['programStart'] != '') {
-                        $output .= Format::date($activity['programStart']);
+                    if ($dateType != 'Date') {
+                        $schoolTerms = $this->schoolYearTermGateway->selectTermsBySchoolYear((int) $this->gibbonSchoolYearID)->fetchKeyPair();
+                        $termList = array_intersect_key($schoolTerms, array_flip(explode(',', $activity['gibbonSchoolYearTermIDList'] ?? '')));
+                        if (!empty($termList)) {
+                            $output .= implode('<br/>', $termList);
+                        }
+                    } else {
+                        $output .= Format::dateRangeReadable($activity['programStart'], $activity['programEnd']);
                     }
-                    if ($activity['programEnd'] != '' && $activity['programEnd'] != $activity['programStart']) {
-                        $output .= ' - '.Format::date($activity['programEnd']);
-                    }
+
+                    $output .= '<br/><span class="text-xs italic">';
+                    $output .= implode(', ', $this->activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN));
+                    $output .= '</span>';
+
                     return $output;
                 });
-        } else {
-            $table->addColumn('listingTerms', __('Terms'));
+
+            $table->addColumn('timestamp', __('Registered'))
+                ->format(Format::using('date', 'timestamp'));
+
+            $canViewActivities = Access::allows('Activities', 'activities_view_full');
+            $table->addActionColumn()
+                    ->format(function ($activity, $actions) use ($canViewActivities) {
+                    $role = $this->session->get('gibbonRoleIDCurrentCategory');
+                    
+                    if ($canViewActivities) {
+                        $actions->addAction('view', __('View Details'))
+                            ->setURL('/modules/Activities/activities_view_full.php')
+                            ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
+                            ->modalWindow(1000, 500);
+                    } else if ($role == 'Student' && $activity['gibbonSchoolYearID'] == $this->session->get('gibbonSchoolYearID')) { 
+                        $actions->addAction('view', __('View Details'))
+                            ->setURL('/modules/Activities/explore_activity.php')
+                            ->addParam('sidebar', 'false')
+                            ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
+                            ->modalWindow(1200, 600);
+                    }
+                    });
+
+            $output .= $table->render($result->toDataSet());
+
         }
 
-        $table->addColumn('timestamp', __('Registered'))
-            ->format(Format::using('date', 'timestamp'));
-
-        return $table->render($result->toDataSet());
+        return $output;
     }
 }

@@ -21,13 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Tables\DataTable;
 
 /**
@@ -40,21 +38,15 @@ use Gibbon\Tables\DataTable;
  */
 class BriefPage extends ProfilePage
 {
-    private YearGroupGateway $yearGroupGateway;
-    private FormGroupGateway $formGroupGateway;
     private HouseGateway $houseGateway;
     private StudentGateway $studentGateway;
 
     public function __construct(
         Session $session,
-        YearGroupGateway $yearGroupGateway,
-        FormGroupGateway $formGroupGateway,
         HouseGateway $houseGateway,
         StudentGateway $studentGateway
     ) {
         parent::__construct($session);
-        $this->yearGroupGateway = $yearGroupGateway;
-        $this->formGroupGateway = $formGroupGateway;
         $this->houseGateway = $houseGateway;
         $this->studentGateway = $studentGateway;
     }
@@ -89,7 +81,7 @@ class BriefPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         // Fetch student data
@@ -165,34 +157,10 @@ class BriefPage extends ProfilePage
         $table = DataTable::createDetails('briefProfile');
 
         // Year Group
-        $table->addColumn('yearGroup', __('Year Group'))
-            ->format(function($row) {
-                if (empty($row['gibbonYearGroupID'])) {
-                    return '';
-                }
-                
-                $yearGroup = $this->yearGroupGateway->getByID($row['gibbonYearGroupID']);
-                if (empty($yearGroup)) {
-                    return '';
-                }
-                
-                return __($yearGroup['name']);
-            });
+        $table->addColumn('yearGroupName', __('Year Group'));
 
         // Form Group
-        $table->addColumn('formGroup', __('Form Group'))
-            ->format(function($row) {
-                if (empty($row['gibbonFormGroupID'])) {
-                    return '';
-                }
-                
-                $formGroup = $this->formGroupGateway->getByID($row['gibbonFormGroupID']);
-                if (empty($formGroup)) {
-                    return '';
-                }
-                
-                return $formGroup['name'];
-            });
+        $table->addColumn('formGroup', __('Form Group'));
 
         // House
         $table->addColumn('house', __('House'))
@@ -215,7 +183,9 @@ class BriefPage extends ProfilePage
 
         // Website
         $table->addColumn('website', __('Website'))
-            ->format(Format::using('link', ['website']));
+            ->format(function($row) {
+                return !empty($row['website'])? Format::link($row['website'], $row['website']) : '';
+            });
 
         return $table->render([$student]);
     }

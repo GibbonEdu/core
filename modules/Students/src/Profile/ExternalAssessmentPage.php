@@ -84,7 +84,7 @@ class ExternalAssessmentPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         // Fetch student data to get year group
@@ -98,7 +98,7 @@ class ExternalAssessmentPage extends ProfilePage
         ob_start();
         
         // Include module functions and render external assessment
-        include __DIR__.'/../../../Formal Assessment/moduleFunctions.php';
+        include './modules/Formal Assessment/moduleFunctions.php';
         \externalAssessmentDetails($this->session->get('guid'), $this->gibbonPersonID, $this->pdo->getConnection(), $student['gibbonYearGroupID']);
         
         return ob_get_clean();
@@ -111,7 +111,7 @@ class ExternalAssessmentPage extends ProfilePage
      */
     protected function fetchStudentData(): array
     {
-        $result = $this->studentGateway->selectActiveStudentForProfile(
+        $result = $this->studentGateway->selectActiveStudentByPerson(
             $this->gibbonSchoolYearID,
             $this->gibbonPersonID
         );

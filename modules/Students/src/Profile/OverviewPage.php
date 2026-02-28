@@ -102,7 +102,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
      */
     public function checkAccess(): bool
     {
-        return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
+        return Access::allows('Students', 'student_view_details');
     }
 
     /**
@@ -125,7 +125,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         // Fetch student data
@@ -303,7 +303,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
                     $tutors = $this->formGroupGateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
 
                     foreach ($tutors as $tutor) {
-                        if (Access::allows('Staff', 'View Staff Profile_brief')) {
+                        if (Access::allows('Staff', 'Staff Directory_brief')) {
                             $output .= Format::nameLinked($tutor['gibbonPersonID'], '', $tutor['preferredName'], $tutor['surname'], 'Staff', false, true);
                         } else {
                             $output .= Format::name($tutor['title'], $tutor['preferredName'], $tutor['surname'], 'Staff');
@@ -333,7 +333,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
                 if (!empty($yearGroup) && !empty($yearGroup['gibbonPersonIDHOY'])) {
                     $hoy = $this->userGateway->getByID($yearGroup['gibbonPersonIDHOY']);
                     if (!empty($hoy) && $hoy['status'] == 'Full') {
-                        if (Access::allows('Staff', 'View Staff Profile_brief')) {
+                        if (Access::allows('Staff', 'Staff Directory_brief')) {
                             return Format::nameLinked($hoy['gibbonPersonID'], $hoy['title'], $hoy['preferredName'], $hoy['surname'], 'Staff');
                         } else {
                             return Format::name($hoy['title'], $hoy['preferredName'], $hoy['surname'], 'Staff');
@@ -428,7 +428,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
             return '';
         }
 
-        $canViewStaff = Access::allows('Staff', 'View Staff Profile_brief');
+        $canViewStaff = Access::allows('Staff', 'Staff Directory_brief');
         $criteria = $this->studentGateway->newQueryCriteria();
 
         $output = '<h4>';
@@ -515,7 +515,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $output = "<a name='timetable'></a>";
         
         // Check if user has access to timetable
-        if (Access::allows('Timetable', 'View Timetables_view')) {
+        if (Access::allows('Timetable', 'tt_view')) {
             $output .= '<h4>';
             $output .= __('Timetable');
             $output .= '</h4>';

@@ -50,22 +50,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
         foreach ($gibbonPersonIDs as $gibbonPersonID) {
             $userFail = false;
             //Get each user's record
-            try {
+            
+            $row = $container->get(INGateway::class)->getINStudentByPersonID($gibbonPersonID);
 
-                $result = $container->get(INGateway::class)->getINStudentByPersonID($gibbonPersonID);
-
-            } catch (PDOException $e) {
-                $userFail = true;
-                $partialFail = true;
-            }
-            if ($result->rowCount() != 1) {
+            if (empty($row)) {
                 $userFail = true;
                 $partialFail = true;
             }
 
             if ($userFail == false) {
                 $userUpdateFail = false;
-                $row = $result->fetch();
 
                 //Check for descriptors, and write to array
                 $descriptors = array();

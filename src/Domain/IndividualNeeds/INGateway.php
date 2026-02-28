@@ -233,7 +233,7 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
       $data = ['gibbonPersonID' => $gibbonPersonID];
       $sql = "SELECT surname, preferredName, gibbonIN.* FROM gibbonPerson JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
 
-      return $this->db()->select($sql, $data);
+      return $this->db()->selectOne($sql, $data);
     }
 
     public function selectINDescriptor()
@@ -243,7 +243,6 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
       
       return $this->db()->select($sql, $data);
     }
-}
 
     /**
      * Select educational assistants for a student
@@ -279,17 +278,4 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
         
         return $this->db()->select($sql, $data);
     }
-
-    /**
-     * Get Individual Needs record by person ID
-     * 
-     * @param string $gibbonPersonID
-     * @return array|false
-     */
-    public function getINByPersonID($gibbonPersonID)
-    {
-        $data = ['gibbonPersonID' => $gibbonPersonID];
-        $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
-        
-        return $this->db()->selectOne($sql, $data);
-    }
+}

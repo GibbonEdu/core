@@ -231,39 +231,6 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
     }
 
     /**
-     * Select families by student with family child data
-     * 
-     * @param string $gibbonPersonID
-     * @return Result
-     */
-    public function selectFamiliesWithChildByStudent($gibbonPersonID)
-    {
-        $data = ['gibbonPersonID' => $gibbonPersonID];
-        $sql = 'SELECT * FROM gibbonFamily 
-                JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) 
-                WHERE gibbonPersonID=:gibbonPersonID';
-        
-        return $this->db()->select($sql, $data);
-    }
-
-    /**
-     * Select adult family members by family ID
-     * 
-     * @param string $gibbonFamilyID
-     * @return Result
-     */
-    public function selectAdultsByFamilyID($gibbonFamilyID)
-    {
-        $data = ['gibbonFamilyID' => $gibbonFamilyID];
-        $sql = 'SELECT * FROM gibbonFamilyAdult 
-                JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-                WHERE gibbonFamilyID=:gibbonFamilyID 
-                ORDER BY contactPriority, surname, preferredName';
-        
-        return $this->db()->select($sql, $data);
-    }
-
-    /**
      * Select family relationship between two persons
      * 
      * @param string $gibbonPersonID1 Adult person ID
@@ -309,22 +276,6 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
                 WHERE gibbonFamilyID=:gibbonFamilyID 
                 AND NOT gibbonPerson.gibbonPersonID=:gibbonPersonID 
                 ORDER BY surname, preferredName';
-        
-        return $this->db()->select($sql, $data);
-    }
-
-    /**
-     * Select all families by student with family child data
-     * 
-     * @param string $gibbonPersonID
-     * @return Result
-     */
-    public function selectAllFamiliesByStudent($gibbonPersonID)
-    {
-        $data = ['gibbonPersonID' => $gibbonPersonID];
-        $sql = 'SELECT * FROM gibbonFamily 
-                JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) 
-                WHERE gibbonPersonID=:gibbonPersonID';
         
         return $this->db()->select($sql, $data);
     }

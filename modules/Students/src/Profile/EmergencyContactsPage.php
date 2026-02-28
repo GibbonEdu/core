@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\FamilyGateway;
@@ -43,12 +42,10 @@ use Gibbon\Domain\DataSet;
  */
 class EmergencyContactsPage extends ProfilePage
 {
-    private Connection $pdo;
     private FamilyGateway $familyGateway;
     private UserGateway $userGateway;
     private StudentGateway $studentGateway;
     private SettingGateway $settingGateway;
-    private \Gibbon\View\View $view;
 
     public function __construct(
         Session $session,
@@ -56,14 +53,12 @@ class EmergencyContactsPage extends ProfilePage
         UserGateway $userGateway,
         StudentGateway $studentGateway,
         SettingGateway $settingGateway,
-        \Gibbon\View\View $view
     ) {
         parent::__construct($session);
         $this->familyGateway = $familyGateway;
         $this->userGateway = $userGateway;
         $this->studentGateway = $studentGateway;
         $this->settingGateway = $settingGateway;
-        $this->view = $view;
     }
 
     /**
@@ -73,7 +68,7 @@ class EmergencyContactsPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
+        return Access::allows('Students', 'student_view_details');
     }
 
     /**
@@ -96,7 +91,7 @@ class EmergencyContactsPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         // Fetch student data
@@ -165,68 +160,46 @@ class EmergencyContactsPage extends ProfilePage
         $output .= __('Adult Family Members');
         $output .= '</h4>';
 
-        $resultFamily = $this->familyGateway->selectAllFamiliesByStudent($this->gibbonPersonID);
+        $resultFamily = $this->familyGateway->selectFamiliesByStudent($this->gibbonPersonID);
 
         if ($resultFamily->rowCount() == 0) {
             return $output . Format::alert(__('There are no records to display.'), 'empty');
         }
 
         while ($rowFamily = $resultFamily->fetch()) {
-            $resultMember = $this->familyGateway->selectAdultsWithRelationshipByFamily(
+            $familyAdults = $this->familyGateway->selectAdultsWithRelationshipByFamily(
                 $rowFamily['gibbonFamilyID'],
                 $this->gibbonPersonID
-            );
+            )->fetchAll();
 
-            while ($rowMember = $resultMember->fetch()) {
-                $output .= $this->renderAdultMember($rowMember);
+            foreach ($familyAdults as $index => $adult) {
+                $table = DataTable::createDetails('family' . $index);
+
+                $table->addColumn('preferredName', __('Name'))
+                    ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Parent']));
+
+                $table->addColumn('relationship', __('Relationship'))
+                    ->format(function($adult) {
+                        return !empty($adult['relationship']) ? __($adult['relationship']) : Format::small(__('Unknown'));
+                    });
+
+
+                $table->addColumn('phone', __('Contact By Phone'))
+                    ->format(function($adult) {
+                        $phones = '';
+
+                        for ($i = 1; $i < 5; ++$i) {
+                            if ($adult['phone'.$i] != '') {
+                                $phones .= Format::phone($adult['phone' . $i], $adult['phone'.$i.'CountryCode'], $adult['phone'.$i.'Type']) . '<br/>';
+                            }
+                        }
+
+                        return $phones;
+                    });
+
+                $output .= $table->render([$adult]).'<br>';
             }
         }
-
-        return $output;
-    }
-
-    /**
-     * Render a single adult family member
-     * 
-     * @param array $member Adult member data
-     * @return string HTML for adult member
-     */
-    protected function renderAdultMember(array $member): string
-    {
-        $output = "<table class='smallIntBorder mb-2' cellspacing='0' style='width: 100%'>";
-        $output .= '<tr>';
-        $output .= "<td style='width: 33%; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-        $output .= Format::name($member['title'], $member['preferredName'], $member['surname'], 'Parent');
-        $output .= '</td>';
-        $output .= "<td style='width: 33%; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Relationship').'</span><br/>';
-
-        if (!empty($member['relationship'])) {
-            $output .= __($member['relationship']);
-        } else {
-            $output .= '<i>'.__('Unknown').'</i>';
-        }
-
-        $output .= '</td>';
-        $output .= "<td style='width: 34%; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Contact By Phone').'</span><br/>';
-        
-        for ($i = 1; $i < 5; ++$i) {
-            if ($member['phone'.$i] != '') {
-                if ($member['phone'.$i.'Type'] != '') {
-                    $output .= $member['phone'.$i.'Type'].':</i> ';
-                }
-                if ($member['phone'.$i.'CountryCode'] != '') {
-                    $output .= '+'.$member['phone'.$i.'CountryCode'].' ';
-                }
-                $output .= __($member['phone'.$i]).'<br/>';
-            }
-        }
-        
-        $output .= '</td>';
-        $output .= '</tr>';
-        $output .= '</table>';
 
         return $output;
     }
@@ -239,52 +212,24 @@ class EmergencyContactsPage extends ProfilePage
      */
     protected function renderEmergencyContacts(array $student): string
     {
-        $output = '<h4>';
-        $output .= __('Emergency Contacts');
-        $output .= '</h4>';
-        $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-        $output .= '<tr>';
-        $output .= "<td style='width: 33%; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Contact 1').'</span><br/>';
-        $output .= $student['emergency1Name'];
-        if ($student['emergency1Relationship'] != '') {
-            $output .= ' ('.__($student['emergency1Relationship']).')';
-        }
-        $output .= '</td>';
-        $output .= "<td style='width: 33%; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Number 1').'</span><br/>';
-        $output .= $student['emergency1Number1'];
-        $output .= '</td>';
-        $output .= "<td style='width: 34%; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-        if ($student['emergency1Number2'] != '') {
-            $output .= $student['emergency1Number2'];
-        }
-        $output .= '</td>';
-        $output .= '</tr>';
-        $output .= '<tr>';
-        $output .= "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Contact 2').'</span><br/>';
-        $output .= $student['emergency2Name'];
-        if ($student['emergency2Relationship'] != '') {
-            $output .= ' ('.__($student['emergency2Relationship']).')';
-        }
-        $output .= '</td>';
-        $output .= "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Number 1').'</span><br/>';
-        $output .= $student['emergency2Number1'];
-        $output .= '</td>';
-        $output .= "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-        if ($student['emergency2Number2'] != '') {
-            $output .= $student['emergency2Number2'];
-        }
-        $output .= '</td>';
-        $output .= '</tr>';
-        $output .= '</table>';
-        $output .= '<br/><br/>';
+        $table = DataTable::createDetails('emergency');
+        $table->setTitle(__('Emergency Contacts'));
 
-        return $output;
+        for ($i = 1; $i <= 2; $i++) {
+            $emergency = 'emergency' . $i;
+            $table->addColumn($emergency . 'Name', __('Contact ' . $i))
+                ->format(function($row) use ($emergency) {
+                    if ($row[$emergency . 'Relationship'] != '') {
+                        return $row[$emergency . 'Name'] . ' (' . __($row[$emergency . 'Relationship']) . ')';
+                    }
+                    return $row[$emergency . 'Name'];
+                });
+
+            $table->addColumn($emergency . 'Number1', __('Number 1'));
+            $table->addColumn($emergency . 'Number2', __('Number 2'));
+        }
+
+        return $table->render([$student]);
     }
 
     /**

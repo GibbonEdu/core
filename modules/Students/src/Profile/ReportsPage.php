@@ -21,10 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Tables\DataTable;
 
 /**
@@ -36,14 +38,20 @@ use Gibbon\Tables\DataTable;
  */
 class ReportsPage extends ProfilePage
 {
-    private ReportArchiveEntryGateway $reportArchiveGateway;
+    private UserGateway $userGateway;
+    private StudentGateway $studentGateway;
+    private ReportArchiveEntryGateway $reportArchiveEntryGateway;
 
     public function __construct(
         Session $session,
-        ReportArchiveEntryGateway $reportArchiveGateway
+        UserGateway $userGateway,
+        StudentGateway $studentGateway,
+        ReportArchiveEntryGateway $reportArchiveEntryGateway
     ) {
         parent::__construct($session);
-        $this->reportArchiveGateway = $reportArchiveGateway;
+        $this->userGateway = $userGateway;
+        $this->studentGateway = $studentGateway;
+        $this->reportArchiveEntryGateway = $reportArchiveEntryGateway;
     }
 
     /**
@@ -80,44 +88,103 @@ class ReportsPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
-        $criteria = $this->reportArchiveGateway->newQueryCriteria(true)
-            ->sortBy('timestampModified', 'DESC')
+        $highestActionReports = Access::get('Reports', 'archive_byStudent_view');
+        $gibbonSchoolYearID = $this->session->get('gibbonSchoolYearID');
+
+        if ($highestActionReports->allows('View by Student')) {
+            $student = $this->userGateway->getByID($this->gibbonPersonID);
+        } else if ($highestActionReports->allows('View Reports_myChildren')) {
+            $children = $this->studentGateway
+                ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $this->session->get('gibbonPersonID'))
+                ->fetchGroupedUnique();
+
+            if (!empty($children[$this->gibbonPersonID])) {
+                $student = $this->userGateway->getByID($this->gibbonPersonID);
+            }
+        } else if ($highestActionReports->allows('View Reports_mine')) {
+            $this->gibbonPersonID = $this->session->get('gibbonPersonID');
+            $student =  $this->studentGateway->selectActiveStudentByPerson($gibbonSchoolYearID, $this->gibbonPersonID)->fetch();
+        }
+
+        if (empty($student)) {
+            return Format::alert(__('You do not have access to this action.'), 'error');
+        }
+
+        $output = '';
+        $criteria = $this->reportArchiveEntryGateway->newQueryCriteria()
+            ->sortBy('sequenceNumber', 'DESC')
+            ->sortBy(['timestampCreated'])
             ->fromPOST();
 
-        $reports = $this->reportArchiveGateway->queryArchiveByStudent($criteria, $this->gibbonSchoolYearID, $this->gibbonPersonID);
 
-        $table = DataTable::createPaginated('reportsView', $criteria);
-        $table->setTitle(__('Reports'));
+        $canViewDraftReports = Access::allows('Reports', 'archive_byStudent', 'View Draft Reports');
+        $canViewPastReports = Access::allows('Reports', 'archive_byStudent', 'View Past Reports');
+        $roleCategory = $this->session->get('gibbonRoleIDCurrentCategory');
 
-        $table->addColumn('reportIdentifier', __('Report'))
-            ->format(function ($report) {
-                return '<b>'.$report['reportName'].'</b><br/><span class="text-xs">'.$report['reportIdentifier'].'</span>';
-            });
+        $reports = $this->reportArchiveEntryGateway->queryArchiveByStudent($criteria, $this->gibbonPersonID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 
-        $table->addColumn('schoolYear', __('School Year'));
+        $reportsBySchoolYear = array_reduce($reports->toArray(), function ($group, $item) {
+            $group[$item['schoolYear']][] = $item;
+            return $group;
+        }, []);
 
-        $table->addColumn('timestampModified', __('Date'))
-            ->format(Format::using('date', 'timestampModified'));
+        if (empty($reportsBySchoolYear)) {
+            $reportsBySchoolYear = [__('Reports') => []];
+        }
 
-        $table->addColumn('status', __('Status'))
-            ->format(function ($report) {
-                return Format::tag(__($report['status']), $report['status'] == 'Final' ? 'success' : 'dull');
-            });
+        foreach ($reportsBySchoolYear as $schoolYear => $reports) {
 
-        $table->addActionColumn()
-            ->addParam('gibbonSchoolYearID', $this->gibbonSchoolYearID)
-            ->addParam('gibbonPersonID', $this->gibbonPersonID)
-            ->addParam('gibbonReportArchiveEntryID')
-            ->format(function ($report, $actions) {
-                $actions->addAction('view', __('View'))
-                    ->setIcon('page_right')
-                    ->directLink()
-                    ->setURL('/modules/Reports/archive_byStudent_download.php');
-            });
+            $table = DataTable::create('reportsView');
+            $table->setTitle($schoolYear);
 
-        return $table->render($reports);
+            $table->addColumn('reportName', __('Report'))
+                ->width('30%')
+                ->format(function ($report) {
+                    return !empty($report['reportName'])? $report['reportName'] : $report['reportIdentifier'];
+                });
+
+            $table->addColumn('yearGroup', __('Year Group'))->width('15%');
+            $table->addColumn('formGroup', __('Form Group'))->width('15%');
+            $table->addColumn('timestampModified', __('Date'))
+                ->width('30%')
+                ->format(function ($report) {
+                    $output = Format::dateReadable($report['timestampModified']);
+                    if ($report['status'] == 'Draft') {
+                        $output .= '<span class="tag ml-2 dull">'.__($report['status']).'</span>';
+                    }
+
+                    if (!empty($report['timestampAccessed'])) {
+                        $title = Format::name($report['parentTitle'], $report['parentPreferredName'], $report['parentSurname'], 'Parent', false).': '.Format::relativeTime($report['timestampAccessed'], false);
+                        $output .= '<span class="tag ml-2 success" title="'.$title.'">'.__('Read').'</span>';
+                    }
+
+                    return $output;
+                });
+
+            $table->addActionColumn()
+                ->addParam('gibbonSchoolYearID')
+                ->format(function ($report, $actions) {
+                    $actions->addAction('view', __('View'))
+                        ->directLink()
+                        ->addParam('action', 'view')
+                        ->addParam('gibbonReportArchiveEntryID', $report['gibbonReportArchiveEntryID'] ?? '')
+                        ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
+                        ->setURL('/modules/Reports/archive_byStudent_download.php');
+
+                    $actions->addAction('download', __('Download'))
+                        ->setIcon('download')
+                        ->directLink()
+                        ->addParam('gibbonReportArchiveEntryID', $report['gibbonReportArchiveEntryID'] ?? '')
+                        ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
+                        ->setURL('/modules/Reports/archive_byStudent_download.php');
+                });
+
+            $output .= $table->render($reports);
+        }
+
+        return $output;
     }
 }

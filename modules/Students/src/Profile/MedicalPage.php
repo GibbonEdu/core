@@ -83,7 +83,7 @@ class MedicalPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         // Fetch medical data
@@ -165,7 +165,7 @@ class MedicalPage extends ProfilePage
         $table = DataTable::createDetails('medical');
 
         // Add header actions if user has permission
-        if (Access::allows('Students', 'Manage Medical Forms')) {
+        if (Access::allows('Students', 'medicalForm_manage', 'Manage Medical Forms')) {
             if (empty($medical)) {
                 $table->addHeaderAction('add', __('Add Medical Form'))
                     ->setURL('/modules/Students/medicalForm_manage_add.php')

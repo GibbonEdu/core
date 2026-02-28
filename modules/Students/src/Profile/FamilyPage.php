@@ -68,7 +68,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     public function checkAccess(): bool
     {
-        return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
+        return Access::allows('Students', 'student_view_details');
     }
 
     /**
@@ -91,7 +91,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         // Fetch family data
@@ -119,7 +119,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function fetchFamilyData(): array
     {
-        return $this->familyGateway->selectFamiliesWithChildByStudent($this->gibbonPersonID)->fetchAll();
+        return $this->familyGateway->selectFamiliesByStudent($this->gibbonPersonID)->fetchAll();
     }
 
     /**
@@ -151,7 +151,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
         $output .= $this->renderCustomFields($family);
 
         // Render adult family members
-        $output .= $this->renderAdults($family['gibbonFamilyID']);
+        $output .= $this->renderAdults($family['gibbonFamilyID'], $family);
 
         // Render siblings
         $output .= $this->renderSiblings($family['gibbonFamilyID']);
@@ -234,9 +234,10 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      * Render adult family members
      * 
      * @param string $gibbonFamilyID Family ID
+     * @param array $family Family data for relationship lookup
      * @return string HTML for adults display
      */
-    protected function renderAdults(string $gibbonFamilyID): string
+    protected function renderAdults(string $gibbonFamilyID, array $family): string
     {
         $adults = $this->fetchAdults($gibbonFamilyID);
         
@@ -244,7 +245,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
         $count = 1;
 
         foreach ($adults as $adult) {
-            $output .= $this->renderAdult($adult, $count);
+            $output .= $this->renderAdult($adult, $count, $family);
             $count++;
         }
 
@@ -259,7 +260,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function fetchAdults(string $gibbonFamilyID): array
     {
-        return $this->familyGateway->selectAdultsByFamilyID($gibbonFamilyID)->fetchAll();
+        return $this->familyGateway->selectAdultsByFamily($gibbonFamilyID, true)->fetchAll();
     }
 
     /**
@@ -267,9 +268,10 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      * 
      * @param array $adult Adult data
      * @param int $count Adult number
+     * @param array $family Family data for relationship lookup
      * @return string HTML for adult display
      */
-    protected function renderAdult(array $adult, int $count): string
+    protected function renderAdult(array $adult, int $count, array $family): string
     {
         $class = '';
         if ($adult['status'] != 'Full') {
@@ -291,7 +293,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
             $output .= "<span style='font-weight: normal; font-style: italic'> (".__($adult['status']).')</span>';
         }
         $output .= "<div style='font-size: 85%; font-style: italic'>";
-        $output .= $this->getRelationship($adult['gibbonPersonID']);
+        $output .= $this->getRelationship($adult['gibbonPersonID'], $family['gibbonFamilyID']);
         $output .= '</div>';
         $output .= '</td>';
         $output .= "<td $class style='width: 34%; vertical-align: top' colspan=2>";
@@ -367,18 +369,11 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      * Get relationship between adult and student
      * 
      * @param string $adultPersonID Adult's person ID
+     * @param string $gibbonFamilyID Family ID
      * @return string Relationship text
      */
-    protected function getRelationship(string $adultPersonID): string
+    protected function getRelationship(string $adultPersonID, string $gibbonFamilyID): string
     {
-        // Get gibbonFamilyID from the current context
-        $familyData = $this->fetchFamilyData();
-        if (empty($familyData)) {
-            return '<i>'.__('Relationship Unknown').'</i>';
-        }
-        
-        $gibbonFamilyID = $familyData[0]['gibbonFamilyID'];
-        
         $relationship = $this->familyGateway->getFamilyRelationship($adultPersonID, $this->gibbonPersonID, $gibbonFamilyID);
         
         if (!empty($relationship)) {

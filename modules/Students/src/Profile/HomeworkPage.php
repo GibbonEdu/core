@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Services\Format;
@@ -41,13 +42,16 @@ class HomeworkPage extends ProfilePage implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     protected SettingGateway $settingGateway;
+    protected PlannerEntryGateway $plannerEntryGateway;
 
     public function __construct(
         Session $session,
-        SettingGateway $settingGateway
+        SettingGateway $settingGateway,
+        PlannerEntryGateway $plannerEntryGateway
     ) {
         parent::__construct($session);
         $this->settingGateway = $settingGateway;
+        $this->plannerEntryGateway = $plannerEntryGateway;
     }
 
     /**
@@ -87,15 +91,41 @@ class HomeworkPage extends ProfilePage implements ContainerAwareInterface
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
-        $viewBy = $_GET['viewBy'] ?? 'date';
+        $output = '';
+        $role = $this->session->get('gibbonRoleIDCurrentCategory');
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? null;
 
-        $homeworkTable = $this->getContainer()->get(HomeworkTable::class)
-            ->create($this->gibbonSchoolYearID, $this->gibbonPersonID, $viewBy, $gibbonCourseClassID);
+        // DEADLINES - Display upcoming homework deadlines
+        $deadlines = $this->plannerEntryGateway->selectUpcomingHomeworkByStudent(
+            $this->gibbonSchoolYearID, 
+            $this->gibbonPersonID, 
+            $role == 'Student' ? 'viewableStudents' : 'viewableParents'
+        )->fetchAll();
 
-        return $homeworkTable->getOutput();
+        $page = $this->getContainer()->get('page');
+        $output .= $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+            'gibbonPersonID' => $this->gibbonPersonID,
+            'deadlines' => $deadlines,
+            'heading' => 'h4'
+        ]);
+
+        // Add planner JavaScript module for interactive features
+        $page->scripts->add('planner', '/modules/Planner/js/module.js');
+
+        // HOMEWORK TABLE - Display all homework with submission status
+        $homeworkTable = $this->getContainer()->get(HomeworkTable::class)
+            ->create(
+                $this->gibbonSchoolYearID, 
+                $this->gibbonPersonID, 
+                $role == 'Student' ? 'Student' : 'Parent',
+                $gibbonCourseClassID
+            );
+
+        $output .= $homeworkTable->getOutput();
+
+        return $output;
     }
 }

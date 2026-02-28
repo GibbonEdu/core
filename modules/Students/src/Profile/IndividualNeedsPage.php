@@ -89,7 +89,7 @@ class IndividualNeedsPage extends ProfilePage
     {
         // Guard clause: validate student context
         if (empty($this->gibbonPersonID)) {
-            return Format::alert(__('Invalid student ID.'));
+            return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
         $output = '';
@@ -105,7 +105,7 @@ class IndividualNeedsPage extends ProfilePage
         }
 
         // Include module functions for status table
-        include __DIR__.'/../../../Individual Needs/moduleFunctions.php';
+        include './modules/Individual Needs/moduleFunctions.php';
 
         // Display status table
         $statusTable = printINStatusTable($this->pdo, $this->session->get('guid'), $this->gibbonPersonID, 'disabled');
@@ -166,7 +166,7 @@ class IndividualNeedsPage extends ProfilePage
     {
         $output = '<h3>' . __('Individual Education Plan') . '</h3>';
 
-        $rowIN = $this->inGateway->getINByPersonID($this->gibbonPersonID);
+        $rowIN = $this->inGateway->getINStudentByPersonID($this->gibbonPersonID);
 
         if (empty($rowIN)) {
             $output .= '<div class="error">' . __('There are no records to display.') . '</div>';

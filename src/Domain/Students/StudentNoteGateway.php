@@ -90,7 +90,7 @@ class StudentNoteGateway extends QueryableGateway implements ScrubbableGateway
      * @param string|null $gibbonStudentNoteCategoryID
      * @return Result
      */
-    public function selectNotesByStudent($gibbonPersonID, $gibbonStudentNoteCategoryID = null)
+    public function selectNotesByStudent($gibbonPersonID, ?string $gibbonStudentNoteCategoryID = null)
     {
         if ($gibbonStudentNoteCategoryID === null) {
             $data = ['gibbonPersonID' => $gibbonPersonID];

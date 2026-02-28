@@ -30,7 +30,6 @@ if (!Access::allows('Students', 'student_view_details')) {
     $page->addError(__('You do not have access to this action.'));
     return;
 } else {
-
     $page->scripts->add('chart');
 
     // Get action with highest precedence
@@ -52,6 +51,8 @@ if (!Access::allows('Students', 'student_view_details')) {
         return;
     }
 
+    $studentGateway = $container->get(\Gibbon\Domain\Students\StudentGateway::class);
+
     $skipBrief = false;
 
     // Skip brief for those with _full or _fullNoNotes
@@ -61,8 +62,7 @@ if (!Access::allows('Students', 'student_view_details')) {
 
     // Test if View Student Profile_myChildren is available and parent has access to this student
     if (Access::allows('Students', 'student_view_details', 'View Student Profile_myChildren')) {
-        $studentGateway = $container->get(\Gibbon\Domain\Students\StudentGateway::class);
-        $student = $studentGateway->getStudentByFamilyAdult($_GET['gibbonPersonID'], $session->get('gibbonPersonID'));
+        $student = $studentGateway->getStudentByFamilyAdult($gibbonPersonID, $session->get('gibbonPersonID'));
         if (!empty($student)) {
             $skipBrief = true;
         }
@@ -79,8 +79,12 @@ if (!Access::allows('Students', 'student_view_details')) {
 
     // Handle brief profile view
     if (Access::allows('Students', 'student_view_details', 'View Student Profile_brief') && !$skipBrief) {
+        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
+
         $briefPage = $container->get(\Gibbon\Module\Students\Profile\BriefPage::class);
         $briefPage->setStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+
+        $session->set('sidebarExtra', Format::userPhoto($student['image_240'] ?? '', 240));
         
         if (!$briefPage->checkAccess()) {
             $page->addError(__('You do not have access to this action.'));
@@ -92,52 +96,30 @@ if (!Access::allows('Students', 'student_view_details')) {
     }
 
     // Handle full profile view
-    $studentGateway = $container->get(\Gibbon\Domain\Students\StudentGateway::class);
-    $userGateway = $container->get(\Gibbon\Domain\User\UserGateway::class);
-
     if ($highestAction->allows('View Student Profile_myChildren')) {
-        $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'today' => date('Y-m-d')];
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonFamilyChild
-            JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-            JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-            WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
-            AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)
-            AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1
-            AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2
-            AND childDataAccess='Y'";
-        $result = $pdo->select($sql, $data);
-        $row = $result->rowCount() == 1 ? $result->fetch() : null;
+        $student = $studentGateway->getStudentByFamilyAdult($gibbonPersonID, $session->get('gibbonPersonID'));
     } elseif ($highestAction->allows('View Student Profile_my')) {
         $gibbonPersonID = $session->get('gibbonPersonID');
-        $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID);
-        $row = $result->rowCount() == 1 ? $result->fetch() : null;
+        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
     } elseif ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
-        if ($allStudents != 'on') {
-            $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID);
-            $row = $result->rowCount() == 1 ? $result->fetch() : null;
-        } else {
-            $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
-            $row = $result->rowCount() == 1 ? $result->fetch() : null;
-        }
+        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStudents == 'on')->fetch();
     } else {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
 
-    if (empty($row)) {
+    if (empty($student)) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
     }
 
     $page->breadcrumbs
         ->add(__('View Student Profiles'), 'student_view.php')
-        ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
+        ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
 
     // When viewing left students, they won't have a year group ID
-    if (empty($row['gibbonYearGroupID'])) {
-        $row['gibbonYearGroupID'] = '';
+    if (empty($student['gibbonYearGroupID'])) {
+        $student['gibbonYearGroupID'] = '';
     }
 
     if (empty($subpage) && empty($hook)) {
@@ -215,12 +197,12 @@ if (!Access::allows('Students', 'student_view_details')) {
         }
     } elseif ($subpage != '') {
         // Invalid subpage
-        echo Format::alert(__('Invalid subpage specified.'), 'error');
+        echo Format::alert(__('You do not have access to this action.'), 'error');
     }
 
     // Set sidebar
     $sidebar = $container->get(Sidebar::class);
-    $sidebar->setStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, $row['image_240']);
+    $sidebar->setStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, $student['image_240']);
 
     $session->set('sidebarExtra', $sidebar->getOutput());
 }
