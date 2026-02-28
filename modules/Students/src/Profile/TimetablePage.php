@@ -26,7 +26,8 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\UI\Timetable\Timetable;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Services\Format;
-use Psr\Container\ContainerInterface;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * TimetablePage
@@ -35,16 +36,14 @@ use Psr\Container\ContainerInterface;
  * 
  * @package Gibbon\Module\Students\Profile
  */
-class TimetablePage extends ProfilePage
+class TimetablePage extends ProfilePage implements ContainerAwareInterface
 {
-    private ContainerInterface $container;
+    use ContainerAwareTrait;
 
     public function __construct(
-        Session $session,
-        ContainerInterface $container
+        Session $session
     ) {
         parent::__construct($session);
-        $this->container = $container;
     }
 
     /**
@@ -77,16 +76,16 @@ class TimetablePage extends ProfilePage
         $gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
         
         // Create timetable context
-        $context = $this->container->get(TimetableContext::class)
+        $context = $this->getContainer()->get(TimetableContext::class)
             ->set('gibbonSchoolYearID', $this->gibbonSchoolYearID)
             ->set('gibbonPersonID', $this->gibbonPersonID)
             ->set('gibbonTTID', $gibbonTTID);
 
         // Build and render timetable
-        return $this->container->get(Timetable::class)
+        return $this->getContainer()->get(Timetable::class)
             ->setDate($ttDate)
             ->setContext($context)
-            ->addCoreLayers($this->container)
+            ->addCoreLayers($this->getContainer())
             ->getOutput();
     }
 }

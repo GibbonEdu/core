@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Database\Connection;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Module\Attendance\StudentHistoryData;

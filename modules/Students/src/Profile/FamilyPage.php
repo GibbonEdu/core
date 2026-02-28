@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Database\Connection;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\FamilyGateway;
@@ -29,7 +29,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Psr\Container\ContainerInterface;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * FamilyPage
@@ -39,25 +40,24 @@ use Psr\Container\ContainerInterface;
  * 
  * @package Gibbon\Module\Students\Profile
  */
-class FamilyPage extends ProfilePage
+class FamilyPage extends ProfilePage implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+    
     private Connection $pdo;
     private CustomFieldHandler $customFieldHandler;
-    private ContainerInterface $container;
-    private \Gibbon\View\Page $page;
+    private \Gibbon\View\View $view;
 
     public function __construct(
         Session $session,
         Connection $pdo,
         CustomFieldHandler $customFieldHandler,
-        ContainerInterface $container,
-        \Gibbon\View\Page $page
+        \Gibbon\View\View $view
     ) {
         parent::__construct($session);
         $this->pdo = $pdo;
         $this->customFieldHandler = $customFieldHandler;
-        $this->container = $container;
-        $this->page = $page;
+        $this->view = $view;
     }
 
     /**
@@ -87,7 +87,7 @@ class FamilyPage extends ProfilePage
         
         // Guard clause: check if family data exists
         if (empty($families)) {
-            return $this->page->getBlankSlate();
+            return Format::alert(__('There are no records to display.'), 'empty');
         }
 
         $output = '';

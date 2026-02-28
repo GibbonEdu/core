@@ -21,11 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Database\Connection;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Services\Format;
-use Psr\Container\ContainerInterface;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * MarkbookPage
@@ -34,22 +35,21 @@ use Psr\Container\ContainerInterface;
  * 
  * @package Gibbon\Module\Students\Profile
  */
-class MarkbookPage extends ProfilePage
+class MarkbookPage extends ProfilePage implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+    
     private Connection $pdo;
-    private ContainerInterface $container;
-    private \Gibbon\View\Page $page;
+    private \Gibbon\View\View $view;
 
     public function __construct(
         Session $session,
         Connection $pdo,
-        ContainerInterface $container,
-        \Gibbon\View\Page $page
+        \Gibbon\View\View $view
     ) {
         parent::__construct($session);
         $this->pdo = $pdo;
-        $this->container = $container;
-        $this->page = $page;
+        $this->view = $view;
     }
 
     /**
@@ -89,9 +89,9 @@ class MarkbookPage extends ProfilePage
         $gibbonSchoolYearID = $this->gibbonSchoolYearID;
         $session = $this->session;
         $connection2 = $this->pdo;
-        $container = $this->container;
+        $container = $this->getContainer();
         $pdo = $this->pdo;
-        $page = $this->page;
+        $page = $this->view;
         $settingGateway = $container->get(\Gibbon\Domain\System\SettingGateway::class);
         $gibbon = $container->get('gibbon');
         

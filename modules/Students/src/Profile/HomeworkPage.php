@@ -25,7 +25,8 @@ use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Services\Format;
-use Psr\Container\ContainerInterface;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * HomeworkPage
@@ -34,16 +35,14 @@ use Psr\Container\ContainerInterface;
  * 
  * @package Gibbon\Module\Students\Profile
  */
-class HomeworkPage extends ProfilePage
+class HomeworkPage extends ProfilePage implements ContainerAwareInterface
 {
-    private ContainerInterface $container;
+    use ContainerAwareTrait;
 
     public function __construct(
-        Session $session,
-        ContainerInterface $container
+        Session $session
     ) {
         parent::__construct($session);
-        $this->container = $container;
     }
 
     /**
@@ -76,7 +75,7 @@ class HomeworkPage extends ProfilePage
         $viewBy = $_GET['viewBy'] ?? 'date';
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? null;
 
-        $homeworkTable = $this->container->get(HomeworkTable::class)
+        $homeworkTable = $this->getContainer()->get(HomeworkTable::class)
             ->create($this->gibbonSchoolYearID, $this->gibbonPersonID, $viewBy, $gibbonCourseClassID);
 
         return $homeworkTable->getOutput();

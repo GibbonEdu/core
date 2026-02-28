@@ -23,7 +23,7 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Database\Connection;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
@@ -56,7 +56,7 @@ class PersonalPage extends ProfilePage
     private PersonalDocumentGateway $personalDocumentGateway;
     private CustomFieldHandler $customFieldHandler;
     private Connection $pdo;
-    private \Gibbon\View\Page $page;
+    private \Gibbon\View\View $view;
 
     public function __construct(
         Session $session,
@@ -70,7 +70,7 @@ class PersonalPage extends ProfilePage
         PersonalDocumentGateway $personalDocumentGateway,
         CustomFieldHandler $customFieldHandler,
         Connection $pdo,
-        \Gibbon\View\Page $page
+        \Gibbon\View\View $view
     ) {
         parent::__construct($session);
         $this->studentGateway = $studentGateway;
@@ -83,7 +83,7 @@ class PersonalPage extends ProfilePage
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->customFieldHandler = $customFieldHandler;
         $this->pdo = $pdo;
-        $this->page = $page;
+        $this->view = $view;
     }
 
     /**
@@ -374,6 +374,6 @@ class PersonalPage extends ProfilePage
         $params = ['student' => true, 'notEmpty' => true];
         $documents = $this->personalDocumentGateway->selectPersonalDocuments('gibbonPerson', $this->gibbonPersonID, $params)->fetchAll();
 
-        return $this->page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
+        return $this->view->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
     }
 }

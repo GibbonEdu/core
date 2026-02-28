@@ -23,7 +23,7 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Database\Connection;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;

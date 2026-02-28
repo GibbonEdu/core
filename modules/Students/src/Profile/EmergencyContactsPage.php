@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Database\Connection;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\FamilyGateway;
@@ -48,7 +48,7 @@ class EmergencyContactsPage extends ProfilePage
     private UserGateway $userGateway;
     private StudentGateway $studentGateway;
     private SettingGateway $settingGateway;
-    private \Gibbon\View\Page $page;
+    private \Gibbon\View\View $view;
 
     public function __construct(
         Session $session,
@@ -57,7 +57,7 @@ class EmergencyContactsPage extends ProfilePage
         UserGateway $userGateway,
         StudentGateway $studentGateway,
         SettingGateway $settingGateway,
-        \Gibbon\View\Page $page
+        \Gibbon\View\View $view
     ) {
         parent::__construct($session);
         $this->pdo = $pdo;
@@ -65,7 +65,7 @@ class EmergencyContactsPage extends ProfilePage
         $this->userGateway = $userGateway;
         $this->studentGateway = $studentGateway;
         $this->settingGateway = $settingGateway;
-        $this->page = $page;
+        $this->view = $view;
     }
 
     /**
@@ -172,7 +172,7 @@ class EmergencyContactsPage extends ProfilePage
         $resultFamily = $this->pdo->select($sqlFamily, $dataFamily);
 
         if ($resultFamily->rowCount() == 0) {
-            return $output . $this->page->getBlankSlate();
+            return $output . Format::alert(__('There are no records to display.'), 'empty');
         }
 
         while ($rowFamily = $resultFamily->fetch()) {

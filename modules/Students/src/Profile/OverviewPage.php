@@ -23,9 +23,10 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Database\Connection;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Students\MedicalGateway;
-use Psr\Container\ContainerInterface;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\User\RoleGateway;
@@ -49,8 +50,10 @@ use Gibbon\UI\Timetable\TimetableContext;
  * 
  * @package Gibbon\Module\Students\Profile
  */
-class OverviewPage extends ProfilePage
+class OverviewPage extends ProfilePage implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+    
     private MedicalGateway $medicalGateway;
     private StudentGateway $studentGateway;
     private UserGateway $userGateway;
@@ -61,7 +64,6 @@ class OverviewPage extends ProfilePage
     private SettingGateway $settingGateway;
     private StudentAttendanceStatus $attendanceStatus;
     private Connection $pdo;
-    private ContainerInterface $container;
 
     public function __construct(
         Session $session,
@@ -74,8 +76,7 @@ class OverviewPage extends ProfilePage
         HouseGateway $houseGateway,
         SettingGateway $settingGateway,
         StudentAttendanceStatus $attendanceStatus,
-        Connection $pdo,
-        ContainerInterface $container
+        Connection $pdo
     ) {
         parent::__construct($session);
         $this->medicalGateway = $medicalGateway;
@@ -88,7 +89,6 @@ class OverviewPage extends ProfilePage
         $this->settingGateway = $settingGateway;
         $this->attendanceStatus = $attendanceStatus;
         $this->pdo = $pdo;
-        $this->container = $container;
     }
 
     /**
@@ -446,7 +446,7 @@ class OverviewPage extends ProfilePage
 
         $view = $_GET['view'] ?? 'grid';
         if ($view == 'grid') {
-            $gridView = $this->container->get(GridView::class);
+            $gridView = $this->getContainer()->get(GridView::class);
             $table->setRenderer($gridView->setCriteria($criteria));
 
             $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
@@ -551,16 +551,16 @@ class OverviewPage extends ProfilePage
             $gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
             
             // Create timetable context
-            $context = $this->container->get(TimetableContext::class)
+            $context = $this->getContainer()->get(TimetableContext::class)
                 ->set('gibbonSchoolYearID', $this->gibbonSchoolYearID)
                 ->set('gibbonPersonID', $this->gibbonPersonID)
                 ->set('gibbonTTID', $gibbonTTID);
 
             // Build and render timetable
-            $output .= $this->container->get(Timetable::class)
+            $output .= $this->getContainer()->get(Timetable::class)
                 ->setDate($ttDate)
                 ->setContext($context)
-                ->addCoreLayers($this->container)
+                ->addCoreLayers($this->getContainer())
                 ->getOutput();
         } else {
             // Display class list if no timetable access

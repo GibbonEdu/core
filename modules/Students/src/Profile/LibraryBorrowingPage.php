@@ -36,16 +36,16 @@ use Gibbon\Services\Format;
 class LibraryBorrowingPage extends ProfilePage
 {
     private LibraryBorrowingView $libraryBorrowing;
-    private \Gibbon\View\Page $page;
+    private \Gibbon\View\View $view;
 
     public function __construct(
         Session $session,
         LibraryBorrowingView $libraryBorrowing,
-        \Gibbon\View\Page $page
+        \Gibbon\View\View $view
     ) {
         parent::__construct($session);
         $this->libraryBorrowing = $libraryBorrowing;
-        $this->page = $page;
+        $this->view = $view;
     }
 
     /**
@@ -76,7 +76,7 @@ class LibraryBorrowingPage extends ProfilePage
 
         ob_start();
         
-        $this->libraryBorrowing->setStudent($this->gibbonPersonID)->compose($this->page);
+        $this->libraryBorrowing->setStudent($this->gibbonPersonID)->compose($this->view);
         
         return ob_get_clean();
     }
