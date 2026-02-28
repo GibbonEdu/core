@@ -54,11 +54,17 @@ use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 use Gibbon\Module\Students\StudentAttendanceStatus;
 use Gibbon\Module\Students\View\LibraryBorrowingView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Support\Facades\Access;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == false) {
+if (!Access::allows('Students', 'View Student Profile_brief') && 
+    !Access::allows('Students', 'View Student Profile_my') && 
+    !Access::allows('Students', 'View Student Profile_myChildren') && 
+    !Access::allows('Students', 'View Student Profile_full') && 
+    !Access::allows('Students', 'View Student Profile_fullNoNotes') && 
+    !Access::allows('Students', 'View Student Profile_fullEditAllNotes')) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -68,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $roleGateway = $container->get(RoleGateway::class);
 
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = Access::getHighestGroupedAction('Students', 'View Student Profile');
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
@@ -93,20 +99,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             }
 
             //Test if View Student Profile_myChildren is available and parent has access to this student...if so, skip brief, and go to full.
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'));
+            if (Access::allows('Students', 'View Student Profile_myChildren')) {
+                    $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID')];
                     $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $pdo->select($sql, $data);
                 if ($result->rowCount() == 1) {
                     $skipBrief = true;
                 }
             }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
+            if (Access::allows('Students', 'View Student Profile_my')) {
                 if ($gibbonPersonID == $session->get('gibbonPersonID')) {
                     $skipBrief = true;
-                } elseif (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')) {
+                } elseif (Access::allows('Students', 'View Student Profile_brief')) {
                     $highestAction = 'View Student Profile_brief';
                 } else {
                     //Acess denied
@@ -115,12 +120,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 }
             }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and $skipBrief == false) {
+            if (Access::allows('Students', 'View Student Profile_brief') and $skipBrief == false) {
                 //Proceed!
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
+                $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID];
                 $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $pdo->select($sql, $data);
 
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
@@ -137,36 +141,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo "<td style='width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
 
-                    $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                    $dataDetail = ['gibbonYearGroupID' => $row['gibbonYearGroupID']];
                     $sqlDetail = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-                    $resultDetail = $connection2->prepare($sqlDetail);
-                    $resultDetail->execute($dataDetail);
-                    if ($resultDetail->rowCount() == 1) {
-                        $rowDetail = $resultDetail->fetch();
+                    $resultDetail = $pdo->select($sqlDetail, $dataDetail);
+                    if ($rowDetail = $resultDetail->fetch()) {
                         echo __($rowDetail['name']);
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
 
-                    $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                    $dataDetail = ['gibbonFormGroupID' => $row['gibbonFormGroupID']];
                     $sqlDetail = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
-                    $resultDetail = $connection2->prepare($sqlDetail);
-                    $resultDetail->execute($dataDetail);
-                    if ($resultDetail->rowCount() == 1) {
-                        $rowDetail = $resultDetail->fetch();
+                    $resultDetail = $pdo->select($sqlDetail, $dataDetail);
+                    if ($rowDetail = $resultDetail->fetch()) {
                         echo $rowDetail['name'];
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('House').'</span><br/>';
 
-                    $dataDetail = array('gibbonHouseID' => $row['gibbonHouseID']);
+                    $dataDetail = ['gibbonHouseID' => $row['gibbonHouseID']];
                     $sqlDetail = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
-                    $resultDetail = $connection2->prepare($sqlDetail);
-                    $resultDetail->execute($dataDetail);
-                    if ($resultDetail->rowCount() == 1) {
-                        $rowDetail = $resultDetail->fetch();
+                    $resultDetail = $pdo->select($sqlDetail, $dataDetail);
+                    if ($rowDetail = $resultDetail->fetch()) {
                         echo $rowDetail['name'];
                     }
                     echo '</td>';
@@ -196,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             } else {
                 try {
                     if ($highestAction == 'View Student Profile_myChildren') {
-                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'today' => date('Y-m-d'));
+                        $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'today' => date('Y-m-d')];
                         $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonFamilyChild
                             JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
@@ -209,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND childDataAccess='Y'";
                     } elseif ($highestAction == 'View Student Profile_my') {
                         $gibbonPersonID = $session->get('gibbonPersonID');
-                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
+                        $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
                         $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
                             LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
@@ -217,14 +215,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
                     } elseif ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
-                            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
+                            $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
                             $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full'
                                 AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
                         } else {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                            $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
                             $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
                                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
@@ -234,8 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $page->addError(__('You do not have access to this action.'));
                         return;
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $pdo->select($sql, $data);
                 } catch (PDOException $e) {
                     return;
                 }
@@ -349,258 +346,252 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     //Set sidebar
                     $session->set('sidebarExtra', '');
 
-                    $sidebarExtra = '';
+                    // Prepare alert bar
                     $alert = '';
-                    //Show alerts
                     if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         $alert = $container->get(Alert::class)->getAlertBar($gibbonPersonID, ['wrap' => false, 'large' => true]);
-                        $sidebarExtra .= '<div class="w-48 sm:w-64 h-10 mb-2">'.$alert.'</div>';
+                    }
+
+                    // Build base URL for menu items
+                    $baseURL = $session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents";
+
+                    // Build personal menu items
+                    $personalMenu = [];
+                    
+                    $personalMenu[] = [
+                        'name' => 'Overview',
+                        'url' => $baseURL.'&subpage=Overview',
+                        'active' => $subpage == 'Overview'
+                    ];
+                    
+                    $personalMenu[] = [
+                        'name' => 'Personal',
+                        'url' => $baseURL.'&subpage=Personal',
+                        'active' => $subpage == 'Personal'
+                    ];
+                    
+                    $personalMenu[] = [
+                        'name' => 'Family',
+                        'url' => $baseURL.'&subpage=Family',
+                        'active' => $subpage == 'Family'
+                    ];
+                    
+                    $personalMenu[] = [
+                        'name' => 'Emergency Contacts',
+                        'url' => $baseURL.'&subpage=Emergency Contacts',
+                        'active' => $subpage == 'Emergency Contacts'
+                    ];
+                    
+                    // Medical - only show if NOT "View Student Profile_my"
+                    if (!Access::allows('Students', 'View Student Profile_my')) {
+                        $personalMenu[] = [
+                            'name' => 'Medical',
+                            'url' => $baseURL.'&subpage=Medical',
+                            'active' => $subpage == 'Medical'
+                        ];
                     }
                     
-                    $sidebarExtra .= Format::userPhoto($studentImage, 240);
-
-                    //PERSONAL DATA MENU ITEMS
-                     $sidebarExtra .= '<div class="column-no-break">';
-                     $sidebarExtra .= '<h4>'.__('Personal').'</h4>';
-                     $sidebarExtra .= "<ul class='moduleMenu'>";
-                    $style = '';
-                    if ($subpage == 'Overview') {
-                        $style = "style='font-weight: bold'";
+                    // First Aid - check permission
+                    if (Access::allows('Students', 'firstAidRecord')) {
+                        $personalMenu[] = [
+                            'name' => 'First Aid',
+                            'url' => $baseURL.'&subpage=First Aid',
+                            'active' => $subpage == 'First Aid'
+                        ];
                     }
-                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Overview'>".__('Overview').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Personal') {
-                        $style = "style='font-weight: bold'";
-                    }
-                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Personal'>".__('Personal').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Family') {
-                        $style = "style='font-weight: bold'";
-                    }
-                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Family'>".__('Family').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Emergency Contacts') {
-                        $style = "style='font-weight: bold'";
-                    }
-                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Medical') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    if (!isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
-                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>';
+                    
+                    // Notes - check permission and setting
+                    if (Access::allows('Students', 'student_view_details_notes_add') && $enableStudentNotes == 'Y') {
+                        $personalMenu[] = [
+                            'name' => 'Notes',
+                            'url' => $baseURL.'&subpage=Notes',
+                            'active' => $subpage == 'Notes'
+                        ];
                     }
 
-                    if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php')) {
-                        $style = '';
-                        if ($subpage == 'First Aid') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=First Aid'>".__('First Aid').'</a></li>';
-
-                    }
-
-                    if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php')) {
-                        if ($enableStudentNotes == 'Y') {
-                            $style = '';
-                            if ($subpage == 'Notes') {
-                                $style = "style='font-weight: bold'";
-                            }
-                             $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Notes'>".__('Notes').'</a></li>';
-                        }
-                    }
-                     $sidebarExtra .= '</ul>';
-
-                    //OTHER MENU ITEMS, DYANMICALLY ARRANGED TO MATCH CUSTOM TOP MENU
-                    //Get all modules, with the categories
-
-                        $dataMenu = array();
-                        $sqlMenu = "SELECT gibbonModuleID, category, name FROM gibbonModule WHERE active='Y' ORDER BY category, name";
-                        $resultMenu = $connection2->prepare($sqlMenu);
-                        $resultMenu->execute($dataMenu);
-                    $mainMenu = array();
+                    // Get all modules with categories
+                    $dataMenu = [];
+                    $sqlMenu = "SELECT gibbonModuleID, category, name FROM gibbonModule WHERE active='Y' ORDER BY category, name";
+                    $resultMenu = $pdo->select($sqlMenu, $dataMenu);
+                    
+                    $mainMenu = [];
                     while ($rowMenu = $resultMenu->fetch()) {
                         $mainMenu[$rowMenu['name']] = $rowMenu['category'];
                     }
-                    $studentMenuCategory = [];
-                    $studentMenuName = [];
-                    $studentMenuLink = [];
-                    $studentMenuCount = 0;
 
-                    //Store items in an array
-                    if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Markbook') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Markbook'];
-                        $studentMenuName[$studentMenuCount] = __('Markbook');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Markbook'>".__('Markbook').'</a></li>';
-                        ++$studentMenuCount;
+                    // Build dynamic menu items array
+                    $studentMenuItems = [];
+
+                    // Markbook
+                    if (Access::allows('Markbook', 'markbook_view')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Markbook'],
+                            'name' => 'Markbook',
+                            'url' => $baseURL.'&subpage=Markbook',
+                            'active' => $subpage == 'Markbook'
+                        ];
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Internal Assessment') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Formal Assessment'];
-                        $studentMenuName[$studentMenuCount] = __('Formal Assessment');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Internal%20Assessment'>".__('Internal Assessment').'</a></li>';
-                        ++$studentMenuCount;
+
+                    // Internal Assessment
+                    if (Access::allows('Formal Assessment', 'internalAssessment_view')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Formal Assessment'],
+                            'name' => 'Internal Assessment',
+                            'url' => $baseURL.'&subpage=Internal%20Assessment',
+                            'active' => $subpage == 'Internal Assessment'
+                        ];
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php') or isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_view.php')) {
-                        $style = '';
-                        if ($subpage == 'External Assessment') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Formal Assessment'];
-                        $studentMenuName[$studentMenuCount] = __('External Assessment');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=External Assessment'>".__('External Assessment').'</a></li>';
-                        ++$studentMenuCount;
+
+                    // External Assessment
+                    if (Access::allows('Formal Assessment', 'externalAssessment_details') || Access::allows('Formal Assessment', 'externalAssessment_view')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Formal Assessment'],
+                            'name' => 'External Assessment',
+                            'url' => $baseURL.'&subpage=External Assessment',
+                            'active' => $subpage == 'External Assessment'
+                        ];
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Reports') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Reports'];
-                        $studentMenuName[$studentMenuCount] = __('Reports');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Reports'>".__('Reports').'</a></li>';
-                        ++$studentMenuCount;
+
+                    // Reports
+                    if (Access::allows('Reports', 'archive_byStudent_view')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Reports'],
+                            'name' => 'Reports',
+                            'url' => $baseURL.'&subpage=Reports',
+                            'active' => $subpage == 'Reports'
+                        ];
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent.php') || isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_myChildren.php') || isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php')) {
-                        $style = '';
-                        if ($subpage == 'Activities') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Activities'];
-                        $studentMenuName[$studentMenuCount] = __('Activities');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Activities'>".__('Activities').'</a></li>';
-                        ++$studentMenuCount;
+
+                    // Activities
+                    if (Access::allows('Activities', 'report_activityChoices_byStudent') 
+                        || Access::allows('Activities', 'activities_view_myChildren') 
+                        || Access::allows('Activities', 'activities_my')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Activities'],
+                            'name' => 'Activities',
+                            'url' => $baseURL.'&subpage=Activities',
+                            'active' => $subpage == 'Activities'
+                        ];
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') or isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php')) {
-                        $style = '';
-                        if ($subpage == 'Homework') {
-                            $style = "style='font-weight: bold'";
-                        }
+
+                    // Homework
+                    if (Access::allows('Planner', 'planner_edit') || Access::allows('Planner', 'planner_view_full')) {
                         $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Planner'];
-                        $studentMenuName[$studentMenuCount] = __($homeworkNamePlural);
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Homework'>".__($homeworkNamePlural).'</a></li>';
-                        ++$studentMenuCount;
-                    }
-                    if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Individual Needs') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Individual Needs'];
-                        $studentMenuName[$studentMenuCount] = __('Individual Needs');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Individual Needs'>".__('Individual Needs').'</a></li>';
-                        ++$studentMenuCount;
-                    }
-                    if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php')) {
-                        $style = '';
-                        if ($subpage == 'Library Borrowing') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Library'];
-                        $studentMenuName[$studentMenuCount] = __('Library Borrowing');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Library Borrowing'>".__('Library Borrowing').'</a></li>';
-                        ++$studentMenuCount;
-                    }
-                    if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Timetable') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Timetable'];
-                        $studentMenuName[$studentMenuCount] = __('Timetable');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Timetable'>".__('Timetable').'</a></li>';
-                        ++$studentMenuCount;
-                    }if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php')) {
-                        $style = '';
-                        if ($subpage == 'Attendance') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Attendance'];
-                        $studentMenuName[$studentMenuCount] = __('Attendance');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Attendance'>".__('Attendance').'</a></li>';
-                        ++$studentMenuCount;
-                    }
-                    if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Behaviour') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Behaviour'];
-                        $studentMenuName[$studentMenuCount] = __('Behaviour');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Behaviour'>".__('Behaviour').'</a></li>';
-                        ++$studentMenuCount;
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Planner'],
+                            'name' => $homeworkNamePlural,
+                            'url' => $baseURL.'&subpage=Homework',
+                            'active' => $subpage == 'Homework'
+                        ];
                     }
 
+                    // Individual Needs
+                    if (Access::allows('Individual Needs', 'in_view')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Individual Needs'],
+                            'name' => 'Individual Needs',
+                            'url' => $baseURL.'&subpage=Individual Needs',
+                            'active' => $subpage == 'Individual Needs'
+                        ];
+                    }
 
-                    //Check for hooks, and slot them into array
+                    // Library Borrowing
+                    if (Access::allows('Library', 'library_browse')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Library'],
+                            'name' => 'Library Borrowing',
+                            'url' => $baseURL.'&subpage=Library Borrowing',
+                            'active' => $subpage == 'Library Borrowing'
+                        ];
+                    }
+
+                    // Timetable
+                    if (Access::allows('Timetable', 'tt_view')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Timetable'],
+                            'name' => 'Timetable',
+                            'url' => $baseURL.'&subpage=Timetable',
+                            'active' => $subpage == 'Timetable'
+                        ];
+                    }
+
+                    // Attendance
+                    if (Access::allows('Attendance', 'report_studentHistory')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Attendance'],
+                            'name' => 'Attendance',
+                            'url' => $baseURL.'&subpage=Attendance',
+                            'active' => $subpage == 'Attendance'
+                        ];
+                    }
+
+                    // Behaviour
+                    if (Access::allows('Behaviour', 'behaviour_view')) {
+                        $studentMenuItems[] = [
+                            'category' => $mainMenu['Behaviour'],
+                            'name' => 'Behaviour',
+                            'url' => $baseURL.'&subpage=Behaviour',
+                            'active' => $subpage == 'Behaviour'
+                        ];
+                    }
+
+                    // Check for hooks and add them to the menu
                     $hooks = $hookGateway->selectHooksByType('Student Profile')->fetchGroupedUnique();
 
                     if (!empty($hooks)) {
-                        $count = 0;
                         foreach ($hooks as $rowHook) {
                             if (empty($rowHook) || empty($rowHook['options'])) continue;
 
                             $options = unserialize($rowHook['options']);
                             $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
 
-                            //Check for permission to hook
-
                             if (!empty($hookPermission)) {
-                                $style = '';
-                                if ($hook == $rowHook['name']) {
-                                    $style = "style='font-weight: bold'";
-                                }
-                                $studentMenuCategory[$studentMenuCount] = $mainMenu[$options['sourceModuleName']];
-                                $studentMenuName[$studentMenuCount] = __($rowHook['name']);
-                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&allStudents='.$allStudents.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID']."'>".__($rowHook['name']).'</a></li>';
-                                ++$studentMenuCount;
-                                ++$count;
+                                $studentMenuItems[] = [
+                                    'category' => $mainMenu[$options['sourceModuleName']],
+                                    'name' => $rowHook['name'],
+                                    'url' => $baseURL.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID'],
+                                    'active' => $hook == $rowHook['name']
+                                ];
                             }
                         }
                     }
 
-                    //Menu ordering categories
+                    // Sort menu items by category and name
+                    usort($studentMenuItems, function($a, $b) {
+                        if ($a['category'] == $b['category']) {
+                            return strcmp($a['name'], $b['name']);
+                        }
+                        return strcmp($a['category'], $b['category']);
+                    });
+
+                    // Group menu items by category according to mainMenuCategoryOrder
                     $mainMenuCategoryOrder = $settingGateway->getSettingByScope('System', 'mainMenuCategoryOrder');
                     $orders = explode(',', $mainMenuCategoryOrder);
 
-                    //Sort array
-                    @array_multisort($studentMenuCategory, $studentMenuName, $studentMenuLink);
+                    $dynamicMenuSections = [];
+                    foreach ($orders as $order) {
+                        $categoryItems = array_filter($studentMenuItems, function($item) use ($order) {
+                            return $item['category'] == $order;
+                        });
 
-                    //Spit out array whilt sorting by $mainMenuCategoryOrder
-                    if (count($studentMenuCategory) > 0) {
-                        foreach ($orders as $order) {
-                            //Check for entries
-                            $countEntries = 0;
-                            for ($i = 0; $i < count($studentMenuCategory); ++$i) {
-                                if ($studentMenuCategory[$i] == $order) {
-                                    $countEntries ++;
-                                }
-                            }
-
-                            if ($countEntries > 0) {
-                                 $sidebarExtra .= '<h4>'.__($order).'</h4>';
-                                 $sidebarExtra .= "<ul class='moduleMenu'>";
-                                for ($i = 0; $i < count($studentMenuCategory); ++$i) {
-                                    if ($studentMenuCategory[$i] == $order) {
-                                         $sidebarExtra .= $studentMenuLink[$i];
-                                    }
-                                }
-
-                                 $sidebarExtra .= '</ul>';
-                            }
+                        if (!empty($categoryItems)) {
+                            $dynamicMenuSections[] = [
+                                'category' => $order,
+                                'items' => array_values($categoryItems)
+                            ];
                         }
                     }
 
-                    $sidebarExtra .= '</div>';
+                    // Prepare data for Twig template
+                    $sidebarData = [
+                        'alert' => $alert,
+                        'studentImage' => Format::userPhoto($studentImage, 240),
+                        'personalMenu' => $personalMenu,
+                        'dynamicMenuSections' => $dynamicMenuSections
+                    ];
 
+                    // Render sidebar using Twig template
+                    $sidebarExtra = $page->fetchFromTemplate('studentProfileSidebar.twig.html', $sidebarData);
                     $session->set('sidebarExtra', $sidebarExtra);
                 }
             }
