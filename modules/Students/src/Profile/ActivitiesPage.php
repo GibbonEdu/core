@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
@@ -36,14 +36,14 @@ use Gibbon\Tables\DataTable;
  */
 class ActivitiesPage extends ProfilePage
 {
-    private Connection $pdo;
+    private ActivityGateway $activityGateway;
 
     public function __construct(
         Session $session,
-        Connection $pdo
+        ActivityGateway $activityGateway
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
+        $this->activityGateway = $activityGateway;
     }
 
     /**
@@ -87,17 +87,10 @@ class ActivitiesPage extends ProfilePage
 
         $dateType = $_REQUEST['dateType'] ?? $this->session->get('gibbonSchoolYearIDCurrent') == $this->gibbonSchoolYearID ? 'Term' : 'Year';
 
-        $data = ['gibbonPersonID' => $this->gibbonPersonID, 'gibbonSchoolYearID' => $this->gibbonSchoolYearID];
-        $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStudent.timestamp
-                FROM gibbonActivity 
-                JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
-                WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
-                AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND gibbonActivityStudent.status='Accepted'
-                AND active='Y' 
-                ORDER BY name";
-
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->activityGateway->selectActivitiesByStudentForProfile(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID
+        );
 
         $table = DataTable::create('activities');
         $table->setTitle(__('Activities'));

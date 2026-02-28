@@ -244,3 +244,52 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
       return $this->db()->select($sql, $data);
     }
 }
+
+    /**
+     * Select educational assistants for a student
+     * 
+     * @param string $gibbonPersonID Student person ID
+     * @param string $gibbonSchoolYearID School year ID
+     * @return Result
+     */
+    public function selectEducationalAssistantsByStudent($gibbonPersonID, $gibbonSchoolYearID)
+    {
+        $data = [
+            'gibbonPersonID1' => $gibbonPersonID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonPersonID2' => $gibbonPersonID
+        ];
+        
+        $sql = "(SELECT DISTINCT surname, preferredName, email
+                FROM gibbonPerson
+                    JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE status='Full'
+                    AND gibbonPersonIDStudent=:gibbonPersonID1)
+            UNION
+            (SELECT DISTINCT surname, preferredName, email
+                FROM gibbonPerson
+                    JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
+            )
+            ORDER BY preferredName, surname, email";
+        
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Get Individual Needs record by person ID
+     * 
+     * @param string $gibbonPersonID
+     * @return array|false
+     */
+    public function getINByPersonID($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
+        
+        return $this->db()->selectOne($sql, $data);
+    }

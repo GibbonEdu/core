@@ -41,18 +41,15 @@ class MedicalPage extends ProfilePage
 {
     private MedicalGateway $medicalGateway;
     private CustomFieldHandler $customFieldHandler;
-    private Connection $pdo;
 
     public function __construct(
         Session $session,
         MedicalGateway $medicalGateway,
-        CustomFieldHandler $customFieldHandler,
-        Connection $pdo
+        CustomFieldHandler $customFieldHandler
     ) {
         parent::__construct($session);
         $this->medicalGateway = $medicalGateway;
         $this->customFieldHandler = $customFieldHandler;
-        $this->pdo = $pdo;
     }
 
     /**

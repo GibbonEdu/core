@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Services\Format;
@@ -38,18 +38,18 @@ use Gibbon\Tables\DataTable;
  */
 class AttendancePage extends ProfilePage
 {
-    private Connection $pdo;
+    private StudentGateway $studentGateway;
     private StudentHistoryData $attendanceData;
     private StudentHistoryView $attendanceView;
 
     public function __construct(
         Session $session,
-        Connection $pdo,
+        StudentGateway $studentGateway,
         StudentHistoryData $attendanceData,
         StudentHistoryView $attendanceView
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
+        $this->studentGateway = $studentGateway;
         $this->attendanceData = $attendanceData;
         $this->attendanceView = $attendanceView;
     }
@@ -124,21 +124,10 @@ class AttendancePage extends ProfilePage
      */
     protected function fetchStudentData(): array
     {
-        $data = [
-            'gibbonSchoolYearID' => $this->gibbonSchoolYearID,
-            'gibbonPersonID' => $this->gibbonPersonID
-        ];
-        
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID 
-                FROM gibbonPerson 
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND status='Full' 
-                AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') 
-                AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->studentGateway->selectActiveStudentForProfile(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID
+        );
         
         if ($result->rowCount() != 1) {
             return [];

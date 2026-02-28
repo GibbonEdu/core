@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Services\Format;
 
 /**
@@ -35,14 +35,14 @@ use Gibbon\Services\Format;
  */
 class BehaviourPage extends ProfilePage
 {
-    private Connection $pdo;
+    private BehaviourGateway $behaviourGateway;
 
     public function __construct(
         Session $session,
-        Connection $pdo
+        BehaviourGateway $behaviourGateway
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
+        $this->behaviourGateway = $behaviourGateway;
     }
 
     /**
@@ -86,7 +86,6 @@ class BehaviourPage extends ProfilePage
         
         // Include module functions and render behaviour records
         $gibbonPersonID = $this->gibbonPersonID;
-        $connection2 = $this->pdo;
         
         include './modules/Behaviour/moduleFunctions.php';
         
@@ -98,16 +97,11 @@ class BehaviourPage extends ProfilePage
         echo __('Positive Behaviour');
         echo '</h3>';
         
-        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonBehaviour.*, gibbonPerson.preferredName, gibbonPerson.surname 
-                FROM gibbonBehaviour 
-                JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-                WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID 
-                AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND type='Positive' 
-                ORDER BY date DESC, timestamp DESC";
-        
-        $result = $connection2->select($sql, $data);
+        $result = $this->behaviourGateway->selectBehaviourByStudentAndType(
+            $gibbonSchoolYearID,
+            $gibbonPersonID,
+            'Positive'
+        );
         
         if ($result->rowCount() < 1) {
             echo '<div class="message">';
@@ -160,15 +154,11 @@ class BehaviourPage extends ProfilePage
         echo __('Negative Behaviour');
         echo '</h3>';
         
-        $sql = "SELECT gibbonBehaviour.*, gibbonPerson.preferredName, gibbonPerson.surname 
-                FROM gibbonBehaviour 
-                JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-                WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID 
-                AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND type='Negative' 
-                ORDER BY date DESC, timestamp DESC";
-        
-        $result = $connection2->select($sql, $data);
+        $result = $this->behaviourGateway->selectBehaviourByStudentAndType(
+            $gibbonSchoolYearID,
+            $gibbonPersonID,
+            'Negative'
+        );
         
         if ($result->rowCount() < 1) {
             echo '<div class="message">';

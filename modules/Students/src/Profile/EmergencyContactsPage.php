@@ -52,7 +52,6 @@ class EmergencyContactsPage extends ProfilePage
 
     public function __construct(
         Session $session,
-        Connection $pdo,
         FamilyGateway $familyGateway,
         UserGateway $userGateway,
         StudentGateway $studentGateway,
@@ -60,7 +59,6 @@ class EmergencyContactsPage extends ProfilePage
         \Gibbon\View\View $view
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
         $this->familyGateway = $familyGateway;
         $this->userGateway = $userGateway;
         $this->studentGateway = $studentGateway;
@@ -144,21 +142,10 @@ class EmergencyContactsPage extends ProfilePage
      */
     protected function fetchStudentData(): array
     {
-        $data = [
-            'gibbonSchoolYearID' => $this->gibbonSchoolYearID,
-            'gibbonPersonID' => $this->gibbonPersonID
-        ];
-        
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID 
-                FROM gibbonPerson 
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND status='Full' 
-                AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') 
-                AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->studentGateway->selectActiveStudentWithEmergencyContacts(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID
+        );
         
         if ($result->rowCount() != 1) {
             return [];
@@ -178,21 +165,20 @@ class EmergencyContactsPage extends ProfilePage
         $output .= __('Adult Family Members');
         $output .= '</h4>';
 
-        $dataFamily = ['gibbonPersonID' => $this->gibbonPersonID];
-        $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-        $resultFamily = $this->pdo->select($sqlFamily, $dataFamily);
+        $resultFamily = $this->familyGateway->selectAllFamiliesByStudent($this->gibbonPersonID);
 
         if ($resultFamily->rowCount() == 0) {
             return $output . Format::alert(__('There are no records to display.'), 'empty');
         }
 
         while ($rowFamily = $resultFamily->fetch()) {
-            $dataMember = ['gibbonFamilyID' => $rowFamily['gibbonFamilyID']];
-            $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-            $resultMember = $this->pdo->select($sqlMember, $dataMember);
+            $resultMember = $this->familyGateway->selectAdultsWithRelationshipByFamily(
+                $rowFamily['gibbonFamilyID'],
+                $this->gibbonPersonID
+            );
 
             while ($rowMember = $resultMember->fetch()) {
-                $output .= $this->renderAdultMember($rowMember, $rowFamily['gibbonFamilyID']);
+                $output .= $this->renderAdultMember($rowMember);
             }
         }
 
@@ -203,10 +189,9 @@ class EmergencyContactsPage extends ProfilePage
      * Render a single adult family member
      * 
      * @param array $member Adult member data
-     * @param string $gibbonFamilyID Family ID
      * @return string HTML for adult member
      */
-    protected function renderAdultMember(array $member, string $gibbonFamilyID): string
+    protected function renderAdultMember(array $member): string
     {
         $output = "<table class='smallIntBorder mb-2' cellspacing='0' style='width: 100%'>";
         $output .= '<tr>';
@@ -217,17 +202,8 @@ class EmergencyContactsPage extends ProfilePage
         $output .= "<td style='width: 33%; vertical-align: top'>";
         $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Relationship').'</span><br/>';
 
-        $dataRelationship = [
-            'gibbonPersonID1' => $member['gibbonPersonID'],
-            'gibbonPersonID2' => $this->gibbonPersonID,
-            'gibbonFamilyID' => $gibbonFamilyID
-        ];
-        $sqlRelationship = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID';
-        $resultRelationship = $this->pdo->select($sqlRelationship, $dataRelationship);
-        
-        if ($resultRelationship->rowCount() == 1) {
-            $rowRelationship = $resultRelationship->fetch();
-            $output .= __($rowRelationship['relationship']);
+        if (!empty($member['relationship'])) {
+            $output .= __($member['relationship']);
         } else {
             $output .= '<i>'.__('Unknown').'</i>';
         }

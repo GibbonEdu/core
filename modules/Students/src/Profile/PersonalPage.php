@@ -55,7 +55,6 @@ class PersonalPage extends ProfilePage
     private SettingGateway $settingGateway;
     private PersonalDocumentGateway $personalDocumentGateway;
     private CustomFieldHandler $customFieldHandler;
-    private Connection $pdo;
     private \Gibbon\View\View $view;
 
     public function __construct(
@@ -69,7 +68,6 @@ class PersonalPage extends ProfilePage
         SettingGateway $settingGateway,
         PersonalDocumentGateway $personalDocumentGateway,
         CustomFieldHandler $customFieldHandler,
-        Connection $pdo,
         \Gibbon\View\View $view
     ) {
         parent::__construct($session);
@@ -82,7 +80,6 @@ class PersonalPage extends ProfilePage
         $this->settingGateway = $settingGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->customFieldHandler = $customFieldHandler;
-        $this->pdo = $pdo;
         $this->view = $view;
     }
 
@@ -145,21 +142,9 @@ class PersonalPage extends ProfilePage
      */
     protected function fetchPersonData(): array
     {
-        $data = ['gibbonPersonID' => $this->gibbonPersonID];
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.fields as enrollmentFields 
-                FROM gibbonPerson 
-                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID 
-                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        $data['gibbonSchoolYearID'] = $this->gibbonSchoolYearID;
+        $personData = $this->userGateway->getPersonWithEnrollmentFields($this->gibbonPersonID, $this->gibbonSchoolYearID);
         
-        $result = $this->pdo->select($sql, $data);
-        
-        if ($result->rowCount() != 1) {
-            return [];
-        }
-        
-        return $result->fetch();
+        return $personData ?: [];
     }
 
     /**

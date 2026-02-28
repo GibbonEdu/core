@@ -45,17 +45,18 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
     use ContainerAwareTrait;
     
     private Connection $pdo;
+    private FamilyGateway $familyGateway;
     private CustomFieldHandler $customFieldHandler;
     private \Gibbon\View\View $view;
 
     public function __construct(
         Session $session,
-        Connection $pdo,
+        FamilyGateway $familyGateway,
         CustomFieldHandler $customFieldHandler,
         \Gibbon\View\View $view
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
+        $this->familyGateway = $familyGateway;
         $this->customFieldHandler = $customFieldHandler;
         $this->view = $view;
     }
@@ -118,10 +119,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function fetchFamilyData(): array
     {
-        $data = ['gibbonPersonID' => $this->gibbonPersonID];
-        $sql = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-        
-        return $this->pdo->select($sql, $data)->fetchAll();
+        return $this->familyGateway->selectFamiliesWithChildByStudent($this->gibbonPersonID)->fetchAll();
     }
 
     /**
@@ -261,10 +259,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function fetchAdults(string $gibbonFamilyID): array
     {
-        $data = ['gibbonFamilyID' => $gibbonFamilyID];
-        $sql = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-        
-        return $this->pdo->select($sql, $data)->fetchAll();
+        return $this->familyGateway->selectAdultsByFamilyID($gibbonFamilyID)->fetchAll();
     }
 
     /**
@@ -376,23 +371,17 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function getRelationship(string $adultPersonID): string
     {
-        $data = [
-            'gibbonPersonID1' => $adultPersonID,
-            'gibbonPersonID2' => $this->gibbonPersonID,
-            'gibbonFamilyID' => ''
-        ];
-        
         // Get gibbonFamilyID from the current context
         $familyData = $this->fetchFamilyData();
-        if (!empty($familyData)) {
-            $data['gibbonFamilyID'] = $familyData[0]['gibbonFamilyID'];
+        if (empty($familyData)) {
+            return '<i>'.__('Relationship Unknown').'</i>';
         }
         
-        $sql = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID';
-        $result = $this->pdo->select($sql, $data);
+        $gibbonFamilyID = $familyData[0]['gibbonFamilyID'];
         
-        if ($result->rowCount() == 1) {
-            $relationship = $result->fetch();
+        $relationship = $this->familyGateway->getFamilyRelationship($adultPersonID, $this->gibbonPersonID, $gibbonFamilyID);
+        
+        if (!empty($relationship)) {
             return __($relationship['relationship']);
         }
         
@@ -559,13 +548,6 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function fetchSiblings(string $gibbonFamilyID): array
     {
-        $data = [
-            'gibbonFamilyID' => $gibbonFamilyID,
-            'gibbonPersonID' => $this->gibbonPersonID,
-            'gibbonSchoolYearID' => $this->gibbonSchoolYearID
-        ];
-        $sql = 'SELECT gibbonPerson.gibbonPersonID, image_240, preferredName, surname, status, gibbonStudentEnrolmentID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) WHERE gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-        
-        return $this->pdo->select($sql, $data)->fetchAll();
+        return $this->familyGateway->selectSiblingsByFamily($gibbonFamilyID, $this->gibbonPersonID, $this->gibbonSchoolYearID)->fetchAll();
     }
 }

@@ -61,10 +61,9 @@ if (!Access::allows('Students', 'student_view_details')) {
 
     // Test if View Student Profile_myChildren is available and parent has access to this student
     if (Access::allows('Students', 'student_view_details', 'View Student Profile_myChildren')) {
-        $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID')];
-        $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-        $result = $pdo->select($sql, $data);
-        if ($result->rowCount() == 1) {
+        $studentGateway = $container->get(\Gibbon\Domain\Students\StudentGateway::class);
+        $student = $studentGateway->getStudentByFamilyAdult($_GET['gibbonPersonID'], $session->get('gibbonPersonID'));
+        if (!empty($student)) {
             $skipBrief = true;
         }
     }
@@ -93,6 +92,8 @@ if (!Access::allows('Students', 'student_view_details')) {
     }
 
     // Handle full profile view
+    $studentGateway = $container->get(\Gibbon\Domain\Students\StudentGateway::class);
+    $userGateway = $container->get(\Gibbon\Domain\User\UserGateway::class);
 
     if ($highestAction->allows('View Student Profile_myChildren')) {
         $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'today' => date('Y-m-d')];
@@ -106,40 +107,29 @@ if (!Access::allows('Students', 'student_view_details')) {
             AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1
             AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2
             AND childDataAccess='Y'";
+        $result = $pdo->select($sql, $data);
+        $row = $result->rowCount() == 1 ? $result->fetch() : null;
     } elseif ($highestAction->allows('View Student Profile_my')) {
         $gibbonPersonID = $session->get('gibbonPersonID');
-        $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
-            LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-            WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
-            AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
-            AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
+        $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+        $row = $result->rowCount() == 1 ? $result->fetch() : null;
     } elseif ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
         if ($allStudents != 'on') {
-            $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
-            $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full'
-                AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
+            $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+            $row = $result->rowCount() == 1 ? $result->fetch() : null;
         } else {
-            $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
-            $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
-                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+            $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
+            $row = $result->rowCount() == 1 ? $result->fetch() : null;
         }
     } else {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
-    $result = $pdo->select($sql, $data);
 
-    if ($result->rowCount() != 1) {
+    if (empty($row)) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
     }
-
-    $row = $result->fetch();
 
     $page->breadcrumbs
         ->add(__('View Student Profiles'), 'student_view.php')

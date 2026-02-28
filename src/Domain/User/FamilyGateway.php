@@ -229,4 +229,130 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    /**
+     * Select families by student with family child data
+     * 
+     * @param string $gibbonPersonID
+     * @return Result
+     */
+    public function selectFamiliesWithChildByStudent($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = 'SELECT * FROM gibbonFamily 
+                JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) 
+                WHERE gibbonPersonID=:gibbonPersonID';
+        
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Select adult family members by family ID
+     * 
+     * @param string $gibbonFamilyID
+     * @return Result
+     */
+    public function selectAdultsByFamilyID($gibbonFamilyID)
+    {
+        $data = ['gibbonFamilyID' => $gibbonFamilyID];
+        $sql = 'SELECT * FROM gibbonFamilyAdult 
+                JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                WHERE gibbonFamilyID=:gibbonFamilyID 
+                ORDER BY contactPriority, surname, preferredName';
+        
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Select family relationship between two persons
+     * 
+     * @param string $gibbonPersonID1 Adult person ID
+     * @param string $gibbonPersonID2 Child person ID
+     * @param string $gibbonFamilyID Family ID
+     * @return array|false
+     */
+    public function getFamilyRelationship($gibbonPersonID1, $gibbonPersonID2, $gibbonFamilyID)
+    {
+        $data = [
+            'gibbonPersonID1' => $gibbonPersonID1,
+            'gibbonPersonID2' => $gibbonPersonID2,
+            'gibbonFamilyID' => $gibbonFamilyID
+        ];
+        $sql = 'SELECT * FROM gibbonFamilyRelationship 
+                WHERE gibbonPersonID1=:gibbonPersonID1 
+                AND gibbonPersonID2=:gibbonPersonID2 
+                AND gibbonFamilyID=:gibbonFamilyID';
+        
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    /**
+     * Select siblings by family ID excluding a specific person
+     * 
+     * @param string $gibbonFamilyID
+     * @param string $gibbonPersonID Person to exclude
+     * @param string $gibbonSchoolYearID
+     * @return Result
+     */
+    public function selectSiblingsByFamily($gibbonFamilyID, $gibbonPersonID, $gibbonSchoolYearID)
+    {
+        $data = [
+            'gibbonFamilyID' => $gibbonFamilyID,
+            'gibbonPersonID' => $gibbonPersonID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID
+        ];
+        $sql = 'SELECT gibbonPerson.gibbonPersonID, image_240, preferredName, surname, status, gibbonStudentEnrolmentID 
+                FROM gibbonFamilyChild 
+                JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                    AND gibbonSchoolYearID=:gibbonSchoolYearID) 
+                WHERE gibbonFamilyID=:gibbonFamilyID 
+                AND NOT gibbonPerson.gibbonPersonID=:gibbonPersonID 
+                ORDER BY surname, preferredName';
+        
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Select all families by student with family child data
+     * 
+     * @param string $gibbonPersonID
+     * @return Result
+     */
+    public function selectAllFamiliesByStudent($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = 'SELECT * FROM gibbonFamily 
+                JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) 
+                WHERE gibbonPersonID=:gibbonPersonID';
+        
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Select adult family members with relationship by family and student
+     * 
+     * @param string $gibbonFamilyID
+     * @param string $gibbonPersonID Student person ID
+     * @return Result
+     */
+    public function selectAdultsWithRelationshipByFamily($gibbonFamilyID, $gibbonPersonID)
+    {
+        $data = [
+            'gibbonFamilyID' => $gibbonFamilyID,
+            'gibbonPersonID' => $gibbonPersonID
+        ];
+        $sql = 'SELECT gibbonPerson.*, gibbonFamilyAdult.*, gibbonFamilyRelationship.relationship 
+                FROM gibbonFamilyAdult 
+                JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                LEFT JOIN gibbonFamilyRelationship ON (
+                    gibbonFamilyRelationship.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID 
+                    AND gibbonFamilyRelationship.gibbonPersonID1=gibbonFamilyAdult.gibbonPersonID 
+                    AND gibbonFamilyRelationship.gibbonPersonID2=:gibbonPersonID
+                )
+                WHERE gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID 
+                ORDER BY contactPriority, surname, preferredName';
+        
+        return $this->db()->select($sql, $data);
+    }
 }

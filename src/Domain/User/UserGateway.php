@@ -281,4 +281,23 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
             'preferences' => json_encode($preferences),
         ]);
     }
+
+    /**
+     * Get person data with student enrollment fields
+     * 
+     * @param string $gibbonPersonID
+     * @param string $gibbonSchoolYearID
+     * @return array|false
+     */
+    public function getPersonWithEnrollmentFields($gibbonPersonID, $gibbonSchoolYearID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.fields as enrollmentFields 
+                FROM gibbonPerson 
+                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID 
+                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+        
+        return $this->db()->selectOne($sql, $data);
+    }
 }

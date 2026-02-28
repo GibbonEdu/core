@@ -70,4 +70,47 @@ class StudentNoteGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    /**
+     * Select active note categories
+     * 
+     * @return Result
+     */
+    public function selectActiveNoteCategories()
+    {
+        $sql = "SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
+        
+        return $this->db()->select($sql);
+    }
+
+    /**
+     * Select notes by student with optional category filter
+     * 
+     * @param string $gibbonPersonID
+     * @param string|null $gibbonStudentNoteCategoryID
+     * @return Result
+     */
+    public function selectNotesByStudent($gibbonPersonID, $gibbonStudentNoteCategoryID = null)
+    {
+        if ($gibbonStudentNoteCategoryID === null) {
+            $data = ['gibbonPersonID' => $gibbonPersonID];
+            $sql = 'SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName 
+                    FROM gibbonStudentNote 
+                    LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) 
+                    JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                    WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID 
+                    ORDER BY timestamp DESC';
+        } else {
+            $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID];
+            $sql = 'SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName 
+                    FROM gibbonStudentNote 
+                    LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) 
+                    JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                    WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID 
+                    AND gibbonStudentNote.gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID 
+                    ORDER BY timestamp DESC';
+        }
+
+        return $this->db()->select($sql, $data);
+    }
 }

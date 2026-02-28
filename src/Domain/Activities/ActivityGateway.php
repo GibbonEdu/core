@@ -509,4 +509,26 @@ class ActivityGateway extends QueryableGateway
         
         return $this->db()->select($sql, $data);
     }
+
+    /**
+     * Select activities by student for profile page
+     * 
+     * @param string $gibbonSchoolYearID
+     * @param string $gibbonPersonID
+     * @return Result
+     */
+    public function selectActivitiesByStudentForProfile($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStudent.timestamp
+                FROM gibbonActivity 
+                JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
+                WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
+                AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND gibbonActivityStudent.status='Accepted'
+                AND active='Y' 
+                ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

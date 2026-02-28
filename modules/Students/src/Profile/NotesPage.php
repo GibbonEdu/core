@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\Profile;
 
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Students\StudentNoteGateway;
@@ -39,18 +38,15 @@ use Gibbon\Tables\DataTable;
  */
 class NotesPage extends ProfilePage
 {
-    private Connection $pdo;
     private StudentNoteGateway $noteGateway;
     private SettingGateway $settingGateway;
 
     public function __construct(
         Session $session,
-        Connection $pdo,
         StudentNoteGateway $noteGateway,
         SettingGateway $settingGateway
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
         $this->noteGateway = $noteGateway;
         $this->settingGateway = $settingGateway;
     }
@@ -129,9 +125,7 @@ class NotesPage extends ProfilePage
      */
     protected function renderCategoryFilter(?string $category, string $allStudents, string $search): string
     {
-        $dataCategories = [];
-        $sqlCategories = "SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
-        $resultCategories = $this->pdo->select($sqlCategories, $dataCategories);
+        $resultCategories = $this->noteGateway->selectActiveNoteCategories();
 
         if ($resultCategories->rowCount() == 0) {
             return '';
@@ -147,10 +141,9 @@ class NotesPage extends ProfilePage
         $form->addHiddenValue('search', $search);
         $form->addHiddenValue('subpage', 'Notes');
 
-        $sql = "SELECT gibbonStudentNoteCategoryID as value, name FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
         $rowFilter = $form->addRow();
         $rowFilter->addLabel('category', __('Category'));
-        $rowFilter->addSelect('category')->fromQuery($this->pdo, $sql)->selected($category)->placeholder();
+        $rowFilter->addSelect('category')->fromResults($resultCategories, 'gibbonStudentNoteCategoryID', 'name')->selected($category)->placeholder();
 
         $rowFilter = $form->addRow();
         $rowFilter->addSearchSubmit($this->session, __('Clear Filters'), ['gibbonPersonID', 'allStudents', 'search', 'subpage']);
@@ -166,26 +159,7 @@ class NotesPage extends ProfilePage
      */
     protected function fetchNotes(?string $category)
     {
-        if ($category == null) {
-            $data = ['gibbonPersonID' => $this->gibbonPersonID];
-            $sql = 'SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName 
-                    FROM gibbonStudentNote 
-                    LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) 
-                    JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-                    WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID 
-                    ORDER BY timestamp DESC';
-        } else {
-            $data = ['gibbonPersonID' => $this->gibbonPersonID, 'gibbonStudentNoteCategoryID' => $category];
-            $sql = 'SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName 
-                    FROM gibbonStudentNote 
-                    LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) 
-                    JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-                    WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID 
-                    AND gibbonStudentNote.gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID 
-                    ORDER BY timestamp DESC';
-        }
-
-        return $this->pdo->select($sql, $data);
+        return $this->noteGateway->selectNotesByStudent($this->gibbonPersonID, $category);
     }
 
     /**

@@ -24,6 +24,7 @@ namespace Gibbon\Module\Students\Profile;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
@@ -39,15 +40,18 @@ use Gibbon\Tables\DataTable;
 class IndividualNeedsPage extends ProfilePage
 {
     private Connection $pdo;
+    private INGateway $inGateway;
     private CustomFieldHandler $customFieldHandler;
 
     public function __construct(
         Session $session,
         Connection $pdo,
+        INGateway $inGateway,
         CustomFieldHandler $customFieldHandler
     ) {
         parent::__construct($session);
         $this->pdo = $pdo;
+        $this->inGateway = $inGateway;
         $this->customFieldHandler = $customFieldHandler;
     }
 
@@ -127,30 +131,10 @@ class IndividualNeedsPage extends ProfilePage
      */
     protected function renderEducationalAssistants(): string
     {
-        $data = [
-            'gibbonPersonID1' => $this->gibbonPersonID,
-            'gibbonSchoolYearID' => $this->gibbonSchoolYearID,
-            'gibbonPersonID2' => $this->gibbonPersonID
-        ];
-        
-        $sql = "(SELECT DISTINCT surname, preferredName, email
-                FROM gibbonPerson
-                    JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
-                    JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                WHERE status='Full'
-                    AND gibbonPersonIDStudent=:gibbonPersonID1)
-            UNION
-            (SELECT DISTINCT surname, preferredName, email
-                FROM gibbonPerson
-                    JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
-                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
-            )
-            ORDER BY preferredName, surname, email";
-        
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->inGateway->selectEducationalAssistantsByStudent(
+            $this->gibbonPersonID,
+            $this->gibbonSchoolYearID
+        );
         
         if ($result->rowCount() == 0) {
             return '';
@@ -182,9 +166,7 @@ class IndividualNeedsPage extends ProfilePage
     {
         $output = '<h3>' . __('Individual Education Plan') . '</h3>';
 
-        $data = ['gibbonPersonID' => $this->gibbonPersonID];
-        $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
-        $rowIN = $this->pdo->select($sql, $data)->fetch();
+        $rowIN = $this->inGateway->getINByPersonID($this->gibbonPersonID);
 
         if (empty($rowIN)) {
             $output .= '<div class="error">' . __('There are no records to display.') . '</div>';

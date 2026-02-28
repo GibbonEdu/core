@@ -40,23 +40,23 @@ use Gibbon\Tables\DataTable;
  */
 class BriefPage extends ProfilePage
 {
-    private Connection $pdo;
     private YearGroupGateway $yearGroupGateway;
     private FormGroupGateway $formGroupGateway;
     private HouseGateway $houseGateway;
+    private StudentGateway $studentGateway;
 
     public function __construct(
         Session $session,
-        Connection $pdo,
         YearGroupGateway $yearGroupGateway,
         FormGroupGateway $formGroupGateway,
-        HouseGateway $houseGateway
+        HouseGateway $houseGateway,
+        StudentGateway $studentGateway
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
         $this->yearGroupGateway = $yearGroupGateway;
         $this->formGroupGateway = $formGroupGateway;
         $this->houseGateway = $houseGateway;
+        $this->studentGateway = $studentGateway;
     }
 
     /**
@@ -117,24 +117,10 @@ class BriefPage extends ProfilePage
      */
     protected function fetchStudentInfo(): array
     {
-        $data = [
-            'gibbonSchoolYearID' => $this->gibbonSchoolYearID,
-            'gibbonPersonID' => $this->gibbonPersonID,
-            'today' => date('Y-m-d')
-        ];
-        
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, 
-                gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, 
-                gibbonStudentEnrolment.rollOrder 
-                FROM gibbonPerson 
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND status='Full' 
-                AND (dateStart IS NULL OR dateStart<=:today) 
-                AND (dateEnd IS NULL OR dateEnd>=:today) 
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->studentGateway->selectActiveStudentByPerson(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID
+        );
         
         if ($result->rowCount() != 1) {
             return [];

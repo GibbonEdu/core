@@ -376,4 +376,26 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
         
         return $this->db()->select($sql, $data);
     }
+
+    /**
+     * Select behaviour records by student and type for profile page
+     * 
+     * @param string $gibbonSchoolYearID
+     * @param string $gibbonPersonID
+     * @param string $type 'Positive' or 'Negative'
+     * @return Result
+     */
+    public function selectBehaviourByStudentAndType($gibbonSchoolYearID, $gibbonPersonID, $type)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'type' => $type];
+        $sql = "SELECT gibbonBehaviour.*, gibbonPerson.preferredName, gibbonPerson.surname 
+                FROM gibbonBehaviour 
+                JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID 
+                AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND type=:type 
+                ORDER BY date DESC, timestamp DESC";
+        
+        return $this->db()->select($sql, $data);
+    }
 }

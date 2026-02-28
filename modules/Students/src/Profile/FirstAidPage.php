@@ -25,6 +25,7 @@ use Gibbon\Contracts\Database\Connection;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Students\FirstAidGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
@@ -37,16 +38,16 @@ use Gibbon\Tables\DataTable;
  */
 class FirstAidPage extends ProfilePage
 {
-    private Connection $pdo;
+    private StudentGateway $studentGateway;
     private FirstAidGateway $firstAidGateway;
 
     public function __construct(
         Session $session,
-        Connection $pdo,
+        StudentGateway $studentGateway,
         FirstAidGateway $firstAidGateway
     ) {
         parent::__construct($session);
-        $this->pdo = $pdo;
+        $this->studentGateway = $studentGateway;
         $this->firstAidGateway = $firstAidGateway;
     }
 
@@ -176,21 +177,10 @@ class FirstAidPage extends ProfilePage
      */
     protected function fetchStudentData(): array
     {
-        $data = [
-            'gibbonSchoolYearID' => $this->gibbonSchoolYearID,
-            'gibbonPersonID' => $this->gibbonPersonID
-        ];
-        
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID 
-                FROM gibbonPerson 
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND status='Full' 
-                AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') 
-                AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->studentGateway->selectActiveStudentForProfile(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID
+        );
         
         if ($result->rowCount() != 1) {
             return [];

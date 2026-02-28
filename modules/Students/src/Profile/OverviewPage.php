@@ -34,6 +34,7 @@ use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseClassPersonGateway;
 use Gibbon\Module\Students\StudentAttendanceStatus;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -63,6 +64,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
     private HouseGateway $houseGateway;
     private SettingGateway $settingGateway;
     private StudentAttendanceStatus $attendanceStatus;
+    private CourseClassPersonGateway $courseClassPersonGateway;
     private Connection $pdo;
 
     public function __construct(
@@ -76,6 +78,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         HouseGateway $houseGateway,
         SettingGateway $settingGateway,
         StudentAttendanceStatus $attendanceStatus,
+        CourseClassPersonGateway $courseClassPersonGateway,
         Connection $pdo
     ) {
         parent::__construct($session);
@@ -88,6 +91,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $this->houseGateway = $houseGateway;
         $this->settingGateway = $settingGateway;
         $this->attendanceStatus = $attendanceStatus;
+        $this->courseClassPersonGateway = $courseClassPersonGateway;
         $this->pdo = $pdo;
     }
 
@@ -159,23 +163,10 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function fetchStudentInfo(): array
     {
-        $data = [
-            'gibbonSchoolYearID' => $this->gibbonSchoolYearID,
-            'gibbonPersonID' => $this->gibbonPersonID
-        ];
-        
-        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, 
-                gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, 
-                gibbonStudentEnrolment.rollOrder 
-                FROM gibbonPerson 
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND status='Full' 
-                AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') 
-                AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') 
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-        
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->studentGateway->selectActiveStudentByPerson(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID
+        );
         
         if ($result->rowCount() != 1) {
             return [];
@@ -309,17 +300,15 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
                 $formGroup = $this->formGroupGateway->getByID($row['gibbonFormGroupID']);
 
                 if (isset($formGroup['gibbonPersonIDTutor'])) {
-                    $dataDetail = ['gibbonFormGroupID' => $row['gibbonFormGroupID']];
-                    $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonFormGroup JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName';
-                    $resultDetail = $this->pdo->select($sqlDetail, $dataDetail);
+                    $tutors = $this->formGroupGateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
 
-                    while ($rowDetail = $resultDetail->fetch()) {
+                    foreach ($tutors as $tutor) {
                         if (Access::allows('Staff', 'View Staff Profile_brief')) {
-                            $output .= Format::nameLinked($rowDetail['gibbonPersonID'], '', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true);
+                            $output .= Format::nameLinked($tutor['gibbonPersonID'], '', $tutor['preferredName'], $tutor['surname'], 'Staff', false, true);
                         } else {
-                            $output .= Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                            $output .= Format::name($tutor['title'], $tutor['preferredName'], $tutor['surname'], 'Staff');
                         }
-                        if ($rowDetail['gibbonPersonID'] == $formGroup['gibbonPersonIDTutor'] && $resultDetail->rowCount() > 1) {
+                        if ($tutor['gibbonPersonID'] == $formGroup['gibbonPersonIDTutor'] && count($tutors) > 1) {
                             $output .= ' ('.__('Main Tutor').')';
                         }
                         $output .= '<br/>';
@@ -579,13 +568,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
             $output .= __('Class List');
             $output .= '</h4>';
 
-            $dataDetail = ['gibbonPersonID' => $this->gibbonPersonID];
-            $sqlDetail = "SELECT DISTINCT gibbonCourse.name AS courseFull, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class
-                FROM gibbonCourseClassPerson
-                    JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                    JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                WHERE gibbonCourseClassPerson.role='Student' AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY course, class";
-            $resultDetail = $this->pdo->select($sqlDetail, $dataDetail);
+            $resultDetail = $this->courseClassPersonGateway->selectClassesByStudent($this->gibbonPersonID, $this->gibbonSchoolYearID);
             
             if ($resultDetail->rowCount() < 1) {
                 $output .= '<div class="warning">'.__('There are no records to display.').'</div>';
