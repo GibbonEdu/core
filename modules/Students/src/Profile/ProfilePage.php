@@ -37,11 +37,11 @@ abstract class ProfilePage
         $this->session = $session;
     }
 
-    public function setStudent(string $gibbonSchoolYearID, string $gibbonPersonID, string $studentImage = ''): self
+    public function setStudent(string $gibbonSchoolYearID, string $gibbonPersonID, ?string $studentImage = ''): self
     {
         $this->gibbonSchoolYearID = $gibbonSchoolYearID;
         $this->gibbonPersonID = $gibbonPersonID;
-        $this->studentImage = $studentImage;
+        $this->studentImage = $studentImage ?? '';
 
         return $this;
     }
