@@ -19,16 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
-use Gibbon\Services\Format;
 use Gibbon\Comms\EmailTemplate;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Data\Validator;
 use Gibbon\Domain\System\EmailTemplateGateway;
-use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -110,7 +110,16 @@ if ($proceed == false) {
     $referenceEmail1 = $_POST['referenceEmail1'] ?? '';
     $referenceEmail2 = $_POST['referenceEmail2'] ?? '';
     $agreement = isset($_POST['agreement']) ? ($_POST['agreement'] == 'on' ? 'Y' : 'N') : null;
+    
+    if (!empty($gibbonPersonID)) {
+        $staffDetails = $container->get(UserGateway::class)->getSafeUserData($gibbonPersonID);
 
+        if (!empty($staffDetails)) {
+            $officialName = $staffDetails['officialName'];
+            $email = $staffDetails['email'];
+            $gender = $staffDetails['gender'];
+        }
+    }
 
     //VALIDATE INPUTS
     if (count($gibbonStaffJobOpeningIDs) < 1 or ($gibbonPersonID == null and ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageFirst == '' or $email == '' or $homeAddress == '' or $homeAddressDistrict == '' or $homeAddressCountry == '' or $phone1 == '')) or (isset($_POST['referenceEmail1']) and $referenceEmail1 == '') or (isset($_POST['referenceEmail2']) and $referenceEmail2 == '') or (isset($_POST['agreement']) and $agreement != 'Y')) {
