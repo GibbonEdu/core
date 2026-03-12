@@ -46,6 +46,7 @@ v31.0.00
         Formal Assessment: added the feature for teachers to view unpublished internal assessments
         Library: updated automatic shelf lists so that lists are queried dynamically in Browse Library
         Library: added the option to edit the category and sub-category for an automatic shelf
+        Library: added a new Library API Key in Library settings to call the Google Books API
         Planner: improved the Deploy Unit page with a drag-drop interface and new tools
         Planner: added the option to set a location for non-timetables lessons in Lesson Planner
         Reports: added error detection while editing twig templates
