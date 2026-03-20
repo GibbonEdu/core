@@ -17,9 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
-use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_delete.php') == false) {
@@ -35,8 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_de
     }
     
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
-    $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
-    $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 
     $event = $calendarEventGateway->getByID($gibbonCalendarEventID);
 
