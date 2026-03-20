@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
-use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
+use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_delete.php') == false) {
     // Access denied
@@ -32,10 +33,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_de
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
+    
+    $calendarEventGateway = $container->get(CalendarEventGateway::class);
+    $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
+    $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 
-    $values = $container->get(CalendarEventGateway::class)->getByID($gibbonCalendarEventID);
+    $event = $calendarEventGateway->getByID($gibbonCalendarEventID);
 
-    if (empty($values)) {
+    if (empty($event)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
