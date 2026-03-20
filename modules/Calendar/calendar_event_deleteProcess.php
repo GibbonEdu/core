@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 use Gibbon\Support\Facades\Access;
@@ -42,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_de
     // Proceed!
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
+    $attendanceLogPersonGateway = $container->get(AttendanceLogPersonGateway::class);
 
     // Validate the database relationships exist
     $event = $calendarEventGateway->getEventDetailsByID($gibbonCalendarEventID, $session->get('gibbonPersonID'));
@@ -54,13 +56,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_de
     if ($event['editor'] != 'Y' && !Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all')) {
         header("Location: {$URL}&return=error0");
         exit;
-    } 
+    }
 
-    $deleted = $calendarEventGateway->delete($gibbonCalendarEventID);
+    // Remove future absences for student participants linked to this event
+    $criteria = $calendarEventPersonGateway->newQueryCriteria()
+        ->sortBy(['roleCategory', 'surname', 'preferredName']);
+
+    $participants = $calendarEventPersonGateway->queryEventAttendees($criteria, $gibbonCalendarEventID);
+
+    $gibbonPersonIDStudents = array_reduce($participants->toArray(), function ($group, $item) {
+        if ($item['roleCategory'] == 'Student') $group[] = $item['gibbonPersonID'];
+        return $group;
+    }, []);
+
+    $eventDeleted = $calendarEventGateway->delete($gibbonCalendarEventID);
 
     $calendarEventPersonGateway->deleteWhere(['gibbonCalendarEventID' => $gibbonCalendarEventID]);
 
-    $URL .= !$deleted
+    if (!empty($gibbonPersonIDStudents)) {
+        $futureAbsences = $event['allDay'] == 'Y' ? $attendanceLogPersonGateway->selectFutureAttendanceLogsByDate($event['dateStart'], $event['dateEnd'])->fetchAll() : $attendanceLogPersonGateway->selectFutureAttendanceLogsByDateAndTime($event['dateStart'], $event['dateEnd'], $event['timeStart'], $event['timeEnd'])->fetchAll();
+
+        foreach ($futureAbsences as $absence) {
+            if (in_array($absence['groupBy'], $gibbonPersonIDStudents)) {
+                $futureAbsenceDeleted = $attendanceLogPersonGateway->delete($absence['gibbonAttendanceLogPersonID']);
+            }
+        }
+    }
+
+    $URL .= !$eventDeleted
         ? '&return=error2'
         : '&return=success0';
 
