@@ -48,6 +48,7 @@ $I->see('Multi Test Column');
 
 // Get the column ID for cleanup
 $gibbonMarkbookColumnID = $I->grabFromDatabase('gibbonMarkbookColumn', 'gibbonMarkbookColumnID', array('name' => 'Multi Test Column', 'gibbonCourseClassID' => $gibbonCourseClassID));
+
 $file = $I->grabFromDatabase('gibbonMarkbookColumn', 'attachment', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
 $I->assertNotEmpty($file);
 

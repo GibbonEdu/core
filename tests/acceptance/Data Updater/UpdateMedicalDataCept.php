@@ -29,7 +29,6 @@ $I->selectOption('name', 'Asthma');
 $I->selectOption('gibbonAlertLevelID', '001');
 $I->fillField('triggers', 'Test triggers');
 $I->attachFile('attachment', 'attachment.txt');
-
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 
 // Confirm ------------------------------------------------
@@ -41,6 +40,12 @@ $gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
 $gibbonPersonMedicalUpdateID = $I->grabFromDatabase('gibbonPersonMedicalUpdate', 'gibbonPersonMedicalUpdateID', ['gibbonPersonID' => $gibbonPersonID, 'status' => 'Pending']);
 $file = $I->grabFromDatabase('gibbonPersonMedicalConditionUpdate', 'attachment', ['gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'name' => 'Asthma']);
 $I->assertNotEmpty($file);
+
+
+$I->amOnModulePage('Data Updater', 'data_medical.php', ['gibbonPersonID' => $gibbonPersonID]);
+$I->seeInFormFields('#content form[method="post"]', $editFormValues);
+
+$gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
 
 // Accept ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_medical_manage_edit.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
@@ -59,9 +64,6 @@ $I->amOnModulePage('Data Updater', 'data_medical_manage_delete.php', array('gibb
 
 $I->click('Delete');
 $I->seeSuccessMessage();
-
-// Cleanup ------------------------------------------------
-$I->deleteFile('../'.$file);
 
 
 // Select ------------------------------------------------
@@ -108,3 +110,13 @@ $I->amOnModulePage('Data Updater', 'data_medical_manage_delete.php', array('gibb
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+
+$gibbonPersonMedicalID = $I->grabFromDatabase('gibbonPersonMedical', 'gibbonPersonMedicalID', ['gibbonPersonID' => $gibbonPersonID]);
+
+$I->deleteFromDatabase('gibbonPersonMedicalCondition', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID]);
+$I->deleteFromDatabase('gibbonPersonMedical', ['gibbonPersonID' => $gibbonPersonID]);
+
+$I->deleteFile('../'.$file);
+

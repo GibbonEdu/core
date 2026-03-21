@@ -28,3 +28,4 @@ $I->see('Your request was completed successfully.', '.success');
 
 // Cleanup ------------------------------------------------
 $I->deleteFile('../'.$file);
+$I->updateInDatabase('gibbonSetting', ['value' => ''], ['scope' => 'System Admin', 'name' => 'customAlarmSound']);
