@@ -24,7 +24,7 @@ $I->seeElement('input[name="reportDate"]');
 // Submit Step 1 with ZIP file ----------------------------
 
 $I->attachFile('file', 'test_archive.zip');
-$I->selectOption('gibbonReportArchiveID', '00005');
+$I->selectFromDropdown('gibbonReportArchiveID', 1);
 $I->fillField('reportIdentifier', 'TestUploadReport');
 $I->fillField('reportDate', date('d/m/Y'));
 
