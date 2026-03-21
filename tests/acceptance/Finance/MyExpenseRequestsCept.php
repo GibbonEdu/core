@@ -50,3 +50,28 @@ $I->seeBreadcrumb('View Expense Request');
 
 $I->seeInField('title', 'Test Expense Request');
 $I->seeInField('status', 'Requested');
+
+// Approve the expense so we can reimburse it ----------
+$I->updateInDatabase('gibbonFinanceExpense', ['status' => 'Approved'], ['gibbonFinanceExpenseID' => $gibbonFinanceExpenseID]);
+
+// Reimburse -------------------------------------------
+$I->amOnModulePage('Finance', 'expenseRequest_manage_reimburse.php', [
+    'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID,
+    'gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID,
+]);
+$I->seeBreadcrumb('Reimburse Expense Request');
+
+$I->selectOption('status', 'Paid');
+$I->fillField('paymentDate', date('Y-m-d'));
+$I->fillField('paymentAmount', '250.00');
+
+$I->attachFile('file', 'attachment.jpg');
+$I->submitForm('#content form', [], 'Submit');
+$I->seeSuccessMessage();
+
+$file = $I->grabFromDatabase('gibbonFinanceExpense', 'paymentReimbursementReceipt', ['gibbonFinanceExpenseID' => $gibbonFinanceExpenseID]);
+$I->assertNotEmpty($file);
+
+// Cleanup ------------------------------------------------
+$I->deleteFromDatabase('gibbonFinanceExpense', ['gibbonFinanceExpenseID' => $gibbonFinanceExpenseID]);
+$I->deleteFile('../'.$file);

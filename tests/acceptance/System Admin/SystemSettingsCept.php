@@ -39,6 +39,7 @@ $I->selectFromDropdown('organisationAdmissions', 2);
 $I->selectFromDropdown('organisationHR', 2);
 $I->selectFromDropdown('defaultAssessmentScale', 1);
 
+$I->attachFile('organisationLogoFile', 'attachment.jpg');
 $I->submitForm('#content form', $newFormValues, 'Submit');
 
 // Verify Results ----------------------------------------------
@@ -46,8 +47,14 @@ $I->submitForm('#content form', $newFormValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $newFormValues);
 
+$file = $I->grabFromDatabase('gibbonSetting', 'value', ['scope' => 'System', 'name' => 'organisationLogo']);
+$I->assertNotEmpty($file);
+
 // Restore Original Settings -----------------------------------
 
 $I->submitForm('#content form', $originalFormValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $originalFormValues);
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);

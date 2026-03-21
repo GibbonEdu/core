@@ -60,10 +60,13 @@ $I->fillField('title', 'Test Contract');
 $I->selectFromDropdown('status', 1);
 $I->fillField('dateStart', date('Y-m-d'));
 
+$I->attachFile('file1', 'attachment.txt');
 $I->submitForm('#content form', [], 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonStaffContractID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonStaffContract', 'contractUpload', ['gibbonStaffContractID' => $gibbonStaffContractID]);
+$I->assertNotEmpty($file);
 
 // Edit Contract ---------------------------------------
 
@@ -74,8 +77,12 @@ $I->amOnModulePage('Staff', 'staff_manage_edit_contract_edit.php', [
 $I->seeBreadcrumb('Edit');
 
 $I->fillField('title', 'Updated Test Contract');
+$I->fillField('contractUpload', '');
 $I->submitForm('#content form', [], 'Submit');
 $I->seeSuccessMessage();
+
+$gibbonStaffContractID = $I->grabValueFromURL('gibbonStaffContractID');
+$I->seeInDatabase('gibbonStaffContract', ['gibbonStaffContractID' => $gibbonStaffContractID, 'contractUpload' => '']);
 
 // Add Facility ----------------------------------------
 
@@ -108,3 +115,6 @@ $I->amOnModulePage('Staff', 'staff_manage_delete.php', ['gibbonStaffID' => $gibb
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);

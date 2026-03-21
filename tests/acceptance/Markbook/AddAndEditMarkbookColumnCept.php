@@ -65,6 +65,9 @@ $I->seeSuccessMessage();
 $gibbonMarkbookColumnID = $I->grabEditIDFromURL();
 $gibbonCourseClassID = $I->grabValueFromURL('gibbonCourseClassID');
 
+$file = $I->grabFromDatabase('gibbonMarkbookColumn', 'attachment', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
+$I->assertNotEmpty($file);
+
 // Edit ------------------------------------------------
 $I->amOnModulePage('Markbook', 'markbook_edit_edit.php', array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID));
 $I->seeBreadcrumb('Edit Column');
@@ -94,8 +97,12 @@ $I->selectOption('gibbonScaleIDEffort', '00009');
 $I->selectOption('gibbonRubricIDAttainment', '00000238');
 $I->selectOption('gibbonRubricIDEffort', '00000238');
 
+$I->fillField('attachment', '');
 $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
+
+$gibbonMarkbookColumnID = $I->grabValueFromURL('gibbonMarkbookColumnID');
+$I->seeInDatabase('gibbonMarkbookColumn', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'attachment' => '']);
 
 // Verify Column ------------------------------------------------
 
@@ -150,3 +157,6 @@ $I->amOnModulePage('School Admin', 'markbookSettings.php');
 $I->submitForm('#content form', $originalMarkbookSettings, 'Submit');
 $I->seeSuccessMessage();
 $I->seeInFormFields('#content form', $originalMarkbookSettings);
+
+// Cleanup uploaded file ----------------------------------------
+$I->deleteFile('../'.$file);

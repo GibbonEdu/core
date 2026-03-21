@@ -77,10 +77,13 @@ $conditionValues = array(
     'comment' => 'Test condition comment',
 );
 
+$I->attachFile('attachment', 'attachment.txt');
 $I->submitForm('#content form', $conditionValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonPersonMedicalConditionID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonPersonMedicalCondition', 'attachment', ['gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID]);
+$I->assertNotEmpty($file);
 
 // Edit Medical Condition ------------------------------
 
@@ -103,8 +106,12 @@ $conditionValues = array(
     'reaction' => 'Updated reaction',
 );
 
+$I->fillField('attachment', '');
 $I->submitForm('#content form', $conditionValues, 'Submit');
 $I->seeSuccessMessage();
+
+$gibbonPersonMedicalConditionID = $I->grabValueFromURL('gibbonPersonMedicalConditionID');
+$I->seeInDatabase('gibbonPersonMedicalCondition', ['gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID, 'attachment' => '']);
 
 // Delete Medical Condition ----------------------------
 
@@ -122,3 +129,6 @@ $I->amOnModulePage('Students', 'medicalForm_manage_delete.php', array('gibbonPer
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);

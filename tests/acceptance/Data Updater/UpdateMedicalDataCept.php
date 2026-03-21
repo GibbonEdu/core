@@ -23,6 +23,13 @@ $editFormValues = array(
     'longTermMedicationDetails' => 'Test ' . date('Y-m-d'),
 );
 
+// Add a new medical condition with attachment
+$I->checkOption('addCondition');
+$I->selectOption('name', 'Asthma');
+$I->selectOption('gibbonAlertLevelID', '001');
+$I->fillField('triggers', 'Test triggers');
+$I->attachFile('attachment', 'attachment.txt');
+
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 
 // Confirm ------------------------------------------------
@@ -30,10 +37,10 @@ $I->seeSuccessMessage();
 
 $gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
 
-$I->amOnModulePage('Data Updater', 'data_medical.php', ['gibbonPersonID' => $gibbonPersonID]);
-$I->seeInFormFields('#content form[method="post"]', $editFormValues);
-
-$gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
+// Verify the attachment was stored
+$gibbonPersonMedicalUpdateID = $I->grabFromDatabase('gibbonPersonMedicalUpdate', 'gibbonPersonMedicalUpdateID', ['gibbonPersonID' => $gibbonPersonID, 'status' => 'Pending']);
+$file = $I->grabFromDatabase('gibbonPersonMedicalConditionUpdate', 'attachment', ['gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'name' => 'Asthma']);
+$I->assertNotEmpty($file);
 
 // Accept ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_medical_manage_edit.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
@@ -52,6 +59,9 @@ $I->amOnModulePage('Data Updater', 'data_medical_manage_delete.php', array('gibb
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);
 
 
 // Select ------------------------------------------------

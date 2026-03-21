@@ -208,6 +208,8 @@ $I->seeInFormFields('#content form', $formValues);
 
 $file0path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload0']);
 $file1path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload1']);
+$I->assertNotEmpty($file0path);
+$I->assertNotEmpty($file1path);
 
 // Check to see the uploaded files are there
 $I->see('FileUpload0');
