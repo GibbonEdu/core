@@ -14,6 +14,9 @@ $gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['statu
 // Create test data directly in database
 $gibbonExternalAssessmentID = $I->grabFromDatabase('gibbonExternalAssessment', 'gibbonExternalAssessmentID', ['active' => 'Y']);
 
+// Enable file upload for this assessment type
+$I->updateInDatabase('gibbonExternalAssessment', ['allowFileUpload' => 'Y'], ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID]);
+
 $gibbonExternalAssessmentStudentID = $I->haveInDatabase('gibbonExternalAssessmentStudent', [
     'gibbonPersonID' => $gibbonPersonID,
     'gibbonExternalAssessmentID' => $gibbonExternalAssessmentID,
@@ -30,12 +33,29 @@ $I->seeBreadcrumb('Edit Assessment');
 
 $I->seeInField('date', '2024-01-15');
 
+$I->attachFile('file', 'attachment.txt');
+
 $formValues = [
     'date' => '2024-02-20',
 ];
 
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->seeSuccessMessage();
+
+$file = $I->grabFromDatabase('gibbonExternalAssessmentStudent', 'attachment', ['gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID]);
+$I->assertNotEmpty($file);
+
+// Edit again to remove attachment ------------------------------------------------
+$I->amOnModulePage('Formal Assessment', 'externalAssessment_manage_details_edit.php', [
+    'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID,
+    'gibbonPersonID' => $gibbonPersonID
+]);
+
+$I->fillField('attachment', '');
+$I->submitForm('#content form', ['date' => '2024-02-20'], 'Submit');
+$I->seeSuccessMessage();
+
+$I->seeInDatabase('gibbonExternalAssessmentStudent', ['gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID, 'attachment' => '']);
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('Formal Assessment', 'externalAssessment_manage_details_delete.php', [
@@ -45,3 +65,9 @@ $I->amOnModulePage('Formal Assessment', 'externalAssessment_manage_details_delet
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->updateInDatabase('gibbonExternalAssessment', ['allowFileUpload' => 'N'], ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID]);
+if (!empty($file)) {
+    $I->deleteFile('../'.$file);
+}

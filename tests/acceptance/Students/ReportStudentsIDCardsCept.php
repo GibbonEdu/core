@@ -12,3 +12,11 @@ $I->seeBreadcrumb('Student ID Cards');
 // Basic Check -----------------------------------------
 
 $I->dontSeeErrors();
+
+// File Upload Check ------------------------------------
+$gibbonPersonID = $I->grabFromDatabase('gibbonStudentEnrolment', 'gibbonPersonID', ['gibbonSchoolYearID' => $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current'])]);
+
+$I->amOnModulePage('Students', 'report_students_IDCards.php');
+$I->attachFile('file', 'attachment.jpg');
+$I->submitForm('#content form', ['gibbonPersonID' => [$gibbonPersonID]], 'Search');
+$I->dontSeeErrors();

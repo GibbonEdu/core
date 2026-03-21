@@ -29,12 +29,16 @@ $formValues = array(
     'borrowable' => 'Y',
     'status' => 'Available',
     'replacement' => 'N',
+    'imageType' => 'File',
 );
 
+$I->attachFile('imageFile', 'attachment.jpg');
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonLibraryItemID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonLibraryItem', 'imageLocation', ['gibbonLibraryItemID' => $gibbonLibraryItemID]);
+$I->assertNotEmpty($file);
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('Library', 'library_manage_catalog_edit.php', array(
@@ -49,10 +53,13 @@ $I->seeInFormFields('#content form', array(
 $formValues = array(
     'name' => 'Updated Catalog Item',
     'producer' => 'Updated Producer',
+    'imageType' => '',
 );
 
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->seeSuccessMessage();
+
+$I->seeInDatabase('gibbonLibraryItem', ['gibbonLibraryItemID' => $gibbonLibraryItemID, 'imageLocation' => '']);
 
 // Duplicate ------------------------------------------------
 $I->amOnModulePage('Library', 'library_manage_catalog_duplicate.php', array(
@@ -79,3 +86,8 @@ $I->amOnModulePage('Library', 'library_manage_catalog_delete.php', array(
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+if (!empty($file)) {
+    $I->deleteFile('../'.$file);
+}
