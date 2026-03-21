@@ -91,24 +91,22 @@ $editFormValues = array(
     'completeDate'             => '2001-01-01',
 );
 
-$I->selectOption('gibbonScaleIDAttainment', '00007');
+$I->selectOption('gibbonScaleIDAttainment', '00004');
 $I->selectOption('gibbonScaleIDEffort', '00009');
 
 $I->selectOption('gibbonRubricIDAttainment', '00000238');
 $I->selectOption('gibbonRubricIDEffort', '00000238');
 
-$I->fillField('attachment', '');
 $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonMarkbookColumnID = $I->grabValueFromURL('gibbonMarkbookColumnID');
-$I->seeInDatabase('gibbonMarkbookColumn', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'attachment' => '']);
 
 // Verify Column ------------------------------------------------
 
 $I->seeInFormFields('#content form', $editFormValues);
 
-$I->seeOptionIsSelected('gibbonScaleIDAttainment', 'International College HK');
+$I->seeOptionIsSelected('gibbonScaleIDAttainment', 'Percentage');
 $I->seeOptionIsSelected('gibbonScaleIDEffort', 'Completion');
 $I->seeFieldIsNotEmpty('#gibbonRubricIDAttainment');
 $I->seeFieldIsNotEmpty('#gibbonRubricIDEffort');
@@ -119,10 +117,10 @@ $I->clickNavigation('Enter Data');
 
 $I->seeBreadcrumb('Enter Marks');
 
-$I->see('More info');
+$I->see('More info', 'a');
 
 $I->fillField('1-attainmentValueRaw', '21');
-$I->selectOption('1-attainmentValue', '4');
+$I->selectOption('1-attainmentValue', '80%');
 $I->selectOption('1-effortValue', 'Late');
 $I->fillField('comment1', 'Test comment.');
 $I->attachFile('response1', 'attachment.jpg');
@@ -132,12 +130,20 @@ $I->click('Submit');
 // Verify Data ------------------------------------------------
 
 $I->seeInField('1-attainmentValueRaw', '21');
-$I->seeOptionIsSelected('1-attainmentValue', '4');
+$I->seeOptionIsSelected('1-attainmentValue', '80%');
 $I->seeOptionIsSelected('1-effortValue', 'Late');
 $I->seeInField('comment1', 'Test comment.');
 $I->seeFieldIsNotEmpty('#attachment1');
 
 $I->seeInField('completeDate', '2001-01-01');
+
+// Remove Attachment ------------------------------------------------
+$I->amOnModulePage('Markbook', 'markbook_edit_edit.php', array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID));
+
+$I->fillField('attachment', '');
+$I->submitForm('#content form', $editFormValues, 'Submit');
+
+$I->seeInDatabase('gibbonMarkbookColumn', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'attachment' => '']);
 
 // Delete Markbook -----------------------------------------------
 
