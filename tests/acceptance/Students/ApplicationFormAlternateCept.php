@@ -23,6 +23,7 @@ $newApplicationSettings = array_replace($originalApplicationSettings, array(
     'languageOptionsActive'      => 'N',
     'applicationFormRefereeLink' => '',
     'agreement'                  => '',
+    'requiredDocuments'          => 'FileUpload0',
 ));
 
 $I->submitForm('#content form', $newApplicationSettings, 'Submit');
