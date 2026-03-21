@@ -7,6 +7,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit and approve a medical data update');
 $I->loginAsAdmin();
+
 $I->amOnModulePage('Data Updater', 'data_medical.php');
 
 // Select ------------------------------------------------
@@ -14,6 +15,15 @@ $I->seeBreadcrumb('Update Medical Data');
 
 $I->selectFromDropdown('gibbonPersonID', 2);
 $I->click('Submit');
+
+// Cleanup ------------------------------------------------
+
+$gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
+$gibbonPersonMedicalID = $I->grabFromDatabase('gibbonPersonMedical', 'gibbonPersonMedicalID', ['gibbonPersonID' => $gibbonPersonID]);
+
+$I->deleteFromDatabase('gibbonPersonMedicalCondition', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID]);
+$I->deleteFromDatabase('gibbonPersonMedical', ['gibbonPersonID' => $gibbonPersonID]);
+
 
 // Update ------------------------------------------------
 $I->see('Update Data');

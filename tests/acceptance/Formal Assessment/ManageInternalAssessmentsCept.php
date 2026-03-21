@@ -98,6 +98,21 @@ $I->seeSuccessMessage();
 
 $I->seeInDatabase('gibbonInternalAssessmentColumn', ['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'attachment' => '']);
 
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('Formal Assessment', 'internalAssessment_manage_edit.php', [
+    'gibbonCourseClassID' => $gibbonCourseClassID,
+    'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID
+]);
+
+$I->selectFromDropdown('type', 1);
+$I->attachFile('file', 'attachment2.png');
+
+$I->submitForm('#content form', $formValues, 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonInternalAssessmentColumn', 'attachment', ['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID]);
+$I->assertNotEmpty($file2);
+
 // Delete ------------------------------------------------
 $I->amOnModulePage('Formal Assessment', 'internalAssessment_manage_delete.php', [
     'gibbonCourseClassID' => $gibbonCourseClassID,
@@ -110,4 +125,7 @@ $I->seeSuccessMessage();
 // Cleanup ------------------------------------------------
 if (!empty($file)) {
     $I->deleteFile('../'.$file);
+}
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
 }

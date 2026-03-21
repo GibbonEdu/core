@@ -61,6 +61,19 @@ $I->seeSuccessMessage();
 
 $I->seeInDatabase('gibbonLibraryItem', ['gibbonLibraryItemID' => $gibbonLibraryItemID, 'imageLocation' => '']);
 
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('Library', 'library_manage_catalog_edit.php', array(
+    'gibbonLibraryItemID' => $gibbonLibraryItemID
+));
+
+$I->selectOption('imageType', 'File');
+$I->attachFile('imageFile', 'attachment2.png');
+$I->submitForm('#content form', [], 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonLibraryItem', 'imageLocation', ['gibbonLibraryItemID' => $gibbonLibraryItemID]);
+$I->assertNotEmpty($file2);
+
 // Duplicate ------------------------------------------------
 $I->amOnModulePage('Library', 'library_manage_catalog_duplicate.php', array(
     'gibbonLibraryItemID' => $gibbonLibraryItemID
@@ -90,4 +103,7 @@ $I->seeSuccessMessage();
 // Cleanup ------------------------------------------------
 if (!empty($file)) {
     $I->deleteFile('../'.$file);
+}
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
 }

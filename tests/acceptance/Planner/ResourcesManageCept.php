@@ -69,17 +69,23 @@ $gibbonResourceID2 = $I->grabEditIDFromURL();
 $file = $I->grabFromDatabase('gibbonResource', 'content', ['gibbonResourceID' => $gibbonResourceID2]);
 $I->assertNotEmpty($file);
 
-// Edit File Resource ----------------------------------
+// Edit File Resource - File Upload --------------------
 $I->amOnModulePage('Planner', 'resources_manage_edit.php', ['gibbonResourceID' => $gibbonResourceID2, 'search' => ' ']);
 $I->seeBreadcrumb('Edit Resource');
 
 $I->fillField('name', 'File Upload Test Updated');
 $I->fillField('tags', 'TestTag');
 $I->fillField('type', 'File');
-
+$I->attachFile('file', 'attachment2.png');
 $I->submitForm('#content form', [], 'Submit');
 $I->seeSuccessMessage();
 
+$file2 = $I->grabFromDatabase('gibbonResource', 'content', ['gibbonResourceID' => $gibbonResourceID2]);
+$I->assertNotEmpty($file2);
+
 // Cleanup ------------------------------------------------
 $I->deleteFile('../'.$file);
+if ($file2 !== $file) {
+    $I->deleteFile('../'.$file2);
+}
 $I->deleteFromDatabase('gibbonResource', ['gibbonResourceID' => $gibbonResourceID2]);

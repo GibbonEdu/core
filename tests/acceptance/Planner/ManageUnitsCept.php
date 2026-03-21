@@ -55,6 +55,20 @@ $I->seeSuccessMessage();
 
 $I->seeInDatabase('gibbonUnit', ['gibbonUnitID' => $gibbonUnitID, 'attachment' => '']);
 
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('Planner', 'units_edit.php', [
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'gibbonCourseID' => $gibbonCourseID,
+    'gibbonUnitID' => $gibbonUnitID,
+]);
+
+$I->attachFile('file', 'attachment2.png');
+$I->submitForm('#content form', ['name' => 'Test Unit Upload Updated'], 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonUnit', 'attachment', ['gibbonUnitID' => $gibbonUnitID]);
+$I->assertNotEmpty($file2);
+
 // Delete ------------------------------------------------
 $I->amOnModulePage('Planner', 'units_delete.php', [
     'gibbonSchoolYearID' => $gibbonSchoolYearID,
@@ -67,3 +81,6 @@ $I->seeSuccessMessage();
 
 // Cleanup ------------------------------------------------
 $I->deleteFile('../'.$file);
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
+}

@@ -145,6 +145,16 @@ $I->submitForm('#content form', $editFormValues, 'Submit');
 
 $I->seeInDatabase('gibbonMarkbookColumn', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'attachment' => '']);
 
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('Markbook', 'markbook_edit_edit.php', array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID));
+
+$I->attachFile('file', 'attachment2.png');
+$I->submitForm('#content form', $editFormValues, 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonMarkbookColumn', 'attachment', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
+$I->assertNotEmpty($file2);
+
 // Delete Markbook -----------------------------------------------
 
 $urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
@@ -166,3 +176,6 @@ $I->seeInFormFields('#content form', $originalMarkbookSettings);
 
 // Cleanup uploaded file ----------------------------------------
 $I->deleteFile('../'.$file);
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
+}

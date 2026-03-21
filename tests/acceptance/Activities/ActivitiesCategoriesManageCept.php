@@ -27,7 +27,7 @@ $gibbonActivityCategoryID = $I->grabEditIDFromURL();
 $file = $I->grabFromDatabase('gibbonActivityCategory', 'backgroundImage', ['gibbonActivityCategoryID' => $gibbonActivityCategoryID]);
 $I->assertNotEmpty($file);
 
-// Edit ------------------------------------------------
+// Edit  - File Delete ------------------------------------
 $I->amOnModulePage('Activities', 'activities_categories.php');
 $I->click('Edit', "//td[contains(text(),'Test Category " . $uniqueID . "')]/..");
 $I->seeBreadcrumb('Edit Category');
@@ -42,6 +42,17 @@ $I->seeSuccessMessage();
 $gibbonActivityCategoryID = $I->grabValueFromURL('gibbonActivityCategoryID'); 
 $I->seeInDatabase('gibbonActivityCategory', ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'backgroundImage' => '']);
 
+
+// Edit - File Upload ------------------------------------
+$I->amOnModulePage('Activities', 'activities_categories_edit.php', ['gibbonActivityCategoryID' => $gibbonActivityCategoryID]);
+
+$I->attachFile('backgroundImageFile', 'attachment2.png');
+$I->submitForm('#content form', []);
+
+$I->seeSuccessMessage();
+$file2 = $I->grabFromDatabase('gibbonActivityCategory', 'backgroundImage', ['gibbonActivityCategoryID' => $gibbonActivityCategoryID]);
+$I->assertNotEmpty($file2);
+
 // Delete ------------------------------------------------
 $I->amOnModulePage('Activities', 'activities_categories.php');
 $I->click('Delete', "//td[contains(text(),'Test Category Edited " . $uniqueID . "')]/..");
@@ -51,3 +62,4 @@ $I->seeSuccessMessage();
 
 // Cleanup ------------------------------------------------
 $I->deleteFile('../'.$file);
+$I->deleteFile('../'.$file2);

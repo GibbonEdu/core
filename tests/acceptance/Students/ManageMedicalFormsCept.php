@@ -113,6 +113,20 @@ $I->seeSuccessMessage();
 $gibbonPersonMedicalConditionID = $I->grabValueFromURL('gibbonPersonMedicalConditionID');
 $I->seeInDatabase('gibbonPersonMedicalCondition', ['gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID, 'attachment' => '']);
 
+// Edit Medical Condition - File Upload ----------------
+
+$I->amOnModulePage('Students', 'medicalForm_manage_condition_edit.php', array(
+    'gibbonPersonMedicalID' => $gibbonPersonMedicalID,
+    'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID
+));
+
+$I->attachFile('input[type="file"][name="attachment"]', 'attachment2.png');
+$I->submitForm('#content form', [], 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonPersonMedicalCondition', 'attachment', ['gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID]);
+$I->assertNotEmpty($file2);
+
 // Delete Medical Condition ----------------------------
 
 $I->amOnModulePage('Students', 'medicalForm_manage_condition_delete.php', array(
@@ -132,3 +146,6 @@ $I->seeSuccessMessage();
 
 // Cleanup ------------------------------------------------
 $I->deleteFile('../'.$file);
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
+}

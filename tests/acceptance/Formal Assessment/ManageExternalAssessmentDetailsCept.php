@@ -57,6 +57,31 @@ $I->seeSuccessMessage();
 
 $I->seeInDatabase('gibbonExternalAssessmentStudent', ['gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID, 'attachment' => '']);
 
+// Add - File Upload ------------------------------------------------
+$I->amOnModulePage('Formal Assessment', 'externalAssessment_manage_details_add.php', [
+    'gibbonExternalAssessmentID' => $gibbonExternalAssessmentID,
+    'gibbonPersonID' => $gibbonPersonID,
+    'step' => 2,
+]);
+$I->seeBreadcrumb('Add Assessment');
+
+$I->attachFile('file', 'attachment2.png');
+$I->submitForm('#content form', ['date' => '2024-03-15'], 'Submit');
+$I->seeSuccessMessage();
+
+$gibbonExternalAssessmentStudentID2 = $I->grabEditIDFromURL();
+$file2 = $I->grabFromDatabase('gibbonExternalAssessmentStudent', 'attachment', ['gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID2]);
+$I->assertNotEmpty($file2);
+
+// Delete second record ------------------------------------------------
+$I->amOnModulePage('Formal Assessment', 'externalAssessment_manage_details_delete.php', [
+    'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID2,
+    'gibbonPersonID' => $gibbonPersonID
+]);
+
+$I->click('Delete');
+$I->seeSuccessMessage();
+
 // Delete ------------------------------------------------
 $I->amOnModulePage('Formal Assessment', 'externalAssessment_manage_details_delete.php', [
     'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID,
@@ -70,4 +95,7 @@ $I->seeSuccessMessage();
 $I->updateInDatabase('gibbonExternalAssessment', ['allowFileUpload' => 'N'], ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID]);
 if (!empty($file)) {
     $I->deleteFile('../'.$file);
+}
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
 }

@@ -51,6 +51,16 @@ $I->seeSuccessMessage();
 $gibbonDepartmentID = $I->grabValueFromURL('gibbonDepartmentID');
 $I->seeInDatabase('gibbonDepartment', ['gibbonDepartmentID' => $gibbonDepartmentID, 'logo' => '']);
 
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('School Admin', 'department_manage_edit.php', array('gibbonDepartmentID' => $gibbonDepartmentID));
+
+$I->attachFile('file', 'attachment2.png');
+$I->submitForm('#content form', [], 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonDepartment', 'logo', ['gibbonDepartmentID' => $gibbonDepartmentID]);
+$I->assertNotEmpty($file2);
+
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'department_manage_delete.php', array('gibbonDepartmentID' => $gibbonDepartmentID));
 
@@ -59,3 +69,6 @@ $I->seeSuccessMessage();
 
 // Cleanup ------------------------------------------------
 $I->deleteFile('../'.$file);
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
+}
