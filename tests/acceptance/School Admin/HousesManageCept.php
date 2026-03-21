@@ -20,10 +20,13 @@ $addFormValues = array(
     'nameShort' => 'TH1',
 );
 
+$I->attachFile('file1', 'attachment.jpg');
 $I->submitForm('#content form', $addFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonHouseID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonHouse', 'logo', ['gibbonHouseID' => $gibbonHouseID]);
+$I->assertNotEmpty($file);
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('School Admin', 'house_manage_edit.php', array('gibbonHouseID' => $gibbonHouseID));
@@ -36,8 +39,12 @@ $editFormValues = array(
     'nameShort' => 'TH2',
 );
 
+$I->fillField('logo', '');
 $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
+
+$gibbonHouseID = $I->grabValueFromURL('gibbonHouseID');
+$I->seeInDatabase('gibbonHouse', ['gibbonHouseID' => $gibbonHouseID, 'logo' => '']);
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'house_manage_delete.php', array('gibbonHouseID' => $gibbonHouseID));
@@ -60,4 +67,7 @@ $assignFormValues = array(
 
 $I->submitForm('#content form', $assignFormValues, 'Submit');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);
 

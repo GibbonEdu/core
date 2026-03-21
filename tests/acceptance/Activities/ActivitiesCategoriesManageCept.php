@@ -18,8 +18,14 @@ $I->seeBreadcrumb('Add Category');
 $uniqueID = uniqid();
 $I->fillField('name', 'Test Category ' . $uniqueID);
 $I->fillField('nameShort', 'TC' . substr($uniqueID, -6));
+$I->attachFile('backgroundImageFile', 'attachment.jpg');
 $I->submitForm('#content form', []);
+
 $I->seeSuccessMessage();
+
+$gibbonActivityCategoryID = $I->grabEditIDFromURL(); 
+$file = $I->grabFromDatabase('gibbonActivityCategory', 'backgroundImage', ['gibbonActivityCategoryID' => $gibbonActivityCategoryID]);
+$I->assertNotEmpty($file);
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('Activities', 'activities_categories.php');
@@ -28,8 +34,13 @@ $I->seeBreadcrumb('Edit Category');
 
 $I->fillField('name', 'Test Category Edited ' . $uniqueID);
 $I->fillField('nameShort', 'TCE' . substr($uniqueID, -5));
+$I->fillField('backgroundImage', '');
 $I->submitForm('#content form', []);
+
 $I->seeSuccessMessage();
+
+$gibbonActivityCategoryID = $I->grabValueFromURL('gibbonActivityCategoryID'); 
+$I->seeInDatabase('gibbonActivityCategory', ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'backgroundImage' => '']);
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('Activities', 'activities_categories.php');
@@ -37,3 +48,6 @@ $I->click('Delete', "//td[contains(text(),'Test Category Edited " . $uniqueID . 
 $I->fillField('confirm', 'Delete');
 $I->click('Yes');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);

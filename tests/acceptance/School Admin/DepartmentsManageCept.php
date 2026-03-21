@@ -22,10 +22,13 @@ $addFormValues = array(
     'blurb'          => 'For testing.',
 );
 
+$I->attachFile('file', 'attachment.jpg');
 $I->submitForm('#content form', $addFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonDepartmentID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonDepartment', 'logo', ['gibbonDepartmentID' => $gibbonDepartmentID]);
+$I->assertNotEmpty($file);
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('School Admin', 'department_manage_edit.php', array('gibbonDepartmentID' => $gibbonDepartmentID));
@@ -41,11 +44,18 @@ $editFormValues = array(
     'blurb'          => 'Also for testing.',
 );
 
+$I->fillField('logo', '');
 $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
+
+$gibbonDepartmentID = $I->grabValueFromURL('gibbonDepartmentID');
+$I->seeInDatabase('gibbonDepartment', ['gibbonDepartmentID' => $gibbonDepartmentID, 'logo' => '']);
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'department_manage_delete.php', array('gibbonDepartmentID' => $gibbonDepartmentID));
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);
