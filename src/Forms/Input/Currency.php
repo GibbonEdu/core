@@ -42,7 +42,7 @@ class Currency extends Number
     {
         global $session;
 
-        list($currencyName, $currencySymbol) = explode(' ', $session->get('currency'));
+        list($currencyName, $currencySymbol) = array_pad(explode(' ', $session->get('currency')), 2, '');
 
         return Component::render(Currency::class, $this->getAttributeArray() + [
             'groupClass'     => $this->getGroupClass(),
