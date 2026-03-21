@@ -11,7 +11,9 @@ $I->amOnModulePage('Formal Assessment', 'internalAssessment_write.php');
 $I->seeBreadcrumb('Write Internal Assessments');
 
 // Get a course class ID from an existing internal assessment column (ensures valid course with department)
-$gibbonCourseClassID = $I->grabFromDatabase('gibbonInternalAssessmentColumn', 'gibbonCourseClassID', []);
+$gibbonSchoolYearID = $I->grabFromDatabase('gibbonSchoolYear', 'gibbonSchoolYearID', ['status' => 'Current']);
+$gibbonCourseID = $I->grabFromDatabase('gibbonCourse', 'gibbonCourseID', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
+$gibbonCourseClassID = $I->grabFromDatabase('gibbonCourseClass', 'gibbonCourseClassID', ['gibbonCourseID' => $gibbonCourseID]);
 
 // Create an internal assessment column with uploadedResponse enabled
 $gibbonInternalAssessmentColumnID = $I->haveInDatabase('gibbonInternalAssessmentColumn', [
