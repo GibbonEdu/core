@@ -42,6 +42,7 @@ v31.0.00
         Admissions: added a warning to Accept Application when milestones have not been completed
         Attendance: student attendance history now ordered by timetable period
         Attendance: fixed the Consecutive Absences check to only count the final status for each day
+        Attendance: added a foreign table field to attendance logs for recording target of future absences
         Calendar: switched default sorting of Manage Events to newest first
         Formal Assessment: added the feature for teachers to view unpublished internal assessments
         Library: updated automatic shelf lists so that lists are queried dynamically in Browse Library

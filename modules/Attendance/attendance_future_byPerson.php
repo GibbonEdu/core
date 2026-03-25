@@ -73,6 +73,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $dateEnd = $_GET['dateEnd'] ?? '';
     $timeStart = $_GET['timeStart'] ?? '';
     $timeEnd = $_GET['timeEnd'] ?? '';
+    $foreignTable = $_GET['foreignTable'] ?? '';
+    $foreignTableID = $_GET['foreignTableID'] ?? '';
 
     $urlParams = compact('target', 'gibbonActivityID', 'gibbonGroupID', 'absenceType', 'date', 'timeStart', 'timeEnd');
 
@@ -381,6 +383,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $form->addHiddenValue('timeStart', $timeStart);
         $form->addHiddenValue('timeEnd', $timeEnd);
         $form->addHiddenValue('gibbonPersonIDList', implode(",", $gibbonPersonIDList));
+        $form->addHiddenValue('foreignTable', $foreignTable);
+        $form->addHiddenValue('foreignTableID', $foreignTableID);
 
         $form->addRow()->addHeading('Set Future Attendance', __('Set Future Attendance'));
 

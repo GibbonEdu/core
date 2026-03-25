@@ -88,6 +88,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $comment = $_POST['comment'] ?? '';
         $courseList = $_POST['courses'] ?? '';
 
+        if (in_array($urlParams['target'], ['Activity', 'Messenger'])) {
+            $foreignTable = $urlParams['target'];
+            $foreignTableID = $urlParams['target'] === 'Activity' ? $urlParams['gibbonActivityID'] : $urlParams['gibbonGroupID'];
+        } else {
+            $foreignTable = $_POST['foreignTable'] ?? '';
+            $foreignTableID = $_POST['foreignTableID'] ?? '';
+        }
+        
         $attendanceCode = $attendance->getAttendanceCodeByType($type);
         $direction = $attendanceCode['direction'];
 
@@ -138,6 +146,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         'comment' => $comment,
                         'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
                         'date' => $date,
+                        'foreignTable' => $foreignTable,
+                        'foreignTableID' => $foreignTableID,
                         'timestampTaken' => date('Y-m-d H:i:s'),
                     ];
 
@@ -166,8 +176,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                 'timestampTaken' => date('Y-m-d H:i:s'),
                                 'gibbonCourseClassID' => $gibbonCourseClassID,
                                 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+                                'foreignTable' => $foreignTable,
+                                'foreignTableID' => $foreignTableID
                             ];
-
+                            
                             $gibbonAttendanceLogPersonID = $attendanceLogGateway->insert($data);
                             if (empty($gibbonAttendanceLogPersonID)) $partialFail = true;
                         }
@@ -189,5 +201,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             header("Location: {$URL}");
         }
     }
-
 }

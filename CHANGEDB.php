@@ -429,4 +429,6 @@ UPDATE `gibboni18n` SET `code`='ca_ES' WHERE `code`='ca_CA';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'timeFormatPHP', 'Time Format', 'How should the time of day be displayed?', 'H:i');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'showIncompleteAttendance', 'Show Incomplete Attendance', 'Show class periods where attendance has not been taken (Not Available).', 'N');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Library', 'libraryAPIKey', 'Library API Key', 'Google Books API Key from Google Cloud Console.', '');end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD `foreignTable` VARCHAR(60) NULL AFTER `gibbonTTDayRowClassID`;end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD `foreignTableID` INT(14) UNSIGNED ZEROFILL NULL AFTER `foreignTable`;end
 ";
