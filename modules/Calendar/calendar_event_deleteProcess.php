@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
-use Gibbon\Support\Facades\Access;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 require_once '../../gibbon.php';
 
@@ -58,31 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_de
         exit;
     }
 
-    // Remove future absences for student participants linked to this event
-    $criteria = $calendarEventPersonGateway->newQueryCriteria()
-        ->sortBy(['roleCategory', 'surname', 'preferredName']);
-
-    $participants = $calendarEventPersonGateway->queryEventAttendees($criteria, $gibbonCalendarEventID);
-
-    $gibbonPersonIDStudents = array_reduce($participants->toArray(), function ($group, $item) {
-        if ($item['roleCategory'] == 'Student') $group[] = $item['gibbonPersonID'];
-        return $group;
-    }, []);
-
     $eventDeleted = $calendarEventGateway->delete($gibbonCalendarEventID);
 
+    // Remove all participants linked to this event
     $calendarEventPersonGateway->deleteWhere(['gibbonCalendarEventID' => $gibbonCalendarEventID]);
 
-    if (!empty($gibbonPersonIDStudents)) {
-        $futureAbsences = $event['allDay'] == 'Y' ? $attendanceLogPersonGateway->selectFutureAttendanceLogsByDate($event['dateStart'], $event['dateEnd'])->fetchAll() : $attendanceLogPersonGateway->selectFutureAttendanceLogsByDateAndTime($event['dateStart'], $event['dateEnd'], $event['timeStart'], $event['timeEnd'])->fetchAll();
-
-        foreach ($futureAbsences as $absence) {
-            if (in_array($absence['groupBy'], $gibbonPersonIDStudents)) {
-                $futureAbsenceDeleted = $attendanceLogPersonGateway->delete($absence['gibbonAttendanceLogPersonID']);
-            }
-        }
-    }
-
+    // Remove future absences for participants linked to this event
+    $attendanceLogPersonGateway->deleteWhere(['foreignTable' => 'gibbonCalendarEvent', 'foreignTableID' => $gibbonCalendarEventID]);
+    
     $URL .= !$eventDeleted
         ? '&return=error2'
         : '&return=success0';

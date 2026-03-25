@@ -19,15 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Support\Facades\Access;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
-use Gibbon\Support\Facades\Access;
 
 include '../../gibbon.php';
 
-$action = $_POST['action'] ?? '';
 $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
+$action = $_POST['action'] ?? '';
+$attendees = $_POST['gibbonCalendarEventPersonID'] ?? [];
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Calendar/calendar_event_participants.php&gibbonCalendarEventID=$gibbonCalendarEventID";
 
@@ -39,8 +40,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
     $attendanceLogPersonGateway = $container->get(AttendanceLogPersonGateway::class);
-    
-    $attendees = $_POST['gibbonCalendarEventPersonID'] ?? [];
 
     if (empty($action) || ($action != 'Delete')) {
         $URL .= '&return=error1';
@@ -53,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
         $URL .= '&return=error3';
         header("Location: {$URL}");
         exit;
-    } 
+    }
 
     // Get event details
     $event = $calendarEventGateway->getEventDetailsByID($gibbonCalendarEventID, $session->get('gibbonPersonID'));
@@ -69,8 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
     } 
 
     $partialFail = false;
-    $deletedPersonIDs = [];
-    
+        
     foreach ($attendees AS $gibbonCalendarEventPersonID) {
         $eventAttendee = $calendarEventPersonGateway->getByID($gibbonCalendarEventPersonID);
        
@@ -82,25 +80,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
         if ($action == 'Delete') {
             $deleted = $calendarEventPersonGateway->delete($gibbonCalendarEventPersonID);
 
-            if ($deleted) {
-                $deletedPersonIDs[] = $eventAttendee['gibbonPersonID'];
+            if ($deleted && !empty($eventAttendee['gibbonPersonID'])) {
+                // Remove future absences for all deleted participants
+                $attendanceLogPersonGateway->deleteWhere(['foreignTable' => 'gibbonCalendarEvent', 'foreignTableID' => $gibbonCalendarEventID, 'gibbonPersonID' => $eventAttendee['gibbonPersonID']]);
             }
         }
     }
 
-    // Remove future absences for all deleted participants in one pass
-    if (!empty($deletedPersonIDs)) {
-        $futureAbsences = $event['allDay'] == 'Y'
-            ? $attendanceLogPersonGateway->selectFutureAttendanceLogsByDate($event['dateStart'], $event['dateEnd'])->fetchAll()
-            : $attendanceLogPersonGateway->selectFutureAttendanceLogsByDateAndTime($event['dateStart'], $event['dateEnd'], $event['timeStart'], $event['timeEnd'])->fetchAll();
-
-        foreach ($futureAbsences as $absence) {
-            if (in_array($absence['groupBy'], $deletedPersonIDs)) {
-                $attendanceLogPersonGateway->delete($absence['gibbonAttendanceLogPersonID']);
-            }
-        }
-    }
-    
     $URL .= $partialFail
         ? '&return=warning1'
         : '&return=success0';
