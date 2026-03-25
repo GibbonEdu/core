@@ -142,32 +142,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     }
 
     // If event date or time changed, remove future absences for all student participants using the OLD dates
-    $absencesRemoved = false;
+    $futureAbsencesRemoved = false;
     if ($dateTimeChanged) {
-        $criteria = $calendarEventPersonGateway->newQueryCriteria()
-            ->sortBy(['roleCategory', 'surname', 'preferredName']);
-
-        $participants = $calendarEventPersonGateway->queryEventAttendees($criteria, $gibbonCalendarEventID);
-
-        $studentPersonIDs = array_reduce($participants->toArray(), function ($group, $item) {
-            if ($item['roleCategory'] == 'Student') $group[] = $item['gibbonPersonID'];
-            return $group;
-        }, []);
-
-        if (!empty($studentPersonIDs)) {
-            // Query using the OLD event dates/times before the update
-            $futureAbsences = $event['allDay'] == 'Y' ? $attendanceLogPersonGateway->selectFutureAttendanceLogsByDate($event['dateStart'], $event['dateEnd'])->fetchAll() : $attendanceLogPersonGateway->selectFutureAttendanceLogsByDateAndTime($event['dateStart'], $event['dateEnd'], $event['timeStart'], $event['timeEnd'])->fetchAll();
-
-            foreach ($futureAbsences as $absence) {
-                if (in_array($absence['groupBy'], $studentPersonIDs)) {
-                    $futureAbsenceDeleted = $attendanceLogPersonGateway->delete($absence['gibbonAttendanceLogPersonID']);
-                    $absencesRemoved = true;
-                }
-            }
-        }
+        $futureAbsencesRemoved = $attendanceLogPersonGateway->deleteWhere(['foreignTable' => 'gibbonCalendarEvent', 'foreignTableID' => $gibbonCalendarEventID]);
     }
 
-    if ($absencesRemoved) {
+    if ($futureAbsencesRemoved) {
         $URL .= "&return=warning9&editID=$gibbonCalendarEventID";
     } elseif ($partialFail) {
         $URL .= "&return=warning1";

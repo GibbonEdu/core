@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     }
 
     $page->return->addReturns([
-        'warning9' => __('Your request was completed successfully, but previous future absences for students in this event have been removed because the event date or time changed. Please set up future absences again.'),
+        'warning9' => __('Your request was completed successfully. Previous future absences tied to this event were removed due to the date/time change. Please set future absences again.'),
     ]);
     
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
