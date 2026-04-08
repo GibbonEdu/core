@@ -234,7 +234,26 @@ class CourseGateway extends QueryableGateway
     public function selectClassesByCourseID($gibbonCourseID, $gibbonSchoolYearID)
     {
         $data = ['gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY class';
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID,
+                       gibbonCourseClass.name,
+                       gibbonCourseClass.nameShort,
+                       gibbonCourseClass.reportable,
+                       gibbonCourseClass.enrolmentMin,
+                       gibbonCourseClass.enrolmentMax,
+                       gibbonCourse.nameShort AS course,
+                       gibbonCourseClass.nameShort AS class,
+                       COUNT(DISTINCT CASE WHEN ccp.role = 'Teacher' THEN ccp.gibbonPersonID END) AS teachersTotal,
+                       COUNT(DISTINCT CASE WHEN ccp.role = 'Student' AND p.status = 'Full' THEN ccp.gibbonPersonID END) AS studentsActive,
+                       COUNT(DISTINCT CASE WHEN ccp.role = 'Student' AND p.status = 'Expected' THEN ccp.gibbonPersonID END) AS studentsExpected,
+                       COUNT(DISTINCT CASE WHEN ccp.role = 'Student' THEN ccp.gibbonPersonID END) AS studentsTotal
+                FROM gibbonCourse
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                LEFT JOIN gibbonCourseClassPerson AS ccp ON (ccp.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                LEFT JOIN gibbonPerson AS p ON (p.gibbonPersonID=ccp.gibbonPersonID)
+                WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID
+                  AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                GROUP BY gibbonCourseClass.gibbonCourseClassID
+                ORDER BY gibbonCourseClass.nameShort";
 
         return $this->db()->select($sql, $data);
     }
