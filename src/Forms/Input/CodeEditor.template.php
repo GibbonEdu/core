@@ -3,32 +3,48 @@
 <div id="editor<?= $id; ?>" class="w-full" style="height: <?= $height; ?>px;"><?= htmlentities($text ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
 
 <script type="text/javascript">
-    function setupEditor () {
-        var useAutocomplete = <?= !empty($autocomplete) ? 'true' : 'false'; ?>;
+    (async () => {
+        const editorId = "editor<?= $id; ?>";
+        const textareaId = "<?= $id; ?>";
+        const useAutocomplete = <?= !empty($autocomplete) ? 'true' : 'false'; ?>;
+
+        await import("./lib/ace/ace.js");
+
         if (useAutocomplete) {
-            var languageTools = ace.require("ace/ext/language_tools");
+            await import("./lib/ace/ext-language_tools.js");
         }
 
         ace.config.set('basePath', './lib/ace/');
-        
-        var editor = ace.edit("editor<?= $id; ?>");
+
+        const editorElement = document.getElementById(editorId);
+        const textareaElement = document.getElementById(textareaId);
+
+        if (!editorElement || !textareaElement) return;
+
+        // Avoid duplicate initialization on the same DOM node
+        if (editorElement.env && editorElement.env.editor) return;
+
+        const editor = ace.edit(editorId);
+
         editor.getSession().setUseWrapMode(true);
-        editor.getSession().on("change", function(e) {
-            $("#<?= $id; ?>").val(editor.getSession().getValue());
+        editor.getSession().setMode("ace/mode/<?= !empty($mode) ? $mode : 'html'; ?>");
+
+        editor.getSession().on("change", function () {
+            textareaElement.value = editor.getSession().getValue();
         });
 
-        editor.getSession().setMode("ace/mode/<?= !empty($mode)? $mode : 'html'; ?>");
-
         if (useAutocomplete) {
+            const languageTools = ace.require("ace/ext/language_tools");
+
             editor.setOptions({
                 enableBasicAutocompletion: false,
                 enableSnippets: true,
                 enableLiveAutocompletion: true
             });
 
-            var staticWordCompleter = {
+            const staticWordCompleter = {
                 getCompletions: function(editor, session, pos, prefix, callback) {
-                    var wordList = <?= json_encode($autocomplete ?? []); ?>;
+                    const wordList = <?= json_encode($autocomplete ?? []); ?>;
                     callback(null, wordList.map(function(word) {
                         return {
                             caption: word,
@@ -37,21 +53,19 @@
                         };
                     }));
                 }
-            }
-            
+            };
+
             languageTools.addCompleter(staticWordCompleter);
         }
-    }
 
-    // Ensure the scripts load in the correct order
-    (async () => {
-        await import("./lib/ace/ace.js")
-        await import("./lib/ace/ext-language_tools.js")
-        await setupEditor();
+        // Sync initial editor content back to the hidden textarea
+        textareaElement.value = editor.getSession().getValue();
+
+        // Clean up before HTMX swaps the page
+        document.addEventListener('htmx:beforeRequest', function () {
+            if (editorElement.env && editorElement.env.editor) {
+                editorElement.env.editor.destroy();
+            }
+        }, { once: true });
     })();
-
-    // Remove the existing editor before htmx swaps to a new page
-    document.addEventListener('htmx:beforeRequest', function (event) {
-        ace.edit("editor<?= $id; ?>").destroy();
-    }, { once: true });
 </script>
