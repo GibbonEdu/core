@@ -1,0 +1,107 @@
+details:
+    type: internalAssessmentColumns
+    name: Internal Assessment Columns
+    table: gibbonInternalAssessmentColumn
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Formal Assessment
+    action: Manage Internal Assessments
+primaryKey:
+    gibbonInternalAssessmentColumnID
+uniqueKeys:
+    - [ gibbonCourseClassID, name ]
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true, readonly: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name }
+    gibbonCourseID:
+        name: "Course"
+        desc: "Short Name"
+        args: { filter: string, required: true, custom: true, readonly: true }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ] }
+    gibbonCourseClassID:
+        name: "Class"
+        desc: "Short Name"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ] }
+    groupingID:
+        name: "Grouping ID"
+        desc: ""
+        args: { filter: numeric, custom: true }
+    name:
+        name: "Name"
+        desc: "Column Name"
+        args: { filter: string, required: true }
+    description:
+        name: "Description"
+        desc: "Column Description"
+        args: { filter: string, required: true }
+    type:
+        name: "Type"
+        desc: "Assessment Type"
+        args: { filter: string, required: true }
+    attachment:
+        name: "Attachment"
+        desc: ""
+        args: { filter: string, custom: true }
+    attainment:
+        name: "Assess Attainment?"
+        desc: "Y/N"
+        args: { filter: yesno, custom: true }
+    attainmentScaleName:
+        name: "Attainment Scale"
+        desc: "Scale Name"
+        args: { filter: string, custom: true, readonly: true }
+    gibbonScaleIDAttainment:
+        name: "Scale ID"
+        desc: ""
+        args: { filter: string, linked: attainmentScaleName, hidden: true }
+        relationship: { table: gibbonScale, key: gibbonScaleID, field: name }
+    effort:
+        name: "Assess Approaches To Learning?"
+        desc: "Y/N"
+        args: { filter: yesno, custom: true }
+    effortScaleName:
+        name: "Approaches to Learning Scale"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true }
+    gibbonScaleIDEffort:
+        name: "Scale ID"
+        desc: ""
+        args: { filter: string, linked: effortScaleName, hidden: true }
+        relationship: { table: gibbonScale, key: gibbonScaleID, field: name }
+    comment:
+        name: "Include Comment"
+        desc: "Y/N"
+        args: { filter: yesno, custom: true }
+    uploadedResponse:
+        name: "Include Uploaded Response"
+        desc: "Y/N"
+        args: { filter: yesno, custom: true }
+    complete:
+        name: "Complete"
+        desc: "Y/N"
+        args: { filter: yesno, custom: true, required: true }
+    completeDate:
+        name: "Go Live Date"
+        desc: ""
+        args: { filter: date, custom: true }
+    viewableStudents:
+        name: "Viewable by Students"
+        desc: "Y/N"
+        args: { filter: yesno, required: true }
+    viewableParents:
+        name: "Viewable by Parents"
+        desc: "Y/N"
+        args: { filter: yesno, required: true }
+    gibbonPersonIDCreator: 
+        name: "Created By"
+        desc: "Username or Email (if unique)"
+        args: { filter: string, custom: true, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }
+    gibbonPersonIDLastEdit:
+        name: "Edited By"
+        desc: ""
+        args: { filter: numeric, hidden: true, linked: gibbonPersonIDCreator }
