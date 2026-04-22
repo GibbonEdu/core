@@ -84,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         ->filterBy('ownershipType', $ownershipType)
         ->filterBy('space', $gibbonSpaceID)
         ->filterBy('status', $status)
+        ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
     $catalog = $reportGateway->queryCatalogSummary($criteria);

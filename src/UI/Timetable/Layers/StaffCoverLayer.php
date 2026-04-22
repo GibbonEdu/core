@@ -108,7 +108,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
 
             // Handle Activity Coverage
             if ($coverage['contextName'] == 'Activity') {
-                $activity = $this->activityGateway->getActivityDetailsByID($coverage['foreignTableID']);
+                $activity = $this->activityGateway->getActivityDetailsByTimeSlot($coverage['foreignTableID']);
                 $item->set('title', $activity['name'] ?? '');
                 $item->set('subtitle', $activity['space'] ?? '');
                 $item->set('description', __($coverage['contextName']).': '.$item->description);
