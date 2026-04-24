@@ -38,6 +38,7 @@ $formValues = array(
     'viewableParents'          => 'N',
 );
 
+$I->attachFile('file', 'attachment.txt');
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->seeSuccessMessage();
 
@@ -48,6 +49,9 @@ $I->see('Multi Test Column');
 // Get the column ID for cleanup
 $gibbonMarkbookColumnID = $I->grabFromDatabase('gibbonMarkbookColumn', 'gibbonMarkbookColumnID', array('name' => 'Multi Test Column', 'gibbonCourseClassID' => $gibbonCourseClassID));
 
+$file = $I->grabFromDatabase('gibbonMarkbookColumn', 'attachment', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
+$I->assertNotEmpty($file);
+
 // Clean up - Delete the created column
 $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', array(
     'gibbonCourseClassID' => $gibbonCourseClassID,
@@ -56,3 +60,6 @@ $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', array(
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);

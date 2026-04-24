@@ -77,10 +77,13 @@ $conditionValues = array(
     'comment' => 'Test condition comment',
 );
 
+$I->attachFile('attachment', 'attachment.txt');
 $I->submitForm('#content form', $conditionValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonPersonMedicalConditionID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonPersonMedicalCondition', 'attachment', ['gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID]);
+$I->assertNotEmpty($file);
 
 // Edit Medical Condition ------------------------------
 
@@ -103,8 +106,26 @@ $conditionValues = array(
     'reaction' => 'Updated reaction',
 );
 
+$I->fillField('attachment', '');
 $I->submitForm('#content form', $conditionValues, 'Submit');
 $I->seeSuccessMessage();
+
+$gibbonPersonMedicalConditionID = $I->grabValueFromURL('gibbonPersonMedicalConditionID');
+$I->seeInDatabase('gibbonPersonMedicalCondition', ['gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID, 'attachment' => '']);
+
+// Edit Medical Condition - File Upload ----------------
+
+$I->amOnModulePage('Students', 'medicalForm_manage_condition_edit.php', array(
+    'gibbonPersonMedicalID' => $gibbonPersonMedicalID,
+    'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID
+));
+
+$I->attachFile('input[type="file"][name="attachment"]', 'attachment2.png');
+$I->submitForm('#content form', [], 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonPersonMedicalCondition', 'attachment', ['gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID]);
+$I->assertNotEmpty($file2);
 
 // Delete Medical Condition ----------------------------
 
@@ -122,3 +143,9 @@ $I->amOnModulePage('Students', 'medicalForm_manage_delete.php', array('gibbonPer
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
+}

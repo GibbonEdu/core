@@ -148,7 +148,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $renameFilename = $userData['username'].'.'.$file['extension'];
             $renameFilePath = str_replace($file['filename'], $renameFilename, $file['absolutePath']);
 
-            $file['absolutePath'] = $fileUploader->resizeImage($file['absolutePath'], $renameFilePath, 480, 100, $zoom, $focalX, $focalY);
+            rename($file['absolutePath'], $renameFilePath);
+
+            $file['absolutePath'] = $fileUploader->resizeImage($renameFilePath, $renameFilePath, 480, 100, $zoom, $focalX, $focalY);
             $file['relativePath'] = str_replace($file['filename'], $renameFilename, $file['relativePath']);
             
             $updated = $userGateway->update($userData['gibbonPersonID'], [

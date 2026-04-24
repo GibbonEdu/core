@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 use Gibbon\Support\Facades\Access;
@@ -40,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
 
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
+    $attendanceLogPersonGateway = $container->get(AttendanceLogPersonGateway::class);
 
     // Get event details
     $event = $calendarEventGateway->getEventDetailsByID($gibbonCalendarEventID, $session->get('gibbonPersonID'));
@@ -92,23 +94,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         header("Location: {$URL}");
     }
 
+    // Check if the date or time has changed compared to the existing event
+    $dateTimeChanged = $data['dateStart'] !== $event['dateStart'] || $data['dateEnd'] !== $event['dateEnd'] || $data['timeStart'] !== $event['timeStart'] || $data['timeEnd'] !== $event['timeEnd'];
+
     // Update the record
     if (!$calendarEventGateway->update($gibbonCalendarEventID, $data)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
     }
 
-     $organiser = $calendarEventPersonGateway->selectBy(['gibbonCalendarEventID' => $gibbonCalendarEventID, 'role' => 'Organiser', 'gibbonPersonID' => $gibbonPersonIDOrganiser])->fetch();
+    $organiser = $calendarEventPersonGateway->selectBy(['gibbonCalendarEventID' => $gibbonCalendarEventID, 'role' => 'Organiser', 'gibbonPersonID' => $gibbonPersonIDOrganiser])->fetch();
 
      if (empty($organiser)) {
          $organiserData = [
-            'gibbonCalendarEventID' => $gibbonCalendarEventID,
-            'gibbonPersonID'   => $gibbonPersonIDOrganiser,
-            'role'    => 'Organiser',
-            'gibbonPersonIDModified' => $session->get('gibbonPersonID') ?? '',
-            'timestampModified' => date('Y-m-d H:i:s'),
-            'timestampCreated'        => date('Y-m-d H:i:s'),
-            'gibbonPersonIDCreated'   => $session->get('gibbonPersonID') ?? '',
+            'gibbonCalendarEventID'     => $gibbonCalendarEventID,
+            'gibbonPersonID'            => $gibbonPersonIDOrganiser,
+            'role'                      => 'Organiser',
+            'gibbonPersonIDModified'    => $session->get('gibbonPersonID') ?? '',
+            'timestampModified'         => date('Y-m-d H:i:s'),
+            'timestampCreated'          => date('Y-m-d H:i:s'),
+            'gibbonPersonIDCreated'     => $session->get('gibbonPersonID') ?? '',
         ];
 
         $inserted = $calendarEventPersonGateway->insertAndUpdate($organiserData, $organiserData);
@@ -135,9 +140,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         $inserted = $calendarEventPersonGateway->insertAndUpdate($personData, $personData);
         $partialFail &= !$inserted;
     }
-    
-    $URL .= $partialFail
-        ? "&return=warning1"
-        : "&return=success0&editID=$gibbonCalendarEventID";
-    header("Location: {$URL}");    
+
+    // If event date or time changed, remove future absences for all student participants using the OLD dates
+    $futureAbsencesRemoved = false;
+    if ($dateTimeChanged) {
+        $futureAbsencesRemoved = $attendanceLogPersonGateway->deleteWhere(['foreignTable' => 'gibbonCalendarEvent', 'foreignTableID' => $gibbonCalendarEventID]);
+    }
+
+    if ($futureAbsencesRemoved) {
+        $URL .= "&return=warning9&editID=$gibbonCalendarEventID";
+    } elseif ($partialFail) {
+        $URL .= "&return=warning1";
+    } else {
+        $URL .= "&return=success0&editID=$gibbonCalendarEventID";
+    }
+
+    header("Location: {$URL}");
 }

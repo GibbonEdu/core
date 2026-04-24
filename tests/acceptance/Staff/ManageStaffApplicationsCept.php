@@ -73,8 +73,16 @@ $I->fillField('notes', 'Test notes for application');
 $I->selectOption('priority', '0');
 
 
+$I->attachFile('file0', 'attachment.txt');
 $I->submitForm('#content form', ['gibbonPersonID' => null, 'gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID], 'Submit');
 $I->seeSuccessMessage();
+
+// Verify file was uploaded to DB
+$filePath = $I->grabFromDatabase('gibbonStaffApplicationFormFile', 'path', [
+    'gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID,
+    'name'                         => 'Curriculum Vitae',
+]);
+$I->assertNotEmpty($filePath);
 
 // // Accept Application ----------------------------------
 
@@ -126,3 +134,8 @@ $I->amOnModulePage('Staff', 'applicationForm_manage_delete.php', ['gibbonStaffAp
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup uploaded file and DB records ----------------
+
+$I->deleteFromDatabase('gibbonStaffApplicationFormFile', ['gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID]);
+$I->deleteFile('../'.$filePath);

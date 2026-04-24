@@ -52,11 +52,14 @@ class StudentReportGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->cols([
                 'gibbonPerson.*', 'gibbonPersonMedical.*',
+                'gibbonFormGroup.nameShort as formGroup',
                 "(SELECT timestamp FROM gibbonPersonUpdate WHERE gibbonPersonID=gibbonPerson.gibbonPersonID AND status='Complete' ORDER BY timestamp DESC LIMIT 1) as lastPersonalUpdate",
                 "(SELECT timestamp FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=gibbonPerson.gibbonPersonID AND status='Complete' ORDER BY timestamp DESC LIMIT 1) as lastMedicalUpdate",
                 'gibbonPerson.gibbonPersonID'
             ])
             ->leftJoin('gibbonPersonMedical', 'gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->where('FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)')
             ->bindValue('gibbonPersonIDList', $gibbonPersonIDList);
 

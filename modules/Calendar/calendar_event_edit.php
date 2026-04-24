@@ -40,6 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     if (empty($gibbonCalendarEventID) && isset($_GET['editID'])) {
         $page->return->setEditLink($session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_edit.php&gibbonCalendarEventID='.$_GET['editID']);
     }
+
+    $page->return->addReturns([
+        'warning9' => __('Your request was completed successfully. Previous future absences tied to this event were removed due to the date/time change. Please set future absences again.'),
+    ]);
     
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);

@@ -163,6 +163,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
                 'timeStart'          => $event['timeStart'],
                 'timeEnd'            => $event['timeEnd'],
                 'gibbonPersonIDList' => implode(',', $futureAbsenceStudents),
+                'foreignTable'       => 'gibbonCalendarEvent',
+                'foreignTableID'     => $gibbonCalendarEventID
             ])
             ->setIcon('user-plus')
             ->setAttribute('target', '_blank')

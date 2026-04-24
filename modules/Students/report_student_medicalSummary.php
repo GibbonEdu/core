@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
+    $excludeNoConditions = $_REQUEST['excludeNoConditions'] ?? 'N';
     $choices = $_POST['gibbonPersonID'] ?? [];
     //If $choices is blank, check to see if session is being used to inject gibbonPersonID list
     if (count($choices) == 0 && $session->has('report_student_medicalSummary.php_choices')) {
@@ -74,6 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                 ->selected($choices);
 
         $row = $form->addRow();
+            $row->addLabel('excludeNoConditions', __('Exclude Students with No Medical Conditions?'));
+            $row->addCheckbox('excludeNoConditions')->setValue('Y')->checked($excludeNoConditions);
+
+        $row = $form->addRow();
             $row->addFooter();
             $row->addSearchSubmit($session);
 
@@ -94,27 +99,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria(true)
         ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
-        ->pageSize(!empty($viewMode) ? 0 : 50)
+        ->pageSize(!empty($viewMode) || $excludeNoConditions == 'Y' ? 0 : 50)
         ->fromPOST();
 
     $students = $reportGateway->queryStudentDetails($criteria, $choices);
 
     // Join a set of medical conditions per student
-    $medicalIDs = $students->getColumn('gibbonPersonMedicalID');
-    $medicalConditions = $medicalGateway->selectMedicalConditionsByID($medicalIDs)->fetchGrouped();
+    $medicalIDs = array_filter($students->getColumn('gibbonPersonMedicalID'));
+    $medicalConditions = !empty($medicalIDs) ? $medicalGateway->selectMedicalConditionsByID($medicalIDs)->fetchGrouped() : [];
     $students->joinColumn('gibbonPersonMedicalID', 'medicalConditions', $medicalConditions);
+
+    // Exclude students who have no medical conditions or no long-term medication
+    if ($excludeNoConditions == 'Y') {
+        $students->filter(function ($student) {
+            return !empty($student['medicalConditions']) || $student['longTermMedication'] === 'Y';
+        });
+        $students->setResultCount($students->count());
+    }
 
     // DATA TABLE
     $table = ReportTable::createPaginated('studentEmergencySummary', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Student Medical Data Summary'));
 
-    $table->addMetaData('post', ['gibbonPersonID' => $choices]);
+    $table->addMetaData('post', ['gibbonPersonID' => $choices, 'excludeNoConditions' => $excludeNoConditions]);
+
+    $table->addColumn('formGroup', __('Form Group'))
+        ->sortable(['gibbonFormGroup.nameShort'])
+        ->width('8%');
 
     $table->addColumn('student', __('Student'))
         ->description(__('Last Update'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) use ($cutoffDate) {
-            $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true).'<br/><br/>';
+            $output = Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['subpage' => 'Medical']).'<br/><br/>';
 
             $output .= ($student['lastMedicalUpdate'] < $cutoffDate) ? '<span style="color: #ff0000; font-weight: bold"><i>' : '<span><i>';
             $output .= !empty($student['lastMedicalUpdate']) ? Format::date($student['lastMedicalUpdate']) : __('N/A');

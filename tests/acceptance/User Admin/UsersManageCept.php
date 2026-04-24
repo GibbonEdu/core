@@ -121,6 +121,8 @@ $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 
 $gibbonPersonID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonPerson', 'image_240', ['gibbonPersonID' => $gibbonPersonID]);
+$I->assertNotEmpty($file);
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_edit.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
@@ -183,12 +185,29 @@ $formValues = array(
     'vehicleRegistration'       => '4321',
 );
 
+$I->fillField('attachment1', '');
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 
+$gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
+$I->seeInDatabase('gibbonPerson', ['gibbonPersonID' => $gibbonPersonID, 'image_240' => '']);
+
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('User Admin', 'user_manage_edit.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
+
+$I->attachFile('file1', 'attachment2.png');
+$I->submitForm('#content form', [], 'Submit');
+$I->see('Your request was completed successfully.', '.success');
+
+$file2 = $I->grabFromDatabase('gibbonPerson', 'image_240', ['gibbonPersonID' => $gibbonPersonID]);
+$I->assertNotEmpty($file2);
+
 // Cleanup Files ------------------------------------------------
 
-$I->deleteFile('../'.rawurldecode($I->grabValueFrom('input[name="attachment1"]')));
+$I->deleteFile('../'.$file);
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
+}
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));

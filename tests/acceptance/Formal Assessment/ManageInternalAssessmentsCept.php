@@ -50,6 +50,8 @@ $I->seeInField('name', 'Test Assessment');
 // Select type if available
 $I->selectFromDropdown('type', 1);
 
+$I->attachFile('file', 'attachment.txt');
+
 $formValues = [
     'name' => 'Updated Assessment',
     'description' => 'Updated Description',
@@ -66,6 +68,51 @@ $formValues = [
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->seeSuccessMessage();
 
+$file = $I->grabFromDatabase('gibbonInternalAssessmentColumn', 'attachment', ['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID]);
+$I->assertNotEmpty($file);
+
+// Edit again to remove attachment ------------------------------------------------
+$I->amOnModulePage('Formal Assessment', 'internalAssessment_manage_edit.php', [
+    'gibbonCourseClassID' => $gibbonCourseClassID,
+    'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID
+]);
+
+$I->selectFromDropdown('type', 1);
+$I->fillField('attachment', '');
+
+$formValues = [
+    'name' => 'Updated Assessment',
+    'description' => 'Updated Description',
+    'attainment' => 'N',
+    'effort' => 'N',
+    'comment' => 'N',
+    'uploadedResponse' => 'N',
+    'viewableStudents' => 'Y',
+    'viewableParents' => 'Y',
+    'completeDate' => '2024-07-15',
+    'complete' => 'Y',
+];
+
+$I->submitForm('#content form', $formValues, 'Submit');
+$I->seeSuccessMessage();
+
+$I->seeInDatabase('gibbonInternalAssessmentColumn', ['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'attachment' => '']);
+
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('Formal Assessment', 'internalAssessment_manage_edit.php', [
+    'gibbonCourseClassID' => $gibbonCourseClassID,
+    'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID
+]);
+
+$I->selectFromDropdown('type', 1);
+$I->attachFile('file', 'attachment2.png');
+
+$I->submitForm('#content form', $formValues, 'Submit');
+$I->seeSuccessMessage();
+
+$file2 = $I->grabFromDatabase('gibbonInternalAssessmentColumn', 'attachment', ['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID]);
+$I->assertNotEmpty($file2);
+
 // Delete ------------------------------------------------
 $I->amOnModulePage('Formal Assessment', 'internalAssessment_manage_delete.php', [
     'gibbonCourseClassID' => $gibbonCourseClassID,
@@ -74,3 +121,11 @@ $I->amOnModulePage('Formal Assessment', 'internalAssessment_manage_delete.php', 
 
 $I->click('Delete');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+if (!empty($file)) {
+    $I->deleteFile('../'.$file);
+}
+if (!empty($file2)) {
+    $I->deleteFile('../'.$file2);
+}

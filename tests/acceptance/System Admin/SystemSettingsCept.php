@@ -12,6 +12,9 @@ $I->amOnModulePage('System Admin', 'systemSettings.php');
 $originalFormValues = $I->grabAllFormValues();
 $I->seeInFormFields('#content form', $originalFormValues);
 
+$I->updateInDatabase('gibbonSetting', ['value' => ''], ['scope' => 'System', 'name' => 'organisationLogo']);
+$I->amOnModulePage('System Admin', 'systemSettings.php');
+
 // Make Changes ------------------------------------------------
 
 $newFormValues = array(
@@ -33,6 +36,8 @@ $newFormValues = array(
     'analytics'             => '<script></script>',
 );
 
+$I->attachFile('organisationLogoFile', 'attachment.jpg');
+
 $I->selectFromDropdown('organisationAdministrator', 2);
 $I->selectFromDropdown('organisationDBA', 2);
 $I->selectFromDropdown('organisationAdmissions', 2);
@@ -43,11 +48,30 @@ $I->submitForm('#content form', $newFormValues, 'Submit');
 
 // Verify Results ----------------------------------------------
 
-$I->see('Your request was completed successfully.', '.success');
+$I->seeSuccessMessage();
 $I->seeInFormFields('#content form', $newFormValues);
+
+$file = $I->grabFromDatabase('gibbonSetting', 'value', ['scope' => 'System', 'name' => 'organisationLogo']);
+$I->assertNotEmpty($file);
+
+// Test File Upload ----------------------------------------------
+
+// $I->attachFile('organisationLogoFile', 'attachment.jpg');
+// $I->submitForm('#content form', [], 'Submit');
+
+// $I->seeSuccessMessage();
+
+
+
 
 // Restore Original Settings -----------------------------------
 
+$I->updateInDatabase('gibbonSetting', ['value' => $originalFormValues['organisationLogo']], ['scope' => 'System', 'name' => 'organisationLogo']);
+$I->amOnModulePage('System Admin', 'systemSettings.php');
+
 $I->submitForm('#content form', $originalFormValues, 'Submit');
-$I->see('Your request was completed successfully.', '.success');
+$I->seeSuccessMessage();
 $I->seeInFormFields('#content form', $originalFormValues);
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);

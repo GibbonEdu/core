@@ -560,6 +560,7 @@ class FormFactory implements FormFactoryInterface
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
+                'TND د.ت' => 'Tunisian Dinar (د.ت)',
                 'UAH ₴' => 'Українська гривня (₴)',
                 'UGX USh' => 'Uganda Shilling (USh)',
                 'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',

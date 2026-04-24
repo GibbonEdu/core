@@ -19,21 +19,23 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\View\GridView;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Tables\Prefab\ClassGroupTable;
+use Gibbon\Tables\View\GridView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 $settingGateway = $container->get(SettingGateway::class);
 $courseGateway = $container->get(CourseGateway::class);
+$courseClassGateway = $container->get(CourseClassGateway::class);
 
 $makeDepartmentsPublic = $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
@@ -167,11 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $sidebarExtra = '';
 
                 //Print related class list
-                try {
-                    $resultCourse = $courseGateway->selectClassesByCourseID($row['gibbonCourseID'], $session->get('gibbonSchoolYearID'));
-                   
-                } catch (PDOException $e) {
-                }
+                $resultCourse = $courseClassGateway->selectClassesByCourseID($row['gibbonCourseID']);
 
                 if ($resultCourse->rowCount() > 0) {
                     $sidebarExtra .= '<div class="column-no-break">';

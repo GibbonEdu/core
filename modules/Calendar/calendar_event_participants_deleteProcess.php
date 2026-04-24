@@ -18,9 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
-use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Support\Facades\Access;
+use Gibbon\Domain\Calendar\CalendarEventGateway;
+use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 require_once '../../gibbon.php';
 
@@ -28,6 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonCalendarEventPersonID = $_POST['gibbonCalendarEventPersonID'] ?? '';
 $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_participants.php&gibbonCalendarEventID='.$gibbonCalendarEventID;
 
@@ -43,7 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
     // Proceed!
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
-    
+    $attendanceLogPersonGateway  = $container->get(AttendanceLogPersonGateway::class);
+
     // Get event details
     $event = $calendarEventGateway->getEventDetailsByID($gibbonCalendarEventID, $session->get('gibbonPersonID'));
     if (empty($event)) {
@@ -57,16 +60,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
         exit;
     } 
 
-    // Validate the database relationships exist
+    // Validate the participant record exists
     if (!$calendarEventPersonGateway->exists($gibbonCalendarEventPersonID)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
-    $deleted = $calendarEventPersonGateway->delete($gibbonCalendarEventPersonID);
+    $deletedParticipant = $calendarEventPersonGateway->delete($gibbonCalendarEventPersonID);
 
-    $URL .= !$deleted
+    // Remove future absences for this participant linked to the event
+    if ($deletedParticipant && !empty($gibbonPersonID)) {
+        $attendanceLogPersonGateway->deleteWhere(['foreignTable' => 'gibbonCalendarEvent', 'foreignTableID' => $gibbonCalendarEventID, 'gibbonPersonID' => $gibbonPersonID]);
+    }
+
+    $URL .= !$deletedParticipant
         ? '&return=error2'
         : '&return=success0';
 

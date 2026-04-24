@@ -23,6 +23,7 @@ $newApplicationSettings = array_replace($originalApplicationSettings, array(
     'languageOptionsActive'      => 'N',
     'applicationFormRefereeLink' => '',
     'agreement'                  => '',
+    'requiredDocuments'          => 'FileUpload0',
 ));
 
 $I->submitForm('#content form', $newApplicationSettings, 'Submit');
@@ -145,6 +146,18 @@ $I->seeBreadcrumb('Edit Form');
 
 $I->seeInFormFields('#content form', $formValues);
 
+// File Upload on Edit ---------------------------------
+
+$I->attachFile('input[name="file0[]"]', 'attachment.txt');
+$I->submitForm('#content form', [], 'Submit');
+$I->seeSuccessMessage();
+
+$filePath = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', [
+    'gibbonApplicationFormID' => $gibbonApplicationFormID,
+    'name'                    => 'FileUpload0',
+]);
+$I->assertNotEmpty($filePath);
+
 // Cleanup ------------------------------------------------
 
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -152,6 +165,9 @@ $I->amOnModulePage('Students', 'applicationForm_manage_delete.php', $urlParams )
 
 $I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
+
+$I->deleteFromDatabase('gibbonApplicationFormFile', ['gibbonApplicationFormID' => $gibbonApplicationFormID]);
+$I->deleteFile('../'.$filePath);
 
 // Restore Original Settings -----------------------------------
 

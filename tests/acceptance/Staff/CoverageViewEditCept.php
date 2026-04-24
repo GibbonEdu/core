@@ -41,9 +41,14 @@ $gibbonStaffCoverageDateID = $I->haveInDatabase('gibbonStaffCoverageDate', [
 $I->amOnModulePage('Staff', 'coverage_view_edit.php', ['gibbonStaffCoverageID' => $gibbonStaffCoverageID]);
 $I->seeBreadcrumb('Edit Coverage');
 
+$I->selectOption('attachmentType', 'File');
+$I->attachFile('file', 'attachment.txt');
 $I->fillField('notesStatus', 'Updated coverage notes from view');
 $I->submitForm('#content form', [], 'Submit');
 $I->seeSuccessMessage();
+
+$file = $I->grabFromDatabase('gibbonStaffCoverage', 'attachmentContent', ['gibbonStaffCoverageID' => $gibbonStaffCoverageID]);
+$I->assertNotEmpty($file);
 
 // Clean up test data ----------------------------------
 
@@ -55,3 +60,6 @@ $I->seeSuccessMessage();
 $I->amOnModulePage('User Admin', 'staffSettings.php');
 $I->submitForm('#content form', $originalFormValues, 'Submit');
 $I->seeSuccessMessage();
+
+// Cleanup ------------------------------------------------
+$I->deleteFile('../'.$file);
