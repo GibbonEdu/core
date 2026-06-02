@@ -173,14 +173,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addLabel('paymentTest', __('Test Payment'))->description(__('You can use this tool to make a small payment in {currency} to test your gateway configuration.', ['currency' => $session->get('currency')]));
             $col = $row->addColumn();
             $col->addCurrency('paymentTest')->setValue(10)->groupAlign('left');
-            $col->addButton(__('Send'), 'testPayment()')->groupAlign('right')->setIcon('solid', 'arrow-right-circle');
+            $col->addButton(__('Send'), 'testPayment()')->groupAlign('right')->setIcon('arrow-right-circle');
     }
 
     // SMS
     $form->addRow()->addHeading('SMS Settings', __('SMS Settings'))->append(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.'));
 
     // SMS Gateway Options - these are not translated, as they represent company names
-    $smsGateways = ['OneWaySMS', 'Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'Mail to SMS'];
+    $smsGateways = ['OneWaySMS', 'Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'MNotify', 'Mail to SMS'];
     $setting = $settingGateway->getSettingByScope('Messenger', 'smsGateway', true);
     $smsGatewaySetting = $setting['value'];
     $row = $form->addRow();
@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     $form->toggleVisibilityByClass('smsSettings')->onSelect($setting['name'])->whenNot('');
     $form->toggleVisibilityByClass('smsSettingsOneWay')->onSelect($setting['name'])->when('OneWaySMS');
-    $form->toggleVisibilityByClass('smsAPIKey')->onSelect($setting['name'])->when(['Twilio', 'Nexmo', 'Clockwork', 'TextLocal']);
+    $form->toggleVisibilityByClass('smsAPIKey')->onSelect($setting['name'])->when(['Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'MNotify']);
     $form->toggleVisibilityByClass('smsAPIToken')->onSelect($setting['name'])->when(['Twilio', 'Nexmo']);
     $form->toggleVisibilityByClass('smsDomain')->onSelect($setting['name'])->when('Mail to SMS');
     
@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addLabel('smsTest', __('Test SMS'))->description(__('You can use this tool to send an sms to test your SMS Gateway configuration.'));
             $col = $row->addColumn();
             $col->addPhoneNumber('smsTest')->setValue($session->get('sms'))->groupAlign('left');
-            $col->addButton(__('Send'), 'testSMS()')->groupAlign('right')->setIcon('solid', 'arrow-right-circle');
+            $col->addButton(__('Send'), 'testSMS()')->groupAlign('right')->setIcon('arrow-right-circle');
     }
 
     // SMTP MAIL
@@ -292,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addLabel('emailTest', __('Test Email'))->description(__('You can use this tool to send an email to test your SMTP configuration.'));
         $col = $row->addColumn();
         $col->addEmail('emailTest')->setValue($session->get('email'))->groupAlign('left');
-        $col->addButton(__('Send'), 'testEmail()')->groupAlign('right')->setIcon('solid', 'arrow-right-circle');
+        $col->addButton(__('Send'), 'testEmail()')->groupAlign('right')->setIcon('arrow-right-circle');
     
 
     $row = $form->addRow();
