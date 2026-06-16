@@ -236,13 +236,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addLabel('timeEnd', __('End Time'));
                     $row->addTime('timeEnd')->required();
 
-                if (empty($values['gibbonTTDayRowClassID'])) {
-                    $row = $form->addRow();
-                        $row->addLabel('gibbonSpaceID', __('Location'));
-                        $row->addSelectSpace('gibbonSpaceID')
-                            ->placeholder();
-                }
-
+                $row = $form->addRow();
+                    $row->addLabel('gibbonSpaceID', __('Location'))->description(__('Override for timetable location'));
+                    $row->addSelectSpace('gibbonSpaceID')->placeholder();
 
                 //LESSON
                 $form->addRow()->addHeading('Lesson Content', __('Lesson Content'));

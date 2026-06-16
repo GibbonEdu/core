@@ -251,12 +251,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('timeEnd', __('End Time'))->description(__("Format: hh:mm (24hr)"));
                 $row->addTime('timeEnd')->setValue($nextTimeEnd)->required();
 
-            if (empty($gibbonTTDayRowClassID)) {
-                $row = $form->addRow();
-                    $row->addLabel('gibbonSpaceID', __('Location'));
-                    $row->addSelectSpace('gibbonSpaceID')
-                        ->placeholder();
-            }
+            $row = $form->addRow();
+                $row->addLabel('gibbonSpaceID', __('Location'))->description(__('Override for timetable location'));
+                $row->addSelectSpace('gibbonSpaceID')->placeholder();
 
             $form->addRow()->addHeading('Lesson Content', __('Lesson Content'));
 

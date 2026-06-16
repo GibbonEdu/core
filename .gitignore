@@ -38,3 +38,10 @@ var/*
 
 # Ignore node_modules folder
 node_modules
+
+# Ignore testing modules
+/modules/Courses and Classes
+/modules/AccessAPI
+/modules/BigBlueButton
+/modules/Data Admin
+
