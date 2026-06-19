@@ -45,5 +45,11 @@ services:
             start_period: 30s
         restart: unless-stopped
 
+    config:
+        image: rija/docker-alpine-shell-tools:1.0.1
+        volumes:
+            - ..:/var/www/html
+        command: /var/www/html/ops/scripts/generate_config.sh
+
 volumes:
     gibbon_db_data:
