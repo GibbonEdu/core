@@ -43,7 +43,7 @@ case "${1:-up}" in
     up)
         echo "Starting Gibbon dev environment..."
         ${DOCKER_COMPOSE} build app db
-        ${DOCKER_COMPOSE} up -d
+        ${DOCKER_COMPOSE} up -d app db
         echo "Installing Composer dependencies (this may take a minute on first run)..."
         ${DOCKER_COMPOSE} exec -T app composer install
         echo ""
