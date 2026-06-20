@@ -17,16 +17,16 @@ APP_SOURCE=/var/www/html
 # read env variables in same directory, from a file called .env.
 # They are shared by both this script and Docker compose files.
 cd $APP_SOURCE
-echo "Current working directory: $PWD"
+#echo "Current working directory: $PWD"
 
 if [ -f  ./.env ];then
-    echo "An .env file is present, sourcing it"
+    # echo "An .env file is present, sourcing it"
     source "./.env"
 fi
 
 # Print directory of this script. We will need it to find nginx config
 THIS_SCRIPT_DIR=`dirname "$BASH_SOURCE"`
-echo "Running ${THIS_SCRIPT_DIR}/generate_config.sh"
+#echo "Running ${THIS_SCRIPT_DIR}/generate_config.sh"
 
 # Generate config files for gigadb-website application using sed
 SOURCE=${APP_SOURCE}/ops/configuration/config.php.dist
@@ -36,5 +36,5 @@ VARS='${MYSQL_HOST} ${MYSQL_USER} ${MYSQL_PASSWORD} ${MYSQL_DATABASE} ${GUID} ${
 
 envsubst "$VARS" < "$SOURCE" > "$TARGET"
 
-echo "Done."
+# printf "Done\n"
 exit 0
