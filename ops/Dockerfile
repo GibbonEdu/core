@@ -1,4 +1,4 @@
-# PHP_VERSION can be overridden at build time via --build-arg or docker-compose.yaml
+# PHP_VERSION can be overridden at build time via --build-arg or compose.yaml
 ARG PHP_VERSION=8.3
 FROM php:${PHP_VERSION}-apache
 

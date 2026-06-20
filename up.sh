@@ -9,7 +9,7 @@
 set -euo pipefail
 
 ## Ensure the script is always run from the project root
-if [ ! -f "ops/docker-compose.yaml" ]; then
+if [ ! -f "ops/compose.yaml" ]; then
     echo "Error: Run this script from the project root (where up.sh lives)."
     exit 1
 fi
