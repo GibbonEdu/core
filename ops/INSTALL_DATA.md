@@ -20,13 +20,15 @@ If the script runs successfully, you should see the following output in the term
 $ ./setup_devdb.sh 
 Cleaning up environment
 OK: config.php deleted
-OK: recreated gibbon database
+OK: Recreated gibbon database
 Generating config.php
 OK: config.php created
-Executing gibbon.sql [this will take a few minutes]
-OK: imported schema
+Waiting for MySQL to accept connections...
+OK: MySQL is ready
+Executing gibbon.sql (this may take a few minutes)
+OK: Imported schema
 Executing gibbon_demo.sql
-OK: imported demo data
+OK: Imported demo data
 Creating admin user
 OK: Created admin user
 ```

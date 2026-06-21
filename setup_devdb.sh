@@ -19,42 +19,61 @@ if [ -f .env ]; then
   source .env
 fi
 
-printf "Cleaning up environment\n"
+# Simple logger
+log() { printf '%s\n' "$*"; }
+err() { printf 'ERROR: %s\n' "$*" >&2; }
+
+log "Cleaning up environment"
 # Delete config.php
 rm config.php 2>/dev/null || true
 if [ ! -f config.php ]; then
-  printf "OK: config.php deleted\n"
+  log "OK: config.php deleted"
 fi
+
 # Drop and recreate database
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db mysql -uroot -e "DROP DATABASE IF EXISTS \`${MYSQL_DATABASE}\`; CREATE DATABASE \`${MYSQL_DATABASE}\`;"
-printf "OK: recreated gibbon database\n"
+log "OK: Recreated gibbon database"
 
-printf "Generating config.php\n"
+log "Generating config.php"
 docker compose run --rm config
 if [ -f config.php ]; then
-  printf "OK: config.php created\n"
+  log "OK: config.php created"
 fi
 
-printf "Executing gibbon.sql [this will take a few minutes]\n"
+# Wait for MySQL to be ready
+log "Waiting for MySQL to accept connections..."
+max_wait=60
+i=0
+until docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db mysql -uroot -e 'SELECT 1' >/dev/null 2>&1; do
+  sleep 1
+  i=$((i+1))
+  if [ "$i" -ge "$max_wait" ]; then
+    err "ERROR: MySQL did not become ready within ${max_wait}s"
+    exit 3
+  fi
+done
+log "OK: MySQL is ready"
+
+log "Executing gibbon.sql (this may take a few minutes)"
 if docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db mysql -uroot "${MYSQL_DATABASE}" < "$SCHEMA_FILE"; then
-  printf "OK: imported schema\n"
+  log "OK: Imported schema"
 else
-  printf "ERROR: import schema\n" >&2
+  err "ERROR: Import schema"
   exit 1
 fi
 
 ## Import demo data into database in relaxed sql_mode
 ## Uses relaxed sql_mode to avoid issues with strict mode when importing demo data
 ## ERROR 1265 (01000) at line 7937: Data truncated for column 'ownershipType' at row 1
-printf "Executing gibbon_demo.sql\n"
+log "Executing gibbon_demo.sql"
 if docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" < "$DEMO_DATA_FILE"; then
-  printf "OK: imported demo data\n"
+  log "OK: Imported demo data"
 else
-  printf "ERROR: import demo data\n" >&2
+  err "ERROR: Import demo data"
   exit 1
 fi
 
-printf "Creating admin user\n"
+log "Creating admin user"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
 INSERT INTO gibbonPerson (
@@ -70,4 +89,4 @@ INSERT INTO gibbonPerson (
   'Y', 'Y', 'Y', 'Y'
 )
 SQL
-printf "OK: Created admin user\n"
+log "OK: Created admin user"
