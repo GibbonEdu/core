@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addLabel('paymentTest', __('Test Payment'))->description(__('You can use this tool to make a small payment in {currency} to test your gateway configuration.', ['currency' => $session->get('currency')]));
             $col = $row->addColumn();
             $col->addCurrency('paymentTest')->setValue(10)->groupAlign('left');
-            $col->addButton(__('Send'), 'testPayment()')->groupAlign('right')->setIcon('arrow-right-circle');
+            $col->addButton(__('Send'), 'testPayment()')->groupAlign('right')->setIcon('solid', 'arrow-right-circle');
     }
 
     // SMS
@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addLabel('smsTest', __('Test SMS'))->description(__('You can use this tool to send an sms to test your SMS Gateway configuration.'));
             $col = $row->addColumn();
             $col->addPhoneNumber('smsTest')->setValue($session->get('sms'))->groupAlign('left');
-            $col->addButton(__('Send'), 'testSMS()')->groupAlign('right')->setIcon('arrow-right-circle');
+            $col->addButton(__('Send'), 'testSMS()')->groupAlign('right')->setIcon('solid', 'arrow-right-circle');
     }
 
     // SMTP MAIL
@@ -292,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addLabel('emailTest', __('Test Email'))->description(__('You can use this tool to send an email to test your SMTP configuration.'));
         $col = $row->addColumn();
         $col->addEmail('emailTest')->setValue($session->get('email'))->groupAlign('left');
-        $col->addButton(__('Send'), 'testEmail()')->groupAlign('right')->setIcon('arrow-right-circle');
+        $col->addButton(__('Send'), 'testEmail()')->groupAlign('right')->setIcon('solid', 'arrow-right-circle');
     
 
     $row = $form->addRow();
