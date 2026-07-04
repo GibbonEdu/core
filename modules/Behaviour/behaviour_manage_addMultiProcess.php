@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
@@ -25,29 +24,24 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
+$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
-$settingGateway = $container->get(SettingGateway::class);
-$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
-$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
-
-$address = $_POST['address'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
-$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-$type = $_GET['type'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/behaviour_manage_addMulti.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $gibbonPersonIDMulti = $_POST['gibbonPersonIDMulti'] ?? [];
+    if (isset($_POST['gibbonPersonIDMulti'])) {
+        $gibbonPersonIDMulti = $_POST['gibbonPersonIDMulti'];
+    } else {
+        $gibbonPersonIDMulti = null;
+    }
     $date = $_POST['date'] ?? '';
     $type = $_POST['type'] ?? '';
     $descriptor = $_POST['descriptor'] ?? null;
@@ -59,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $customRequireFail = false;
     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Behaviour', [], $customRequireFail);
 
-    if (empty($gibbonPersonIDMulti) or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
+    if (is_null($gibbonPersonIDMulti) == true or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -105,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
 
                     // Add notifications for Educational Assistants
-                    if ($settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                    if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
                         $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
                         foreach ($educationalAssistants as $ea) {
                             $event->addRecipient($ea['gibbonPersonID']);
@@ -117,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     // Add direct notifications to form group tutors
                     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                        if ($settingGateway->getSettingByScope('Behaviour', 'notifyTutors') == 'Y') {
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
                             $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
 
                             if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {

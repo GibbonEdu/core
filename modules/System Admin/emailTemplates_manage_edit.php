@@ -18,8 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\Action;
 use Gibbon\Services\Format;
 use Gibbon\Comms\EmailTemplate;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage_edit.php') == false) {
@@ -57,12 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         $row->addTextField('moduleName')->readonly();
 
     $row = $form->addRow();
-        $row->addLabel('templateType', __('Type'));
-        $row->addTextField('templateType')->readonly();
-
-    $row = $form->addRow();
         $row->addLabel('templateName', __('Name'));
-        $row->addTextField('templateName')->maxLength(120);
+        $row->addTextField('templateName')->readonly();
 
     $form->addRow()->addHeading(__('Template'))
         ->prepend(Format::link('https://twig.symfony.com/doc/2.x/', '<img class="float-right w-5 h-5" title="'.__('Twig Documentation').'"  src="./themes/Default/img/help.png" >'));

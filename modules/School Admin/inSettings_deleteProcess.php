@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_de
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonINDescriptorID specified
+    //Check if school year specified
     if ($gibbonINDescriptorID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

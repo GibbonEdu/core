@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_d
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonTTColumnID specified
+    //Check if school year specified
     $gibbonTTColumnID = $_GET['gibbonTTColumnID'];
     if ($gibbonTTColumnID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

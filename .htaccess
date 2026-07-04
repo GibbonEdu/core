@@ -1,4 +1,9 @@
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|sql|neon|DS_Store)$">
+
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|sql)$">
 Order Allow,Deny
 Deny from all
 </FilesMatch>
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# This domain inherits the “PHP” package.
+# php -- END cPanel-generated handler, do not edit

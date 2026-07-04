@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplacement_manage_edit.php') == false) {
@@ -50,7 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             $values = $result->fetch();
 
             if ($search != '') {
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('System Admin', 'stringReplacement_manage.php')->withQueryParam('search', $search));
+                echo "<div class='linkTop'>";
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/System Admin/stringReplacement_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+                echo '</div>';
             }
 
             $form = Form::create('editString', $session->get('absoluteURL').'/modules/'.$session->get('module').'/stringReplacement_manage_editProcess.php?gibbonStringID='.$values['gibbonStringID'].'&search='.$search);

@@ -22,11 +22,8 @@ use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML']);
+include '../../gibbon.php';
 
 $gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
 $search = $_POST['search'] ?? '';
@@ -39,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonActivityID specified
+    //Check if school year specified
     $activityGateway = $container->get(ActivityGateway::class);
 
     if (!$activityGateway->exists($gibbonActivityID)) {

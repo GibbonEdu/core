@@ -19,15 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\View\View;
 use Gibbon\Domain\System\AlarmGateway;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
 // Gibbon system-wide includes
 include './gibbon.php';
 
 $type = $_GET['type'] ?? '';
 
-if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
+if (!$gibbon->session->has('gibbonPersonID') || $gibbon->session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     return;
 } elseif ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
     $alarmGateway = $container->get(AlarmGateway::class);
@@ -35,27 +33,16 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
     $alarm = $alarmGateway->selectBy(['status' => 'Current'])->fetch();
     if (empty($alarm)) return;
 
-    $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $session->get('gibbonPersonID'));
+    $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbon->session->get('gibbonPersonID'));
     $canViewReport = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
     $confirmationReport = $alarmGateway->selectAlarmConfirmation($alarm['gibbonAlarmID'])->fetchAll();
-
-    // Check for staff absent today
-    $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
-    $criteria = $staffAbsenceGateway->newQueryCriteria()->filterBy('date', 'Today')->filterBy('status', 'Approved');
-    $absences = $staffAbsenceGateway->queryAbsencesBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
-    $absences = array_reduce($absences->toArray(), function ($group, $item) {
-        if ($item['allDay'] != 'Y' && ($item['timeStart'] > date('H:i:s') || $item['timeEnd'] < date('H:i:s'))) return $group;
-        $group[] = $item['gibbonPersonID'];
-        return $group;
-    }, []);
     
     echo $container->get(View::class)->fetchFromTemplate('ui/alarmOverlay.twig.html', [
         'alarm'              => $alarm,
         'confirmed'          => $confirmed,
-        'gibbonPersonID'     => $session->get('gibbonPersonID'),
-        'customAlarmSound'   => $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'customAlarmSound'),
+        'gibbonPersonID'     => $gibbon->session->get('gibbonPersonID'),
+        'customAlarmSound'   => getSettingByScope($connection2, 'System Admin', 'customAlarmSound'),
         'canViewReport'      => $canViewReport,
         'confirmationReport' => $canViewReport ? $confirmationReport : [],
-        'staffAbsences'      => $absences,
     ]);
 }

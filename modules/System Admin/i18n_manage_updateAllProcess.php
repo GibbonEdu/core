@@ -18,11 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\I18nGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

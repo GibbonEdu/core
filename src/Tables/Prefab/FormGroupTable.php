@@ -19,14 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Forms\Input\Checkbox;
-use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Forms\Input\Checkbox;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Students\StudentGateway;
 
 /**
  * FormGroupTable
@@ -114,7 +113,7 @@ class FormGroupTable extends DataTable
         $this->addColumn('image_240')
             ->setClass('relative')
             ->format(function ($person) use ($canViewStudents) {
-                $url =  Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $person['gibbonPersonID']);
+                $url =  './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
 
@@ -126,8 +125,9 @@ class FormGroupTable extends DataTable
         $this->addColumn('name')
             ->setClass('text-xs font-bold mt-1')
             ->format(function ($person) use ($canViewStudents) {
-                $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
-                $url =  Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $person['gibbonPersonID']);
+                //GS//$name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
+                $name = $person['username'].' - '.Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
+                $url =  './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
 
                 return $canViewStudents
                     ? Format::link($url, $name)

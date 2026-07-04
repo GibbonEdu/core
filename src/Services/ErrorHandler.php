@@ -124,7 +124,7 @@ class ErrorHandler
             }
 
             if ($this->page) {
-                $this->page->addAlert($output, 'exception');
+                $this->page->addAlert('exception', $output);
             } else {
                 echo $output;
             }

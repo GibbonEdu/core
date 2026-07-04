@@ -21,11 +21,8 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 

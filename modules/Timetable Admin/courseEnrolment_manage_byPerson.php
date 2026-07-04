@@ -29,14 +29,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     //Proceed!
     $page->breadcrumbs->add(__('Course Enrolment by Person'));
 
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
 
-    if (empty($gibbonSchoolYearID)) {
+    if (empty($gibbonSchoolYearID) || $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
+    } else {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
+        $result = $pdo->executeQuery($data, $sql);
+        
+        $gibbonSchoolYearName = ($result->rowCount() > 0)? $result->fetchColumn(0) : '';
+    }
+
+    if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearName)) {
         echo '<div class="error">';
         echo __('The specified record does not exist.');
         echo '</div>';
     } else {
-        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+        echo '<h2>';
+        echo $gibbonSchoolYearName;
+        echo '</h2>';
+
+        echo "<div class='linkTop'>";
+            //Print year picker
+            if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+            } else {
+                echo __('Previous Year').' ';
+            }
+			echo ' | ';
+			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+				echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+			} else {
+				echo __('Next Year').' ';
+			}
+        echo '</div>';
 
         $allUsers = isset($_GET['allUsers'])? $_GET['allUsers'] : '';
         $search = isset($_GET['search'])? $_GET['search'] : '';

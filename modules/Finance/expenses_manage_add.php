@@ -17,10 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -29,9 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $allowExpenseAdd = $settingGateway->getSettingByScope('Finance', 'allowExpenseAdd');
+    $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
     if ($allowExpenseAdd != 'Y') {
         echo "<div class='error'>";
         echo __('You do not have access to this action.');
@@ -57,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         $page->return->setEditLink($editLink);
 
 
-        //Check if gibbonFinanceBudgetCycleID specified
+        //Check if school year specified
         $status2 = $_GET['status2'];
         $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
         if ($gibbonFinanceBudgetCycleID == '') {
@@ -66,12 +62,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
             echo '</div>';
         } else {
             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
-                 $params = [
-                    "gibbonFinanceBudgetCycleID" => $gibbonFinanceBudgetCycleID,
-                    "status2" => $status2,
-                    "gibbonFinanceBudgetID2" =>$gibbonFinanceBudgetID2
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'expenses_manage.php')->withQueryParams($params));
+                echo "<div class='linkTop'>";
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
+                echo '</div>';
 			}
 
 			$form = Form::create('expenseManage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenses_manage_addProcess.php');
@@ -107,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 				$row->addLabel('status', __('Status'));
 				$row->addSelect('status')->fromArray($statuses)->required()->placeholder();
 
-			$expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
+			$expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
 			$row = $form->addRow();
 				$col = $row->addColumn();
 				$col->addLabel('body', __('Description'));

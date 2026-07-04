@@ -48,8 +48,8 @@ class QueryCriteria
     {
         $this->setIdentifier($identifier);
 
-        return !empty($identifier) && isset($_POST[$identifier]) 
-            ? $this->fromArray($_POST[$identifier]) 
+        return !empty($identifier) && isset($_POST[$identifier])
+            ? $this->fromArray($_POST[$identifier])
             : $this->fromArray($_POST);
     }
 
@@ -148,7 +148,7 @@ class QueryCriteria
 
     /**
      * Sets the page number for paginated queries, applied to the sql offset.
-     * 
+     *
      * @param int $page
      * @return self
      */
@@ -195,7 +195,7 @@ class QueryCriteria
      * Add a search string to the criteria for the specified columns.
      * Accepts $column as a string or an array of columns to search.
      * Omitting the $text value will modify the columns for the current search.
-     * 
+     *
      * @param string|array $column
      * @param string $search
      * @return self
@@ -206,8 +206,8 @@ class QueryCriteria
         $columns = array_filter($columns);
 
         if (!empty($columns)) {
-            $columns = array_map(function($item){ 
-                return preg_replace('/[^a-zA-Z0-9\.\_]/', '', $item); 
+            $columns = array_map(function($item){
+                return preg_replace('/[^a-zA-Z0-9\.\_]/', '', $item);
             }, $columns);
             $this->criteria['searchBy']['columns'] =  $columns;
         }
@@ -296,10 +296,10 @@ class QueryCriteria
     }
 
     /**
-     * Add a filter to the criteria. 
+     * Add a filter to the criteria.
      * Accepts parameters as filter:value strings, or separate $name, $value params.
      * Values with spaces or other characters can also be quoted, as filter:"some value"
-     * 
+     *
      * @param string $filter
      * @param string $value
      * @return self
@@ -370,7 +370,7 @@ class QueryCriteria
     /**
      * Add a sort column to the criteria.
      * Accepts $column as a string or an array of columns to search.
-     * 
+     *
      * @param string $column
      * @param string $direction
      * @return self

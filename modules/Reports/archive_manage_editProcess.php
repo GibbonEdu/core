@@ -19,11 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
 

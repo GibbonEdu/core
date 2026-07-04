@@ -18,11 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -46,7 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
         //Run through each of the selected participants.
         $update = true;
-        $choices = $_POST['Members'] ?? [];
+        $choices = null;
+        if (isset($_POST['Members'])) {
+            $choices = $_POST['Members'];
+        }
 
         if (count($choices) < 1) {
             $URL .= '&return=error1';

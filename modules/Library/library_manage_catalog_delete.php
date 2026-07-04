@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonLibraryItemID specified
+    //Check if school year specified
     $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
     $name = $_GET['name'] ?? '';
     $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';

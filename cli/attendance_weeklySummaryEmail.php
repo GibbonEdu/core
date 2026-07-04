@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
 
@@ -29,20 +28,17 @@ require getcwd().'/../gibbon.php';
 setCurrentSchoolYear($guid, $connection2);
 
 //Check for CLI, so this cannot be run through browser
-$settingGateway = $container->get(SettingGateway::class);
-$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
-$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
-if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
+if (!isCommandLineInterface()) {
     echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     setCurrentSchoolYear($guid, $connection2);
 
     require_once __DIR__ . '/../modules/Attendance/moduleFunctions.php';
     require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
+    $attendance = new AttendanceView($gibbon, $pdo);
 
-    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
-    $firstDayOfTheWeek = $session->get('firstDayOfTheWeek');
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+    $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
     $dateFormat = $session->get('i18n')['dateFormat'];
 
     $dateEnd = new DateTime();
@@ -52,7 +48,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     $data = array(
         'dateStart' => $dateStart->format('Y-m-d'),
         'dateEnd' => $dateEnd->format('Y-m-d'),
-        'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')
+        'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID')
     );
     $sql = "SELECT gibbonFormGroup.nameShort as formGroupName, gibbonYearGroup.gibbonYearGroupID, gibbonAttendanceLogPerson.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className, gibbonCourseClass.gibbonCourseClassID
             FROM gibbonAttendanceLogPerson
@@ -163,7 +159,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     if (!empty($reportByYearGroup)) {
         // Initialize the notification sender & gateway objects
         $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $session);
+        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
         $reportHeading = '<h3>'.__('Weekly Attendance Summary').': '.$dateStart->format('M j').' - '.$dateEnd->format('M j').'</h3>';
 

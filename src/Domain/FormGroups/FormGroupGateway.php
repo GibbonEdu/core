@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+//GS/
 
 namespace Gibbon\Domain\FormGroups;
 
@@ -53,8 +54,7 @@ class FormGroupGateway extends QueryableGateway
                 'gibbonFormGroup.gibbonPersonIDTutor2',
                 'gibbonFormGroup.gibbonPersonIDTutor3',
                 'gibbonSpace.name AS space',
-                'gibbonFormGroup.website',
-                "LENGTH(gibbonFormGroup.name) as sortOrder"
+                'gibbonFormGroup.website'
 
             ])
             ->innerJoin('gibbonSchoolYear', 'gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID')
@@ -79,7 +79,7 @@ class FormGroupGateway extends QueryableGateway
                 LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
                 WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 GROUP BY gibbonFormGroup.gibbonFormGroupID
-                ORDER BY LENGTH(gibbonFormGroup.name), gibbonFormGroup.name";
+                ORDER BY gibbonFormGroup.name"; //GS//
 
         return $this->db()->select($sql, $data);
     }
@@ -102,7 +102,7 @@ class FormGroupGateway extends QueryableGateway
                 WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                     AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
                 GROUP BY gibbonFormGroup.gibbonFormGroupID
-                ORDER BY LENGTH(gibbonFormGroup.name), gibbonFormGroup.name";
+                ORDER BY gibbonFormGroup.name"; //GS//
 
         return $this->db()->select($sql, $data);
     }

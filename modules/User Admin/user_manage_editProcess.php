@@ -2,19 +2,21 @@
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
+
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
@@ -22,18 +24,14 @@ use Gibbon\Domain\System\LogGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\User\UserStatusLogGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
@@ -41,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonPersonID specified
+    //Check if school year specified
     if ($gibbonPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -91,8 +89,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $title = $_POST['title'] ?? '';
             $surname = trim($_POST['surname'] ?? '');
             $firstName = trim($_POST['firstName'] ?? '');
-            $preferredName = trim($_POST['preferredName'] ?? '');
-            $officialName = trim($_POST['officialName'] ?? '');
+            //GS//$preferredName = trim($_POST['preferredName'] ?? '');
+            $preferredName = $firstName; //GS//
+            //GS//$officialName = trim($_POST['officialName'] ?? '');
+            $officialName = trim($firstName . ' ' . $surname); //GS//
             $nameInCharacters = $_POST['nameInCharacters'] ?? '';
             $gender = $_POST['gender'] ?? '';
             $username = isset($_POST['username'])? $_POST['username'] : $values['username'];
@@ -173,25 +173,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $address2District = $_POST['address2District'] ?? '';
             $address2Country = $_POST['address2Country'] ?? '';
             $phone1Type = $_POST['phone1Type'] ?? '';
-            if ($_POST['phone1'] != '' && $phone1Type == '') {
+            if ($_POST['phone1'] != '' and $phone1Type == '') {
                 $phone1Type = 'Other';
             }
             $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
             $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1'] ?? '');
             $phone2Type = $_POST['phone2Type'] ?? '';
-            if ($_POST['phone2'] != '' && $phone2Type == '') {
+            if ($_POST['phone2'] != '' and $phone2Type == '') {
                 $phone2Type = 'Other';
             }
             $phone2CountryCode = $_POST['phone2CountryCode'] ?? '';
             $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2'] ?? '');
             $phone3Type = $_POST['phone3Type'];
-            if ($_POST['phone3'] != '' && $phone3Type == '') {
+            if ($_POST['phone3'] != '' and $phone3Type == '') {
                 $phone3Type = 'Other';
             }
             $phone3CountryCode = $_POST['phone3CountryCode'] ?? '';
             $phone3 = preg_replace('/[^0-9+]/', '', $_POST['phone3'] ?? '');
             $phone4Type = $_POST['phone4Type'];
-            if ($_POST['phone4'] != '' && $phone4Type == '') {
+            if ($_POST['phone4'] != '' and $phone4Type == '') {
                 $phone4Type = 'Other';
             }
             $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
@@ -237,7 +237,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $dayType = $_POST['dayType'] ?? null;
 
             //Validate Inputs
-            if ($surname == '' || $firstName == '' || $preferredName == '' || $officialName == '' || $gender == '' || $username == '' || $status == '' || $gibbonRoleIDPrimary == '') {
+            if (/*GS// $surname == '' or */$firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $username == '' or $status == '' or $gibbonRoleIDPrimary == '') {
+                //GS-DEBUG//var_dump($surname); var_dump($firstName); var_dump($preferredName); var_dump($officialName); var_dump($gender); var_dump($username); var_dump($status); var_dump($gibbonRoleIDPrimary);
+                //GS-DEBUG//DIE();
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
@@ -366,15 +368,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             exit();
                         }
 
-                        if ($row['status'] != $status) {
-                            $statusReason = $_POST['statusReason'] ?? '';
-
-                            $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
-                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason]);
-                        }
-
                         //Deal with change to privacy settings
-                        if ($student && $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {
+                        if ($student and getSettingByScope($connection2, 'User Admin', 'privacy') == 'Y') {
                             if ($privacy_old != $privacy) {
 
                                 //Notify tutor
@@ -418,13 +413,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                         $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
                                         $notificationText .= $privacyText;
 
-                                        if ($rowDetail['gibbonPersonIDTutor'] != null && $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
+                                        if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);
                                         }
-                                        if ($rowDetail['gibbonPersonIDTutor2'] != null && $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
+                                        if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Students', $actionLink);
                                         }
-                                        if ($rowDetail['gibbonPersonIDTutor3'] != null && $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
+                                        if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', $actionLink);
                                         }
                                     }
@@ -462,17 +457,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 }
                             }
                         }
-                        if ($partialFail || $personalDocumentFail) {
+                        if ($partialFail == true) {
                             $URL .= '&return=warning1';
                             header("Location: {$URL}");
-                        } else if ($imageFail) {
-                            $URL .= '&return=warning3';
-                            header("Location: {$URL}");
                         } else {
-                            $URL .= '&return=success0';
-                            header("Location: {$URL}");
+                            if ($personalDocumentFail) {
+                                $URL .= '&return=warning1';
+                                header("Location: {$URL}");
+                            } else {
+                                $URL .= '&return=success0';
+                                header("Location: {$URL}");
+                            }
                         }
-
                     }
                 }
             }

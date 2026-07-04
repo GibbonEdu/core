@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
@@ -37,13 +36,8 @@ if (!empty($session->get('i18n')['code'])) {
     textdomain('gibbon');
 }
 
-$settingGateway = $container->get(SettingGateway::class);
-
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
-$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
-if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
-    echo __('This script cannot be run from a browser, only via CLI.');
+if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $currentDate = date('Y-m-d');
 
@@ -56,8 +50,8 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
         $userReport = array();
         $adminReport = array( 'classes' => array() );
 
-        $enabledByClass = $settingGateway->getSettingByScope('Attendance', 'attendanceCLINotifyByClass');
-        $additionalUsersList = $settingGateway->getSettingByScope('Attendance', 'attendanceCLIAdditionalUsers');
+        $enabledByClass = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass');
+        $additionalUsersList = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers');
 
         if ($enabledByClass != 'Y') {
             die('Attendance CLI cancelled: Notifications not enabled in Attendance Settings.');
@@ -156,7 +150,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 
         // Initialize the notification sender & gateway objects
         $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $session);
+        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
         // Raise a new notification event
         $event = new NotificationEvent('Attendance', 'Daily Attendance Summary');

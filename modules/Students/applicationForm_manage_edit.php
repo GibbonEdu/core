@@ -26,7 +26,6 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
-use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -43,29 +42,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    $urlParams = compact('gibbonApplicationFormID', 'gibbonSchoolYearID', 'search');
-
     $page->breadcrumbs
-        ->add(__('Manage Applications'), 'applicationForm_manage.php', $urlParams)
+        ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Form'));
 
-    $settingGateway = $container->get(SettingGateway::class);
-    $customFieldHandler = $container->get(CustomFieldHandler::class);
-    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
-
-    //Check if gibbonApplicationFormID and gibbonSchoolYearID specified
+    //Check if school year specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-    
-    $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-    $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
+
+
+        $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+        $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
     if ($result->rowCount() != 1) {
-        $page->addError(__('The specified record does not exist.'));
+        echo "<div class='error'>";
+        echo __('The specified record does not exist.');
+        echo '</div>';
         return;
     }
 
@@ -73,24 +69,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $application = $result->fetch();
     $proceed = true;
 
-    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'applicationForm_manage')->withQueryParams($urlParams));
-
-    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
-    if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
-        $page->navigator->addHeaderAction('payment', __('Send Payment Request'))
-            ->setUrl('/index.php?q=/modules/Students/applicationForm_manage_edit_fee.php')
-            ->setIcon('page_right')
-            ->addParams($urlParams)
-            ->displayLabel(true);
+    echo "<div class='linkTop'>";
+    if ($search != '') {
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
     }
 
-    $page->navigator->addHeaderAction('print', __('Print'))
-        ->setUrl('/report.php')
-        ->addParam('q', '/modules/Students/applicationForm_manage_edit_print.php')
-        ->addParams($urlParams)
-        ->setTarget('_blank')
-        ->directLink()
-        ->displayLabel(true);
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
+        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
+    }
+
+    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+    echo '</div>';
+
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
+    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
 
     $form = Form::create('applicationFormEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_editProcess.php?search='.$search);
     $form->setAutocomplete('on');
@@ -108,9 +101,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('gibbonApplicationFormID', __('Application ID'));
         $row->addTextField('gibbonApplicationFormID')->readOnly();
 
-    $row = $form->addRow();
-        $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
-        $row->addSelect('priority')->fromArray(range(-9, 9))->required();
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
+    //GS//    $row->addSelect('priority')->fromArray(range(-9, 9))->required();
+
+    $form->addHiddenValue('priority', '0'); //GS//
 
     // STATUS
     if ($application['applicationStatus'] != 'Accepted') {
@@ -130,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // MILESTONES
-    $milestonesList = $settingGateway->getSettingByScope('Application Form', 'milestones');
+    $milestonesList = getSettingByScope($connection2, 'Application Form', 'milestones');
     if (!empty($milestonesList)) {
         $row = $form->addRow();
             $row->addLabel('milestones', __('Milestones'));
@@ -176,22 +171,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             ->placeholder();
 
     // DAY TYPE
-    $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
+    $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
     if (!empty($dayTypeOptions)) {
         $row = $form->addRow();
-            $row->addLabel('dayType', __('Day Type'))->description($settingGateway->getSettingByScope('User Admin', 'dayTypeText'));
+            $row->addLabel('dayType', __('Day Type'))->description(getSettingByScope($connection2, 'User Admin', 'dayTypeText'));
             $row->addSelect('dayType')->fromString($dayTypeOptions);
     }
 
     // PAYMENT
-    $currency = $settingGateway->getSettingByScope('System', 'currency');
-    $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
-    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
-    $enablePayments = $settingGateway->getSettingByScope('System', 'enablePayments');
-    $paymentAPIUsername = $settingGateway->getSettingByScope('System', 'paymentAPIUsername');
-    $paymentAPIPassword = $settingGateway->getSettingByScope('System', 'paymentAPIPassword');
-    $paymentAPISignature = $settingGateway->getSettingByScope('System', 'paymentAPISignature');
-    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
+    $currency = getSettingByScope($connection2, 'System', 'currency');
+    $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
+    $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
+    $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
+    $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     $ccPayment = false;
 
     $paymentMadeOptions = array(
@@ -238,17 +233,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     // USERNAME & STUDENT ID
     $row = $form->addRow();
-        $row->addLabel('username', __('Username'))->description(__('System login name.'));
+        $row->addLabel('username', __('Username/ID'))->description(__('System login name/Student ID.')); //GS//
         $row->addUsername('username')
+            ->required() //GS//
             ->readonly($application['applicationStatus'] == 'Accepted')
             ->addGenerateUsernameButton($form);
 
-    $row = $form->addRow();
-        $row->addLabel('studentID', __('Student ID'));
-        $row->addTextField('studentID')
-            ->maxLength(10)
-            ->uniqueField('./modules/Students/applicationForm_manage_studentIDAjax.php', ['gibbonApplicationFormID' => $gibbonApplicationFormID])
-            ->readonly($application['applicationStatus'] == 'Accepted');
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('studentID', __('Student ID'));
+    //GS//    $row->addTextField('studentID')
+    //GS//        ->maxLength(10)
+    //GS//        ->uniqueField('./modules/Students/applicationForm_manage_studentIDAjax.php', ['gibbonApplicationFormID' => $gibbonApplicationFormID])
+    //GS//        ->readonly($application['applicationStatus'] == 'Accepted');
+    $form->addHiddenValue('studentID', ''); //GS//
 
     // NOTES
     $row = $form->addRow();
@@ -323,80 +320,102 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     // STUDENT PERSONAL DATA
     $form->addRow()->addHeading(__('Student'));
-    $form->addRow()->addSubheading(__('Student Personal Data'));
+    //GS//$form->addRow()->addSubheading(__('Student Personal Data'));
+
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
+    //GS//    $row->addTextField('firstName')->required()->maxLength(60);
+    $form->addHiddenValue('firstName', ''); //GS//
 
     $row = $form->addRow();
-        $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-        $row->addTextField('surname')->required()->maxLength(60);
-
-    $row = $form->addRow();
-        $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-        $row->addTextField('firstName')->required()->maxLength(60);
-
-    $row = $form->addRow();
-        $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+        $row->addLabel('preferredName', __('First Name'))->description(__('Most common name, alias, nickname, etc.')); //GS//
         $row->addTextField('preferredName')->required()->maxLength(60);
 
+    //GS// changed position
     $row = $form->addRow();
-        $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-        $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+        $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
+        //GS//$row->addTextField('surname')->required()->maxLength(60);
+        $row->addTextField('surname')->maxLength(60); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-        $row->addTextField('nameInCharacters')->maxLength(60);
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
+    //GS//    $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+    $form->addHiddenValue('officialName', ''); //GS//
+
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
+    //GS//    $row->addTextField('nameInCharacters')->maxLength(60);
+    $form->addHiddenValue('nameInCharacters', ''); //GS//
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'));
+        $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dob')->required();
 
     // STUDENT BACKGROUND
-    $form->addRow()->addSubheading(__('Student Background'));
+    //GS//$form->addRow()->addSubheading(__('Student Background'));
 
-    $row = $form->addRow();
-        $row->addLabel('languageHomePrimary', __('Home Language - Primary'))->description(__('The primary language used in the student\'s home.'));
-        $row->addSelectLanguage('languageHomePrimary')->required();
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageHomePrimary', __('Home Language - Primary'))->description(__('The primary language used in the student\'s home.'));
+    //GS//    $row->addSelectLanguage('languageHomePrimary')->required();
+    $form->addHiddenValue('languageHomePrimary', $application['languageHomePrimary']); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
-        $row->addSelectLanguage('languageHomeSecondary')->placeholder('');
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
+    //GS//    $row->addSelectLanguage('languageHomeSecondary')->placeholder('');
+    $form->addHiddenValue('languageHomeSecondary', $application['languageHomeSecondary']); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
-        $row->addSelectLanguage('languageFirst')->required();
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
+    //GS//    $row->addSelectLanguage('languageFirst')->required();
+    $form->addHiddenValue('languageFirst', $application['languageFirst']); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageSecond', __('Second Language'));
-        $row->addSelectLanguage('languageSecond')->placeholder('');
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageSecond', __('Second Language'));
+    //GS//    $row->addSelectLanguage('languageSecond')->placeholder('');
+    $form->addHiddenValue('languageSecond', $application['languageSecond']); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageThird', __('Third Language'));
-        $row->addSelectLanguage('languageThird')->placeholder('');
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageThird', __('Third Language'));
+    //GS//    $row->addSelectLanguage('languageThird')->placeholder('');
+    $form->addHiddenValue('languageThird', $application['languageThird']); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('countryOfBirth', __('Country of Birth'));
-        $row->addSelectCountry('countryOfBirth')->required();
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('countryOfBirth', __('Country of Birth'));
+    //GS//    $row->addSelectCountry('countryOfBirth')->required();
+    $form->addHiddenValue('countryOfBirth', $application['countryOfBirth']); //GS//
 
-    $countryName = ($session->has('country')) ? __($session->get('country')).' ' : '';
-    $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
-    $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
-    
+    //GS//$countryName = ($session->has('country')) ? __($session->get('country')).' ' : '';
+    //GS//$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+    //GS//$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+
+    $religions = getSettingByScope($connection2, 'User Admin', 'religions'); //GS//
+    $row = $form->addRow(); //GS//
+	$row->addLabel('religion', __('Religion')); //GS//
+	if (!empty($religions)) { //GS//
+	       $row->addSelect('religion')->fromString($religions)->placeholder(); //GS//
+	} else { //GS//
+	       $row->addTextField('religion')->maxLength(30); //GS//
+	} //GS//
+
+
     // PERSONAL DOCUMENTS
     $params = ['student' => true, 'applicationForm' => true];
     $personalDocumentHandler->addPersonalDocumentsToForm($form, 'gibbonApplicationForm', $gibbonApplicationFormID, $params);
-    
+
     // STUDENT CONTACT
     $form->addRow()->addSubheading(__('Student Contact'));
 
-    $row = $form->addRow();
-        $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email');
-        if ($uniqueEmailAddress == 'Y') {
-            $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php');
-        }
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('email', __('Email'));
+    //GS//    $email = $row->addEmail('email');
+    //GS//    if ($uniqueEmailAddress == 'Y') {
+    //GS//        $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php');
+    //GS//    }
+    $form->addHiddenValue('email', $application['email']);
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
@@ -405,12 +424,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // SPECIAL EDUCATION & MEDICAL
-    $senOptionsActive = $settingGateway->getSettingByScope('Application Form', 'senOptionsActive');
+    $senOptionsActive = getSettingByScope($connection2, 'Application Form', 'senOptionsActive');
 
     if ($senOptionsActive == 'Y') {
         $heading = $form->addRow()->addSubheading(__('Special Educational Needs & Medical'));
 
-        $applicationFormSENText = $settingGateway->getSettingByScope('Students', 'applicationFormSENText');
+        $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
         if (!empty($applicationFormSENText)) {
             $heading->append('<p>'.$applicationFormSENText.'<p>');
         }
@@ -430,45 +449,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $form->addHiddenValue('sen', 'N');
     }
 
-    $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
-        $column->addTextArea('medicalInformation')->setRows(5)->setClass('fullWidth');
+    //GS//$row = $form->addRow();
+    //GS//    $column = $row->addColumn();
+    //GS//    $column->addLabel('', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
+    //GS//    $column->addTextArea('medicalInformation')->setRows(5)->setClass('fullWidth');
+    $form->addHiddenValue('Medical Information', $application['Medical Information']); //GS//
 
+    //GS//// STUDENT EDUCATION
+    //GS//$row = $form->addRow()->addSubheading(__('Previous Schools'))->append(__('Please give information on the last two schools attended by the applicant.'));
 
-    // STUDENT EDUCATION
-    $row = $form->addRow()->addSubheading(__('Previous Schools'))->append(__('Please give information on the last two schools attended by the applicant.'));
+    //GS//// REFEREE EMAIL
+    //GS//$applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
+    //GS//if (!empty($applicationFormRefereeLink)) {
+    //GS//    $row = $form->addRow();
+    //GS//        $row->addLabel('referenceEmail', __('Current School Reference Email'))->description(__('An email address for a referee at the applicant\'s current school.'));
+    //GS//        $row->addEmail('referenceEmail')->required();
+    //GS//}
 
-    // REFEREE EMAIL
-    $applicationFormRefereeLink = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink');
-    if (!empty($applicationFormRefereeLink)) {
-        $row = $form->addRow();
-            $row->addLabel('referenceEmail', __('Current School Reference Email'))->description(__('An email address for a referee at the applicant\'s current school.'));
-            $row->addEmail('referenceEmail')->required();
-    }
+    //GS//// PREVIOUS SCHOOLS TABLE
+    //GS//$table = $form->addRow()->addTable()->addClass('colorOddEven');
 
-    // PREVIOUS SCHOOLS TABLE
-    $table = $form->addRow()->addTable()->addClass('colorOddEven');
+    //GS//$header = $table->addHeaderRow();
+    //GS//$header->addContent(__('School Name'));
+    //GS//$header->addContent(__('Address'));
+    //GS//$header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
+    //GS//$header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
+    //GS//$header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
 
-    $header = $table->addHeaderRow();
-    $header->addContent(__('School Name'));
-    $header->addContent(__('Address'));
-    $header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
-    $header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
-    $header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
+    //GS//// Grab some languages, for auto-complete
+    //GS//$results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
+    //GS//$languages = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
 
-    // Grab some languages, for auto-complete
-    $results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
-    $languages = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
+    //GS//for ($i = 1; $i < 3; ++$i) {
+    //GS//    $row = $table->addRow();
+    //GS//    $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(18);
+    //GS//    $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
+    //GS//    $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
+    //GS//    $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
+    //GS//    $row->addDate('schoolDate'.$i)->setSize(10);
+    //GS//}
 
-    for ($i = 1; $i < 3; ++$i) {
-        $row = $table->addRow();
-        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(18);
-        $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
-        $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
-        $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
-        $row->addDate('schoolDate'.$i)->setSize(10);
-    }
+    for ($i = 1; $i < 3; ++$i) { //GS//
+        $form->addHiddenValue('schoolName'.$i, $application['schoolName'.$i]); //GS//
+        $form->addHiddenValue('schoolAddress'.$i, $application['schoolAddress'.$i]); //GS//
+        $form->addHiddenValue('schoolGrades'.$i, $application['schoolGrades'.$i]); //GS//
+        $form->addHiddenValue('schoolLanguage'.$i, $application['schoolLanguage'.$i]); //GS//
+        $form->addHiddenValue('schoolDate'.$i, $application['schoolDate'.$i]); //GS//
+    } //GS//
+
 
     // CUSTOM FIELDS FOR STUDENT
     $params = ['student' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
@@ -536,38 +564,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $form->addRow()->addHeading(__('Parent/Guardian').' '.$i)->append($subheading);
 
             if ($i == 2) {
-                $checked = (!empty($application['parent2gibbonPersonID']) || !empty($application['parent2surname']))? 'Yes' : 'No';
+                //GS//$checked = (!empty($application['parent2gibbonPersonID']) || !empty($application['parent2surname']))? 'Yes' : 'No';
+                $checked = (!empty($application['parent2gibbonPersonID']) || !empty($application['parent2surname']) || !empty($application['parent2firstName']))? 'Yes' : 'No';
                 $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian'));
                 $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
             }
 
             // PARENT PERSONAL DATA
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Data'));
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Data'));
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}title", __('Title'));
-                $row->addSelectTitle("parent{$i}title")->required();
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}title", __('Title'));
+            //GS//    $row->addSelectTitle("parent{$i}title")->required();
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
-                $row->addTextField("parent{$i}surname")->required()->maxLength(30);
-
+            //GS: Changed order//
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}firstName", __('First Name'))->description(__('First name as shown in ID documents.'));
                 $row->addTextField("parent{$i}firstName")->required()->maxLength(30);
 
+            //GS: Changed order//
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-                $row->addTextField("parent{$i}preferredName")->required()->maxLength(30);
+                $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
+                //GS//$row->addTextField("parent{$i}surname")->required()->maxLength(30);
+                $row->addTextField("parent{$i}surname")->maxLength(30);//GS//
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
-                $row->addTextField("parent{$i}officialName")->required()->maxLength(150);
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+            //GS//    $row->addTextField("parent{$i}preferredName")->required()->maxLength(30);
+            $form->addHiddenValue('parent{$i}preferredName', $application['parent{$i}preferredName']); //GS//
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-                $row->addTextField("parent{$i}nameInCharacters")->maxLength(20);
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
+            //GS//    $row->addTextField("parent{$i}officialName")->required()->maxLength(150);
+            $form->addHiddenValue('parent{$i}officialName', $application['parent{$i}officialName']); //GS//
+
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
+            //GS//    $row->addTextField("parent{$i}nameInCharacters")->maxLength(20);
+            $form->addHiddenValue('parent{$i}nameInCharacters', $application['parent{$i}nameInCharacters']); //GS//
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}gender", __('Gender'));
@@ -578,16 +613,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addSelectRelationship("parent{$i}relationship")->required();
 
             // PARENT PERSONAL BACKGROUND
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Background'));
+            //GS////GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS////GS//    $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Background'));
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}languageFirst", __('First Language'));
-                $row->addSelectLanguage("parent{$i}languageFirst")->placeholder();
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}languageFirst", __('First Language'));
+            //GS//    $row->addSelectLanguage("parent{$i}languageFirst")->placeholder();
+            $form->addHiddenValue("parent{$i}languageFirst", $application["parent{$i}languageFirst"]); //GS//
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}languageSecond", __('Second Language'));
-                $row->addSelectLanguage("parent{$i}languageSecond")->placeholder();
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}languageSecond", __('Second Language'));
+            //GS//    $row->addSelectLanguage("parent{$i}languageSecond")->placeholder();
+            $form->addHiddenValue("parent{$i}languageSecond", $application["parent{$i}languageSecond"]); //GS//
 
             // PERSONAL DOCUMENTS
 
@@ -595,16 +632,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $personalDocumentHandler->addPersonalDocumentsToForm($form, 'gibbonApplicationFormParent'.$i, $gibbonApplicationFormID, $params);
 
             // PARENT CONTACT
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Contact'));
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addSubheading(__('Parent/Guardian')." $i ".__('Contact'));
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->required($i == 1);
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}email", __('Email'));
+            //GS//    $email = $row->addEmail("parent{$i}email")->required($i == 1);
+            $form->addHiddenValue("parent{$i}email", $application["parent{$i}email"]);
 
-                if ($uniqueEmailAddress == 'Y') {
-                    $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
-                }
+            if ($uniqueEmailAddress == 'Y') {
+                $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
+            }
 
             for ($y = 1; $y < 3; ++$y) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
@@ -613,16 +651,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
 
             // PARENT EMPLOYMENT
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Employment'));
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addSubheading(__('Parent/Guardian')." $i ".__('Employment'));
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
                 $row->addTextField("parent{$i}profession")->required($i == 1)->maxLength(90);
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->maxLength(90);
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}employer", __('Employer'));
+            //GS//    $row->addTextField("parent{$i}employer")->maxLength(90);
+            $form->addHiddenValue("parent{$i}employer", $application["parent{$i}employer"]); //GS//
 
             // CUSTOM FIELDS FOR PARENTS
             $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'headingPrefix' => __('Parent/Guardian')." $i", 'headingLevel' => 'h4', 'class' => "parentSection{$i}"];
@@ -652,7 +691,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $header->addContent(__('Relationships'));
 
             // Get the family relationships
-            
+
                 $dataRelationships = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
                 $sqlRelationships = 'SELECT surname, preferredName, title, gender, gibbonApplicationFormRelationship.gibbonPersonID, relationship FROM gibbonApplicationFormRelationship JOIN gibbonPerson ON (gibbonApplicationFormRelationship.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonApplicationFormRelationship.gibbonApplicationFormID=:gibbonApplicationFormID';
                 $resultRelationships = $connection2->prepare($sqlRelationships);
@@ -670,29 +709,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // SIBLINGS
-    $form->addRow()->addHeading(__('Siblings'))->append(__('Please give information on the applicants\'s siblings.'));
+    //GS//$form->addRow()->addHeading(__('Siblings'))->append(__('Please give information on the applicants\'s siblings.'));
 
-    $table = $form->addRow()->addTable()->addClass('colorOddEven');
+    //GS//$table = $form->addRow()->addTable()->addClass('colorOddEven');
 
-    $header = $table->addHeaderRow();
-    $header->addContent(__('Sibling Name'));
-    $header->addContent(__('Date of Birth'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
-    $header->addContent(__('School Attending'));
-    $header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
+    //GS//$header = $table->addHeaderRow();
+    //GS//$header->addContent(__('Sibling Name'));
+    //GS//$header->addContent(__('Date of Birth'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
+    //GS//$header->addContent(__('School Attending'));
+    //GS//$header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
 
-    // Add additional sibling rows up to 3
-    for ($i = 1; $i <= 3; ++$i) {
-        $row = $table->addRow();
-        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
-        $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
-        $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
-        $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
-    }
+    //GS//// Add additional sibling rows up to 3
+    //GS//for ($i = 1; $i <= 3; ++$i) {
+    //GS//    $row = $table->addRow();
+    //GS//    $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
+    //GS//    $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
+    //GS//    $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
+    //GS//    $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
+    //GS//}
 
     // LANGUAGE OPTIONS
-    $languageOptionsActive = $settingGateway->getSettingByScope('Application Form', 'languageOptionsActive');
-    $languageOptionsBlurb = $settingGateway->getSettingByScope('Application Form', 'languageOptionsBlurb');
-    $languageOptionsLanguageList = $settingGateway->getSettingByScope('Application Form', 'languageOptionsLanguageList');
+    $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
+    $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
+    $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
 
     if ($languageOptionsActive == 'Y' && ($languageOptionsBlurb != '' OR $languageOptionsLanguageList != '')) {
 
@@ -719,12 +758,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // SCHOLARSHIPS
-    $scholarshipOptionsActive = $settingGateway->getSettingByScope('Application Form', 'scholarshipOptionsActive');
+    $scholarshipOptionsActive = getSettingByScope($connection2, 'Application Form', 'scholarshipOptionsActive');
 
     if ($scholarshipOptionsActive == 'Y') {
         $heading = $form->addRow()->addHeading(__('Scholarships'));
 
-        $scholarship = $settingGateway->getSettingByScope('Application Form', 'scholarships');
+        $scholarship = getSettingByScope($connection2, 'Application Form', 'scholarships');
         if (!empty($scholarship)) {
             $heading->append($scholarship)->wrap('<p>','</p>');
         }
@@ -740,7 +779,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
 
     // PAYMENT
-    $paymentOptionsActive = $settingGateway->getSettingByScope('Application Form', 'paymentOptionsActive');
+    $paymentOptionsActive = getSettingByScope($connection2, 'Application Form', 'paymentOptionsActive');
 
     if ($paymentOptionsActive == 'Y') {
         $form->addRow()->addHeading(__('Payment'));
@@ -809,16 +848,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // REQURIED DOCUMENTS
-    $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
-    $internalDocuments = $settingGateway->getSettingByScope('Application Form', 'internalDocuments');
+    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+    $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
 
     if (!empty($internalDocuments)) {
         $requiredDocuments .= ','.$internalDocuments;
     }
 
     if (!empty($requiredDocuments)) {
-        $requiredDocumentsText = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsText');
-        $requiredDocumentsCompulsory = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsCompulsory');
+        $requiredDocumentsText = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsText');
+        $requiredDocumentsCompulsory = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory');
 
         $heading = $form->addRow()->addHeading(__('Supporting Documents'));
 
@@ -862,37 +901,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
 
     // MISCELLANEOUS
-    $form->addRow()->addHeading(__('Miscellaneous'));
+    //GS//$form->addRow()->addHeading(__('Miscellaneous'));
 
-    $howDidYouHear = $settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
-    $howDidYouHearList = explode(',', $howDidYouHear);
+    //GS//$howDidYouHear = getSettingByScope($connection2, 'Application Form', 'howDidYouHear');
+    //GS//$howDidYouHearList = explode(',', $howDidYouHear);
 
-    $row = $form->addRow();
-        $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
-    if (empty($howDidYouHear)) {
-        $row->addTextField('howDidYouHear')->required()->maxLength(30);
-    } else {
-        $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder();
+    //GS//if (empty($howDidYouHear)) {
+    //GS//    $row->addTextField('howDidYouHear')->required()->maxLength(30);
+    //GS//} else {
+    //GS//    $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder();
+    $form->addHiddenValue('howDidYouHear', ''); //GS//
 
-        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+    //GS//    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
 
-        $row = $form->addRow()->addClass('tellUsMore');
-            $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
-            $row->addTextField('howDidYouHearMore')->maxLength(255);
-    }
+    //GS//    $row = $form->addRow()->addClass('tellUsMore');
+    //GS//        $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
+    //GS//        $row->addTextField('howDidYouHearMore')->maxLength(255);
+    //GS//}
 
     // PRIVACY
-    $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
-    $privacyBlurb = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
-    $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
+    $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+    $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
         $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
 
         $options = array_map('trim', explode(',', $privacyOptions));
-        $checked = !empty($application['privacy']) ? array_map('trim', explode(',', $application['privacy'])) : [];
+        $checked = array_map('trim', explode(',', $application['privacy']));
 
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy'));

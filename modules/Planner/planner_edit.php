@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 use Gibbon\Services\Format;
@@ -38,9 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         //Set variables
         $today = date('Y-m-d');
 
-        $settingGateway = $container->get(SettingGateway::class);
-        $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
-        $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -66,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
             if ($date == '') {
                 $date = date('Y-m-d');
             }
-            [$dateYear, $dateMonth, $dateDay] = explode('-', $date);
+            list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
             $params += [
                 'viewBy' => 'date',
@@ -87,10 +85,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         }
         $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-        [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
+        list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
-        //Check if gibbonPlannerEntryID and gibbonCourseClassID specified
+        //Check if school year specified
         $gibbonCourseClassID = null;
         if (isset($_GET['gibbonCourseClassID'])) {
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
@@ -218,13 +216,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 //LESSON
                 $form->addRow()->addHeading(__('Lesson Content'));
 
-                $description = $settingGateway->getSettingByScope('Planner', 'lessonDetailsTemplate') ;
+                $description = getSettingByScope($connection2, 'Planner', 'lessonDetailsTemplate') ;
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('description', __('Lesson Details'));
                     $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
 
-                $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
+                $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
@@ -331,7 +329,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $form->addRow()->addHeading(__('Outcomes'));
                     $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
 
-                    $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
+                    $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
 
                     $row = $form->addRow();
                         $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);

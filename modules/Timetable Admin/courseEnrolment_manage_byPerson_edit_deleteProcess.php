@@ -36,7 +36,7 @@ if ($gibbonPersonID == '' or $gibbonCourseClassID == '' or $gibbonSchoolYearID =
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonPersonID specified
+        //Check if school year specified
         if ($gibbonPersonID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

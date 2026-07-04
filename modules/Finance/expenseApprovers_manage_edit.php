@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -30,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         ->add(__('Manage Expense Approvers'),'expenseApprovers_manage.php')
         ->add(__('Edit Expense Approver'));
 
-    //Check if gibbonFinanceExpenseApproverID specified
+    //Check if school year specified
     $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'];
     if ($gibbonFinanceExpenseApproverID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -56,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
                 $row->addLabel('gibbonPersonID', __('Staff'));
                 $row->addSelectStaff('gibbonPersonID')->required()->placeholder();
 
-            $expenseApprovalType = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
+            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
             if ($expenseApprovalType == 'Chain Of All') {
                 $row = $form->addRow();
                     $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique.'));

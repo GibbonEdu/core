@@ -26,7 +26,6 @@ use Gibbon\Tables\View\DataTableView;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Columns\Column;
-use Gibbon\Http\Url;
 
 /**
  * Paginated View
@@ -56,7 +55,6 @@ class PaginatedView extends DataTableView implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
-        $dataSet->htmlEncode($table->getMetaData('allowHTML', []));
         $this->preparePageData($table, $dataSet);
 
         return $this->render('components/paginatedTable.twig.html');
@@ -66,7 +64,7 @@ class PaginatedView extends DataTableView implements RendererInterface
     {
         $this->preProcessTable($table);
         $filters = $table->getMetaData('filterOptions', []);
-
+        
         $this->addData([
             'table'      => $table,
             'dataSet'    => $dataSet,
@@ -79,8 +77,8 @@ class PaginatedView extends DataTableView implements RendererInterface
 
         if (!empty($this->criteria)) {
             $this->addData([
-                'url'            => Url::fromRoute()->withQueryParams($_GET),
-                'path'           => Url::fromHandlerRoute('fullscreen.php')->withQueryParams($_GET),
+                'url'            => './index.php?'.http_build_query(['view' => ''] + $_GET),
+                'path'           => './fullscreen.php?'.http_build_query($_GET),
                 'headers'        => $this->getTableHeaders($table),
                 'identifier'     => $this->criteria->getIdentifier(),
                 'searchText'     => $this->criteria->getSearchText(),
@@ -122,7 +120,7 @@ class PaginatedView extends DataTableView implements RendererInterface
 
         return $th;
     }
-
+    
     /**
      * Get the currently active filters for this criteria.
      *
@@ -134,14 +132,14 @@ class PaginatedView extends DataTableView implements RendererInterface
         $criteriaUsed = [];
         foreach ($this->criteria->getFilterBy() as $name => $value) {
             $key = $name.':'.$value;
-            $criteriaUsed[$name] = isset($filters[$key])
-                ? $filters[$key]
+            $criteriaUsed[$name] = isset($filters[$key]) 
+                ? $filters[$key] 
                 : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))) . ($name == 'in'? ': '.ucfirst($value) : ''); // camelCase => Title Case
         }
 
         return $criteriaUsed;
     }
-
+    
     /**
      * Render the available options for filtering the data set.
      *
@@ -152,7 +150,7 @@ class PaginatedView extends DataTableView implements RendererInterface
     protected function getSelectFilterOptions(DataSet $dataSet, array $filters)
     {
         if (empty($filters)) return '';
-
+        
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
             ->setClass('filters float-none w-24 pl-2 border leading-none h-full sm:h-8 ')

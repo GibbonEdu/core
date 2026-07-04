@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Finance\FinanceGateway;
 use Gibbon\Tables\DataTable;
@@ -29,9 +28,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     //Proceed!
     $page->breadcrumbs->add(__('Manage Expense Approvers'));
 
-    $settingGateway = $container->get(SettingGateway::class);
-    $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
-    $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
+    $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+    $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
     $description = '';
 
     if ($expenseApprovalType == 'One Of') {

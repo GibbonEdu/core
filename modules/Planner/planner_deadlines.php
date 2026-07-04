@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
@@ -37,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $today = date('Y-m-d');
 
     $plannerGateway = $container->get(PlannerEntryGateway::class);
-    $homeworkNamePlural = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'homeworkNamePlural');
+    $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
     //Proceed!
     //Get viewBy, date and class variables
@@ -66,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
         if ($date == '') {
             $date = date('Y-m-d');
         }
-        [$dateYear, $dateMonth, $dateDay] = explode('-', $date);
+        list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
         $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         $params += [
             'viewBy' => 'date',
@@ -84,16 +83,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             'gibbonCourseClassID' => $gibbonCourseClassID,
         ];
     }
-    [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
+    list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
     $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
     $show = null;
     if (isset($_GET['show'])) {
         $show = $_GET['show'];
     }
-
+    $gibbonCourseClassIDFilter = null;
     if (isset($_GET['gibbonCourseClassIDFilter'])) {
-        $gibbonCourseClassID = $_GET['gibbonCourseClassIDFilter'];
-        $params['gibbonCourseClassID'] = $gibbonCourseClassID;
+        $gibbonCourseClassIDFilter = $_GET['gibbonCourseClassIDFilter'];
     }
     $gibbonPersonID = null;
     if (isset($_GET['search'])) {
@@ -278,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ]);
 
             // HOMEWORK TABLE
-            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $category, $gibbonCourseClassID);
+            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $category);
             $table->setTitle($homeworkNamePlural);
 
             echo $table->getOutput();

@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -37,14 +36,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Reject Application'));
 
-    //Check if gibbonApplicationFormID and gibbonSchoolYearID specified
+    //Check if school year specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-        $sql = 'SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        
+            $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+            $sql = 'SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -55,13 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $values = $result->fetch();
             $proceed = true;
 
-           if ($search != '') {
-                $params = [
-                    "search" => $search,
-                    "gibbonSchoolYearID" => $gibbonSchoolYearID
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'applicationForm_manage.php')->withQueryParams($params));
+            echo "<div class='linkTop'>";
+            if ($search != '') {
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
             }
+            echo '</div>';
 
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/applicationForm_manage_rejectProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&search=$search");
 

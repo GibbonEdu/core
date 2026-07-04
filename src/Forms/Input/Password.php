@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Domain\System\SettingGateway;
 
 /**
  * Password
@@ -37,14 +36,12 @@ class Password extends TextField
      */
     public function addPasswordPolicy(Connection $pdo)
     {
-        global $container;
+        $connection2 = $pdo->getConnection();
 
-        $settingGateway = $container->get(SettingGateway::class);
-
-        $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
-        $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
-        $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
-        $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
+        $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
+        $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+        $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+        $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
 
         if ($alpha == 'Y') {
             $this->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');

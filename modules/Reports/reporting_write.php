@@ -193,12 +193,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     }
 
     // SIDEBAR: Student List
-    $session->set('sidebarExtra', $page->fetchFromTemplate('ui/writingSidebar.twig.html', [
+    $_SESSION[$guid]['sidebarExtra'] .= $page->fetchFromTemplate('ui/writingSidebar.twig.html', [
         'totalCount' => count($progress),
         'progressCount' => count($progressByCategory['Complete'] ?? []),
         'students' => $progress,
         'params' => $urlParams,
-    ]));
+    ]);
 }
 ?>
 <script>

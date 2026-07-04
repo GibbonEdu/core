@@ -19,11 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
-use Gibbon\Services\Format;
-use Gibbon\Session\SessionFactory;
 use Psr\Container\ContainerInterface;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\System\SessionGateway;
 
 /**
  * Gibbon Core
@@ -40,13 +36,13 @@ class Core
     protected $basePath;
 
     /**
-     * Core classes available to all Gibbon scripts
+     * Core classes available to all Gibbon scripts 
      * TODO: These need removed & replaced with DI
-     * @var  \Gibbon\Contracts\Services\Session Session object.
+     * @var  object
      */
     public $session;
     public $locale;
-
+    
     /**
      * Configuration variables
      * @var  array
@@ -83,12 +79,12 @@ class Core
         if ($this->initialized == true) return;
 
         $db = $container->get('db');
-        $this->session = $container->get('session');
-        
-        Format::setupFromSession($this->session);
+
+        $this->session->setDatabaseConnection($db);
 
         if (empty($this->session->get('systemSettingsSet'))) {
-            SessionFactory::populateSettings($this->session, $db);
+            $this->session->loadSystemSettings($db);
+            $this->session->loadLanguageSettings($db);
         }
 
         $installType = $this->session->get('installType');
@@ -99,12 +95,7 @@ class Core
         $this->locale->setLocale($this->session->get(array('i18n', 'code')));
         $this->locale->setTimezone($this->session->get('timezone', 'UTC'));
         $this->locale->setTextDomain($db);
-        $this->locale->setStringReplacementList($this->session, $db);
-
-        // Update the information for this session (except in ajax scripts)
-        if (\SESSION_TABLE_AVAILABLE && stripos($this->session->get('action'), 'ajax') === false) {
-            $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('module'), $this->session->get('gibbonPersonID'));
-        }
+        $this->locale->setStringReplacementList($db);
 
         $this->initialized = true;
     }
@@ -145,15 +136,15 @@ class Core
     }
 
     /**
-     * Get a config value by name, otherwise return the config array.
-     * @param string|null $name
+     * Get a config value by name, othwerwise return the config array.
+     * @param string $name
      * 
      * @return mixed|array
      */
     public function getConfig($name = null)
     {
-        return !is_null($name)
-            ? ($this->config[$name] ?? '')
+        return !is_null($name) && isset($this->config[$name])
+            ? $this->config[$name]
             : $this->config;
     }
 
@@ -174,12 +165,12 @@ class Core
      *
      * @param    string  $versionFilePath
      *
-     * @throws   \Exception If the version file is not found
+     * @throws   Exception If the version file is not found
      */
     protected function loadVersionFromFile($versionFilePath)
     {
         if (file_exists($versionFilePath) == false) {
-            throw new \Exception('Gibbon version.php file missing: ' . $versionFilePath);
+            throw new Exception('Gibbon version.php file missing: ' . $versionFilePath);
         }
 
         include $versionFilePath;
@@ -201,12 +192,10 @@ class Core
         $this->config = include $configFilePath;
 
         if (!isset($databasePort)) $databasePort = '';
-        if (!isset($sessionHandler)) $sessionHandler = 'default';
-        if (!isset($sessionEncryptionKey)) $sessionEncryptionKey = '';
 
         // Otherwise load the config values from global scope
         if (empty($this->config) || !is_array($this->config)) {
-            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching', 'sessionHandler', 'sessionEncryptionKey');
+            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching');
         }
     }
 }

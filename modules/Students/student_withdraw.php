@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -47,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
         $row->addLabel('dateEnd', __('End Date'))->description(__("Users's last day at school."));
         $row->addDate('dateEnd')->required();
 
-    $departureReasonsList = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'departureReasons');
+    $departureReasonsList = getSettingByScope($connection2, 'User Admin', 'departureReasons');
     $row = $form->addRow();
         $row->addLabel('departureReason', __('Departure Reason'));
         if (!empty($departureReasonsList)) {

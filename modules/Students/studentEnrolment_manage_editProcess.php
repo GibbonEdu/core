@@ -20,11 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'] ?? '';
@@ -107,6 +104,19 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         exit;
                     }
 
+                    //GS->//
+                    try {
+                        $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonFormGroupID' => $gibbonFormGroupID, 'rollOrder' => $rollOrder, 'today' => date('Y-m-d'));
+                        $sql = 'INSERT INTO gibbonStudentEnrolmentChanged SET gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID, gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonFormGroupID=:gibbonFormGroupID, rollOrder=:rollOrder, dateChanged=:today';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error22';
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                    //GS<-//
+                    
                     $partialFail = false;
 
                     // Handle automatic course enrolment if enabled

@@ -42,14 +42,15 @@ class StudentGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryStudentsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $searchFamilyDetails = false)
+    public function queryStudentsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $searchFamilyDetails = false, $gibbonPersonTutorID = false) //GS//
     {
         $query = $this
             ->newQuery()
             ->distinct()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240',  'gibbonYearGroup.gibbonYearGroupID', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.gibbonFormGroupID', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory"
+                //GS//'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240',  'gibbonYearGroup.gibbonYearGroupID', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.gibbonFormGroupID', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory"
+                'gibbonPerson.username', 'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240',  'gibbonYearGroup.gibbonYearGroupID', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.gibbonFormGroupID', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory" //GS//
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->leftJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
@@ -66,6 +67,10 @@ class StudentGateway extends QueryableGateway
                   ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
                   ->bindValue('today', date('Y-m-d'));
         }
+
+        if ($gibbonPersonTutorID) { //GS//
+            $query->where("gibbonFormGroup.gibbonPersonIDTutor = '".$gibbonPersonTutorID."'"); //GS//
+        } //GS//
 
         if ($searchFamilyDetails && $criteria->hasSearchText()) {
             self::$searchableColumns = array_merge(self::$searchableColumns, ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate']);
@@ -108,7 +113,8 @@ class StudentGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonStudentEnrolment.gibbonSchoolYearID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory", 'gender', 'dob', 'transport', 'lockerNumber', 'privacy',
+                //GS//'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonStudentEnrolment.gibbonSchoolYearID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory", 'gender', 'dob', 'transport', 'lockerNumber', 'privacy',
+                'gibbonPerson.username', 'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonStudentEnrolment.gibbonSchoolYearID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory", 'gender', 'dob', 'transport', 'lockerNumber', 'privacy',
                 "GROUP_CONCAT(DISTINCT (CASE WHEN gibbonPersonalDocumentType.name IS NOT NULL THEN gibbonPersonalDocument.country END) SEPARATOR '<br/>') as citizenship"
             ])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
@@ -182,13 +188,14 @@ class StudentGateway extends QueryableGateway
     public function selectUnenrolledStudentsBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonPerson.gibbonPersonID AS value, CONCAT(surname, \", \", preferredName, \" (\", username, \")\") AS name
+        //GS//$sql = "SELECT gibbonPerson.gibbonPersonID AS value, CONCAT(surname, \", \", preferredName, \" (\", username, \")\") AS name
+        $sql = "SELECT gibbonPerson.gibbonPersonID AS value, CONCAT(username, \" - \", firstName, \" \", surname) AS name
                 FROM gibbonPerson
                     JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
                     LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                     LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE
-                    (status='Full' OR status='Expected')
+                    status='Full'
                     AND gibbonFormGroup.name IS NULL
                     AND gibbonRole.category='Student'
                 ORDER BY name, surname, preferredName";
@@ -236,8 +243,8 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID, $onlyFull = true)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, image_240, gender, dateStart, dateEnd, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
-                FROM gibbonPerson
+        //GS//$sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gender, dateStart, dateEnd, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
+        $sql = "SELECT gibbonPerson.username, gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gender, dateStart, dateEnd, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy        FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -299,6 +306,126 @@ class StudentGateway extends QueryableGateway
         }
         return $this->db()->selectOne($sql, $data);
     }
+
+    //GS->//
+    public function getStudentTotalGirlsCount($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gender='F'";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getStudentTotalBoysCount($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gender='M'";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+
+    public function getTeachersTotalCount($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
+                FROM gibbonPerson
+                JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonPerson.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor OR gibbonPerson.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor2 OR gibbonPerson.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor3)
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getStudentTransitionedCount($gibbonSchoolYearID, $date = null)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                  AND gibbonPerson.gibbonRoleIDPrimary='003' AND gibbonPerson.departureReason='Transitioned'";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getStudentPassoutCount($gibbonSchoolYearID, $date = null)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                  AND gibbonPerson.gibbonRoleIDPrimary='003' AND gibbonPerson.departureReason='Passout'";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getStudentDropoutCount($gibbonSchoolYearID, $date = null)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                  AND gibbonPerson.gibbonRoleIDPrimary='003' AND gibbonPerson.departureReason='Dropout'";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getStudentMigratedCount($gibbonSchoolYearID, $date = null)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                  AND gibbonPerson.gibbonRoleIDPrimary='003' AND gibbonPerson.departureReason='Migrated'";
+
+        return $this->db()->selectOne($sql, $data);
+    }    
+
+    public function getAttendanceTakenPercentage($gibbonSchoolYearID, $date = null)
+    {
+        $totalEnrolment = $this->getStudentEnrolmentCount($gibbonSchoolYearID, $date);
+
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => $date];
+        $sql = "SELECT COUNT(DISTINCT gibbonPersonID)
+                FROM gibbonAttendanceLogPerson
+                WHERE date=:date";
+
+        $totalTaken = $this->db()->selectOne($sql, $data);
+
+        return round(($totalTaken * 100) / $totalEnrolment, 2);
+    }      
+
+    public function getAttendancePresentPercentage($gibbonSchoolYearID, $date = null)
+    {
+        $totalEnrolment = $this->getStudentEnrolmentCount($gibbonSchoolYearID, $date);
+
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => $date];
+        $sql = "SELECT COUNT(DISTINCT gibbonPersonID)
+                FROM gibbonAttendanceLogPerson
+                WHERE date=:date
+                    AND type='Present'";
+
+        $totalPresent = $this->db()->selectOne($sql, $data);
+
+        return round(($totalPresent * 100) / $totalEnrolment, 2);
+    }  
+    //<-GS//
 
     public function selectAllRelatedUsersByStudent($gibbonSchoolYearID, $gibbonYearGroupID, $gibbonFormGroupID, $gibbonPersonID)
     {

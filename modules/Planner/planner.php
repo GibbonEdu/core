@@ -17,10 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -38,13 +36,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
-        
         //Set variables
         $today = date('Y-m-d');
-        $settingGateway = $container->get(SettingGateway::class);
-        $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
-        $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -72,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             if ($date == '') {
                 $date = date('Y-m-d');
             }
-            [$dateYear, $dateMonth, $dateDay] = explode('-', $date);
+            list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
             $class = null;
@@ -84,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
             }
         }
-        [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
+        list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
         $gibbonPersonIDArray = [];
 
@@ -968,7 +963,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     echo '</th>';
                                     echo '<th>';
                                     echo __('TT Period').'<br/>';
-                                    echo "<span style='font-size: 85%; font-style: italic'>".__('Time')." & ".__('Facility')."</span>";
+                                    echo "<span style='font-size: 85%; font-style: italic'>".__('Time')."</span>";
                                     echo '</th>';
                                     echo '<th>';
                                     echo __('Planned Lesson').'<br/>';
@@ -1036,9 +1031,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                                         //COLOR ROW BY STATUS!
                                         if ($lesson[8] != 'School Closure') {
-                                            
-                                            $times = $plannerEntryGateway->getPlannerTTByClassTimes($gibbonCourseClassID, $lesson[1], $lesson[2], $lesson[3]);
-
                                             echo "<tr class=$rowNum>";
                                             echo "<td $style>";
                                             echo "<b>".__('Lesson')." ".($classCount + 1)."</b>";
@@ -1054,7 +1046,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             echo "<td $style>";
                                             echo $lesson['4'].'<br/>';
                                             echo "<span style='font-size: 85%; font-style: italic'>".substr($lesson['2'], 0, 5).' - '.substr($lesson['3'], 0, 5).'</span>';
-                                            echo  "<br/><i style='font-size: 85%; font-style: italic'>".($times['spaceName'] ?? '')."</i>";
                                             echo '</td>';
                                             echo "<td $style>";
                                             if ($lesson['0'] == 'Planned') {

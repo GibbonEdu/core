@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
 $gibbonTTID = $_GET['gibbonTTID'] ?? '';
@@ -40,7 +37,7 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
         //Proceed!
         $gibbonSpaceID = !empty($_POST['gibbonSpaceID']) ? $_POST['gibbonSpaceID'] : null;
 
-        //Check if gibbonTTDayID specified
+        //Check if school year specified
         if ($gibbonTTDayID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

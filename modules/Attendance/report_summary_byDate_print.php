@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -28,8 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $settingGateway = $container->get(SettingGateway::class);
-    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $dateEnd = (isset($_GET['dateEnd']))? Format::dateConvert($_GET['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
@@ -97,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         }
         else if ($reportType == 'reasons') {
             $attendanceCodeInfo = $resultCodes->fetch();
-            $attendanceReasons = explode(',', $settingGateway->getSettingByScope('Attendance', 'attendanceReasons') );
+            $attendanceReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceReasons') );
 
             foreach( $attendanceReasons as $reason ) {
                 $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.reason='".$reason."' THEN date END) AS `".$reason."`";

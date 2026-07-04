@@ -20,13 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_manage_add.php';
 
@@ -38,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     // Proceed!
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
-    $fullDayThreshold =  floatval($container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageFullDayThreshold'));
+    $fullDayThreshold =  floatval(getSettingByScope($connection2, 'Staff', 'coverageFullDayThreshold'));
     
     $requestDates = $_POST['requestDates'] ?? [];
 

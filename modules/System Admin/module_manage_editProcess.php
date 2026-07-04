@@ -18,11 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\ModuleGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
 

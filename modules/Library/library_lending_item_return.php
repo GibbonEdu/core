@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if gibbonLibraryItemEventID specified
+    //Check if school year specified
     if (empty($gibbonLibraryItemEventID) or empty($gibbonLibraryItemID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonTTSpaceBookingID specified
+        //Check if school year specified
         if ($gibbonTTSpaceBookingID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -29,9 +28,7 @@ use Gibbon\Tables\Prefab\ClassGroupTable;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$settingGateway = $container->get(SettingGateway::class);
-
-$makeDepartmentsPublic = $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic');
+$makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
@@ -79,12 +76,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             if ($gibbonDepartmentID != '') {
                 $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
                 $page->breadcrumbs
+                    ->add(__('View All'), 'departments.php')
                     ->add($row['department'], 'department.php', $urlParams)
                     ->add($row['courseLong'].$extra, 'department_course.php', $urlParams)
                     ->add(Format::courseClassName($row['course'], $row['class']));
             } else {
                 $page->breadcrumbs
-                    ->add(__('Departments'), 'departments.php')
+                    ->add(__('View All'), 'departments.php')
                     ->add(Format::courseClassName($row['course'], $row['class']));
             }
 
@@ -117,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
             // Homework
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
-                $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
+                $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
                 $menuItems[] = [
                     'name' => __($homeworkNamePlural),
                     'url'  => './index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$gibbonCourseClassID,
@@ -134,31 +132,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
 
             // Menu Items Table
-            if (!empty($menuItems)) {
-                $gridRenderer = new GridView($container->get('twig'));
-                $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
-                $table->setTitle($row['courseLong']." - ".$row['classLong']);
-                $table->setDescription(Format::courseClassName($row['course'], $row['class']));
+            $gridRenderer = new GridView($container->get('twig'));
+            $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+            $table->setTitle($row['courseLong']." - ".$row['classLong']);
+            $table->setDescription(Format::courseClassName($row['course'], $row['class']));
 
-                $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
-                $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
-                $table->addMetaData('hidePagination', true);
+            $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
+            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
+            $table->addMetaData('hidePagination', true);
 
-                $iconPath = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/';
-                $table->addColumn('icon')
-                    ->format(function ($menu) use ($iconPath) {
-                        $img = sprintf('<img src="%1$s" title="%2$s" class="w-24 sm:w-32 px-4 pb-2">', $iconPath.$menu['icon'], $menu['name']);
-                        return Format::link($menu['url'], $img);
-                    });
+            $iconPath = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/';
+            $table->addColumn('icon')
+                ->format(function ($menu) use ($iconPath) {
+                    $img = sprintf('<img src="%1$s" title="%2$s" class="w-24 sm:w-32 px-4 pb-2">', $iconPath.$menu['icon'], $menu['name']);
+                    return Format::link($menu['url'], $img);
+                });
 
-                $table->addColumn('name')
-                    ->setClass('font-bold text-xs')
-                    ->format(function ($menu) {
-                        return Format::link($menu['url'], $menu['name']);
-                    });
+            $table->addColumn('name')
+                ->setClass('font-bold text-xs')
+                ->format(function ($menu) {
+                    return Format::link($menu['url'], $menu['name']);
+                });
 
-                echo $table->render(new DataSet($menuItems));
-            }
+            echo $table->render(new DataSet($menuItems));
 
             // Custom fields
             $table = DataTable::createDetails('fields');
@@ -166,10 +162,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             echo $table->render([$row]);
 
             // Participants
-            $table = $container->get(ClassGroupTable::class);
-            $table->build($gibbon->session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
+            if (!empty($menuItems)) {
+                $table = $container->get(ClassGroupTable::class);
+                $table->build($gibbon->session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
 
-            echo $table->getOutput();
+                echo $table->getOutput();
+            }
 
             //Print sidebar
             if ($session->get('username')) {

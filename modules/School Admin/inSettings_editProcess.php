@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/inSettings_edit.php&gibbonINDescriptorID=$gibbonINDescriptorID";
@@ -30,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonINDescriptorID specified
+    //Check if school year specified
     if ($gibbonINDescriptorID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -45,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $results = $result->fetchAll();
         $row = current($results);
 
-        $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
+        $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
         $date = '';
         if ($dateType == 'Date') {
             if (substr($row['programStart'], 0, 4) == substr($row['programEnd'], 0, 4)) {

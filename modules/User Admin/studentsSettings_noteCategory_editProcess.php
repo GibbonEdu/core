@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['template' => 'HTML']);
+include '../../gibbon.php';
 
 $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID=$gibbonStudentNoteCategoryID";
@@ -30,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonStudentNoteCategoryID specified
+    //Check if school year specified
     if ($gibbonStudentNoteCategoryID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

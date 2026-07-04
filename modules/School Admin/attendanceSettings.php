@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -91,32 +90,30 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $row = $form->addRow()->addHeading(__('Reasons'));
 
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $setting = $settingGateway->getSettingByScope('Attendance', 'attendanceReasons', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceReasons', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Context & Defaults'));
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'recordFirstClassAsSchool', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'recordFirstClassAsSchool', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'crossFillClasses', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'crossFillClasses', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $sql = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
-    $setting = $settingGateway->getSettingByScope('Attendance', 'defaultFormGroupAttendanceType', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -124,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             ->selected($setting['value'])
             ->required();
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'defaultClassAttendanceType', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -135,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $row = $form->addRow()->addHeading(__('Student Self Registration'));
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'studentSelfRegistrationIPAddresses', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
@@ -155,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $form->addRow()->addAlert(sprintf(__('Your current IP address (%1$s) is not included in the saved list.'), "<b>".$realIP."</b>"), 'warning')->setClass('standardWidth');
     }
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'selfRegistrationRedirect', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'selfRegistrationRedirect', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -163,18 +160,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $row = $form->addRow()->addHeading(__('Attendance CLI'));
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'attendanceCLINotifyByFormGroup', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'attendanceCLINotifyByClass', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 
-    $setting = $settingGateway->getSettingByScope('Attendance', 'attendanceCLIAdditionalUsers', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
     $inputs = array();
     
         $data=array( 'action1' => '%report_formGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );

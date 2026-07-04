@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $time = time();
 
@@ -32,7 +29,10 @@ if (empty($_POST) or empty($_FILES)) {
 } else {
     //Proceed!
     $id = $_POST['id'] ?? '';
-    $imagesAsLinks = !empty($_POST['imagesAsLinks']) && $_POST['imagesAsLinks'] == 'Y';
+    $imagesAsLinks = false;
+    if ($_POST['imagesAsLinks'] == 'Y') {
+        $imagesAsLinks = true;
+    }
 
     if ($id == '') {
         echo "<span style='font-weight: bold; color: #ff0000'>";
@@ -74,7 +74,7 @@ if (empty($_POST) or empty($_FILES)) {
                     $name = mb_substr(basename($file['name']), 0, mb_strrpos(basename($file['name']), '.'));
 
                     if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
-                        $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'><img class='resource' style='max-width: 100%' src='".$session->get('absoluteURL').'/'.$attachment."'></a>";
+                        $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'><img class='resource' style='max-width: 500px' src='".$session->get('absoluteURL').'/'.$attachment."'></a>";
                     } else {
                         $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'>".$name.'</a>';
                     }

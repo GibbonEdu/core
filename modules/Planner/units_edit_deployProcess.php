@@ -17,13 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
+include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
@@ -89,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                         //It is a lesson, so add it
                         if (strpos($order, 'lessonHeader-') !== false) {
                             $summary = 'Part of the '.$row['name'].' unit.';
-                            $teachersNotes = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'teachersNotesTemplate');
+                            $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
                             $viewableStudents = $_POST['viewableStudents'];
                             $viewableParents = $_POST['viewableParents'];
 

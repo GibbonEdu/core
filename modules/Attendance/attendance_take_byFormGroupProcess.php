@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
@@ -44,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         echo '</div>';
     } else {
         //Proceed!
-        //Check if gibbonFormGroupID and currentDate specified
+        //Check if school year specified
         if ($gibbonFormGroupID == '' and $currentDate == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -82,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     } else {
                         //Write to database
                         require_once __DIR__ . '/src/AttendanceView.php';
-                        $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
+                        $attendance = new AttendanceView($gibbon, $pdo);
 
                         try {
                             $data = array('gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));

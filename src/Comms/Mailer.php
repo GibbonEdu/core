@@ -22,7 +22,6 @@ namespace Gibbon\Comms;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use Gibbon\View\View;
-use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Mailer class
@@ -30,7 +29,7 @@ use PHPMailer\PHPMailer\PHPMailer;
  * @version v14
  * @since   v14
  */
-class Mailer extends PHPMailer implements MailerInterface
+class Mailer extends \PHPMailer implements MailerInterface
 {
     protected $session;
     protected $view;

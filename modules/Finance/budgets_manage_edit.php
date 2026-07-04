@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -36,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 
     $page->return->addReturns(['error4' => __('Your request failed due to an attachment error.')]);
 
-    //Check if gibbonFinanceBudgetID specified
+    //Check if school year specified
     $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'];
     if ($gibbonFinanceBudgetID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -74,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->required();
 
-            $categories = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'budgetCategories');
+            $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
             if (empty($categories)) {
                 $categories = 'Other';
             }

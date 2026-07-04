@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $viewBy = $_POST['viewBy'] ?? '';
@@ -96,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                             $partialFail = true;
                         }
                         while ($rowNext = $resultNext->fetch()) {
-                            if (isSchoolOpen($guid, $rowNext['date'], $connection2)) {
+                            if (isSchoolOpen($guid, $row['date'], $connection2)) {
                                 try {
                                     $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
@@ -141,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                             $partialFail = true;
                         }
                         while ($rowNext = $resultNext->fetch()) {
-                            if (isSchoolOpen($guid, $rowNext['date'], $connection2)) {
+                            if (isSchoolOpen($guid, $row['date'], $connection2)) {
                                 try {
                                     $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';

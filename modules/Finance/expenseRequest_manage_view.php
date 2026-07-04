@@ -17,10 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
 
 //Module includes
@@ -41,10 +38,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
 
     //Check if params are specified
-    $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'] ?? '';
+    $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
     $status = '';
-    $status2 = $_GET['status2'] ?? '';
-    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
+    $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
+    $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
     if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -64,10 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
             echo '</div>';
         } else {
             //Get and check settings
-            $settingGateway = $container->get(SettingGateway::class);
-            $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
-            $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
-            $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
+            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+            $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+            $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                 echo "<div class='error'>";
                 echo __('An error has occurred with your expense and budget settings.');
@@ -103,12 +99,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         //Let's go!
                         $values = $result->fetch();
                         if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
-                            $params = [
-                                "gibbonFinanceBudgetCycleID" => $gibbonFinanceBudgetCycleID,
-                                "status2" => $status2,
-                                "gibbonFinanceBudgetID2" =>$gibbonFinanceBudgetID2
-                            ];
-                            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'expenseRequest_manage.php')->withQueryParams($params));
+                            echo "<div class='linkTop'>";
+                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
+                            echo '</div>';
                         }
 
                         $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenseRequest_manage_viewProcess.php');
@@ -153,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                         $row = $form->addRow();
                             $row->addLabel('countAgainstBudget', __('Count Against Budget'));
-                            $row->addTextField('countAgainstBudget')->maxLength(3)->required()->readonly()->setValue(Format::yesNo($values['countAgainstBudget']));
+                            $row->addTextField('countAgainstBudget')->maxLength(3)->required()->readonly()->setValue(ynExpander($guid, $values['countAgainstBudget']));
 
                         $row = $form->addRow();
                             $row->addLabel('purchaseBy', __('Purchase By'));

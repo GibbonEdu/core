@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         ->add(__('Student Details'), 'externalAssessment_details.php', ['gibbonPersonID' => $gibbonPersonID])
         ->add(__('Edit Assessment'));
 
-    //Check if gibbonExternalAssessmentStudentID and gibbonPersonID specified
+    //Check if school year specified
     if ($gibbonExternalAssessmentStudentID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

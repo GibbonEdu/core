@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonPersonMedicalUpdateID specified
+    //Check if school year specified
     $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
     if ($gibbonPersonMedicalUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

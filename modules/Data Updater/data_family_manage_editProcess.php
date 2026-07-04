@@ -16,23 +16,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'] ?? '';
 $gibbonFamilyID = $_POST['gibbonFamilyID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_family_manage_edit.php&gibbonFamilyUpdateID=$gibbonFamilyUpdateID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family_manage_edit.php&gibbonFamilyUpdateID=$gibbonFamilyUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if sgibbonFamilyUpdateID and gibbonFamilyID specified
+    //Check if school year specified
     if ($gibbonFamilyUpdateID == '' or $gibbonFamilyID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

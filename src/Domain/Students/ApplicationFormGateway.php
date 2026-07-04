@@ -54,9 +54,10 @@ class ApplicationFormGateway extends QueryableGateway implements ScrubbableGatew
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonApplicationFormID', 'gibbonApplicationForm.status', 'preferredName', 'surname', 'dob', 'priority', 'gibbonApplicationForm.timestamp', 'milestones', 'gibbonFamilyID', 'schoolName1', 'schoolDate1', 'schoolName2', 'schoolDate2', 'parent1title', 'parent1preferredName', 'parent1surname', 'parent1email', 'parent2title', 'parent2preferredName', 'parent2surname', 'parent2email', 'paymentMade','gibbonYearGroup.name AS yearGroup', 'gibbonPayment.paymentTransactionID'
+                'gibbonFormGroup.name AS formGroupName', 'gibbonApplicationFormID', 'gibbonApplicationForm.status', 'preferredName', 'surname', 'dob', 'priority', 'gibbonApplicationForm.timestamp', 'milestones', 'gibbonFamilyID', 'schoolName1', 'schoolDate1', 'schoolName2', 'schoolDate2', 'parent1title', 'parent1preferredName', 'parent1surname', 'parent1email', 'parent2title', 'parent2preferredName', 'parent2surname', 'parent2email', 'paymentMade','gibbonYearGroup.name AS yearGroup', 'gibbonPayment.paymentTransactionID' //GS//
             ])
             ->innerJoin('gibbonYearGroup', 'gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonApplicationForm.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID') //GS//
             ->leftJoin('gibbonPayment', "gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND gibbonPayment.foreignTable='gibbonApplicationForm'")
             ->where('gibbonApplicationForm.gibbonSchoolYearIDEntry  = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -95,12 +96,12 @@ class ApplicationFormGateway extends QueryableGateway implements ScrubbableGatew
     public function selectLinkedApplicationsByID($gibbonApplicationFormID)
     {
         $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-        $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status 
+        $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status
                 FROM gibbonApplicationForm
                 JOIN gibbonApplicationFormLink ON (
                     gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
                 WHERE gibbonApplicationFormID1=:gibbonApplicationFormID
-                OR gibbonApplicationFormID2=:gibbonApplicationFormID 
+                OR gibbonApplicationFormID2=:gibbonApplicationFormID
                 ORDER BY gibbonApplicationFormID";
 
         return $this->db()->select($sql, $data);

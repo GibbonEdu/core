@@ -16,19 +16,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML']);
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
 
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/department_course_edit.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_course_edit.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_edit.php') == false) {
     $URL .= '&return=error0';

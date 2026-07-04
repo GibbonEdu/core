@@ -19,11 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['indexText' => 'HTML', 'analytics' => 'RAW']);
+include '../../gibbon.php';
 include '../../config.php';
 
 // Module includes

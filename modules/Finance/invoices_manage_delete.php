@@ -26,6 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_de
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+    //Check if school year specified
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
     $status = $_GET['status'];
@@ -35,7 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_de
     $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
     //Proceed!
-    //Check if gibbonFinanceInvoiceID and gibbonSchoolYearID specified
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
         ->add(__('Manage Families'), 'family_manage.php')
         ->add(__('Edit Family'));        
 
-    //Check if search and gibbonFamilyID specified
+    //Check if school year specified
     $gibbonFamilyID = $_GET['gibbonFamilyID'];
     $search = '';
     if (isset($_GET['search'])) {
@@ -55,7 +55,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form->addHeaderAction('back', __('Back to Search Results'))
                 ->displayLabel()
-                ->setIcon('search')
                 ->addParam('search', $search)
                 ->setURL('/modules/User Admin/family_manage.php');
 

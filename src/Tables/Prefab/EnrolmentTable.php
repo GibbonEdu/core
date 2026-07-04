@@ -36,25 +36,8 @@ use Gibbon\Domain\Students\StudentReportGateway;
  */
 class EnrolmentTable implements OutputableInterface
 {
-    /**
-     * @var \Gibbon\Contract\Services\Session
-     */
     protected $session;
-
-    /**
-     * @var \Gibbon\View\View
-     */
-    protected $view;
-
-    /**
-     * @var \Gibbon\Domain\Students\StudentGateway
-     */
     protected $studentGateway;
-
-    /**
-     * @var \Gibbon\Domain\Students\StudentReportGateway
-     */
-    protected $studentReportGateway;
 
     public function __construct(Session $session, View $view, StudentGateway $studentGateway, StudentReportGateway $studentReportGateway)
     {
@@ -74,10 +57,19 @@ class EnrolmentTable implements OutputableInterface
         $output = '';
 
         // TEMPLATE
-        $output .= $this->view->fetchFromTemplate('ui/enrolmentOverview.twig.html', [
+        $output .= $this->view->fetchFromTemplate('ui/enrolmentOverviewrkt.twig.html', [
             'currentEnrolment' => $this->studentGateway->getStudentEnrolmentCount($gibbonSchoolYearID),
             'lastEnrolment' => $this->studentGateway->getStudentEnrolmentCount($gibbonSchoolYearID, date('Y-m-d', strtotime('today - 60 days'))),
             'nextEnrolment' => $this->studentGateway->getStudentEnrolmentCount($gibbonSchoolYearID, date('Y-m-d', strtotime('today + 60 days'))),
+            'totalTeachers' => $this->studentGateway->getTeachersTotalCount($gibbonSchoolYearID), //GS//
+            'totalGirls' => $this->studentGateway->getStudentTotalGirlsCount($gibbonSchoolYearID, date('Y-m-d')), //GS//
+            'totalBoys' => $this->studentGateway->getStudentTotalBoysCount($gibbonSchoolYearID, date('Y-m-d')), //GS//
+            'studentsTransitioned' => $this->studentGateway->getStudentTransitionedCount($gibbonSchoolYearID, date('Y-m-d')), //GS//
+            'studentsPassout' => $this->studentGateway->getStudentPassoutCount($gibbonSchoolYearID, date('Y-m-d')), //GS//
+            'studentsDropout' => $this->studentGateway->getStudentDropoutCount($gibbonSchoolYearID, date('Y-m-d')), //GS//
+            'studentsMigrated' => $this->studentGateway->getStudentMigratedCount($gibbonSchoolYearID, date('Y-m-d')), //GS//
+            'attendanceTakenPercentage' => $this->studentGateway->getAttendanceTakenPercentage($gibbonSchoolYearID, date('Y-m-d')), //GS//
+            'attendancePresentPercentage' => $this->studentGateway->getAttendancePresentPercentage($gibbonSchoolYearID, date('Y-m-d')) //GS//
         ]);
 
 
@@ -91,20 +83,18 @@ class EnrolmentTable implements OutputableInterface
             $chart->setLegend(false);
             $chart->setColors(['rgba(54, 162, 235, 1.0)']);
             $chart->setOptions([
-                'height' => '20vh',
-                'tooltip' => [
+                'height' => '50',
+                'tooltips' => [
                     'mode' => 'x-axis',
                 ],
-                'animation' => false,
                 'scales' => [
-                    'y' => [
+                    'yAxes' => [[
                         'display' => false,
-                        'beginAtZero' => true,
-                    ],
-                    'x' => [
+                    ]],
+                    'xAxes' => [[
                         'display'   => true,
                         'gridLines' => ['display' => false],
-                    ],
+                    ]],
                 ],
             ]);
 
@@ -117,8 +107,7 @@ class EnrolmentTable implements OutputableInterface
 
         // CRITERIA
         $criteria = $this->studentReportGateway->newQueryCriteria()
-            ->sortBy('dateStart', 'DESC')
-            ->sortBy(['formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['dateStart', 'formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->fromPOST();
 
         $students = $this->studentReportGateway->queryStudentStatusBySchoolYear($criteria, $gibbonSchoolYearID, 'Full', date('Y-m-d', strtotime('today - 60 days')), date('Y-m-d', strtotime('today + 60 days')), false);

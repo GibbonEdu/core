@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
     //Proceed!
     $gibbonGroupID = (isset($_GET['gibbonGroupID']))? $_GET['gibbonGroupID'] : null;
 
-    //Check if gibbonGroupID specified
+    //Check if school year specified
     if ($gibbonGroupID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -63,11 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 $row->addTextField('name')->required()->maxLength(60);
 
             $row = $form->addRow();
-                $col = $row->addColumn();
-                    $col->addLabel('members', __('Members'));
-                    $col->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'useMultiSelect' => true])
-                        ->required()
-                        ->mergeGroupings();
+                $row->addLabel('members', __('Add Members'));
+                $row->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true])
+                    ->selectMultiple();
             	
 			$row = $form->addRow();
                 $row->addFooter();

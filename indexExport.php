@@ -17,37 +17,38 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-
 include './gibbon.php';
 
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
-$URL = Url::fromRoute();
+$URL = $gibbon->session->get('absoluteURL').'/index.php';
 
 try {
-    $data = array('gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
+    $data = array('gibbonPersonIDTutor' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $gibbon->session->get('gibbonPersonID'));
     $sql = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
-    header("Location: {$URL->withReturn('error0')}");
+    $URL .= '?return=error0';
+    header("Location: {$URL}");
 }
 
 if ($result) {
     if ($gibbonFormGroupID == '') {
-        header("Location: {$URL->withReturn('error1')}");
+        $URL .= '?return=error1';
+        header("Location: {$URL}");
     } else {
         if ($result->rowCount() < 1) {
-            header("Location: {$URL->withReturn('error3')}");
+            $URL .= '?return=error3';
+            header("Location: {$URL}");
         } else {
             //Proceed!
             $data = ['gibbonFormGroupID' => $gibbonFormGroupID, 'today' => date('Y-m-d')];
-            $sql = "SELECT surname, preferredName, email
-                    FROM gibbonStudentEnrolment
-                    JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
-                    WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full'
-                    AND (dateStart IS NULL OR dateStart<=:today)
-                    AND (dateEnd IS NULL  OR dateEnd>=:today)
+            $sql = "SELECT surname, preferredName, email 
+                    FROM gibbonStudentEnrolment 
+                    JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                    WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' 
+                    AND (dateStart IS NULL OR dateStart<=:today) 
+                    AND (dateEnd IS NULL  OR dateEnd>=:today) 
                     ORDER BY surname, preferredName";
 
             $result = $pdo->select($sql, $data);

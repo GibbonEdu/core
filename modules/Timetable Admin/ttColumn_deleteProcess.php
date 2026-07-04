@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_d
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonTTColumnID specified
+    //Check if school year specified
     if ($gibbonTTColumnID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

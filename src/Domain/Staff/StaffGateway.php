@@ -67,7 +67,7 @@ class StaffGateway extends QueryableGateway
                 "GROUP_CONCAT(DISTINCT gibbonSpace.name ORDER BY gibbonSpace.name SEPARATOR '<br/>') as facility",
                 "GROUP_CONCAT(DISTINCT gibbonSpace.phoneInternal ORDER BY gibbonSpace.name SEPARATOR '<br/>') as extension",
                 "GROUP_CONCAT(DISTINCT gibbonDepartment.name ORDER BY gibbonDepartment.name SEPARATOR '<br/>') as department",
-                "(CASE WHEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingSortOrder) > 0 THEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingSortOrder) WHEN gibbonStaff.biographicalGrouping <> '' THEN 998 ELSE 999 END) AS biographicalGroupingOrder",
+                "(CASE WHEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingOrder) > 0 THEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingOrder) WHEN gibbonStaff.biographicalGrouping <> '' THEN 998 ELSE 999 END) AS biographicalGroupingOrder",
             ])
             ->leftJoin('gibbonFormGroup', '((gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID)')
             ->leftJoin('gibbonSpacePerson', 'gibbonSpacePerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
@@ -75,7 +75,7 @@ class StaffGateway extends QueryableGateway
             ->leftJoin('gibbonDepartmentStaff', 'gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonDepartment', 'gibbonDepartment.gibbonDepartmentID=gibbonDepartmentStaff.gibbonDepartmentID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->bindValue('biographicalGroupingSortOrder', !empty($biographicalGroupingOrder) ? $biographicalGroupingOrder : 'Default,Test')
+            ->bindValue('biographicalGroupingOrder', !empty($biographicalGroupingOrder) ? $biographicalGroupingOrder : null)
             ->groupBy(['gibbonPerson.gibbonPersonID']);
         }
 
@@ -92,10 +92,6 @@ class StaffGateway extends QueryableGateway
                     ->bindValue('grouping', $grouping);
             },
 
-            'biographicalGroupingSort' => function ($query, $group) {
-                return $query->orderBy(['(biographicalGrouping="Leadership Team") DESC',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
-            },
-
             'status' => function ($query, $status) {
                 return $query
                     ->where('gibbonPerson.status = :status')
@@ -108,18 +104,14 @@ class StaffGateway extends QueryableGateway
 
     public function selectStaffByID($gibbonPersonID, $type = null)
     {
-        $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
-
-        $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.image_240, gibbonStaff.type, gibbonStaff.jobTitle, gibbonPerson.username
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.image_240, gibbonStaff.type, gibbonStaff.jobTitle
                 FROM gibbonPerson
                 LEFT JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
-                WHERE FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                 AND gibbonPerson.status='Full'";
 
         if (!empty($type)) $sql .= " AND gibbonStaff.type='Teaching'";
-
-        $sql .= " ORDER BY surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }

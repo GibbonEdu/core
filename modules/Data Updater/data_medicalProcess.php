@@ -23,27 +23,23 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
-
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_medical.php&gibbonPersonID=$gibbonPersonID";
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical.php&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
+    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonPersonID specified
+        //Check if school year specified
         if ($gibbonPersonID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -128,12 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Medical Form', ['dataUpdater' => 1], $customRequireFail);
 
                 // Check for data changed
-                $existingFields = isset($values['fields']) ? json_decode($values['fields'], true) : [];
-                $existingFields = is_array($existingFields) ? $existingFields : []; // make sure this is an array
+                $existingFields = json_decode($values['fields'], true);
                 $newFields = json_decode($fields, true);
-                $newFields = is_array($newFields) ? $newFields : []; // make sure this is an array
                 foreach ($newFields as $key => $fieldValue) {
-                    if (!isset($existingFields[$key]) || $existingFields[$key] != $fieldValue) {
+                    if ($existingFields[$key] != $fieldValue) {
                         $dataChanged = true;
                     }
                 }

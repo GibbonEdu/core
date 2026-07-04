@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -65,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         $col->addSubmit(__('Go'));
 
     // DATA
-    $firstDayOfTheWeek = $container->get(SettingGateway::class)->getSettingByScope('System', 'firstDayOfTheWeek');
+    $firstDayOfTheWeek = getSettingByScope($connection2, 'System', 'firstDayOfTheWeek');
     $dateStart = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday this week" : "Sunday last week");
     $dateEnd = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday next week" : "Sunday this week");
 

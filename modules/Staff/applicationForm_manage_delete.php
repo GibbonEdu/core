@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonStaffApplicationFormID specified
+    //Check if school year specified
     $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
     $search = $_GET['search'];
     if ($gibbonStaffApplicationFormID == '') {

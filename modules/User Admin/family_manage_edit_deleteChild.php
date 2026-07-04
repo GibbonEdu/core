@@ -24,10 +24,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonPersonID and gibbonFamilyID specified
-    $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
-    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-    $search = $_GET['search'] ?? '';
+    //Check if school year specified
+    $gibbonFamilyID = $_GET['gibbonFamilyID'];
+    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $search = $_GET['search'];
     if ($gibbonPersonID == '' or $gibbonFamilyID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

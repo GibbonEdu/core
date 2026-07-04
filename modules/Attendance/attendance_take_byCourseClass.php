@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
@@ -39,11 +38,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     //Proceed!
     $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
-    $settingGateway = $container->get(SettingGateway::class);
+    $attendance = new AttendanceView($gibbon, $pdo);
 
-    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
-
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseClassID = isset($_GET['gibbonCourseClassID']) ? $_GET['gibbonCourseClassID'] : '';
     if (empty($gibbonCourseClassID)) {
         try {
             $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -104,8 +101,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 echo __("School is closed on the specified date, and so attendance information cannot be recorded.");
                 echo "</div>";
             } else {
-                $defaultAttendanceType = $settingGateway->getSettingByScope('Attendance', 'defaultClassAttendanceType');
-                $crossFillClasses = $settingGateway->getSettingByScope('Attendance', 'crossFillClasses');
+                $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
+                $crossFillClasses = getSettingByScope($connection2, 'Attendance', 'crossFillClasses');
 
                 // Check class
                 try {
@@ -186,7 +183,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     //Show form group grid
                     try {
                         $dataCourseClass = array("gibbonCourseClassID" => $gibbonCourseClassID, 'date' => $currentDate);
-                        $sqlCourseClass = "SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.image_240, gibbonPerson.dob FROM gibbonCourseClassPerson
+                        $sqlCourseClass = "SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.image_240 FROM gibbonCourseClassPerson
                             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
                             LEFT JOIN (SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                             LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
@@ -296,11 +293,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 ->addClass($student['cellHighlight']);
 
                             $studentLink = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Attendance';
-                            $icon = Format::userBirthdayIcon($student['dob'], $student['preferredName']);
-
-                            $cell->addContent(Format::link($studentLink, Format::userPhoto($student['image_240'], 75)))
-                                ->setClass('relative')
-                                ->append($icon ?? '');
+                            $cell->addContent(Format::link($studentLink, Format::userPhoto($student['image_240'], 75)));
                             $cell->addWebLink(Format::name('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                 ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])

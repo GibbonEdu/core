@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Psr\Container\ContainerInterface;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -26,17 +25,13 @@ use Gibbon\Domain\Students\StudentGateway;
 
 function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 {
-    global $session;
-
     $output = '';
 
     $guid = $container->get('config')->getConfig('guid');
     $connection2 = $container->get('db')->getConnection();
 
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
-    $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
+    $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
+    $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
     $behaviourGateway = $container->get(BehaviourGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
@@ -61,7 +56,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
             $table = DataTable::createPaginated('behaviour'.$schoolYear['gibbonSchoolYearID'], $criteria);
             $table->setTitle($schoolYear['name']);
 
-            if ($schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
+            if ($schoolYear['gibbonSchoolYearID'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
                 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php')) {
                     $table->addHeaderAction('add', __('Add'))
                         ->setURL('/modules/Behaviour/behaviour_manage_add.php')
@@ -72,7 +67,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                         ->displayLabel();
                 }
 
-                $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
+                $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
                 if (!empty($policyLink)) {
                     $table->addHeaderAction('policy', __('View Behaviour Policy'))
                         ->setExternalURL($policyLink)
@@ -109,11 +104,11 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 
             $table->addColumn('type', __('Type'))
                 ->width('5%')
-                ->format(function($beahviour) use ($session) {
+                ->format(function($beahviour) use ($guid) {
                     if ($beahviour['type'] == 'Negative') {
-                        return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
+                        return "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
                     } elseif ($beahviour['type'] == 'Positive') {
-                        return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
+                        return "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
                     }
                 });
 
@@ -132,7 +127,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
                 });
 
-            if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
+            if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') && $schoolYear['gibbonSchoolYearID'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
                 $highestAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
 
                 $table->addActionColumn()
@@ -141,9 +136,9 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     ->addParam('gibbonYearGroupID', '')
                     ->addParam('type', '')
                     ->addParam('gibbonBehaviourID')
-                    ->format(function ($person, $actions) use ($session, $highestAction) {
+                    ->format(function ($person, $actions) use ($guid, $highestAction) {
                         if ($highestAction == 'Manage Behaviour Records_all'
-                        || ($highestAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'))) {
+                        || ($highestAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID'])) {
                             $actions->addAction('edit', __('Edit'))
                                 ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
                         }

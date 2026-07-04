@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSettings.php') == false) {
@@ -33,100 +32,99 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 
     $row = $form->addRow()->addHeading(__('Features'));
 
-    $settingGateway = $container->get(SettingGateway::class);
-    $setting = $settingGateway->getSettingByScope('Markbook', 'enableEffort', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableEffort', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'enableRubrics', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableRubrics', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('columnWeighting')->onSelect('enableColumnWeighting')->when('Y');
 
-    $defaultAssessmentScale = $settingGateway->getSettingByScope('System', 'defaultAssessmentScale');
+    $defaultAssessmentScale = getSettingByScope($connection2, 'System', 'defaultAssessmentScale');
     if (intval($defaultAssessmentScale) != 4) {
         $row = $form->addRow()->addClass('columnWeighting');
             $row->addAlert(__('Calculation of cumulative marks and weightings is currently only available when using Percentage as the Default Assessment Scale. This value can be changed in System Settings.'));
     }
     
-    $setting = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks', true);
     $row = $form->addRow()->addClass('columnWeighting');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'enableRawAttainment', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
     
-    $setting = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Interface'));
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'markbookType', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'markbookType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Warnings'));
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'showStudentAttainmentWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showStudentAttainmentWarning', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'showStudentEffortWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showStudentEffortWarning', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'showParentEffortWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Markbook', 'personalisedWarnings', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'personalisedWarnings', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();

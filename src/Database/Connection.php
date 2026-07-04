@@ -66,22 +66,11 @@ class Connection implements ConnectionInterface
 
     /**
      * Create the connection wrapper around a \PDO instance.
-     *
-     * @param \PDO  $pdo     Should be configured to fit Connection use internally.
+     * @param \PDO $pdo
      * @param array $config
-     *
-     * @throws \InvalidArgumentException Throws if the \PDO is misconfigured.
      */
     public function __construct(PDO $pdo, array $config = [])
     {
-        // Check the statement class. Expect $pdo to be correctly setup.
-        // See MySqlConnector::configureEncoding().
-        $class = $pdo->getAttribute(\PDO::ATTR_STATEMENT_CLASS);
-        if (!is_array($class) || sizeof($class) < 1 || $class[0] !== Result::class) {
-            throw new \InvalidArgumentException('$pdo must be setup to use ' . Result::class . ' as statement.');
-        }
-
-        // Use the PDO as internal connection
         $this->pdo = $pdo;
     }
 
@@ -96,7 +85,11 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     *{@inheritDoc}
+     * Run a select statement and return a single result.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return mixed
      */
     public function selectOne($query, $bindings = [])
     {
@@ -107,7 +100,11 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Run a select statement against the database.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return object
      */
     public function select($query, $bindings = [])
     {
@@ -130,7 +127,11 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Run an update statement against the database.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return int
      */
     public function update($query, $bindings = [])
     {
@@ -138,7 +139,11 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Run a delete statement against the database.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return int
      */
     public function delete($query, $bindings = [])
     {
@@ -146,7 +151,11 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Execute an SQL statement and return the boolean result.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return bool
      */
     public function statement($query, $bindings = [])
     {
@@ -155,7 +164,11 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Run an SQL statement and get the number of rows affected.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return int
      */
     public function affectingStatement($query, $bindings = [])
     {
@@ -167,8 +180,9 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $query
      * @param  array   $bindings
+     * @return mixed
      *
-     * @return \Gibbon\Database\Result The database query result.
+     * @throws \PDOException
      */
     protected function run($query, $bindings = [])
     {
@@ -236,7 +250,7 @@ class Connection implements ConnectionInterface
     {
         return $this->result;
     }
-
+    
     /**
      * Start a new database transaction.
      *

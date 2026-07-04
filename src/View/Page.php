@@ -19,12 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View;
 
+use Twig\Environment;
 use Gibbon\View\View;
 use Gibbon\View\AssetBundle;
 use Gibbon\View\Components\Breadcrumbs;
 use Gibbon\View\Components\ReturnMessage;
-use Psr\Container\ContainerInterface;
-use Gibbon\View\Components\Navigator;
 
 /**
  * Holds the details for rendering the current page.
@@ -38,33 +37,9 @@ class Page extends View
      * After constructing these class properties are publicly read-only.
      */
     protected $title = '';
-
-    /**
-     * Address of the page.
-     *
-     * @var string
-     */
     protected $address = '';
-
-    /**
-     * Action of the page
-     *
-     * @var Action
-     */
     protected $action;
-
-    /**
-     * Module that the page belongs to.
-     *
-     * @var Module
-     */
     protected $module;
-
-    /**
-     * Theme to render the page with.
-     *
-     * @var Theme
-     */
     protected $theme;
 
     /**
@@ -72,60 +47,26 @@ class Page extends View
      * and will be output at the end during template rendering.
      */
     protected $content = [];
-
-    /**
-     * Stylesheet asset.
-     *
-     * @var AssetBundle
-     */
     protected $stylesheets;
-
-    /**
-     * Stylesheet asset.
-     *
-     * @var AssetBundle
-     */
     protected $scripts;
-
-    /**
-     * Breadcrumb for the page.
-     *
-     * @var Breadcrumbs
-     */
     protected $breadcrumbs;
-
-    /**
-     * School Year and Search Result navigation.
-     *
-     * @var Navigator
-     */
-    protected $navigator;
-
-    /**
-     * Return message, if any.
-     *
-     * @var ReturnMessage
-     */
     protected $return;
-
     protected $alerts = ['error' => [], 'warning' => [], 'success' => [], 'message' => []];
     protected $extra = ['head' => [], 'foot' => [], 'sidebar' => []];
 
     /**
      * Create a new page from a variable set of constructor params.
      *
-     * @param ContainerInterface $container
      * @param array $params Essential parameters for building a page.
      */
-    public function __construct(ContainerInterface $container = null, array $params = [])
-    { 
-        parent::__construct($container ? $container->get('twig') : null);
-
+    public function __construct(Environment $templateEngine = null, array $params = [])
+    {
+        parent::__construct($templateEngine);
+        
         $this->breadcrumbs = new Breadcrumbs();
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
         $this->return = new ReturnMessage();
-        $this->navigator = $container && $container->has('db') ? $container->get(Navigator::class) : null;
 
         // Merge constructor params into class properties
         foreach ($params as $key => $value) {
@@ -174,7 +115,7 @@ class Page extends View
      */
     public function getAddress(): string
     {
-        return preg_replace('/[^a-zA-Z0-9_\-\.\/\s&=%]/', '', $this->address);
+        return $this->address;
     }
 
     /**
@@ -301,10 +242,10 @@ class Page extends View
     /**
      * Add user feedback as an alert displayed on this page.
      *
-     * @param string $text      General notice message text.
      * @param string $context   Contexts: error, warning, message, code
+     * @param string $text      General notice message text.
      */
-    public function addAlert(string $text, string $context = 'message')
+    public function addAlert(string $context, string $text)
     {
         $this->alerts[$context][] = $text;
     }
@@ -364,7 +305,7 @@ class Page extends View
             ? $this->extra[$context]
             : $this->extra;
     }
-
+    
     /**
      * Builds an array of page data to be passed to the template engine.
      *
@@ -377,11 +318,10 @@ class Page extends View
         // Eg: more than one on a non-module page, more than two on a module-page.
         $breadcrumbs = $this->breadcrumbs->getItems();
         $displayTrail = ((empty($this['isLoggedIn']) || empty($this->getModule())) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
-
+        
         return [
             'title'        => $this->getTitle(),
             'breadcrumbs'  => $displayTrail ? $breadcrumbs : [],
-            'navigator'    => $this->navigator ? $this->navigator->getData() : [],
             'helpLink'     => $this->action['helpURL'] ?? '',
             'alerts'       => $this->getAlerts(),
             'stylesheets'  => $this->getAllStylesheets(),
@@ -408,12 +348,16 @@ class Page extends View
             'gibbonThemeName' => 'Default',
             'absolutePath'    => $absolutePath,
             'absoluteURL'     => $absoluteURL,
-            'themeColour'     => 'purple',
         ]);
 
         $this->stylesheets->add('main', 'themes/Default/css/main.css');
         $this->stylesheets->add('theme', 'resources/assets/css/theme.min.css');
         $this->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
+        $this->stylesheets->add(
+            'personal-background',
+            'body { background: url("'.$absoluteURL.'/themes/Default/img/backgroundPage.jpg'.'") repeat fixed center top #626cd3!important; }',
+            ['type' => 'inline']
+        );
 
         return $this;
     }
@@ -424,19 +368,14 @@ class Page extends View
      * @param string $address
      * @return bool
      */
-    public function isAddressValid($address, bool $strictPHP = false) : bool
+    public function isAddressValid($address) : bool
     {
-        if ($strictPHP && stripos($address, '.php') === false) {
-            return false;
-        }
-
         return !(stripos($address, '..') !== false
-            || stristr($address, 'installer')
-            || stristr($address, 'uploads')
-            || stristr($address, 'config.php')
-            || in_array(strtolower($address), array('index.php', '/index.php', './index.php'))
-            || strtolower(substr($address, -11)) == '// index.php'
-            || strtolower(substr($address, -11)) == './index.php');
+            || strstr($address, 'installer')
+            || strstr($address, 'uploads')
+            || in_array($address, array('index.php', '/index.php', './index.php'))
+            || substr($address, -11) == '// index.php'
+            || substr($address, -11) == './index.php');
     }
 
     /**

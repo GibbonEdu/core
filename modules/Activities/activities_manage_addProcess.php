@@ -17,16 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\Activities\ActivitySlotGateway;
-use Gibbon\Domain\Activities\ActivityStaffGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage_add.php&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
 
@@ -35,7 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $partialFail = false;
     $name = $_POST['name'] ?? '';
     $provider = $_POST['provider'] ?? '';
     $active = $_POST['active'] ?? '';
@@ -45,20 +37,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $gibbonSchoolYearTermIDList =  $_POST['gibbonSchoolYearTermIDList'] ?? [];
         $gibbonSchoolYearTermIDList = implode(',', $gibbonSchoolYearTermIDList);
     } elseif ($dateType == 'Date') {
-            $listingStart = Format::dateConvert($_POST['listingStart'] ?? '');
-            $listingEnd = Format::dateConvert($_POST['listingEnd'] ?? '');
-            $programStart = Format::dateConvert($_POST['programStart'] ?? '');
-            $programEnd = Format::dateConvert($_POST['programEnd'] ?? '');
+        $listingStart = !empty($_POST['listingStart']) ? Format::dateConvert($_POST['listingStart']) : null;
+        $listingEnd = !empty($_POST['listingEnd']) ? Format::dateConvert($_POST['listingEnd']) : null;
+        $programStart = !empty($_POST['programStart']) ? Format::dateConvert($_POST['programStart']) : null;
+        $programEnd = !empty($_POST['programEnd']) ? Format::dateConvert($_POST['programEnd']) : null;
     }
-
-    $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? [];
+    $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? array();
     $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
-    
+
     $maxParticipants = $_POST['maxParticipants'] ?? '';
-    
-    $settingGateway = $container->get(SettingGateway::class);
-    $paymentMethod = $settingGateway->getSettingByScope('Activities', 'payment');
-    if ($paymentMethod == 'None' || $paymentMethod == 'Single') {
+    if (getSettingByScope($connection2, 'Activities', 'payment') == 'None' or getSettingByScope($connection2, 'Activities', 'payment') == 'Single') {
         $paymentOn = false;
         $payment = null;
         $paymentType = null;
@@ -71,81 +59,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
     $description = $_POST['description'] ?? '';
 
-    if ($dateType == '' || $name == '' || $provider == '' || $active == '' || $registration == '' || $maxParticipants == '' || ($paymentOn && ($payment == '' || $paymentType == '' || $paymentFirmness == '')) || ($dateType == 'Date' && ($listingStart == '' || $listingEnd == '' || $programStart == '' || $programEnd == ''))) {
-           $URL .= '&return=error1';
+    if ($dateType == '' or $name == '' or $provider == '' or $active == '' or $registration == '' or $maxParticipants == '' or ($paymentOn and ($payment == '' or $paymentType == '' or $paymentFirmness == '')) or ($dateType == 'Date' and ($listingStart == '' or $listingEnd == '' or $programStart == '' or $programEnd == ''))) {
+        $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         //Write to database
-        $activityGateway = $container->get(ActivityGateway::class);
-        
-        $type = $_POST['type'] ?? '';
-
-        $data = [
-            'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
-            'name'                  => $name,
-            'provider'              => $provider,
-            'type'                  => $type,
-            'active'                => $active,
-            'registration'          => $registration,
-            'gibbonYearGroupIDList' => $gibbonYearGroupIDList,
-            'maxParticipants'       => $maxParticipants,
-            'payment'               => $payment,
-            'paymentType'           => $paymentType,
-            'paymentFirmness'       => $paymentFirmness,
-            'description'           => $description
-        ];
-
-        if ($dateType == 'Date') {
-            $data['gibbonSchoolYearTermIDList'] = '';
-            $data['listingStart'] = $listingStart;
-            $data['listingEnd'] = $listingEnd;
-            $data['programStart'] = $programStart;
-            $data['programEnd'] = $programEnd;
-        } else {
-            $data['gibbonSchoolYearTermIDList'] = $gibbonSchoolYearTermIDList;
-            $data['listingStart'] = null;
-            $data['listingEnd'] = null;
-            $data['programStart'] = null;
-            $data['programEnd'] = null;
+        $type = '';
+        if (isset($_POST['type'])) {
+            $type = $_POST['type'];
         }
 
-        $gibbonActivityID = $activityGateway->insert($data);
-
-        if (!$gibbonActivityID) {
+        try {
+            if ($dateType == 'Date') {
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'name' => $name, 'provider' => $provider, 'type' => $type, 'active' => $active, 'registration' => $registration, 'listingStart' => $listingStart, 'listingEnd' => $listingEnd, 'programStart' => $programStart, 'programEnd' => $programEnd, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'maxParticipants' => $maxParticipants, 'payment' => $payment, 'paymentType' => $paymentType, 'paymentFirmness' => $paymentFirmness, 'description' => $description);
+                $sql = "INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList='', listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, paymentType=:paymentType, paymentFirmness=:paymentFirmness, description=:description";
+            } else {
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'name' => $name, 'provider' => $provider, 'type' => $type, 'active' => $active, 'registration' => $registration, 'gibbonSchoolYearTermIDList' => $gibbonSchoolYearTermIDList, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'maxParticipants' => $maxParticipants, 'payment' => $payment, 'paymentType' => $paymentType, 'paymentFirmness' => $paymentFirmness, 'description' => $description);
+                $sql = 'INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=NULL, listingEnd=NULL, programStart=NULL, programEnd=NULL, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, paymentType=:paymentType, paymentFirmness=:paymentFirmness, description=:description';
+            }
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        $activitySlotGateway = $container->get(ActivitySlotGateway::class);
+        //Last insert ID
+        $AI = str_pad($connection2->lastInsertID(), 14, '0', STR_PAD_LEFT);
 
-        $timeSlotOrder = $_POST['order'] ?? [];
-        foreach ($timeSlotOrder as $order) {
-            $slot = $_POST['timeSlots'][$order];
-
-            if (empty($slot['gibbonDaysOfWeekID']) || empty($slot['timeStart']) || empty('timeEnd')) {
-                continue;
+        //Scan through slots
+        $partialFail = false;
+        for ($i = 1; $i < 3; ++$i) {
+            $gibbonDaysOfWeekID = $_POST["gibbonDaysOfWeekID$i"] ?? '';
+            $timeStart = $_POST["timeStart$i"] ?? '';
+            $timeEnd = $_POST["timeEnd$i"] ?? '';
+            $type = 'Internal';
+            if (isset($_POST['slot'.$i.'Location'])) {
+                $type = $_POST['slot'.$i.'Location'];
             }
-
-            //If start is after end, swap times.
-            if ($slot['timeStart'] > $slot['timeEnd']) {
-                $temp = $slot['timeStart'];
-                $slot['timeStart'] = $slot['timeEnd'];
-                $slot['timeEnd'] = $temp;
-            }
-
-            $slot['gibbonActivityID'] = $gibbonActivityID;
-
-            $type = $slot['location'] ?? 'Internal';
+            $gibbonSpaceID = null;
             if ($type == 'Internal') {
-                $slot['locationExternal'] = '';
+                $gibbonSpaceID = $_POST["gibbonSpaceID$i"] ?? null;
+                $locationExternal = '';
             } else {
-                $slot['gibbonSpaceID'] = null;
+                $locationExternal = $_POST['location'.$i.'External'] ?? '';
             }
 
-            unset($slot['location']);
-
-            $activitySlotGateway->insert($slot);
+            if ($gibbonDaysOfWeekID != '' and $timeStart != '' and $timeEnd != '') {
+                try {
+                    $data = array('AI' => $AI, 'gibbonDaysOfWeekID' => $gibbonDaysOfWeekID, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonSpaceID' => $gibbonSpaceID, 'locationExternal' => $locationExternal);
+                    $sql = 'INSERT INTO gibbonActivitySlot SET gibbonActivityID=:AI, gibbonDaysOfWeekID=:gibbonDaysOfWeekID, timeStart=:timeStart, timeEnd=:timeEnd, gibbonSpaceID=:gibbonSpaceID, locationExternal=:locationExternal';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $partialFail = true;
+                }
+            }
         }
 
         // Scan through staff
@@ -154,21 +124,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
         // make sure that staff is an array
         if (!is_array($staff)) {
-            $staff = [strval($staff)];
+            $staff = [(string) $staff];
         }
 
-        $activityStaffGateway = $container->get(ActivityStaffGateway::class);
-        foreach ($staff as $staffPersonID) {
-            $partialFail |= !$activityStaffGateway->insertActivityStaff($gibbonActivityID, $staffPersonID, $role);
+        if (count($staff) > 0) {
+            foreach ($staff as $t) {
+                //Check to see if person is already registered in this activity
+                try {
+                    $dataGuest = array('gibbonPersonID' => $t, 'gibbonActivityID' => $AI);
+                    $sqlGuest = 'SELECT * FROM gibbonActivityStaff WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID';
+                    $resultGuest = $connection2->prepare($sqlGuest);
+                    $resultGuest->execute($dataGuest);
+                } catch (PDOException $e) {
+                    $partialFail = true;
+                }
+
+                if ($resultGuest->rowCount() == 0) {
+                    try {
+                        $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $AI, 'role' => $role);
+                        $sql = 'INSERT INTO gibbonActivityStaff SET gibbonPersonID=:gibbonPersonID, gibbonActivityID=:gibbonActivityID, role=:role';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "here<div class='error'>".$e->getMessage().'</div>';
+                        $partialFail = true;
+                    }
+                }
+            }
         }
 
-        if (isset($partialFail) && $partialFail == true) {
+        if ($partialFail == true) {
             $URL .= '&return=warning1';
+            header("Location: {$URL}");
         } else {
-            $URL .= '&return=success0';
+            $URL .= "&return=success0&editID=$AI";
+            header("Location: {$URL}");
         }
-
-        $URL .= '&editID=' . $gibbonActivityID;
-        header("Location: {$URL}");
     }
 }

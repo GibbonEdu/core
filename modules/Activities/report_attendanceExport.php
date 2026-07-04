@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -146,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $excel->getActiveSheet()->getStyle('A3')->getAlignment()->setWrapText(true);
 
         // DATE / TERMS
-        $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
+        $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
         if ($dateType != 'Date') {
             $terms = getTerms($connection2, $activity['gibbonSchoolYearID']);
             $termList = array();

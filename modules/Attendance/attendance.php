@@ -56,7 +56,7 @@ $form->setClass('noIntBorder fullWidth');
 $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.php');
 
 $row = $form->addRow();
-$row->addLabel('currentDate', __('Date'));
+$row->addLabel('currentDate', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
 $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGroupsNotRegistered_byDate.php')) {
@@ -134,7 +134,7 @@ if ($session->has('username')) {
                             case 'absent':
                                 $class = 'highlightAbsent';
                                 $content = Format::link($link, $content);
-                                break;
+                                break;  
                             default:
                                 $class = 'highlightNoData';
                                 break;
@@ -271,6 +271,7 @@ if ($session->has('username')) {
                         $dayData = [
                             'currentDate' => Format::dateConvert($lastNSchoolDays[$i]),
                             'currentDayTimestamp' => Format::timestamp($lastNSchoolDays[$i]),
+                            ///HERE CHECK IF TEACHER IS THERE OR THE CENTER IS OPEN
                             'status' => isset($logHistory[$lastNSchoolDays[$i]]) ? 'present' : 'absent',
                         ];
                     }

@@ -9,70 +9,78 @@ file that was distributed with this source code.
 
 namespace Gibbon;
 
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Locale;
-use Gibbon\Contracts\Services\Session;
+use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 
-// Require the system-wide functions.
-require_once __DIR__.'/../../../../functions.php';
-
-// Require trait for testing.
-require_once __DIR__ . '/MockGibbonTrait.php';
-require_once __DIR__ . '/MockGuidTrait.php';
-
 /**
- * @covers \Gibbon\Locale::translate
- * @covers __ function
+ * @covers Locale
  *
  * Test against PO file generated LocaleTest.sh in
  * the folder containing this file.
  */
 class TranslateTest extends TestCase
 {
+    private $mockPDO;
+    private $mockSession;
 
-    use MockGibbonTrait;
-    use MockGuidTrait;
-
-    /**
-     * Locale object to test with.
-     *
-     * @var \Gibbon\Locale
-     */
     private $locale;
+    private $gibbonToRestore;
 
     public function setUp(): void
     {
-        // Create a stub for the Gibbon\Contracts\Services\Session interface
-        $mockSession = $this->createMock(Session::class);
-        $mockSession
+
+        // Setup the composer autoloader
+        $autoloader = require_once __DIR__.'/../../../../vendor/autoload.php';
+
+        // Require the system-wide functions
+        require_once __DIR__.'/../../../../functions.php';
+
+        // Create a stub for the Gibbon\session class
+        $this->mockSession = $this->createMock(session::class);
+        $this->mockSession
             ->method('get')
             ->willReturn(null); // always return null
 
         // mocked locale object
         $i18ncode = 'zh_TW';
-        $locale = new Locale(__DIR__ . '/mock', $mockSession);
+        $locale = new Locale(__DIR__ . '/mock', $this->mockSession);
         $locale->setLocale($i18ncode);
         $locale->setSystemTextDomain(__DIR__ . '/mock');
 
-        $this->locale = $locale;
+        // mocked global gibbon object
+        global $gibbon;
+        $this->gibbonToRestore = isset($gibbon) ? $gibbon : null;
+        $gibbon = (object) [
+            'locale' => $locale,
+        ];
     }
 
-    /**
-     * @covers \Gibbon\Locale::translate
-     */
+    public function tearDown(): void
+    {
+        global $gibbon;
+        unset($gibbon);
+        if (isset($this->gibbonToRestore)) {
+            $gibbon = $this->gibbonToRestore; // restore gibbon before test
+        }
+    }
+
     public function testTranslate()
     {
+        global $gibbon;
+
         $this->assertEquals(
             'Not translated',
             # L10N: Untranslated plain text.
-            $this->locale->translate('Not translated'),
+            $gibbon->locale->translate('Not translated'),
             'Untranslated string stays untranslated'
         );
 
         $this->assertEquals(
             'Untranslated hello world',
             # L10N: Untranslated string for string replacement.
-            $this->locale->translate('Untranslated {action} {name}', [
+            $gibbon->locale->translate('Untranslated {action} {name}', [
                 'action' => 'hello',
                 'name' => 'world',
             ]),
@@ -82,14 +90,14 @@ class TranslateTest extends TestCase
         $this->assertEquals(
             '你好世界',
             # L10N: Translated plain text.
-            $this->locale->translate('Hello world'),
+            $gibbon->locale->translate('Hello world'),
             'Translated plain text'
         );
 
         $this->assertEquals(
             '你好，來自 earth 的 stranger',
             # L10N: Translated string for string replacement.
-            $this->locale->translate('Hello {name} from {planet}', [
+            $gibbon->locale->translate('Hello {name} from {planet}', [
                 'name' => 'stranger',
                 'planet' => 'earth',
             ]),
@@ -99,7 +107,7 @@ class TranslateTest extends TestCase
         $this->assertEquals(
             '你好，來自 earth 的 stranger',
             # L10N: Translated string for numerical replacement.
-            $this->locale->translate('Hello {0} from {1}', [
+            $gibbon->locale->translate('Hello {0} from {1}', [
                 'stranger',
                 'earth',
             ]),
@@ -109,7 +117,7 @@ class TranslateTest extends TestCase
         $this->assertEquals(
             '你好，來自 earth 的 stranger。今天是 monday。',
             # L10N: Translated string with mixed numerical and string placeholder.
-            $this->locale->translate('Hello {0} from {1}. Today is {dayOfWeek}.', [
+            $gibbon->locale->translate('Hello {0} from {1}. Today is {dayOfWeek}.', [
                 'stranger',
                 'dayOfWeek' => 'monday',
                 'earth',
@@ -118,139 +126,61 @@ class TranslateTest extends TestCase
         );
     }
 
-    /**
-     * @covers __(string $text)
-     */
-    public function testShortcutBasic()
+    public function testShortcut()
     {
-        $localeObserver = $this->createMock(Locale::class);
-        $localeObserver->expects($this->once())
-                ->method('translate')
-                ->with(
-                     $this->equalTo('Some text to translate'),
-                     $this->equalTo([]),
-                     $this->equalTo([])
-                )
-                ->willReturn('Some translation result');
-        $restoreGibbon = $this->mockGlobalGibbon((object) [
-            'locale' => $localeObserver,
-        ]);
-
         $this->assertEquals(
-            'Some translation result',
-            __('Some text to translate'),
-            '__() calls $gibbon->locale->translate()'
-        );
-        $restoreGibbon();
-    }
-
-    /**
-     * @covers __(string $text, array $params)
-     */
-    public function testShortcutTextWithParams()
-    {
-        $localeObserver = $this->createMock(Locale::class);
-        $localeObserver->expects($this->once())
-                ->method('translate')
-                ->with(
-                     $this->equalTo('Some text to translate'),
-                     $this->equalTo(['some', 'param']),
-                     $this->equalTo([])
-                )
-                ->willReturn('Some translation result');
-        $restoreGibbon = $this->mockGlobalGibbon((object) [
-            'locale' => $localeObserver,
-        ]);
-
-        $this->assertEquals(
-            'Some translation result',
-            __('Some text to translate', ['some', 'param']),
-            '__() calls $gibbon->locale->translate()'
-        );
-        $restoreGibbon();
-    }
-
-    /**
-     * @covers __(string $text, array $params, array $options)
-     */
-    public function testShortcutWithParamsAndOptions()
-    {
-        $localeObserver = $this->createMock(Locale::class);
-        $localeObserver->expects($this->once())
-                ->method('translate')
-                ->with(
-                     $this->equalTo('Some text to translate'),
-                     $this->equalTo(['some', 'param']),
-                     $this->equalTo(['some', 'options'])
-                )
-                ->willReturn('Some translation result');
-        $restoreGibbon = $this->mockGlobalGibbon((object) [
-            'locale' => $localeObserver,
-        ]);
-
-        $this->assertEquals(
-            'Some translation result',
-            __('Some text to translate', ['some', 'param'], ['some', 'options']),
-            '__() calls $gibbon->locale->translate()'
-        );
-        $restoreGibbon();
-    }
-
-    /**
-     * @covers __(string $guid, string $text)
-     */
-    public function testShortcutUsingGuid()
-    {
-        $localeObserver = $this->createMock(Locale::class);
-        $localeObserver->expects($this->once())
-                ->method('translate')
-                ->with(
-                     $this->equalTo('Some text to translate'),
-                     $this->equalTo([]),
-                     $this->equalTo([])
-                )
-                ->willReturn('Some translation result');
-        list($guid, $restoreGuid) = $this->mockGlobalGuid();
-        $restoreGibbon = $this->mockGlobalGibbon((object) [
-            'locale' => $localeObserver,
-        ]);
-
-        $this->assertEquals(
-            'Some translation result',
-            __($guid, 'Some text to translate'),
-            '__() with $guid calls $gibbon->locale->translate() in backward compatible way'
+            'Not translated',
+            # L10N: Untranslated plain text.
+            __('Not translated'),
+            'Untranslated string stays untranslated'
         );
 
-        $restoreGibbon();
-        $restoreGuid();
-    }
-
-    /**
-     * @covers __(string $guid, string $text, string $domain)
-     */
-    public function testShortcutUsingGuidWithDomainString()
-    {
-        $localeObserver = $this->createMock(Locale::class);
-        $localeObserver->expects($this->once())
-                ->method('translate')
-                ->with(
-                     $this->equalTo('Some text to translate'),
-                     $this->equalTo([]),
-                     $this->equalTo(['domain' => 'bogus_domain'])
-                )
-                ->willReturn('Some translation result');
-        list($guid, $restoreGuid) = $this->mockGlobalGuid();
-        $restoreGibbon = $this->mockGlobalGibbon((object) [
-            'locale' => $localeObserver,
-        ]);
-
         $this->assertEquals(
-            'Some translation result',
-            __($guid, 'Some text to translate', 'bogus_domain'),
-            '__() with $guid calls $gibbon->locale->translate() in backward compatible way and returns the result'
+            'Untranslated hello world',
+            # L10N: Untranslated string for string replacement.
+            __('Untranslated {action} {name}', [
+                'action' => 'hello',
+                'name' => 'world',
+            ]),
+            'Named string replacement works on untranslated strings'
         );
 
-        $restoreGibbon();
-        $restoreGuid();
+        $this->assertEquals(
+            '你好世界',
+            # L10N: Translated plain text.
+            __('Hello world'),
+            'Translated plain text'
+        );
+
+        $this->assertEquals(
+            '你好，來自 earth 的 stranger',
+            # L10N: Translated string for string replacement.
+            __('Hello {name} from {planet}', [
+                'name' => 'stranger',
+                'planet' => 'earth',
+            ]),
+            'Translated string with named string replacement'
+        );
+
+        $this->assertEquals(
+            '你好，來自 earth 的 stranger',
+            # L10N: Translated string for numerical placeholder replacement.
+            __('Hello {0} from {1}', [
+                'stranger',
+                'earth',
+            ]),
+            'Translated string with numerical placeholder replacement'
+        );
+
+        $this->assertEquals(
+            '你好，來自 earth 的 stranger。今天是 monday。',
+            # L10N: Translated string with mixed numerical and string placeholder.
+            __('Hello {0} from {1}. Today is {dayOfWeek}.', [
+                'stranger',
+                'dayOfWeek' => 'monday',
+                'earth',
+            ]),
+            'Translated string with mixed numerical and string placeholder'
+        );
     }
 }

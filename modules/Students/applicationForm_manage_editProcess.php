@@ -17,16 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
@@ -41,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonApplicationFormID and gibbonSchoolYearID specified
+    //Check if school year specified
 
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $URL .= '&return=error1';
@@ -67,8 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $priority = $_POST['priority'] ?? '';
             $status = $_POST['status'] ?? '';
             $milestones = '';
-            $settingGateway = $container->get(SettingGateway::class);
-            $milestonesMaster = explode(',', $settingGateway->getSettingByScope('Application Form', 'milestones'));
+            $milestonesMaster = explode(',', getSettingByScope($connection2, 'Application Form', 'milestones'));
             foreach ($milestonesMaster as $milestoneMaster) {
                 if (isset($_POST['milestone_'.preg_replace('/\s+/', '', $milestoneMaster)])) {
                     if ($_POST['milestone_'.preg_replace('/\s+/', '', $milestoneMaster)] == 'on') {
@@ -85,18 +80,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if (isset($_POST['gibbonFormGroupID']) && $_POST['gibbonFormGroupID'] != '') {
                 $gibbonFormGroupID = $_POST['gibbonFormGroupID'];
             }
-
-            $paymentMade = !empty($_POST['paymentMade']) ? $_POST['paymentMade'] : 'N';
-            $paymentMade2 = !empty($_POST['paymentMade2']) ? $_POST['paymentMade2'] : 'N';
-
+            $paymentMade = 'N';
+            if (isset($_POST['paymentMade'])) {
+                $paymentMade = $_POST['paymentMade'];
+            }
             $username = $_POST['username'] ?? '';
             $studentID = $_POST['studentID'] ?? '';
             $notes = $_POST['notes'] ?? '';
             $surname = trim($_POST['surname'] ?? '');
-            $firstName = trim($_POST['firstName'] ?? '');
             $preferredName = trim($_POST['preferredName'] ?? '');
-            $officialName = trim($_POST['officialName'] ?? '');
-            $nameInCharacters = $_POST['nameInCharacters'] ?? '';
+            $firstName = $preferredName; //GS//
+            $officialName = trim($preferredName . ' ' . $surname ?? ''); //GS//
+            $nameInCharacters = $officialName; //GS//
             $gender = $_POST['gender'] ?? '';
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
             $languageHomePrimary = $_POST['languageHomePrimary'] ?? '';
@@ -105,6 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
             $countryOfBirth = $_POST['countryOfBirth'] ?? '';
+            $religion = $_POST['religion'] ?? ''; //GS//
             $email = trim($_POST['email'] ?? '');
             $phone1Type = $_POST['phone1Type'] ?? '';
             $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
@@ -161,8 +157,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $parent1title = $_POST['parent1title'] ?? null;
             $parent1surname = trim($_POST['parent1surname'] ?? '');
             $parent1firstName = trim($_POST['parent1firstName'] ?? '');
-            $parent1preferredName = trim($_POST['parent1preferredName'] ?? '');
-            $parent1officialName = trim($_POST['parent1officialName'] ?? '');
+            //GS//$parent1preferredName = trim($_POST['parent1preferredName'] ?? '');
+            $parent1preferredName = $parent1firstName; //GS//
+            //GS//$parent1officialName = trim($_POST['parent1officialName'] ?? '');
+            $parent1officialName = trim($parent1firstName.' '.$parent1surname);//GS//
             $parent1nameInCharacters = $_POST['parent1nameInCharacters'] ?? null;
             $parent1gender = $_POST['parent1gender'] ?? null;
             $parent1relationship = $_POST['parent1relationship'] ?? null;
@@ -188,8 +186,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $parent2title = $_POST['parent2title'] ?? null;
             $parent2surname = trim($_POST['parent2surname'] ?? '');
             $parent2firstName = trim($_POST['parent2firstName'] ?? '');
-            $parent2preferredName = trim($_POST['parent2preferredName'] ?? '');
-            $parent2officialName = trim($_POST['parent2officialName'] ?? '');
+            //GS//$parent2preferredName = trim($_POST['parent2preferredName'] ?? '');
+            $parent2preferredName = $parent2firstName; //GS//
+            //GS//$parent2officialName = trim($_POST['parent2officialName'] ?? '');
+            $parent2officialName = trim($parent2firstName.' '.$parent2surname);//GS//
             $parent2nameInCharacters = $_POST['parent2nameInCharacters'] ?? null;
             $parent2gender = $_POST['parent2gender'] ?? null;
             $parent2relationship = $_POST['parent2relationship'] ?? null;
@@ -309,7 +309,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $familyFail = true;
                 }
                 if ($parent1gibbonPersonID == null) {
-                    if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '' or $parent1profession == '') {
+                    //GS//if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '' or $parent1profession == '') {
+                    if ($parent1preferredName == '' or $parent1relationship == '') { //GS//
                         $familyFail = true;
                     }
                 }
@@ -329,7 +330,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
 
 
-            if ($priority == '' or $surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or $familyFail) {
+            //GS//if ($priority == '' or $surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or $familyFail) {
+            if ($preferredName == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $familyFail) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
@@ -356,7 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 if ($gibbonFamily == 'FALSE') { // Only if there is no family
                     $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent1'];
                     $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent1', $gibbonApplicationFormID, $params, $personalDocumentFail);
-    
+
                     if (empty($_POST['secondParent'])) {
                         $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent2'];
                         $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent2', $gibbonApplicationFormID, $params, $personalDocumentFail);
@@ -370,8 +372,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 } else {
                     //Write to database
                     try {
-                        $data = array('priority' => $priority, 'status' => $status, 'milestones' => $milestones, 'dateStart' => $dateStart, 'gibbonFormGroupID' => $gibbonFormGroupID, 'paymentMade' => $paymentMade, 'paymentMade2' => $paymentMade2, 'notes' => $notes, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'username' => $username, 'dob' => $dob, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'medicalInformation' => $medicalInformation, 'sen' => $sen, 'senDetails' => $senDetails, 'gibbonSchoolYearIDEntry' => $gibbonSchoolYearIDEntry, 'gibbonYearGroupIDEntry' => $gibbonYearGroupIDEntry, 'dayType' => $dayType, 'referenceEmail' => $referenceEmail, 'schoolName1' => $schoolName1, 'schoolAddress1' => $schoolAddress1, 'schoolGrades1' => $schoolGrades1, 'schoolDate1' => $schoolDate1, 'schoolName2' => $schoolName2, 'schoolAddress2' => $schoolAddress2, 'schoolGrades2' => $schoolGrades2, 'schoolDate2' => $schoolDate2, 'gibbonFamilyID' => $gibbonFamilyID, 'parent1gibbonPersonID' => $parent1gibbonPersonID, 'parent1title' => $parent1title, 'parent1surname' => $parent1surname, 'parent1firstName' => $parent1firstName, 'parent1preferredName' => $parent1preferredName, 'parent1officialName' => $parent1officialName, 'parent1nameInCharacters' => $parent1nameInCharacters, 'parent1gender' => $parent1gender, 'parent1relationship' => $parent1relationship, 'parent1languageFirst' => $parent1languageFirst, 'parent1languageSecond' => $parent1languageSecond, 'parent1email' => $parent1email, 'parent1phone1Type' => $parent1phone1Type, 'parent1phone1CountryCode' => $parent1phone1CountryCode, 'parent1phone1' => $parent1phone1, 'parent1phone2Type' => $parent1phone2Type, 'parent1phone2CountryCode' => $parent1phone2CountryCode, 'parent1phone2' => $parent1phone2, 'parent1profession' => $parent1profession, 'parent1employer' => $parent1employer, 'parent2title' => $parent2title, 'parent2surname' => $parent2surname, 'parent2firstName' => $parent2firstName, 'parent2preferredName' => $parent2preferredName, 'parent2officialName' => $parent2officialName, 'parent2nameInCharacters' => $parent2nameInCharacters, 'parent2gender' => $parent2gender, 'parent2relationship' => $parent2relationship, 'parent2languageFirst' => $parent2languageFirst, 'parent2languageSecond' => $parent2languageSecond, 'parent2email' => $parent2email, 'parent2phone1Type' => $parent2phone1Type, 'parent2phone1CountryCode' => $parent2phone1CountryCode, 'parent2phone1' => $parent2phone1, 'parent2phone2Type' => $parent2phone2Type, 'parent2phone2CountryCode' => $parent2phone2CountryCode, 'parent2phone2' => $parent2phone2, 'parent2profession' => $parent2profession, 'parent2employer' => $parent2employer, 'siblingName1' => $siblingName1, 'siblingDOB1' => $siblingDOB1, 'siblingSchool1' => $siblingSchool1, 'siblingSchoolJoiningDate1' => $siblingSchoolJoiningDate1, 'siblingName2' => $siblingName2, 'siblingDOB2' => $siblingDOB2, 'siblingSchool2' => $siblingSchool2, 'siblingSchoolJoiningDate2' => $siblingSchoolJoiningDate2, 'siblingName3' => $siblingName3, 'siblingDOB3' => $siblingDOB3, 'siblingSchool3' => $siblingSchool3, 'siblingSchoolJoiningDate3' => $siblingSchoolJoiningDate3, 'languageChoice' => $languageChoice, 'languageChoiceExperience' => $languageChoiceExperience, 'scholarshipInterest' => $scholarshipInterest, 'scholarshipRequired' => $scholarshipRequired, 'payment' => $payment, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'howDidYouHear' => $howDidYouHear, 'howDidYouHearMore' => $howDidYouHearMore, 'studentID' => $studentID, 'privacy' => $privacy, 'fields' => $fields, 'parent1fields' => $parent1fields, 'parent2fields' => $parent2fields, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
-                        $sql = 'UPDATE gibbonApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, gibbonFormGroupID=:gibbonFormGroupID, paymentMade=:paymentMade, paymentMade2=:paymentMade2, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, username=:username, dob=:dob, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, sen=:sen, senDetails=:senDetails, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, referenceEmail=:referenceEmail, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, studentID=:studentID, privacy=:privacy, fields=:fields, parent1fields=:parent1fields, parent2fields=:parent2fields WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                        $data = array('priority' => $priority, 'status' => $status, 'milestones' => $milestones, 'dateStart' => $dateStart, 'gibbonFormGroupID' => $gibbonFormGroupID, 'paymentMade' => $paymentMade, 'notes' => $notes, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'username' => $username, 'dob' => $dob, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'religion' => $religion, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'medicalInformation' => $medicalInformation, 'sen' => $sen, 'senDetails' => $senDetails, 'gibbonSchoolYearIDEntry' => $gibbonSchoolYearIDEntry, 'gibbonYearGroupIDEntry' => $gibbonYearGroupIDEntry, 'dayType' => $dayType, 'referenceEmail' => $referenceEmail, 'schoolName1' => $schoolName1, 'schoolAddress1' => $schoolAddress1, 'schoolGrades1' => $schoolGrades1, 'schoolDate1' => $schoolDate1, 'schoolName2' => $schoolName2, 'schoolAddress2' => $schoolAddress2, 'schoolGrades2' => $schoolGrades2, 'schoolDate2' => $schoolDate2, 'gibbonFamilyID' => $gibbonFamilyID, 'parent1gibbonPersonID' => $parent1gibbonPersonID, 'parent1title' => $parent1title, 'parent1surname' => $parent1surname, 'parent1firstName' => $parent1firstName, 'parent1preferredName' => $parent1preferredName, 'parent1officialName' => $parent1officialName, 'parent1nameInCharacters' => $parent1nameInCharacters, 'parent1gender' => $parent1gender, 'parent1relationship' => $parent1relationship, 'parent1languageFirst' => $parent1languageFirst, 'parent1languageSecond' => $parent1languageSecond, 'parent1email' => $parent1email, 'parent1phone1Type' => $parent1phone1Type, 'parent1phone1CountryCode' => $parent1phone1CountryCode, 'parent1phone1' => $parent1phone1, 'parent1phone2Type' => $parent1phone2Type, 'parent1phone2CountryCode' => $parent1phone2CountryCode, 'parent1phone2' => $parent1phone2, 'parent1profession' => $parent1profession, 'parent1employer' => $parent1employer, 'parent2title' => $parent2title, 'parent2surname' => $parent2surname, 'parent2firstName' => $parent2firstName, 'parent2preferredName' => $parent2preferredName, 'parent2officialName' => $parent2officialName, 'parent2nameInCharacters' => $parent2nameInCharacters, 'parent2gender' => $parent2gender, 'parent2relationship' => $parent2relationship, 'parent2languageFirst' => $parent2languageFirst, 'parent2languageSecond' => $parent2languageSecond, 'parent2email' => $parent2email, 'parent2phone1Type' => $parent2phone1Type, 'parent2phone1CountryCode' => $parent2phone1CountryCode, 'parent2phone1' => $parent2phone1, 'parent2phone2Type' => $parent2phone2Type, 'parent2phone2CountryCode' => $parent2phone2CountryCode, 'parent2phone2' => $parent2phone2, 'parent2profession' => $parent2profession, 'parent2employer' => $parent2employer, 'siblingName1' => $siblingName1, 'siblingDOB1' => $siblingDOB1, 'siblingSchool1' => $siblingSchool1, 'siblingSchoolJoiningDate1' => $siblingSchoolJoiningDate1, 'siblingName2' => $siblingName2, 'siblingDOB2' => $siblingDOB2, 'siblingSchool2' => $siblingSchool2, 'siblingSchoolJoiningDate2' => $siblingSchoolJoiningDate2, 'siblingName3' => $siblingName3, 'siblingDOB3' => $siblingDOB3, 'siblingSchool3' => $siblingSchool3, 'siblingSchoolJoiningDate3' => $siblingSchoolJoiningDate3, 'languageChoice' => $languageChoice, 'languageChoiceExperience' => $languageChoiceExperience, 'scholarshipInterest' => $scholarshipInterest, 'scholarshipRequired' => $scholarshipRequired, 'payment' => $payment, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'howDidYouHear' => $howDidYouHear, 'howDidYouHearMore' => $howDidYouHearMore, 'studentID' => $studentID, 'privacy' => $privacy, 'fields' => $fields, 'parent1fields' => $parent1fields, 'parent2fields' => $parent2fields, 'gibbonApplicationFormID' => $gibbonApplicationFormID); //GS//
+                        $sql = 'UPDATE gibbonApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, gibbonFormGroupID=:gibbonFormGroupID, paymentMade=:paymentMade, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, username=:username, dob=:dob, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, religion=:religion, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, sen=:sen, senDetails=:senDetails, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, referenceEmail=:referenceEmail, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, studentID=:studentID, privacy=:privacy, fields=:fields, parent1fields=:parent1fields, parent2fields=:parent2fields WHERE gibbonApplicationFormID=:gibbonApplicationFormID'; //GS//
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -383,8 +385,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $partialFail = false;
 
                     //Deal with required documents
-                    $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
-                    $internalDocuments = $settingGateway->getSettingByScope('Application Form', 'internalDocuments');
+                    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+                    $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
                     if ($internalDocuments != '') {
                         $requiredDocuments .= ','.$internalDocuments;
                     }

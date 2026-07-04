@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 require getcwd().'/../gibbon.php';
@@ -36,10 +35,7 @@ if (!empty($session->get('i18n')['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'remoteCLIKey');
-$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
-if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
-    echo __('This script cannot be run from a browser, only via CLI.');
+if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $currentDate = date('Y-m-d');
 
@@ -95,7 +91,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
             $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_pattern.php&minimumCount=1&fromDate='.Format::date($currentDate));
 
             // Send all notifications
-            $sendReport = $event->sendNotifications($pdo, $session);
+            $sendReport = $event->sendNotifications($pdo, $gibbon->session);
 
             // Output the result to terminal
             echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";

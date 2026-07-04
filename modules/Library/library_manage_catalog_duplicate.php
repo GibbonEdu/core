@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -32,15 +31,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonLibraryItemID specified
+    //Check if school year specified
     $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
     if ($gibbonLibraryItemID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
-        $sql = 'SELECT gibbonLibraryItem.*, gibbonLibraryType.name AS type FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+
+            $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
+            $sql = 'SELECT gibbonLibraryItem.*, gibbonLibraryType.name AS type FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -57,19 +57,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             if ($step != 1 and $step != 2) {
                 $step = 1;
             }
-            
-            $urlParamKeys = array('name' => '', 'gibbonLibraryTypeID' => '', 'gibbonSpaceID' => '', 'status' => '', 'gibbonPersonIDOwnership' => '', 'typeSpecificFields' => '');
-
-            $urlParams = array_intersect_key($_GET, $urlParamKeys);
-            $urlParams = array_merge($urlParamKeys, $urlParams);
 
             //Step 1
             if ($step == 1) {
-                if (array_filter($urlParams)) {
-                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Library', 'library_manage_catalog.php')->withQueryParams($urlParams));
+                if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '' or $_GET['gibbonPersonIDOwnership'] != '' or $_GET['typeSpecificFields'] != '') {
+                    echo "<div class='linkTop'>";
+                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_catalog.php&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields']."'>".__('Back to Search Results').'</a>';
+                    echo '</div>';
                 }
 
-                $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID='.$values['gibbonLibraryItemID'].'&'.http_build_query($urlParams));
+                $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID='.$values['gibbonLibraryItemID'].'&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields']);
 
                 $form->addHiddenValue('address', $session->get('address'));
 
@@ -108,13 +105,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             }
             //Step 1
             elseif ($step == 2) {
-                if (array_filter($urlParams)) {
-                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Library', 'library_manage_catalog.php')->withQueryParams($urlParams));
+                if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '' or $_GET['gibbonPersonIDOwnership'] != '' or $_GET['typeSpecificFields'] != '') {
+                    echo "<div class='linkTop'>";
+                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_catalog.php&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields']."'>".__('Back to Search Results').'</a>';
+                    echo '</div>';
                 }
 
                 $number = $_POST['number'];
 
-                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID='.$values['gibbonLibraryItemID'].'&'.http_build_query($urlParams));
+                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID='.$values['gibbonLibraryItemID'].'&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields']);
 
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('count', $number);

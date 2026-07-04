@@ -17,12 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Data\Validator;
-
 include '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
 
 //Module includes
 include './moduleFunctions.php';
@@ -53,7 +48,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '' or $status
             header("Location: {$URL}");
         } else {
             //Prepare approval settings
-            $budgetLevelExpenseApproval = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
+            $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
             if ($budgetLevelExpenseApproval == '') {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");

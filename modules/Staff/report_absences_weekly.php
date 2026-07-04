@@ -84,22 +84,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
     // BAR GRAPH
     $chartConfig = [
-        'height' => '30vh',
-        'tooltip' => [
+        'height' => '70',
+        'tooltips' => [
             'mode' => 'x-axis',
         ],
         'scales' => [
-            'y' => [
+            'yAxes' => [[
                 'stacked' => true,
                 'display' => false,
-                'suggestedMax' => 5,
-                'ticks'     => ['stepSize' => 1],
-            ],
-            'x' => [
+                'ticks'     => ['stepSize' => 1, 'suggestedMax' => 5],
+            ]],
+            'xAxes' => [[
                 'display'   => true,
                 'stacked'   => true,
                 'gridLines' => ['display' => false],
-            ],
+            ]],
         ],
     ];
     

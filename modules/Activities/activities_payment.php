@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -154,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo $row['name'];
             echo '</td>';
             echo '<td>';
-            $invoiceNumber = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'invoiceNumber');
+            $invoiceNumber = getSettingByScope($connection2, 'Finance', 'invoiceNumber');
             if ($invoiceNumber == 'Person ID + Invoice ID') {
                 echo ltrim($row['gibbonPersonID'], '0').'-'.ltrim($row['gibbonFinanceInvoiceID'], '0');
             } elseif ($invoiceNumber == 'Student ID + Invoice ID') {

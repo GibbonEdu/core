@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -31,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
 
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
 
@@ -39,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         ->add(__('Personal Data Updates'), 'data_personal_manage.php', $urlParams)
         ->add(__('Edit Request'));
 
-    //Check if gibbonPersonUpdateID specified
+    //Check if school year specified
     $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
     if ($gibbonPersonUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -147,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             }
 
             $form = Form::createTable('updatePerson', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_personal_manage_editProcess.php?gibbonPersonUpdateID='.$gibbonPersonUpdateID);
-
+            
             $form->setClass('fullWidth colorOddEven');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $oldValues['gibbonPersonID']);
@@ -171,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
 
                 if ($fieldName == 'email') {
-                    $uniqueEmailAddress = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'uniqueEmailAddress');
+                    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
                     if ($uniqueEmailAddress == 'Y') {
                         $data = array('gibbonPersonID' => $oldValues['gibbonPersonID'], 'email' => $newValues['email']);
                         $sql = "SELECT COUNT(*) FROM gibbonPerson WHERE email=:email AND gibbonPersonID<>:gibbonPersonID";

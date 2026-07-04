@@ -33,8 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonActivityID = $_GET['gibbonActivityID'] ?? null;
-    $viewMode = $_REQUEST['format'] ?? '';
+    $gibbonActivityID = isset($_GET['gibbonActivityID'])? $_GET['gibbonActivityID'] : null;
+    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Participants by Activity'));

@@ -60,18 +60,20 @@ class PhoneNumber extends Input
         // Create an internal column to hold the set of phone number fields
         $this->column = $factory->createColumn();
 
-        $this->phoneType = $this->column
-            ->addSelect($name.'Type')
-            ->fromArray($types)
-            ->placeholder()
-            ->setClass('mr-1 w-1/3 sm:w-1/4');
-        
-        $this->phoneCodes = $this->column
-            ->addSelect($name.'CountryCode')
-            ->fromArray($countryCodes)
-            ->placeholder()
-            ->setClass('mr-1 w-1/3 sm:w-1/4');
-            
+        $this->phoneType = $this->column; //GS//
+        //GS//$this->phoneType = $this->column
+	//GS//    ->addSelect($name.'Type')
+        //GS//    ->fromArray($types)
+        //GS//    ->placeholder()
+        //GS//    ->setClass('mr-1 w-1/3 sm:w-1/4');
+
+        $this->phoneCodes = $this->column; //GS//
+        //GS//$this->phoneCodes = $this->column
+        //GS//    ->addSelect($name.'CountryCode')
+        //GS//    ->fromArray($countryCodes)
+        //GS//    ->placeholder()
+        //GS//    ->setClass('mr-1 w-1/3 sm:w-1/4');
+
         $this->phoneNumber = $this->column
             ->addTextField($name)
             ->setClass('w-2/3 sm:w-1/2');

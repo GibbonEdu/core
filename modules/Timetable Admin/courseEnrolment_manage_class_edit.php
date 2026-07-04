@@ -17,21 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if gibbonCourseID, gibbonSchoolYearID, and gibbonCourseClassID specified
+    //Check if school year specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -54,13 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->add(__('Course Enrolment by Class'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
                 ->add(__('Edit %1$s.%2$s Enrolment', ['%1$s' => $values['courseNameShort'], '%2$s' => $values['name']]));
 
+            echo "<div class='linkTop'>";
             if ($search != '') {
-                $params = [
-                    "search" => $search,
-                    "gibbonSchoolYearID" => $gibbonSchoolYearID
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage.php')->withQueryParams($params));
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage.php&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Back to Search Results').'</a>';
             }
+            echo '</div>';
             
             echo '<h2>';
             echo __('Add Participants');

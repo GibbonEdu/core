@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if gibbonCourseClassID and gibbonInternalAssessmentColumnID specified
+    //Check if school year specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
     if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {

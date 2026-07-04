@@ -17,13 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -55,11 +53,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo $form->getOutput();
 
     if (!empty($gibbonPersonID)) {
-        $settingGateway = $container->get(SettingGateway::class);
-        $activityTypes = $container->get(ActivityGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
-        $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
+        $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
+        $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
         if ($dateType == 'Term') {
-            $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
+            $maxPerTerm = getSettingByScope($connection2, 'Activities', 'maxPerTerm');
         }
 
         $gateway = $container->get(ActivityReportGateway::class);
@@ -83,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             $table->setTitle($enroledYear['name']);
             $table->addColumn('activityName', __('Activity'));
 
-            if (!empty($activityTypes)) {
+            if ($options != '') {
                 $table->addColumn('activityType', __('Type'));
             }
 
@@ -124,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                     $actions
                         ->addAction('view', __('View Details'))
                         ->setURL('/modules/Activities/activities_view_full.php')
-                        ->isModal(1000, 500);
+                        ->isModal(900, 500);
                 });
 
             echo $table->render($activities);

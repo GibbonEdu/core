@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrationSettings.php') == false) {
@@ -33,25 +32,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 
     $row = $form->addRow()->addHeading(__('General Settings'));
 
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $setting = $settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationMinimumAge', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(0)->maxLength(99);
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultStatus', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('Full, Pending Approval')->selected($setting['value'])->required();
 
     $sql = "SELECT gibbonRoleID AS value, name FROM gibbonRole ORDER BY name";
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultRole', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -59,34 +56,34 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
             ->selected($setting['value'])
             ->required();
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAllowedDomains', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Interface Options'));
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationIntro', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationPostscript', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationPrivacyStatement', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAgreement', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAlternateEmail', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAlternateEmail', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();

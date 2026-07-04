@@ -22,9 +22,8 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonFinanceFeeCategoryID = $_POST['gibbonFinanceFeeCategoryID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/feeCategories_manage_delete.php&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/feeCategories_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/feeCategories_manage_delete.php&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/feeCategories_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_manage_delete.php') == false) {
     $URL .= '&return=error0';

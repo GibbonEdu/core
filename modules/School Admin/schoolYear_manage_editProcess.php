@@ -18,12 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Domain\Timetable\TimetableDayDateGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYear_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
@@ -43,7 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-            $row = $result->fetch();
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
@@ -112,11 +107,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
-                        }
-
-                        if ($firstDay > $row['firstDay']) {
-                          $timetableDayDateGateway = $container->get(TimetableDayDateGateway::class);
-                          $timetableDayDateGateway->deleteTTDatesInRange($row['firstDay'], $firstDay);
                         }
 
                         // Update session vars so the user is warned if they're logged into a different year

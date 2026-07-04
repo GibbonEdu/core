@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSettings.php') == false) {
@@ -38,21 +37,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 
 	$row = $form->addRow()->addHeading(__('Message Wall Settings'));
 
-    $settingGateway = $container->get(SettingGateway::class);
-
-	$setting = $settingGateway->getSettingByScope('Messenger', 'enableHomeScreenWidget', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Miscellaneous'));
 
-	$setting = $settingGateway->getSettingByScope('Messenger', 'messageBcc', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'messageBcc', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(2);
 
-    $setting = $settingGateway->getSettingByScope('Messenger', 'pinnedMessagesOnHome', true);
+    $setting = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();

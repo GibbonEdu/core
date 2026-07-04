@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $form->addRow()->addHeading(__('Staff Coverage'));
 
-    $setting = $settingGateway->getSettingByScope('Staff', 'substituteInfo', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'substituteInfo', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
@@ -171,22 +171,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $row = $form->addRow()->addHeading(__('Field Values'));
 
-    $setting = $settingGateway->getSettingByScope('Staff', 'salaryScalePositions', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'salaryScalePositions', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Staff', 'responsibilityPosts', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'responsibilityPosts', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Staff', 'biographicalGroupingOrder', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'biographicalGroupingOrder', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Staff', 'jobOpeningDescriptionTemplate', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
@@ -200,8 +200,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         list($title, $preferredName, $surname) = array_values($result->fetch());
     }
 
-    $setting = $settingGateway->getSettingByScope('System', 'nameFormatStaffFormal', true);
-    $settingRev = $settingGateway->getSettingByScope('System', 'nameFormatStaffFormalReversed', true);
+    $setting = getSettingByScope($connection2, 'System', 'nameFormatStaffFormal', true);
+    $settingRev = getSettingByScope($connection2, 'System', 'nameFormatStaffFormalReversed', true);
 
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']))->description(
@@ -211,8 +211,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         $col->addTextField($setting['name'])->required()->maxLength(60)->setValue($setting['value']);
         $col->addTextField($settingRev['name'])->required()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
 
-    $setting = $settingGateway->getSettingByScope('System', 'nameFormatStaffInformal', true);
-    $settingRev = $settingGateway->getSettingByScope('System', 'nameFormatStaffInformalReversed', true);
+    $setting = getSettingByScope($connection2, 'System', 'nameFormatStaffInformal', true);
+    $settingRev = getSettingByScope($connection2, 'System', 'nameFormatStaffInformalReversed', true);
 
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']))->description(

@@ -1,0 +1,16 @@
+{
+    "remotePath": "core_gyansetu",
+    "host": "ftp.shef.ngo",
+    "username": "felipetp@shef.ngo",
+    "password": "ftppasswordforshef.ngo",
+    "port": 21,
+    "protocol": "ftp",
+    "fileNameEncoding": "utf8",
+    "autoUpload": true,
+    "autoDelete": false,
+    "autoDownload": false,
+    "ignore": [
+        ".git",
+        "/.vscode"
+    ]
+}

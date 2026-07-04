@@ -44,8 +44,6 @@ class DataTableView extends View implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
-        $dataSet->htmlEncode($table->getMetaData('allowHTML', []));
-        
         $this->addData('table', $table);
         $this->addData('blankSlate', $table->getMetaData('blankSlate'));
         $this->addData('draggable', $table->getMetaData('draggable'));

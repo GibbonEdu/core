@@ -24,11 +24,8 @@ use Gibbon\Domain\System\LogGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 //Module includes
 include '../User Admin/moduleFunctions.php';
@@ -36,15 +33,14 @@ include '../User Admin/moduleFunctions.php';
 $logGateway = $container->get(LogGateway::class);
 $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonPersonUpdateID specified
+    //Check if school year specified
     if ($gibbonPersonUpdateID == '' or $gibbonPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

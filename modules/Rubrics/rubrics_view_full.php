@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.
     echo '</div>';
 } else {
     //Proceed!
-    //Check if gibbonRubricID specified
+    //Check if school year specified
     $gibbonRubricID = $_GET['gibbonRubricID'];
     if ($gibbonRubricID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

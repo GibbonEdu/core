@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 
@@ -27,10 +26,9 @@ include __DIR__ . '/../../gibbon.php';
 //Module includes
 include __DIR__ . '/moduleFunctions.php';
 
-$address = $_POST['address'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $scope = $_POST['scope'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';
@@ -65,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         } else {
             //Write to database
             require_once __DIR__ . '/src/AttendanceView.php';
-            $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
+            $attendance = new AttendanceView($gibbon, $pdo);
 
             $partialFail = false;
             $partialFailSchoolClosed = false;
@@ -79,9 +77,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             $absenceType = $_POST['absenceType'] ?? 'full';
 
-
-            $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
-            $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : $dateStart;
+            $dateStart = '';
+            if ($_POST['dateStart'] != '') {
+                $dateStart = Format::dateConvert($_POST['dateStart']);
+            }
+            $dateEnd = $dateStart;
+            if ($_POST['dateEnd'] != '') {
+                $dateEnd = Format::dateConvert($_POST['dateEnd']);
+            }
             $today = date('Y-m-d');
 
             //Check to see if date is in the future and is a school day.

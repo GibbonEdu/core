@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -26,13 +25,12 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 //Get alternative header names
-$settingGateway = $container->get(SettingGateway::class);
-$attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
-$attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev');
+$attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+$attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $hasAttainmentName = ($attainmentAlternativeName != '' && $attainmentAlternativeNameAbrev != '');
 
-$effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
-$effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
+$effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+$effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 $hasEffortName = ($effortAlternativeName != '' && $effortAlternativeNameAbrev != '');
 
 echo "<script type='text/javascript'>";
@@ -51,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Check if gibbonCourseClassID and gibbonInternalAssessmentColumnID specified
+        //Check if school year specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {

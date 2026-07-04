@@ -19,9 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session as SessionInterface;
 
 /**
@@ -36,6 +35,8 @@ class Locale implements LocaleInterface
 
     protected $absolutePath;
 
+    protected $session;
+
     protected $stringReplacements;
 
     protected $supportsGetText = true;
@@ -48,9 +49,10 @@ class Locale implements LocaleInterface
      * @param Session $session      Global session object for string
      *                              replacement cache.
      */
-    public function __construct(string $absolutePath)
+    public function __construct(string $absolutePath, SessionInterface $session)
     {
         $this->absolutePath = $absolutePath;
+        $this->session = $session;
         $this->supportsGetText = function_exists('gettext') && function_exists('dgettext');
     }
 
@@ -148,9 +150,9 @@ class Locale implements LocaleInterface
      *
      * @param   Gibbon\Contracts\Database\Connection  $pdo
      */
-    public function setStringReplacementList(Session $session, Connection $pdo, $forceRefresh = false)
+    public function setStringReplacementList(Connection $pdo, $forceRefresh = false)
     {
-        $stringReplacements = $session->get('stringReplacement', null);
+        $stringReplacements = $this->session->get('stringReplacement', null);
 
         // Do this once per session, only if the value doesn't exist
         if ($forceRefresh || $stringReplacements === null) {
@@ -161,14 +163,14 @@ class Locale implements LocaleInterface
                 $data = array();
                 $sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original";
 
-                $result = $pdo->select($sql, $data);
+                $result = $pdo->executeQuery($data, $sql);
 
                 if ($result->rowCount()>0) {
                     $stringReplacements = $result->fetchAll();
                 }
             }
 
-            $session->set('stringReplacement', $stringReplacements );
+            $this->session->set('stringReplacement', $stringReplacements );
         }
 
         $this->stringReplacements = $stringReplacements;

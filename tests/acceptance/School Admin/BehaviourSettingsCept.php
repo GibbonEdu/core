@@ -17,10 +17,13 @@ $newFormValues = array(
     'negativeDescriptors'           => 'Negative1,Negative2,Negative3',
     'enableLevels'                  => 'Y',
     'levels'                        => 'Level1,Level2,Level3',
-    'enableNegativeBehaviourLetters'        => 'Y',
-    'behaviourLettersNegativeLetter1Count'  => '4',
-    'behaviourLettersNegativeLetter2Count'  => '8',
-    'behaviourLettersNegativeLetter3Count'  => '12',
+    'enableBehaviourLetters'        => 'Y',
+    'behaviourLettersLetter1Count'  => '4',
+    'behaviourLettersLetter1Text'   => 'Letter Test 1',
+    'behaviourLettersLetter2Count'  => '8',
+    'behaviourLettersLetter2Text'   => 'Letter Test 2',
+    'behaviourLettersLetter3Count'  => '12',
+    'behaviourLettersLetter3Text'   => 'Letter Test 3',
     'policyLink'                    => 'http://test.test',
 );
 
@@ -36,7 +39,7 @@ $I->seeInFormFields('#content form', $newFormValues);
 $resetFormValues = $originalFormValues;
 $resetFormValues['enableDescriptors'] = 'Y';
 $resetFormValues['enableLevels'] = 'Y';
-$resetFormValues['enableNegativeBehaviourLetters'] = 'Y';
+$resetFormValues['enableBehaviourLetters'] = 'Y';
 $I->submitForm('#content form', $resetFormValues, 'Submit');
 
 // Restore Original Settings -----------------------------------

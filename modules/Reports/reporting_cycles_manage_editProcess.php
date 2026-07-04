@@ -19,21 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Services\Format;
-use Gibbon\Http\Url;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
-$URL = Url::fromModuleRoute('Reports', 'reporting_cycles_manage_edit')
-    ->withQueryParam('gibbonReportingCycleID', $gibbonReportingCycleID);
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_edit.php&gibbonReportingCycleID='.$gibbonReportingCycleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage_edit.php') == false) {
-    header("Location: {$URL->withReturn('error0')}");
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
     exit;
 } else {
     // Proceed!
@@ -66,21 +62,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     // Validate the required values are present
     if (empty($gibbonReportingCycleID) || empty($gibbonSchoolYearID) || empty($data['name']) || empty($data['nameShort'])) {
-        $URL = $URL->withReturn('error1');
+        $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     // Validate the database relationships exist
     if (!$reportingCycleGateway->exists($gibbonReportingCycleID)) {
-        $URL = $URL->withReturn('error2');
+        $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
     // Validate that this record is unique
     if (!$reportingCycleGateway->unique($data, ['name', 'gibbonSchoolYearID'], $gibbonReportingCycleID)) {
-        $URL = $URL->withReturn('error7');
+        $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
     }
@@ -88,6 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     // Update the record
     $updated = $reportingCycleGateway->update($gibbonReportingCycleID, $data);
 
-    $URL = $URL->withReturn(!$updated ? 'error2' : 'success0');
+    $URL .= !$updated
+        ? "&return=error2"
+        : "&return=success0";
+
     header("Location: {$URL}");
 }

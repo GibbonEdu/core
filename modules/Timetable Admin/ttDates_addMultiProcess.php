@@ -20,11 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $dates = $_POST['dates'] ?? [];

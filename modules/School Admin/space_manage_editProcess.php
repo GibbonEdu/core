@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/space_manage_edit.php&gibbonSpaceID=$gibbonSpaceID";
@@ -30,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonSpaceID specified
+    //Check if school year specified
     if ($gibbonSpaceID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

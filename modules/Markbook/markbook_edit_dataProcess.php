@@ -17,27 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
-$settingGateway = $container->get(SettingGateway::class);
-$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
-$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
-$enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+$enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
-$address = $_GET['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
-$personalisedWarnings = $settingGateway->getSettingByScope('Markbook', 'personalisedWarnings');
+$personalisedWarnings = getSettingByScope($connection2, 'Markbook', 'personalisedWarnings');
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {
     $URL .= '&return=error0';
@@ -48,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonMarkbookColumnID and gibbonCourseClassID specified
+        //Check if school year specified
         if ($gibbonMarkbookColumnID == '' or $gibbonCourseClassID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -270,15 +264,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                             // Create a log of failed uploads
                             $errorMessage = $fileUploader->getLastError();
-                            if (empty($errorMessage) && !file_exists($attachment)) {
-                                $errorMessage = __('Uploaded file not found in the system.');
-                            }
                             if (!empty($errorMessage) || filesize($attachment) === 0) {
                                 $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
                                 $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                     'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
                                     'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
-                                    'name' => $name,
+                                    'name' => $row['name'],
                                     'attachment' => $attachment,
                                     'errorMessage' => $errorMessage,
                                     'fileType' => $file['type'] ?? '',

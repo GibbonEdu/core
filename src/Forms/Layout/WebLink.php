@@ -5,38 +5,15 @@ use Gibbon\Forms\OutputableInterface;
 
 class WebLink extends Element
 {
-    /**
-     * An array of embedded elements to output inside the link tag.
-     *
-     * @var \Gibbon\Forms\OutputableInterface[]
-     */
     protected $embeddedElements = array();
-
-    /**
-     * An array of URL parameters to be appended to the link URL.
-     *
-     * @var array
-     */
     protected $params = array();
 
-    /**
-     * Constructor of WebLink.
-     *
-     * @param string $content
-     */
     public function __construct($content = '')
     {
         $this->setURL('');
         parent::__construct($content);
     }
 
-    /**
-     * Set the onClick attribute for the link.
-     *
-     * A shortcut for calling `setAttribute('onClick', $value)`.
-     * @param string $url
-     * @return self
-     */
     public function onClick($value)
     {
         $this->setAttribute('onClick',$value);
@@ -108,6 +85,7 @@ class WebLink extends Element
     public function addConfirmation($message)
     {
         $this->setAttribute('onclick', "return confirm(\"".__($message)."\")");
+        
         return $this;
     }
 
@@ -140,7 +118,7 @@ class WebLink extends Element
 
     /**
      * Adds an embedded element to output inside the link tag.
-     * @param \Gibbon\Forms\OutputableInterface $element
+     * @param OutputtableInterface $element
      * @return self
      */
     public function addEmbeddedElement($element)
@@ -151,10 +129,10 @@ class WebLink extends Element
 
         return $this;
     }
-
+    
     /**
      * Sets an array of embedded elements to output inside the link tag.
-     * @param \Gibbon\Forms\OutputableInterface[] $elements
+     * @param OutputtableInterface $element
      * @return self
      */
     public function setEmbeddedElements($elements)

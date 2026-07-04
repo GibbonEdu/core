@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['blurb' => 'HTML']);
+include '../../gibbon.php';
 
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_manage_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
@@ -31,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     exit();
 } else {
     //Proceed!
-    //Check if gibbonDepartmentID specified
+    //Check if school year specified
     if ($gibbonDepartmentID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

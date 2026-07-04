@@ -19,11 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
 $allStaff = $_GET['allStaff'] ?? '';
@@ -35,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonStaffID specified
+    //Check if school year specified
     if ($gibbonStaffID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

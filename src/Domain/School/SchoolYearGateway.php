@@ -48,13 +48,6 @@ class SchoolYearGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
     
-    public function getSchoolYearList()
-    {
-        $sql = "SELECT gibbonSchoolYearID AS value, name FROM gibbonSchoolYear ORDER BY sequenceNumber";
-
-        return $this->db()->select($sql)->fetchKeyPair();
-    }
-
     public function getSchoolYearByID($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);

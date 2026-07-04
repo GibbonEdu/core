@@ -17,15 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['questions' => 'HTML']);
+include '../../gibbon.php';
 
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
@@ -39,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonStaffApplicationFormID specified
+    //Check if school year specified
 
     if ($gibbonStaffApplicationFormID == '') {
         $URL .= '&return=error1';
@@ -61,12 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $settingGateway = $container->get(SettingGateway::class);
             //Get student fields
             $priority = $_POST['priority'] ?? '';
             $status = $_POST['status'] ?? '';
             $milestones = '';
-            $milestonesMaster = explode(',', $settingGateway->getSettingByScope('Staff', 'staffApplicationFormMilestones'));
+            $milestonesMaster = explode(',', getSettingByScope($connection2, 'Staff', 'staffApplicationFormMilestones'));
             foreach ($milestonesMaster as $milestoneMaster) {
                 if (isset($_POST['milestone_'.preg_replace('/\s+/', '', $milestoneMaster)])) {
                     if ($_POST['milestone_'.preg_replace('/\s+/', '', $milestoneMaster)] == 'on') {
@@ -142,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $partialFail = false;
 
                     //Deal with required documents
-                    $requiredDocuments = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments');
+                    $requiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
                     if ($requiredDocuments != '' and $requiredDocuments != false) {
                         $fileCount = 0;
                         if (isset($_POST['fileCount'])) {

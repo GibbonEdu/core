@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonStudentNoteCategoryID specified
+    //Check if school year specified
     if ($gibbonStudentNoteCategoryID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

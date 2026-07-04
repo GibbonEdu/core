@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonFileExtensionID specified
+    //Check if school year specified
     $gibbonFileExtensionID = $_GET['gibbonFileExtensionID'];
     if ($gibbonFileExtensionID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

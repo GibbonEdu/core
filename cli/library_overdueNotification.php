@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\System\SettingGateway;
 
 require getcwd().'/../gibbon.php';
 
@@ -37,9 +36,7 @@ if (!empty($session->get('i18n')['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'remoteCLIKey');
-$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
-if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
+if (!isCommandLineInterface()) {
 	print __("This script cannot be run from a browser, only via CLI.") ;
 }
 else {
@@ -54,7 +51,7 @@ else {
 
     // Initialize the notification sender & gateway objects
     $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $session);
+    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
     // Raise a new notification event
     $event = new NotificationEvent('Library', 'Overdue Loan Items');

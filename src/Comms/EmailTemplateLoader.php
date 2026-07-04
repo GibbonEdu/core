@@ -40,7 +40,7 @@ class EmailTemplateLoader implements LoaderInterface
         return $this;
     }
 
-    public function getSourceContext($name): Source
+    public function getSourceContext($name)
     {
         if (false === $template = $this->getTemplate($name)) {
             throw new LoaderError(sprintf('Template "%s" does not exist.', $name));
@@ -54,12 +54,12 @@ class EmailTemplateLoader implements LoaderInterface
         return (bool)$this->getTemplate($name);
     }
 
-    public function getCacheKey($name): string
+    public function getCacheKey($name)
     {
         return $name.$this->source;
     }
 
-    public function isFresh($name, $time): bool
+    public function isFresh($name, $time)
     {
         if (false === $template = $this->getTemplate($name)) {
             return false;

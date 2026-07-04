@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonFileExtensionID specified
+    //Check if school year specified
     if ($gibbonFileExtensionID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

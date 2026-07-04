@@ -25,13 +25,13 @@ namespace Gibbon\Domain;
 class DataSet implements \Countable, \IteratorAggregate
 {
     protected $data;
+    
+    protected $resultCount; 
+    protected $totalCount; 
 
-    protected $resultCount;
-    protected $totalCount;
-
-    protected $page;
-    protected $pageSize;
-
+    protected $page; 
+    protected $pageSize; 
+    
     /**
      * Creates a new data set from an array and calculates the result counts and pagination based on array size.
      *
@@ -81,7 +81,7 @@ class DataSet implements \Countable, \IteratorAggregate
      *
      * @return int
      */
-    public function count(): int
+    public function count()
     {
         return count($this->data);
     }
@@ -91,7 +91,7 @@ class DataSet implements \Countable, \IteratorAggregate
      *
      * @return \ArrayIterator
      */
-    public function getIterator(): \Traversable
+    public function getIterator()
     {
         return new \ArrayIterator($this->data);
     }
@@ -117,7 +117,7 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * The total un-paginated number of rows for this data set.
+     * The total un-paginated number of rows for this data set. 
      * Will be less than the totalCount if the results have criteria applied.
      *
      * @return int
@@ -301,23 +301,6 @@ class DataSet implements \Countable, \IteratorAggregate
     public function transform(callable $callable)
     {
         array_walk($this->data, $callable);
-    }
-
-    /**
-     * Prepare data to be displayed in a table.
-     *
-     * @param callable $callable
-     */
-    public function htmlEncode(array $ignore = [])
-    {
-        array_walk($this->data, function (&$item, $key) use (&$ignore)  {
-            if (isset($ignore[$key]) || in_array($key, $ignore)) return;
-            if (is_string($item)) $item = strip_tags($item, '<br>');
-            if (is_array($item)) array_walk($item, function (&$innerItem, $innerKey) use (&$ignore) {
-                if (isset($ignore[$innerKey]) || in_array($innerKey, $ignore)) return;
-                if (is_string($innerItem)) $innerItem = strip_tags($innerItem, '<br>');
-            });
-        });
     }
 
     /**

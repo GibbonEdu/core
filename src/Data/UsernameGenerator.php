@@ -62,7 +62,7 @@ class UsernameGenerator
     public function addToken($name, $value)
     {
         if (empty($name)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->tokens[$name] = array(
@@ -84,7 +84,7 @@ class UsernameGenerator
     public function addNumericToken($name, $value, $size, $increment, $callback = null)
     {
         if (empty($name)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->tokens[$name] = array(
@@ -115,37 +115,49 @@ class UsernameGenerator
      * @param    string|int  $gibbonRoleID
      * @return   string  Unique username
      */
-    public function generateByRole($gibbonRoleID)
+    public function generateByRole($gibbonRoleID, $sufix = '') //GS//
     {
-        $usernameFormat = '';
-
         // Get the username format data by gibbonRoleID
         $data = array('gibbonRoleID' => $gibbonRoleID);
         $sql = "SELECT gibbonUsernameFormat.*, gibbonRole.name as roleName FROM gibbonUsernameFormat JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonRoleIDList)) WHERE gibbonRoleID=:gibbonRoleID OR isDefault='Y' ORDER BY FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList) DESC LIMIT 1";
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->pdo->executeQuery($data, $sql);
 
-        if ($result->rowCount() > 0) {
-            $row = $result->fetch(0);
+        if ($sufix == '') { //GS//
+            $usernameFormat = '';
 
-            $usernameFormat = $row['format'];
+            if ($result->rowCount() > 0) {
+                $row = $result->fetch(0);
 
-            // Update the default value to the role name
-            $this->defaultValue = strtolower($row['roleName']);
+                $usernameFormat = $row['format'];
 
-            // Add a numeric token with a callback to update the database value when generated.
-            if ($row['isNumeric'] == 'Y') {
-                $pdo = $this->pdo;
-                $callback = function($number) use (&$pdo, &$row) {
-                    $data = array('gibbonUsernameFormatID' => $row['gibbonUsernameFormatID'], 'numericValue' => $number);
-                    $sql = "UPDATE gibbonUsernameFormat SET numericValue=:numericValue WHERE gibbonUsernameFormatID=:gibbonUsernameFormatID";
-                    $result = $pdo->select($sql, $data);
-                };
+                // Update the default value to the role name
+                $this->defaultValue = strtolower($row['roleName']);
 
-                $this->addNumericToken('number', $row['numericValue'], $row['numericSize'], $row['numericIncrement'], $callback);
+                // Add a numeric token with a callback to update the database value when generated.
+                if ($row['isNumeric'] == 'Y') {
+                    $pdo = $this->pdo;
+                    $callback = function ($number) use (&$pdo, &$row) {
+                        $data = array('gibbonUsernameFormatID' => $row['gibbonUsernameFormatID'], 'numericValue' => $number);
+                        $sql = "UPDATE gibbonUsernameFormat SET numericValue=:numericValue WHERE gibbonUsernameFormatID=:gibbonUsernameFormatID";
+                        $result = $pdo->executeQuery($data, $sql);
+                    };
+
+                    $this->addNumericToken('number', $row['numericValue'], $row['numericSize'], $row['numericIncrement'], $callback);
+                }
+            }
+
+            return $this->generate($usernameFormat);
+        }
+        //GS-->//
+        else {
+            if ($result->rowCount() > 0) {
+                $row = $result->fetch(0);
+                $prefix = $row['format'];
+
+                return $prefix.$sufix;                
             }
         }
-
-        return $this->generate($usernameFormat);
+        //GS<--//
     }
 
     /**
@@ -230,7 +242,7 @@ class UsernameGenerator
     {
         $data = array('username' => $username);
         $sql = "SELECT gibbonPersonID from gibbonPerson WHERE username=:username OR username=LOWER(:username)";
-        $result = $this->pdo->select($sql, $data);
+        $result = $this->pdo->executeQuery($data, $sql);
 
         return ($result->rowCount() == 0);
     }
@@ -247,7 +259,7 @@ class UsernameGenerator
         $number = $this->getToken($name);
 
         if (empty($number) || $number['type'] != 'numeric') {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         // Increment value and format result

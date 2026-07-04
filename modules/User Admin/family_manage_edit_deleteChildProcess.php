@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -36,7 +33,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonPersonID specified
+        //Check if school year specified
         if ($gibbonPersonID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

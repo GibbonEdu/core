@@ -29,16 +29,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 } else {
     $page->breadcrumbs->add(__('View Available Teachers'));
 
-    $viewBy = $_GET['viewBy'] ?? '';
-    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
-    $ttDate = $_GET['ttDate'] ?? '';
+    echo '<h2>';
+    echo __('Choose Options');
+    echo '</h2>';
 
-    if (empty($ttDate)) {
-        $ttDate = Format::date(date('Y-m-d'));
+    $gibbonTTID = null;
+    if (isset($_GET['gibbonTTID'])) {
+        $gibbonTTID = $_GET['gibbonTTID'];
+    }
+    $ttDate = null;
+    if (isset($_GET['ttDate'])) {
+        $ttDate = $_GET['ttDate'];
+    }
+    if ($ttDate == '') {
+        $ttDate = date($session->get('i18n')['dateFormatPHP']);
     }
 
+    $viewBy = (isset($_GET['viewBy']))? $_GET['viewBy'] : '';
+
     $form = Form::create('viewAvailableTeachers', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setTitle(__('Choose Options'));
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/report_viewAvailableTeachers.php');
 
@@ -68,11 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         echo __('Report Data');
         echo '</h2>';
 
-        echo '<p>'.__('Click the timetable to view availability details.').'</p>';
-
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
-        $sql = 'SELECT * FROM gibbonTT WHERE gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-        $result = $pdo->select($sql, $data);
+        
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
+            $sql = 'SELECT * FROM gibbonTT WHERE gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -84,14 +93,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
             //Check which days are school days
             $daysInWeek = 0;
-            $days = [];
+            $days = array();
             $timeStart = '';
             $timeEnd = '';
             
-            $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
-            $days = $pdo->select($sqlDays)->fetchAll();
-            $daysInWeek = count($days);
-
+                $dataDays = array();
+                $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
+                $resultDays = $connection2->prepare($sqlDays);
+                $resultDays->execute($dataDays);
+            $days = $resultDays->fetchAll();
+            $daysInWeek = $resultDays->rowCount();
             foreach ($days as $day) {
                 if ($timeStart == '' or $timeEnd == '') {
                     $timeStart = $day['schoolStart'];
@@ -119,14 +130,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
             //Max diff time for week based on timetables
             
-            $dataDiff = array('date1' => date('Y-m-d', ($startDayStamp + (86400 * 0))), 'date2' => date('Y-m-d', ($endDayStamp + (86400 * 1))), 'gibbonTTID' => $row['gibbonTTID']);
-            $sqlDiff = 'SELECT DISTINCT gibbonTTColumn.gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE (date>=:date1 AND date<=:date2) AND gibbonTTID=:gibbonTTID';
-            $resultDiff = $pdo->select($sqlDiff, $dataDiff);
+                $dataDiff = array('date1' => date('Y-m-d', ($startDayStamp + (86400 * 0))), 'date2' => date('Y-m-d', ($endDayStamp + (86400 * 1))), 'gibbonTTID' => $row['gibbonTTID']);
+                $sqlDiff = 'SELECT DISTINCT gibbonTTColumn.gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE (date>=:date1 AND date<=:date2) AND gibbonTTID=:gibbonTTID';
+                $resultDiff = $connection2->prepare($sqlDiff);
+                $resultDiff->execute($dataDiff);
             while ($rowDiff = $resultDiff->fetch()) {
                 
-                $dataDiffDay = array('gibbonTTColumnID' => $rowDiff['gibbonTTColumnID']);
-                $sqlDiffDay = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart';
-                $resultDiffDay = $pdo->select($sqlDiffDay, $dataDiffDay);
+                    $dataDiffDay = array('gibbonTTColumnID' => $rowDiff['gibbonTTColumnID']);
+                    $sqlDiffDay = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart';
+                    $resultDiffDay = $connection2->prepare($sqlDiffDay);
+                    $resultDiffDay->execute($dataDiffDay);
                 while ($rowDiffDay = $resultDiffDay->fetch()) {
                     if ($rowDiffDay['timeStart'] < $timeStart) {
                         $timeStart = $rowDiffDay['timeStart'];
@@ -193,10 +206,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             //Check to see if week is at all in term time...if it is, then display the grid
             $isWeekInTerm = false;
             
-            $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-            $resultTerm = $pdo->select($sqlTerm, $dataTerm);
-
+                $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
+                $resultTerm = $connection2->prepare($sqlTerm);
+                $resultTerm->execute($dataTerm);
             $weekStart = date('Y-m-d', ($startDayStamp + (86400 * 0)));
             $weekEnd = date('Y-m-d', ($startDayStamp + (86400 * 6)));
             while ($rowTerm = $resultTerm->fetch()) {
@@ -223,10 +236,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                     //Check to see if day is term time
                     $isDayInTerm = false;
                     
-                    $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $resultTerm = $pdo->select($sqlTerm, $dataTerm);
-
+                        $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                        $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
+                        $resultTerm = $connection2->prepare($sqlTerm);
+                        $resultTerm->execute($dataTerm);
                     while ($rowTerm = $resultTerm->fetch()) {
                         if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
                             $isDayInTerm = true;
@@ -235,10 +248,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
                     if ($isDayInTerm == true) {
                         //Check for school closure day
-                        $dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
-                        $sqlClosure = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date and type='School Closure'";
-                        $resultClosure = $pdo->select($sqlClosure, $dataClosure);
-
+                        
+                            $dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                            $sqlClosure = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date and type='School Closure'";
+                            $resultClosure = $connection2->prepare($sqlClosure);
+                            $resultClosure->execute($dataClosure);
                         if ($resultClosure->rowCount() == 1) {
                             $rowClosure = $resultClosure->fetch();
                             $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
@@ -262,10 +276,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                             $dayTimeStart = '';
                             $dayTimeEnd = '';
                             
-                            $dataDiff = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))), 'gibbonTTID' => $gibbonTTID);
-                            $sqlDiff = 'SELECT timeStart, timeEnd FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
-                            $resultDiff = $pdo->select($sqlDiff, $dataDiff);
-
+                                $dataDiff = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))), 'gibbonTTID' => $gibbonTTID);
+                                $sqlDiff = 'SELECT timeStart, timeEnd FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
+                                $resultDiff = $connection2->prepare($sqlDiff);
+                                $resultDiff->execute($dataDiff);
                             while ($rowDiff = $resultDiff->fetch()) {
                                 if ($dayTimeStart == '') {
                                     $dayTimeStart = $rowDiff['timeStart'];
@@ -286,23 +300,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                             $startPad = strtotime($dayTimeStart) - strtotime($timeStart);
 
                             $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-
-                            $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
-                            $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
-                            $resultDay = $pdo->select($sqlDay, $dataDay);
-
+                            try {
+                                $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                                $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
+                                $resultDay = $connection2->prepare($sqlDay);
+                                $resultDay->execute($dataDay);
+                            } catch (PDOException $e) {
+                                $dayOut .= "<div class='error'>".$e->getMessage().'</div>';
+                            }
 
                             if ($resultDay->rowCount() == 1) {
                                 $rowDay = $resultDay->fetch();
                                 $zCount = 0;
                                 $dayOut .= "<div style='position: relative;'>";
 
-                                //Draw outline of the day
-
-                                $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
-                                $sqlPeriods = 'SELECT gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTColumnRow.name, timeStart, timeEnd, type, date FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDayDate.gibbonTTDayID=:gibbonTTDayID AND date=:date ORDER BY timeStart, timeEnd';
-                                $resultPeriods = $pdo->select($sqlPeriods, $dataPeriods);
-
+                                    //Draw outline of the day
+                                    try {
+                                        $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                                        $sqlPeriods = 'SELECT gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTColumnRow.name, timeStart, timeEnd, type, date FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDayDate.gibbonTTDayID=:gibbonTTDayID AND date=:date ORDER BY timeStart, timeEnd';
+                                        $resultPeriods = $connection2->prepare($sqlPeriods);
+                                        $resultPeriods->execute($dataPeriods);
+                                    } catch (PDOException $e) {
+                                        $dayOut .= "<div class='error'>".$e->getMessage().'</div>';
+                                    }
                                 while ($rowPeriods = $resultPeriods->fetch()) {
                                     $isSlotInTime = false;
                                     if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -326,69 +346,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                         $width = (ceil(690 / $daysInWeek) - 20).'px';
                                         $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60).'px';
                                         $top = ceil(((strtotime($effectiveStart) - strtotime($dayTimeStart)) + $startPad) / 60).'px';
-                                        $bg = "bg-gray-200";
+                                        $bg = "rgba(238,238,238,$ttAlpha)";
                                         if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
-                                            $bg = "bg-green-200";
+                                            $bg = "rgba(179,239,194,$ttAlpha)";
                                         }
-                                       
-                                        $availability = [];
-                                        $vacancies = [];
+                                        $style = '';
                                         if ($rowPeriods['type'] == 'Lesson') {
-                                            
-                                            $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, initials, username, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials";
-                                            $resultSelect = $pdo->select($sqlSelect);
-
-                                            while ($rowSelect = $resultSelect->fetch()) {
-                                                
-                                                $dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonPersonID' => $rowSelect['gibbonPersonID']);
-                                                $sqlUnique = "SELECT * FROM gibbonTTDayRowClass JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonTTDayRowClassExceptionID IS NULL";
-
-                                                $rowUnique = $pdo->selectOne($sqlUnique, $dataUnique);
-
-                                                if (empty($rowUnique)) {
-
-                                                    if ($viewBy == 'name') {
-                                                        $vacancies[] = Format::name('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff');
-                                                    }
-                                                    else if ($viewBy == 'username') {
-                                                        $vacancies[] = $rowSelect['username'];
-                                                    }
-                                                    else if (isset($rowSelect['initials'])) {
-                                                        $vacancies[] = $rowSelect['initials'];
-                                                    } else {
-                                                        $vacancies[] = $rowSelect['username'];
-                                                    }
-
-                                                    $availability[] = $rowSelect['gibbonPersonID'];
-                                                }
-                                            }
-
-                                            //Explode vacancies into array and sort, get ready to output
-                                            $availability = array_map('trim', $availability);
-                                            natcasesort($availability);
-                                            natcasesort($vacancies);
+                                            $style = '';
                                         }
-
-                                        $dayOut .= "<a class='thickbox hover:bg-blue-200 $bg' href='".$session->get('absoluteURL')."/fullscreen.php?q=/modules/Timetable/report_viewAvailableTeachers_view.php&width=800&height=550&".http_build_query(['ids' => $availability, 'date' => $rowPeriods['date'], 'period' => $rowPeriods['name']])."' style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; left: 0; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px;; color: rgba(136,136,136, $ttAlpha)'>";
-
+                                        $dayOut .= "<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>";
                                         if ($height > 15) {
                                             $dayOut .= $rowPeriods['name'].'<br/>';
                                         }
+                                        if ($rowPeriods['type'] == 'Lesson') {
+                                            $vacancies = '';
+                                            
+                                                $dataSelect = array();
+                                                $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, initials, username, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials";
+                                                $resultSelect = $connection2->prepare($sqlSelect);
+                                                $resultSelect->execute($dataSelect);
+                                            while ($rowSelect = $resultSelect->fetch()) {
+                                                
+                                                    $dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonPersonID' => $rowSelect['gibbonPersonID']);
+                                                    $sqlUnique = "SELECT * FROM gibbonTTDayRowClass JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonTTDayRowClassExceptionID IS NULL";
+                                                    $resultUnique = $connection2->prepare($sqlUnique);
+                                                    $resultUnique->execute($dataUnique);
+                                                if ($resultUnique->rowCount() < 1) {
 
-                                        if ($height > 30) {
-
-                                            $vacanciesOutput = implode(', ', $vacancies);
-                                            $dayOut .= "<div title='".htmlPrep($vacanciesOutput)."' style='color: black; font-weight: normal;line-height: 0.9'>";
-                                            if (strlen($vacanciesOutput) <= 50) {
-                                                $dayOut .= $vacanciesOutput;
+                                                    if ($viewBy == 'name') {
+                                                        $vacancies .= Format::name('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
+                                                    }
+                                                    else if ($viewBy == 'username') {
+                                                        $vacancies .= $rowSelect['username'].', ';
+                                                    }
+                                                    else if (isset($rowSelect['initials'])) {
+                                                        $vacancies .= $rowSelect['initials'].', ';
+                                                    } else {
+                                                        $vacancies .= $rowSelect['username'].', ';
+                                                    }
+                                                }
+                                            }
+                                            $vacancies = substr($vacancies, 0, -2);
+                                            $dayOut .= "<div title='".htmlPrep($vacancies)."' style='color: black; font-weight: normal;line-height: 0.9'>";
+                                            if (strlen($vacancies) <= 50) {
+                                                $dayOut .= $vacancies;
                                             } else {
-                                                $dayOut .= substr($vacanciesOutput, 0, 50).'...';
+                                                $dayOut .= substr($vacancies, 0, 50).'...';
                                             }
 
                                             $dayOut .= '</div>';
                                         }
-
-                                        $dayOut .= '</a>';
+                                        $dayOut .= '</div>';
                                         ++$zCount;
                                     }
                                 }

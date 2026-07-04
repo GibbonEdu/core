@@ -75,11 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_formGroupsNotRegistered_byDate.php");
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'));
+        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'));
+        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $row = $form->addRow();
@@ -99,21 +99,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         echo '</h2>';
 
         //Produce array of attendance data
+        $myRole = getRoleName($session->get('gibbonRoleIDCurrent'), $connection2); //GS//
 
-            $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-            $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
+        $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
         $log = array();
         while ($row = $result->fetch()) {
             $log[$row['gibbonFormGroupID']][$row['date']] = true;
         }
 
+        $data = array(); //GS//
+        $sql = ""; //GS//
 
+        if ($myRole == 'Teacher') { //GS//
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID')); //GS//
+            $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID) AND attendance='Y' ORDER BY LENGTH(name), name"; //GS//
+        } //GS//
+        else{ //GS//
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        } //GS//
+
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";

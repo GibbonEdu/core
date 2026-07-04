@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 } else {
     //Proceed!
 
-    //Check if gibbonDepartmentID specified
+    //Check if school year specified
     if ($gibbonDepartmentID == '' or $gibbonDepartmentResourceID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

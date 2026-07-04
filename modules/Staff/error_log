@@ -1,0 +1,105 @@
+[30-Aug-2021 18:12:38 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:12:38 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (NaN/NaN/NaN 00:00:00) at position 0 (N): The timezone could not be found in the database in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('NaN/NaN/NaN 00:...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:12:49 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:12:50 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:13:00 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:13:17 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31-08 2021 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31-08 2021 00:0...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:13:18 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31-08 2021 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31-08 2021 00:0...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:13:39 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31-08 2021 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31-08 2021 00:0...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:13:39 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31-08 2021 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31-08 2021 00:0...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[30-Aug-2021 18:15:15 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31-08 2021 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addProcess.php:102
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addProcess.php(102): DateTime->__construct('31-08 2021 00:0...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addProcess.php on line 102
+[31-Aug-2021 08:21:54 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (31 00:00:00) at position 0 (3): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('31 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[07-Feb-2022 12:59:31 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (15 00:00:00) at position 0 (1): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('15 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[10-Feb-2022 16:20:34 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (11 00:00:00) at position 0 (1): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('11 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[21-Feb-2022 16:14:05 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (2,3,4,5, 00:00:00) at position 0 (2): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('2,3,4,5, 00:00:...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[24-Feb-2022 09:24:08 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (/12/2021 23:00:00) at position 0 (/): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:32
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(32): DateTime->__construct('/12/2021 23:00:...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 32
+[11-Mar-2022 11:07:12 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (NaN/NaN/NaN 00:00:00) at position 0 (N): The timezone could not be found in the database in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('NaN/NaN/NaN 00:...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[11-Mar-2022 11:07:16 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (NaN/NaN/NaN 00:00:00) at position 0 (N): The timezone could not be found in the database in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('NaN/NaN/NaN 00:...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[11-Mar-2022 11:11:35 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (NaN/NaN/NaN 23:00:00) at position 0 (N): The timezone could not be found in the database in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:32
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(32): DateTime->__construct('NaN/NaN/NaN 23:...')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 32
+[25-Mar-2022 10:50:23 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (25 00:00:00) at position 0 (2): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('25 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[06-Apr-2022 22:17:40 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (5 00:00:00) at position 0 (5): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('5 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31
+[07-Apr-2022 22:22:04 Asia/Kolkata] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (28 00:00:00) at position 0 (2): Unexpected character in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php:31
+Stack trace:
+#0 /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php(31): DateTime->__construct('28 00:00:00')
+#1 {main}
+  thrown in /home1/shefng1z/public_html/core_gyansetu/modules/Staff/absences_addAjax.php on line 31

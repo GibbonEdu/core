@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? null;
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
@@ -35,6 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 } else {
     //Proceed!
     $syncData = (isset($_POST['syncData']))? $_POST['syncData'] : false;
+
+//var_dump($syncData);
 
     if (empty($gibbonYearGroupIDList) || empty($gibbonSchoolYearID) || empty($syncData)) {
         $URL .= '&return=error1';
@@ -54,19 +53,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     'role' => $role,
                     'dateEnrolled' => date('Y-m-d'),
                 );
-
+//echo("</br></br>");
+//var_dump($data);
                 // Update existing course enrolments
                 $sql = "UPDATE gibbonCourseClassPerson
                         JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                        JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID 
+                        JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
                             AND gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                         SET gibbonCourseClassPerson.role=:role, gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
                         WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
                         AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID
                         AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL";
+//echo("</br></br>");
+//var_dump($sql);
                 $pdo->executeQuery($data, $sql);
 
                 // Add course enrolments
+                //GS//$sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                //GS//        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateEnrolled, 'Y'
+                //GS//        FROM gibbonCourseClassMap
+                //GS//        LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role=:role)
+                //GS//        WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
+                //GS//        AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                 $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
                         SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateEnrolled, 'Y'
                         FROM gibbonCourseClassMap
@@ -74,9 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID)
                         WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
                         AND (:role='Teacher' OR gibbonCourseClassMap.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
-                        AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+                        AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL"; //GS// PULL REQUEST: core_gyansetu: courseEnrolment_syc_runProcess.php - Not taking gibbonYearGroupID into consideration when synchronizing students enrolment in classes
                 $pdo->executeQuery($data, $sql);
-
+                //GS//var_dump($data);
+                //GS//echo("</br></br>");
+                //GS//die(var_dump($sql));
                 if (!$pdo->getQuerySuccess()) $partialFail = true;
             }
         }

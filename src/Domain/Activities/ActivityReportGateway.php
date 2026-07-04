@@ -280,8 +280,17 @@ class ActivityReportGateway extends QueryableGateway
         ->where("(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= CURRENT_TIMESTAMP)")
         ->groupBy([
             'gibbonActivity.gibbonActivityID',
-            'gibbonActivityStudent.gibbonActivityStudentID',
-            'gibbonPerson.gibbonPersonID',
+            'gibbonSchoolYear.name',
+            'gibbonFormGroup.name',
+            'gibbonActivity.programStart',
+            'gibbonActivity.programEnd',
+            'gibbonActivityStudent.status',
+            'gibbonActivity.name',
+            'gibbonActivity.type',
+            'gibbonPerson.title',
+            'gibbonPerson.preferredName',
+            'gibbonPerson.surname',
+            'gibbonSchoolYear.sequenceNumber'
         ])
         ->distinct();
 

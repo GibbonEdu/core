@@ -17,31 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
-
-$settingGateway = $container->get(SettingGateway::class);
-
-$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
-$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
+$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
+$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
-$address = $_POST['address'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
-$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-$type = $_GET['type'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -53,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonBehaviourID specified
+        //Check if school year specified
         if ($gibbonBehaviourID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -134,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         }
 
                         // Add direct notifications to form group tutors
-                        if ($settingGateway->getSettingByScope('Behaviour', 'notifyTutors') == 'Y') {
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
                             $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'])->fetchAll();
                             foreach ($tutors as $tutor) {
                                 $event->addRecipient($tutor['gibbonPersonID']);
@@ -142,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         }
 
                         // Add notifications for Educational Assistants
-                        if ($settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
                             $educationalAssistants = $inAssistantGateway->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
                             foreach ($educationalAssistants as $ea) {
                                 $event->addRecipient($ea['gibbonPersonID']);

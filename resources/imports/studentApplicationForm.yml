@@ -78,10 +78,6 @@ table:
         name: "Home Address (Country)"
         desc: ""
         args: {filter: country }
-    languageHomePrimary: 
-        name: "Home Language (Primary)"
-        desc: ""
-        args: { filter: language }
     countryOfBirth:
         name: "Country of Birth"
         desc: ""
@@ -90,14 +86,6 @@ table:
         name: "Special Education Needs"
         desc: ""
         args: {filter: yesNo, custom: true}
-    languageFirst:
-        name: "First Language"
-        desc: ""
-        args: {filter: language }
-    languageSecond:
-        name: "Second Language"
-        desc: ""
-        args: {filter: language }
 
     parent1title:
         name: "Parent 1 Title"
@@ -117,8 +105,8 @@ table:
         args: {filter: string, required: true, custom: true}
     parent1officialName:
         name: "Parent 1 Official Name"
-        desc: "Full name as shown in ID documents."
-        args: {filter: string, required: true}
+        desc: ""
+        args: {filter: string, required: true, custom: true}
     parent1gender:
         name: "Parent 1 Gender"
         desc: ""
@@ -155,10 +143,6 @@ table:
         name: "Parent 1 Relationship"
         desc: ""
         args: {filter: string, custom: true }
-    parent1profession:
-        name: "Parent 1 Profession"
-        desc: "For parents only"
-        args: {filter: string}
 
     parent2title:
         name: "Parent 2 Title"
@@ -178,8 +162,8 @@ table:
         args: {filter: string, required: true, custom: true}
     parent2officialName:
         name: "Parent 2 Official Name"
-        desc: "Full name as shown in ID documents."
-        args: {filter: string, required: true}
+        desc: ""
+        args: {filter: string, required: true, custom: true}
     parent2gender:
         name: "Parent 2 Gender"
         desc: ""
@@ -216,10 +200,6 @@ table:
         name: "Parent 2 Relationship"
         desc: ""
         args: {filter: string, custom: true }
-    parent2profession:
-        name: "Parent 2 Profession"
-        desc: "For parents only"
-        args: {filter: string}
 
     dayType:
         name: "Student ID"

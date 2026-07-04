@@ -32,7 +32,7 @@ if ($gibbonScaleID == '') { echo 'Fatal error loading this page!';
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonScaleGradeID specified
+        //Check if school year specified
         if ($gibbonScaleGradeID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

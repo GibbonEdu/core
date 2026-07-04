@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     $search = $_GET['search'] ?? '';
     $allStudents = $_GET['allStudents'] ?? '';
 
-    //Check if gibbonExternalAssessmentStudentID specified
+    //Check if school year specified
     if ($gibbonExternalAssessmentStudentID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

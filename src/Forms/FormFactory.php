@@ -19,13 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
-use Gibbon\Forms\Layout\Row;
-use Gibbon\Forms\Layout\Column;
-use Gibbon\Forms\Layout\Element;
-use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Forms\FormFactoryInterface;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Http\Url;
 use Gibbon\Tables\DataTable;
 
 /**
@@ -49,18 +43,12 @@ class FormFactory implements FormFactoryInterface
 
     /* LAYOUT TYPES --------------------------- */
 
-    /**
-     * {@inheritDoc}
-     */
-    public function createRow($id = ''): Row
+    public function createRow($id = '')
     {
         return new Layout\Row($this, $id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function createColumn($id = ''): Column
+    public function createColumn($id = '')
     {
         return new Layout\Column($this, $id);
     }
@@ -92,10 +80,7 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Details($this, $id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function createTrigger($selector = ''): Trigger
+    public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
     }
@@ -115,10 +100,7 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Heading($content, $tag = 'h4');
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function createContent($content = ''): Element
+    public function createContent($content = '')
     {
         return new Layout\Element($content);
     }
@@ -231,9 +213,6 @@ class FormFactory implements FormFactoryInterface
         return (new Input\Radio($name));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function createSelect($name)
     {
         return new Input\Select($name);
@@ -254,7 +233,7 @@ class FormFactory implements FormFactoryInterface
         return $button;
     }
 
-    public function createCustomBlocks($name, Session $session)
+    public function createCustomBlocks($name, \Gibbon\Session $session)
     {
         return new Input\CustomBlocks($this, $name, $session);
     }
@@ -274,11 +253,6 @@ class FormFactory implements FormFactoryInterface
         return new Input\Person($name);
     }
 
-    public function createScanner($name)
-    {
-        return new Input\Scanner($name);
-    }
-
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createAlert($content, $level = 'warning')
@@ -296,7 +270,7 @@ class FormFactory implements FormFactoryInterface
     {
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
-        $clearURL = Url::fromRoute()->withQueryParams($parameters);
+        $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createSubmit('Go')->prepend($clearLink);
@@ -475,7 +449,6 @@ class FormFactory implements FormFactoryInterface
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
                 'JMD $' => 'Jamaican Dollar ($)',
                 'KES KSh' => 'Kenyan Shilling (KSh)',
-                'LYD د.ل' => 'Libyan Dinar (د.ل)',
                 'MOP' => 'Macanese Pataca (MOP)',
                 'MGA' => 'Malagasy Ariary (Ar)',
                 'MVR Rf' => 'Maldivian Rufiyaa (Rf)',

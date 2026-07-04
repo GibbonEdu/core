@@ -34,20 +34,9 @@ class Grid implements OutputableInterface, ValidatableInterface
 {
     use BasicAttributesTrait;
 
-    /**
-     * @var \Gibbon\Forms\FormFactoryInterface
-     */
     protected $factory;
-
-    /**
-     * @var \Gibbon\Forms\Layout\OutputableInterface[]
-     */
     protected $elements = array();
-
-    /**
-     * @var string
-     */
-    protected $breakpoints;
+    protected $columns; 
 
     /**
      * Create an element that displays a collection of elements in a flexible grid,
@@ -72,11 +61,11 @@ class Grid implements OutputableInterface, ValidatableInterface
 
         return $this;
     }
-
+    
     /**
      * Add a cell to the internal collection and return the resulting object.
      * @param  string  $id
-     * @return \Gibbon\Forms\Layout\Column  Column
+     * @return object  Column
      */
     public function addCell($id = '')
     {
@@ -88,7 +77,7 @@ class Grid implements OutputableInterface, ValidatableInterface
 
     /**
      * Get all cells in the grid.
-     * @return  \Gibbon\Forms\Layout\OutputableInterface[]
+     * @return  array
      */
     public function getElements()
     {
@@ -104,7 +93,7 @@ class Grid implements OutputableInterface, ValidatableInterface
         $this->setClass('w-full flex flex-wrap items-stretch');
 
         $output = '<div '.$this->getAttributeString().'>';
-
+        
         foreach ($this->getElements() as $cell) {
             $cell->addClass($this->breakpoints);
 

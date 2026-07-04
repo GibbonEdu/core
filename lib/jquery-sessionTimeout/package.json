@@ -1,0 +1,27 @@
+{
+  "name": "sessiontimeout",
+  "version": "1.0.3",
+  "description": "After a set amount of time, a dialog is shown to the user with the option to either log out now, or stay connected. If log out now is selected, the page is redirected to a logout URL. If stay connected is selected, a keep-alive URL is requested through AJAX. If no options is selected after another set amount of time, the page is automatically redirected to a timeout URL.",
+  "main": "jquery.sessionTimeout.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/travishorn/jquery-sessionTimeout.git"
+  },
+  "keywords": [
+    "alert",
+    "ajax"
+  ],
+  "author": "Travis Horn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/travishorn/jquery-sessionTimeout/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-uglify": "~0.2.2"
+  }
+}

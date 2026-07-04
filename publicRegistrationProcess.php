@@ -17,33 +17,30 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Http\Url;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 
 include './gibbon.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-$URL = Url::fromRoute('publicRegistration');
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/publicRegistration.php';
 
 $proceed = false;
 
-$settingGateway = $container->get(SettingGateway::class);
-
-if ($session->exists('username') == false) {
-    $enablePublicRegistration = $settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
+if ($gibbon->session->exists('username') == false) {
+    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $proceed = true;
     }
 }
 
 if ($proceed == false) {
-    header("Location: {$URL->withReturn('error0')}");
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
 } else {
     // Sanitize the whole $_POST array
     $validator = $container->get(Validator::class);
@@ -67,17 +64,18 @@ if ($proceed == false) {
     $password = $_POST['passwordNew'];
     $salt = getSalt();
     $passwordStrong = hash('sha256', $salt.$password);
-    $status = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultStatus');
-    $gibbonRoleIDPrimary = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultRole');
+    $status = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus');
+    $gibbonRoleIDPrimary = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole');
     $gibbonRoleIDAll = $gibbonRoleIDPrimary;
 
     if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $email == '' or $username == '' or $password == '' or $gibbonRoleIDPrimary == '' or $gibbonRoleIDPrimary == '' or ($status != 'Pending Approval' and $status != 'Full')) {
-        header("Location: {$URL->withReturn('error1')}");
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
         exit;
     }
 
     // Check email address domain
-    $allowedDomains = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAllowedDomains');
+    $allowedDomains = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains');
     $allowedDomains = array_filter(array_map('trim', explode(',', $allowedDomains)));
 
     if (!empty($allowedDomains)) {
@@ -85,7 +83,8 @@ if ($proceed == false) {
             return stripos($email, $domain) !== false;
         });
         if (empty($emailCheck)) {
-            header("Location: {$URL->withReturn('error8')}");
+            $URL .= '&return=error8';
+            header("Location: {$URL}");
             exit;
         }
     }
@@ -94,7 +93,8 @@ if ($proceed == false) {
     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', ['publicRegistration' => 1], $customRequireFail);
 
     if ($customRequireFail) {
-        header("Location: {$URL->withReturn('error1')}");
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
         exit;
     }
 
@@ -102,12 +102,13 @@ if ($proceed == false) {
     $passwordMatch = doesPasswordMatchPolicy($connection2, $password);
 
     if ($passwordMatch == false) {
-        header("Location: {$URL->withReturn('error6')}");
+        $URL .= '&return=error6';
+        header("Location: {$URL}");
         exit;
     }
 
     // Check uniqueness of username (and/or email, if required)
-    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $data = array('username' => $username, 'email' => $email);
         $sql = 'SELECT * FROM gibbonPerson WHERE username=:username OR email=:email';
@@ -119,26 +120,29 @@ if ($proceed == false) {
     }
 
     if (!empty($result)) {
-        header("Location: {$URL->withReturn('error7')}");
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
         exit;
     }
 
     // Check publicRegistrationMinimumAge
-    $publicRegistrationMinimumAge = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationMinimumAge');
+    $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
 
     if (!empty($publicRegistrationMinimumAge) > 0 and $publicRegistrationMinimumAge > (new DateTime('@'.Format::timestamp($dob)))->diff(new DateTime())->y) {
-        header("Location: {$URL->withReturn('error5')}");
+        $URL .= '&return=error5';
+        header("Location: {$URL}");
         exit;
     }
 
     //Write to database
     $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'gender' => $gender, 'dob' => $dob, 'email' => $email, 'emailAlternate' => $emailAlternate, 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'fields' => $fields);
-    $sql = "INSERT INTO gibbonPerson SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, dob=:dob, email=:email, emailAlternate=:emailAlternate, username=:username, passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, fields=:fields";
+    $sql = "INSERT INTO gibbonPerson SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, dob=:dob, email=:email, emailAlternate=:emailAlternate, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, fields=:fields";
 
     $gibbonPersonID = $pdo->insert($sql, $data);
 
     if (empty($gibbonPersonID)) {
-        header("Location: {$URL->withReturn('error2')}");
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
         exit;
     }
 
@@ -146,23 +150,25 @@ if ($proceed == false) {
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
-        $event->addRecipient($session->get('organisationAdmissions'));
-        $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
+        $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
 
-        $event->sendNotifications($pdo, $session);
+        $event->sendNotifications($pdo, $gibbon->session);
 
-        header("Location: {$URL->withReturn('success1')}");
+        $URL .= '&return=success1';
+        header("Location: {$URL}");
     } else {
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
-        $event->addRecipient($session->get('organisationAdmissions'));
-        $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
+        $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
 
-        $event->sendNotifications($pdo, $session);
+        $event->sendNotifications($pdo, $gibbon->session);
 
-        header("Location: {$URL->withReturn('success0')}");
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
     }
 }

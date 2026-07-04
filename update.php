@@ -65,10 +65,10 @@ use Gibbon\Database\Updater;
                 i18nCheckAndUpdateVersion($container, $updater->versionDB);
 
                 // Clear the templates cache folder
-                removeDirectoryContents($session->get('absolutePath').'/uploads/cache');
+                removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache');
 
                 // Clear the var/log folder
-                removeDirectoryContents($session->get('absolutePath').'/var', true);
+                removeDirectoryContents($gibbon->session->get('absolutePath').'/var', true);
             }
         }
         ?>

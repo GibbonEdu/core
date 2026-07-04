@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $viewMode = $_REQUEST['format'] ?? '';
+    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
     $onClickURL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/';
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
         $chart->setLabels(array_column($chartData, 'labelName'));
         $chart->setMetaData(array_column($chartData, 'labelID'));
         $chart->setOptions([
-            'tooltip' => [
+            'tooltips' => [
                 'mode' => 'label',
             ],
         ]);
@@ -69,9 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
             ->setData(array_column($chartData, 'inCount'));
 
         $chart->onClick('function(event, elements) {
-            if (elements[0] == undefined) return;
-            var index = elements[0].index;
-            var labelID = this.config._config.metadata[index];
+            var index = elements[0]._index;
+            var labelID = elements[0]._chart.config.metadata[index];
             window.location = "'.$onClickURL.'" + labelID;
         }');
 

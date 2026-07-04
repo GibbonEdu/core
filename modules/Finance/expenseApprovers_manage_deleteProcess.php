@@ -20,16 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/expenseApprovers_manage_delete.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/expenseApprovers_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_delete.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonFinanceExpenseApproverID specified
+    //Check if school year specified
     if ($gibbonFinanceExpenseApproverID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

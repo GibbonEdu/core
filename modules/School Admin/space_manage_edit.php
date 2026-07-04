@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_edit.php') == false) {
@@ -29,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         ->add(__('Manage Facilities'), 'space_manage.php')
         ->add(__('Edit Facility'));
 
-    //Check if gibbonSpaceID specified
+    //Check if school year specified
     $gibbonSpaceID = $_GET['gibbonSpaceID'];
     if ($gibbonSpaceID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -54,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
                 $row->addTextField('name')->required()->maxLength(30);
 
-            $types = $container->get(SettingGateway::class)->getSettingByScope('School Admin', 'facilityTypes');
+            $types = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));

@@ -21,16 +21,15 @@ include '../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_delete.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/markbook_edit_delete.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonMarkbookColumnID and gibbonCourseClassID specified
+    //Check if school year specified
     if ($gibbonMarkbookColumnID == '' or $gibbonCourseClassID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

@@ -17,28 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
-
-$settingGateway = $container->get(SettingGateway::class);
-$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
-$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
-$address = $_GET['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_edit.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_edit.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
+    $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
     if ($highestAction == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
@@ -48,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
             header("Location: {$URL}");
         } else {
             //Proceed!
-            //Check if gibbonMarkbookColumnID and gibbonCourseClassID specified
+            //Check if school year specified
             if ($gibbonMarkbookColumnID == '' or $gibbonCourseClassID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
@@ -71,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $row = $result->fetch();
                     //Validate Inputs
                     $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
-                    $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
+                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
                     $name = $_POST['name'] ?? '';
                     $description = $_POST['description'] ?? '';
                     $type = $_POST['type'] ?? '';

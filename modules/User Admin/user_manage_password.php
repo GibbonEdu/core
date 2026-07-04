@@ -17,11 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_password.php') == false) {
     // Access denied
@@ -37,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $page->return->addReturns($returns);
 
-    //Check if gibbonPersonID specified
+    //Check if school year specified
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -64,7 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $search = $_GET['search'] ?? '';
             if ($search != '') {
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
+                echo "<div class='linkTop'>";
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
+                echo '</div>';
             }
 
             $policy = getPasswordPolicy($guid, $connection2);

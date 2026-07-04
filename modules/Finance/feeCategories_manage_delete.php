@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonFinanceFeeCategoryID specified
+    //Check if school year specified
     $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
     if ($gibbonFinanceFeeCategoryID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

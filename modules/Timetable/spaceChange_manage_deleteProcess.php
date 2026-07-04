@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if gibbonTTSpaceChangeID and gibbonCourseClassID specified
+        //Check if school year specified
         if ($gibbonTTSpaceChangeID == '' OR $gibbonCourseClassID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

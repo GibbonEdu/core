@@ -17,24 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Aura\Auth\AuthFactory;
-use Gibbon\Http\Url;
-use Gibbon\Auth\Adapter\DefaultAdapter;
-
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$URL = Url::fromRoute();
-if (isset($_GET['timeout'])) {
-    $URL = $URL->withQueryParam('timeout', 'true');
+$URL = './index.php';
+if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
+    $URL = './index.php?timeout=true';
 }
-// Setup authentication classes
-$authFactory = $container->get(AuthFactory::class);
-$authAdapter = $container->get(DefaultAdapter::class);
-$auth = $authFactory->newInstance();
 
-// Logout
-$logoutService = $authFactory->newLogoutService($authAdapter);
-$logoutService->logout($auth);
+unset($_SESSION[$guid]['googleAPIAccessToken']);
+unset($_SESSION[$guid]['gplusuer']);
 
+session_destroy();
+
+$_SESSION[$guid] = null;
 header("Location: {$URL}");

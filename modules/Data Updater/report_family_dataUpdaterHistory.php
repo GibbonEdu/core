@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -42,15 +41,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
     echo __('Choose Options');
     echo '</h2>';
 
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $cutoffDate = $settingGateway->getSettingByScope('Data Updater', 'cutoffDate');
+    $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
     $cutoffDate = !empty($cutoffDate)? Format::date($cutoffDate) : Format::dateFromTimestamp(time() - (604800 * 26));
 
-    $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? array();
-    $nonCompliant = $_POST['nonCompliant'] ?? '';
-    $hideDetails = $_POST['hideDetails'] ?? '';
-    $date = $_POST['date'] ?? $cutoffDate;
+    $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
+    $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
+    $hideDetails = isset($_POST['hideDetails'])? $_POST['hideDetails'] : '';
+    $date = isset($_POST['date'])? $_POST['date'] : $cutoffDate;
 
     $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_family_dataUpdaterHistory.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -82,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         echo __('Report Data');
         echo '</h2>';
 
-        $requiredUpdatesByType = explode(',', $settingGateway->getSettingByScope('Data Updater', 'requiredUpdatesByType'));
+        $requiredUpdatesByType = explode(',', getSettingByScope($connection2, 'Data Updater', 'requiredUpdatesByType'));
 
         $gateway = $container->get(FamilyUpdateGateway::class);
 

@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -39,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         ->add(__('Manage Applications'), 'applicationForm_manage.php')
         ->add(__('Edit Form'));
 
-    //Check if gibbonStaffApplicationFormID specified
+    //Check if school year specified
     $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
     $search = $_GET['search'];
     if ($gibbonStaffApplicationFormID == '') {
@@ -79,7 +78,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 ->setURL('/report.php')
                 ->addParam('q', '/modules/Staff/applicationForm_manage_edit_print.php')
                 ->addParam('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID)
-                ->setTarget('_blank')
                 ->directLink()
                 ->displayLabel();
 
@@ -110,8 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             // MILESTONES
-            $settingGateway = $container->get(SettingGateway::class);
-            $milestonesList = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormMilestones');
+            $milestonesList = getSettingByScope($connection2, 'Staff', 'staffApplicationFormMilestones');
             if (!empty($milestonesList)) {
                 $row = $form->addRow();
                     $row->addLabel('milestones', __('Milestones'));
@@ -150,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $row->addLabel('jobTitle', __('Job Opening'));
                 $row->addTextField('jobTitle')->readOnly()->required();
 
-            $staffApplicationFormQuestions = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormQuestions');
+            $staffApplicationFormQuestions = getSettingByScope($connection2, 'Staff', 'staffApplicationFormQuestions');
             if ($staffApplicationFormQuestions != '') {
                 $row = $form->addRow();
                     $column = $row->addColumn();
@@ -227,8 +224,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row->addLabel('countryOfBirth', __('Country of Birth'));
                     $row->addSelectCountry('countryOfBirth')->required();
 
-                $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
-                $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
+                $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+                $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 
                 // PERSONAL DOCUMENTS
                 $params = ['staff' => true, 'applicationForm' => true];
@@ -240,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row->addLabel('email', __('Email'));
                     $email = $row->addEmail('email')->required();
 
-                    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
+                    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
                     if ($uniqueEmailAddress == 'Y') {
                         $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php');
                     }
@@ -267,11 +264,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $values['fields']);
 
             // REQURIED DOCUMENTS
-            $staffApplicationFormRequiredDocuments = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments');
+            $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
 
             if (!empty($staffApplicationFormRequiredDocuments)) {
-                $staffApplicationFormRequiredDocumentsText = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsText');
-                $staffApplicationFormRequiredDocumentsCompulsory = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
+                $staffApplicationFormRequiredDocumentsText = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsText');
+                $staffApplicationFormRequiredDocumentsCompulsory = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
 
                 $heading = $form->addRow()->addHeading(__('Supporting Documents'));
 
@@ -309,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             //REFERENCES
-            $applicationFormRefereeLink = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink');
+            $applicationFormRefereeLink = getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink');
             if ($applicationFormRefereeLink != '') {
                 $heading = $form->addRow()->addHeading(__('References'));
 

@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     
     $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
-    //Check if gibbonActivityID specified
+    //Check if school year specified
     $gibbonActivityID = $_GET['gibbonActivityID'];
     if ($gibbonActivityID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -89,12 +89,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         'External' => __('External')
                     ]);
 
-            $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
-
+            $activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
             if (!empty($activityTypes)) {
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromArray($activityTypes)->placeholder();
+                    $row->addSelect('type')
+                        ->fromString($activityTypes)
+                        ->placeholder();
             }
 
             $row = $form->addRow();
@@ -247,6 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $timeSlots = $activitySlotGateway->selectBy(['gibbonActivityID' => $gibbonActivityID]);
 
             foreach ($timeSlots as $slot) {
+                //Must cast to int for select to work.
                 $slot['location'] = empty($slot['gibbonSpaceID']) ? 'External' : 'Internal';
                 $slotBlocks->addBlock($slot['gibbonActivitySlotID'], $slot);
             }

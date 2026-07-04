@@ -17,14 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
@@ -71,29 +69,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         } else {
             $student = $result->fetch();
 
-            $search = $_GET['search'] ?? null;
-            $allStudents = $_GET['allStudents'] ?? null;
-            $source = $_GET['source'] ?? null;
-            $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? null;
-            $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'] ?? null;
-            $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? null;
-            $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? null;
+            $search = isset($_GET['search'])? $_GET['search'] : null;
+            $source = isset($_GET['source'])? $_GET['source'] : null;
+            $gibbonINDescriptorID = isset($_GET['gibbonINDescriptorID'])? $_GET['gibbonINDescriptorID'] : null;
+            $gibbonAlertLevelID = isset($_GET['gibbonAlertLevelID'])? $_GET['gibbonAlertLevelID'] : null;
+            $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
+            $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
 
-            
             if ($search != '' and $source == '') {
-                $params = [
-                    "search" => $search,
-                    "allStudents" => $allStudents
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Individual Needs', 'in_view.php')->withQueryParams($params));
+                echo "<div class='linkTop'>";
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/in_view.php&search='.$search."'>".__('Back to Search Results').'</a>';
+                echo '</div>';
             } elseif (($gibbonINDescriptorID != '' or $gibbonAlertLevelID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '') and $source == 'summary') {
-                 $params = [
-                    "gibbonINDescriptorID" => $gibbonINDescriptorID,
-                    "gibbonAlertLevelID" => $gibbonAlertLevelID,
-                    "gibbonFormGroupID" => $gibbonFormGroupID,
-                    "gibbonYearGroupID" => $gibbonYearGroupID
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Individual Needs', 'in_summary.php')->withQueryParams($params));
+                echo "<div class='linkTop'>";
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID='.$gibbonINDescriptorID.'&gibbonAlertLevelID='.$gibbonAlertLevelID.'&=gibbonFormGroupID'.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID."'>".__('Back to Search Results').'</a>';
+                echo '</div>';
             }
 
             // Grab educational assistant data
@@ -218,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             // DISPLAY AND EDIT IEP
-
+           
 
             $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2');
 
@@ -242,10 +232,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Individual Needs', ['table' => $table, 'readonly' => true], $archivedIEP['fields']);
             } else {
                 if (empty($IEP)) { // New record, get templates if they exist
-                    $settingGateway = $container->get(SettingGateway::class);
-                    $IEP['targets'] = $settingGateway->getSettingByScope('Individual Needs', 'targetsTemplate');
-                    $IEP['strategies'] = $settingGateway->getSettingByScope('Individual Needs', 'teachingStrategiesTemplate');
-                    $IEP['notes'] = $settingGateway->getSettingByScope('Individual Needs', 'notesReviewTemplate');
+                    $IEP['targets'] = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate');
+                    $IEP['strategies'] = getSettingByScope($connection2, 'Individual Needs', 'teachingStrategiesTemplate');
+                    $IEP['notes'] = getSettingByScope($connection2, 'Individual Needs', 'notesReviewTemplate');
                 }
 
                 // CURRENT IEP
@@ -285,5 +274,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         }
     }
     //Set sidebar
-    $session->set('sidebarExtra', Format::userPhoto($student['image_240'] ?? '', 240));
+    $session->set('sidebarExtra', getUserPhoto($guid, $student['image_240'] ?? '', 240));
 }

@@ -20,11 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 

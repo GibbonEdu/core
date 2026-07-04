@@ -17,16 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['note' => 'HTML']);
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $subpage = $_GET['subpage'] ?? '';
@@ -37,9 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $settingGateway = $container->get(SettingGateway::class);
-    $enableStudentNotes = $settingGateway->getSettingByScope('Students', 'enableStudentNotes');
-    $noteCreationNotification = $settingGateway->getSettingByScope('Students', 'noteCreationNotification');
+    $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+    $noteCreationNotification = getSettingByScope($connection2, 'Students', 'noteCreationNotification');
 
     if ($enableStudentNotes != 'Y') {
         $URL .= '&return=error0';

@@ -21,10 +21,9 @@ use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Contracts\Services\Payment;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -32,13 +31,11 @@ include './modules/User Admin/moduleFunctions.php';
 $proceed = false;
 $public = false;
 
-$settingGateway = $container->get(SettingGateway::class);
-
 if (!$session->has('username')) {
     $public = true;
 
     //Get public access
-    $publicApplications = $settingGateway->getSettingByScope('Application Form', 'publicApplications');
+    $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
     if ($publicApplications == 'Y') {
         $proceed = true;
     }
@@ -104,13 +101,6 @@ if ($proceed == false) {
         $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$session->get('organisationAdmissionsEmail')."'>".$session->get('organisationAdmissionsName').'</a>');
     }
 
-    $payment = $container->get(Payment::class);
-
-    if ($payment->isEnabled()) {
-        $payment->setForeignTable('gibbonApplicationForm', $gibbonApplicationFormID);
-        $page->return->addReturns($payment->getReturnMessages());
-    }
-
     $returns = array();
     $returns['success0'] = __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').$returnExtra;
     $returns['success1'] = __('Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra;
@@ -122,7 +112,7 @@ if ($proceed == false) {
     // JS success return addition
     $return = (isset($_GET['return']))? $_GET['return'] : '';
 
-    if ($return == 'success0' or $return == 'success1' or $return == 'success2' or $return == 'success3' or $return == 'success4') {
+    if ($return == 'success0' or $return == 'success1' or $return == 'success2'  or $return == 'success4') {
         echo "<script type='text/javascript'>";
         echo '$(document).ready(function(){';
         echo "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;";
@@ -131,18 +121,21 @@ if ($proceed == false) {
     }
 
     // Get intro
-    $intro = $settingGateway->getSettingByScope('Application Form', 'introduction');
+    $intro = getSettingByScope($connection2, 'Application Form', 'introduction');
     if ($intro != '') {
         echo '<p>';
         echo $intro;
         echo '</p>';
     }
 
-    $currency = $settingGateway->getSettingByScope('System', 'currency');
-    $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
-    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
-    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
-    $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
+    $currency = getSettingByScope($connection2, 'System', 'currency');
+    $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
+    $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
+    $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
+    $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 
     if (!empty($applicationFee) || !empty($applicationProcessFee)) {
         echo "<div class='warning'>";
@@ -152,8 +145,8 @@ if ($proceed == false) {
         if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
             echo __('A processing fee of {fee} may be sent by email after your application has been submitted.', ['fee' => '<b><u>'.$currency.$applicationProcessFee.'</u></b>']);
         }
-        if ($payment->isEnabled() && !empty($applicationFee)) {
-            echo ' '.__('Payment must be made by credit card, using our secure {gateway} payment gateway. When you press Submit at the end of this form, you will be directed to {gateway} in order to make payment. During this process we do not see or store your credit card details.', ['gateway' => $paymentGateway]);
+        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' && !empty($applicationFee)) {
+            echo ' '.__('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.');
         }
         echo '</div>';
     }
@@ -208,95 +201,116 @@ if ($proceed == false) {
     }
 
     // STUDENT PERSONAL DATA
-    $form->addRow()->addHeading(__('Student'));
-    $form->addRow()->addSubheading(__('Student Personal Data'));
+    $form->addRow()->addHeading(__('Student - विद्यार्थी'));
+    $form->addRow()->addSubheading(__('Student Personal Data - विद्यार्थी का विवरण'));
 
     $row = $form->addRow();
-        $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-        $row->addTextField('surname')->required()->maxLength(60);
-
-    $row = $form->addRow();
-        $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
+        $row->addLabel('firstName', __('Name - नाम'))->description(__('First name as shown in ID documents. - पहला नाम जैसा कि आईडी दस्तावेजों में दिखाया गया है'));
         $row->addTextField('firstName')->required()->maxLength(60);
 
     $row = $form->addRow();
-        $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-        $row->addTextField('preferredName')->required()->maxLength(60);
+        $row->addLabel('surname', __('Surname - उपनाम'))->description(__('Surname used by family as per government documents. - परिवार द्वारा प्रयोग किया जा रहा उपनाम सरकारी दस्तावेज़ के अनुसार'));
+        //GS//$row->addTextField('surname')->required()->maxLength(60);
+        $row->addTextField('surname')->maxLength(60); //GS//
+
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+    //GS//    $row->addTextField('preferredName')->required()->maxLength(60);
+    $form->addHiddenValue('preferredName', isset($application['preferredName'])? $application['preferredName'] : ''); //GS//
+
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
+    //GS//    $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+    $form->addHiddenValue('officialName', isset($application['officialName'])? $application['officialName'] : ''); //GS//
+
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
+    //GS//    $row->addTextField('nameInCharacters')->maxLength(60);
+    $form->addHiddenValue('nameInCharacters', isset($application['nameInCharacters'])? $application['nameInCharacters'] : ''); //GS//
 
     $row = $form->addRow();
-        $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-        $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
-
-    $row = $form->addRow();
-        $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-        $row->addTextField('nameInCharacters')->maxLength(60);
-
-    $row = $form->addRow();
-        $row->addLabel('gender', __('Gender'));
+        $row->addLabel('gender', __('Gender - लिंग'));
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'));
+        $row->addLabel('dob', __('Date of Birth - जन्म तिथि'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format - प्रारूप:'));
         $row->addDate('dob')->required();
 
+    $religions = getSettingByScope($connection2, 'User Admin', 'religions'); //GS//
+    $row = $form->addRow(); //GS//
+        $row->addLabel('religion', __('Religion - धर्म')); //GS//
+        if (!empty($religions)) { //GS//
+            $row->addSelect('religion')->fromString($religions)->placeholder()->required(); //GS//
+        } else { //GS//
+            $row->addTextField('religion')->maxLength(30); //GS//
+        } //GS//
+
     // STUDENT BACKGROUND
-    $form->addRow()->addSubheading(__('Student Background'));
+    //GS//$form->addRow()->addSubheading(__('Student Background - छात्र पृष्ठभूमि'));
 
-    $row = $form->addRow();
-        $row->addLabel('languageHomePrimary', __('Home Language - Primary'))->description(__('The primary language used in the student\'s home.'));
-        $row->addSelectLanguage('languageHomePrimary')->required();
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageHomePrimary', __('Home Language - Primary'))->description(__('The primary language used in the student\'s home.'));
+    //GS//    $row->addSelectLanguage('languageHomePrimary')->required();
+    $form->addHiddenValue('languageHomePrimary', isset($application['languageHomePrimary'])? $application['languageHomePrimary'] : ''); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
-        $row->addSelectLanguage('languageHomeSecondary')->placeholder('');
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
+    //GS//    $row->addSelectLanguage('languageHomeSecondary')->placeholder('');
+    $form->addHiddenValue('languageHomeSecondary', isset($application['languageHomeSecondary'])? $application['languageHomeSecondary'] : ''); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
-        $row->addSelectLanguage('languageFirst')->required();
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
+    //GS//    $row->addSelectLanguage('languageFirst')->required();
+    $form->addHiddenValue('languageFirst', isset($application['languageFirst'])? $application['languageFirst'] : ''); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageSecond', __('Second Language'));
-        $row->addSelectLanguage('languageSecond')->placeholder('');
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageSecond', __('Second Language'));
+    //GS//    $row->addSelectLanguage('languageSecond')->placeholder('');
+    $form->addHiddenValue('languageSecond', isset($application['languageSecond'])? $application['languageSecond'] : ''); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('languageThird', __('Third Language'));
-        $row->addSelectLanguage('languageThird')->placeholder('');
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('languageThird', __('Third Language'));
+    //GS//    $row->addSelectLanguage('languageThird')->placeholder('');
+    $form->addHiddenValue('languageThird', isset($application['languageThird'])? $application['languageThird'] : ''); //GS//
 
-    $row = $form->addRow();
-        $row->addLabel('countryOfBirth', __('Country of Birth'));
-        $row->addSelectCountry('countryOfBirth')->required();
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('countryOfBirth', __('Country of Birth'));
+    //GS//    $row->addSelectCountry('countryOfBirth')->required();
+    $form->addHiddenValue('countryOfBirth', isset($application['countryOfBirth'])? $application['countryOfBirth'] : ''); //GS//
 
     $countryName = ($session->has('country')) ? __($session->get('country')).' ' : '';
-    $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
-    $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
+    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 
     // PERSONAL DOCUMENTS
     $params = ['student' => true, 'applicationForm' => true];
     $personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
 
     // STUDENT CONTACT
-    $form->addRow()->addSubheading(__('Student Contact'));
+    //GS//$form->addRow()->addSubheading(__('Student Contact'));
 
-    $row = $form->addRow();
-        $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email');
-        if ($uniqueEmailAddress == 'Y') {
-            $email->uniqueField('./publicRegistrationCheck.php');
-        }
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('email', __('Email'));
+    //GS//    $email = $row->addEmail('email');
+    //GS//    if ($uniqueEmailAddress == 'Y') {
+    //GS//        $email->uniqueField('./publicRegistrationCheck.php');
+    //GS//    }
+    $form->addHiddenValue('email', isset($application['email'])? $application['email'] : ''); //GS//
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
-            $row->addLabel('', __('Phone').' '.$i)->description(__('Type, country code, number.'));
-            $row->addPhoneNumber('phone'.$i);
+            //GS//$row->addLabel('', __('Phone').' '.$i)->description(__('Type, country code, number.'));
+            //GS//$row->addPhoneNumber('phone'.$i);
+            $form->addHiddenValue('phone'.$i, isset($application['phone'.$i])? $application['phone'.$i] : ''); //GS//
     }
 
     // SPECIAL EDUCATION & MEDICAL
-    $senOptionsActive = $settingGateway->getSettingByScope('Application Form', 'senOptionsActive');
+    $senOptionsActive = getSettingByScope($connection2, 'Application Form', 'senOptionsActive');
 
     if ($senOptionsActive == 'Y') {
         $heading = $form->addRow()->addSubheading(__('Special Educational Needs & Medical'));
 
-        $applicationFormSENText = $settingGateway->getSettingByScope('Students', 'applicationFormSENText');
+        $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
         if (!empty($applicationFormSENText)) {
             $heading->append($applicationFormSENText);
         }
@@ -316,9 +330,10 @@ if ($proceed == false) {
         $form->addHiddenValue('sen', 'N');
     }
 
-    $row = $form->addRow();
-        $row->addLabel('medical', __('Medical Conditions'))->description(__('Does your child have any medical conditions or concerns?'));
-        $row->addYesNo('medical')->required()->placeholder(__('Please select...'));
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('medical', __('Medical Conditions - चिकित्सीय स्थितियां'))->description(__('Does your child have any medical conditions or concerns? - क्या बच्चे को कोई चिकित्सीय स्थिति या चिंता है?'));
+    //GS//    $row->addYesNo('medical')->required()->placeholder(__('Please select...'));
+    $form->addHiddenValue('medical', ''); //GS//
 
     $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
 
@@ -327,43 +342,67 @@ if ($proceed == false) {
         $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('fullWidth');
 
     // STUDENT EDUCATION
-    $heading = $form->addRow()->addSubheading(__('Student Education'));
+    //GS//$heading = $form->addRow()->addSubheading(__('Student Education'));
+
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('gibbonSchoolYearIDEntry', __('Anticipated Year of Entry'))->description(__('What school year will the student join in?'));
+
+    //GS//    $enableLimitedYearsOfEntry = getSettingByScope($connection2, 'Application Form', 'enableLimitedYearsOfEntry');
+    //GS//    $availableYearsOfEntry = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry');
+    //GS//    if ($enableLimitedYearsOfEntry == 'Y' && !empty($availableYearsOfEntry)) {
+    //GS//        $data = array('gibbonSchoolYearIDList' => $availableYearsOfEntry);
+    //GS//        $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE FIND_IN_SET(gibbonSchoolYearID, :gibbonSchoolYearIDList) ORDER BY sequenceNumber";
+    //GS//    } else {
+    //GS//        $data = array();
+    //GS//        $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber";
+    //GS//    }
+    //GS//    $row->addSelect('gibbonSchoolYearIDEntry')->fromQuery($pdo, $sql, $data)->required()->placeholder(__('Please select...'));
+
+
+    $sqlSelect = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Current' ORDER BY sequenceNumber"; //GS//
+    $resultSelect = $pdo->executeQuery(array(), $sqlSelect); //GS//
+    $currentSchoolYear = ($resultSelect->rowCount() > 0)? $resultSelect->fetchAll() : array(); //GS//
+
+    $form->addHiddenValue('gibbonSchoolYearIDEntry', $currentSchoolYear[0]["value"]); //GS//
+
 
     $row = $form->addRow();
-        $row->addLabel('gibbonSchoolYearIDEntry', __('Anticipated Year of Entry'))->description(__('What school year will the student join in?'));
-
-        $enableLimitedYearsOfEntry = $settingGateway->getSettingByScope('Application Form', 'enableLimitedYearsOfEntry');
-        $availableYearsOfEntry = $settingGateway->getSettingByScope('Application Form', 'availableYearsOfEntry');
-        if ($enableLimitedYearsOfEntry == 'Y' && !empty($availableYearsOfEntry)) {
-            $data = array('gibbonSchoolYearIDList' => $availableYearsOfEntry);
-            $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE FIND_IN_SET(gibbonSchoolYearID, :gibbonSchoolYearIDList) ORDER BY sequenceNumber";
-        } else {
-            $data = array();
-            $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber";
-        }
-        $row->addSelect('gibbonSchoolYearIDEntry')->fromQuery($pdo, $sql, $data)->required()->placeholder(__('Please select...'));
-
-    $row = $form->addRow();
-        $row->addLabel('dateStart', __('Intended Start Date'))->description(__('Student\'s intended first day at school.'))->append('<br/>'.__('Format:'))->append(' '.$session->get('i18n')['dateFormat']);
+        $row->addLabel('dateStart', __('Start Date - प्रवेश तिथि'))->description(__('Student\'s intended first day at school. - छात्र के शामिल होने की तिथि'))->append('<br/>'.__('Format - प्रारूप:'))->append(' '.$session->get('i18n')['dateFormat']);
         $row->addDate('dateStart')->required();
 
     $row = $form->addRow();
-        $row->addLabel('gibbonYearGroupIDEntry', __('Year Group at Entry'))->description('Which year level will student enter.');
+        $row->addLabel('gibbonYearGroupIDEntry', __('Year Group at Entry - प्रवेश स्तर'))->description('Which year level will student enter. - छात्र किस वर्ष के स्तर पर प्रवेश करेगा');
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
         $row->addSelect('gibbonYearGroupIDEntry')->fromQuery($pdo, $sql)->required()->placeholder(__('Please select...'));
 
+    // ROLL GROUP //GS//
+    $sqlSelect = "SELECT gibbonFormGroupID as value, name, gibbonSchoolYearID FROM gibbonFormGroup ORDER BY gibbonSchoolYearID, name"; //GS//
+    $resultSelect = $pdo->executeQuery(array(), $sqlSelect); //GS//
+
+    $rollGroups = ($resultSelect->rowCount() > 0)? $resultSelect->fetchAll() : array(); //GS//
+    $rollGroupsChained = array_combine(array_column($rollGroups, 'value'), array_column($rollGroups, 'gibbonSchoolYearID')); //GS//
+    $rollGroupsOptions = array_combine(array_column($rollGroups, 'value'), array_column($rollGroups, 'name')); //GS//
+
+    $row = $form->addRow(); //GS//
+        $row->addLabel('gibbonFormGroupID', __('Gyansetu Roll Group name - ज्ञानसेतु केंद्र का नाम')); //GS//
+        $row->addSelect('gibbonFormGroupID') //GS//
+        ->fromArray($rollGroupsOptions) //GS//
+        ->chainedTo('gibbonSchoolYearID', $rollGroupsChained) //GS//
+        ->required() //GS//
+        ->placeholder(); //GS//
+
     // DAY TYPE
-    $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
+    $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
     if (!empty($dayTypeOptions)) {
         $row = $form->addRow();
-            $row->addLabel('dayType', __('Day Type'))->description($settingGateway->getSettingByScope('User Admin', 'dayTypeText'));
+            $row->addLabel('dayType', __('Day Type'))->description(getSettingByScope($connection2, 'User Admin', 'dayTypeText'));
             $row->addSelect('dayType')->fromString($dayTypeOptions);
     }
 
     // REFEREE EMAIL
-    $applicationFormRefereeLink = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink');
+    $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
     if (!empty($applicationFormRefereeLink)) {
-        $applicationFormRefereeRequired = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeRequired', true);
+        $applicationFormRefereeRequired = getSettingByScope($connection2, 'Students', 'applicationFormRefereeRequired', true);
         $row = $form->addRow();
             $row->addLabel('referenceEmail', __('Current School Reference Email'))->description(__('An email address for a referee at the applicant\'s current school.'));
             if ($applicationFormRefereeRequired["value"] == "Y") {
@@ -374,31 +413,37 @@ if ($proceed == false) {
             }
     }
 
-    $row = $form->addRow();
-        $row->addLabel('', __('Previous Schools'))->description(__('Please give information on the last two schools attended by the applicant.'));
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('', __('Previous Schools'))->description(__('Please give information on the last two schools attended by the applicant.'));
 
     // PREVIOUS SCHOOLS TABLE
-    $table = $form->addRow()->addTable()->addClass('colorOddEven');
+    //GS//$table = $form->addRow()->addTable()->addClass('colorOddEven');
 
-    $header = $table->addHeaderRow();
-    $header->addContent(__('School Name'));
-    $header->addContent(__('Address'));
-    $header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
-    $header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
-    $header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
+    //GS//$header = $table->addHeaderRow();
+    //GS//$header->addContent(__('School Name'));
+    //GS//$header->addContent(__('Address'));
+    //GS//$header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
+    //GS//$header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
+    //GS//$header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
 
-    // Grab some languages, for auto-complete
-    $results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
-    $languages = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
+    //GS//// Grab some languages, for auto-complete
+    //GS//$results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
+    //GS//$languages = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
 
-    for ($i = 1; $i < 3; ++$i) {
-        $row = $table->addRow();
-        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(18);
-        $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
-        $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
-        $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
-        $row->addDate('schoolDate'.$i)->setSize(10);
-    }
+    //GS//for ($i = 1; $i < 3; ++$i) {
+    //GS//    $row = $table->addRow();
+    //GS//    $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(18);
+    //GS//    $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
+    //GS//    $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
+    //GS//    $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
+    //GS//    $row->addDate('schoolDate'.$i)->setSize(10);
+    //GS//}
+
+    for ($i = 1; $i < 3; ++$i) {//GS//
+        $form->addHiddenValue('schoolName'.$i, ''); //GS//
+        $form->addHiddenValue('schoolAddress'.$i, '');//GS//
+        $form->addHiddenValue('schoolGrades'.$i, '');//GS//
+    }//GS//
 
     // CUSTOM FIELDS FOR STUDENT
     $params = ['student' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
@@ -425,18 +470,19 @@ if ($proceed == false) {
             $form->addHiddenValue('homeAddressCountry', isset($application['homeAddressCountry'])? $application['homeAddressCountry'] : '');
         } else {
             // HOME ADDRESS
-            $form->addRow()->addHeading(__('Home Address'))->append(__('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.'));
+            $form->addRow()->addHeading(__('Gyansetu Center Address - मकान न.,गांव, ब्लॉक')); //GS//
 
             $row = $form->addRow();
-                $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
+                $row->addLabel('homeAddress', __('Gyansetu Center Address - ज्ञानसेतु केंद्र का पता'))->description(__('Unit, Building, Street - इकाई, भवन, गली'));
                 $row->addTextArea('homeAddress')->required()->maxLength(255)->setRows(2);
 
             $row = $form->addRow();
-                $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
-                $row->addTextFieldDistrict('homeAddressDistrict')->required();
+                $row->addLabel('homeAddressDistrict', __('Gyansetu Center Address (State) - ज्ञानसेतु केंद्र का पता (राज्य)'));
+                //GS//$row->addTextFieldDistrict('homeAddressDistrict')->required();
+                $row->addTextField('homeAddressDistrict')->setValue('Uttar Pradesh')->required(); //GS//
 
             $row = $form->addRow();
-                $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
+                $row->addLabel('homeAddressCountry', __('Gyansetu Center Address (Country) - ज्ञानसेतु केंद्र का पता (देश)'));
                 $row->addSelectCountry('homeAddressCountry')->required();
         }
 
@@ -463,7 +509,7 @@ if ($proceed == false) {
                 $parent1fields = $parent['fields'];
             }
 
-            $form->addRow()->addHeading(__('Parent/Guardian').' 1');
+            $form->addRow()->addHeading(__('Parent/Guardian - अभिभावक की जानकारी').' 1');
 
             $form->addHiddenValue('parent1email', $parent1email);
             $form->addHiddenValue('parent1gibbonPersonID', $parent1gibbonPersonID);
@@ -485,7 +531,7 @@ if ($proceed == false) {
                 $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'headingPrefix' => __('Parent/Guardian').' 1', 'headingLevel' => 'h4'];
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'headingPrefix' => __('Parent/Guardian - माता-पिता/अभिभावक').' 1', 'headingLevel' => 'h4'];
             $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $parent1fields);
 
             $start = 2;
@@ -502,97 +548,107 @@ if ($proceed == false) {
                 $subheading = '<span style="font-size: 75%">'.__('(e.g. father)').'</span>';
             }
 
-            $form->addRow()->addHeading(__('Parent/Guardian').' '.$i)->append($subheading);
+            $form->addRow()->addHeading(__('Parent/Guardian - माता-पिता/अभिभावक').' '.$i)->append($subheading);
 
             if ($i == 2) {
-                $checked = ($siblingApplicationMode && !empty($application['parent2gibbonPersonID']))? 'No' : 'Yes';
-                $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian'));
+                $checked = ($siblingApplicationMode && !empty($application['parent2gibbonPersonID'])) ? 'No' : 'Yes';
+                $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian - दूसरे माता-पिता/अभिभावक को शामिल न करें'));
                 $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
             }
 
             // PARENT PERSONAL DATA
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Data'));
+                //GS//$row->addSubheading(__('Parent/Guardian - अभिभावक की जानकारी')." $i ".__('Personal Data'));
+
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}title", __('Title'));
+            //GS//    $row->addSelectTitle("parent{$i}title")->required()->loadFrom($application);
+            $form->addHiddenValue('parent{$i}title', isset($application['parent{$i}title'])? $application['parent{$i}title'] : ''); //GS//
 
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}title", __('Title'));
-                $row->addSelectTitle("parent{$i}title")->required()->loadFrom($application);
-
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
-                $row->addTextField("parent{$i}surname")->required()->maxLength(30)->loadFrom($application);
-
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}firstName", __('First Name'))->description(__('First name as shown in ID documents.'));
+                $row->addLabel("parent{$i}firstName", __('Name - नाम'))->description(__('First name as shown in government documents. - पहला नाम जैसा कि आईडी दस्तावेजों में दिखाया गया है'));
                 $row->addTextField("parent{$i}firstName")->required()->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-                $row->addTextField("parent{$i}preferredName")->required()->maxLength(30)->loadFrom($application);
+                $row->addLabel("parent{$i}surname", __('Surname - उपनाम'))->description(__('Family name as shown in government documents. - परिवार का उपनाम सरकारी दस्तावेज के अनुसार'));
+                $row->addTextField("parent{$i}surname")->required()->maxLength(30)->loadFrom($application);
+
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+            //GS//    $row->addTextField("parent{$i}preferredName")->required()->maxLength(30)->loadFrom($application);
+            $form->addHiddenValue('parent{$i}preferredName', isset($application['parent{$i}preferredName'])? $application['parent{$i}preferredName'] : ''); //GS//
+
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
+            //GS//    $row->addTextField("parent{$i}officialName")->required()->maxLength(150)->loadFrom($application);
+            $form->addHiddenValue('parent{$i}officialName', isset($application['parent{$i}officialName'])? $application['parent{$i}officialName'] : ''); //GS//
+
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
+            //GS//    $row->addTextField("parent{$i}nameInCharacters")->maxLength(20)->loadFrom($application);
+            $form->addHiddenValue('parent{$i}nameInCharacters', isset($application['parent{$i}nameInCharacters'])? $application['parent{$i}nameInCharacters'] : ''); //GS//
 
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
-                $row->addTextField("parent{$i}officialName")->required()->maxLength(150)->loadFrom($application);
-
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-                $row->addTextField("parent{$i}nameInCharacters")->maxLength(20)->loadFrom($application);
-
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}gender", __('Gender'));
+                $row->addLabel("parent{$i}gender", __('Gender - लिंग'));
                 $row->addSelectGender("parent{$i}gender")->required()->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}relationship", __('Relationship'));
+                $row->addLabel("parent{$i}relationship", __('Relationship - विद्यार्थी का सम्बन्ध'));
                 $row->addSelectRelationship("parent{$i}relationship")->required();
 
             // PARENT PERSONAL BACKGROUND
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Background'));
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Background'));
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}languageFirst", __('First Language'));
-                $row->addSelectLanguage("parent{$i}languageFirst")->placeholder()->loadFrom($application);
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}languageFirst", __('First Language'));
+            //GS//    $row->addSelectLanguage("parent{$i}languageFirst")->placeholder()->loadFrom($application);
+            $form->addHiddenValue('parent{$i}languageFirst', isset($application['parent{$i}languageFirst'])? $application['parent{$i}languageFirst'] : ''); //GS//
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}languageSecond", __('Second Language'));
-                $row->addSelectLanguage("parent{$i}languageSecond")->placeholder()->loadFrom($application);
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}languageSecond", __('Second Language'));
+            //GS//    $row->addSelectLanguage("parent{$i}languageSecond")->placeholder()->loadFrom($application);
+            $form->addHiddenValue('parent{$i}languageSecond', isset($application['parent{$i}languageSecond'])? $application['parent{$i}languageSecond'] : ''); //GS//
 
             // PERSONAL DOCUMENTS
-            $params = ['parent' => true, 'applicationForm' => true, 'prefix' => "parent{$i}", 'class' => "parentSection{$i}"];
-            $personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
+            //GS//$params = ['parent' => true, 'applicationForm' => true, 'prefix' => "parent{$i}", 'class' => "parentSection{$i}"];
+            //GS//$personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
+            $form->addHiddenValue('parent{$i}document', isset($application['parent{$i}document'])? $application['parent{$i}document'] : ''); //GS//
 
             // PARENT CONTACT
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Contact'));
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addSubheading(__('Parent/Guardian - माता-पिता/अभिभावक')." $i ".__('Contact - संपर्क'));
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->required($i == 1)->loadFrom($application);
-                if ($uniqueEmailAddress == 'Y') {
-                    $email->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'email'));
-                }
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}email", __('Email'));
+            //GS//    $email = $row->addEmail("parent{$i}email")->required($i == 1)->loadFrom($application);
+            //GS//    if ($uniqueEmailAddress == 'Y') {
+            //GS//        $email->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'email'));
+            //GS//    }
+            $form->addHiddenValue('parent{$i}email', isset($application['parent{$i}email'])? $application['parent{$i}email'] : ''); //GS//
 
-            for ($y = 1; $y < 3; ++$y) {
+
+            for ($y = 1; $y < 3; ++$y) { //GS//
                 $row = $form->addRow()->setClass("parentSection{$i}");
-                    $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
+                    $row->addLabel("parent{$i}phone{$y}", __('Phone - फोन').' '.$y)->description(__('Type, country code, number.'));
                     $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($i == 1 && $y == 1)->loadFrom($application);
             }
 
             // PARENT EMPLOYMENT
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Employment'));
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addSubheading(__('Parent/Guardian - माता-पिता/अभिभावक')." $i ".__('Employment - रोज़गार'));
 
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}profession", __('Profession'));
+                $row->addLabel("parent{$i}profession", __('Parent\'s work - कार्य'));
                 $row->addTextField("parent{$i}profession")->required($i == 1)->maxLength(90)->loadFrom($application);
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->maxLength(90)->loadFrom($application);
+            //GS//$row = $form->addRow()->setClass("parentSection{$i}");
+            //GS//    $row->addLabel("parent{$i}employer", __('Employer'));
+            //GS//    $row->addTextField("parent{$i}employer")->maxLength(90)->loadFrom($application);
+            $form->addHiddenValue('parent{$i}employer', isset($application['parent{$i}employer'])? $application['parent{$i}employer'] : ''); //GS//
 
             // CUSTOM FIELDS FOR PARENTS
-            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'headingPrefix' => __('Parent/Guardian')." $i", 'headingLevel' => 'h4', 'class' => "parentSection{$i}"];
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'headingPrefix' => __('Parent/Guardian - माता-पिता/अभिभावक')." $i", 'headingLevel' => 'h4', 'class' => "parentSection{$i}"];
             $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $application["parent{$i}fields"] ?? '');
         }
     } else {
@@ -647,58 +703,58 @@ if ($proceed == false) {
     }
 
     // SIBLINGS
-    $form->addRow()->addHeading(__('Siblings'))->append(__('Please give information on the applicants\'s siblings.'));
+    //GS//$form->addRow()->addHeading(__('Siblings'))->append(__('Please give information on the applicants\'s siblings.'));
 
-    $table = $form->addRow()->addTable()->addClass('colorOddEven');
+    //GS//$table = $form->addRow()->addTable()->addClass('colorOddEven');
 
-    $header = $table->addHeaderRow();
-    $header->addContent(__('Sibling Name'));
-    $header->addContent(__('Date of Birth'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
-    $header->addContent(__('School Attending'));
-    $header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
+    //GS//$header = $table->addHeaderRow();
+    //GS//$header->addContent(__('Sibling Name'));
+    //GS//$header->addContent(__('Date of Birth'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
+    //GS//$header->addContent(__('School Attending'));
+    //GS//$header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
 
-    $rowCount = 1;
+    //GS//$rowCount = 1;
 
-    // List siblings who have been to or are at the school
-    if (isset($gibbonFamilyID)) {
+    //GS//// List siblings who have been to or are at the school
+    //GS//if (isset($gibbonFamilyID)) {
 
-            $dataSibling = array('gibbonFamilyID' => $gibbonFamilyID);
-            $sqlSibling = 'SELECT surname, preferredName, dob, dateStart FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY dob ASC, surname, preferredName';
-            $resultSibling = $connection2->prepare($sqlSibling);
-            $resultSibling->execute($dataSibling);
+    //GS//        $dataSibling = array('gibbonFamilyID' => $gibbonFamilyID);
+    //GS//        $sqlSibling = 'SELECT surname, preferredName, dob, dateStart FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY dob ASC, surname, preferredName';
+    //GS//        $resultSibling = $connection2->prepare($sqlSibling);
+    //GS//        $resultSibling->execute($dataSibling);
 
-        while ($rowSibling = $resultSibling->fetch()) {
-            $name = Format::name('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
+    //GS//    while ($rowSibling = $resultSibling->fetch()) {
+    //GS//        $name = Format::name('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
 
-            $row = $table->addRow();
-            $row->addTextField('siblingName'.$rowCount)->maxLength(50)->setSize(26)->setValue($name);
-            $row->addDate('siblingDOB'.$rowCount)->setSize(10)->setValue(Format::date($rowSibling['dob']));
-            $row->addTextField('siblingSchool'.$rowCount)->maxLength(50)->setSize(30)->setValue($session->get('organisationName'));
-            $row->addDate('siblingSchoolJoiningDate'.$rowCount)->setSize(10)->setValue(Format::date($rowSibling['dateStart']));
+    //GS//        $row = $table->addRow();
+    //GS//        $row->addTextField('siblingName'.$rowCount)->maxLength(50)->setSize(26)->setValue($name);
+    //GS//        $row->addDate('siblingDOB'.$rowCount)->setSize(10)->setValue(Format::date($rowSibling['dob']));
+    //GS//        $row->addTextField('siblingSchool'.$rowCount)->maxLength(50)->setSize(30)->setValue($session->get('organisationName'));
+    //GS//        $row->addDate('siblingSchoolJoiningDate'.$rowCount)->setSize(10)->setValue(Format::date($rowSibling['dateStart']));
 
-            $rowCount++;
-        }
-    }
+    //GS//        $rowCount++;
+    //GS//    }
+    //GS//}
 
-    // Add additional sibling rows up to 3
-    for ($i = $rowCount; $i <= 3; ++$i) {
-        $row = $table->addRow();
-        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
-        $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
-        $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
-        $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
+    //GS//// Add additional sibling rows up to 3
+    //GS//for ($i = $rowCount; $i <= 3; ++$i) {
+    //GS//    $row = $table->addRow();
+    //GS//    $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
+    //GS//    $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
+    //GS//    $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
+    //GS//    $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
 
-        // Fill in some info from any sibling applications
-        if (!empty($linkedApplications[$i-1])) {
-            $nameField->setValue($linkedApplications[$i-1]['officialName']);
-            $dobField->setValue(Format::date($linkedApplications[$i-1]['dob']));
-        }
-    }
+    //GS//    // Fill in some info from any sibling applications
+    //GS//    if (!empty($linkedApplications[$i-1])) {
+    //GS//        $nameField->setValue($linkedApplications[$i-1]['officialName']);
+    //GS//        $dobField->setValue(Format::date($linkedApplications[$i-1]['dob']));
+    //GS//    }
+    //GS//}
 
     // LANGUAGE OPTIONS
-    $languageOptionsActive = $settingGateway->getSettingByScope('Application Form', 'languageOptionsActive');
-    $languageOptionsBlurb = $settingGateway->getSettingByScope('Application Form', 'languageOptionsBlurb');
-    $languageOptionsLanguageList = $settingGateway->getSettingByScope('Application Form', 'languageOptionsLanguageList');
+    $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
+    $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
+    $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
 
     if ($languageOptionsActive == 'Y' && ($languageOptionsBlurb != '' OR $languageOptionsLanguageList != '')) {
 
@@ -723,12 +779,12 @@ if ($proceed == false) {
     }
 
     // SCHOLARSHIPS
-    $scholarshipOptionsActive = $settingGateway->getSettingByScope('Application Form', 'scholarshipOptionsActive');
+    $scholarshipOptionsActive = getSettingByScope($connection2, 'Application Form', 'scholarshipOptionsActive');
 
     if ($scholarshipOptionsActive == 'Y') {
         $heading = $form->addRow()->addHeading(__('Scholarships'));
 
-        $scholarship = $settingGateway->getSettingByScope('Application Form', 'scholarships');
+        $scholarship = getSettingByScope($connection2, 'Application Form', 'scholarships');
         if (!empty($scholarship)) {
             $heading->append($scholarship);
         }
@@ -744,7 +800,7 @@ if ($proceed == false) {
 
 
     // PAYMENT
-    $paymentOptionsActive = $settingGateway->getSettingByScope('Application Form', 'paymentOptionsActive');
+    $paymentOptionsActive = getSettingByScope($connection2, 'Application Form', 'paymentOptionsActive');
 
     if ($paymentOptionsActive == 'Y') {
         $form->addRow()->addHeading(__('Payment'));
@@ -814,11 +870,11 @@ if ($proceed == false) {
     }
 
     // REQURIED DOCUMENTS
-    $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
+    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
 
     if (!empty($requiredDocuments)) {
-        $requiredDocumentsText = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsText');
-        $requiredDocumentsCompulsory = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsCompulsory');
+        $requiredDocumentsText = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsText');
+        $requiredDocumentsCompulsory = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory');
 
         $heading = $form->addRow()->addHeading(__('Supporting Documents'));
 
@@ -853,30 +909,31 @@ if ($proceed == false) {
 
 
     // MISCELLANEOUS
-    $form->addRow()->addHeading(__('Miscellaneous'));
+    //GS//$form->addRow()->addHeading(__('Miscellaneous'));
 
-    $howDidYouHear = $settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
+    $howDidYouHear = getSettingByScope($connection2, 'Application Form', 'howDidYouHear');
     $howDidYouHearList = explode(',', $howDidYouHear);
 
-    $row = $form->addRow();
-        $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
+    //GS//$row = $form->addRow();
+    //GS//    $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
-    if (empty($howDidYouHear)) {
-        $row->addTextField('howDidYouHear')->required()->maxLength(30)->loadFrom($application);
-    } else {
-        $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->loadFrom($application);
+    //GS//if (empty($howDidYouHear)) {
+    //GS//    $row->addTextField('howDidYouHear')->required()->maxLength(30)->loadFrom($application);
+    //GS//} else {
+    //GS//    $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->loadFrom($application);
 
-        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+    //GS//    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
 
-        $row = $form->addRow()->addClass('tellUsMore');
-            $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
-            $row->addTextField('howDidYouHearMore')->maxLength(255)->loadFrom($application);
-    }
+    //GS//    $row = $form->addRow()->addClass('tellUsMore');
+    //GS//        $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
+    //GS//        $row->addTextField('howDidYouHearMore')->maxLength(255)->loadFrom($application);
+    //GS//}
+    $form->addHiddenValue('howDidYouHear', isset($application['howDidYouHear'])? $application['howDidYouHear'] : ''); //GS//
 
     // PRIVACY
-    $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
-    $privacyBlurb = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
-    $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
+    $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+    $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
@@ -890,7 +947,7 @@ if ($proceed == false) {
     }
 
     // AGREEMENT
-    $agreement = $settingGateway->getSettingByScope('Application Form', 'agreement');
+    $agreement = getSettingByScope($connection2, 'Application Form', 'agreement');
     if (!empty($agreement)) {
         $form->addRow()->addHeading(__('Agreement'))->append($agreement);
 
@@ -914,8 +971,29 @@ if ($proceed == false) {
 
     echo $form->getOutput();
 
+    //GS: trying to constraint inputs to english chars and numbers
+    echo('<script type="text/javascript">
+    ///function onlyLettersNnumbers(e) {
+    ///    var regex = new RegExp("^[a-zA-Z0-9_ ]+$");
+    ///    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    ///    if (regex.test(str)) {
+    ///        return true;
+    ///    }
+    ///    e.preventDefault();
+    ///    return false;
+    ///}
+    ///
+    ///firstName.onkeypress = onlyLettersNnumbers;
+
+
+    // Function to validate the date
+
+
+    </script>
+    ');
+    
     //Get postscrript
-    $postscript = $settingGateway->getSettingByScope('Application Form', 'postscript');
+    $postscript = getSettingByScope($connection2, 'Application Form', 'postscript');
     if ($postscript != '') {
         echo '<h2>';
         echo __('Further Information');

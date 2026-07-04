@@ -18,9 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\User\UserStatusLogGateway;
 
 require getcwd().'/../gibbon.php';
 
@@ -37,16 +34,11 @@ if (!empty($session->get('i18n')['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'remoteCLIKey');
-$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
-if (!(isCommandLineInterface() || ($remoteCLIKey != '' && $remoteCLIKey == $remoteCLIKeyInput))) {
-    echo __('This script cannot be run from a browser, only via CLI.');
+if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $count = 0;
 
     //Scan through every user to correct own status
-    $userGateway = $container->get(UserGateway::class);
-    $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
 
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = 'SELECT gibbonPersonID, status, dateEnd, dateStart, gibbonRoleIDAll FROM gibbonPerson ORDER BY gibbonPersonID';
@@ -55,15 +47,23 @@ if (!(isCommandLineInterface() || ($remoteCLIKey != '' && $remoteCLIKey == $remo
 
     while ($row = $result->fetch()) {
         //Check for status=='Expected' when met or exceeded start date and set to 'Full'
-        if ($row['dateStart'] != '' && date('Y-m-d') >= $row['dateStart'] && $row['status'] == 'Expected') {
-            $userGateway->update($gibbonPersonID, ['status' => 'Full']);
-            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => 'Full', 'reason' => 'CLI Status Check and Fix']);
+        if ($row['dateStart'] != '' and date('Y-m-d') >= $row['dateStart'] and $row['status'] == 'Expected') {
+
+                $dataUpdate = array('gibbonPersonID' => $row['gibbonPersonID']);
+                $sqlUpdate = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
+                $resultUpdate = $connection2->prepare($sqlUpdate);
+                $resultUpdate->execute($dataUpdate);
+            ++$count;
         }
 
         //Check for status=='Full' when end date exceeded, and set to 'Left'
-        if ($row['dateEnd'] != '' && date('Y-m-d') > $row['dateEnd'] && $row['status'] == 'Full') {
-            $userGateway->update($gibbonPersonID, ['status' => 'Left']);
-            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => 'Left', 'reason' => 'CLI Status Check and Fix']);
+        if ($row['dateEnd'] != '' and date('Y-m-d') > $row['dateEnd'] and $row['status'] == 'Full') {
+
+                $dataUpdate = array('gibbonPersonID' => $row['gibbonPersonID']);
+                $sqlUpdate = "UPDATE gibbonPerson SET status='Left' WHERE gibbonPersonID=:gibbonPersonID";
+                $resultUpdate = $connection2->prepare($sqlUpdate);
+                $resultUpdate->execute($dataUpdate);
+            ++$count;
         }
     }
 
@@ -108,7 +108,7 @@ if (!(isCommandLineInterface() || ($remoteCLIKey != '' && $remoteCLIKey == $remo
     $event->addRecipient($session->get('organisationAdministrator'));
 
     // Send all notifications
-    $sendReport = $event->sendNotifications($pdo, $session);
+    $sendReport = $event->sendNotifications($pdo, $gibbon->session);
 
     // Output the result to terminal
     echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";

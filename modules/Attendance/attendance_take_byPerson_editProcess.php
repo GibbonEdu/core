@@ -18,11 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+//Gibbon system-wide includes
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';

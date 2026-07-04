@@ -22,11 +22,8 @@ use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\HookGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $orphaned = $_GET['orphaned'] ?? '';
 

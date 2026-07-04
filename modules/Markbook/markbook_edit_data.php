@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -26,23 +25,23 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 //Get settings
-$settingGateway = $container->get(SettingGateway::class);
-$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
-$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
-$enableRawAttainment = $settingGateway->getSettingByScope('Markbook', 'enableRawAttainment');
-$enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+$enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
+$enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
 //Get alternative header names
-$attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
-$attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev');
+$attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+$attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $hasAttainmentName = ($attainmentAlternativeName != '' && $attainmentAlternativeNameAbrev != '');
 
-$effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
-$effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
+$effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+$effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 $hasEffortName = ($effortAlternativeName != '' && $effortAlternativeNameAbrev != '');
 
 // Get the sort order, if it exists
-$studentOrderBy = $session->get('markbookOrderBy', null) ?? $_GET['markbookOrderBy'] ?? 'surname';
+$studentOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
+$studentOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $studentOrderBy;
 
 // Register scripts available to the core, but not included by default
 $page->scripts->add('chart');
@@ -118,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Check if gibbonCourseClassID and gibbonMarkbookColumnID specified
+        //Check if school year specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '') {
@@ -208,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     }
 
                     echo "<div class='linkTop'>";
-                    if (!empty($values['gibbonPlannerEntryID'])) {
+                    if ($values['gibbonPlannerEntryID'] != '') {
                         echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=".$values['gibbonPlannerEntryID']."'>".__('View Linked Lesson')."<img style='margin: 0 0 -4px 5px' title='".__('View Linked Lesson')."' src='./themes/".$session->get('gibbonThemeName')."/img/planner.png'/></a> | ";
                     }
                     echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
@@ -303,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $result = $pdo->executeQuery($data, $sql);
                     $individualNeeds = ($result->rowCount() > 0)? $result->fetchAll() : array();
 
-                    $form = Form::create('markbookEditData', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$session->get('address'));
+                    $form = Form::create('markbookEditData', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$_SESSION[$guid]['address']);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', $session->get('address'));
 
@@ -350,7 +349,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $detailsText .= !empty($values['completeDate'])? __('Marked on').' '.Format::date($values['completeDate']) : __('Unmarked');
                         $detailsText .= '<br/>'.$values['type'];
 
-                        if ($values['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$values['attachment'])) {
+                        if ($values['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$values['attachment'])) {
                             $detailsText .= " | <a title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$values['attachment']."'>".__('More info').'</a>';
                         }
 

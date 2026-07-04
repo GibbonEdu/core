@@ -18,11 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['cookieConsentText' => 'HTML']);
+include '../../gibbon.php';
+include '../../config.php';
 
 // Module includes
 include './moduleFunctions.php';
@@ -50,7 +48,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
             'cookieConsentEnabled' => 'required',
             'cookieConsentText' => 'skip-empty',
             'privacyPolicy' => '',
-            'remoteCLIKey' => '',
         ],
     ];
 

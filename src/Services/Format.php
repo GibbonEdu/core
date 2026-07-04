@@ -20,9 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services;
 
 use DateTime;
+use Gibbon\Session;
 use DateTimeImmutable;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Http\Url;
 
 /**
  * Format values based on locale and system settings.
@@ -62,7 +61,7 @@ class Format
         $settings['absolutePath'] = $session->get('absolutePath');
         $settings['absoluteURL'] = $session->get('absoluteURL');
         $settings['gibbonThemeName'] = $session->get('gibbonThemeName');
-        $settings['currency'] = $session->get('currency') ?? '';
+        $settings['currency'] = $session->get('currency');
         $settings['currencySymbol'] = !empty(substr($settings['currency'], 4)) ? substr($settings['currency'], 4) : '';
         $settings['currencyName'] = substr($settings['currency'], 0, 3);
         $settings['nameFormatStaffInformal'] = $session->get('nameFormatStaffInformal');
@@ -211,7 +210,7 @@ class Format
      * @param DateTime|string $dateString
      * @return string
      */
-    public static function relativeTime($dateString, $tooltip = true, $relativeString = true)
+    public static function relativeTime($dateString, $tooltip = true)
     {
         if (empty($dateString)) {
             return '';
@@ -249,9 +248,9 @@ class Format
                 $time = static::dateReadable($dateString);
         }
 
-        if ($relativeString && $timeDifference > 0) {
+        if ($timeDifference > 0) {
             $time = __('{time} ago', ['time' => $time]);
-        } elseif ($relativeString && $timeDifference < 0) {
+        } elseif ($timeDifference < 0) {
             $time = __('in {time}', ['time' => $time]);
         }
 
@@ -356,10 +355,10 @@ class Format
             'Other'       => __('Other'),
             'Unspecified' => __('Unspecified')
             ];
-
+        
         return $translate ? __($genderNames[$value]) : $genderNames[$value];
-    }
-
+    }    
+    
     /**
      * Formats a filesize in bytes to display in KB, MB, etc.
      *
@@ -546,7 +545,7 @@ class Format
                 $number = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{2})/', '$1 - $2 $3 $4', $number);
                 break;
             case 10:
-                $number = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/', '($1) $2 $3', $number);
+                $number = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{3})/', '$1 - $2 $3 $4', $number);
                 break;
         }
 
@@ -660,14 +659,16 @@ class Format
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
         if ($roleCategory == 'Staff') {
-            $url = Url::fromModuleRoute('Staff', 'staff_view_details')
-                ->withAbsoluteUrl()
-                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
             $output = self::link($url, $name);
         } elseif ($roleCategory == 'Student') {
-            $url = Url::fromModuleRoute('Students', 'student_view_details')
-                ->withAbsoluteUrl()
-                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
             $output = self::link($url, $name);
         } else {
             $output = $name;
@@ -746,7 +747,6 @@ class Format
                 $imageSize = $size;
         }
 
-        $path = (string) $path;
         if (preg_match('/^http[s]*/', $path)) {
             return sprintf('<img class="%1$s" src="%2$s">', $class, $path);
         } else {

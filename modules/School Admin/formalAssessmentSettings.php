@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessmentSettings.php') == false) {
@@ -33,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
 
     $form->addRow()->addHeading(__('Internal Assessment Settings'));
 
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $setting = $settingGateway->getSettingByScope('Formal Assessment', 'internalAssessmentTypes', true);
+    $setting = getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
@@ -69,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     }
 
     // Get and unserialize the current settings value
-    $primaryExternalAssessmentByYearGroup = unserialize($settingGateway->getSettingByScope('School Admin', 'primaryExternalAssessmentByYearGroup'));
+    $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($connection2, 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
     // Split the ID portion off of the ID-category pair, for the first dropdown
     $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (mb_strpos($v, '-') !== false? mb_substr($v, 0, mb_strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);

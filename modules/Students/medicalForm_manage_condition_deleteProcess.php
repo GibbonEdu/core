@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-//Check if gibbonPersonMedicalID and gibbonPersonMedicalConditionID specified
+//Check if school year specified
 $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
 $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';
 $search = $_GET['search'] ?? '';

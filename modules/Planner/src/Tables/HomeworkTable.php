@@ -47,14 +47,13 @@ class HomeworkTable
         $this->plannerEntryGateway = $plannerEntryGateway;
     }
 
-    public function create($gibbonSchoolYearID, $gibbonPersonID, $roleCategory, $gibbonCourseClassID = null)
+    public function create($gibbonSchoolYearID, $gibbonPersonID, $roleCategory)
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
         $criteria = $this->plannerEntryGateway->newQueryCriteria(true)
             ->sortBy(['date', 'timeStart'], 'DESC')
-            ->filterBy('class', $gibbonCourseClassID)
             ->fromPOST();
 
         $allHomework = $this->plannerEntryGateway->queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID);

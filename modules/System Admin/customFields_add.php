@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 
@@ -147,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
         $row->addSelect('activeApplicationForm')->fromArray(['1' => __('Yes'), '0' => __('No')])->selected('0')->required();
     
-    $enablePublicRegistration = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration');
+    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $row = $form->addRow()->addClass('contextPerson');
             $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));

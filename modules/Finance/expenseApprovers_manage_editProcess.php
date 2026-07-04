@@ -17,23 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Data\Validator;
-
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonFinanceExpenseApproverID specified
+    //Check if school year specified
     if ($gibbonFinanceExpenseApproverID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -55,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         } else {
             //Validate Inputs
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $expenseApprovalType = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
+            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
             $sequenceNumber = null;
             if ($expenseApprovalType == 'Chain Of All') {
                 $sequenceNumber = abs($_POST['sequenceNumber']);

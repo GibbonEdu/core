@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\School\SchoolYearGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_add.php') == false) {
     // Access denied
@@ -43,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
     if ($gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT name as schoolYearName FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
@@ -92,13 +91,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
                 $row->addLabel('gibbonSpaceID', __('Location'));
                 $row->addSelectSpace('gibbonSpaceID');
 
-            $nextYear = $container->get(SchoolYearGateway::class)->getNextSchoolYearByID($gibbonSchoolYearID);
+            $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
             $row = $form->addRow();
                 $row->addLabel('gibbonFormGroupIDNext', __('Next Form Group'))->description(__('Sets student progression on rollover.'));
                 if (empty($nextYear)) {
                     $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
                 } else {
-                    $row->addSelectFormGroup('gibbonFormGroupIDNext', $nextYear['gibbonSchoolYearID']);
+                    $row->addSelectFormGroup('gibbonFormGroupIDNext', $nextYear);
                 }
 
             $row = $form->addRow();
@@ -106,8 +105,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
                 $row->addYesNo('attendance');
 
             $row = $form->addRow();
-                $row->addLabel('website', __('Website'))->description(__('Include http://'));
-                $row->addURL('website')->maxLength(255);
+                //GS//$row->addLabel('website', __('Website'))->description(__('Include http://'));
+                $row->addLabel('website', __('Timing'))->description(__('Center start and end time.'));
+                //GS//$row->addURL('website')->maxLength(255);
+                $row->addTextField('website')->maxLength(255);
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -117,4 +118,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
         }
     }
 }
-

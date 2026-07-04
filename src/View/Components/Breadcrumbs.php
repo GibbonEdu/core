@@ -19,13 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View\Components;
 
-use Gibbon\Http\Url;
-use Psr\Http\Message\UriInterface;
-
 /**
  * Breadcrumb trail.
  *
- * @version v23
+ * @version v17
  * @since   v17
  */
 class Breadcrumbs
@@ -38,7 +35,7 @@ class Breadcrumbs
      */
     public function __construct()
     {
-        $this->add(__('Home'), Url::fromRoute());
+        $this->add(__('Home'));
         $this->setBaseURL('index.php?q=');
     }
 
@@ -50,43 +47,26 @@ class Breadcrumbs
      */
     public function setBaseURL(string $baseURL)
     {
-        $this->baseURL = rtrim(urldecode($baseURL), '/ ').'/';
+        $this->baseURL = trim($baseURL, '/ ').'/';
+        
         return $this;
     }
 
     /**
      * Add a named route to the trail.
      *
-     * @version v23
-     * @since   v17
-     *
-     * @param string              $title   Name to display on this route's link
-     * @param string|UriInterface $route   String URL relative to the trail's BaseURL, or
-     *                                     UriInterface.
-     * @param array               $params  Additional URL params to append to the route.
-     *                                     Only has effect if $route is a string.
+     * @param string $title   Name to display on this route's link
+     * @param string $route   URL relative to the trail's BaseURL
+     * @param array  $params  Additional URL params to append to the route
      * @return self
      */
-    public function add(string $title, $route = '', array $params = [])
+    public function add(string $title, string $route = '', array $params = [])
     {
-        if (!is_string($route) && !$route instanceof UriInterface) {
-            throw new \InvalidArgumentException(sprintf(
-                'Route should be either a string or an implementation of UriInterface. Got %s',
-                var_export($route, true)
-            ));
-        }
+        $route = !empty($params)
+            ? trim($route, '/ ').'&'.http_build_query($params)
+            : trim($route, '/ ');
 
-        // backward compatible
-        if (is_string($route)) {
-            $route = !empty($params)
-                ? trim($route, '/ ').'&'.http_build_query($params)
-                : trim($route, '/ ');
-            $this->items[$title] = !empty($route)? $this->baseURL . $route : '';
-        } else {
-            // Do not support the query parameter at all because
-            // UriInterface should have that covered.
-            $this->items[$title] = $route;
-        }
+        $this->items[$title] = !empty($route)? $this->baseURL . $route : '';
 
         return $this;
     }

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Custom Message | Session Timeout</title>
+  </head>
+  <body>
+    <h1>Custom Message | Session Timeout</h1>
+
+    <p>The warning dialog will appear after 3 seconds.</p>
+
+    <script src="../dist/session-timeout.js"></script>
+    <script>
+      sessionTimeout({
+        warnAfter: 3000,
+        message: 'This is a custom message. You are about to be logged out.',
+      });
+    </script>
+  </body>
+</html>

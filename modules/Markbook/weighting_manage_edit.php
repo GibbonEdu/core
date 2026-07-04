@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -37,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
         echo '</div>';
     } else {
 
-        if ($container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableColumnWeighting') != 'Y') {
+        if (getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting') != 'Y') {
             //Acess denied
             echo "<div class='error'>";
             echo __('Your request failed because you do not have access to this action.');

@@ -17,11 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
-
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
+//Gibbon system-wide includes
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';

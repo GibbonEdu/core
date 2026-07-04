@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -33,17 +32,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         ->add(__('Manage Applications'), 'applicationForm_manage.php')
         ->add(__('Reject Application'));
 
-    //Check if gibbonStaffApplicationFormID specified
+    //Check if school year specified
     $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
     $search = $_GET['search'];
     if ($gibbonStaffApplicationFormID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-        $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
-        $sql = 'SELECT * FROM gibbonStaffApplicationForm WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+            $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
+            $sql = 'SELECT * FROM gibbonStaffApplicationForm WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -54,9 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $values = $result->fetch();
             $proceed = true;
 
+            echo "<div class='linkTop'>";
             if ($search != '') {
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
             }
+            echo '</div>';
 
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/applicationForm_manage_rejectProcess.php?gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search");
 

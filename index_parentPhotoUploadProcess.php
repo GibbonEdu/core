@@ -18,18 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-
-use Gibbon\Http\Url;
-
 include './gibbon.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$URL = Url::fromRoute();
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$URL = $gibbon->session->get('absoluteURL').'/index.php';
 
 //Proceed!
 //Check if planner specified
-if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') or $_FILES['file1']['tmp_name'] == '') {
-    header("Location: {$URL->withReturn('error1')}");
+if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPersonID') or $_FILES['file1']['tmp_name'] == '') {
+    $URL .= '?return=error1';
+    header("Location: {$URL}");
     exit();
 } else {
     try {
@@ -38,44 +36,50 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        header("Location: {$URL->withReturn('error2')}");
+        $URL .= '?return=error2';
+        header("Location: {$URL}");
         exit();
     }
 
     if ($result->rowCount() != 1) {
-        header("Location: {$URL->withReturn('error2')}");
+        $URL .= '?return=error2';
+        header("Location: {$URL}");
         exit();
     } else {
         $attachment1 = null;
         if (!empty($_FILES['file1']['tmp_name'])) {
-            $fileUploader = new Gibbon\FileUploader($pdo, $session);
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
 
             $file = $_FILES['file1'] ?? null;
 
             // Upload the file, return the /uploads relative path
-            $attachment1 = $fileUploader->uploadFromPost($file, $session->get('username').'_240');
+            $attachment1 = $fileUploader->uploadFromPost($file, $gibbon->session->get('username').'_240');
 
             if (empty($attachment1)) {
-                header("Location: {$URL->withReturn('warning1')}");
+                $URL .= '?return=warning1';
+                header("Location: {$URL}");
                 exit();
             }
         }
-
-        $path = $session->get('absolutePath');
+        
+        $path = $gibbon->session->get('absolutePath');
 
         //Check for reasonable image
         $size = getimagesize($path.'/'.$attachment1);
         $width = $size[0];
         $height = $size[1];
         if ($width < 240 or $height < 320) {
-            header("Location: {$URL->withReturn('error6')}");
+            $URL .= '?return=error6';
+            header("Location: {$URL}");
             exit();
         } elseif ($width > 480 or $height > 640) {
-            header("Location: {$URL->withReturn('error6')}");
+            $URL .= '?return=error6';
+            header("Location: {$URL}");
             exit();
         } elseif (($width / $height) < 0.60 or ($width / $height) > 0.8) {
-            header("Location: {$URL->withReturn('error6')}");
+            $URL .= '?return=error6';
+            header("Location: {$URL}");
             exit();
         } else {
             //UPDATE
@@ -85,17 +89,19 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                header("Location: {$URL->withReturn('error2')}");
+                $URL .= '?return=error2';
+                header("Location: {$URL}");
                 exit();
             }
 
             //Update session variables
-            $session->set('image_240', $attachment1);
+            $gibbon->session->set('image_240', $attachment1);
 
             //Clear cusotm sidebar
-            $session->remove('index_customSidebar.php');
+            unset($_SESSION[$guid]['index_customSidebar.php']);
 
-            header("Location: {$URL->withReturn('success0')}");
+            $URL .= '?return=success0';
+            header("Location: {$URL}");
         }
     }
 }

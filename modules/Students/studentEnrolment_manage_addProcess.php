@@ -18,19 +18,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
-use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $search = $_GET['search'] ?? '';
 
-if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
+if ($gibbonSchoolYearID == '') {
+    echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
+    $URL = $session->get('absoluteURL') . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/studentEnrolment_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
     if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_add.php') == false) {
         $URL .= '&return=error0';
@@ -112,6 +110,22 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                             header("Location: {$URL}");
                             exit;
                         }
+
+                        //GS->//
+                        //Write to history table
+                        $last_id = $connection2->lastInsertID();
+
+                        try {
+                            $data = array('gibbonStudentEnrolmentID' => $last_id,'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonFormGroupID' => $gibbonFormGroupID, 'rollOrder' => $rollOrder, 'today' => date('Y-m-d'));
+                            $sql = 'INSERT INTO gibbonStudentEnrolmentChanged SET gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID, gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonFormGroupID=:gibbonFormGroupID, rollOrder=:rollOrder, dateChanged=:today';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $URL .= '&return=error2';
+                            header("Location: {$URL}");
+                            exit;
+                        }
+                        //GS<-//
 
                         //Last insert ID
                         $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);

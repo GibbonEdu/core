@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\EmailTemplateGateway;
@@ -28,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     // Proceed!
     $page->breadcrumbs->add(__('Email Templates'));
 
-    $emailTemplateGateway = $container->get(EmailTemplateGateway::class);
+    $emailTemplateGateway = new EmailTemplateGateway($pdo);
 
     $criteria = $emailTemplateGateway->newQueryCriteria()
         ->sortBy(['gibbonModule.type', 'templateName'])
@@ -40,23 +41,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $table->setDescription(__('These templates enable you to customize emails sent by Gibbon using a Twig template syntax. For more information about how to write template code, visit the {link}.', ['link' => Format::link('https://twig.symfony.com/doc/2.x/', __('Twig Documentation'))]));
 
     $table->addColumn('moduleName', __('Module'))->translatable();
-    $table->addColumn('templateType', __('Template'));
     $table->addColumn('templateName', __('Name'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('moduleType', __('Type'));
 
     $actions = $table->addActionColumn()
         ->addParam('gibbonEmailTemplateID')
         ->format(function ($values, $actions) {
-            $actions->addAction('duplicate', __('Duplicate'))
-                    ->setIcon('copy')
-                    ->setURL('/modules/System Admin/emailTemplates_manage_duplicate.php');
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/System Admin/emailTemplates_manage_edit.php');
-
-            if ($values['type'] == 'Custom') {
-                $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/System Admin/emailTemplates_manage_delete.php'); 
-            }
         });
 
     echo $table->render($templates);

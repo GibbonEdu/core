@@ -23,7 +23,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if gibbonExternalAssessmentFieldID and gibbonExternalAssessmentID specified
+    //Check if school year specified
     $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'] ?? '';
     $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
     if ($gibbonExternalAssessmentFieldID == '' or $gibbonExternalAssessmentID == '') {

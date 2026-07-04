@@ -20,9 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['homeworkDetails' => 'HTML']);
+//Gibbon system-wide includes
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
@@ -68,7 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             //Get variables
             $homework = $_POST['homework'];
             if ($homework == 'Y') {
-                $homeworkDetails = $_POST['homeworkDetails'] ?? '';
+                //Attempt to prevent XSS attack
+                $validator = $container->get(Validator::class);
+                $homeworkDetails = $validator->sanitizeRichText($_POST['homeworkDetails'] ?? '');
+
                 if ($_POST['homeworkDueDateTime'] != '') {
                     $homeworkDueDateTime = $_POST['homeworkDueDateTime'].':59';
                 } else {

@@ -19,15 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Http\Url;
+use PDOException;
 use Gibbon\Services\Format;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Tables\Prefab\EnrolmentTable;
 use Gibbon\Tables\Prefab\FormGroupTable;
-use Gibbon\Data\Validator;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Staff Dashboard View Composer
@@ -37,43 +35,16 @@ use Gibbon\Data\Validator;
  */
 class StaffDashboard implements OutputableInterface
 {
-    /**
-     * @var \Gibbon\Contracts\Database\Connection
-     */
     protected $db;
-
-    /**
-     * @var \Gibbon\Contracts\Services\Session
-     */
     protected $session;
-
-    /**
-     * @var \Gibbon\Tables\Prefab\FormGroupTable
-     */
     protected $formGroupTable;
 
-    /**
-     * @var \Gibbon\Tables\Prefab\EnrolmentTable
-     */
-    protected $enrolmentTable;
-
-    /**
-     * @var SettingGateway
-     */
-    private $settingGateway;
-
-    public function __construct(
-        Connection $db,
-        Session $session,
-        FormGroupTable $formGroupTable,
-        EnrolmentTable $enrolmentTable,
-        SettingGateway $settingGateway
-    ) {
+    public function __construct(Connection $db, Session $session, FormGroupTable $formGroupTable, EnrolmentTable $enrolmentTable)
+    {
         $this->db = $db;
         $this->session = $session;
         $this->formGroupTable = $formGroupTable;
         $this->enrolmentTable = $enrolmentTable;
-        $this->settingGateway = $settingGateway;
     }
 
     public function getOutput()
@@ -106,13 +77,15 @@ class StaffDashboard implements OutputableInterface
 
         $return = false;
 
-        $homeworkNameSingular = $this->settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+
 
         //GET PLANNER
         $planner = false;
+        /*//GS
         $date = date('Y-m-d');
         try {
-            $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'date2' => $date, 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date2' => $date, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime
             FROM gibbonPlannerEntry
             JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
@@ -153,7 +126,7 @@ class StaffDashboard implements OutputableInterface
             $planner .= '</div>';
         } else {
             $planner .= "<div class='linkTop'>";
-            $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner')."'>".__('View Planner').'</a>';
+            $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
             $planner .= '</div>';
 
             $planner .= "<table cellspacing='0' style='width: 100%'>";
@@ -232,41 +205,30 @@ class StaffDashboard implements OutputableInterface
                     $planner .= Format::truncate($row['summary'], 360);
                     $planner .= '</td>';
                     $planner .= '<td>';
-                    $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
-                        'viewBy' => 'class',
-                        'gibbonCourseClassID' => $row['gibbonCourseClassID'],
-                        'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'],
-                    ])."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
+                    $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                     $planner .= '</td>';
                     $planner .= '</tr>';
                 }
             }
             $planner .= '</table>';
         }
+        */
+
 
         //GET TIMETABLE
         $timetable = false;
-        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Staff') {
-            $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
-            $_POST = (new Validator(''))->sanitize($_POST);
-            $jsonQuery = [
-                'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
-                'ttDate' => $_POST['ttDate'] ?? '',
-                'fromTT' => $_POST['fromTT'] ?? '',
-                'personalCalendar' => $_POST['personalCalendar'] ?? '',
-                'schoolCalendar' => $_POST['schoolCalendar'] ?? '',
-                'spaceBookingCalendar' => $_POST['spaceBookingCalendar'] ?? '',
-            ];
+        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $_SESSION[$guid]['username'] != '' and getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
+
             $timetable .= '
             <script type="text/javascript">
                 $(document).ready(function(){
-                    $("#tt").load('.json_encode($apiEndpoint).', '.json_encode($jsonQuery).');
+                    $("#tt").load("'.$_SESSION[$guid]['absoluteURL'].'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
                 });
-            </script>';
+            </script>   ';
 
             $timetable .= '<h2>'.__('My Timetable').'</h2>';
             $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
-            $timetable .= "<img style='margin: 10px 0 5px 0' src='".$this->session->get('absoluteURL')."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
+            $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
             $timetable .= '</div>';
         }
 
@@ -275,7 +237,7 @@ class StaffDashboard implements OutputableInterface
         $formGroupCount = 0;
         $count = 0;
 
-        $dataFormGroups = array('gibbonPersonIDTutor' => $this->session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $this->session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'));
+        $dataFormGroups = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sqlFormGroups = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID';
         $resultFormGroups = $this->db->select($sqlFormGroups, $dataFormGroups);
 
@@ -315,7 +277,7 @@ class StaffDashboard implements OutputableInterface
                     $plural = '';
                 }
                 try {
-                    $dataBehaviour = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'gibbonFormGroupID' => $formGroups[$count][0]);
+                    $dataBehaviour = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFormGroupID' => $formGroups[$count][0]);
                     $sqlBehaviour = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY timestamp DESC';
                     $resultBehaviour = $connection2->prepare($sqlBehaviour);
                     $resultBehaviour->execute($dataBehaviour);
@@ -325,13 +287,8 @@ class StaffDashboard implements OutputableInterface
 
                 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php')) {
                     $formGroups[$count][3] .= "<div class='linkTop'>";
-                    $formGroups[$count][3] .= "<a href='".Url::fromModuleRoute('Behaviour', 'behaviour_manage_add')->withQueryParams([
-                        'gibbonPersonID' => '',
-                        'gibbonFormGroupID' => '',
-                        'gibbonYearGroupID' => '',
-                        'type' => '',
-                    ]) . "'>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-                    $policyLink = $this->settingGateway->getSettingByScope('Behaviour', 'policyLink');
+                    $formGroups[$count][3] .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonFormGroupID=&gibbonYearGroupID=&type='>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
                     if ($policyLink != '') {
                         $formGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
                     }
@@ -388,9 +345,9 @@ class StaffDashboard implements OutputableInterface
                         $formGroups[$count][3] .= '</td>';
                         $formGroups[$count][3] .= "<td style='text-align: center'>";
                         if ($rowBehaviour['type'] == 'Negative') {
-                            $formGroups[$count][3] .= "<img title='".__('Negative')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/iconCross.png'/> ";
+                            $formGroups[$count][3] .= "<img title='".__('Negative')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
                         } elseif ($rowBehaviour['type'] == 'Positive') {
-                            $formGroups[$count][3] .= "<img title='".__('Positive')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/iconTick.png'/> ";
+                            $formGroups[$count][3] .= "<img title='".__('Positive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
                         }
                         $formGroups[$count][3] .= '</td>';
                         $formGroups[$count][3] .= '<td>';
@@ -413,7 +370,7 @@ class StaffDashboard implements OutputableInterface
                         $formGroups[$count][3] .= '});';
                         $formGroups[$count][3] .= '</script>';
                         if ($rowBehaviour['comment'] != '') {
-                            $formGroups[$count][3] .= "<a title='".__('View Description')."' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='".$this->session->get('absoluteURL')."/themes/Default/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
+                            $formGroups[$count][3] .= "<a title='".__('View Description')."' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                         }
                         $formGroups[$count][3] .= '</td>';
                         $formGroups[$count][3] .= '</tr>';
@@ -453,7 +410,7 @@ class StaffDashboard implements OutputableInterface
                 $options = unserialize($rowHooks['options']);
                 //Check for permission to hook
 
-                    $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName']);
+                    $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName']);
                     $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Staff Dashboard'  AND gibbonAction.name='".$options['sourceModuleAction']."' AND gibbonModule.name='".$options['sourceModuleName']."' ORDER BY name";
                     $resultHook = $connection2->prepare($sqlHook);
                     $resultHook->execute($dataHook);
@@ -467,12 +424,13 @@ class StaffDashboard implements OutputableInterface
             }
         }
 
-        if ($planner == false and $timetable == false and count($hooks) < 1) {
+        //GS//if ($planner == false and $timetable == false and count($hooks) < 1) {
+        if ($planner == false and $timetable == false and count($hooks) < 1 and !isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) { //GS//
             $return .= "<div class='warning'>";
             $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
-            $staffDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'staffDashboardDefaultTab');
+            $staffDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab');
             $staffDashboardDefaultTabCount = null;
 
             $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
@@ -495,7 +453,9 @@ class StaffDashboard implements OutputableInterface
                 }
             }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+            $myrole = getRoleName($this->session->get('gibbonRoleIDCurrent'), $this->db->getConnection()); //GS//
+            //GS//if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php' and $myrole != 'Teacher')) { //GS//
                 $return .= "<li><a href='#tabs".$tabCount."'>".__('Enrolment').'</a></li>';
                 if ($staffDashboardDefaultTab == 'Enrolment') {
                     $staffDashboardDefaultTabCount = $tabCount;
@@ -537,7 +497,8 @@ class StaffDashboard implements OutputableInterface
             }
 
             // Enrolment tab
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+            //GS//if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') and $myrole != 'Teacher') { //GS//
                 $return .= "<div id='tabs".$tabCount."'>";
                 $return .= $this->enrolmentTable->getOutput();
                 $return .= '</div>';
@@ -546,7 +507,7 @@ class StaffDashboard implements OutputableInterface
 
             foreach ($hooks as $hook) {
                 $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
-                $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
+                $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
                 if (!file_exists($include)) {
                     $return .= "<div class='error'>";
                     $return .= __('The selected page cannot be displayed due to a hook error.');
@@ -560,9 +521,11 @@ class StaffDashboard implements OutputableInterface
             $return .= '</div>';
         }
 
-        $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
-        
-        if (!isset($_GET['tab']) && !empty($staffDashboardDefaultTabCount)) {
+        $defaultTab = 0;
+        if (isset($_GET['tab'])) {
+            $defaultTab = $_GET['tab'];
+        }
+        else if (!empty($staffDashboardDefaultTabCount)) {
             $defaultTab = $staffDashboardDefaultTabCount-1;
         }
 

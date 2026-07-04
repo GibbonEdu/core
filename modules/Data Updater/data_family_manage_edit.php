@@ -27,14 +27,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
 
     $page->breadcrumbs
         ->add(__('Family Data Updates'), 'data_family_manage.php', $urlParams)
         ->add(__('Edit Request'));
 
-    //Check if gibbonFamilyUpdateID specified
+    //Check if school year specified
     $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
     if ($gibbonFamilyUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));

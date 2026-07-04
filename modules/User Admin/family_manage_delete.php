@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if gibbonFamilyID specified
+    //Check if school year specified
     $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
     $search = $_GET['search'] ?? '';
     if ($gibbonFamilyID == '') {

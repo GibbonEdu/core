@@ -18,46 +18,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$statusCurrent = $_POST['statusCurrent'] ?? '';
+$status = $_POST['status'] ?? '';
+$type = 'Other';
+if ($status == 'Decommissioned') {
+    $type = 'Decommission';
+} elseif ($status == 'Lost') {
+    $type = 'Loss';
+} elseif ($status == 'On Loan') {
+    $type = 'Loan';
+} elseif ($status == 'Repair') {
+    $type = 'Repair';
+} elseif ($status == 'Reserved') {
+    $type = 'Reserve';
+}
+$gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? null;
+$returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
+$returnAction = $_POST['returnAction'] ?? '';
+$gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? null;
+
 
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 
-$address = $_POST['address'] ?? '';
-$name = $_GET['name'] ?? '';
-$gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
-$gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
-$status = $_GET['status'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_signOut.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
-$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item_signOut.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_signOut.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $statusCurrent = $_POST['statusCurrent'] ?? '';
-    $status = $_POST['status'] ?? '';
-    $type = 'Other';
-    if ($status == 'Decommissioned') {
-        $type = 'Decommission';
-    } elseif ($status == 'Lost') {
-        $type = 'Loss';
-    } elseif ($status == 'On Loan') {
-        $type = 'Loan';
-    } elseif ($status == 'Repair') {
-        $type = 'Repair';
-    } elseif ($status == 'Reserved') {
-        $type = 'Reserve';
-    }
-    $gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? null;
-    $returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
-    $returnAction = $_POST['returnAction'] ?? '';
-    $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? null;
-
     //Validate Inputs
     if ($gibbonLibraryItemID == '' or $status == '' or empty($gibbonPersonIDStatusResponsible) or $statusCurrent != 'Available') {
         $URL .= '&return=error1';

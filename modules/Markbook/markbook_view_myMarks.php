@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -28,13 +27,12 @@ $page->breadcrumbs->add(__('View Markbook'));
 if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID') ) . date('zWy') ) return;
 
     //Get settings
-    $settingGateway = $container->get(SettingGateway::class);
-    $enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
-    $enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
-    $showStudentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showStudentAttainmentWarning');
-    $showStudentEffortWarning = $settingGateway->getSettingByScope('Markbook', 'showStudentEffortWarning');
-    $attainmentAltName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
-	$effortAltName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
+    $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+    $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+    $showStudentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showStudentAttainmentWarning');
+    $showStudentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showStudentEffortWarning');
+    $attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+	$effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 
     $entryCount = 0;
     echo '<p>';
@@ -86,7 +84,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
             ->fromQuery($pdo, $sqlSelect, $dataSelect)
             ->selected($filter);
 
-    $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
+    $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
     if (!empty($types)) {
         $rowFilter = $form->addRow();
         $rowFilter->addLabel('filter3', __('Type'));
@@ -230,7 +228,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                     if ($enableModifiedAssessment == 'Y') {
                         if (!is_null($rowEntry['modifiedAssessment'])) {
                             echo "<td>";
-                            echo Format::yesNo($rowEntry['modifiedAssessment']);
+                            echo ynExpander($guid, $rowEntry['modifiedAssessment']);
                             echo '</td>';
                         }
                         else {
@@ -413,8 +411,8 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                     }
                 }
 
-                $enableColumnWeighting = $settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting');
-                $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
+                $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+                $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
 
                 if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
                     renderStudentCumulativeMarks($gibbon, $pdo, $session->get('gibbonPersonID'), $rowList['gibbonCourseClassID']);

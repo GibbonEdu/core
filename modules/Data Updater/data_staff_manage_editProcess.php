@@ -20,16 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonStaffUpdateID = $_GET['gibbonStaffUpdateID'] ?? '';
 $gibbonStaffID = $_POST['gibbonStaffID'] ?? '';
-$address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_staff_manage_edit.php&gibbonStaffUpdateID=$gibbonStaffUpdateID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_staff_manage_edit.php&gibbonStaffUpdateID=$gibbonStaffUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_manage_edit.php') == false) {
     $URL .= '&return=error0';

@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     }
     $page->return->setEditLink($editLink);
 
-    //Check if gibbonPersonMedicalID specified
+    //Check if school year specified
     $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
     $search = $_GET['search'];
     if ($gibbonPersonMedicalID == '') {

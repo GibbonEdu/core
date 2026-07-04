@@ -18,11 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonFirstAidID = $_GET['gibbonFirstAidID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonFormGroupID=".$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
@@ -32,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonFirstAidID specified
+    //Check if school year specified
     if ($gibbonFirstAidID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

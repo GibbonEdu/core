@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 //Search & Filters
 $search = $_GET['search'] ?? '';
@@ -45,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             header("Location: {$URL}");
         } else {
             //Proceed!
-            //Check if gibbonRubricID specified
+            //Check if school year specified
             if ($gibbonRubricID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

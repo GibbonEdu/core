@@ -17,23 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-
 // Gibbon system-wide include
 require_once './gibbon.php';
 
+$URL = './index.php';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
 
-$session->set('pageLoads', null);
+$gibbon->session->set('pageLoads', null);
 
 //Check for parameter
 if (empty($gibbonSchoolYearID)) {
-    $URL = Url::fromRoute()->withReturn('error0');
+    $URL .= '?return=error0';
     header("Location: {$URL}");
     exit;
 } else {
-
-        $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
+    
+        $data = array('gibbonRoleID' => $gibbon->session->get('gibbonRoleIDCurrent'));
         $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -43,19 +42,19 @@ if (empty($gibbonSchoolYearID)) {
         $row = $result->fetch();
 
         if ($row['futureYearsLogin'] != 'Y' and $row['pastYearsLogin'] != 'Y') { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
-            $URL = Url::fromRoute()->withReturn('error0');
+            $URL .= '?return=error0';
             header("Location: {$URL}");
             exit();
         } else {
             //Get details on requested school year
-
+            
                 $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultYear = $connection2->prepare($sqlYear);
                 $resultYear->execute($dataYear);
 
             //Get current year sequenceNumber
-
+            
                 $dataYearCurrent = array();
                 $sqlYearCurrent = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
                 $resultYearCurrent = $connection2->prepare($sqlYearCurrent);
@@ -64,7 +63,7 @@ if (empty($gibbonSchoolYearID)) {
             //Check number of rows returned.
             //If it is not 1, show error
             if (!($resultYear->rowCount() == 1) && !($resultYearCurrent->rowCount() == 1)) {
-                $URL = Url::fromRoute()->withReturn('error0');
+                $URL .= '?return=error0';
                 header("Location: {$URL}");
                 exit;
             }
@@ -73,27 +72,27 @@ if (empty($gibbonSchoolYearID)) {
                 $rowYear = $resultYear->fetch();
                 $rowYearCurrent = $resultYearCurrent->fetch();
                 if ($row['futureYearsLogin'] != 'Y' and $rowYearCurrent['sequenceNumber'] < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                    $URL = Url::fromRoute()->withReturn('error0');
+                    $URL .= '?return=error0';
                     header("Location: {$URL}");
                     exit();
                 } elseif ($row['pastYearsLogin'] != 'Y' and $rowYearCurrent['sequenceNumber'] > $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                    $URL = Url::fromRoute()->withReturn('error0');
+                    $URL .= '?return=error0';
                     header("Location: {$URL}");
                     exit();
                 } else { //ALLOWED
-                    $session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
-                    $session->set('gibbonSchoolYearName', $rowYear['name']);
-                    $session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
-                    $session->set('gibbonSchoolYearFirstDay', $rowYear['firstDay']);
-                    $session->set('gibbonSchoolYearLastDay', $rowYear['lastDay']);
+                    $gibbon->session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
+                    $gibbon->session->set('gibbonSchoolYearName', $rowYear['name']);
+                    $gibbon->session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
+                    $gibbon->session->set('gibbonSchoolYearFirstDay', $rowYear['firstDay']);
+                    $gibbon->session->set('gibbonSchoolYearLastDay', $rowYear['lastDay']);
 
-                    // Clear cached FF actions
-                    $session->forget('fastFinderActions');
+                    // Reload cached FF actions
+                    $gibbon->session->cacheFastFinderActions($gibbon->session->get('gibbonRoleIDCurrent'));
 
                     // Clear the main menu from session cache
-                    $session->forget('menuMainItems');
+                    $gibbon->session->forget('menuMainItems');
 
-                    $URL = Url::fromRoute()->withReturn('success0');
+                    $URL .= '?return=success0';
                     header("Location: {$URL}");
                 }
             }

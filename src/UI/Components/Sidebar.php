@@ -19,18 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Components;
 
-use Gibbon\Http\Url;
-use Gibbon\View\View;
-use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 /**
  * Sidebar View Composer
@@ -45,14 +41,12 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
     protected $db;
     protected $session;
     protected $category;
-    protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
+    public function __construct(Connection $db, Session $session)
     {
         $this->db = $db;
         $this->session = $session;
         $this->category = getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $this->db->getConnection());
-        $this->settingGateway = $settingGateway;
     }
 
     public function getOutput()
@@ -63,36 +57,35 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         ob_start();
 
-        $loginReturn = $_GET['loginReturn'] ?? '';
-
-
-        if (!empty($loginReturn)) {
-            $loginReturnMessage = '';
-
-            switch ($loginReturn) {
-                case 'fail0': $loginReturnMessage = __('Username or password not set.');
-                    break;
-                case 'fail1': $loginReturnMessage = __('Incorrect username and password.');
-                    break;
-                case 'fail2': $loginReturnMessage = __('You do not have sufficient privileges to login.');
-                    break;
-                case 'fail3': $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
-                    break;
-                case 'fail4': $loginReturnMessage = __('Your primary role does not support the ability to login.');
-                    break;
-                case 'fail5': $loginReturnMessage = __('Your request failed due to a database error.');
-                    break;
-                case 'fail6': $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".Url::fromRoute('passwordReset') . "'>", '</a>');
-                    break;
-                case 'fail7': $loginReturnMessage = sprintf(__('Error with SSO Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
-                    break;
-                case 'fail8': $loginReturnMessage = sprintf(__('Email account does not match the email stored in %1$s. If you have logged in with your school email account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
-                    break;
-                case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
-                    break;
-
+        $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
+        if (isset($_GET['loginReturn'])) {
+            $loginReturn = $_GET['loginReturn'];
+        } else {
+            $loginReturn = '';
+        }
+        $loginReturnMessage = '';
+        if (!($loginReturn == '')) {
+            if ($loginReturn == 'fail0b') {
+                $loginReturnMessage = __('Username or password not set.');
+            } elseif ($loginReturn == 'fail1') {
+                $loginReturnMessage = __('Incorrect username and password.');
+            } elseif ($loginReturn == 'fail2') {
+                $loginReturnMessage = __('You do not have sufficient privileges to login.');
+            } elseif ($loginReturn == 'fail5') {
+                $loginReturnMessage = __('Your request failed due to a database error.');
+            } elseif ($loginReturn == 'fail6') {
+                $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=/passwordReset.php'>", '</a>');
+            } elseif ($loginReturn == 'fail7') {
+                $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
+            } elseif ($loginReturn == 'fail8') {
+                $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
+            } elseif ($loginReturn == 'fail9') {
+                $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
             }
-            echo Format::alert($loginReturnMessage, 'error');
+
+            echo "<div class='error'>";
+            echo $loginReturnMessage;
+            echo '</div>';
         }
 
         if ($this->session->get('sidebarExtra') != '' and $this->session->get('sidebarExtraPosition') != 'bottom') {
@@ -103,71 +96,23 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         // Add Google Login Button
         if (!$this->session->exists('username') && !$this->session->exists('email')) {
-            $googleSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
-            $microsoftSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft'), true);
-            $genericSSOSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoOther'), true);
-
-            if ($googleSettings['enabled'] == 'Y' || $microsoftSettings['enabled'] == 'Y' || $genericSSOSettings['enabled'] == 'Y') {
+            if ($googleOAuth == 'Y') {
                 echo '<div class="column-no-break">';
+                echo '<h2>';
+                echo __('Login with Google');
+                echo '</h2>';
 
-                $form = Form::create('loginFormOAuth2', '#');
-                $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->setTitle(__('Single Sign-on'));
-                $form->setClass('blank fullWidth loginTableOAuth2');
-
-                $view = $this->getContainer()->get(View::class);
-
-                if ($googleSettings['enabled'] == 'Y') {
-                    $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
-                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'google', 'options' => '']),
-                        'service'    => 'google',
-                        'clientName' => __('Google'),
-                    ]));
-                }
-                if ($microsoftSettings['enabled'] == 'Y') {
-                    $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
-                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'microsoft', 'options' => '']),
-                        'service'    => 'microsoft',
-                        'clientName' => __('Microsoft'),
-                    ]));
-                }
-                if ($genericSSOSettings['enabled'] == 'Y') {
-                    $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
-                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'oauth', 'options' => '']),
-                        'service'    => 'other',
-                        'clientName' => $genericSSOSettings['clientName'],
-                    ]));
-                }
-
-                $loginIcon = '<img src="'.$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName').'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
-
-                $row = $form->addRow()->setClass('loginOptionsOAuth2');
-                    $row->addContent(sprintf($loginIcon, 'planner', __('School Year')))->setClass('flex-none');
-                    $row->addSelectSchoolYear('gibbonSchoolYearIDOAuth2')
-                        ->setClass('w-full p-1')
-                        ->placeholder(null)
-                        ->selected($this->session->get('gibbonSchoolYearID'));
-
-                $row = $form->addRow()->setClass('loginOptionsOAuth2');
-                    $row->addContent(sprintf($loginIcon, 'language', __('Language')))->setClass('flex-none');
-                    $row->addSelectI18n('gibboni18nIDOAuth2')
-                        ->setClass('w-full p-1')
-                        ->placeholder(null)
-                        ->selected($this->session->get('i18n')['gibboni18nID'] ?? '');
-
-                $row = $form->addRow();
-                    $row->addContent('<a class="showOAuth2Options" onclick="false" href="#">'.__('Options').'</a>')
-                        ->wrap('<span class="small">', '</span>')
-                        ->setClass('right');
-
-                echo $form->getOutput();
-
-                echo $view->fetchFromTemplate('ui/ssoButton.twig.html');
-
+                ?>
+                <script>
+                    $(function(){
+                        $('#siteloader').load('lib/google/index.php');
+                    });
+                </script>
+                <div id="siteloader" style="min-height:73px"></div>
+                <?php
                 echo '</div>';
 
-            }
-
+            } //End Check for Google Auth
             if (!$this->session->exists('username')) { // If Google Auth set to No make sure login screen not visible when logged in
                 echo '<div class="column-no-break">';
                 echo '<h2>';
@@ -177,15 +122,14 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 if (!$this->session->has('gibbonSchoolYearID')) setCurrentSchoolYear($guid, $connection2);
                 unset($_GET['return']);
 
-                $enablePublicRegistration = $this->settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
-
+                $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+                
                 $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
                 $form->setClass('noIntBorder fullWidth');
                 $form->addHiddenValue('address', $this->session->get('address'));
-                $form->addHiddenValue('method', 'default');
 
                 $loginIcon = '<img src="'.$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName').'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
 
@@ -227,12 +171,12 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $row = $form->addRow();
                     $row->addContent('<a class="show_hide" onclick="false" href="#">'.__('Options').'</a>')
-                        ->append(' . <a href="'.Url::fromRoute('passwordReset').'">'.__('Forgot Password?').'</a>')
+                        ->append(' . <a href="'.$this->session->get('absoluteURL').'/index.php?q=passwordReset.php">'.__('Forgot Password?').'</a>')
                         ->wrap('<span class="small">', '</span>')
                         ->setClass('right');
 
                 $row = $form->addRow();
-                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-100')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
+                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-100')->onClick('window.location="'.$this->session->get('absoluteURL').'/index.php?q=/publicRegistration.php"');
                     $row->addSubmit(__('Login'));
 
                 echo $form->getOutput();
@@ -274,9 +218,9 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         if ($this->session->get('address') == '') {
             if ($this->session->exists('messageWallArray')) {
                 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-                    $enableHomeScreenWidget = $this->settingGateway->getSettingByScope('Messenger', 'enableHomeScreenWidget');
+                    $enableHomeScreenWidget = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget');
                     if ($enableHomeScreenWidget == 'Y') {
-                        $unpinnedMessages = array_reduce($this->session->get('messageWallArray'), function ($group, $item) {
+                        $unpinnedMessages = array_reduce($_SESSION[$guid]['messageWallArray'], function ($group, $item) {
                             if ($item['messageWallPin'] == 'N') {
                                 $group[$item['gibbonMessengerID']] = $item;
                             }
@@ -328,7 +272,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
 
                                 //Title
-                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment($message['gibbonMessengerID']);
+                                $URL = $this->session->get('absoluteURL').'/index.php?q=/modules/Messenger/messageWall_view.php#'.$message['gibbonMessengerID'];
                                 if (strlen($message['subject']) <= 16) {
                                     echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
                                 } else {
@@ -406,7 +350,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 </script>";
                         }
                         echo "<p style='padding-top: 5px; text-align: right'>";
-                        echo "<a href='".Url::fromModuleRoute('Messenger', 'messageWall_view')."'>".__('View Message Wall').'</a>';
+                        echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Messenger/messageWall_view.php'>".__('View Message Wall').'</a>';
                         echo '</p>';
                         echo '</div>';
                     }
@@ -419,7 +363,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
             if ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
 
-                $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
+                $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
                 echo '<div class="column-no-break">';
                 echo '<h2>';
@@ -427,7 +371,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 echo '</h2>';
 
                 $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
-                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'))->fetchAll();
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($_SESSION[$guid]['gibbonSchoolYearID'], $this->session->get('gibbonPersonID'))->fetchAll();
 
                 echo $this->getContainer()->get('page')->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                     'gibbonPersonID' => $this->session->get('gibbonPersonID'),
@@ -436,8 +380,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 ]);
 
                 echo "<p style='padding-top: 0px; text-align: right'>";
-                echo "<a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')."'>";
-
+                echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_deadlines.php'>";
+                
                 echo __('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]);
                 echo '</a>';
                 echo '</p>';
@@ -467,7 +411,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $count = 0;
 
                     while ($rowEntry = $resultEntry->fetch() and $count < 5) {
-                        echo "<li><a href='".Url::fromModuleRoute('Markbook', 'markbook_view')->withFragment($rowEntry['gibbonMarkbookEntryID'])."'>".$rowEntry['course'].'.'.$rowEntry['class']."<br/><span style='font-size: 85%; font-style: italic'>".$rowEntry['name'].'</span></a></li>';
+                        echo "<li><a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_view.php#'.$rowEntry['gibbonMarkbookEntryID']."'>".$rowEntry['course'].'.'.$rowEntry['class']."<br/><span style='font-size: 85%; font-style: italic'>".$rowEntry['name'].'</span></a></li>';
                         ++$count;
                     }
 
@@ -488,7 +432,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             }
 
             if ($result->rowCount() > 0) {
-                echo '<div class="column-no-break" id="myClasses">';
+                echo '<div class="column-no-break">';
                 echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
                 echo __('My Classes');
                 echo '</h2>';
@@ -531,30 +475,30 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo "<td style='word-wrap: break-word'>";
-                    echo "<a href='".Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])."'>".$row['course'].'.'.$row['class'].'</a>';
+                    echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."'>".$row['course'].'.'.$row['class'].'</a>';
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".Url::fromModuleRoute('Planner', 'planner')->withQueryParams(['gibbonCourseClassID' => $row['gibbonCourseClassID'], 'viewBy' => 'class'])."' title='".__('View Planner')."'><img style='margin-top: 3px' alt='".__('View Planner')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/planner.png'/></a> ";
+                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&viewBy=class' title='".__('View Planner')."'><img style='margin-top: 3px' alt='".__('View Planner')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/planner.png'/></a> ";
                         echo '</td>';
                     }
                     if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".Url::fromModuleRoute('Markbook', 'markbook_view')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])."' title='".__('View Markbook')."'><img style='margin-top: 3px' alt='".__('View Markbook')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
+                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."' title='".__('View Markbook')."'><img style='margin-top: 3px' alt='".__('View Markbook')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
                         echo '</td>';
                     }
                     echo "<td style='text-align: center'>";
                     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php') && $row['attendance'] == 'Y') {
-                        echo "<a href='".Url::fromModuleRoute('Attendance', 'attendance_take_byCourseClass')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])."'title='".__('Take Attendance')."' ><img alt='".__('Take Attendance')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
+                        echo "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."'title='".__('Take Attendance')."' ><img alt='".__('Take Attendance')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
                     } else {
-                        echo "<a href='".Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])->withFragment('participants')."' title='".__('Participants')."' ><img alt='".__('Participants')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
+                        echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."#participants' title='".__('Participants')."' ><img alt='".__('Participants')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
                     }
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
-                        $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
+                        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')->withQueryParam('gibbonCourseClassIDFilter', $row['gibbonCourseClassID'])."'  title='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."'><img style='margin-top: 3px' alt='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."' src='./themes/".$this->session->get('gibbonThemeName')."/img/homework.png'/></a> ";
+                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$row['gibbonCourseClassID']."'  title='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."'><img style='margin-top: 3px' alt='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."' src='./themes/".$this->session->get('gibbonThemeName')."/img/homework.png'/></a> ";
                         echo '</td>';
                     }
                     echo '</tr>';
@@ -573,14 +517,14 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             echo '</h2>';
             echo getResourcesTagCloud($guid, $connection2, 20);
             echo "<p style='margin-bototm: 20px; text-align: right'>";
-            echo "<a href='".Url::fromModuleRoute('Planner', 'resources_view')."'>".__('View Resources').'</a>';
+            echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/resources_view.php'>".__('View Resources').'</a>';
             echo '</p>';
             echo '</div>';
         }
 
         //Show role switcher if user has more than one role
         if ($this->session->exists('username')) {
-            if (count($this->session->get('gibbonRoleIDAll', [])) > 1 and $this->session->get('address') == '') {
+            if (count($this->session->get('gibbonRoleIDAll')) > 1 and $this->session->get('address') == '') {
                 echo '<div class="column-no-break">';
                 echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
                 echo __('Role Switcher');
@@ -591,7 +535,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 echo '</p>';
 
                 echo '<ul>';
-                for ($i = 0; $i < count($this->session->get('gibbonRoleIDAll', [])); ++$i) {
+                for ($i = 0; $i < count($this->session->get('gibbonRoleIDAll')); ++$i) {
                     if ($this->session->get('gibbonRoleIDAll')[$i][0] == $this->session->get('gibbonRoleIDCurrent')) {
                         echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$this->session->get('gibbonRoleIDAll')[$i][0]."'>".__($this->session->get('gibbonRoleIDAll')[$i][1]).'</a> <i>'.__('(Active)').'</i></li>';
                     } else {
@@ -606,7 +550,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         //Show year switcher if user is staff and has access to multiple years
         if ($this->session->exists('username') && $this->category == 'Staff' && $this->session->get('address') == '') {
             //Check for multiple-year login
-
+            
                 $data = array('gibbonRoleID' => $this->session->get('gibbonRoleIDCurrent'));
                 $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
                 $result = $connection2->prepare($sql);
@@ -681,7 +625,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $output .= __('Please upload a passport photo to use as a profile picture.').' '.__('240px by 320px').'.';
                 $output .= '</p>';
 
-                $form = Form::create('photoUpload', Url::fromHandlerRoute('index_parentPhotoUploadProcess.php')->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID')));
+                $form = Form::create('photoUpload', $this->session->get('absoluteURL').'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$this->session->get('gibbonPersonID'));
                 $form->addHiddenValue('address', $this->session->get('address'));
                 $form->setClass('smallIntBorder w-full');
 
@@ -693,9 +637,9 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
             } else { //Photo, so show image and removal link
                 $output .= '<p>';
-                $output .= Format::userPhoto($this->session->get('image_240'), 240);
+                $output .= getUserPhoto($guid, $this->session->get('image_240'), 240);
                 $output .= "<div style='margin-left: 220px; margin-top: -50px'>";
-                $output .= "<a href='".Url::fromHandlerRoute('index_parentPhotoDeleteProcess.php')->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID'))."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/garbage.png'/></a><br/><br/>";
+                $output .= "<a href='".$this->session->get('absoluteURL').'/index_parentPhotoDeleteProcess.php?gibbonPersonID='.$this->session->get('gibbonPersonID')."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/garbage.png'/></a><br/><br/>";
                 $output .= '</div>';
                 $output .= '</p>';
             }

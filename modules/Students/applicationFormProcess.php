@@ -18,17 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
-use Gibbon\Contracts\Services\Payment;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 //Check to see if system settings are set from databases
 if (!$session->has('systemSettingsSet')) {
@@ -42,17 +38,14 @@ include '../User Admin/moduleFunctions.php';
 include '../Finance/moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Students/applicationForm.php';
-$URLPayment = $session->get('absoluteURL').'/modules/Students/applicationFormProcess.php?payment=true';
 
 $proceed = false;
 $public = false;
 
-$settingGateway = $container->get(SettingGateway::class);
-
 if (!$session->has('username')) {
     $public = true;
     //Get public access
-    $access = $settingGateway->getSettingByScope('Application Form', 'publicApplications');
+    $access = getSettingByScope($connection2, 'Application Form', 'publicApplications');
     if ($access == 'Y') {
         $proceed = true;
     }
@@ -66,20 +59,29 @@ if ($proceed == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $applicationFormHash = $_GET['id'] ?? null;
-
+    $id = null;
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+    }
     //IF ID IS NOT SET IT IS A NEW APPLICATION, SO PROCESS AND SAVE.
-    if (is_null($applicationFormHash)) {
+    if (is_null($id)) {
         //Proceed!
+
+        // Sanitize the whole $_POST array
+        $validator = $container->get(Validator::class);
+        $_POST = $validator->sanitize($_POST);
 
         //GET STUDENT FIELDS
         $surname = $_POST['surname'] ?? '';
         $firstName = trim($_POST['firstName'] ?? '');
-        $preferredName = trim($_POST['preferredName'] ?? '');
-        $officialName = trim($_POST['officialName'] ?? '');
+        //GS//$preferredName = trim($_POST['preferredName'] ?? '');
+        $preferredName = $firstName ?? ''; //GS//
+        //GS//$officialName = trim($_POST['officialName'] ?? '');
+        $officialName = $firstName.(!empty($firstName) && !empty($surname) ? ' ' : '').$surname; //GS//
         $nameInCharacters = $_POST['nameInCharacters'] ?? '';
         $gender = $_POST['gender'] ?? '';
         $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
+        $religion = $_POST['religion'] ?? ''; //GS//
         $languageHomePrimary = $_POST['languageHomePrimary'] ?? '';
         $languageHomeSecondary = $_POST['languageHomeSecondary'] ?? '';
         $languageFirst = $_POST['languageFirst'] ?? '';
@@ -110,6 +112,7 @@ if ($proceed == false) {
         $gibbonSchoolYearIDEntry = $_POST['gibbonSchoolYearIDEntry'] ?? '';
         $dayType = $_POST['dayType'] ?? null;
         $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
+        $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? ''; //GS//
         $gibbonYearGroupIDEntry = $_POST['gibbonYearGroupIDEntry'] ?? '';
         $referenceEmail = $_POST['referenceEmail'] ?? '';
         $schoolName1 = $_POST['schoolName1'] ?? '';
@@ -135,8 +138,10 @@ if ($proceed == false) {
         $parent1title = $_POST['parent1title'] ?? null;
         $parent1surname = trim($_POST['parent1surname'] ?? '');
         $parent1firstName = trim($_POST['parent1firstName'] ?? '');
-        $parent1preferredName = trim($_POST['parent1preferredName'] ?? '');
-        $parent1officialName = trim($_POST['parent1officialName'] ?? '');
+        //GS//$parent1preferredName = trim($_POST['parent1preferredName'] ?? '');
+        $parent1preferredName = $parent1firstName; //GS//
+        //GS//$parent1officialName = trim($_POST['parent1officialName'] ?? '');
+        $parent1officialName = trim($parent1firstName.' '.$parent1surname); //GS//
         $parent1nameInCharacters = $_POST['parent1nameInCharacters'] ?? null;
         $parent1gender = $_POST['parent1gender'] ?? null;
         $parent1relationship = $_POST['parent1relationship'] ?? null;
@@ -162,8 +167,11 @@ if ($proceed == false) {
         $parent2title = $_POST['parent2title'] ?? null;
         $parent2surname = trim($_POST['parent2surname'] ?? '');
         $parent2firstName = trim($_POST['parent2firstName'] ?? '');
-        $parent2preferredName = trim($_POST['parent2preferredName'] ?? '');
-        $parent2officialName = trim($_POST['parent2officialName'] ?? '');
+
+        //GS//$parent2preferredName = trim($_POST['parent2preferredName'] ?? '');
+        $parent2preferredName = $parent2firstName; //GS//
+        //GS//$parent2officialName = trim($_POST['parent2officialName'] ?? '');
+        $parent2officialName = trim($parent2firstName.' '.$parent2surname); //GS//
         $parent2nameInCharacters = $_POST['parent2nameInCharacters'] ?? null;
         $parent2gender = $_POST['parent2gender'] ?? null;
         $parent2relationship = $_POST['parent2relationship'] ?? null;
@@ -234,19 +242,23 @@ if ($proceed == false) {
                 $familyFail = true;
             }
             if ($parent1gibbonPersonID == null) {
-                if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '' or $parent1profession == '') {
+                //GS//if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '' or $parent1profession == '') {
+                if ($parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '' or $parent1profession == '') {
                     $familyFail = true;
                 }
             }
             if (isset($_POST['secondParent'])) {
                 if ($_POST['secondParent'] != 'No') {
-                    if ($parent2title == '' or $parent2surname == '' or $parent2firstName == '' or $parent2preferredName == '' or $parent2officialName == '' or $parent2gender == '' or $parent2relationship == '' or $parent2phone1 == '' or $parent2profession == '') {
+                    //GS//if ($parent2title == '' or $parent2surname == '' or $parent2firstName == '' or $parent2preferredName == '' or $parent2officialName == '' or $parent2gender == '' or $parent2relationship == '' or $parent2phone1 == '' or $parent2profession == '') {
+                    if ($parent2firstName == '' or $parent2preferredName == '' or $parent2officialName == '' or $parent2gender == '' or $parent2relationship == '' or $parent2phone1 == '' or $parent2profession == '') {//GS//
                         $familyFail = true;
                     }
                 }
             }
         }
-        if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $countryOfBirth == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or (isset($_POST['agreement']) and $agreement != 'Y') or $familyFail) {
+        //GS//if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $countryOfBirth == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or (isset($_POST['agreement']) and $agreement != 'Y') or $familyFail) {
+        if ($gender == '' or $dob == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or (isset($_POST['agreement']) and $agreement != 'Y') or $familyFail) {
+            //GS//die($gender.' - '.$dob.' - '.$gibbonSchoolYearIDEntry.' - '.$dateStart.' - '.$gibbonYearGroupIDEntry.' - '.$sen.' - '.$howDidYouHear);
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
@@ -275,8 +287,10 @@ if ($proceed == false) {
             } else {
                 //Write to database
                 try {
-                    $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'medicalInformation' => $medicalInformation, 'sen' => $sen, 'senDetails' => $senDetails, 'gibbonSchoolYearIDEntry' => $gibbonSchoolYearIDEntry, 'dayType' => $dayType, 'dateStart' => $dateStart, 'gibbonYearGroupIDEntry' => $gibbonYearGroupIDEntry, 'referenceEmail' => $referenceEmail, 'schoolName1' => $schoolName1, 'schoolAddress1' => $schoolAddress1, 'schoolGrades1' => $schoolGrades1, 'schoolLanguage1' => $schoolLanguage1, 'schoolDate1' => $schoolDate1, 'schoolName2' => $schoolName2, 'schoolAddress2' => $schoolAddress2, 'schoolGrades2' => $schoolGrades2, 'schoolLanguage2' => $schoolLanguage2, 'schoolDate2' => $schoolDate2, 'gibbonFamilyID' => $gibbonFamilyID, 'parent1gibbonPersonID' => $parent1gibbonPersonID, 'parent1title' => $parent1title, 'parent1surname' => $parent1surname, 'parent1firstName' => $parent1firstName, 'parent1preferredName' => $parent1preferredName, 'parent1officialName' => $parent1officialName, 'parent1nameInCharacters' => $parent1nameInCharacters, 'parent1gender' => $parent1gender, 'parent1relationship' => $parent1relationship, 'parent1languageFirst' => $parent1languageFirst, 'parent1languageSecond' => $parent1languageSecond,  'parent1email' => $parent1email, 'parent1phone1Type' => $parent1phone1Type, 'parent1phone1CountryCode' => $parent1phone1CountryCode, 'parent1phone1' => $parent1phone1, 'parent1phone2Type' => $parent1phone2Type, 'parent1phone2CountryCode' => $parent1phone2CountryCode, 'parent1phone2' => $parent1phone2, 'parent1profession' => $parent1profession, 'parent1employer' => $parent1employer, 'parent2title' => $parent2title, 'parent2surname' => $parent2surname, 'parent2firstName' => $parent2firstName, 'parent2preferredName' => $parent2preferredName, 'parent2officialName' => $parent2officialName, 'parent2nameInCharacters' => $parent2nameInCharacters, 'parent2gender' => $parent2gender, 'parent2relationship' => $parent2relationship, 'parent2languageFirst' => $parent2languageFirst, 'parent2languageSecond' => $parent2languageSecond, 'parent2email' => $parent2email, 'parent2phone1Type' => $parent2phone1Type, 'parent2phone1CountryCode' => $parent2phone1CountryCode, 'parent2phone1' => $parent2phone1, 'parent2phone2Type' => $parent2phone2Type, 'parent2phone2CountryCode' => $parent2phone2CountryCode, 'parent2phone2' => $parent2phone2, 'parent2profession' => $parent2profession, 'parent2employer' => $parent2employer, 'siblingName1' => $siblingName1, 'siblingDOB1' => $siblingDOB1, 'siblingSchool1' => $siblingSchool1, 'siblingSchoolJoiningDate1' => $siblingSchoolJoiningDate1, 'siblingName2' => $siblingName2, 'siblingDOB2' => $siblingDOB2, 'siblingSchool2' => $siblingSchool2, 'siblingSchoolJoiningDate2' => $siblingSchoolJoiningDate2, 'siblingName3' => $siblingName3, 'siblingDOB3' => $siblingDOB3, 'siblingSchool3' => $siblingSchool3, 'siblingSchoolJoiningDate3' => $siblingSchoolJoiningDate3, 'languageChoice' => $languageChoice, 'languageChoiceExperience' => $languageChoiceExperience, 'scholarshipInterest' => $scholarshipInterest, 'scholarshipRequired' => $scholarshipRequired, 'payment' => $payment, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'howDidYouHear' => $howDidYouHear, 'howDidYouHearMore' => $howDidYouHearMore, 'agreement' => $agreement, 'privacy' => $privacy, 'fields' => $fields, 'parent1fields' => $parent1fields, 'parent2fields' => $parent2fields, 'timestamp' => date('Y-m-d H:i:s'));
-                    $sql = 'INSERT INTO gibbonApplicationForm SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, sen=:sen, senDetails=:senDetails, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, dateStart=:dateStart, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, referenceEmail=:referenceEmail, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolLanguage1=:schoolLanguage1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolLanguage2=:schoolLanguage2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, agreement=:agreement, privacy=:privacy, fields=:fields, parent1fields=:parent1fields, parent2fields=:parent2fields, timestamp=:timestamp';
+                    //GS//$data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'medicalInformation' => $medicalInformation, 'sen' => $sen, 'senDetails' => $senDetails, 'gibbonSchoolYearIDEntry' => $gibbonSchoolYearIDEntry, 'dayType' => $dayType, 'dateStart' => $dateStart, 'gibbonYearGroupIDEntry' => $gibbonYearGroupIDEntry, 'referenceEmail' => $referenceEmail, 'schoolName1' => $schoolName1, 'schoolAddress1' => $schoolAddress1, 'schoolGrades1' => $schoolGrades1, 'schoolLanguage1' => $schoolLanguage1, 'schoolDate1' => $schoolDate1, 'schoolName2' => $schoolName2, 'schoolAddress2' => $schoolAddress2, 'schoolGrades2' => $schoolGrades2, 'schoolLanguage2' => $schoolLanguage2, 'schoolDate2' => $schoolDate2, 'gibbonFamilyID' => $gibbonFamilyID, 'parent1gibbonPersonID' => $parent1gibbonPersonID, 'parent1title' => $parent1title, 'parent1surname' => $parent1surname, 'parent1firstName' => $parent1firstName, 'parent1preferredName' => $parent1preferredName, 'parent1officialName' => $parent1officialName, 'parent1nameInCharacters' => $parent1nameInCharacters, 'parent1gender' => $parent1gender, 'parent1relationship' => $parent1relationship, 'parent1languageFirst' => $parent1languageFirst, 'parent1languageSecond' => $parent1languageSecond,  'parent1email' => $parent1email, 'parent1phone1Type' => $parent1phone1Type, 'parent1phone1CountryCode' => $parent1phone1CountryCode, 'parent1phone1' => $parent1phone1, 'parent1phone2Type' => $parent1phone2Type, 'parent1phone2CountryCode' => $parent1phone2CountryCode, 'parent1phone2' => $parent1phone2, 'parent1profession' => $parent1profession, 'parent1employer' => $parent1employer, 'parent2title' => $parent2title, 'parent2surname' => $parent2surname, 'parent2firstName' => $parent2firstName, 'parent2preferredName' => $parent2preferredName, 'parent2officialName' => $parent2officialName, 'parent2nameInCharacters' => $parent2nameInCharacters, 'parent2gender' => $parent2gender, 'parent2relationship' => $parent2relationship, 'parent2languageFirst' => $parent2languageFirst, 'parent2languageSecond' => $parent2languageSecond, 'parent2email' => $parent2email, 'parent2phone1Type' => $parent2phone1Type, 'parent2phone1CountryCode' => $parent2phone1CountryCode, 'parent2phone1' => $parent2phone1, 'parent2phone2Type' => $parent2phone2Type, 'parent2phone2CountryCode' => $parent2phone2CountryCode, 'parent2phone2' => $parent2phone2, 'parent2profession' => $parent2profession, 'parent2employer' => $parent2employer, 'siblingName1' => $siblingName1, 'siblingDOB1' => $siblingDOB1, 'siblingSchool1' => $siblingSchool1, 'siblingSchoolJoiningDate1' => $siblingSchoolJoiningDate1, 'siblingName2' => $siblingName2, 'siblingDOB2' => $siblingDOB2, 'siblingSchool2' => $siblingSchool2, 'siblingSchoolJoiningDate2' => $siblingSchoolJoiningDate2, 'siblingName3' => $siblingName3, 'siblingDOB3' => $siblingDOB3, 'siblingSchool3' => $siblingSchool3, 'siblingSchoolJoiningDate3' => $siblingSchoolJoiningDate3, 'languageChoice' => $languageChoice, 'languageChoiceExperience' => $languageChoiceExperience, 'scholarshipInterest' => $scholarshipInterest, 'scholarshipRequired' => $scholarshipRequired, 'payment' => $payment, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'howDidYouHear' => $howDidYouHear, 'howDidYouHearMore' => $howDidYouHearMore, 'agreement' => $agreement, 'privacy' => $privacy, 'fields' => $fields, 'parent1fields' => $parent1fields, 'parent2fields' => $parent2fields, 'timestamp' => date('Y-m-d H:i:s'));
+                    $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'religion' => $religion, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'medicalInformation' => $medicalInformation, 'sen' => $sen, 'senDetails' => $senDetails, 'gibbonSchoolYearIDEntry' => $gibbonSchoolYearIDEntry, 'dayType' => $dayType, 'dateStart' => $dateStart, 'gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonYearGroupIDEntry' => $gibbonYearGroupIDEntry, 'referenceEmail' => $referenceEmail, 'schoolName1' => $schoolName1, 'schoolAddress1' => $schoolAddress1, 'schoolGrades1' => $schoolGrades1, 'schoolLanguage1' => $schoolLanguage1, 'schoolDate1' => $schoolDate1, 'schoolName2' => $schoolName2, 'schoolAddress2' => $schoolAddress2, 'schoolGrades2' => $schoolGrades2, 'schoolLanguage2' => $schoolLanguage2, 'schoolDate2' => $schoolDate2, 'gibbonFamilyID' => $gibbonFamilyID, 'parent1gibbonPersonID' => $parent1gibbonPersonID, 'parent1title' => $parent1title, 'parent1surname' => $parent1surname, 'parent1firstName' => $parent1firstName, 'parent1preferredName' => $parent1preferredName, 'parent1officialName' => $parent1officialName, 'parent1nameInCharacters' => $parent1nameInCharacters, 'parent1gender' => $parent1gender, 'parent1relationship' => $parent1relationship, 'parent1languageFirst' => $parent1languageFirst, 'parent1languageSecond' => $parent1languageSecond,  'parent1email' => $parent1email, 'parent1phone1Type' => $parent1phone1Type, 'parent1phone1CountryCode' => $parent1phone1CountryCode, 'parent1phone1' => $parent1phone1, 'parent1phone2Type' => $parent1phone2Type, 'parent1phone2CountryCode' => $parent1phone2CountryCode, 'parent1phone2' => $parent1phone2, 'parent1profession' => $parent1profession, 'parent1employer' => $parent1employer, 'parent2title' => $parent2title, 'parent2surname' => $parent2surname, 'parent2firstName' => $parent2firstName, 'parent2preferredName' => $parent2preferredName, 'parent2officialName' => $parent2officialName, 'parent2nameInCharacters' => $parent2nameInCharacters, 'parent2gender' => $parent2gender, 'parent2relationship' => $parent2relationship, 'parent2languageFirst' => $parent2languageFirst, 'parent2languageSecond' => $parent2languageSecond, 'parent2email' => $parent2email, 'parent2phone1Type' => $parent2phone1Type, 'parent2phone1CountryCode' => $parent2phone1CountryCode, 'parent2phone1' => $parent2phone1, 'parent2phone2Type' => $parent2phone2Type, 'parent2phone2CountryCode' => $parent2phone2CountryCode, 'parent2phone2' => $parent2phone2, 'parent2profession' => $parent2profession, 'parent2employer' => $parent2employer, 'siblingName1' => $siblingName1, 'siblingDOB1' => $siblingDOB1, 'siblingSchool1' => $siblingSchool1, 'siblingSchoolJoiningDate1' => $siblingSchoolJoiningDate1, 'siblingName2' => $siblingName2, 'siblingDOB2' => $siblingDOB2, 'siblingSchool2' => $siblingSchool2, 'siblingSchoolJoiningDate2' => $siblingSchoolJoiningDate2, 'siblingName3' => $siblingName3, 'siblingDOB3' => $siblingDOB3, 'siblingSchool3' => $siblingSchool3, 'siblingSchoolJoiningDate3' => $siblingSchoolJoiningDate3, 'languageChoice' => $languageChoice, 'languageChoiceExperience' => $languageChoiceExperience, 'scholarshipInterest' => $scholarshipInterest, 'scholarshipRequired' => $scholarshipRequired, 'payment' => $payment, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'howDidYouHear' => $howDidYouHear, 'howDidYouHearMore' => $howDidYouHearMore, 'agreement' => $agreement, 'privacy' => $privacy, 'fields' => $fields, 'parent1fields' => $parent1fields, 'parent2fields' => $parent2fields, 'timestamp' => date('Y-m-d H:i:s'));
+                    //GS//$sql = 'INSERT INTO gibbonApplicationForm SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, sen=:sen, senDetails=:senDetails, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, dateStart=:dateStart, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, referenceEmail=:referenceEmail, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolLanguage1=:schoolLanguage1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolLanguage2=:schoolLanguage2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, agreement=:agreement, privacy=:privacy, fields=:fields, parent1fields=:parent1fields, parent2fields=:parent2fields, timestamp=:timestamp';
+                    $sql = 'INSERT INTO gibbonApplicationForm SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, religion=:religion, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, sen=:sen, senDetails=:senDetails, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, dateStart=:dateStart, gibbonFormGroupID=:gibbonFormGroupID, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, referenceEmail=:referenceEmail, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolLanguage1=:schoolLanguage1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolLanguage2=:schoolLanguage2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, agreement=:agreement, privacy=:privacy, fields=:fields, parent1fields=:parent1fields, parent2fields=:parent2fields, timestamp=:timestamp';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -299,7 +313,7 @@ if ($proceed == false) {
                 if ($gibbonFamily == 'FALSE') { // Only if there is no family
                     $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent1'];
                     $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent1', $AI, $params, $personalDocumentFail);
-    
+
                     if (empty($_POST['secondParent'])) {
                         $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent2'];
                         $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent2', $AI, $params, $personalDocumentFail);
@@ -328,7 +342,7 @@ if ($proceed == false) {
                 }
 
                 //Deal with required documents
-                $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
+                $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
                 if ($requiredDocuments != '' and $requiredDocuments != false) {
                     $fileCount = 0;
                     if (isset($_POST['fileCount'])) {
@@ -368,7 +382,7 @@ if ($proceed == false) {
 
 
                 //Email reference form link to referee
-                $applicationFormRefereeLink = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink');
+                $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
                 if ($applicationFormRefereeLink != '' and $referenceEmail != '' and $session->get('organisationAdmissionsName') != '' and $session->get('organisationAdmissionsEmail') != '') {
                     //Prep message
                     $subject = __('Request For Reference');
@@ -438,22 +452,16 @@ if ($proceed == false) {
                 }
 
                 //Attempt payment if everything is set up for it
-                $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
+                $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+                $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
+                $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
+                $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
+                $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
 
-                $payment = $container->get(Payment::class);
-                $payment->setReturnURL($URLPayment.'&id='.$secureAI);
-                $payment->setCancelURL($URLPayment.'&id='.$secureAI);
-                $payment->setForeignTable('gibbonApplicationForm', $AI);
-
-                if ($payment->isEnabled() && $applicationFee > 0 and is_numeric($applicationFee)) {
-                    $_FILES = []; // This speeds up the request object, which does not need files anymore
-                    $return = $payment->requestPayment($applicationFee, __('Application Fee'));
-
-                    if (!empty($return)) {
-                        $URL .= '&return='.$return;
-                        header("Location: " . $URL);
-                        exit;
-                    }
+                if ($applicationFee > 0 and is_numeric($applicationFee) and $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '') {
+                    $session->set('gatewayCurrencyNoSupportReturnURL', $session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$secureAI");
+                    $URL = $session->get('absoluteURL')."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$secureAI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$secureAI&applicationFee=$applicationFee");
+                    header("Location: {$URL}");
                 } else {
                     $URL .= "&return=success0&id=$secureAI";
                     header("Location: {$URL}");
@@ -463,34 +471,42 @@ if ($proceed == false) {
     }
     //IF ID IS SET WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PAYMENT, SO LET'S DO IT.
     else {
-        $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
-        $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
-        
-        $paymentToken = $_GET['token'] ?? '';
-        $paymentPayerID = $_GET['PayerID'] ?? '';
-
-        // Find the ID based on the hash provided for added security
-        $gibbonApplicationFormID = null;
-        $data = ['gibbonApplicationFormHash' => $applicationFormHash];
-        $sql = "SELECT gibbonApplicationFormID FROM gibbonApplicationForm WHERE gibbonApplicationFormHash=:gibbonApplicationFormHash";
-        $resultID = $pdo->executeQuery($data, $sql);
-
-        if ($resultID && $resultID->rowCount() == 1) {
-            $gibbonApplicationFormID = $resultID->fetchColumn(0);
+        //Get returned paypal tokens, ids, etc
+        $paymentMade = 'N';
+        if ($_GET['return'] == 'success1') {
+            $paymentMade = 'Y';
         }
+        $paymentToken = null;
+        if (isset($_GET['token'])) {
+            $paymentToken = $_GET['token'];
+        }
+        $paymentPayerID = null;
+        if (isset($_GET['PayerID'])) {
+            $paymentPayerID = $_GET['PayerID'];
+        }
+        $gibbonApplicationFormID = null;
+        if (isset($_GET['id'])) {
+            // Find the ID based on the hash provided for added security
+            $data = array( 'gibbonApplicationFormHash' => $_GET['id'] );
+            $sql = "SELECT gibbonApplicationFormID FROM gibbonApplicationForm WHERE gibbonApplicationFormHash=:gibbonApplicationFormHash";
+            $resultID = $pdo->executeQuery($data, $sql);
 
-        $payment = $container->get(Payment::class);
-        $payment->setReturnURL($URLPayment);
-        $payment->setCancelURL($URLPayment);
-        $payment->setForeignTable('gibbonApplicationForm', $gibbonApplicationFormID);
+            if ($resultID && $resultID->rowCount() == 1) {
+                $gibbonApplicationFormID = $resultID->fetchColumn(0);
+            }
+        }
+        $applicationFee = null;
+        if (isset($_GET['applicationFee'])) {
+            $applicationFee = $_GET['applicationFee'];
+        }
 
         //Get email parameters ready to send messages for to admissions for payment problems
         $to = $session->get('organisationAdmissionsEmail');
         $subject = $session->get('organisationNameShort').' Gibbon Application Form Payment Issue';
 
         //Check return values to see if we can proceed
-        if (!$payment->isEnabled() or empty($gibbonApplicationFormID) or empty($applicationFee)) {
-            $body = __('Payment via {gateway} may or may not have been successful, but has not been recorded either way due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $paymentGateway])."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
+        if ($paymentToken == '' or $gibbonApplicationFormID == '' or $applicationFee == '') {
+            $body = __('Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
             $mail = $container->get(Mailer::class);
             $mail->Subject = $subject;
@@ -504,57 +520,26 @@ if ($proceed == false) {
             $mail->Send();
 
             //Success 2
-            $URL .= '&return=success2&id='.$applicationFormHash;
+            $URL .= '&return=success2&id='.$_GET['id'];
             header("Location: {$URL}");
             exit();
         } else {
             //PROCEED AND FINALISE PAYMENT
+            require '../../lib/paypal/paypalfunctions.php';
 
-            $return = $payment->confirmPayment();
-            $result = $payment->getPaymentResult();
-            $gibbonPaymentID = $result['gibbonPaymentID'];
+            //Ask paypal to finalise the payment
+            $confirmPayment = confirmPayment($guid, $applicationFee, $paymentToken, $paymentPayerID);
+
+            $ACK = $confirmPayment['ACK'];
+            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'] ?? '';
+            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'] ?? '';
 
             //Payment was successful. Yeah!
-            if ($result['success']) {
+            if ($ACK == 'Success') {
                 $updateFail = false;
 
-                //Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
-                if ($gibbonPaymentID != '') {
-                    try {
-                        $data = array('paymentMade' => 'Y', 'gibbonPaymentID' => $gibbonPaymentID, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
-                        $sql = 'UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, gibbonPaymentID=:gibbonPaymentID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $updateFail = true;
-                    }
-                } else {
-                    $updateFail = true;
-                }
-
-                if ($updateFail == true) {
-                    $body = __('Payment via {gateway} was successful, but has not been recorded due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $paymentGateway])."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
-
-                    $mail = $container->get(Mailer::class);
-                    $mail->Subject = $subject;
-                    $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));
-                    $mail->AddAddress($to);
-                    $mail->renderBody('mail/email.twig.html', [
-                        'title'  => $subject,
-                        'body'   => $body,
-                    ]);
-
-                    $mail->Send();
-
-                    $URL .= '&return=success3&id='.$applicationFormHash;
-                    header("Location: {$URL}");
-                    exit;
-                }
-
-                $URL .= '&return=success1&id='.$applicationFormHash;
-                header("Location: {$URL}");
-            } else {
-                $updateFail = false;
+                //Save payment details to gibbonPayment
+                $gibbonPaymentID = setPaymentLog($connection2, $guid, 'gibbonApplicationForm', $gibbonApplicationFormID, 'Online', 'Complete', $applicationFee, 'Paypal', 'Success', $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID);
 
                 //Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
                 if ($gibbonPaymentID != '') {
@@ -571,7 +556,48 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __('Payment via {gateway} was unsuccessful, and has also not been recorded due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $paymentGateway])."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
+                    $body = __('Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
+
+                    $mail = $container->get(Mailer::class);
+                    $mail->Subject = $subject;
+                    $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));
+                    $mail->AddAddress($to);
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $body,
+                    ]);
+
+                    $mail->Send();
+
+                    $URL .= '&return=success3&id='.$_GET['id'];
+                    header("Location: {$URL}");
+                    exit;
+                }
+
+                $URL .= '&return=success1&id='.$_GET['id'];
+                header("Location: {$URL}");
+            } else {
+                $updateFail = false;
+
+                //Save payment details to gibbonPayment
+                $gibbonPaymentID = setPaymentLog($connection2, $guid, 'gibbonApplicationForm', $gibbonApplicationFormID, 'Online', 'Failure', $applicationFee, 'Paypal', 'Failure', $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID);
+
+                //Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
+                if ($gibbonPaymentID != '') {
+                    try {
+                        $data = array('paymentMade' => $paymentMade, 'gibbonPaymentID' => $gibbonPaymentID, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
+                        $sql = 'UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, gibbonPaymentID=:gibbonPaymentID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $updateFail = true;
+                    }
+                } else {
+                    $updateFail = true;
+                }
+
+                if ($updateFail == true) {
+                    $body = __('Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
                     $mail = $container->get(Mailer::class);
                     $mail->Subject = $subject;
@@ -585,13 +611,13 @@ if ($proceed == false) {
                     $mail->Send();
 
                     //Success 2
-                    $URL .= '&return=success2&id='.$applicationFormHash;
+                    $URL .= '&return=success2&id='.$_GET['id'];
                     header("Location: {$URL}");
                     exit;
                 }
 
                 //Success 2
-                $URL .= '&return=success2&id='.$applicationFormHash;
+                $URL .= '&return=success2&id='.$_GET['id'];
                 header("Location: {$URL}");
             }
         }

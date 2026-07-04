@@ -17,14 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php') == false) {
     // Access denied
@@ -82,13 +81,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
     }
 
     if (!empty($search) || !empty($gibbonYearGroupID) || !empty($gibbonFormGroupID) || !empty($allStudents)) {
-        $params = [
-            "search" => $search,
-            "gibbonYearGroupID" => $gibbonYearGroupID,
-            "gibbonFormGroupID" => $gibbonFormGroupID,
-            "allStudents" => $allStudents,
-        ];
-        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Reports', 'archive_byStudent.php')->withQueryParams($params));
+        echo "<div class='linkTop'>";
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Reports/archive_byStudent.php&gibbonYearGroupID=$gibbonYearGroupID&gibbonFormGroupID=$gibbonFormGroupID&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
+        echo '</div>';
     }
 
     $archiveInformation = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'archiveInformation');

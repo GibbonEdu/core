@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
@@ -52,7 +51,7 @@ class CustomBlocks implements OutputableInterface
      * @param  OutputableInterface  $form
      * @param  Session              $session
      */
-    public function __construct(FormFactoryInterface &$factory, $name, Session $session)
+    public function __construct(FormFactoryInterface &$factory, $name, \Gibbon\Session $session)
     {
         $this->factory = $factory;
         $this->session = $session;

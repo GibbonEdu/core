@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     $page->breadcrumbs
         ->add(__('Students Settings'), 'studentsSettings.php')
         ->add(__('Edit Note Category'));
-    //Check if gibbonStudentNoteCategoryID specified
+    //Check if school year specified
     $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
     if ($gibbonStudentNoteCategoryID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

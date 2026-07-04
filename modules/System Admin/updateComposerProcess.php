@@ -21,11 +21,8 @@ use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
 
 $_POST['address'] = '/index.php?q=/modules/System Admin/update.php';
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

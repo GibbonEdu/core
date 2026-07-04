@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
@@ -49,7 +48,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 }
 else {
     //Proceed!
-    //Check if gibbonCourseClassID and currentDate specified
+    //Check if school year specified
     if ($gibbonCourseClassID=="" AND $currentDate=="") {
         //Fail1
         $URL.="&return=error1" ;
@@ -93,11 +92,9 @@ else {
                     die();
                 }
                 else {
-                    $settingGateway = $container->get(SettingGateway::class);
-
                     //Write to database
                     require_once __DIR__ . '/src/AttendanceView.php';
-                    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
+                    $attendance = new AttendanceView($gibbon, $pdo);
 
                     try {
                         $data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate);
@@ -133,7 +130,7 @@ else {
                         die();
                     }
 
-                    $recordFirstClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'recordFirstClassAsSchool');
+                    $recordFirstClassAsSchool = getSettingByScope($connection2, 'Attendance', 'recordFirstClassAsSchool');
                     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 
                     $recordSchoolAttendance = $_POST['recordSchoolAttendance'] ?? 'N';

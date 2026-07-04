@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
@@ -174,9 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         //UNIT OUTLINE
                         $form->addRow()->addHeading(__('Unit Outline'));
 
-                        $settingGateway = $container->get(SettingGateway::class);
-                        $unitOutline = $settingGateway->getSettingByScope('Planner', 'unitOutlineTemplate');
-                        $shareUnitOutline = $settingGateway->getSettingByScope('Planner', 'shareUnitOutline');
+                        $unitOutline = getSettingByScope($connection2, 'Planner', 'unitOutlineTemplate');
+                        $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
                         if ($shareUnitOutline == 'Y') {
                             $content = __('The contents of both the Unit Outline field and the Downloadable Unit Outline are available to all users who can access this unit via the Lesson Planner (possibly include parents and students).');
                         }
@@ -211,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                         //OUTCOMES
                         $form->addRow()->addHeading(__('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'))->addClass('advanced');
-                        $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
+                        $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
                         $row = $form->addRow()->addClass('advanced');
                             $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
@@ -246,7 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             $row->addLabel('license', __('License'))->description(__('Under what conditions can this work be reused?'));
                             $row->addSelect('license')->fromArray($licences)->placeholder();
 
-                        $makeUnitsPublic = $settingGateway->getSettingByScope('Planner', 'makeUnitsPublic');
+                        $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
                         if ($makeUnitsPublic == 'Y') {
                             $row = $form->addRow()->addClass('advanced');
                                 $row->addLabel('sharedPublic', __('Shared Publicly'))->description(__('Share this unit via the public listing of units? Useful for building MOOCS.'));

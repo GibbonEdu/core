@@ -16,30 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
-$address = $_POST['address'] ?? '';
-$name = $_GET['name'] ?? '';
-$gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
-$gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
-$status = $_GET['status'] ?? '';
-$gibbonPersonIDOwnership = $_GET['gibbonPersonIDOwnership'] ?? '';
-$typeSpecificFields = $_GET['typeSpecificFields'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_manage_catalog_duplicate.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=$typeSpecificFields";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_manage_catalog_duplicate.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonLibraryItemID specified
+    //Check if school year specified
     if ($gibbonLibraryItemID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -26,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+    //Check if school year specified
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
     $status = $_GET['status'];
@@ -43,14 +41,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
         ->add(__('Manage Invoices'), 'invoices_manage.php', $urlParams)
         ->add(__('Print Invoices, Receipts & Reminders'));    
 
-    //Check if gibbonFinanceInvoiceID and gibbonSchoolYearID specified
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-        $sql = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+            $sql = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
@@ -59,7 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
             $row = $result->fetch();
 
             if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'invoices_manage.php')->withQueryParams($urlParams));
+                echo "<div class='linkTop'>";
+                echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__('Back to Search Results').'</a>';
+                echo '</div>';
             }
 
             if ($row['status'] == 'Pending') {

@@ -33,7 +33,6 @@ class InternalAssessmentByCourse extends DataSource
                     'type'                 => 'Type',
                     'attainmentActive'     => 'Y',
                     'effortActive'         => 'Y',
-                    'completeDate'         => ['date', 'Y-m-d', '+1 year'],
                 ],
                 'Example Assessment 2' => [
                     'name'                 => 'Example Assessment 2',
@@ -41,7 +40,6 @@ class InternalAssessmentByCourse extends DataSource
                     'type'                 => 'Type',
                     'attainmentActive'     => 'Y',
                     'effortActive'         => 'Y',
-                    'completeDate'         => ['date', 'Y-m-d', '+1 year'],
                 ]
             ],
             'courses' => [
@@ -119,8 +117,7 @@ class InternalAssessmentByCourse extends DataSource
                     gibbonCourse.name as courseName,
                     gibbonCourse.nameShort AS courseNameShort, 
                     gibbonCourseClass.name AS className, 
-                    gibbonCourseClass.nameShort AS classNameShort,
-                    gibbonInternalAssessmentColumn.completeDate
+                    gibbonCourseClass.nameShort AS classNameShort
                 FROM gibbonReport
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 JOIN gibbonInternalAssessmentEntry ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID)
@@ -146,7 +143,6 @@ class InternalAssessmentByCourse extends DataSource
                 'description'      => $result['description'],
                 'attainmentActive' => $result['attainmentActive'],
                 'effortActive'     => $result['effortActive'],
-                'completeDate'     => $result['completeDate'],
             ];
             $values['courses'][$result['courseNameShort']][$result['name']] = $result;
         }

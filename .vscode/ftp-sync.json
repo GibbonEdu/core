@@ -1,0 +1,28 @@
+{
+    "remotePath": "core_gyansetu",
+    "host": "ftp.shef.ngo",
+    "username": "felipetp@shef.ngo",
+    "password": "ftppasswordforshef.ngo",
+    "port": 21,
+    "protocol": "ftp",
+    "secure": false,
+    "uploadOnSave": true,
+    "passive": false,
+    "debug": false,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "agent": null,
+    "allow": [],
+    "ignore": [
+        "\\.remote-sync.json",
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store"
+    ],
+    "generatedFiles": {
+        "extensionsToInclude": [
+            ""
+        ],
+        "path": ""
+    }
+}

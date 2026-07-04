@@ -17,21 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
-
-$settingGateway = $container->get(SettingGateway::class);
-$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
-$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$address = $_GET['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add.php') == false) {
     $URL .= '&return=error0';
@@ -44,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         //Proceed!
         //Validate Inputs
         $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
-        $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
+        $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
         $name = $_POST['name'] ?? '';
         $description = $_POST['description'] ?? '';
         $type = $_POST['type'] ?? '';

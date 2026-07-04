@@ -47,7 +47,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
         
     }
 
-    public function runSendReportsToParents($gibbonReportID, $templateName, $identifiers)
+    public function runSendReportsToParents($gibbonReportID, $identifiers)
     {
         $familyGateway = $this->container->get(FamilyGateway::class);
         $reportGateway = $this->container->get(ReportGateway::class);
@@ -55,7 +55,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
         $reportArchiveEntryGateway = $this->container->get(ReportArchiveEntryGateway::class);
     
         $report = $reportGateway->getByID($gibbonReportID);
-        $template = $this->container->get(EmailTemplate::class)->setTemplate($templateName);
+        $template = $this->container->get(EmailTemplate::class)->setTemplate('Send Reports to Parents');
         $mail = $this->container->get(Mailer::class);
         $mail->SMTPKeepAlive = true;
 
@@ -139,14 +139,14 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
         return $sendReport;
     }
 
-    public function runSendReportsToStudents($gibbonReportID, $templateName, $identifiers)
+    public function runSendReportsToStudents($gibbonReportID, $identifiers)
     {
         $reportGateway = $this->container->get(ReportGateway::class);
         $userGateway = $this->container->get(UserGateway::class);
         $reportArchiveEntryGateway = $this->container->get(ReportArchiveEntryGateway::class);
     
         $report = $reportGateway->getByID($gibbonReportID);
-        $template = $this->container->get(EmailTemplate::class)->setTemplate($templateName);
+        $template = $this->container->get(EmailTemplate::class)->setTemplate('Send Reports to Students');
         $mail = $this->container->get(Mailer::class);
         $mail->SMTPKeepAlive = true;
 

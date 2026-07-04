@@ -16,26 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
 $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
-$address = $_POST['address'] ?? '';
-$search = $_GET['search'] ?? '';
-$allUsers = $_GET['allUsers'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=$search&allUsers=$allUsers";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonFinanceInvoiceeID specified
+    //Check if school year specified
     if ($gibbonFinanceInvoiceeID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

@@ -65,6 +65,20 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                     exit();
                 }
 
+                //GS->//
+                //Write to database
+                try {
+                    $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
+                    $sql = 'DELETE FROM gibbonStudentEnrolmentChanged WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+                //GS<-//
+
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");
             }

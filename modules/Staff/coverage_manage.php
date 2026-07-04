@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -34,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $search = $_GET['search'] ?? '';
 
-    $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
+    $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
     $StaffCoverageGateway = $container->get(StaffCoverageGateway::class);
     
     // SEARCH FORM

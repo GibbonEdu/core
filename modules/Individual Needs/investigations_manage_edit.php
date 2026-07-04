@@ -17,12 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\UI\Chart\Chart;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\UI\Chart\Chart;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 
@@ -74,12 +73,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 } else {
 
                     if ($gibbonPersonID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '') {
-                        $params = [
-                            "gibbonPersonID" => $gibbonPersonID,
-                            "gibbonFormGroupID" => $gibbonFormGroupID,
-                            "gibbonYearGroupID" => $gibbonYearGroupID
-                        ];
-                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Individual Needs', 'investigations_manage.php')->withQueryParams($params));
+                        echo "<div class='linkTop'>";
+                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__('Back to Search Results').'</a>';
+                        echo '</div>';
                     }
 
                     $form = Form::create('addform', $session->get('absoluteURL')."/modules/Individual Needs/investigations_manage_editProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
@@ -100,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                     //Date
                     $row = $form->addRow();
-                    	$row->addLabel('date', __('Date'));
+                    	$row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
                     	$row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required()->readonly();
 
             		//Reason

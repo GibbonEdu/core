@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
@@ -38,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     $numberOfSchoolDays = (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) ? $_GET['numberOfSchoolDays'] : 7;
 
     require_once __DIR__ . '/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 

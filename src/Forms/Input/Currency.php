@@ -36,10 +36,10 @@ class Currency extends Number
      */
     public function getLabelContext($label)
     {
-        global $session;
+        global $guid;
 
         if (stristr($label->getDescription(), 'In ') === false) {
-            return sprintf(__('In %1$s.'), $session->get('currency'));
+            return sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']);
         }
 
         return false;

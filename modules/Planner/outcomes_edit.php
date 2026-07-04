@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -51,10 +50,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
             }
 
             if ($filter2 != '') {
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'outcomes.php')->withQueryParam('filter2', $filter2));
+                echo "<div class='linkTop'>";
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/outcomes.php&filter2='.$filter2."'>".__('Back to Search Results').'</a>';
+                echo '</div>';
             }
 
-            //Check if gibbonOutcomeID specified
+            //Check if school year specified
             $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
             if ($gibbonOutcomeID == '') {
                 echo "<div class='error'>";

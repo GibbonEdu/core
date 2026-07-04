@@ -18,11 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYearTerm_manage_edit.php&gibbonSchoolYearTermID='.$gibbonSchoolYearTermID;
@@ -32,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonSchoolYearTermID specified
+    //Check if school year specified
     if ($gibbonSchoolYearTermID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

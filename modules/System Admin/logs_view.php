@@ -85,10 +85,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {
-            $array = !empty($log['serialisedArray']) ? unserialize($log['serialisedArray']) : [];
+            $array = $log['serialisedArray'] ? unserialize($log['serialisedArray']) : null;
 
             $details = '';
-            if (is_array($array) && count($array) > 0) {
+            if (count($array) > 0) {
                 $details = "<table class='smallIntBorder' style='width:100%;'>";
                 foreach ($array as $fieldName => $fieldValue) {
                     $fieldValue = is_array($fieldValue)

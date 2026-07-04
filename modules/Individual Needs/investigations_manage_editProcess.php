@@ -22,11 +22,8 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';

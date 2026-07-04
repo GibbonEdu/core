@@ -42,7 +42,6 @@ class InternalAssessment extends DataSource
                 'courseNameShort'      => 'COURSE',
                 'className'            => 'Example Class',
                 'classNameShort'       => 'CLASS',
-                'completeDate'         => ['date', 'Y-m-d'],
             ],
         ];
     }
@@ -64,8 +63,7 @@ class InternalAssessment extends DataSource
                     gibbonCourse.name as courseName,
                     gibbonCourse.nameShort AS courseNameShort, 
                     gibbonCourseClass.name AS className, 
-                    gibbonCourseClass.nameShort AS classNameShort,
-                    gibbonInternalAssessmentColumn.completeDate
+                    gibbonCourseClass.nameShort AS classNameShort
                 FROM gibbonStudentEnrolment
                 JOIN gibbonInternalAssessmentEntry ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) 

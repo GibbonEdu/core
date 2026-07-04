@@ -35,7 +35,7 @@ class CustomFieldGateway extends QueryableGateway
     private static $primaryKey = 'gibbonCustomFieldID';
 
     private static $searchableColumns = ['name'];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -46,9 +46,9 @@ class CustomFieldGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCustomFieldID', 'context', 'heading', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther', 'required'
+                'gibbonCustomFieldID', 'context', 'heading', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
             ]);
-        
+
         $criteria->addFilterRules([
             'context' => function ($query, $context) {
                 return $query

@@ -18,12 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-use Gibbon\Domain\System\SettingGateway;
-
 require_once __DIR__ . '/moduleFunctions.php';
 
 // common variables
-$makeUnitsPublic = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'makeUnitsPublic');
+$makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 
 $page->breadcrumbs->add(__('Learn With Us'));
@@ -35,16 +34,67 @@ if ($makeUnitsPublic != 'Y') {
     echo '</div>';
 } else {
     //Get action with highest precendence
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    if ($gibbonSchoolYearID == '') {
+        
+            $data = array();
+            $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
-    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['sidebar' => 'false']);
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __('The specified record does not exist.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
+            $gibbonSchoolYearName = $row['name'];
+        }
+    } else {
+        
+            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
+            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __('The specified record does not exist.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
+            $gibbonSchoolYearName = $row['name'];
+        }
+    }
+
+    echo '<h2>';
+    echo $gibbonSchoolYearName;
+    echo '</h2>';
+
+    echo "<div class='linkTop'>";
+        //Print year picker
+        if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/units_public.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+        } else {
+            echo __('Previous Year').' ';
+        }
+		echo ' | ';
+		if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+			echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/units_public.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+		} else {
+			echo __('Next Year').' ';
+		}
+    echo '</div>';
 
     //Fetch units
     
-    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-    $sql = "SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description, gibbonCourse.name AS course FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND sharedPublic='Y' ORDER BY course, name";
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description, gibbonCourse.name AS course FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND sharedPublic='Y' ORDER BY course, name";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+    echo "<div class='linkTop'></div>";
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";

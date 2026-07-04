@@ -18,28 +18,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonActivityID = $_GET['gibbonActivityID'];
+$gibbonPersonID = $_GET['gibbonPersonID'];
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_edit.php') == false) { 
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_edit.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
-    if ($gibbonActivityID == '' or $gibbonPersonID == '') {
+    if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_edit.php') == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if status specified
+        //Check if school year specified
         $status = $_POST['status'] ?? '';
         if ($status == '') {
             $URL .= '&return=error1';

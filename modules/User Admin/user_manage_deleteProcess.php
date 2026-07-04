@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonPersonID specified
+    //Check if school year specified
     if ($gibbonPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

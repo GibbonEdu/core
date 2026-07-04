@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Markbook\MarkbookView;
 use Gibbon\Services\Format;
 
@@ -151,7 +150,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 	
 
     // Build the markbook object for this class
-    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $container->get(SettingGateway::class));
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
     // QUERY
     $criteria = $markbookGateway->newQueryCriteria(true)

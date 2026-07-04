@@ -31,7 +31,7 @@ class PersonalDocumentHandler
     protected $fileUploader;
     protected $settingGateway;
     protected $view;
-
+    
     protected $documents;
     protected $fields;
 
@@ -123,7 +123,7 @@ class PersonalDocumentHandler
         }
     }
 
-    public function addPersonalDocumentsToForm(&$form, $foreignTable = null, $foreignTableID = null, $params = [])
+    public function addPersonalDocumentsToForm(&$form, $foreignTable = null, $foreignTableID = null, $params)
     {
         $documents = $this->personalDocumentGateway->selectPersonalDocuments($foreignTable, $foreignTableID, $params)->fetchAll();
         if (empty($documents)) return;
@@ -152,7 +152,7 @@ class PersonalDocumentHandler
             if (!empty($documentsNew[$gibbonPersonalDocumentTypeID])) {
                 $form->addHiddenValue("document[$gibbonPersonalDocumentTypeID][gibbonPersonalDocumentID]", $documentsNew[$gibbonPersonalDocumentTypeID]['gibbonPersonalDocumentID']);
             }
-
+                
             $fields = json_decode($document['fields']);
             foreach ($fields as $field) {
                 $oldValue = $documentsOld[$gibbonPersonalDocumentTypeID][$field] ?? null;

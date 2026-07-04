@@ -13,12 +13,9 @@ themes/*
 !themes/Legacy
 !themes/2021
 
-# Test generated temporary files
+# Tests Folder
 tests/log/*
 tests/config/support/_generated/*
-tests/_output
-tests/_support
-.phpunit.result.cache
 
 # Template Cache
 /resources/templates/cache/*
@@ -38,3 +35,8 @@ var/*
 
 # Ignore node_modules folder
 node_modules
+
+# Extra stuff for Gyansetu
+mysqltosheets
+resources
+i18n

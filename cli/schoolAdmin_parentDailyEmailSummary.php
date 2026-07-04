@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -34,11 +33,7 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
-//Check for CLI, so this cannot be run through browser
-$settingGateway = $container->get(SettingGateway::class);
-$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
-$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
-if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
+if (!isCommandLineInterface()) {
     echo __('This script cannot be run from a browser, only via CLI.');
     return;
 }
@@ -53,8 +48,8 @@ if ($session->get('organisationEmail') == '') {
     return;
 }
 
-$parentDailyEmailSummaryIntroduction = $settingGateway->getSettingByScope('School Admin', 'parentDailyEmailSummaryIntroduction');
-$parentDailyEmailSummaryPostScript = $settingGateway->getSettingByScope('School Admin', 'parentDailyEmailSummaryPostScript');
+$parentDailyEmailSummaryIntroduction = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryIntroduction');
+$parentDailyEmailSummaryPostScript = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryPostScript');
 
 // Override the ini to keep this process alive
 ini_set('memory_limit', '2048M');
@@ -68,7 +63,7 @@ $mail->SMTPKeepAlive = true;
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 $currentDate = date('Y-m-d');
-$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+$gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
 $familyGateway = $container->get(FamilyGateway::class);
 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
@@ -163,10 +158,10 @@ $event->setNotificationText(__('A School Admin CLI script has run.').'<br/><br/>
 $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.php');
 
 // Notify admin
-$event->addRecipient($session->get('organisationAdministrator'));
+$event->addRecipient($gibbon->session->get('organisationAdministrator'));
 
 // Send all notifications
-$event->sendNotifications($pdo, $session);
+$event->sendNotifications($pdo, $gibbon->session);
 
 // Output the result to terminal
 echo sprintf('Sent %1$s emails: %2$s emails sent, %3$s emails failed.', $sendReport['emailSent'] + $sendReport['emailFailed'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";

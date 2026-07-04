@@ -17,15 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
 
-$settingGateway = $container->get(SettingGateway::class);
-$from = $settingGateway->getSettingByScope('Finance', 'email');
+$from = getSettingByScope($connection2, 'Finance', 'email');
 
 //Module includes
 include './moduleFunctions.php';
@@ -435,11 +433,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                         //Prep message
                         $body = '';
                         if ($row['reminderCount'] == '0') {
-                            $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder1Text');
+                            $reminderText = getSettingByScope($connection2, 'Finance', 'reminder1Text');
                         } elseif ($row['reminderCount'] == '1') {
-                            $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder2Text');
+                            $reminderText = getSettingByScope($connection2, 'Finance', 'reminder2Text');
                         } elseif ($row['reminderCount'] >= '2') {
-                            $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder3Text');
+                            $reminderText = getSettingByScope($connection2, 'Finance', 'reminder3Text');
                         }
                         if ($reminderText != '') {
                             $reminderOutput = $row['reminderCount'] + 1;

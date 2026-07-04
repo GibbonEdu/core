@@ -17,14 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Comms\EmailTemplate;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['templateBody' => 'RAW']);
 
 $gibbonEmailTemplateID = $_POST['gibbonEmailTemplateID'] ?? '';
 $sendTest = $_POST['sendTest'] ?? 'N';
@@ -40,13 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $emailTemplateGateway = $container->get(EmailTemplateGateway::class);
 
     $data = [
-        'templateName'    => $_POST['templateName'] ?? '',
         'templateSubject' => $_POST['templateSubject'] ?? '',
         'templateBody'    => $_POST['templateBody'] ?? '',
     ];
 
     // Validate the required values are present
-    if (empty($gibbonEmailTemplateID) || empty($data['templateName']) || empty($data['templateSubject']) || empty($data['templateBody'])) {
+    if (empty($gibbonEmailTemplateID) || empty($data['templateSubject']) || empty($data['templateBody'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -56,13 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $values = $emailTemplateGateway->getByID($gibbonEmailTemplateID);
     if (empty($values)) {
         $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
-
-    // Validate that this record is unique
-    if (!$emailTemplateGateway->unique($data, ['templateName'], $gibbonEmailTemplateID)) {
-        $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
     }

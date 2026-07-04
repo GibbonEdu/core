@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
         ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
         ->add(__('Edit External Assessment'));
 
-    //Check if gibbonExternalAssessmentID specified
+    //Check if school year specified
     $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
     if ($gibbonExternalAssessmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

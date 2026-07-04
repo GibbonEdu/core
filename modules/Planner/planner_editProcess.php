@@ -20,11 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML', 'homeworkDetails' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
+include '../../gibbon.php';
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $viewBy = $_GET['viewBy'] ?? '';
@@ -57,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
             header("Location: {$URL}");
         } else {
             //Proceed!
-            //Check if gibbonPlannerEntryID and gibbonCourseClassID specified
+            //Check if school year specified
             if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == '')) {
                 $URL .= "&return=error1$params";
                 header("Location: {$URL}");
@@ -244,9 +241,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                         //Deal with smart unit
                         $partialFail = false;
-                        $order = $_POST['order'] ?? [];
-                        $seq = $_POST['minSeq'] ?? 0;
-                        $idList = [];
+                        $order = $_POST['order'] ?? '';
+
+                        $seq = $_POST['minSeq'] ?? '';
+
 
                         if (is_array($order)) {
                             foreach ($order as $i) {
@@ -257,24 +255,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                 $length = $_POST["length$i"] ?? '';
                                 $contents = $_POST["contents$i"] ?? '';
                                 $teachersNotesBlock = $_POST["teachersNotes$i"] ?? '';
-                                $complete = isset($_POST["complete$i"]) && $_POST["complete$i"] == 'on' ? 'Y' : 'N';
+                                $complete = 'N';
+                                if (isset($_POST["complete$i"])) {
+                                    if ($_POST["complete$i"] == 'on') {
+                                        $complete = 'Y';
+                                    }
+                                }
 
                                 //Write to database
-                                $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
-                                $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
-                                
-                                $updated = $pdo->update($sql, $data);
-                                $partialFail &= !$updated;
+                                try {
+                                    $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
+                                    $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
+                                } catch (PDOException $e) {
+                                    $partialFail = true;
+                                }
 
-                                $idList[] = $id;
                                 ++$seq;
                             }
-
-                            //Remove orphaned blocks
-
-                            $dataRemove = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonUnitClassBlockIDList' => implode(',', $idList)];
-                            $sqlRemove = "DELETE FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
-                            $pdo->delete($sqlRemove, $dataRemove);
                         }
 
                         //Delete all outcomes

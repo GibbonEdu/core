@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_delete.
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if gibbonStaffID specified
+    //Check if school year specified
     if ($gibbonStaffID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

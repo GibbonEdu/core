@@ -108,7 +108,7 @@ interface Result
     /**
      * Fetches all results and returns it as a DataSet object.
      *
-     * @return \Gibbon\Domain\DataSet  The DataSet object of all the fetched results.
+     * @return array
      */
     public function toDataSet();
 }

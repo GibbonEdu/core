@@ -21,9 +21,8 @@ use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML']);
+//Gibbon system-wide includes
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
@@ -64,9 +63,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $row = $result->fetch();
 
                 //INSERT
-                $replyTo = !empty($_POST['replyTo']) ? $_POST['replyTo'] : null;
-                $comment = $_POST['comment'] ?? '';
+                $replyTo = $_POST['replyTo'];
+                if ($_POST['replyTo'] == '') {
+                    $replyTo = null;
+                }
                 
+                //Attempt to prevent XSS attack
+                $validator = $container->get(Validator::class);
+                $comment = $validator->sanitizeRichText($_POST['comment'] ?? '');
+
                 try {
                     $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
                     $sqlInsert = 'INSERT INTO gibbonPlannerEntryDiscuss SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonPlannerEntryDiscussIDReplyTo=:replyTo';

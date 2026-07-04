@@ -17,11 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (!$session->exists("username")) {
+if (!$gibbon->session->exists("username")) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -32,26 +31,30 @@ if (!$session->exists("username")) {
     //Deal with force reset notification
     $forceReset = $_GET['forceReset'] ?? null;
     if ($forceReset == 'Y' AND $return != 'successa') {
-        $page->addMessage(__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.'));
+        $forceResetReturnMessage = '<b><u>'.__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
+        echo "<div class='error'>";
+        echo $forceResetReturnMessage;
+        echo '</div>';
     }
 
     $returns = array();
-    $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationAdministratorEmail')."'>".$session->get('organisationAdministratorName').'</a>');
+    $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationAdministratorEmail')."'>".$gibbon->session->get('organisationAdministratorName').'</a>');
     $returns['error4'] = __('Your request failed due to non-matching passwords.');
     $returns['error3'] = __('Your request failed due to incorrect current password.');
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
     $page->return->addReturns($returns);
 
-    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-    $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
+    
+        $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+        $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
     if ($result->rowCount() == 1) {
         $values = $result->fetch();
     }
 
-    $form = Form::create('resetPassword', $session->get('absoluteURL').'/preferencesPasswordProcess.php');
+    $form = Form::create('resetPassword', $gibbon->session->get('absoluteURL').'/preferencesPasswordProcess.php');
 
     $form->addRow()->addHeading(__('Reset Password'));
 
@@ -67,6 +70,7 @@ if (!$session->exists("username")) {
             ->maxLength(30);
 
     $row = $form->addRow();
+
         $row->addLabel('passwordNew', __('New Password'));
         $row->addPassword('passwordNew')
             ->addPasswordPolicy($pdo)
@@ -89,12 +93,12 @@ if (!$session->exists("username")) {
 
     if ($forceReset != 'Y') {
         $staff = false;
-        foreach ($session->get('gibbonRoleIDAll') as $role) {
+        foreach ($gibbon->session->get('gibbonRoleIDAll') as $role) {
             $roleCategory = getRoleCategory($role[0], $connection2);
             $staff = $staff || ($roleCategory == 'Staff');
         }
 
-        $form = Form::create('preferences', $session->get('absoluteURL').'/preferencesProcess.php');
+        $form = Form::create('preferences', $gibbon->session->get('absoluteURL').'/preferencesProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addRow()->addHeading(__('Settings'));
@@ -103,7 +107,7 @@ if (!$session->exists("username")) {
             $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__('Only enables timetable integration when logging in via Google.'));
             $password = $row->addTextField('calendarFeedPersonal');
 
-        $personalBackground = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'personalBackground');
+        $personalBackground = getSettingByScope($connection2, 'User Admin', 'personalBackground');
         if ($personalBackground == 'Y') {
             $row = $form->addRow();
                 $row->addLabel('personalBackground', __('Personal Background'))->description(__('Set your own custom background image.').'<br/>'.__('Please provide URL to image.'));

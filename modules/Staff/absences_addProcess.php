@@ -17,18 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Module\Staff\AbsenceNotificationProcess;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_add.php';
 $URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php';
@@ -41,9 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     // Proceed!
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
-    $settingGateway = $container->get(SettingGateway::class);
-    $fullDayThreshold =  floatval($settingGateway->getSettingByScope('Staff', 'absenceFullDayThreshold'));
-    $halfDayThreshold = floatval($settingGateway->getSettingByScope('Staff', 'absenceHalfDayThreshold'));
+    $fullDayThreshold =  floatval(getSettingByScope($connection2, 'Staff', 'absenceFullDayThreshold'));
+    $halfDayThreshold = floatval(getSettingByScope($connection2, 'Staff', 'absenceHalfDayThreshold'));
 
     $dateStart = $_POST['dateStart'] ?? '';
     $dateEnd = $_POST['dateEnd'] ?? '';

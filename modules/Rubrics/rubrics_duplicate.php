@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -54,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                 ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
                 ->add(__('Duplicate Rubric'));
 
-            //Check if gibbonRubricID specified
+            //Check if school year specified
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {
                 echo "<div class='error'>";
@@ -76,11 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                     $values = $result->fetch();
 
                     if ($search != '' or $filter2 != '') {
-                        $params = [
-                            "search" => $search,
-                            "filter2" => $filter2,
-                        ];
-                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Rubrics', 'rubrics.php')->withQueryParams($params));
+                        echo "<div class='linkTop'>";
+                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>".__('Back to Search Results').'</a>';
+                        echo '</div>';
 					}
 
 					$scopes = array(

@@ -58,7 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         if (getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2) == "Staff") {
             $table->addColumn('students', __('Students'));
         }
-        $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
+        //GS//$table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
+        $table->addColumn('website', __('Timing')); //GS//
 
         $actions = $table->addActionColumn()->addParam('gibbonFormGroupID');
         $actions->addAction('view', __('View'))

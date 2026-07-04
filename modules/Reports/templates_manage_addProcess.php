@@ -18,13 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$search = $_GET['search'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_add.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_add.php&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_add.php') == false) {
     $URL .= '&return=error0';

@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
-
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+include '../../gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/user_manage_password.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
@@ -77,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                         //Write to database
                         try {
                             $data = array('passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'passwordForceReset' => $passwordForceReset, 'gibbonPersonID' => $gibbonPersonID);
-                            $sql = "UPDATE gibbonPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, passwordForceReset=:passwordForceReset, failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
+                            $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, passwordForceReset=:passwordForceReset, failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

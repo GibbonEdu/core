@@ -18,15 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
-
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$address = $_GET['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -55,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
         }
         //Sort out effort
-        $effort = $_POST['effort'] ?? '';
+        $effort = $_POST['effort'];
         if ($effort == 'N') {
             $gibbonScaleIDEffort = null;
         } else {

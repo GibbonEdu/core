@@ -17,14 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
 
-$settingGateway = $container->get(SettingGateway::class);
-$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
-$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
-$enableNegativeBehaviourLetters = $settingGateway->getSettingByScope('Behaviour', 'enableNegativeBehaviourLetters');
+$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
+$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSettings.php') == false) {
     //Access denied
@@ -41,83 +38,73 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 
     $row = $form->addRow()->addHeading(__('Descriptors'));
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('descriptors')->onSelect($setting['name'])->when('Y');
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors', true);
     $row = $form->addRow()->addClass('descriptors');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors', true);
     $row = $form->addRow()->addClass('descriptors');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Levels'));
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'enableLevels', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'enableLevels', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('levels')->onSelect($setting['name'])->when('Y');
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'levels', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'levels', true);
     $row = $form->addRow()->addClass('levels');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Notifications'));
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'notifyTutors', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'notifyTutors', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
-    
-    $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(__('By using a {linkCLIScript}, {systemName} can be configured to automatically generate and email behaviour letters to parents and tutors, once certain behaviour threshold levels have been reached. Visit the {linkEmailTemplates} page to customise the templates for each behaviour letter email.', ['systemName' => $session->get('systemName'), 'linkCLIScript' => Format::link('https://gibbonedu.org/support/administrators/command-line-tools/', __('CLI script')),'linkEmailTemplates' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
+    $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(sprintf(__('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $session->get('systemName'), '[studentName], [formGroup], [behaviourCount], [behaviourRecord]'));
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'enableNegativeBehaviourLetters', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $form->toggleVisibilityByClass('behaviourLettersNegative')->onSelect($setting['name'])->when('Y');
+    $form->toggleVisibilityByClass('behaviourLetters')->onSelect($setting['name'])->when('Y');
 
     for ($i = 1;$i < 4;++$i) {
-        $setting = $settingGateway->getSettingByScope('Behaviour', 'behaviourLettersNegativeLetter'.$i.'Count', true);
-        $row = $form->addRow()->addClass('behaviourLettersNegative');
+        $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Count', true);
+        $row = $form->addRow()->addClass('behaviourLetters');
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelect($setting['name'])->fromArray(range(1,20))->selected($setting['value'])->required();
-    }
+            $row->addSelect($setting['name'])->fromString('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')->selected($setting['value'])->required();
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'enablePositiveBehaviourLetters', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
-
-    $form->toggleVisibilityByClass('behaviourLettersPositive')->onSelect($setting['name'])->when('Y');
-
-    for ($i = 1;$i < 4;++$i) {
-        $setting = $settingGateway->getSettingByScope('Behaviour', 'behaviourLettersPositiveLetter'.$i.'Count', true);
-        $row = $form->addRow()->addClass('behaviourLettersPositive');
+        $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Text', true);
+        $row = $form->addRow()->addClass('behaviourLetters');
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelect($setting['name'])->fromArray(range(1,20))->selected($setting['value'])->required();
+            $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
     }
 
     $row = $form->addRow()->addHeading(__('Miscellaneous'));
 
-    $setting = $settingGateway->getSettingByScope('Behaviour', 'policyLink', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'policyLink', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);

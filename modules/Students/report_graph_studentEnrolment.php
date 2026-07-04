@@ -186,19 +186,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
             $options = [
                 'fill'         => false,
                 'showTooltips' => true,
-                'tooltip'     => ['mode' => 'single'],
+                'tooltips'     => ['mode' => 'single'],
                 'hover'        => ['mode' => 'dataset'],
                 'scales'       => [
-                    'x' => [
+                    'xAxes' => [[
                         'ticks' => [
                             'autoSkip'    => true,
                             'maxRotation' => 0,
                             'padding'     => 30,
                         ]
-                    ],
-                    'y' => [
-                        'beginAtZero'  => false,
-                    ],
+                    ]],
+                    'yAxes' => [[
+                        'ticks' => [
+                            'beginAtZero'  => false,
+                        ]
+                    ]],
                 ],
             ];
 

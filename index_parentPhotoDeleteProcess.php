@@ -18,18 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-
-use Gibbon\Http\Url;
-
 include './gibbon.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$URL = Url::fromRoute();
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$URL = $gibbon->session->get('absoluteURL').'/index.php';
 
 //Proceed!
 //Check if planner specified
-if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID')) {
-    header("Location: {$URL->withReturn('error1')}");
+if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPersonID')) {
+    $URL .= '?return=error1';
+    header("Location: {$URL}");
 } else {
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -37,12 +35,14 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID'))
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        header("Location: {$URL->withReturn('error2')}");
+        $URL .= '?return=error2';
+        header("Location: {$URL}");
         exit();
     }
 
     if ($result->rowCount() != 1) {
-        header("Location: {$URL->withReturn('error2')}");
+        $URL .= '?return=error2';
+        header("Location: {$URL}");
     } else {
         //UPDATE
         try {
@@ -51,17 +51,19 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID'))
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            header("Location: {$URL->withReturn('error2')}");
+            $URL .= '?return=error2';
+            header("Location: {$URL}");
             exit();
         }
 
         //Update session variables
-        $session->set('image_240', '');
+        $gibbon->session->set('image_240', '');
 
         //Clear cusotm sidebar
-        $session->remove('index_customSidebar.php');
+        unset($_SESSION[$guid]['index_customSidebar.php']);
 
+        $URL .= '?return=success0';
         //Success 0
-        header("Location: {$URL->withReturn('success0')}");
+        header("Location: {$URL}");
     }
 }

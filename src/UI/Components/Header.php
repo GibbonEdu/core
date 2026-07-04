@@ -16,12 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Components;
 
-use Gibbon\Contracts\Database\Connection;
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Http\Url;
 
 /**
  * Header View Composer
@@ -35,20 +34,13 @@ class Header
     protected $session;
     protected $notificationGateway;
     protected $messengerGateway;
-    protected $settingGateway;
 
-    public function __construct(
-        Connection $db,
-        Session $session,
-        NotificationGateway $notificationGateway,
-        MessengerGateway $messengerGateway,
-        SettingGateway $settingGateway
-    ) {
+    public function __construct(Connection $db, Session $session, NotificationGateway $notificationGateway, MessengerGateway $messengerGateway)
+    {
         $this->db = $db;
         $this->session = $session;
         $this->notificationGateway = $notificationGateway;
         $this->messengerGateway = $messengerGateway;
-        $this->settingGateway = $settingGateway;
     }
 
     public function getStatusTray()
@@ -58,11 +50,11 @@ class Header
         $tray = [];
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
-
+        
         // Message Wall
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             $tray['messageWall'] = [
-                'url'      => Url::fromModuleRoute('Messenger', 'messageWall_view'),
+                'url'      => $this->session->get('absoluteURL').'/index.php?q=/modules/Messenger/messageWall_view.php',
                 'messages' => count($this->session->get('messageWallArray', [])),
             ];
         }
@@ -72,14 +64,14 @@ class Header
         $notifications = $this->notificationGateway->queryNotificationsByPerson($criteria, $this->session->get('gibbonPersonID'), 'New');
 
         $tray['notifications'] = [
-            'url'      => Url::fromRoute('notifications')->withQueryParam('sidebar', 'false'),
+            'url'      => $this->session->get('absoluteURL').'/index.php?q=/notifications.php&sidebar=false',
             'count'    => $notifications->count(),
-            'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? 10000 : 60000,
+            'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? 10000 : 120000,
         ];
 
         // Alarm
         $tray['alarm'] = $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'
-            ? $this->settingGateway->getSettingByScope('System', 'alarm')
+            ? getSettingByScope($connection2, 'System', 'alarm')
             : false;
 
         return $tray;
@@ -91,7 +83,7 @@ class Header
 
         // Links for logged in users
         if ($this->session->has('username')) {
-
+            
             $links['logout'] = [
                 'name' => __('Logout'),
                 'url'  => $this->session->get('absoluteURL').'/logout.php',
@@ -99,7 +91,7 @@ class Header
 
             $links['preferences'] = [
                 'name' => __('Preferences'),
-                'url'  => Url::fromRoute('preferences'),
+                'url'  => $this->session->get('absoluteURL').'/index.php?q=preferences.php',
             ];
 
             if ($this->session->has('emailLink')) {
@@ -159,13 +151,11 @@ class Header
         $roleCategory = $this->session->get('gibbonRoleIDCurrentCategory');
 
         if ($roleCategory == 'Student' && isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php')) {
-            $profileURL = Url::fromModuleRoute('Students', 'student_view_details')
-                ->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID'));
+            $profileURL = $this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID');
         }
 
         if ($roleCategory == 'Staff' && isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-            $profileURL = Url::fromModuleRoute('Staff', 'staff_view_details')
-                ->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID'));
+            $profileURL = $this->session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID');
         }
 
         $messageWallLatestPost = $this->messengerGateway->getRecentMessageWallTimestamp();
@@ -178,7 +168,7 @@ class Header
             'image_240'     => $this->session->get('image_240'),
             'houseName'     => $this->session->get('gibbonHouseIDName'),
             'houseLogo'     => $this->session->get('gibbonHouseIDLogo'),
-            'messengerRead' => strtotime((string) $this->session->get('messengerLastRead')) >= $messageWallLatestPost,
+            'messengerRead' => strtotime($this->session->get('messengerLastRead')) >= $messageWallLatestPost,
         ];
     }
 }

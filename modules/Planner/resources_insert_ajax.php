@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -79,16 +78,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $form->setClass('noIntBorder fullWidth');
             
     $row = $form->addRow();
-
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $categories = $settingGateway->getSettingByScope('Resources', 'categories');
+    
+    $categories = getSettingByScope($connection2, 'Resources', 'categories');
     $col = $row->addColumn();
         $col->addLabel('category'.$id, __('Category'));
         $col->addSelect('category'.$id)->fromString($categories)->placeholder()->setClass('mediumWidth')->selected($category);
 
-    $purposesGeneral = $settingGateway->getSettingByScope('Resources', 'purposesGeneral');
-    $purposesRestricted = ($highestAction == 'Manage Resources_all')? $settingGateway->getSettingByScope('Resources', 'purposesRestricted') : '';
+    $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
+    $purposesRestricted = ($highestAction == 'Manage Resources_all')? getSettingByScope($connection2, 'Resources', 'purposesRestricted') : '';
     $col = $row->addColumn();
         $col->addLabel('purpose'.$id, __('Purpose'));
         $col->addSelect('purpose'.$id)->fromString($purposesGeneral)->fromString($purposesRestricted)->placeholder()->setClass('mediumWidth')->selected($purpose);
@@ -255,14 +252,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             if ($row['type'] == 'Link') {
                 $extension = strrchr($row['content'], '.');
                 if (strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$row['content']."'><img class='resource' style='max-width: 100%' src='".$row['content']."'></a>";
+                    $html = "<a target='_blank' style='font-weight: bold' href='".$row['content']."'><img class='resource' style='max-width: 500px' src='".$row['content']."'></a>";
                 } else {
                     $html = "<a target='_blank' style='font-weight: bold' href='".$row['content']."'>".$row['name'].'</a>';
                 }
             } elseif ($row['type'] == 'File') {
                 $extension = strrchr($row['content'], '.');
                 if (strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'><img class='resource' style='max-width: 100%' src='".$session->get('absoluteURL').'/'.$row['content']."'></a>";
+                    $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'><img class='resource' style='max-width: 500px' src='".$session->get('absoluteURL').'/'.$row['content']."'></a>";
                 } else {
                     $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'>".$row['name'].'</a>';
                 }

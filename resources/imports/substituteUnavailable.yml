@@ -10,7 +10,7 @@ access:
 primaryKey:
     gibbonStaffCoverageDateID
 uniqueKeys:
-    - [ gibbonPersonIDUnavailable, date ]
+    - [ gibbonPersonID, date ]
 table:
     gibbonPersonIDUnavailable:
         name: "Substitute User"

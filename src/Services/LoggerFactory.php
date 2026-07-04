@@ -77,6 +77,7 @@ class LoggerFactory
      */
     public function __construct(SettingGateway $settingGateway)
     {
+        $this->settingGateway = $settingGateway;
         $this->filePath = $settingGateway->getSettingByScope('System', 'absolutePath') . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
         $this->loggerLevel = $settingGateway->getSettingByScope('System', 'installType') === 'Production' ? Logger::WARNING : Logger::DEBUG;
     }
