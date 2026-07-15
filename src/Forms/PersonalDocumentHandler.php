@@ -26,6 +26,7 @@ use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 class PersonalDocumentHandler
 {
@@ -33,16 +34,18 @@ class PersonalDocumentHandler
     protected $fileUploader;
     protected $settingGateway;
     protected $view;
+    protected $fileHandler;
 
     protected $documents;
     protected $fields;
 
-    public function __construct(PersonalDocumentGateway $personalDocumentGateway, FileUploader $fileUploader, View $view, SettingGateway $settingGateway)
+    public function __construct(PersonalDocumentGateway $personalDocumentGateway, FileUploader $fileUploader, View $view, SettingGateway $settingGateway, FileHandler $fileHandler)
     {
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->fileUploader = $fileUploader;
         $this->settingGateway = $settingGateway;
         $this->view = $view;
+        $this->fileHandler = $fileHandler;
 
         $this->documents = [
             'Passport' => __('Passport'),
@@ -80,6 +83,7 @@ class PersonalDocumentHandler
             $fields = json_decode($document['fields']);
             $prefix = $params['prefix'] ?? '';
             $data = [];
+            $fileMetaData = null;
 
             foreach ($fields as $field) {
                 $value = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
@@ -91,7 +95,6 @@ class PersonalDocumentHandler
                     // Handle file uploads
                     $file = $_FILES[$prefix.'document'.$document['gibbonPersonalDocumentTypeID'].$field] ?? null;
                     $attachment = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
-
                     
                     if (!empty($file['tmp_name'])) {
                         $this->fileUploader->setFileSuffixType(FileUploader::FILE_SUFFIX_ALPHANUMERIC);
@@ -99,16 +102,24 @@ class PersonalDocumentHandler
 
                         if (empty($data[$field])) {
                             $personalDocumentFail = true;
+                        } else {
+                            // Capture file metadata for tracking
+                            $fileMetaData = $this->fileUploader->getFileMetaData($data[$field]);
                         }
                     } else {
                         $documentID = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
 
                         // Remove the attachment if it has been deleted, otherwise retain the original value
-                        if (!empty($attachment) && !empty($documentID)) {
+                        $existingFilePath = null;
+                        if (!empty($documentID)) {
                             $documentData = $this->personalDocumentGateway->getByID($documentID, ['filePath']);
-                            $data[$field] = $documentData['filePath'] ?? null;
-                        } else {
-                            $data[$field] = null;
+                            $existingFilePath = $documentData['filePath'] ?? null;
+                        }
+
+                        $data[$field] = !empty($attachment) ? $existingFilePath : null;
+
+                        if (empty($attachment) && !empty($existingFilePath)) {
+                            $this->fileHandler->deleteFile('gibbonPersonalDocument', $documentID, 'filePath');
                         }
                     } 
                 } else {
@@ -129,8 +140,17 @@ class PersonalDocumentHandler
             $data['foreignTableID'] = $foreignTableID;
             $data['timestamp'] = date('Y-m-d H:i:s');
 
-            $success = $this->personalDocumentGateway->insertAndUpdate($data, $data);
-            $personalDocumentFail &= !$success;
+            $gibbonPersonalDocumentID = $this->personalDocumentGateway->insertAndUpdate($data, $data);
+            $personalDocumentFail &= !$gibbonPersonalDocumentID;
+
+            // Record file tracking (only if file was uploaded)
+            if (!empty($fileMetaData) && !empty($gibbonPersonalDocumentID)) {
+                $gibbonFileID = $this->fileHandler->recordFileUpload($fileMetaData, 'gibbonPersonalDocument', $gibbonPersonalDocumentID, 'filePath');
+
+                if (empty($gibbonFileID)) {
+                    $personalDocumentFail = true;
+                }
+            }
         }
     }
 

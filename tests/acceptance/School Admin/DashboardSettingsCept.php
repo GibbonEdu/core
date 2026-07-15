@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/dashboardSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Dashboard Settings');
 $I->loginAsAdmin();

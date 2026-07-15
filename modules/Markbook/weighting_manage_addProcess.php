@@ -63,7 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                 exit();
             }
 
-            $URL .= "&return=success0";
+            $gibbonMarkbookWeightID = $pdo->getConnection()->lastInsertID();
+
+            $URL .= "&return=success0&editID=".$gibbonMarkbookWeightID;
             header("Location: {$URL}");
         }
     }

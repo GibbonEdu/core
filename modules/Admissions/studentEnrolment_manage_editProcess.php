@@ -79,6 +79,17 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
             } else {
                 $row = $result->fetch();
 
+                // Fetch old record for file comparison
+                try {
+                    $dataOld = ['gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID];
+                    $sqlOld = 'SELECT fields FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID';
+                    $resultOld = $connection2->prepare($sqlOld);
+                    $resultOld->execute($dataOld);
+                    $oldEnrolmentRecord = $resultOld->fetch();
+                } catch (PDOException $e) {
+                    $oldEnrolmentRecord = null;
+                }
+
                 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
                 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
                 $gibbonFormGroupIDOriginal = $_POST['gibbonFormGroupIDOriginal'] ?? 'N';
@@ -122,6 +133,11 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         exit;
                     }
 
+                    // Manage custom field file uploads
+                    if (!empty($fields)) {
+                        $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Student Enrolment', [], $fields, 'gibbonStudentEnrolment', $gibbonStudentEnrolmentID, $oldEnrolmentRecord['fields'] ?? null);
+                    }
+                    
                     $partialFail = false;
 
                     // Handle automatic course enrolment if enabled

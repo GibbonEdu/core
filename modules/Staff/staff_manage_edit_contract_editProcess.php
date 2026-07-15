@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use PDOException;
 
 require_once '../../gibbon.php';
 
@@ -29,9 +31,10 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
 $gibbonStaffContractID = $_GET['gibbonStaffContractID'] ?? '';
 $search = $_GET['search'] ?? '';
-if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
+if ($gibbonStaffID == '') {
+    echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_contract_edit.php&gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search";
+    $URL = $session->get('absoluteURL') . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/staff_manage_edit_contract_edit.php&gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search";
 
     if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_contract_edit.php') == false) {
         $URL .= '&return=error0';
@@ -83,11 +86,12 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $notes = $_POST['notes'] ?? '';
 
                 $partialFail = false;
+                $fileMetaData = null;
                 if (!empty($_FILES['file1']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);
                     $fileUploader->getFileExtensions('Document');
 
-                    $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+                    $file = (isset($_FILES['file1'])) ? $_FILES['file1'] : null;
 
                     // Upload the file, return the /uploads relative path
                     $contractUpload = $fileUploader->uploadFromPost($file, $username);
@@ -95,6 +99,8 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     if (empty($contractUpload)) {
                         $contractUpload = '';
                         $partialFail = true;
+                    } else {
+                        $fileMetaData = $fileUploader->getFileMetaData($contractUpload);
                     }
                 } else {
                     // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -115,6 +121,20 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    // Record file tracking (only if new file uploaded)
+                    if (!empty($fileMetaData) && !empty($gibbonStaffContractID)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonStaffContract', $gibbonStaffContractID, 'contractUpload');
+
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
+                    }
+
+                    // Handle file deletion when user removes attachment (must be done before recording new upload)
+                    if (empty($contractUpload) && !empty($row['contractUpload'])) {
+                        $deleted = $container->get(FileHandler::class)->deleteFile('gibbonStaffContract', $gibbonStaffContractID, 'contractUpload');
                     }
 
                     if ($partialFail == true) {

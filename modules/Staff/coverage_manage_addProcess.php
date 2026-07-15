@@ -145,5 +145,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         ? "&return=warning1"
         : "&return=success0";
 
-    header("Location: {$URL}");
+    header("Location: {$URL}&editID=".$gibbonStaffCoverageID);
 }

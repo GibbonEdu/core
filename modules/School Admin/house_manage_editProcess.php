@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -80,6 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
                     //Sort out logo
                     $imageFail = false;
+                    $fileMetaData = null;
                     if (!empty($_FILES['file1']['tmp_name'])) {
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
@@ -90,6 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
                         if (empty($logo)) {
                             $imageFail = true;
+                        } else {
+                            $fileMetaData = $fileUploader->getFileMetaData($logo);
                         }
                     } else {
                         // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -106,6 +110,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    // Handle file deletion when user removes attachment
+                    if (empty($logo) && !empty($row['logo'])) {
+                        $deleted = $container->get(FileHandler::class)->deleteFile('gibbonHouse', $gibbonHouseID, 'logo');
+                    }
+
+                    // Record file tracking
+                    if (!empty($fileMetaData) && !empty($gibbonHouseID)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonHouse', $gibbonHouseID, 'logo');
+                        
+                        if (empty($gibbonFileID)) {
+                            $imageFail = true;
+                        }
                     }
 
                     if ($imageFail) {

@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\AlarmGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -48,6 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 
         $time = time();
         $attachmentCurrent = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound');
+        $partialFail = false;
+        $fileMetaData = null;
 
         //Move attached file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
@@ -62,6 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
                 exit;
+            } else {
+                $fileMetaData = $fileUploader->getFileMetaData($attachment);
             }
         } else {
             // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -71,6 +76,23 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         //Write setting to database
         $dataWhere = ['scope' => 'System Admin', 'name' => 'customAlarmSound'];
         $settingGateway->updateWhere($dataWhere, ['value' => $attachment]);
+
+        // Get the setting record for file tracking
+        $settingRecord = $settingGateway->selectBy($dataWhere)->fetch();
+        
+        // Handle file deletion when user removes attachment
+        if (empty($attachment) && !empty($attachmentCurrent) && !empty($settingRecord)) {
+            $deleted = $container->get(FileHandler::class)->deleteFile('gibbonSetting', $settingRecord['gibbonSettingID'], 'value');
+        }
+
+        // Record file tracking
+        if (!empty($fileMetaData) && !empty($settingRecord)) {
+            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonSetting', $settingRecord['gibbonSettingID'], 'value');
+                
+            if (empty($gibbonFileID)) {
+                $partialFail = true;
+            }
+        }
 
         //DEAL WITH ALARM SETTING
         //Write setting to database
@@ -94,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         }
 
         getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
+        $URL .= $partialFail ? '&return=success1' : '&return=success0';
         header("Location: {$URL}");
     }
 }

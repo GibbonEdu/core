@@ -67,4 +67,20 @@ class ExternalAssessmentGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectActiveExternalAssessments()
+    {
+        $data = [];
+        $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCATGradesByPersonID($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='Cognitive Abilities Test' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
+
+        return $this->db()->select($sql, $data);
+    }
 }

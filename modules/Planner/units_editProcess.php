@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 require_once '../../gibbon.php';
 
@@ -93,7 +94,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         header("Location: {$URL}");
                     } else {
                         $row = $result->fetch();
+                        $fileHandler = $container->get(FileHandler::class);
                         $partialFail = false;
+                        $fileMetaData = null;
                         //Move attached file, if there is one
                         if (!empty($_FILES['file']['tmp_name'])) {
                             $fileUploader = new Gibbon\FileUploader($pdo, $session);
@@ -107,6 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $partialFail = true;
                             } else {
                                 $content = $attachment;
+                                $fileMetaData = $fileUploader->getFileMetaData($attachment);
                             }
                         } else {
                             // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -259,6 +263,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
+                        }
+
+                        // Handle file deletion when user removes attachment
+                        if (empty($attachment) && !empty($row['attachment'])) {
+                            $deleted = $fileHandler->deleteFile('gibbonUnit', $gibbonUnitID, 'attachment');
+                        }
+
+                        // Record file tracking
+                        if (!empty($fileMetaData) && !empty($gibbonUnitID)) {
+                            $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, 'gibbonUnit', $gibbonUnitID, 'attachment');
+
+                            if (empty($gibbonFileID)) {
+                                $partialFail = true;
+                            }
                         }
 
                         if ($partialFail) {

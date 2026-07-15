@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/messengerSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Messenger Settings');
 $I->loginAsAdmin();

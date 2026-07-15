@@ -53,6 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         return;
     }
 
+    if (empty($values)) {
+        $page->addError(__('The specified record cannot be found.'));
+        return;
+    }
+    
     if (stripos(basename($values['templateFile']), '.twig.html') === false) {
         $page->addError(__('The file {file} is missing the extension {ext} and may not work as expected.', ['file' => basename($values['templateFile']), 'ext' => '.twig.html']));
     }
@@ -87,11 +92,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         $row->addLabel('templateFile', __('File'));
         $row->addTextField('templateFile')->readonly();
 
-    $templateContent = file_get_contents($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);
+    $templateFilePath = $absolutePath.$customAssetPath.'/templates/'.$values['templateFile'];
+    if (file_exists($templateFilePath)) {
+        $templateContent = file_get_contents($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);
+    }
 
     $col = $form->addRow()->addColumn();
         $col->addLabel('templateContent', __('Template Code'));
-        $col->addCodeEditor('templateContent')->setMode('twig')->setValue($templateContent);
+        $col->addCodeEditor('templateContent')->setMode('twig')->setValue($templateContent ?? '');
 
     $row = $form->addRow();
         $row->addFooter();

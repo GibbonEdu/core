@@ -1,4 +1,13 @@
 <?php
+/**
+ * @covers modules/School Admin/externalAssessments_manage.php
+ * @covers modules/School Admin/externalAssessments_manage_add.php
+ * @covers modules/School Admin/externalAssessments_manage_edit.php
+ * @covers modules/School Admin/externalAssessments_manage_edit_field_add.php
+ * @covers modules/School Admin/externalAssessments_manage_edit_field_edit.php
+ * @covers modules/School Admin/externalAssessments_manage_edit_field_delete.php
+ * @covers modules/School Admin/externalAssessments_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete something');
 $I->loginAsAdmin();
@@ -53,6 +62,24 @@ $I->submitForm('#content form', $addFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonExternalAssessmentFieldID = $I->grabEditIDFromURL();
+
+// Edit Field -----------------------------------------------
+$I->amOnModulePage('School Admin', 'externalAssessments_manage_edit_field_edit.php', array(
+    'gibbonExternalAssessmentID' => $gibbonExternalAssessmentID,
+    'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID
+));
+$I->seeBreadcrumb('Edit Field');
+
+$I->seeInField('name', 'Test Field 1');
+
+$editFieldFormValues = array(
+    'name'     => 'Test Field Updated',
+    'category' => 'Test Updated',
+    'order'    => '2',
+);
+
+$I->submitForm('#content form', $editFieldFormValues, 'Submit');
+$I->seeSuccessMessage();
 
 // Delete Field ------------------------------------------
 $I->amOnModulePage('School Admin', 'externalAssessments_manage_edit_field_delete.php', array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID));

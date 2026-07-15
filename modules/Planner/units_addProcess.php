@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 include '../../gibbon.php';
 
@@ -76,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     header("Location: {$URL}");
                 } else {
                     //Move attached file, if there is one
+                    $fileMetaData = null;
                     if (!empty($_FILES['file']['tmp_name'])) {
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
@@ -86,6 +88,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                         if (empty($attachment)) {
                             $partialFail = true;
+                        } else {
+                            $fileMetaData = $fileUploader->getFileMetaData($attachment);
                         }
                     } else {
                         $attachment = '';
@@ -106,6 +110,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     $AI = $connection2->lastInsertID();
 
                     $partialFail = false;
+
+                    // Record file tracking (only if file uploaded)
+                    if (!empty($fileMetaData) && !empty($AI)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonUnit', $AI, 'attachment');
+
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
+                    }
 
                     //ADD CLASS RECORDS
                     if ($classCount > 0) {

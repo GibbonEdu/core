@@ -161,6 +161,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectTimezone($setting['name'])->selected($setting['value'])->placeholder()->required();
 
+    $timeFormats = ['H:i' => __('24-hour'), 'g:i a' => __('AM/PM')];
+    $setting = $settingGateway->getSettingByScope('System', 'timeFormatPHP', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromArray($timeFormats)->selected($setting['value'])->placeholder()->required();
+
     $setting = $settingGateway->getSettingByScope('System', 'currency', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

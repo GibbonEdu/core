@@ -29,7 +29,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$action = $_POST['action'] ?? [];
+$action = $_POST['action'] ?? '';
 $identifiers = $_POST['identifiers'] ?? []; 
 $templateName = $_POST['templateName'] ?? '';
 
@@ -86,7 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $data = [
                 'preferredName'     => $application['preferredName'] ?? '',
                 'surname'           => $application['surname'] ?? '',
-                'date'              => Format::date(date('Y-m-d')),
+                'organisationName'  => $session->get('organisationName'),
+                'organisationEmail' => $session->get('organisationEmail'),
             ];
 
             // Render the email
@@ -116,11 +117,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
         // Update success based on email results
         if ($sendReport['emailFailed'] > 0 && $sendReport['emailSent'] == 0) {
-            $success = false;
+            $successEmail = false;
         }
     }
 
-    $URL .= !$success ? "&return=error2" : ($action == 'Reject with email' ? "&return=success5" : "&return=success0");
+    if (empty($templateName)) {
+        $URL .= !$success ? "&return=error2" : "&return=success0";
+    } else {
+        $URL .= !$successEmail ? "&return=success5" : "&return=success0";
+    }
 
     header("Location: {$URL}");
 }

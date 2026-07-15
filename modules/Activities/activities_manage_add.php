@@ -299,50 +299,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
         }
 
-        var time = 'input[id^="time"]';
-        function setTimepicker(input) {
-            input.removeClass('hasTimepicker').timepicker({
-                    'scrollDefault': 'now',
-                    'timeFormat': 'H:i',
-                    'minTime': '00:00',
-                    'maxTime': '23:59',
-                    onSelect: function(){$(this).blur();},
-                    onClose: function(){$(this).change();}
-                });
-        }
-
         $(document).ready(function(){
             //This is to ensure that loaded blocks have the correct state.
             $(radio + ':checked').each(locationSwap);
-
-            //This is to ensure that loaded blocks have timepickers
-            $(time).each(function() {
-                setTimepicker($(this));
-            });
-
-            //This is needed to ensure that loaded timeEnds are properly chained to loaded timeStarts
-            $('input[id^=timeEnd]').each(function() {
-                var timeStart = $('#' + $(this).prop('id').replace('End', 'Start'));
-                $(this).timepicker('option', {'minTime': timeStart.val(), 'timeFormat': 'H:i', 'showDuration': true});
-            });
         });
 
         //This supplements triggers for the Internal and External Locations
         $(document).on('change', radio, locationSwap);
-
-        //This is needed to make chaining Times work with Custom Blocks
-        $(document).on('changeTime', 'input[id^=timeStart]', function() {
-            var timeEnd = $('#' + $(this).prop('id').replace('Start', 'End'));
-            if (timeEnd.val() == "" || $(this).val() > timeEnd.val()) {
-                timeEnd.val($(this).val());
-            }
-            timeEnd.timepicker('option', {'minTime': $(this).val(), 'timeFormat': 'H:i', 'showDuration': true});
-        });
-
-        //This is needed to make Time inputs have time pickers.
-        $(document).on('click', '.addBlock', function () {
-            setTimepicker($(time));
-        });
     </script>
 
     <?php

@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
-    $students = $reportGateway->queryStudentDetails($criteria, $choices);
+    $students = $reportGateway->queryStudentDetails($criteria, $gibbonSchoolYearID, $choices);
 
     // Join a set of family adults per student
     $people = $students->getColumn('gibbonPersonID');

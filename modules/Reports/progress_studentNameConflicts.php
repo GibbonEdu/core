@@ -19,13 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNameConflicts.php') == false) {
     // Access denied
@@ -77,21 +78,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
 
     // Check all comments for names that don't match this student's name
     foreach ($reportingValues as $values) {
+        $matches = [];
+        $key = $values['gibbonReportingValueID'];
+
         foreach ($names as $name) {
             if ($values['preferredName'] == $name) continue;
 
-            $matches = [];
+            // Check for the presence of other student names in the comment. Use word boundaries to avoid partial matches.
             if (preg_match('/\b'.$name.'\b/', $values['comment'], $matches)) {
-                $key = $values['gibbonReportingValueID'];
+                $foundNames[$key] = array_merge($foundNames[$key] ?? [], $values);
                 $foundNames[$key]['gibbonPersonIDStudent'] = $values['gibbonPersonID'];
-                $foundNames[$key]['gibbonReportingScopeID'] = $values['gibbonReportingScopeID'];
-                $foundNames[$key]['criteriaName'] = $values['criteriaName'];
-                $foundNames[$key]['scopeType'] = $values['scopeType'];
-                $foundNames[$key]['scopeTypeID'] = $values['scopeTypeID'];
-                $foundNames[$key]['preferredName'] = $values['preferredName'];
-                $foundNames[$key]['surname'] = $values['surname'];
                 $foundNames[$key]['foundNames'][] = $name;
             }
+        }
+
+        // Check for the absence of the student's own name in the comment. 
+        if (preg_match('/\b'.$values['preferredName'].'\b/', $values['comment'], $matches) === 0 && (stripos($values['criteriaName'], 'Individual') !== false || $values['scopeType'] != 'Course')) {
+            $foundNames[$key] = array_merge($foundNames[$key] ?? [], $values);
+            $foundNames[$key]['gibbonPersonIDStudent'] = $values['gibbonPersonID'];
+            $foundNames[$key]['missingName'] = $values['preferredName'];
+        }
+
+        // Check that the student pronouns match the student gender
+        $pronounMismatch = null;
+        $gender = $values['gender'];
+        if ($gender == 'M') {
+            $pronounMismatch = '/(\bshe\b.*)|(\bher\b.*)|(\bherself\b)/i';
+        } elseif ($gender == 'F') {
+            $pronounMismatch = '/(\bhe\b.*)|(\bhis\b.*)|(\bhim\b.*)|(\bhimself\b)/i';
+        }
+
+        if ($pronounMismatch && preg_match($pronounMismatch, $values['comment'], $matches)) {
+            $foundNames[$key] = array_merge($foundNames[$key] ?? [], $values);
+            $foundNames[$key]['gibbonPersonIDStudent'] = $values['gibbonPersonID'];
+            $foundNames[$key]['pronounMismatch'] = $gender;
+        }
+
+        // Check for invalid characters
+        if (preg_match('/ /', $values['comment'], $matches)) {
+            $foundNames[$key] = array_merge($foundNames[$key] ?? [], $values);
+            $foundNames[$key]['gibbonPersonIDStudent'] = $values['gibbonPersonID'];
+            $foundNames[$key]['invalidCharacter'] = ' ';
         }
     }
 
@@ -99,6 +126,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
     $table = DataTable::create('nameCheck');
     $table->setTitle(__('Student Name Conflicts'));
     $table->setDescription(__('This report checks all comments in a reporting cycle for any other student names that do not match the name of the student commented on.'));
+
+    $table->addColumn('checked', __('Checked'))
+        ->format(function ($values) use (&$form) {
+            $checked = $values['checked'];
+            $url = Url::fromModuleRoute('Reports', 'progress_studentNameConflicts_ajax.php')
+                ->withQueryParams(['gibbonReportingProgressID' => $values['gibbonReportingProgressID'], 'checked' => $checked == 'Y' ? 'N' : 'Y'])
+                ->directLink();
+
+            return $form->getFactory()
+                ->createButton('')
+                ->setIcon('solid', $checked == 'Y' ? 'check' : 'question-mark', $checked == 'Y' ? 'size-5 text-green-600' : 'size-5')
+                ->setAttribute('hx-get', $url)
+                ->setAttribute('hx-target', 'this')
+                ->setAttribute('hx-push-url', 'false')
+                ->setAttribute('hx-swap', 'outerHTML show:none swap:0s')
+                ->getOutput();
+        });
 
     $table->addColumn('name', __('Name'))
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true, true]));
@@ -113,8 +157,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
             if (!empty($values['foundNames']) && is_array($values['foundNames'])) {
                 sort($values['foundNames']);
                 $values['foundNames'] = array_unique($values['foundNames']);
+
+                return Format::tag(implode(', ', $values['foundNames'] ?? []), 'warning');
             }
-            return Format::tag(implode(', ', $values['foundNames'] ?? []), 'warning');
+
+            if (!empty($values['missingName'])) {
+                return Format::tag(__('Name not found'), 'error');
+            }
+
+            if (!empty($values['pronounMismatch'])) {
+                return Format::tag(__('Check pronouns'), 'message');
+            }
+
+            if (!empty($values['invalidCharacter'])) {
+                return Format::tag(__('Should not include').' "'.$values['invalidCharacter'].'"', 'message');
+            }
         });
 
     if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_byStudent.php')) {

@@ -67,14 +67,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $target = $_GET['target'] ?? '';
     $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     $absenceType = $_GET['absenceType'] ?? 'full';
     $date = $_GET['date'] ?? '';
     $dateStart = $_GET['dateStart'] ?? '';
     $dateEnd = $_GET['dateEnd'] ?? '';
     $timeStart = $_GET['timeStart'] ?? '';
     $timeEnd = $_GET['timeEnd'] ?? '';
+    $foreignTable = $_GET['foreignTable'] ?? '';
+    $foreignTableID = $_GET['foreignTableID'] ?? '';
 
-    $urlParams = compact('target', 'gibbonActivityID', 'gibbonGroupID', 'absenceType', 'date', 'timeStart', 'timeEnd');
+    $urlParams = compact('target', 'gibbonActivityID', 'gibbonGroupID', 'gibbonCourseClassID', 'absenceType', 'date', 'timeStart', 'timeEnd');
 
     $targetDate = !empty($date) ? Format::dateConvert($date) : date('Y-m-d');
     $effectiveStart = strtotime($targetDate.' '.$timeStart);
@@ -110,6 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $targetOptions = [
             'Messenger' => __('Messenger Group'),
             'Activity'  => __('Activity Enrolment'),
+            'Class'   => __('Class Enrolment'),
             'Select'    => __('Select Students'),
         ];
         $row = $form->addRow()->addClass('multiple');
@@ -118,6 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         $form->toggleVisibilityByClass('targetActivity')->onSelect('target')->when('Activity');
         $form->toggleVisibilityByClass('targetMessenger')->onSelect('target')->when('Messenger');
+        $form->toggleVisibilityByClass('targetClass')->onSelect('target')->when('Class');
         $form->toggleVisibilityByClass('targetSelect')->onSelect('target')->when('Select');
 
         // Activity
@@ -125,13 +130,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $row = $form->addRow()->addClass('targetActivity');
             $row->addLabel('gibbonActivityID', __('Activity'));
             $row->addSelect('gibbonActivityID')->fromArray($activities)->selected($gibbonActivityID)->required()->placeholder();
-
         // Messenger Groups
         $groups = $container->get(GroupGateway::class)->selectGroupsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
         $row = $form->addRow()->addClass('targetMessenger');
             $row->addLabel('gibbonGroupID', __('Messenger Group'));
             $row->addSelect('gibbonGroupID')->fromArray($groups)->selected($gibbonGroupID)->required()->placeholder();
 
+        // Class Enrolments
+        $row = $form->addRow()->addClass('targetClass');
+            $row->addLabel('gibbonCourseClassID', __('Class'));
+            $row->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->selected($gibbonCourseClassID)->required()->placeholder();
     }
 
     // Select Students
@@ -190,7 +198,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     // Get list of students for selected target
     if (!empty($target)) {
-        $targetID = $target == 'Activity' ? $gibbonActivityID : ($target == 'Messenger' ? $gibbonGroupID : $gibbonPersonIDList);
+        switch ($target) {
+            case 'Activity':
+                $targetID = $gibbonActivityID; break;
+            case 'Messenger':
+                $targetID = $gibbonGroupID; break;
+            case 'Class':
+                $targetID = $gibbonCourseClassID; break;
+            default:      
+                $targetID = $gibbonPersonIDList; break;
+        }
+
         $students = $attendanceLogGateway->selectAdHocAttendanceStudents($session->get('gibbonSchoolYearID'), $target, $targetID, $targetDate)->fetchAll();
         $gibbonPersonIDList = empty($gibbonPersonIDList) ? array_column($students, 'gibbonPersonID') : $gibbonPersonIDList;
     }
@@ -377,10 +395,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $form->addHiddenValue('target', $target);
         $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
         $form->addHiddenValue('gibbonGroupID', $gibbonGroupID);
+        $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
         $form->addHiddenValue('date', $date);
         $form->addHiddenValue('timeStart', $timeStart);
         $form->addHiddenValue('timeEnd', $timeEnd);
         $form->addHiddenValue('gibbonPersonIDList', implode(",", $gibbonPersonIDList));
+        $form->addHiddenValue('foreignTable', $foreignTable);
+        $form->addHiddenValue('foreignTableID', $foreignTableID);
 
         $form->addRow()->addHeading('Set Future Attendance', __('Set Future Attendance'));
 

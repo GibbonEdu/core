@@ -23,6 +23,7 @@ use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -61,6 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
     }
 
     // Handle file uploads for custom config fields
+    $fileMetaDataList = [];
     foreach ($config ?? [] as $configName => $configValue) {
         if (!empty($_FILES['config']['tmp_name'][$configName])) {
             $file = array_reduce(array_keys($_FILES['config']), function ($group, $itemName) use ($configName) {
@@ -71,6 +73,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
             // Upload the file, return the /uploads relative path
             $fileUploader = empty($fileUploader) ? new FileUploader($pdo, $session) : $fileUploader;
             $config[$configName] = $fileUploader->uploadFromPost($file, $configName.'_file');
+            
+            // Get file metadata for tracking
+            if (!empty($config[$configName])) {
+                $fileMetaData = $fileUploader->getFileMetaData($config[$configName]);
+                if (!empty($fileMetaData)) {
+                    $fileMetaDataList[$configName] = $fileMetaData;
+                }
+            }
         }
     }
 
@@ -98,6 +108,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
     // Update the record
     $updated = $templateSectionGateway->update($gibbonReportTemplateSectionID, $data);
 
+    // Record file tracking for each uploaded file in JSON config
+    if (!empty($fileMetaDataList)) {
+        $fileHandler = $container->get(FileHandler::class);
+        foreach ($fileMetaDataList as $configName => $fileMetaData) {
+            $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, 'gibbonReportTemplateSection', $gibbonReportTemplateSectionID, 'config[' . $configName . ']');
+        }
+    }
+    
     $URL .= !$updated
         ? "&return=error2"
         : "&return=success0";

@@ -256,6 +256,9 @@ class Structure
     {
         if (empty($time1) || empty($time2)) return 0;
 
+        if (strlen($time1) > 8) $time1 = substr($time1, -8, 8);
+        if (strlen($time2) > 8) $time2 = substr($time2, -8, 8);
+
         $date1 = \DateTimeImmutable::createFromFormat('H:i:s', $time1 > $time2 ? $time1 : $time2);
         $date2 = \DateTimeImmutable::createFromFormat('H:i:s', $time1 > $time2 ? $time2 : $time1);
 

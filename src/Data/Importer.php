@@ -220,6 +220,7 @@ class Importer
 
     public function readFileIntoCSV()
     {
+        // File Upload Tracking is skipped as this is a CSV/Excel import handler that processes uploaded files temporarily from $_FILES['file']['tmp_name'] for data import.
         $data = '';
 
         $fileType = mb_substr($_FILES['file']['name'], mb_strpos($_FILES['file']['name'], '.')+1);

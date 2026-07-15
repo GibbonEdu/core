@@ -116,15 +116,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     header("Location: {$URL}");
                 } else {
                     if ($canEdit) {
-                        try {
-                            $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID];
-                            $sql = 'UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, fields=:fields, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
+                        $data = [
+                            'gibbonPersonID' => $gibbonPersonID,
+                            'date' => Format::dateConvert($date),
+                            'type' => $type,
+                            'descriptor' => $descriptor,
+                            'level' => $level,
+                            'comment' => $comment,
+                            'fields' => $fields,
+                            'gibbonPlannerEntryID' => $gibbonPlannerEntryID,
+                            'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID') ?? '',
+                        ];
+
+                        $updated = $behaviourGateway->update($gibbonBehaviourID, $data);
+
+                        if (!$updated) {
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
+                        }
+
+                        // Manage custom field file uploads and deletions
+                        if (!empty($fields)) {
+                            $filesRecorded = $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Behaviour', [], $fields, 'gibbonBehaviour', $gibbonBehaviourID, $behaviourRecord['fields']);
                         }
                     }
 

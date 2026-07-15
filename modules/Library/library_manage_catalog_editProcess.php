@@ -19,10 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Library\LibraryGateway;
 use Gibbon\Domain\Library\LibraryTypeGateway;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -167,6 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     } 
 
     $partialFail = false;
+    $fileMetaData = null;
 
     // Move attached image  file, if there is one
     if (!empty($_FILES['imageFile']['tmp_name']) && $imageType == 'File') {
@@ -180,11 +182,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         if (empty($data['imageLocation'])) {
             $partialFail = true;
+        } else {
+            $fileMetaData = $fileUploader->getFileMetaData($data['imageLocation']);
         }
     }
 
     // Write to database
     $updated = $libraryGateway->update($gibbonLibraryItemID, $data);
+
+    // Record file tracking
+    if (!empty($fileMetaData) && !empty($gibbonLibraryItemID)) {
+        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonLibraryItem', $gibbonLibraryItemID, 'imageLocation');
+
+        if (empty($gibbonFileID)) {
+            $partialFail = true;
+        }
+    }
 
     if (!$updated) {
         $URL .= '&return=error2';

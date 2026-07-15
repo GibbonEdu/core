@@ -268,7 +268,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     $form->setTitle(__('Select Class'));
 
     $row = $form->addRow()->addClass('flex');
-        $row->addSelect('gibbonCourseClassID')
+        $row->addSearchSelect('gibbonCourseClassID')
             ->fromArray($classes)
             ->selected($gibbonCourseClassID)
             ->placeholder()

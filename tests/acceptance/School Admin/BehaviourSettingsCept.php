@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/behaviourSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Behaviour Settings');
 $I->loginAsAdmin();

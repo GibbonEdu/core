@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/System Admin/customFields.php
+ * @covers modules/System Admin/customFields_add.php
+ * @covers modules/System Admin/customFields_edit.php
+ * @covers modules/System Admin/customFields_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete custom fields');
 $I->loginAsAdmin();

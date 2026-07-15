@@ -98,7 +98,7 @@ class CourseGateway extends QueryableGateway
 
     public function selectClassesBySchoolYear($gibbonSchoolYearID)
     {
-        $data= array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $data= ['gibbonSchoolYearID' => $gibbonSchoolYearID];
         $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort as course, gibbonCourseClass.nameShort as class
                 FROM gibbonCourse
                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
@@ -106,34 +106,6 @@ class CourseGateway extends QueryableGateway
                 ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
         return $this->db()->select($sql, $data);
-    }
-
-    public function selectClassesByCourseID($gibbonCourseID)
-    {
-        $data = array('gibbonCourseID' => $gibbonCourseID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonCourseClass.*, COUNT(CASE WHEN gibbonPerson.status='Full' AND gibbonCourseClassPerson.role='Student' AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<:today) AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today) THEN gibbonPerson.status END) as studentsActive, COUNT(CASE WHEN (gibbonPerson.status='Expected' OR gibbonPerson.dateStart>=:today) AND gibbonCourseClassPerson.role='Student' THEN gibbonPerson.status END) as studentsExpected, COUNT(DISTINCT CASE WHEN (gibbonPerson.status='Full' OR gibbonPerson.status='Expected') AND gibbonCourseClassPerson.role='Student' AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today) THEN gibbonPerson.gibbonPersonID END) as studentsTotal, COUNT(DISTINCT CASE WHEN gibbonCourseClassPerson.role='Teacher' AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected') THEN gibbonPerson.gibbonPersonID END) as teachersTotal
-            FROM gibbonCourseClass
-            LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Teacher'))
-            LEFT JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected'))
-            WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID
-            GROUP BY gibbonCourseClass.gibbonCourseClassID
-            ORDER BY gibbonCourseClass.nameShort";
-
-        return $this->db()->select($sql, $data);
-    }
-
-    public function getCourseClassByID($gibbonCourseClassID)
-    {
-        $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, enrolmentMin, enrolmentMax, COUNT(DISTINCT gibbonCourseClassPerson.gibbonPersonID) as studentsTotal
-                FROM gibbonCourseClass
-                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
-                WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
-                GROUP BY gibbonCourseClass.gibbonCourseClassID";
-
-        return $this->db()->selectOne($sql, $data);
     }
 
     public function selectCoursesBySchoolYear($gibbonSchoolYearID)
@@ -230,8 +202,46 @@ class CourseGateway extends QueryableGateway
                 ORDER BY gibbonCourse.nameShort";
 
         return $this->db()->select($sql, $data);
+    }    
+
+    public function getCourseClassDetails($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonSchoolYearID, gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.name AS classLong, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance, gibbonCourseClass.fields, gibbonSchoolYear.firstDay, gibbonSchoolYear.lastDay
+                FROM gibbonCourse
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID)
+                WHERE gibbonCourseClassID=:gibbonCourseClassID";
+        
+        return $this->db()->selectOne($sql, $data);
     }
 
+    // SELECT gibbonCourseClass.*, firstDay, lastDay,
+
+    public function getCourseClassInfoByID($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.name AS classLong, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance, gibbonCourseClass.fields
+                    FROM gibbonCourse
+                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                    WHERE gibbonCourseClassID=:gibbonCourseClassID";
+        
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectCoursesAndClassesBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
+                FROM gibbonCourse
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                WHERE gibbonSchoolYearID=:gibbonSchoolYearID
+                ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+        
+        return $this->db()->select($sql, $data);
+    }
     public function selectCourseListBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
@@ -239,7 +249,7 @@ class CourseGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
-
+      
     public function selectCourseListBySchoolYearAndPerson($gibbonSchoolYearID, $gibbonPersonID )
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
@@ -248,6 +258,48 @@ class CourseGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getCourseDetails($gibbonCourseID)
+    {
+        $data = ['gibbonCourseID' => $gibbonCourseID];
+        $sql = 'SELECT gibbonSchoolYear.name AS year, gibbonDepartment.name AS department, gibbonCourse.name AS course, description, gibbonCourse.gibbonSchoolYearID FROM gibbonCourse JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectClassesByCourse($gibbonCourseID)
+    {
+        $data = ['gibbonCourseID' => $gibbonCourseID];
+        $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID ORDER BY class';
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCurrentCoursesByDepartment($gibbonDepartmentID)
+    {
+        $data = ['gibbonDepartmentID' => $gibbonDepartmentID];
+        $sql = "SELECT gibbonCourse.* FROM gibbonCourse
+            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+            WHERE gibbonDepartmentID=:gibbonDepartmentID
+            AND gibbonYearGroupIDList <> ''
+            AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
+            GROUP BY gibbonCourse.gibbonCourseID
+            ORDER BY nameShort, name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectPastCoursesByDepartment($gibbonDepartmentID, $gibbonSchoolYearID)
+    {
+        $data = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonSchoolYear.name AS year, gibbonCourse.gibbonCourseID as value, gibbonCourse.name AS name
+                        FROM gibbonCourse
+                        JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                        WHERE gibbonDepartmentID=:gibbonDepartmentID
+                        AND NOT gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                        ORDER BY sequenceNumber, gibbonCourse.nameShort, name";
+        return $this->db()->select($sql, $data);
+    }
+    
     public function selectClassListBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
@@ -256,11 +308,19 @@ class CourseGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectClassesByStaff($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE \'% - Left%\' ORDER BY course, class';
+        
+        return $this->db()->select($sql, $data);
+    }
+        
     public function selectClassListBySchoolYearAndPerson($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' ORDER BY gibbonCourseClass.name";
-
+        
         return $this->db()->select($sql, $data);
     }
 }

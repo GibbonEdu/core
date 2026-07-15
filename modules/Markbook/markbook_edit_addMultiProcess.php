@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -152,13 +153,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         }
 
         $rowGrouping = $resultGrouping->fetch();
-        if (is_null($rowGrouping['groupingID'])) {
+        if (empty($rowGrouping['groupingID'])) {
             $groupingID = 1;
         } else {
             $groupingID = ($rowGrouping['groupingID'] + 1);
         }
 
         //Move attached image  file, if there is one
+        $fileMetaData = null;
         if (!empty($_FILES['file']['tmp_name'])) {
             $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
@@ -169,6 +171,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
             if (empty($attachment)) {
                 $partialFail = true;
+            } else {
+                $fileMetaData = $fileUploader->getFileMetaData($attachment);
             }
         }
 
@@ -197,20 +201,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 }
 
                 //Write to database
+                $gibbonMarkbookColumnID = null;
                 try {
                     $data = array('groupingID' => $groupingID, 'gibbonCourseClassID' => $gibbonCourseClassIDSingle, 'name' => $name, 'description' => $description, 'columnColor' => $columnColor, 'type' => $type, 'date' => $date, 'sequenceNumber' => $sequenceNumber, 'attainment' => $attainment, 'gibbonScaleIDAttainment' => $gibbonScaleIDAttainment, 'attainmentWeighting' => $attainmentWeighting, 'attainmentRaw' => $attainmentRaw, 'attainmentRawMax' => $attainmentRawMax, 'effort' => $effort, 'gibbonScaleIDEffort' => $gibbonScaleIDEffort, 'gibbonRubricIDAttainment' => $gibbonRubricIDAttainment, 'gibbonRubricIDEffort' => $gibbonRubricIDEffort, 'comment' => $comment, 'uploadedResponse' => $uploadedResponse, 'completeDate' => $completeDate, 'complete' => $complete, 'viewableStudents' => $viewableStudents, 'viewableParents' => $viewableParents, 'attachment' => $attachment, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
                     $sql = 'INSERT INTO gibbonMarkbookColumn SET groupingID=:groupingID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, columnColor=:columnColor, type=:type, date=:date, sequenceNumber=:sequenceNumber, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, attainmentWeighting=:attainmentWeighting, attainmentRaw=:attainmentRaw, attainmentRawMax=:attainmentRawMax, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
+                    $gibbonMarkbookColumnID = $connection2->lastInsertID();
                 } catch (PDOException $e) {
                     $partialFail = true;
+                }
+                
+                // Record file tracking for each column
+                if (!empty($fileMetaData) && !empty($gibbonMarkbookColumnID)) {
+                    $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonMarkbookColumn', $gibbonMarkbookColumnID, 'attachment');
+
+                    if (empty($gibbonFileID)) {
+                        $partialFail = true;
+                    }
                 }
             }
 
             //Unlock module table
-
-                $sql = 'UNLOCK TABLES';
-                $result = $connection2->query($sql);
+            $sql = 'UNLOCK TABLES';
+            $result = $connection2->query($sql);
 
             if ($partialFail != false) {
                 $URL .= '&return=warning1';

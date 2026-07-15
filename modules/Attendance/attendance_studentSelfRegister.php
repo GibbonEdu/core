@@ -19,9 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -53,12 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
             print "</div>" ;
         }
         else {
-            //Check for existence of records today
-
-                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'date' => $currentDate);
-                $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            // Check for existence of records today
+            $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($session->get('gibbonPersonID'), $currentDate, 'N');
 
             if ($result->rowCount() > 0) { //Records! Output current status
                 $row = $result->fetch();

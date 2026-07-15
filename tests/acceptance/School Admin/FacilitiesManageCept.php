@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/School Admin/space_manage.php
+ * @covers modules/School Admin/space_manage_add.php
+ * @covers modules/School Admin/space_manage_edit.php
+ * @covers modules/School Admin/space_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete something');
 $I->loginAsAdmin();

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/System Admin/privacySettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Security & Privacy Settings');
 $I->loginAsAdmin();

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
@@ -64,6 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            // Fetch old record for comparison
+            $oldApplicationRecord = $result->fetch();
+
             //Proceed!
             //Get student fields
             $priority = $_POST['priority'] ?? '';
@@ -382,6 +386,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         exit();
                     }
 
+                    // Manage custom field file uploads for student
+                    if (!empty($fields)) {
+                        $params = ['student' => true, 'applicationForm' => true];
+                        $customFieldHandler->manageCustomFieldFileUploads('User', $params, $fields, 'gibbonApplicationForm', $gibbonApplicationFormID, $oldApplicationRecord['fields'] ?? null);
+                    }
+
+                    // Manage custom field file uploads for parents if no existing family
+                    if ($gibbonFamily == 'FALSE') {
+                        if (!empty($parent1fields)) {
+                            $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent1custom'];
+                            $customFieldHandler->manageCustomFieldFileUploads('User', $params, $parent1fields, 'gibbonApplicationFormParent1', $gibbonApplicationFormID, $oldApplicationRecord['parent1fields'] ?? null);
+                        }
+
+                        if (empty($_POST['secondParent']) && !empty($parent2fields)) {
+                            $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent2custom'];
+                            $customFieldHandler->manageCustomFieldFileUploads('User', $params, $parent2fields, 'gibbonApplicationFormParent2', $gibbonApplicationFormID, $oldApplicationRecord['parent2fields'] ?? null);
+                        }
+                    }
+
                     $partialFail = false;
 
                     //Deal with required documents
@@ -416,16 +439,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                 // Upload the file, return the /uploads relative path
                                 $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
+                                $fileMetaData = null;
 
                                 // Write files to database, if there is one
                                 if (!empty($attachment)) {
+                                    $fileMetaData = $fileUploader->getFileMetaData($attachment);
+
                                     try {
-                                        $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName, 'path' => $attachment);
+                                        $dataFile = ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName, 'path' => $attachment];
                                         $sqlFile = "INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path";
                                         $resultFile = $connection2->prepare($sqlFile);
                                         $resultFile->execute($dataFile);
+                                        $gibbonApplicationFormFileID = $connection2->lastInsertID();
                                     } catch (PDOException $e) {
                                         $partialFail = true;
+                                    }
+
+                                    // Record file tracking
+                                    if (!empty($fileMetaData) && !empty($gibbonApplicationFormFileID)) {
+                                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonApplicationFormFile', $gibbonApplicationFormFileID, 'path');
+                                        
+                                        if (empty($gibbonFileID)) {
+                                            $partialFail = true;
+                                        }
                                     }
                                 } else {
                                     $partialFail = true;
@@ -437,13 +473,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                         // File is flagged for deletion if the attachment path has been removed
                         foreach ($attachments as $gibbonApplicationFormFileID => $attachment) {
-                            if (!empty($gibbonApplicationFormFileID) && empty($attachment)) {
+                            if (!empty($gibbonApplicationFormFileID) && empty($attachment)) {                                
                                 try {
                                     $dataFile = array('gibbonApplicationFormFileID' => $gibbonApplicationFormFileID);
                                     $sqlFile = "DELETE FROM gibbonApplicationFormFile WHERE gibbonApplicationFormFileID=:gibbonApplicationFormFileID";
                                     $resultFile = $connection2->prepare($sqlFile);
                                     $resultFile->execute($dataFile);
                                 } catch (PDOException $e) {
+                                    $partialFail = true;
+                                }
+
+                                // Delete file tracking before deleting the database record
+                                $deleted = $container->get(FileHandler::class)->deleteFile('gibbonApplicationFormFile', $gibbonApplicationFormFileID, 'path');
+
+                                if (!$deleted) {
                                     $partialFail = true;
                                 }
                             }

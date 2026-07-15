@@ -23,6 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Domain\User\PersonPhotoGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 include './gibbon.php';
 
@@ -50,6 +51,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
         exit();
     } else {
         $attachment1 = null;
+        $fileMetaData = null;
         if (!empty($_FILES['file1']['tmp_name'])) {
             $fileUploader = new Gibbon\FileUploader($pdo, $session);
             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
@@ -63,6 +65,9 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
                 header("Location: {$URL->withReturn('warning1')}");
                 exit();
             }
+
+            // Capture file metadata for tracking
+            $fileMetaData = $fileUploader->getFileMetaData($attachment1);
         }
 
         $path = $session->get('absolutePath');
@@ -92,18 +97,29 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
                 exit();
             }
 
+            
             if (!empty($attachment1)) {
                 $personPhotoGateway = $container->get(PersonPhotoGateway::class);
                 // Update/insert the photo into the backup table
                 $photoUpdated = $personPhotoGateway->insertAndUpdate([
-                    'gibbonPersonID' => $userData['gibbonPersonID'],
+                    'gibbonPersonID' => $gibbonPersonID,
                     'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
-                    'personImage' => $file['relativePath'],
+                    'personImage' => $attachment1,
                     'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
                 ], [
-                    'personImage' => $file['relativePath'],
+                    'personImage' => $attachment1,
                     'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
                 ]);
+
+                // Record file tracking 
+                if (!empty($fileMetaData) && !empty($gibbonPersonID)) {
+                    $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPerson', $gibbonPersonID, 'image_240');
+                    
+                    if (empty($gibbonFileID)) {
+                        header("Location: {$URL->withReturn('warning1')}");
+                        exit();
+                    }
+                }
             }
 
             //Update session variables

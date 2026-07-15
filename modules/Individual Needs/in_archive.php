@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,6 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 } else {
     $page->breadcrumbs->add(__('Archive Records'));
 
+    $result = $container->get(INGateway::class)->selectINStudentsBySchoolYear($session->get('gibbonSchoolYearID'));
+  
     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort as formGroup
             FROM gibbonPerson

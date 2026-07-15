@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -160,6 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $partialFail = false;
 
                     //Move attached image  file, if there is one
+                    $fileMetaData = null;
                     if (!empty($_FILES['file']['tmp_name'])) {
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
@@ -170,6 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 
                         if (empty($attachment)) {
                             $partialFail = true;
+                        } else {
+                            $fileMetaData = $fileUploader->getFileMetaData($attachment);
                         }
                     } else {
                         // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -190,6 +194,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
+                        }
+
+                        // Handle file deletion when user removes attachment
+                        if (empty($attachment) && !empty($row['attachment'])) {
+                            $deleted = $container->get(FileHandler::class)->deleteFile('gibbonMarkbookColumn', $gibbonMarkbookColumnID, 'attachment');
+                        }
+                            
+                        // Record file tracking for UPDATE
+                        if (!empty($fileMetaData) && !empty($gibbonMarkbookColumnID)) {
+                            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonMarkbookColumn', $gibbonMarkbookColumnID, 'attachment');
+
+                            if (empty($gibbonFileID)) {
+                                $partialFail = true;
+                            }
                         }
 
                         $URL .= '&return=success0';

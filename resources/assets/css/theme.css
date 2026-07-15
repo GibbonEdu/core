@@ -475,6 +475,10 @@ textarea + .error-msg {
     @apply top-auto bottom-0 mb-2 ml-2;
 }
 
+.personSelect + .error-msg {
+    @apply top-[30%] ml-20;
+}
+
 .editor-full .tox-tinymce + .error-msg  {
     @apply top-auto bottom-0 mb-6 ml-2;
 }

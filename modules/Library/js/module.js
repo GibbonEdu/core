@@ -23,12 +23,18 @@ function stopRKey(evt) {
 }
 
 $.prototype.loadGoogleBookData = function (settings) {
-
+    
     $(document).on('click', '.gbooks', function () {
         var isbn = $("#fieldISBN10").val() ? $("#fieldISBN10").val() : $("#fieldISBN13").val();
 
         if (isbn) {
-            $.get(("https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn), function (data) {
+            var apiUrl = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn;
+
+            if (settings.apiKey && settings.apiKey !== '') {
+                apiUrl += "&key=" + settings.apiKey;
+            }
+
+            $.get((apiUrl), function (data) {
                 var obj = (data.constructor === String) ? jQuery.parseJSON(data) : data;
 
                 if (obj['totalItems'] == 0) {

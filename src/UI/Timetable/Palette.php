@@ -137,7 +137,7 @@ class Palette
     }
 
     public function adjustHexColor($hexCode, $adjustPercent) {
-        $hexCode = ltrim($hexCode, '#');
+        $hexCode = ltrim($hexCode ?? '', '#');
     
         if (strlen($hexCode) == 3) {
             $hexCode = $hexCode[0] . $hexCode[0] . $hexCode[1] . $hexCode[1] . $hexCode[2] . $hexCode[2];
@@ -157,7 +157,7 @@ class Palette
 
     public function getHexContrastColor($hexcolor) {
         // Remove '#' if present
-        $hexcolor = str_replace('#', '', $hexcolor);
+        $hexcolor = str_replace('#', '', $hexcolor ?? '');
     
         // Get RGB components
         $r = hexdec(substr($hexcolor, 0, 2));

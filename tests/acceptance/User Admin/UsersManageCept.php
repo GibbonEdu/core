@@ -1,4 +1,12 @@
 <?php
+/**
+ * @covers modules/User Admin/user_manage.php
+ * @covers modules/User Admin/user_manage_add.php
+ * @covers modules/User Admin/user_manage_edit.php
+ * @covers modules/User Admin/user_manage_delete.php
+ * @covers modules/User Admin/userSettings.php
+ * @covers modules/User Admin/studentsSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a user');
 $I->loginAsAdmin();
@@ -113,6 +121,8 @@ $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 
 $gibbonPersonID = $I->grabEditIDFromURL();
+$file = $I->grabFromDatabase('gibbonPerson', 'image_240', ['gibbonPersonID' => $gibbonPersonID]);
+$I->assertNotEmpty($file);
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_edit.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
@@ -175,12 +185,23 @@ $formValues = array(
     'vehicleRegistration'       => '4321',
 );
 
+$I->fillField('attachment1', '');
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 
-// Cleanup Files ------------------------------------------------
+$gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
+$I->seeInDatabase('gibbonPerson', ['gibbonPersonID' => $gibbonPersonID, 'image_240' => '']);
 
-$I->deleteFile('../'.rawurldecode($I->grabValueFrom('input[name="attachment1"]')));
+// Edit - File Upload ------------------------------------------------
+$I->amOnModulePage('User Admin', 'user_manage_edit.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
+
+$I->attachFile('file1', 'attachment2.png');
+$I->submitForm('#content form', [], 'Submit');
+$I->see('Your request was completed successfully.', '.success');
+
+$file2 = $I->grabFromDatabase('gibbonPerson', 'image_240', ['gibbonPersonID' => $gibbonPersonID]);
+$I->assertNotEmpty($file2);
+
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));

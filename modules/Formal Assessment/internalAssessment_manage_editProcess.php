@@ -19,8 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -44,16 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            $result = $container->get(InternalAssessmentColumnGateway::class)->selectBy(['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID]);
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error2';
@@ -103,6 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
                 $time = time();
+                $fileMetaData = null;
                 //Move attached file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);
@@ -114,6 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     if (empty($attachment)) {
                         $partialFail = true;
+                    } else {
+                        $fileMetaData = $fileUploader->getFileMetaData($attachment);
                     }
                 } else {
                     // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -134,6 +130,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    $fileHandler = $container->get(FileHandler::class);
+                    // Handle file deletion when user removes attachment
+                    if (empty($attachment) && !empty($row['attachment'])) {
+                        $deleted = $fileHandler->deleteFile('gibbonInternalAssessmentColumn', $gibbonInternalAssessmentColumnID, 'attachment');
+                    }
+
+                    // Record file tracking
+                    if (!empty($fileMetaData) && !empty($gibbonInternalAssessmentColumnID)) {
+                        $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, 'gibbonInternalAssessmentColumn', $gibbonInternalAssessmentColumnID, 'attachment');
+
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
                     }
 
                     if ($partialFail == true) {

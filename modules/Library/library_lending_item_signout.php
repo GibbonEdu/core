@@ -135,41 +135,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addLabel('status', __('New Status'));
                 $row->addSelect('status')->fromArray($statuses)->required()->selected('On Loan')->placeholder();
 
-            $people = array();
-
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => date('Y-m-d'));
-            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName
-                FROM gibbonPerson
-                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                WHERE status='Full'
-                    AND (dateStart IS NULL OR dateStart<=:date)
-                    AND (dateEnd IS NULL  OR dateEnd>=:date)
-                    AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY name, surname, preferredName";
-            $result = $pdo->executeQuery($data, $sql);
-
-            if ($result->rowCount() > 0) {
-                $people['--'.__('Students By Form Group').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = $item['formGroupName'].' - '.Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
-                    return $group;
-                }, array());
-            }
-
-            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-            $result = $pdo->executeQuery(array(), $sql);
-
-            if ($result->rowCount() > 0) {
-                $people['--'.__('All Users').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
-                    $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
-                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
-                    return $group;
-                }, array());
-            }
-
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonIDStatusResponsible', __('Responsible User'))->description(__('Who is responsible for this new status?'));
-                $row->addSelect('gibbonPersonIDStatusResponsible')->fromArray($people)->placeholder()->required();
+                $row->addSelectUsers('gibbonPersonIDStatusResponsible', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'includeStaff' => true])->placeholder()->required();
 
             $loanLength = $container->get(SettingGateway::class)->getSettingByScope('Library', 'defaultLoanLength');
             $loanLength = (is_numeric($loanLength) == false or $loanLength < 0) ? 7 : $loanLength ;
@@ -194,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonIDReturnAction', __('Responsible User'))->description(__('Who will be responsible for the future status?'));
-                $row->addSelect('gibbonPersonIDReturnAction')->fromArray($people)->placeholder();
+                $row->addSelectUsers('gibbonPersonIDReturnAction', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'includeStaff' => true])->placeholder();
 
 
             $row = $form->addRow();

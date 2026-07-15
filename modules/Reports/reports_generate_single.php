@@ -58,10 +58,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
 
     $context = ContextFactory::create($templateData['context']);
 
-    $ids = $context->getIdentifiers($pdo, $report['gibbonReportID'], $contextData, true);
-    $ids = array_map(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway) {
-        $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($gibbonReportID, 'Single', $report['gibbonPersonID'], 'Staff', true, true);
-        return $report;
+$ids = $context->getIdentifiers($pdo, $report['gibbonReportID'], $contextData, true);
+$ids = array_map(function ($entry) use ($gibbonReportID, $report, &$reportArchiveEntryGateway) {
+    $entry['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($gibbonReportID, 'Single', $entry['gibbonPersonID'], 'Staff', true, true);
+
+    // Backward-compatibility fallback: some archived entries are linked by identifier only.
+    if (empty($entry['archive']) && !empty($report['name'])) {
+        $entry['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReportIdentifier(
+            $report['gibbonSchoolYearID'],
+            $report['name'],
+            'Single',
+            $entry['gibbonPersonID'],
+            'Staff',
+            true,
+            true
+        );
+    }
+
+    return $entry;
     }, $ids);
 
     // FORM
@@ -105,7 +119,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
         ->notSortable()
         ->format(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway) {
             if ($report['archive']) {
-                $tag = '<span class="tag ml-2 '.($report['archive']['status'] == 'Final' ? 'success' : 'dull').'">'.__($report['archive']['status']).'</span>';
+                $tag = !empty($report['archive']['status'])
+                    ? '<span class="tag ml-2 '.($report['archive']['status'] == 'Final' ? 'success' : 'dull').'">'.__($report['archive']['status']).'</span>'
+                    : '';
                 $title = Format::dateTimeReadable($report['archive']['timestampModified']);
                 $url = './modules/Reports/archive_byStudent_download.php?gibbonReportArchiveEntryID='.$report['archive']['gibbonReportArchiveEntryID'].'&gibbonPersonID='.$report['gibbonPersonID'];
                 return Format::link($url, $title).$tag;

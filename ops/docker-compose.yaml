@@ -1,0 +1,44 @@
+name: gibbon
+
+services:
+    app:
+        build:
+            # Context is project root so COPY . . captures all source code
+            context: .
+            # Path to Dockerfile is relative to the build context (project root)
+            dockerfile: ops/Dockerfile
+            args:
+                PHP_VERSION: ${PHP_VERSION:-8.3}
+        container_name: gibbon_app
+        depends_on:
+            db:
+                condition: service_healthy
+        restart: unless-stopped
+
+    db:
+        image: mysql:${MYSQL_VERSION:-8.0}
+        container_name: gibbon_db
+
+        # Gibbon Docker Environment Variables
+        environment:
+            # MySQL database name (default: gibbon)
+            - MYSQL_DATABASE=${MYSQL_DATABASE:-gibbon}
+            # MySQL application user credentials
+            - MYSQL_USER=${MYSQL_USER:-gibbon}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Create .env from ops/.env-example and set a password.}
+            # MySQL root password — keep this strong in production
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Create .env from ops/.env-example and set a password.}
+        volumes:
+            - gibbon_db_data:/var/lib/mysql
+        # Native password plugin ensures PHP can connect easily
+        command: --default-authentication-plugin=mysql_native_password
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+        restart: unless-stopped
+
+volumes:
+    gibbon_db_data:

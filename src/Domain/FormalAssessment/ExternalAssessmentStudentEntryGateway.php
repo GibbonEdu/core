@@ -37,4 +37,28 @@ class ExternalAssessmentStudentEntryGateway extends QueryableGateway
     private static $primaryKey = 'gibbonExternalAssessmentStudentEntryID';
 
     private static $searchableColumns = [];
+
+    public function selectGCSEGradesByStudentID($gibbonExternalAssessmentStudentID)
+    {
+        $data = ['category' => '%GCSE Target Grades', 'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID];
+        $sql = 'SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) WHERE category LIKE :category AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonScaleGradeID IS NULL) ORDER BY name';
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectTargetGradesByExternalAssessmentStudentID($gibbonExternalAssessmentStudentID)
+    {
+        $data = ['gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID];
+        $sql = "SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE category LIKE '%Target Grade' AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID IS NULL) ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectFinalGradesByExternalAssessmentStudentID($gibbonExternalAssessmentStudentID)
+    {
+        $data = ['gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID];
+        $sql = "SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE category LIKE '%Final Grade' AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID IS NULL) ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

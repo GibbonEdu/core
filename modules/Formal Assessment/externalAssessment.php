@@ -25,6 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\School\ExternalAssessmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -110,9 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         );
 
         $col = $form->createBulkActionColumn($bulkActions);
-            $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
+        
+        $result = $container->get(ExternalAssessmentGateway::class)->selectActiveExternalAssessments();
+
             $col->addSelect('gibbonExternalAssessmentID')
-                ->fromQuery($pdo, $sql)
+                ->fromResults($result)
                 ->required()
                 ->placeholder()
                 ->setClass('w-32 mr-2');

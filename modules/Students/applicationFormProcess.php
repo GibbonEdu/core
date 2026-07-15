@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Payment;
@@ -320,6 +321,23 @@ if ($proceed == false) {
                     }
                 }
 
+                // Manage custom field file uploads for student
+                $params = ['student' => true, 'applicationForm' => true];
+                $customFieldHandler->manageCustomFieldFileUploads('User', $params, $fields, 'gibbonApplicationForm', $AI);
+
+                // Manage custom field file uploads for parents if no existing family
+                if ($gibbonFamily == 'FALSE') {
+                    if (!empty($parent1fields)) {
+                        $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent1custom'];
+                        $customFieldHandler->manageCustomFieldFileUploads('User', $params, $parent1fields, 'gibbonApplicationFormParent1', $AI);
+                    }
+
+                    if (empty($_POST['secondParent']) && !empty($parent2fields)) {
+                        $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent2custom'];
+                        $customFieldHandler->manageCustomFieldFileUploads('User', $params, $parent2fields, 'gibbonApplicationFormParent2', $AI);
+                    }
+                }
+
                 // Update the Application Form with a hash for looking up this record in the future
                 $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
                 $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
@@ -359,14 +377,26 @@ if ($proceed == false) {
 
                         // Upload the file, return the /uploads relative path
                         $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
+                        $fileMetaData = null;
 
                         // Write files to database, if there is one
                         if (!empty($attachment)) {
+                            $fileMetaData = $fileUploader->getFileMetaData($attachment);
 
-                                $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
-                                $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
-                                $resultFile = $connection2->prepare($sqlFile);
-                                $resultFile->execute($dataFile);
+                            $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
+                            $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
+                            $resultFile = $connection2->prepare($sqlFile);
+                            $resultFile->execute($dataFile);
+                            $gibbonApplicationFormFileID = $connection2->lastInsertID();
+                            
+                            // Record file tracking
+                            if (!empty($fileMetaData) && !empty($gibbonApplicationFormFileID)) {
+                                $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonApplicationFormFile', $gibbonApplicationFormFileID, 'path');
+                            }
+
+                            if (empty($gibbonFileID)) {
+                                $partialFail = true;
+                            }
                         }
                     }
                 }

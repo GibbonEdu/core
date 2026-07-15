@@ -19,10 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -51,44 +54,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        //Check if gibbonCourseClassID and gibbonInternalAssessmentColumnID specified
+        // Check if gibbonCourseClassID and gibbonInternalAssessmentColumnID specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
+
         if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
-            try {
-                if ($highestAction == 'Write Internal Assessments_all') {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
-                } else {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Teacher'";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
+
+            if ($highestAction == 'Write Internal Assessments_all') {
+                $result = $container->get(CourseGateway::class)->getCourseClassDetails($gibbonCourseClassID);
+            } else {
+                $result = $container->get(CourseClassGateway::class)->getCourseClassByPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
             }
 
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
+                $result2 = $container->get(InternalAssessmentColumnGateway::class)->getScaleByInternalAssessmentColumn($gibbonInternalAssessmentColumnID);
 
-                    $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
-                    $sql2 = "SELECT gibbonInternalAssessmentColumn.*, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort
-                        FROM gibbonInternalAssessmentColumn
-                        LEFT JOIN gibbonScale as attainmentScale ON (attainmentScale.gibbonScaleID=gibbonInternalAssessmentColumn.gibbonScaleIDAttainment)
-                        LEFT JOIN gibbonScale as effortScale ON (effortScale.gibbonScaleID=gibbonInternalAssessmentColumn.gibbonScaleIDEffort)
-                        WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID";
-                    $result2 = $connection2->prepare($sql2);
-                    $result2->execute($data2);
-
-                if ($result2->rowCount() != 1) {
+                if (empty($result2)) {
                     $page->addError(__('The selected column does not exist, or you do not have access to it.'));
                 } else {
-                    //Let's go!
-                    $class = $result->fetch();
-                    $values = $result2->fetch();
+                    // Let's go!
+                    $class = $result;
+                    $values = $result2;
 
                     $page->breadcrumbs
                         ->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $class['course'].'.'.$class['class']]), 'internalAssessment_write.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
@@ -101,16 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $hasComment = $values['comment'] == 'Y';
                     $hasUpload = $values['uploadedResponse'] == 'Y';
 
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'today' => date('Y-m-d'));
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.dateStart, gibbonInternalAssessmentEntry.*
-                        FROM gibbonCourseClassPerson
-                        JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                        LEFT JOIN gibbonInternalAssessmentEntry ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID AND gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID)
-                        WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
-                        AND gibbonCourseClassPerson.reportable='Y' AND gibbonCourseClassPerson.role='Student'
-                        AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)
-                        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
-                    $result = $pdo->executeQuery($data, $sql);
+                    $result = $container->get(InternalAssessmentColumnGateway::class)->selectStudentsByCourseClassAndInternalAssessmentColumn($gibbonCourseClassID, $gibbonInternalAssessmentColumnID);
+                    
                     $students = ($result->rowCount() > 0)? $result->fetchAll() : array();
 
                     $form = Form::create('internalAssessment', $session->get('absoluteURL').'/modules/'.$session->get('module').'/internalAssessment_write_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&address='.$session->get('address'));
@@ -234,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
         }
 
-        //Print sidebar
+        // Print sidebar
         $session->set('sidebarExtra', sidebarExtra($guid, $connection2, $gibbonCourseClassID, 'write'));
     }
 }

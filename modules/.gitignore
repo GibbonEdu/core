@@ -1,10 +1,10 @@
 # ignore all modules
 *
 
-# whitelist .gitignore file
+# allowlist .gitignore file
 !.gitignore
 
-# whitelist all core modules
+# allowlist all core modules
 !/Activities
 !/Activities/**
 !/Admissions
@@ -62,6 +62,6 @@
 !/User Admin
 !/User Admin/**
 
-# black list some files and folders
+# denylist some files and folders
 # in the module folders
 **/.DS_Store

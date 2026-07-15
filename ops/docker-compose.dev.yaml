@@ -1,0 +1,9 @@
+services:
+    app:
+        ports:
+            - "8080:80"
+        volumes:
+            ## Mount project root so live edits are immediately reflected without rebuilding the image.
+            - .:/var/www/html
+            ## Mount PHP config so values can be changed without an image rebuild.
+            - ./ops/php/gibbon.ini:/usr/local/etc/php/conf.d/gibbon.ini:ro

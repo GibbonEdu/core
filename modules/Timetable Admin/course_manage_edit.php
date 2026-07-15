@@ -26,6 +26,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Domain\Departments\DepartmentGateway;
 
 //Module includes
@@ -140,8 +141,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</h2>';
 
             $courseGateway = $container->get(CourseGateway::class);
+            $courseClassGateway = $container->get(CourseClassGateway::class);
 
-            $classes = $courseGateway->selectClassesByCourseID($gibbonCourseID);
+            $classes = $courseClassGateway->selectClassesByCourseID($gibbonCourseID);
 
             // DATA TABLE
             $table = DataTable::create('courseClassManage');

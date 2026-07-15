@@ -20,9 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Library\LibraryGateway;
-use Gibbon\Http\Url;
-use Gibbon\Forms\Form;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -217,8 +218,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addSubmit();
 
     echo $form->getOutput();
+
+    // Get Google Books API Key from settings
+    $libraryApiKey = $container->get(SettingGateway::class)->getSettingByScope('Library', 'libraryAPIKey');
 }
 ?>
+
+
 <script type='text/javascript'>
     $(document).ready(function(){
         document.onkeypress = stopRKey;
@@ -226,6 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $(".gbooks").loadGoogleBookData({
             "notFound": "<?php echo __('The specified record cannot be found.'); ?>",
             "dataRequired": "<?php echo __('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.'); ?>",
+            "apiKey": '<?php echo $libraryApiKey; ?>',
         });
 
         $('#gibbonLibraryTypeID').change(function(){

@@ -63,9 +63,11 @@ class Person extends SearchSelect
                 $optGroup = is_array($items) ? $items : [$key => $items];
 
                 foreach ($optGroup as $value => $label) {
-                    $options[$value] = [
+                    $options[$optLabel][$value] = [
                         'value' => $value,
                         'label' => $label,
+                        'selected' => $this->isOptionSelected($value) ? 'selected' : '',
+                        'class' => !empty($this->chainedToValues[$value]) ? $this->chainedToValues[$value] : '',
                     ];
                 }
             }
@@ -74,10 +76,14 @@ class Person extends SearchSelect
         $selected = is_array($this->selected)? ($this->selected[0] ?? '') : $this->selected;
 
         return Component::render(Person::class, $this->getAttributeArray() + [
-            'groupClass'  => $this->getGroupClass(),
-            'placeholder' => $this->placeholder,
-            'options'     => array_values($options),
-            'selected'    => $selected,
+            'outerClass'    => $this->getOuterClass(),
+            'groupClass'    => $this->getGroupClass(),
+            'placeholder'   => $this->placeholder,
+            'chainedToID'   => $this->chainedToID,
+            'options'       => $options,
+            'selected'      => $selected,
+            'selectedLabel' => $options[$selected]['label'] ?? '',
+            'validation'    => '',
         ]);
     }
 }

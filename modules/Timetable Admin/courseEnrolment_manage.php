@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage.php') == false) {
     // Access denied
@@ -43,6 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
 
         $courseGateway = $container->get(CourseGateway::class);
+        $courseClassGateway = $container->get(CourseClassGateway::class);
 
         // CRITERIA
         $criteria = $courseGateway->newQueryCriteria()
@@ -89,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo $course['nameShort'].' ('.$course['name'].')';
             echo '</h3>';
 
-            $classes = $courseGateway->selectClassesByCourseID($course['gibbonCourseID']);
+            $classes = $courseClassGateway->selectClassesByCourseID($course['gibbonCourseID']);
 
             // DATA TABLE
             $table = DataTable::create('courseClassEnrolment');

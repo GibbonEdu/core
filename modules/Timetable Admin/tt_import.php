@@ -209,6 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         echo __('File Import');
                         echo '</h4>';
                         $importFail = false;
+                        // File Upload Tracking is skipped as this is a CSV import handler that processes uploaded files temporarily for data import into gibbonTTImport table.
                         $csvFile = $_FILES['file']['tmp_name'];
                         $handle = fopen($csvFile, 'r');
                         while (($data = fgetcsv($handle, 100000, stripslashes($_POST['fieldDelimiter']), stripslashes($_POST['stringEnclosure']))) !== false) {

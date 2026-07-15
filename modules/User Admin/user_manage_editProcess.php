@@ -29,6 +29,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -269,6 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     header("Location: {$URL}");
                 } else {
                     $imageFail = false;
+                    $fileMetaData = null;
                     $updateBackupPhoto = false;
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
@@ -286,6 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             if (empty($attachment1)) {
                                 $imageFail = true;
                             } else {
+                                $fileMetaData = $fileUploader->getFileMetaData($attachment1);
                                 $updateBackupPhoto = true;
                             }
                         }
@@ -321,6 +324,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             exit();
                         }
 
+                        // Record file tracking
+                        if (!empty($fileMetaData) && !empty($gibbonPersonID)) {
+                            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPerson', $gibbonPersonID, 'image_240');
+                            
+                            if (empty($gibbonFileID)) {
+                                $imageFail = true;
+                            }
+                        }
+
+                        // Handle file deletion when user removes attachment
+                        if (empty($attachment1) && !empty($row['image_240'])) {
+                            $deleted = $container->get(FileHandler::class)->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
+                        }
+
+                        // Manage custom field file uploads
+                        if (!empty($fields)) {
+                            $params = compact('student', 'staff', 'parent', 'other');
+                            $params['requiredOverride'] = 'N';
+                            $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('User', $params, $fields, 'gibbonPerson', $gibbonPersonID, $row['fields'] ?? null);
+                        }
+                        
                         if ($row['status'] != $status) {
                             $statusReason = $_POST['statusReason'] ?? '';
 

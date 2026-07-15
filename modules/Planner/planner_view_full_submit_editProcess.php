@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -101,6 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                             header("Location: {$URL}");
                         } else {
                             $partialFail = false;
+                            $fileMetaData = null;
                             $attachment = null;
                             if ($type == 'Link') {
                                 if (substr($link, 0, 7) != 'http://' and substr($link, 0, 8) != 'https://') {
@@ -119,6 +121,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                                 if (empty($attachment)) {
                                     $partialFail = true;
+                                } else {
+                                    $fileMetaData = $fileUploader->getFileMetaData($attachment);
                                 }
                             }
 
@@ -137,6 +141,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                     $URL .= '&return=error2';
                                     header("Location: {$URL}");
                                     exit();
+                                }
+
+                                $gibbonPlannerEntryHomeworkID = $connection2->lastInsertID();
+
+                                // Record file tracking (only if file uploaded)
+                                if (!empty($fileMetaData) && !empty($gibbonPlannerEntryHomeworkID)) {
+                                    $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPlannerEntryHomework', $gibbonPlannerEntryHomeworkID, 'location');
+
+                                    if (empty($gibbonFileID)) {
+                                        $partialFail = true;
+                                    }
                                 }
 
                                 $URL .= '&return=success0';

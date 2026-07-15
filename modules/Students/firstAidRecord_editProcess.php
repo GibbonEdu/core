@@ -75,6 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
         // Update the record
         $data = ['timeOut' => $timeOut, 'fields' => $fields];
         $firstAidGateway->update($gibbonFirstAidID, $data);
+
+        // Manage custom field file uploads
+        if (!empty($fields)) {
+            $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('First Aid', [], $fields, 'gibbonFirstAid', $gibbonFirstAidID, $values['fields'] ?? null);
+        }
     }
 
     // Add a new follow up log, if needed

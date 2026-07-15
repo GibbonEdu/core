@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -30,56 +31,32 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/librarySettin
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    $defaultLoanLength = $_POST['defaultLoanLength'] ?? '';
-    $browseBGColor = $_POST['browseBGColor'] ?? '';
-    $browseBGImage = $_POST['browseBGImage'] ?? '';
+    // Proceed!
+    $partialFail = false;
 
-    // Filter valid colour values
-    $browseBGColor = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($browseBGColor, 0, 7));
+    $settingGateway = $container->get(SettingGateway::class);
+    $settingsToUpdate = [
+        'Library' => [
+            'defaultLoanLength',
+            'browseBGColor',
+            'browseBGImage',
+            'libraryAPIKey',
+        ]
+    ];
 
-    //Validate Inputs
-    if ($defaultLoanLength == '') {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
-    } else {
-        //Write to database
-        $fail = false;
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name) {
+            $value = $_POST[$name] ?? '';
 
-        try {
-            $data = array('value' => $defaultLoanLength);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Library' AND name='defaultLoanLength'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+            if ($name === 'browseBGColor') {
+                $value = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($value, 0, 7));
+            }
 
-        try {
-            $data = array('value' => $browseBGColor);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Library' AND name='browseBGColor'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('value' => $browseBGImage);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Library' AND name='browseBGImage'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        if ($fail == true) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            getSystemSettings($guid, $connection2);
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
         }
     }
+
+    $URL .= $partialFail ? '&return=error2' : '&return=success0';
+    header("Location: {$URL}");
 }

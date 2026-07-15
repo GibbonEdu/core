@@ -19,10 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Library\LibraryGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -290,6 +291,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     echo $form->getOutput();
 
+    // Get Google Books API Key from settings
+    $libraryApiKey = $container->get(SettingGateway::class)->getSettingByScope('Library', 'libraryAPIKey');
 }
 ?>
 <script type='text/javascript'>
@@ -300,6 +303,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             "notFound": "<?php echo __('The specified record cannot be found.'); ?>",
             "dataRequired": "<?php echo __('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.'); ?>",
             "confirmation": "<?php echo __('Do you want to update the name of this book? Choose cancel to update all other fields except the name.'); ?>",
+            "apiKey": '<?php echo $libraryApiKey; ?>',
         });
 
         var path = '<?php echo $session->get('absoluteURL').'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';

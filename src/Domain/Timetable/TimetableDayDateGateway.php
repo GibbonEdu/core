@@ -83,6 +83,27 @@ class TimetableDayDateGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function selectTimetabledPeriodsByDate($date)
+    {
+        $query = $this
+            ->newSelect()
+            ->cols(['gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd'])
+            ->from('gibbonTT')
+            ->innerJoin('gibbonSchoolYear', 'gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID') 
+            ->innerJoin('gibbonTTDay', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
+            ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
+            ->innerJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID')
+            ->where('gibbonSchoolYear.status="Current"')
+            ->where('gibbonTT.active="Y"')
+            ->where('gibbonTTDayDate.date=:date')
+            ->where('(gibbonTTColumnRow.type="Lesson" OR gibbonTTColumnRow.type="Pastoral" OR gibbonTTColumnRow.type="Break")')
+            ->bindValue('date', $date)
+            ->groupBy(['gibbonTTColumnRow.timeStart'])
+            ->orderBy(['timeStart', 'timeEnd']);
+
+        return $this->runSelect($query);
+    }
+
     public function selectTimetabledPeriodsByPersonAndDateRange($gibbonPersonID, $dateStart, $dateEnd)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];

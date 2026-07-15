@@ -121,23 +121,25 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     // SORT BY
     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$session->get('gibbonSchoolYearID') );
-    $sql = "SELECT COUNT(DISTINCT rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
+    $sql = "SELECT COUNT(DISTINCT gibbonStudentEnrolment.rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND gibbonPerson.status='Full' AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<='".date('Y-m-d')."') AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
     $result = $pdo->executeQuery($data, $sql);
     $rollOrderCount = ($result->rowCount() > 0)? $result->fetchColumn(0) : 0;
+
+    $selectOrderBy = ($session->has('markbookOrderBy'))? $session->get('markbookOrderBy') : 'surname';
+    $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
+
+    $orderBy = ['surname' => __('Surname'), 'preferredName' => __('Preferred Name')];
+
     if ($rollOrderCount > 0) {
-        $selectOrderBy = ($session->has('markbookOrderBy'))? $session->get('markbookOrderBy') : 'surname';
-        $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
-
-        $orderBy = array(
-            'rollOrder'     => __('Roll Order'),
-            'surname'       => __('Surname'),
-            'preferredName' => __('Preferred Name'),
-        );
-        $col->addContent(__('Sort By').':')->setClass('flex-shrink');
-        $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('flex-1');
-
-        $session->set('markbookOrderBy', $selectOrderBy);
+        $orderBy = ['rollOrder' => __('Roll Order')] + $orderBy;
+    } elseif ($selectOrderBy == 'rollOrder') {
+        $selectOrderBy = 'surname';
     }
+
+    $col->addContent(__('Sort By').':')->setClass('flex-shrink');
+    $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('flex-1');
+
+    $session->set('markbookOrderBy', $selectOrderBy);
 
     // SHOW
     $selectFilter = ($session->has('markbookFilter'))? $session->get('markbookFilter') : '';

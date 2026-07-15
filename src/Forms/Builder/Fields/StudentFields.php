@@ -247,36 +247,36 @@ class StudentFields extends AbstractFieldGroup
 
             // EMERGENCY CONTACTS
             case 'emergency1Name':
-                $row->addLabel('emergency1Name', __('Contact 1 Name'));
-                $row->addTextField('emergency1Name')->maxLength(90);
+                $row->addLabel('emergency1Name', __($field['label']))->description(__($field['description']));
+                $row->addTextField('emergency1Name')->maxLength(90)->required($required);
                 break;
             case 'emergency1Relationship':
-                $row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
-                $row->addSelectEmergencyRelationship('emergency1Relationship');
+                $row->addLabel('emergency1Relationship', __($field['label']))->description(__($field['description']));
+                $row->addSelectEmergencyRelationship('emergency1Relationship')->required($required);
                 break;
             case 'emergency1Number1':
-                $row->addLabel('emergency1Number1', __('Contact 1 Number 1'));
-                $row->addTextField('emergency1Number1')->maxLength(30);
+                $row->addLabel('emergency1Number1', __($field['label']))->description(__($field['description']));
+                $row->addTextField('emergency1Number1')->maxLength(30)->required($required);
                 break;
             case 'emergency1Number2':
-                $row->addLabel('emergency1Number2', __('Contact 1 Number 2'));
-                $row->addTextField('emergency1Number2')->maxLength(30);
+                $row->addLabel('emergency1Number2', __($field['label']))->description(__($field['description']));
+                $row->addTextField('emergency1Number2')->maxLength(30)->required($required);
                 break;
             case 'emergency2Name':
-                $row->addLabel('emergency2Name', __('Contact 2 Name'));
-                $row->addTextField('emergency2Name')->maxLength(90);
+                $row->addLabel('emergency2Name', __($field['label']))->description(__($field['description']));
+                $row->addTextField('emergency2Name')->maxLength(90)->required($required);
                 break;
             case 'emergency2Relationship':
-                $row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
-                $row->addSelectEmergencyRelationship('emergency2Relationship');
+                $row->addLabel('emergency2Relationship', __($field['label']))->description(__($field['description']));
+                $row->addSelectEmergencyRelationship('emergency2Relationship')->required($required);
                 break;
             case 'emergency2Number1':
-                $row->addLabel('emergency2Number1', __('Contact 2 Number 1'));
-                $row->addTextField('emergency2Number1')->maxLength(30);
+                $row->addLabel('emergency2Number1', __($field['label']))->description(__($field['description']));
+                $row->addTextField('emergency2Number1')->maxLength(30)->required($required);
                 break;
             case 'emergency2Number2':
-                $row->addLabel('emergency2Number2', __('Contact 2 Number 2'));
-                $row->addTextField('emergency2Number2')->maxLength(30);
+                $row->addLabel('emergency2Number2', __($field['label']))->description(__($field['description']));
+                $row->addTextField('emergency2Number2')->maxLength(30)->required($required);
                 break;
         }
 

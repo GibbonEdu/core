@@ -21,8 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\ReportBuilder;
-use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
-use Gibbon\Domain\Students\StudentGateway;
 
 $gibbonReportID = $_GET['gibbonReportID'] ?? '';
 $contextData = $_GET['contextData'] ?? '';
@@ -36,8 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
     $partialFail = false;
     
     $reportGateway = $container->get(ReportGateway::class);
-    $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    $studentGateway = $container->get(StudentGateway::class);
 
     $report = $reportGateway->getByID($gibbonReportID);
     if (empty($gibbonReportID) || empty($report)) {

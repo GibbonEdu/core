@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/financeSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Finance Settings');
 $I->loginAsAdmin();

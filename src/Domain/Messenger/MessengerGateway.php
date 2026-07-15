@@ -188,7 +188,7 @@ class MessengerGateway extends QueryableGateway
         $connection2 = $this->db()->getConnection();
 
         $return = '';
-        $dataPosts = array();
+        $dataPosts = [];
 
         if ($date == '') {
             $date = date('Y-m-d');
@@ -197,7 +197,7 @@ class MessengerGateway extends QueryableGateway
             $mode = 'print';
         }
 
-        //Work out all role categories this user has, ignoring "Other"
+        // Work out all role categories this user has, ignoring "Other"
         $roles = $session->get('gibbonRoleIDAll');
         $roleCategory = '';
         $staff = false;
@@ -214,31 +214,30 @@ class MessengerGateway extends QueryableGateway
             }
         }
 
-        //If parent get a list of student IDs
+        // If parent get a list of student IDs
         if ($parent) {
             $children = [];
 
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+            $data = ['gibbonPersonID' => $session->get('gibbonPersonID')];
             $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
             while ($row = $result->fetch()) {
+                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
+                $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+                $resultChild = $connection2->prepare($sqlChild);
+                $resultChild->execute($dataChild);
 
-                    $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
-                    $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-                    $resultChild = $connection2->prepare($sqlChild);
-                    $resultChild->execute($dataChild);
                 while ($rowChild = $resultChild->fetch()) {
                     $children[] = $rowChild['gibbonPersonID'];
                 }
             }
-
         }
 
         $dataPosts['date'] = $date;
         $dateWhere = "(:date BETWEEN gibbonMessenger.messageWall_dateStart AND gibbonMessenger.messageWall_dateEnd)";
 
-        //My roles
+        // My roles
         $roles = $session->get('gibbonRoleIDAll');
         $sqlWhere = '(';
         if (count($roles) > 0) {
@@ -360,11 +359,10 @@ class MessengerGateway extends QueryableGateway
 
         //My courses
         //First check for any course, then do specific parent check
-
-            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
-            $resultClasses = $connection2->prepare($sqlClasses);
-            $resultClasses->execute($dataClasses);
+        $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
+        $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
+        $resultClasses = $connection2->prepare($sqlClasses);
+        $resultClasses->execute($dataClasses);
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
             $i = 0;
@@ -384,11 +382,10 @@ class MessengerGateway extends QueryableGateway
             }
         }
         if ($parent and !empty($children)) {
-
-                $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
-                $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonCourseClassPerson.gibbonPersonID, :children) AND NOT role LIKE '%- Left'";
-                $resultClasses = $connection2->prepare($sqlClasses);
-                $resultClasses->execute($dataClasses);
+            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
+            $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonCourseClassPerson.gibbonPersonID, :children) AND NOT role LIKE '%- Left'";
+            $resultClasses = $connection2->prepare($sqlClasses);
+            $resultClasses->execute($dataClasses);
             $sqlWhere = '(';
             if ($resultClasses->rowCount() > 0) {
                 $i = 0;
@@ -403,13 +400,12 @@ class MessengerGateway extends QueryableGateway
             }
         }
 
-        //My classes
-        //First check for any role, then do specific parent check
-
-            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
-            $resultClasses = $connection2->prepare($sqlClasses);
-            $resultClasses->execute($dataClasses);
+        // My classes
+        // First check for any role, then do specific parent check
+        $dataClasses = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID')];
+        $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
+        $resultClasses = $connection2->prepare($sqlClasses);
+        $resultClasses->execute($dataClasses);
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
             $i = 0;
@@ -429,12 +425,10 @@ class MessengerGateway extends QueryableGateway
             }
         }
         if ($parent and !empty($children)) {
-
-                $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
-
-                $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonCourseClassPerson.gibbonPersonID, :children) AND NOT role LIKE '%- Left'";
-                $resultClasses = $connection2->prepare($sqlClasses);
-                $resultClasses->execute($dataClasses);
+            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
+            $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonCourseClassPerson.gibbonPersonID, :children) AND NOT role LIKE '%- Left'";
+            $resultClasses = $connection2->prepare($sqlClasses);
+            $resultClasses->execute($dataClasses);
             $sqlWhere = '(';
             if ($resultClasses->rowCount() > 0) {
                 $i = 0;
@@ -450,13 +444,12 @@ class MessengerGateway extends QueryableGateway
             }
         }
 
-        //My activities
+        //Activities
         if ($staff) {
-
-                $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID';
-                $resultActivities = $connection2->prepare($sqlActivities);
-                $resultActivities->execute($dataActivities);
+            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
+            $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID';
+            $resultActivities = $connection2->prepare($sqlActivities);
+            $resultActivities->execute($dataActivities);
             $sqlWhere = '(';
             if ($resultActivities->rowCount() > 0) {
                 $i = 0;
@@ -472,11 +465,10 @@ class MessengerGateway extends QueryableGateway
             }
         }
         if ($student) {
-
-                $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND status='Accepted'";
-                $resultActivities = $connection2->prepare($sqlActivities);
-                $resultActivities->execute($dataActivities);
+            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
+            $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND status='Accepted'";
+            $resultActivities = $connection2->prepare($sqlActivities);
+            $resultActivities->execute($dataActivities);
             $sqlWhere = '(';
             if ($resultActivities->rowCount() > 0) {
                 $i = 0;
@@ -492,11 +484,10 @@ class MessengerGateway extends QueryableGateway
             }
         }
         if ($parent and !empty($children)) {
-
-                $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
-                $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonActivityStudent.gibbonPersonID, :children) AND status='Accepted'";
-                $resultActivities = $connection2->prepare($sqlActivities);
-                $resultActivities->execute($dataActivities);
+            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
+            $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonActivityStudent.gibbonPersonID, :children) AND status='Accepted'";
+            $resultActivities = $connection2->prepare($sqlActivities);
+            $resultActivities->execute($dataActivities);
             $sqlWhere = '(';
             if ($resultActivities->rowCount() > 0) {
                 $i = 0;
@@ -520,7 +511,6 @@ class MessengerGateway extends QueryableGateway
         $dataPosts['gibbonPersonID4'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, 'Individual: You' AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS individual ON (gibbonMessengerTarget.id=individual.gibbonPersonID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Individuals' AND $dateWhere AND individual.gibbonPersonID=:gibbonPersonID4)";
 
-
         //Attendance
         if ($student) {
             try {
@@ -535,7 +525,6 @@ class MessengerGateway extends QueryableGateway
                 $studentAttendance = $resultAttendance->fetch();
                 $dataPosts['attendanceType1'] = $studentAttendance['type'].' '.$date;
                 $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType1 AND $dateWhere )";
-
             }
         }
         if ($parent and !empty($children)) {
@@ -551,7 +540,6 @@ class MessengerGateway extends QueryableGateway
                 $studentAttendance = $resultAttendance->fetch();
                 $dataPosts['attendanceType2'] = $studentAttendance['type'].' '.$date;
                 $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id, ' for ', '".$studentAttendance['firstName']."') AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType2 AND $dateWhere )";
-
             }
         }
 
@@ -633,9 +621,13 @@ class MessengerGateway extends QueryableGateway
             AND $dateWhere )";
         }
 
-        //SPIT OUT RESULTS
+        // Post Owner - show messages created by the user
+        $dataPosts['gibbonPersonIDOwner'] = $session->get('gibbonPersonID');
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, 'Post Owner' AS source FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessenger.gibbonPersonID=:gibbonPersonIDOwner AND $dateWhere)";
+
+        // SPIT OUT RESULTS
         if ($mode == 'result') {
-            $resultReturn = array();
+            $resultReturn = [];
             $resultReturn[0] = $dataPosts;
             $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp DESC, gibbonMessengerID, source';
 
@@ -671,7 +663,7 @@ class MessengerGateway extends QueryableGateway
             if ($resultPosts->rowCount() < 1) {
                 $return .= Format::alert(__('There are no records to display.'), 'message');
             } else {
-                $output = array();
+                $output = [];
                 $last = '';
                 while ($rowPosts = $resultPosts->fetch()) {
                     if ($last == $rowPosts['gibbonMessengerID']) {

@@ -26,6 +26,8 @@ v31.0.00
         Form fields have been improved with searchable select boxes
         Smart blocks have been updated with a streamlined appearance and more tools
         Improved text editor with drag-drop image uploads and more formatting options
+        Added support for 12-hour and 24-hour time formats
+        Added comprehensive file upload tracking feature to monitor and manage all file uploads across the system
 
     Security
 
@@ -34,23 +36,41 @@ v31.0.00
     Tweaks & Additions
         System: updated TinyMCE to version 8 and added a minimal mode to Editor fields
         System: added a User module to organise user preferences and settings
+        System: enabled configuring the time format as 12-hour clock or 24-hour clock in System Settings
+        System: added Peruvian Sol as a currency option
+        System: ensured Twig cache is turned off for Development installs
+        System: added a new fileHandler class to track and monitor file uploads
+        Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
         Attendance: student attendance history now ordered by timetable period
+        Attendance: fixed the Consecutive Absences check to only count the final status for each day
+        Attendance: added a foreign table field to attendance logs for recording target of future absences
+        Attendance: added Class as a target option for Set Future Absence
         Calendar: switched default sorting of Manage Events to newest first
+        Calendar: remove future absence when deleting participant or editing the date
         Formal Assessment: added the feature for teachers to view unpublished internal assessments
         Library: updated automatic shelf lists so that lists are queried dynamically in Browse Library
         Library: added the option to edit the category and sub-category for an automatic shelf
+        Library: added a new Library API Key in Library settings to call the Google Books API
+        Messenger: creator of targeted message can now view it in Message Wall
         Planner: improved the Deploy Unit page with a drag-drop interface and new tools
         Planner: added the option to set a location for non-timetables lessons in Lesson Planner
         Reports: added error detection while editing twig templates
         Reports: improved the file path checking while managing archives and uploading bulk reports
+        Reports: added the option to set the report author in Write Reports by Student
+        Reports: added the option to mark issues as resolved in Student Name Conflicts
+        Reports: added checks for missing names and incorrect pronouns to Student Name Conflicts
         Staff: updated the staff absence message for partial day absence
         Staff: fixed the issue to allow editing coverage request
         Staff: added an indicator at the top of view staff profile to indicate the attendance status and current location location of the staff
         Staff: added a bulk action to reject multiple staff application forms
+        Staff: added the feature to send an automated email for staff application confirmation
         Students: added an indicator at the top of view student profile to indicate attendance status and current location of the student
+        Students: Added a checkbox to the Medical Data Summary to exclude students with no medical conditions
         System Admin: added a validation to check for error in email twig templates
+        System Admin: added new Marks By Term importer for Markbook Column
+        System Admin: added new importer to import Internal Assessment Columns
         Timetable: added class and location details to non-timetabled lessons in the Timetable
         Tracking: fixed the post variable validation
         User Admin: linked user names to Student and Staff profiles in Manage Users
@@ -58,12 +78,19 @@ v31.0.00
         User Admin: fix the bug to display user's personal address if turned on
 
     Bug Fixes
+        Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
-        School Admin: fixed inactive grade scales not selectable in Manage External Assessment
+        System: renamed ca_CA locale to ca_ES and updated locale files
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data 
         Messenger: fixed overflowing images and iframes on Message Wall
+        Planner: fixed "present in room" attendance counts in Lesson Plan to exclude Present - Offsite
+        Reports: fixed non-reportable classes being counted when checking report progress
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
-        School Admin: fixed inactive grade scales not selectable in Manage External Assessment 
+        Staff: fixed the issue of including staff email while submitting a job application form
+        School Admin: fixed inactive grade scales not selectable in Manage External Assessment
+        System Admin: fixed incorrect required status of Emergency Contact fields in Form Builder
+        Timetable: fixed incorrect Staff Cover information for activity cover on the timetable
+        Timetable Admin: fixed error preventing the copy of courses to next year.
 
     Deprecations
 

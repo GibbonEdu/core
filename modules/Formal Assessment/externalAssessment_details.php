@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
-use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\UserGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,12 +31,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    //Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        //Get action with highest precendence
+        //Get action with highest precedence
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $search = $_GET['search'] ?? '';
         $allStudents = $_GET['allStudents'] ?? '';
@@ -44,21 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         $page->breadcrumbs
             ->add(__('View All Assessments'), 'externalAssessment.php')
             ->add(__('Student Details'));
+            
+        $result = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
-        try {
-            if ($allStudents != 'on') {
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.name AS yearGroup, gibbonFormGroup.nameShort AS formGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
-            } else {
-                $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, title, image_240, NULL AS yearGroup, NULL AS formGroup FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-        }
-
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             if ($search != '') {
@@ -69,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Formal Assessment', 'externalAssessment.php')->withQueryParams($params));
             }
 
-            $row = $result->fetch();
+            $row = $result;
             
             if ($highestAction == 'External Assessment Data_manage') {
                 $params = [

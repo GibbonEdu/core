@@ -33,14 +33,15 @@ $URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/cours
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
-    //Proceed!
-    
+    // Proceed!
     // Check if school years specified (current and next)
     if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearIDNext)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } 
+        exit;
+    }
 
     $courseGateway = $container->get(CourseGateway::class);
     $courseClassGateway = $container->get(CourseClassGateway::class);
@@ -50,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     if (empty($courses)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
+        exit;
     }
 
     $partialFail = false;

@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -113,6 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         }
 
         $time = time();
+        $fileMetaData = null;
         //Move attached file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
@@ -122,6 +124,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             if (empty($attachment)) {
                 $partialFail = true;
+            } else {
+                $fileMetaData = $fileUploader->getFileMetaData($attachment);
             }
         } else {
             $attachment = '';
@@ -143,6 +147,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $sql = 'INSERT INTO gibbonInternalAssessmentColumn SET groupingID=:groupingID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
+
+                    $gibbonInternalAssessmentColumnID = $connection2->lastInsertID();
+
+                    // Record file tracking (capture lastInsertID for each iteration)
+                    if (!empty($fileMetaData) && !empty($gibbonInternalAssessmentColumnID)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonInternalAssessmentColumn', $gibbonInternalAssessmentColumnID, 'attachment');
+                        
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
+                    }
                 } catch (PDOException $e) {
                     exit();
                     $partialFail = true;

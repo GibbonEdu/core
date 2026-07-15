@@ -129,6 +129,11 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         //Last insert ID
                         $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
+                        // Manage custom field file uploads
+                        if (!empty($fields) && !empty($AI)) {
+                            $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Student Enrolment', [], $fields, 'gibbonStudentEnrolment', $AI);
+                        }
+
                         // Handle automatic course enrolment if enabled
                         $autoEnrolStudent = $_POST['autoEnrolStudent'] ?? 'N';
                         if ($autoEnrolStudent == 'Y') {

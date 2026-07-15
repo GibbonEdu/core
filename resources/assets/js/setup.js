@@ -446,13 +446,19 @@ const gibbonTinyMCEFull = {
     init_instance_callback: (editor) => {
         // Enable quick save from within tinymce
         editor.addShortcut("meta+s", "Custom Ctrl+S", function (e) {
-            editor.formElement.dispatchEvent(new Event('quicksave'));
+            tinymce.triggerSave();
+            editor.formElement.dispatchEvent(new CustomEvent('quicksave'));
         });
 
         // Enable validation checking
         editor.on('blur', (e) => {
             tinymce.triggerSave();
-            e.target.targetElm.dispatchEvent(new Event('blur'));
+            editor.targetElm.dispatchEvent(new Event('blur'));
+        });
+
+        // Enable input event checking
+        editor.on('input', (e) => {
+            editor.targetElm.dispatchEvent(new Event('input', { bubbles: true }));
         });
 
         // Autosave trigger
@@ -461,6 +467,7 @@ const gibbonTinyMCEFull = {
                 editor.on('keydown', function () {
                     tinymce.triggerSave();
                     gibbonFormSubmitQuiet(document.getElementById(editor.formElement.id), editor.targetElm.getAttribute('data-autosave'))
+                    editor.targetElm.dispatchEvent(new Event('input', { bubbles: true }));
                 })
             }, 100);
         }

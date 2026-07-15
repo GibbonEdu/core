@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -58,6 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             'organisationAdmissions' => 'required',
             'pagination' => 'required',
             'timezone' => 'required',
+            'timeFormatPHP' => 'required',
             'country' => '',
             'firstDayOfTheWeek' => 'required',
             'analytics' => '',
@@ -101,6 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $fileUploader = new FileUploader($pdo, $session);
     $fileUploader->getFileExtensions('Graphics/Design');
+    $fileMetaData = null;
 
     // Move attached logo file, if there is one
     if (!empty($_FILES['organisationLogoFile']['tmp_name'])) {
@@ -111,9 +114,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
         if (empty($_POST['organisationLogo'])) {
             $partialFail = true;
+        } else {
+            $fileMetaData = $fileUploader->getFileMetaData($_POST['organisationLogo']);
         }
     } else {
-        $_POST['organisationLogo'] = $settingGateway->getSettingByScope('System', 'organisationLogo');
+        $oldLogo = $settingGateway->getSettingByScope('System', 'organisationLogo');
+        $_POST['organisationLogo'] = $oldLogo;
     }
 
     // Update fields
@@ -125,6 +131,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
             $partialFail &= !$updated;
+        }
+    }
+
+    // Record file tracking
+    if (!empty($fileMetaData) && !empty($settingRecord)) {
+        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonSetting', $settingRecord['gibbonSettingID'],'value');
+        
+        if (empty($gibbonFileID)) {
+            $partialFail = true;
         }
     }
 

@@ -84,6 +84,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
+            // Manage custom field file uploads
+            if (!empty($fields) && !empty($AI)) {
+                $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Medical Form', [], $fields, 'gibbonPersonMedical', $AI);
+            }
+
             $URL .= "&return=success0&editID=$AI";
             header("Location: {$URL}");
         }

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 require_once '../../gibbon.php';
 
@@ -48,11 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             header("Location: {$URL}");
         } else {
             //Check access to specified course
-
-                $data = array('gibbonCourseID' => $gibbonCourseID);
-                $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            
+                $result = $container->get(CourseGateway::class)->selectBy(['gibbonCourseID' => $gibbonCourseID]);
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error1';

@@ -50,4 +50,12 @@ class AttendanceLogCourseClassGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectAttendanceLogByClassAndDate($gibbonCourseClassID, $date, $gibbonTTDayRowClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID];
+        $sql = "SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date AND (gibbonTTDayRowClassID=:gibbonTTDayRowClassID OR gibbonTTDayRowClassID IS NULL) ORDER BY timestampTaken";
+
+        return $this->db()->select($sql, $data);
+    }
 }

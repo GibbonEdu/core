@@ -87,6 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
+            // Manage custom field file uploads
+            if (!empty($fields) && !empty($AI)) {
+                $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Course', [], $fields, 'gibbonCourse', $AI);
+            }
+
             $URL .= "&return=success0&editID=$AI";
             header("Location: {$URL}");
         }

@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -38,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
 } else {
     // Proceed!
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
+    $partialFail = false;
 
     $type = $_POST['attachmentType'] ?? '';
     switch ($type) {
@@ -56,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
 
     // Validate the database relationships exist
     $coverage = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
+    $fileHandler = $container->get(FileHandler::class);
 
     if (empty($coverage)) {
         $URL .= '&return=error2';
@@ -70,16 +73,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
     }
 
     // File Upload
+    $fileMetaData = null;
     if ($type == 'File') {
         if (!empty($_FILES['file'])) {
             // Upload the file, return the /uploads relative path
             $fileUploader = new FileUploader($pdo, $session);
             $content = $fileUploader->uploadFromPost($_FILES['file']);
-    
+
             if (empty($content)) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
                 exit;
+            } else {
+                $fileMetaData = $fileUploader->getFileMetaData($content);
             }
         } else {
             // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -94,9 +100,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
         'attachmentContent' => $content,
     ]);
 
-    $URL .= !$updated
-        ? "&return=error2"
-        : "&return=success0";
+    // Record file tracking (only if new file uploaded)
+    if (!empty($fileMetaData)) {
+        $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, 'gibbonStaffCoverage', $gibbonStaffCoverageID, 'attachmentContent');
+
+        if (empty($gibbonFileID)) {
+            $partialFail = true;
+        }
+    }
+
+    // Handle file deletion when user removes attachment
+    if ($type == 'File' && empty($content) && !empty($coverage['attachmentContent'])) {
+        $deleted = $fileHandler->deleteFile('gibbonStaffCoverage', $gibbonStaffCoverageID, 'attachmentContent');
+    }
+
+    if (!$updated) {
+        $URL .= "&return=error2";
+    } else if ($partialFail) {
+        $URL .= "&return=warning1";
+    } else {
+        $URL .= "&return=success0";
+    }
 
     header("Location: {$URL}");
 }

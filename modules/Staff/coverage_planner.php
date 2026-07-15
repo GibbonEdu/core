@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
-                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                if (empty($coverage['gibbonStaffAbsenceID']) && empty($coverage['surnameCoverage'])) {
                     return Format::tag(__('Assigned'), 'success');
                 } elseif ($coverage['absenceStatus'] == 'Pending Approval') {
                     return Format::tag(__('Pending Approval'), 'dull');

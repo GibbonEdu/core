@@ -19,9 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 
@@ -61,27 +62,16 @@ else {
         die();
     }
     else {
-        try {
-            $data=array("gibbonCourseClassID"=>$gibbonCourseClassID);
-            $sql="SELECT * FROM gibbonCourseClass WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
-            $result=$connection2->prepare($sql);
-            $result->execute($data);
-        }
-        catch(PDOException $e) {
-            //Fail2
-            $URL.="&return=error2" ;
-            header("Location: {$URL}");
-            die();
-        }
+        $result = $container->get(CourseClassGateway::class)->getByID($gibbonCourseClassID);
 
-        if ($result->rowCount()!=1) {
-            //Fail 2
+        if (empty($result)) {
+            // Fail 2
             $URL.="&return=error1" ;
             header("Location: {$URL}");
             die();
         }
         else {
-            //Check that date is not in the future
+            // Check that date is not in the future
             if ($currentDate>$today) {
                 //Fail 4
                 $URL.="&return=error3" ;
@@ -151,20 +141,9 @@ else {
                         $attendanceCode = $attendance->getAttendanceCodeByType($type);
                         $direction = $attendanceCode['direction'];
 
-                        //Check for last record on same day
-                        try {
-                            $data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>$currentDate . "%");
-                            $sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC" ;
-                            $result=$connection2->prepare($sql);
-                            $result->execute($data);
-                        }
-                        catch(PDOException $e) {
-                            //Fail 2
-                            $URL.="&return=error2" ;
-                            header("Location: {$URL}");
-                            die();
-                        }
-
+                        // Check for last record on same day
+                        $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($gibbonPersonID, $currentDate.'%', 'N');
+                        
                         // Check context, gibbonCourseClassID and type, updating only if not a match
                         $existing = false ;
                         $gibbonAttendanceLogPersonID = '';

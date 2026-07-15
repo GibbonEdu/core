@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 include '../../gibbon.php';
 
@@ -66,6 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             } else {
                 if ($type == 'File') {
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);
+                    $fileMetaData = null;
 
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
@@ -79,6 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                     }
 
                     $content = $attachment;
+                    $fileMetaData = $fileUploader->getFileMetaData($attachment);
                 }
 
                 //Deal with tags
@@ -157,6 +160,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 14, '0', STR_PAD_LEFT);
+
+                // Record file tracking (only if file uploaded)
+                if (!empty($fileMetaData) && !empty($AI)) {
+                    $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonResource', $AI, 'content');
+
+                    if (empty($gibbonFileID)) {
+                        $partialFail = true;
+                    }
+                }
 
                 if ($partialFail == true) {
                     $URL .= "&return=warning1&editID=$AI";

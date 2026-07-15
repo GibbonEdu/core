@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
@@ -274,6 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $entry = $result->rowCount() > 0 ? $result->fetch() : [];
 
                         // Move attached file, if there is one
+                        $fileMetaData = null;
                         if ($uploadedResponse == 'Y') {
                             //Move attached image  file, if there is one
                             if (!empty($_FILES['response'.$i]['tmp_name'])) {
@@ -286,8 +288,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                                 if (empty($attachment)) {
                                     $partialFail = true;
-                                } elseif (!empty($entry['response'])) {
-                                    @unlink($session->get('absolutePath').'/'.$entry['response']);
+                                } else {
+                                    $fileMetaData = $fileUploader->getFileMetaData($attachment);
+
+                                    if (!empty($entry['response'])) {
+                                        @unlink($session->get('absolutePath').'/'.$entry['response']);
+                                    }
                                 }
 
                                 // Create a log of failed uploads
@@ -317,25 +323,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $attachment = $entry['response'] ?? '';
                         }
 
+                        $gibbonMarkbookEntryID = null;
                         if (empty($entry)) {
                             try {
                                 $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment);
                                 $sql = 'INSERT INTO gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, modifiedAssessment=:modifiedAssessment, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
+                                $gibbonMarkbookEntryID = $connection2->lastInsertID();
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
                         } else {
                             //Update
                             try {
-                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment, 'gibbonMarkbookEntryID' => $entry['gibbonMarkbookEntryID']);
+                                $gibbonMarkbookEntryID =$entry['gibbonMarkbookEntryID'];
+                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment, 'gibbonMarkbookEntryID' => $gibbonMarkbookEntryID);
                                 $sql = 'UPDATE gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, modifiedAssessment=:modifiedAssessment, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment WHERE gibbonMarkbookEntryID=:gibbonMarkbookEntryID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
-                            } catch (PDOException $e) {
+                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
+                        }
+
+                        // Record file tracking for Upload (only if database operation succeeded)
+                        if (!empty($fileMetaData) && !empty($gibbonMarkbookEntryID)) {
+                            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonMarkbookEntry', $gibbonMarkbookEntryID, 'response');
+
+                            if (empty($gibbonFileID)) {
+                                $partialFail = true;
+                            }
+                        }
+
+                        // Delete old file if attachment was removed (only if database operation succeeded)
+                        if (empty($attachment) && !empty($entry['response'])) {
+                            $deleted = $container->get(FileHandler::class)->deleteFile('gibbonMarkbookEntry', $gibbonMarkbookEntryID, 'response');
                         }
                     }
 

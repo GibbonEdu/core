@@ -378,6 +378,16 @@ class ActivityGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function getActivityDetailsByTimeSlot($gibbonActivitySlotID)
+    {
+        $data = ['gibbonActivitySlotID' => $gibbonActivitySlotID];
+        $sql = "SELECT gibbonActivityID FROM gibbonActivitySlot WHERE gibbonActivitySlotID=:gibbonActivitySlotID";
+
+        $gibbonActivityID = $this->db()->selectOne($sql, $data);
+
+        return $this->getActivityDetailsByID($gibbonActivityID);
+    }
+
     public function selectActivityDetailsByCategory($gibbonActivityCategoryID)
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];

@@ -34,6 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage.php
 
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
 
+    $archiveTempFolder = $session->get('absolutePath').'/uploads/temp';
+    if (is_dir($archiveTempFolder) == false) {
+        mkdir($archiveTempFolder, 0755, true);
+    }
+
     // QUERY
     $criteria = $reportArchiveGateway->newQueryCriteria(true)
         ->sortBy('name', 'ASC')

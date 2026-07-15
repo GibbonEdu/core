@@ -109,23 +109,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $attendanceCode = $attendance->getAttendanceCodeByType($type);
                             $direction = $attendanceCode['direction'];
 
-                            //Check for last record on same day
-                            try {
-                                $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => $currentDate.'%');
-                                $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $URL .= '&return=error2';
-                                header("Location: {$URL}");
-                                exit();
-                            }
+                            // Check for last record on same day
+                             $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($gibbonPersonID, $currentDate.'%', 'N');
 
-                            //Check context and type, updating only if not a match
+                            // Check context and type, updating only if not a match
                             $existing = false ;
                             $gibbonAttendanceLogPersonID = '';
-                            if ($result->rowCount()>0) {
-                                $row=$result->fetch() ;
+                            if ($result->rowCount() > 0) {
+                                $row = $result->fetch() ;
                                 if ($row['context'] == 'Form Group' && $row['type'] == $type && $row['direction'] == $direction ) {
                                     $existing = true ;
                                     $gibbonAttendanceLogPersonID = $row['gibbonAttendanceLogPersonID'];

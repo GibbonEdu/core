@@ -52,7 +52,7 @@
         "slim/slim": "^4.0",
         "phpmailer/phpmailer": "^6.5.0",
         "skuipers/sms-client": "dev-master",
-        "symfony/yaml": "^3.2",
+        "symfony/yaml": "^5.4",
         "monolog/monolog": "^1.24",
         "phpoffice/phpspreadsheet": "^1.29",
         "fakerphp/faker": "^1.24",

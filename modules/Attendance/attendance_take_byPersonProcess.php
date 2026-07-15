@@ -19,9 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 //Gibbon system-wide includes
 require __DIR__ . '/../../gibbon.php';
@@ -82,23 +83,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $attendanceCode = $attendance->getAttendanceCodeByType($type);
                     $direction = $attendanceCode['direction'];
 
-                    //Check for last record on same day
-                    try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => $currentDate.'%');
-                        $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
+                    // Check for last record on same day
+                    $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($gibbonPersonID, $currentDate.'%', 'N');
 
-                    //Check context and type, updating only if not a match
+                    // Check context and type, updating only if not a match
                     $existing = false ;
                     $gibbonAttendanceLogPersonID = '';
-                    if ($result->rowCount()>0) {
-                        $row=$result->fetch() ;
+                    if ($result->rowCount() > 0) {
+                        $row = $result->fetch();
                         if ($row['context'] == 'Person' && $row['type'] == $type) {
                             $existing = true ;
                             $gibbonAttendanceLogPersonID = $row['gibbonAttendanceLogPersonID'];
@@ -106,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     }
 
                     if (!$existing) {
-                        //If no records then create one
+                        // If no records then create one
                         try {
                             $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
                             $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Person\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';

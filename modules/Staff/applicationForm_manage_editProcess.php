@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -62,6 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            // Get old record for file deletion tracking
+            $oldApplicationRecord = $result->fetch();
+
             //Proceed!
             $settingGateway = $container->get(SettingGateway::class);
             //Get student fields
@@ -143,6 +147,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     $partialFail = false;
 
+                    // Manage custom field file uploads and deletions for User context
+                    if (!empty($fields)) {
+                        $filesRecorded = $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('User', ['staff' => 1, 'applicationForm' => 1], $fields, 'gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, $oldApplicationRecord['fields']);
+                    }
+
+                    // Manage custom field file uploads and deletions for Staff context
+                    if (!empty($staffFields)) {
+                        $staffFilesRecorded = $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Staff', ['applicationForm' => 1, 'prefix' => 'customStaff'], $staffFields, 'gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, $oldApplicationRecord['staffFields']);
+                    }
+
                     //Deal with required documents
                     $requiredDocuments = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments');
                     if ($requiredDocuments != '' and $requiredDocuments != false) {
@@ -162,13 +176,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             // Upload the file, return the /uploads relative path
                             $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
 
+                            if (!empty($attachment)) {
+                                $fileMetaData = $fileUploader->getFileMetaData($attachment);
+                            }
+
                             // Write files to database, if there is one
                             if (!empty($attachment)) {
+                                $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $fileName, 'path' => $attachment);
+                                $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
+                                $resultFile = $connection2->prepare($sqlFile);
+                                $resultFile->execute($dataFile);
+                                    
+                                // Record file tracking
+                                if (!empty($fileMetaData)) {
+                                    $gibbonStaffApplicationFormFileID = $connection2->lastInsertID();
+                                    $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonStaffApplicationFormFile', $gibbonStaffApplicationFormFileID, 'path');
 
-                                    $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $fileName, 'path' => $attachment);
-                                    $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
-                                    $resultFile = $connection2->prepare($sqlFile);
-                                    $resultFile->execute($dataFile);
+                                    if (empty($gibbonFileID)) {
+                                        $partialFail = true;
+                                    }
+                                }
                             } else {
                                 $partialFail = true;
                             }

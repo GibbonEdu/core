@@ -24,6 +24,7 @@ namespace Gibbon\Forms;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
 
 class CustomFieldHandler
@@ -37,6 +38,11 @@ class CustomFieldHandler
      * @var \Gibbon\FileUploader
      */
     protected $fileUploader;
+
+    /**
+     * @var FileHandler
+     */
+    protected $fileHandler;
 
     /**
      * @var string[][]
@@ -53,10 +59,11 @@ class CustomFieldHandler
      */
     protected $headings;
 
-    public function __construct(CustomFieldGateway $customFieldGateway, FileUploader $fileUploader)
+    public function __construct(CustomFieldGateway $customFieldGateway, FileUploader $fileUploader, FileHandler $fileHandler)
     {
         $this->customFieldGateway = $customFieldGateway;
         $this->fileUploader = $fileUploader;
+        $this->fileHandler = $fileHandler;
 
         $this->contexts = [
             __('User Admin') => [
@@ -492,5 +499,90 @@ class CustomFieldHandler
         }
 
         return $fields;
+    }
+
+    /**
+     * Manage custom field file uploads and deletions
+     * 
+     * @param string $context The custom field context
+     * @param array $params Parameters for filtering custom fields
+     * @param string|array $newFields JSON string or array of new custom field values from POST
+     * @param string $foreignTable The foreign table name 
+     * @param int $foreignTableID The foreign table record ID
+     * @param string|array|null $oldFields Optional. JSON string or array of old field values from database
+     * @return int Count of successfully processed files or false on error
+     */
+    public function manageCustomFieldFileUploads($context, $params, $newFields, $foreignTable, $foreignTableID, $oldFields = null)
+    {
+        // Validate and decode new fields
+        $newFieldsArray = is_string($newFields) ? json_decode($newFields, true) : (is_array($newFields) ? $newFields : null);
+        
+        if (!is_array($newFieldsArray)) {
+            return false;
+        }
+
+        // Decode old fields if provided (for edit operations)
+        $oldFieldsArray = !empty($oldFields) && is_string($oldFields) ? json_decode($oldFields, true) : (is_array($oldFields) ? $oldFields : []);
+
+        // Get custom field definitions for this context
+        $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+        if (empty($customFields)) {
+            return false;
+        }
+
+        $processedCount = 0;
+
+        // Process each custom field
+        foreach ($customFields as $field) {
+            // Only process file and image type fields
+            if (!isset($field['type']) || ($field['type'] !== 'file' && $field['type'] !== 'image')) {
+                continue;
+            }
+
+            $gibbonCustomFieldID = $field['gibbonCustomFieldID'] ?? '';
+            if (empty($gibbonCustomFieldID)) {
+                continue;
+            }
+
+            // Get old and new values for this field
+            $oldValue = $oldFieldsArray[$gibbonCustomFieldID] ?? null;
+            $newValue = $newFieldsArray[$gibbonCustomFieldID] ?? null;
+
+            // Determine if the file value has changed
+            $hasNewFile = !empty($newValue) && is_string($newValue);
+            $hasOldFile = !empty($oldValue) && is_string($oldValue);
+            
+            // Only process if something has changed
+            if ($oldValue === $newValue) {
+                continue;
+            }
+
+            $foreignColumn = "fields[{$gibbonCustomFieldID}]";
+            // New file upload or replacement
+            if ($hasNewFile) {
+                // Get file metadata
+                $fileMetaData = $this->fileUploader->getFileMetaData($newValue);
+
+                if (!empty($fileMetaData)) {
+                    // Record new file upload (automatically handles old file deletion if pointer exists)
+                    $gibbonFileID = $this->fileHandler->recordFileUpload($fileMetaData, $foreignTable, $foreignTableID, $foreignColumn);
+                    
+                    if (!empty($gibbonFileID)) {
+                        $processedCount++;
+                    }
+                }
+            }
+            // File removal (old exists, new is empty)
+            elseif ($hasOldFile && !$hasNewFile) {                
+                // Delete file with proper tracking cleanup
+                $deleted = $this->fileHandler->deleteFile($foreignTable, $foreignTableID, $foreignColumn);
+                
+                if ($deleted) {
+                    $processedCount++;
+                }
+            }
+        }
+
+        return $processedCount;
     }
 }

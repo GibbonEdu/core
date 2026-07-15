@@ -39,13 +39,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
     $randStrGenerator = new PasswordPolicy(true, true, false, 40);
     
+    $mailingListList = $_POST['gibbonMessengerMailingListIDList'] ?? '';
     $data = [
         'surname'                           => $_POST['surname'] ?? '',
         'preferredName'                     => $_POST['preferredName'] ?? '',
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'key'                               => $randStrGenerator->generate(),    
         'organisation'                      => $_POST['organisation'] ?? '',
-        'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),
+        'gibbonMessengerMailingListIDList'  => is_array($mailingListList) ? implode(',', $mailingListList) : '',
     ];
 
     // Validate the required values are present

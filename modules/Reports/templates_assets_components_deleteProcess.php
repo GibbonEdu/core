@@ -52,7 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
     
-    $partialFail &= !unlink($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);
+    if (file_exists($absolutePath.$customAssetPath.'/templates/'.$values['templateFile'])) {
+        $partialFail &= !unlink($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);
+    }
 
     $deleted = $templateGateway->delete($gibbonReportPrototypeSectionID);
     $partialFail &= !$deleted;

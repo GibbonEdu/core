@@ -57,6 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            // Get old record for file deletion tracking
+            $oldStaffRecord = $result->fetch();
+
             //Validate Inputs
             $initials = $_POST['initials'] ?? '';
             if ($initials == '') {
@@ -125,6 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    // Manage custom field file uploads and deletions
+                    if (!empty($fields) and !empty($gibbonStaffID)) {
+                        $filesRecorded = $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Staff', ['requiredOverride' => 'N'], $fields, 'gibbonStaff', $gibbonStaffID, $oldStaffRecord['fields']);
                     }
 
                     $URL .= '&return=success0';

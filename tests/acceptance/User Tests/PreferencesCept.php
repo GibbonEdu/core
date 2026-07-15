@@ -1,4 +1,7 @@
-<?php 
+<?php
+/**
+ * @covers preferences.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update my preferences');
 $I->loginAsAdmin();

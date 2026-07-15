@@ -26,6 +26,8 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\DataUpdater\MedicalConditionUpdateGateway;
 
 require_once '../../gibbon.php';
 
@@ -150,8 +152,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $data['timestamp'] = date('Y-m-d H:i:s');
                 $data['fields'] = $fields;
 
+                $oldUpdateRecord = null;
                 if ($existing != 'N') {
+                    // Fetch the old update record for comparison
                     $gibbonPersonMedicalUpdateID = $existing;
+                    $oldUpdateRecord = $container->get(MedicalUpdateGateway::class)->getByID($gibbonPersonMedicalUpdateID);
+
                     $data['gibbonPersonMedicalUpdateID'] = $gibbonPersonMedicalUpdateID;
                     $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
                     $pdo->update($sql, $data);
@@ -160,6 +166,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     $gibbonPersonMedicalUpdateID = $pdo->insert($sql, $data);
                 }
 
+                // Manage custom field file uploads
+                if (!empty($fields) && !empty($gibbonPersonMedicalUpdateID)) {
+                    $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Medical Form', ['dataUpdater' => true], $fields, 'gibbonPersonMedicalUpdate', $gibbonPersonMedicalUpdateID, $oldUpdateRecord['fields'] ?? null);
+                }
+                
                 // Update existing medical conditions
                 $partialFail = false;
                 $count = $_POST['count'] ?? 0;
@@ -188,6 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
                     ];
 
+                    $fileMetaData = null;
                     if (!empty($_FILES["attachment$i"]['tmp_name'])) {
                         // Upload the file, return the /uploads relative path
                         $fileUploader = new FileUploader($pdo, $session);
@@ -195,6 +207,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                         if (empty($data['attachment'])) {
                             $partialFail = true;
+                        } else {
+                            $fileMetaData = $fileUploader->getFileMetaData($data['attachment']);
                         }
                     } else {
                         // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -213,14 +227,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     $data['timestamp'] = date('Y-m-d H:i:s');
 
+                    // Get old update record for deletion check
+                    $oldUpdateRecord = null;
+                    
                     if ($existing != 'N' && !empty($_POST["gibbonPersonMedicalConditionUpdateID$i"])) {
-                        $data['gibbonPersonMedicalConditionUpdateID'] = $_POST["gibbonPersonMedicalConditionUpdateID$i"] ?? '';
+                        $gibbonPersonMedicalConditionUpdateID = $_POST["gibbonPersonMedicalConditionUpdateID$i"];
+                        $oldUpdateRecord = $container->get(MedicalConditionUpdateGateway::class)->getByID($gibbonPersonMedicalConditionUpdateID);
+
+                        $data['gibbonPersonMedicalConditionUpdateID'] = $gibbonPersonMedicalConditionUpdateID ?? '';
                         $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
-                        $pdo->update($sql, $data);
+                        $updated = $pdo->update($sql, $data);
                     } else {
                         $data['gibbonPersonMedicalConditionID'] = $gibbonPersonMedicalConditionID;
                         $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
                         $gibbonPersonMedicalConditionUpdateID = $pdo->insert($sql, $data);
+                    }
+
+                     // Record file tracking
+                    if (!empty($fileMetaData) && !empty($gibbonPersonMedicalConditionUpdateID)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPersonMedicalConditionUpdate', $gibbonPersonMedicalConditionUpdateID, 'attachment'
+                        );
+                        
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
+                    }
+
+                    // Handle file deletion when user removes file
+                    if (empty($data['attachment']) && !empty($oldUpdateRecord['attachment'])) {
+                        $deleted = $container->get(FileHandler::class)->deleteFile('gibbonPersonMedicalConditionUpdate', $gibbonPersonMedicalConditionUpdateID, 'attachment');
                     }
                 }
 
@@ -244,6 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         'timestamp'                   => date('Y-m-d H:i:s'),
                     ];
 
+                    $newFileMetaData = null;
                     if (!empty($_FILES['attachment']['tmp_name'])) {
                         // Upload the file, return the /uploads relative path
                         $fileUploader = new FileUploader($pdo, $session);
@@ -251,12 +287,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                         if (empty($data['attachment'])) {
                             $partialFail = true;
+                        } else {
+                            $newFileMetaData = $fileUploader->getFileMetaData($data['attachment']);
                         }
                     }
 
                     if (!empty($data['name']) and !empty($data['gibbonAlertLevelID'])) {
                         $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
-                        $pdo->insert($sql, $data);
+                        $gibbonPersonMedicalConditionUpdateID = $pdo->insert($sql, $data);
+                        
+                        // Record file tracking
+                        if (!empty($newFileMetaData) && !empty($gibbonPersonMedicalConditionUpdateID)) {
+                            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($newFileMetaData, 'gibbonPersonMedicalConditionUpdate', $gibbonPersonMedicalConditionUpdateID, 'attachment');
+                            
+                            if (empty($gibbonFileID)) {
+                                $partialFail = true;
+                            }
+                        }
                     } else {
                         $partialFail = true;
                     }

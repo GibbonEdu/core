@@ -23,6 +23,7 @@ use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\UI\Components\Alert;
@@ -82,6 +83,7 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
 
                 // File Upload
                 $attachment = null;
+                $fileMetaData = null;
                 if (!empty($_FILES['attachment']['tmp_name'])) {
 
                     // Upload the file, return the /uploads relative path
@@ -93,6 +95,8 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                         header("Location: {$URL}");
                         exit;
                     }
+                    
+                    $fileMetaData = $fileUploader->getFileMetaData($attachment);
                 }
 
                 if ($name == '' or $gibbonAlertLevelID == '') {
@@ -113,6 +117,15 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
 
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID() , 12, '0', STR_PAD_LEFT);
+                    
+                    // Record file tracking
+                    if (!empty($fileMetaData) && !empty($AI)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPersonMedicalCondition', $AI, 'attachment');
+
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
+                    }
 
                     // ALERTS: possible change to Medical alert status, recalculate alerts
                     $container->get(Alert::class)->recalculateAlerts($values['gibbonPersonID']);

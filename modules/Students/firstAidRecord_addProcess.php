@@ -70,6 +70,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     $gibbonFirstAidID = $firstAidGateway->insert($data);
     $gibbonFirstAidID = str_pad($gibbonFirstAidID, 12, '0', STR_PAD_LEFT);
 
+    // Manage custom field file uploads
+    if (!empty($data['fields'])) {
+        $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('First Aid', [], $data['fields'], 'gibbonFirstAid', $gibbonFirstAidID);
+    }
+
     // Send a notification to the requested user
     if (!empty($data['gibbonPersonIDFollowUp'])) {
         $notificationSender = $container->get(NotificationSender::class);
@@ -83,5 +88,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
     $URL .= "&return=success0&editID=$gibbonFirstAidID";
     header("Location: {$URL}");
-
 }

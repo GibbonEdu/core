@@ -59,6 +59,9 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                // Fetch old record for file comparison
+                $oldClassRecord = $result->fetch();
+
                 //Validate Inputs
                 $name = $_POST['name'] ?? '';
                 $nameShort = $_POST['nameShort'] ?? '';
@@ -106,6 +109,11 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
+                        }
+
+                        // Manage custom field file uploads
+                        if (!empty($fields) && !empty($gibbonCourseClassID)) {
+                            $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Class', [], $fields, 'gibbonCourseClass', $gibbonCourseClassID, $oldClassRecord['fields'] ?? null);
                         }
 
                         $URL .= '&return=success0';

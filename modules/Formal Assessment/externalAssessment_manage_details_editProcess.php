@@ -19,8 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -46,21 +48,18 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                $data = array('gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-                $sql = 'SELECT * FROM gibbonExternalAssessmentStudent WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            try {                
+                $result = $container->get(ExternalAssessmentStudentGateway::class)->getByID($gibbonExternalAssessmentStudentID);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
             }
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $row = $result->fetch();
+                $row = $result;
 
                 //Validate Inputs
                 $count = 0;
@@ -70,6 +69,8 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 $date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 
                 //Move attached image  file, if there is one
+                $partialFail = false;
+                $fileMetaData = null;
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
@@ -80,6 +81,8 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
 
                     if (empty($attachment)) {
                         $partialFail = true;
+                    } else {
+                        $fileMetaData = $fileUploader->getFileMetaData($attachment);
                     }
                 } else {
                     // Remove the attachment if it has been deleted, otherwise retain the original value
@@ -91,7 +94,6 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                     header("Location: {$URL}");
                 } else {
                     //Scan through fields
-                    $partialFail = false;
                     for ($i = 0; $i < $count; ++$i) {
                         $gibbonExternalAssessmentStudentEntryID = @$_POST[$i.'-gibbonExternalAssessmentStudentEntryID'];
                         if (isset($_POST[$i.'-gibbonScaleGradeID']) == false) {
@@ -125,6 +127,21 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    $fileHandler = $container->get(FileHandler::class); 
+                    // Handle file deletion when user removes attachment
+                    if (empty($attachment) && !empty($row['attachment'])) {
+                        $deleted = $fileHandler->deleteFile('gibbonExternalAssessmentStudent', $gibbonExternalAssessmentStudentID, 'attachment');
+                    }
+
+                    // Record file tracking
+                    if (!empty($fileMetaData) && !empty($gibbonExternalAssessmentStudentID)) {
+                        $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, 'gibbonExternalAssessmentStudent', $gibbonExternalAssessmentStudentID, 'attachment');
+
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
                     }
 
                     if ($partialFail == true) {

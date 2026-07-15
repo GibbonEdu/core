@@ -112,6 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
+            // Manage custom field file uploads
+            if (!empty($fields) and !empty($AI)) {
+                $filesRecorded = $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Staff', ['requiredOverride' => 'N'], $fields, 'gibbonStaff', $AI);
+            }
+
             // Raise a new notification event
             $event = new NotificationEvent('Staff', 'New Staff');
 

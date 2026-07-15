@@ -402,24 +402,7 @@ class DatabaseFormFactory extends FormFactory
         $users = [];
         $data = [];
 
-        if ($params['includeStaff'] == true) {
-            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username
-                    FROM gibbonPerson
-                    JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
-
-            if (!empty($gibbonSchoolYearID)) {
-                $sql .= " WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
-            }
-            $sql .= " ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
-
-            $result = $this->pdo->select($sql);
-            if ($result->rowCount() > 0) {
-                $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true)." (".$item['username'].")";
-                    return $group;
-                }, array());
-            }
-        }
+        
 
         if ($params['includeStudents'] == true) {
             $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName
@@ -444,6 +427,25 @@ class DatabaseFormFactory extends FormFactory
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
                     $group[$item['gibbonPersonID']] = $item['formGroupName'].' - '.Format::name('', $item['preferredName'], $item['surname'], 'Student', true). " (".$item['username'].")";
+                    return $group;
+                }, array());
+            }
+        }
+
+        if ($params['includeStaff'] == true) {
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username
+                    FROM gibbonPerson
+                    JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
+
+            if (!empty($gibbonSchoolYearID)) {
+                $sql .= " WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
+            }
+            $sql .= " ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+
+            $result = $this->pdo->select($sql);
+            if ($result->rowCount() > 0) {
+                $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
+                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true)." (".$item['username'].")";
                     return $group;
                 }, array());
             }

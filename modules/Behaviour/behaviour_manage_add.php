@@ -19,13 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 $settingGateway = $container->get(SettingGateway::class);
@@ -36,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
@@ -69,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $step = 1;
         }
 
-        //Step 1
+        // Step 1
         if ($step == 1 or $gibbonBehaviourID == null) {
             $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
             $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -95,22 +98,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
             $form->addRow()->addHeading('Step 1', __('Step 1'));
 
-            //Student
+            // Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonID', __('Student'));
                 $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonPersonID)->required();
 
-            //Date
+            // Date
             $row = $form->addRow();
             	$row->addLabel('date', __('Date'));
             	$row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required();
 
-            //Type
+            // Type
             $row = $form->addRow();
             	$row->addLabel('type', __('Type'));
             	$row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive'), 'Observation' => __('Observation')])->selected($type)->required();
 
-            //Descriptor
+            // Descriptor
             if ($enableDescriptors == 'Y') {
                 $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
                 $negativeDescriptors = (!empty($negativeDescriptors))? explode(',', $negativeDescriptors) : [];
@@ -148,13 +151,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
             $form->addRow()->addHeading('Details', __('Details'));
 
-			//Incident
+			// Incident
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('comment', __('Incident'));
             	$column->addTextArea('comment')->setRows(5)->setClass('w-full');
 
-            //Follow Up
+            // Follow Up
             $row = $form->addRow();
             	$column = $row->addColumn();
             	$column->addLabel('followup', __('Follow Up'));
@@ -163,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);
 
-            //Copy to Notes
+            // Copy to Notes
             $row = $form->addRow();
                 $row->addLabel('copyToNotes', __('Copy To Notes'));
                 $row->addCheckbox('copyToNotes');
@@ -178,45 +181,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             if ($gibbonBehaviourID == '') {
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {
-                //Check for existence of behaviour record
+                // Check for existence of behaviour record
+                $values = $container->get(BehaviourGateway::class)->getBehaviourRecordByID($gibbonBehaviourID);
 
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                if ($result->rowCount() != 1) {
+                if (empty($values)) {
                     $page->addError(__('The specified record cannot be found.'));
                 } else {
-                    $values = $result->fetch();
-
                     $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
                     $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
                     $form->addRow()->addHeading(__('Step 2 (Optional)'));
 
-                    //Student
+                    // Student
                     $row = $form->addRow();
                     	$row->addLabel('students', __('Student'));
                     	$row->addTextField('students')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->readonly();
                         $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
-                    //Lessons
-                    $lessons = array();
-                    $minDate = date('Y-m-d', (time() - (24 * 60 * 60 * 30)));
+                    // Lessons
+                    $lessons = [];
 
-                        $dataSelect = array('date1' => date('Y-m-d', time()), 'date2' => $minDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $values['gibbonPersonID']);
-                        $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date DESC, timeStart";
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
+                    $resultSelect = $container->get(PlannerEntryGateway::class)->selectPlannerLessonsByStudent($session->get('gibbonSchoolYearID'), $values['gibbonPersonID']);
+
                     while ($rowSelect = $resultSelect->fetch()) {
                         $show = true;
                         if ($highestAction == 'Manage Behaviour Records_my') {
-
-                                $dataShow = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-                                $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
-                                $resultShow = $connection2->prepare($sqlShow);
-                                $resultShow->execute($dataShow);
+                            
+                                $resultShow = $container->get(CourseEnrolmentGateway::class)->selectBy(['gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID'], 'role' => 'Teacher']);
+                             
                             if ($resultShow->rowCount() != 1) {
                                 $show = false;
                             }

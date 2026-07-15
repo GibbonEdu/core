@@ -20,10 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 
@@ -114,38 +114,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             if (isset($_GET['gibbonPersonID'])) {
                 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
             }
-            //Test data access field for permission
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-            
-            if ($result->rowCount() < 1) {
+
+            // Test data access field for permission
+            $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
+
+            if (empty($children)) {
                 echo $page->getBlankSlate();
             } else {
-                //Get child list
+                // Get child list
                 $countChild = 0;
                 $options = [];
-                while ($row = $result->fetch()) {
 
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-                        $resultChild = $connection2->prepare($sqlChild);
-                        $resultChild->execute($dataChild);
-                    if ($resultChild->rowCount() > 0) {
-                        if ($resultChild->rowCount() == 1) {
-                            $rowChild = $resultChild->fetch();
-                            $gibbonPersonID = $rowChild['gibbonPersonID'];
-                            $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
-                            ++$countChild;
-                        }
-                        else {
-                            while ($rowChild = $resultChild->fetch()) {
-                                $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
-                                ++$countChild;
-                            }
-                        }
-                    }
+                foreach($children as $child) {
+                    $options[$child['gibbonPersonID']] = Format::name('', $child['preferredName'], $child['surname'], 'Student', true);
+                    ++$countChild;
                 }
 
                 if ($countChild == 0) {
@@ -176,44 +158,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     echo $form->getOutput();
                 }
 
-                if ($gibbonPersonID != '' and $countChild > 0) {
-                    //Confirm access to this student
+                if ($gibbonPersonID != '') {
+                    $output = '';
 
-                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                        $resultChild = $connection2->prepare($sqlChild);
-                        @$resultChild->execute($dataChild);
+                    if (empty($children[$gibbonPersonID])) {
+                        $page->addError(__('You do not have access to this action.'));
+                        return;
+                    }
 
-                    if ($resultChild->rowCount() < 1) {
-                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+                    $data = ['gibbonPersonID' => $gibbonPersonID];
+                    $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+
+                    if ($result->rowCount() != 1) {
+                        $page->addError(__('The specified record does not exist.'));
                     } else {
-                        $rowChild = $resultChild->fetch();
+                        $row = $result->fetch();
 
-                        if ($gibbonPersonID != '') {
-                            $output = '';
+                        // ATTENDANCE DATA
+                        $attendanceData = $container
+                            ->get(StudentHistoryData::class)
+                            ->getAttendanceData($gibbonSchoolYearID, $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
 
-                            $data = array('gibbonPersonID' => $gibbonPersonID);
-                            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                            if ($result->rowCount() != 1) {
-                                $page->addError(__('The specified record does not exist.'));
-                            } else {
-                                $row = $result->fetch();
+                        // DATA TABLE
+                        $renderer = $container->get(StudentHistoryView::class);
+                        $table = DataTable::create('studentHistory', $renderer);
+                        $table->setTitle(__('Attendance History for {name}', ['name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Student')]));
 
-                                // ATTENDANCE DATA
-                                $attendanceData = $container
-                                    ->get(StudentHistoryData::class)
-                                    ->getAttendanceData($gibbonSchoolYearID, $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
-
-                                // DATA TABLE
-                                $renderer = $container->get(StudentHistoryView::class);
-                                $table = DataTable::create('studentHistory', $renderer);
-                                $table->setTitle(__('Attendance History for {name}', ['name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Student')]));
-
-                                echo $table->render($attendanceData);
-                            }
-                        }
+                        echo $table->render($attendanceData);
                     }
                 }
             }

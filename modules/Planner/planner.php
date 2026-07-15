@@ -19,21 +19,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Module\Planner\Tables\LessonTable;
 use Gibbon\Domain\Students\StudentGateway;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == false) {
-    //Acess denied
+    // Access denied
     $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    //Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
@@ -45,10 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         $settingGateway = $container->get(SettingGateway::class);
         $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
         $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
-
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-        //Proceed!
-        //Get viewBy, date and class variables
+        // Proceed!
+        // Get viewBy, date and class variables
         $viewBy = $_GET['viewBy'] ?? '';
         $search = $_GET['search'] ?? '';
         $subView = $_GET['subView'] ?? '';
@@ -83,6 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             }
         }
+
         [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
@@ -95,21 +95,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             return;
         }
 
-        //My children's classes
+        // My children's classes
         if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
-            
+
             $page->breadcrumbs->add(__('My Children\'s Classes'));
-
             $studentGateway = $container->get(StudentGateway::class);
-            $children = $studentGateway
-                ->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))
-                ->fetchGroupedUnique();
 
+            // Test data access field for permission
+            $children = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
+            
             if (empty($children)) {
                 echo $page->getBlankSlate();
             } elseif (count($children) == 1) {
-                $gibbonPersonID = key($children);
+                $gibbonPersonID = array_key_first($children);
             } else {
+                $options = [];
+                $count = 0;
+                foreach($children as $child) {
+                    $options[$child['gibbonPersonID']] = Format::name('', $child['preferredName'], $child['surname'], 'Student', true);
+                    $gibbonPersonIDArray[$count] = $child['gibbonPersonID'];
+                    ++$count;
+                }
+
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
                 $form->setTitle(__('Choose'));
                 $form->setClass('noIntBorder w-full');
@@ -134,22 +141,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                 $gibbonPersonID = $search;
             }
-
-            if (!empty($gibbonPersonID) && !empty($children[$gibbonPersonID])) {
-                $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
-
-                if (empty($student)) {
-                    echo $page->getBlankSlate();
-                } else {
-                    $table = $container->get(LessonTable::class)->create($gibbonSchoolYearID, $gibbonCourseClassID, $gibbonPersonID, $date, $viewBy);
-                    $table->setTitle(__('Lessons'));
-
-                    echo $table->getOutput();
-                }
-            }
-            
         }
-        //My Classes
+
+        if (!empty($gibbonPersonID) && !empty($children) && !empty($children[$gibbonPersonID])) {
+            $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
+
+            if (empty($student)) {
+                echo $page->getBlankSlate();
+            } else {
+                $table = $container->get(LessonTable::class)->create($gibbonSchoolYearID, $gibbonCourseClassID, $gibbonPersonID, $date, $viewBy);
+                $table->setTitle(__('Lessons'));
+
+                echo $table->getOutput();
+            }
+        }
+        // My Classes
         elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
             $gibbonPersonID = $session->get('gibbonPersonID');
 
@@ -181,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
     }
 
     if (!empty($gibbonPersonID)) {
-        //Print sidebar
+        // Print sidebar
         $session->set('sidebarExtra', sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateStamp, $gibbonCourseClassID));
     }
 }

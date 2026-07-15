@@ -168,17 +168,6 @@ class ClassesLayer extends AbstractTimetableLayer
             $planner = $lessons[$class['lessonID']] ?? [];
             if (!empty($planner)) {
                 unset($lessons[$class['lessonID']]);
-                
-                // Use lesson plan location as override if available
-                if (!empty($planner['plannerRoomName'])) {
-                    $item->set('subtitle', $planner['plannerRoomName'])
-                          ->set('location', $planner['plannerRoomName']);
-                }
-                
-                // Use lesson plan phone if available
-                if (!empty($planner['plannerRoomPhone'])) {
-                    $item->set('phone', $planner['plannerRoomPhone']);
-                }
             }
             
             if ($context->get('edit')) {

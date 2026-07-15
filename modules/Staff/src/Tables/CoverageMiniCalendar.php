@@ -62,7 +62,7 @@ class CoverageMiniCalendar
 
         $output = '<div class="flex h-12 border" style="min-width: 8rem;" title="'.$title.'">';
 
-        $timeRange = new DatePeriod(new DateTime($timeRangeStart), new DateInterval('PT10M'), new DateTime($timeRangeEnd));
+        $timeRange = !empty($timeRangeStart) ? new DatePeriod(new DateTime($timeRangeStart), new DateInterval('PT10M'), new DateTime($timeRangeEnd)) : [];
 
         // Ensure absences have higher priority on the mini-calendar
         usort($availabilityByDate, function ($a, $b) {

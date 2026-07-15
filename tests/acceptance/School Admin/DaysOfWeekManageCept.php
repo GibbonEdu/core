@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/daysOfWeek_manage.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Days Of Week');
 $I->loginAsAdmin();

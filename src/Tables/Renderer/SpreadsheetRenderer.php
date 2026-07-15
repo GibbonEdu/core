@@ -32,6 +32,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 /**
  * SpreadsheetRenderer
@@ -183,7 +184,22 @@ class SpreadsheetRenderer implements RendererInterface
 
                     $cellContent = $this->stripTags($column->getOutput($data, false));
 
-                    if (is_numeric($cellContent) && strpos($cellContent, ".") === false) {
+                    $photoPath = $table->getMetaData('absolutePath').'/'.$cellContent;
+
+                    if (stripos($column->getLabel(), 'user photo') !== false && file_exists($photoPath)) {
+                        $drawing = new Drawing();
+                        $drawing->setName($column->getLabel());
+                        $drawing->setDescription('');
+                        $drawing->setPath($photoPath);
+                        $drawing->setCoordinates($alpha.$this->rowCount);
+                        $drawing->setHeight(120);
+                        $drawing->setOffsetX(4);
+                        $drawing->setOffsetY(4);
+                        $drawing->setWorksheet($this->sheet);
+
+                        $this->sheet->getRowDimension($this->rowCount)->setRowHeight(95);
+
+                    } elseif (is_numeric($cellContent) && strpos($cellContent, ".") === false) {
                         $this->sheet->setCellValueExplicit( $alpha.$this->rowCount, $cellContent, DataType::TYPE_NUMERIC);
                     } else {
                         $this->sheet->setCellValueExplicit( $alpha.$this->rowCount, $cellContent, DataType::TYPE_STRING);

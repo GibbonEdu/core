@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/School Admin/resourceSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Resource Settings');
 $I->loginAsAdmin();

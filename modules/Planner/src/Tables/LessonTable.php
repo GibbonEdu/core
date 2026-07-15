@@ -160,21 +160,13 @@ class LessonTable
                 ->displayLabel();
         }
 
-        if ($editAccess) { 
+        if ($editAccess) {
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Planner/planner_add.php')
                 ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
                 ->addParam('gibbonPersonID', $gibbonPersonID)
                 ->addParam('date', $date)
                 ->addParam('viewBy', $viewBy)
-                ->displayLabel();
-
-            // Import action: opens the Planner import UI
-            $table->addHeaderAction('import', __('Import'))
-                ->setURL('/modules/Planner/planner_import.php')
-                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
-                ->addParam('viewBy', $viewBy)
-                ->setIcon('upload')
                 ->displayLabel();
         }
 

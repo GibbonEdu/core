@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
-use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 
@@ -30,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('Manage Courses & Classes'));
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
@@ -93,8 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 ->addParam('search', $search)
                 ->setIcon('copy')
                 ->onCLick('return confirm("'.__('Are you sure you want to do this? All courses and classes, but not their participants, will be copied.').'");')
-                ->displayLabel()
-                ->directLink();
+                ->displayLabel();
         }
 
         $table->addHeaderAction('add', __('Add'))

@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
 
     // CUSTOM FIELDS
     $customRequireFail = false;
-    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', ['dataUpdater' => 1], $customRequireFail);
+    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', ['dataUpdater' => true], $customRequireFail);
 
     // Check for data changed
     $existingFields = json_decode($values['fields'], true);
@@ -121,15 +121,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
     $data['timestamp'] = date('Y-m-d H:i:s');
 
+    // Fetch old record for file comparison if updating
+    $oldStaffUpdateRecord = null;
+    if ($gibbonStaffUpdateID != 'N') {
+        $oldStaffUpdateRecord = $staffUpdateGateway->getByID($gibbonStaffUpdateID);
+    }
+
     if ($gibbonStaffUpdateID != 'N') {
         $success = $staffUpdateGateway->update($gibbonStaffUpdateID, $data);
     } else {
         $success = $staffUpdateGateway->insert($data);
+        $gibbonStaffUpdateID = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
     }
 
     if (!$success || !$pdo->getQuerySuccess()) {
         echo $pdo->getErrorMessage();
         die();
+    }
+
+    // Manage custom field file uploads
+    if (!empty($fields)) {
+        $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Staff', ['dataUpdater' => true], $fields, 'gibbonStaffUpdate', $gibbonStaffUpdateID, $oldStaffUpdateRecord['fields'] ?? null);
     }
 
     if ($dataChanged) {

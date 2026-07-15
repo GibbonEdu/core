@@ -1,4 +1,7 @@
 <?php 
+/**
+ * @covers modules/User Admin/publicRegistrationSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Public Registration Settings');
 $I->loginAsAdmin();

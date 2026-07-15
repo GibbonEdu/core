@@ -301,7 +301,7 @@ class CustomBlocks implements OutputableInterface
                 $id = !empty($element->getID()) ? $element->getID() : $element->getName();
                 $name = $element->getName();
 
-                if (empty($this->settings['primaryInput']) && $element instanceof TextField) {
+                if (empty($this->settings['primaryInput']) && get_class($element) === TextField::class) {
                     $element->setAttribute('x-model', 'block.'.$name);
                     $element->setAttribute('value', 'block.'.$name);
                     $this->settings['primaryInput'] = $name;
@@ -337,10 +337,7 @@ class CustomBlocks implements OutputableInterface
                 }
 
                 if ($element instanceof Time) {
-                    $element->setAttribute('x-init', "$(\$el).timepicker({
-                    'scrollDefault': 'now',
-                    'timeFormat': 'H:i',
-                    })");
+                    $element->setAttribute('x-init', '$data.setTime(block.'.$name.')');
                 }
 
                 if ($element instanceof Editor || $element->getData('tinymce') !== null) {

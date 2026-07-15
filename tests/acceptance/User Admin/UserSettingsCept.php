@@ -1,7 +1,60 @@
 <?php 
+/**
+ * @covers modules/User Admin/userSettings.php
+ * @covers modules/User Admin/userSettings_usernameFormat_add.php
+ * @covers modules/User Admin/userSettings_usernameFormat_edit.php
+ * @covers modules/User Admin/userSettings_usernameFormat_delete.php
+ */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('update User Settings');
+$I->wantTo('manage user settings');
 $I->loginAsAdmin();
+$I->amOnModulePage('User Admin', 'userSettings.php');
+
+// Add Username Format -----------------------------------
+$I->clickNavigation('Add');
+$I->seeBreadcrumb('Add Username Format');
+
+$I->selectFromDropdown('gibbonRoleIDList', 1);
+
+$addFormValues = [
+    'format' => '[preferredName:1][surname]',
+    'isDefault' => 'N',
+    'isNumeric' => 'N',
+];
+
+$I->submitForm('#content form', $addFormValues, 'Submit');
+$I->seeSuccessMessage();
+
+$gibbonUsernameFormatID = $I->grabEditIDFromURL();
+
+// Edit Username Format ----------------------------------
+$I->amOnModulePage('User Admin', 'userSettings_usernameFormat_edit.php', [
+    'gibbonUsernameFormatID' => $gibbonUsernameFormatID
+]);
+$I->seeBreadcrumb('Edit Username Format');
+
+$I->seeInFormFields('#content form', [
+    'format' => '[preferredName:1][surname]',
+]);
+
+$editFormValues = [
+    'format' => '[firstName][surname]',
+    'isDefault' => 'N',
+    'isNumeric' => 'N',
+];
+
+$I->submitForm('#content form', $editFormValues, 'Submit');
+$I->seeSuccessMessage();
+
+// Delete Username Format --------------------------------
+$I->amOnModulePage('User Admin', 'userSettings_usernameFormat_delete.php', [
+    'gibbonUsernameFormatID' => $gibbonUsernameFormatID
+]);
+
+$I->click('Delete');
+$I->seeSuccessMessage();
+
+// Test Settings Page (original test) -------------------
 $I->amOnModulePage('User Admin', 'userSettings.php');
 
 // Grab Original Settings --------------------------------------

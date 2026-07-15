@@ -77,7 +77,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div x-show="showCurrentTime" class="print:hidden absolute ml-1 w-full left-0" style="top: {{ structure.timeToPixels(now) + dayOffset }}px">
             <div class="border-b-2 border-blue-500 w-full"></div>
             <div class="absolute origin-center text-center left-0 -mt-3 rounded-full border border-blue-500 bg-blue-500 w-10 shadow">
-                <span class="inline-block text-xxs text-white uppercase leading-loose">{{ structure.getToday.format('G:i') }}</span>
+                <span class="inline-block text-xxs text-white uppercase leading-loose">{{ formatUsing('time', structure.getToday) }}</span>
             </div>
             <div class="absolute origin-center w-1.5 h-1.5 right-0 -mr-1 -mt-1 rounded-full bg-blue-500 shadow"></div>
         </div>
@@ -86,7 +86,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="w-12">
             {% for time in structure.getTimeRange %}
             <div class="leading-none text-center" style="height: {{ structure.minutesToPixels(60) }}px">
-                <span class="block text-xxs text-gray-500 uppercase">{{ time.format('G:i') }}</span>
+                <span class="block text-xxs text-gray-500 uppercase">{{ formatUsing('time', time) }}</span>
             </div>
             {% endfor %}
         </div>

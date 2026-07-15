@@ -50,6 +50,7 @@ use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 use Gibbon\Module\Students\StudentAttendanceStatus;
 use Gibbon\Module\Students\View\LibraryBorrowingView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -1960,10 +1961,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     } else {
                                                         echo '<td>';
                                                         $rowSub = $resultSub->fetch();
-                                                        $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $_GET['gibbonPersonID']);
-                                                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                                        $resultWork = $connection2->prepare($sqlWork);
-                                                        $resultWork->execute($dataWork);
+                                                        $resultWork = $container->get(PlannerEntryHomeworkGateway::class)->selectHomeworkByStudent($rowEntry['gibbonPlannerEntryID'], $_GET['gibbonPersonID']);
+
                                                         if ($resultWork->rowCount() > 0) {
                                                             $rowWork = $resultWork->fetch();
 
@@ -2188,6 +2187,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->setURL('/modules/Individual Needs/in_edit.php')
                                     ->addParam('gibbonPersonID', $gibbonPersonID)
                                     ->displayLabel();
+                                if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_supportPlan_manage.php') == true) {
+                                    $form->addHeaderAction('manage', __('Student Support Plans'))
+                                        ->setIcon('planner')
+                                        ->setURL('/modules/Individual Needs/in_supportPlan_manage.php')
+                                        ->addParam('gibbonPersonID', $gibbonPersonID)
+                                        ->displayLabel();
+                                }
                                 echo $form->getOutput();
                             }
 

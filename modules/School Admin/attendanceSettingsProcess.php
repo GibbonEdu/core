@@ -91,6 +91,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     } catch (PDOException $e) {
         $fail = true;
     }
+	
+	$showIncompleteAttendance = (isset($_POST['showIncompleteAttendance'])) ? $_POST['showIncompleteAttendance'] : NULL;
+	try {
+		$data = ['value' => $showIncompleteAttendance];
+		$sql = "UPDATE gibbonSetting SET value=:value
+				WHERE scope='Attendance'
+				AND name='showIncompleteAttendance'";
+		$result = $connection2->prepare($sql);
+		$result->execute($data);
+	} catch (PDOException $e) {
+		$fail = true;
+	}
+
 
     $studentSelfRegistrationIPAddresses = '';
     foreach (explode(',', $_POST['studentSelfRegistrationIPAddresses']) as $ipAddress) {

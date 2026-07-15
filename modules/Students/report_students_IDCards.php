@@ -100,8 +100,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                 // Upload the file, return the /uploads relative path
-                $attachment = $fileUploader->uploadFromPost($file, 'Card_BG');
-
+                $attachment = $fileUploader->uploadFromPost($file, 'Card_BG');  // This is a temporary file that is only used for the current print session and is not stored in any database record.
+                
                 if (empty($attachment)) {
                     echo '<div class="error">';
                         echo __('Your request failed due to an attachment error.');

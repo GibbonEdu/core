@@ -18,7 +18,7 @@ all stylesheets and scripts with a 'head' context.
             {% for title, src in page.breadcrumbs %}
 
                     <li class="list-none inline ml-0 ">
-                        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" hx-indicator="#loadingIndicator" class="text-gray-600 hover:text-gray-800 no-underline hover:cursor-pointer {{ loop.last ? 'trailEnd' }}" href="{{ src }}">
+                        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" hx-indicator="#loadingIndicator" class="text-gray-600 hover:text-gray-800 no-underline hover:cursor-pointer breadcrumb {{ loop.last ? 'trailEnd' }}" href="{{ src }}">
                             {% if loop.index == 1 %}
                                 {{ icon('basic', 'home', 'block size-4 text-gray-500 hover:text-gray-800') }}
                             {% elseif loop.revindex > 4 %}

@@ -40,12 +40,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     // Proceed!
     $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
 
+    $mailingListList = $_POST['gibbonMessengerMailingListIDList'] ?? '';
     $data = [
         'surname'                           => $_POST['surname'] ?? '',
         'preferredName'                     => $_POST['preferredName'] ?? '',
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'organisation'                      => $_POST['organisation'] ?? '',
-        'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),
+        'gibbonMessengerMailingListIDList'  => is_array($mailingListList) ? implode(',', $mailingListList) : '',
     ];
 
     // Validate the required values are present

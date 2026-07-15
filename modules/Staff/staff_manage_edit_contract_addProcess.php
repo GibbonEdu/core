@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 include '../../gibbon.php';
 
@@ -86,6 +87,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $partialFail = false;
 
                 $contractUpload = null;
+                $fileMetaData = null;
                 if (!empty($_FILES['file1']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);
                     $fileUploader->getFileExtensions('Document');
@@ -97,6 +99,8 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 
                     if (empty($contractUpload)) {
                         $partialFail = true;
+                    } else {
+                        $fileMetaData = $fileUploader->getFileMetaData($contractUpload);
                     }
                 }
 
@@ -118,6 +122,15 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID(), 14, '0', STR_PAD_LEFT);
+
+                    // Record file tracking
+                    if (!empty($fileMetaData)) { 
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonStaffContract', $AI, 'contractUpload');
+
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
+                    }
 
                     if ($partialFail == true) {
                         $URL .= '&return=warning1';

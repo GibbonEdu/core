@@ -26,6 +26,7 @@ use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 /**
  * BOOTSTRAP
@@ -162,14 +163,8 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                         $currentDate = date('Y-m-d');
                         if (isSchoolOpen($guid, $currentDate, $connection2, true)) { // Is school open today
                             // Check for existence of records today
-                            try {
-                                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'date' => $currentDate);
-                                $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                            }
-
+                            $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($session->get('gibbonPersonID'), $currentDate, 'N');
+                            
                             if ($result->rowCount() == 0) {
                                 // No registration yet
                                 // Redirect!

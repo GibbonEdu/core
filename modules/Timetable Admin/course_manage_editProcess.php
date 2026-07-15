@@ -54,6 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            // Fetch old record for file comparison
+            $oldCourseRecord = $result->fetch();
+
             //Validate Inputs
             $gibbonDepartmentID = !empty($_POST['gibbonDepartmentID']) ? $_POST['gibbonDepartmentID'] : null;
             $name = $_POST['name'] ?? '';
@@ -103,6 +106,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    // Manage custom field file uploads
+                    if (!empty($fields) && !empty($gibbonCourseID)) {
+                        $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Course', [], $fields, 'gibbonCourse', $gibbonCourseID, $oldCourseRecord['fields'] ?? null);
                     }
 
                     $URL .= '&return=success0';

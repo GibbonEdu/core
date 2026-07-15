@@ -124,18 +124,18 @@ document.addEventListener('alpine:init', () => {
 });
 
 // Enable preventing page navigation from hx-boosted links
-document.addEventListener('htmx:confirm', function(evt) {
-    if (!evt.detail.elt.hasAttribute('hx-boost')) return;
+document.addEventListener('htmx:confirm', function(event) {
+    if (!event.detail.elt.hasAttribute('hx-boost')) return;
 
-    evt.preventDefault();
+    event.preventDefault();
 
-    if (window.onbeforeunload != null) {
+    if (window.onbeforeunload != null && !event.originalTarget?.classList.contains('no-confirm')) {
         if (window.confirm(Gibbon.config.htmx.unload_confirm)) {
             window.onbeforeunload = null;
-            evt.detail.issueRequest(true);
+            event.detail.issueRequest(true);
         }
     } else {
-        evt.detail.issueRequest(true);
+        event.detail.issueRequest(true);
     }
 }, false);
 
@@ -410,7 +410,7 @@ function updateComments(element) {
             (heFound && gender == "F") || (sheFound && gender == "M");
         $(
             ".characterInfo .commentStatusPronoun",
-            $(element).parent()
+            $(element).parent().parent()
         ).toggleClass("hidden", !pronounMismatch);
     }
 }

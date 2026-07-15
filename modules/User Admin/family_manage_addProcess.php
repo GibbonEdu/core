@@ -71,6 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
         //Last insert ID
         $AI = str_pad($connection2->lastInsertID(), 6, '0', STR_PAD_LEFT);
 
+        // Manage custom field file uploads
+        if (!empty($fields) && !empty($AI)) {
+            $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Family', [], $fields, 'gibbonFamily', $AI);
+        }
+
         //Success 0
         $URL .= "&return=success0&editID=$AI";
         header("Location: {$URL}");

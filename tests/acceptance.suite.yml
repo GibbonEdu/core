@@ -10,7 +10,7 @@ modules:
         - PhpBrowser:
             url: "%ABSOLUTE_URL%"
             curl:
-                CURLOPT_TIMEOUT: 180
+                CURLOPT_TIMEOUT: 8
         - \Helper\Acceptance
         - Db
         - DbHelper

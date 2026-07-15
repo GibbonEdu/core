@@ -20,7 +20,7 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-    protected $breadcrumbEnd = '.trailEnd';
+    protected $breadcrumbEnd = '.breadcrumb';
 
    /**
     * Define custom actions here
@@ -89,6 +89,14 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->see($text, '.warning');
     }
 
+    public function dontSeeErrors()
+    {
+        $this->dontSee('PHP Deprecated');
+        $this->dontSee('PHP Fatal error');
+        $this->dontSee('Uncaught Exception');
+        $this->dontSee('Warning: Undefined');
+    }
+
     public function grabValueFromURL($param)
     {
         return $this->grabFromCurrentUrl('/'.$param.'=([^=&\s]+)/');
@@ -103,9 +111,13 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $n = intval($n);
 
-        $option = $n < 0
-            ? $this->grabTextFrom('#content select[name='.$selector.'] option:not([value=""]):nth-last-of-type('.abs($n).')')
-            : $this->grabTextFrom('#content select[name='.$selector.'] option:not([value=""]):nth-of-type('.$n.')');
+        if ($n < 0) {
+            $option = $this->grabTextFrom('#content select[name*='.$selector.'] option:not([value=""]):nth-last-of-type('.abs($n).')');
+        } else if ($n == 1) {
+            $option = $this->grabTextFrom('#content select[name*='.$selector.'] option:not([value=""])');
+        } else {
+            $option = $this->grabTextFrom('#content select[name*='.$selector.'] option:not([value=""]):nth-of-type('.$n.')');
+        }
 
         $this->selectOption('#content #'.$selector, $option);
     }
@@ -122,6 +134,8 @@ class AcceptanceTester extends \Codeception\Actor
             $url .= '&'.http_build_query($params);
         }
 
-        return $this->amOnPage($url);
+        $this->amOnPage($url);
+
+        $this->dontSeeErrors();
     }
 }

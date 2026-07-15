@@ -84,6 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/impersonateUs
     $session->set($user);
 
     // Clear cached FF actions and main menu
+    $session->forget('googleAPIAccessToken');
+    $session->forget('googleAPIRefreshToken');
     $session->forget('fastFinderActions');
     $session->forget(['menuMainItems', 'menuModuleItems', 'menuModuleName', 'menuItemActive']);
 

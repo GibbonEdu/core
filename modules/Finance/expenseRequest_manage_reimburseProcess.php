@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\FinanceExpenseApproverGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -107,6 +108,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                         $paymentAmount = $_POST['paymentAmount'] ?? '';
                         $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
                         $paymentMethod = $_POST['paymentMethod'] ?? '';
+                        $fileMetaData = null;
 
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
@@ -119,8 +121,10 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                             $URL .= '&return=error5';
                             header("Location: {$URL}");
                             exit();
+                        } else {
+                            $fileMetaData = $fileUploader->getFileMetaData($attachment);
                         }
-
+                        
                         //Write back to gibbonFinanceExpense
                         try {
                             $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'status' => 'Paid', 'paymentDate' => $paymentDate, 'paymentAmount' => $paymentAmount, 'gibbonPersonIDPayment' => $gibbonPersonIDPayment, 'paymentMethod' => $paymentMethod, 'paymentReimbursementReceipt' => $attachment, 'paymentReimbursementStatus' => 'Requested');
@@ -131,6 +135,17 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
+                        }
+
+                        // Record file tracking
+                        if (!empty($fileMetaData) && !empty($gibbonFinanceExpenseID)) {
+                            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonFinanceExpense', $gibbonFinanceExpenseID, 'paymentReimbursementReceipt');
+                            
+                            if (empty($gibbonFileID)) {
+                                $URL .= '&return=error2';
+                                header("Location: {$URL}");
+                                exit();
+                            }
                         }
 
                         //Notify reimbursement officer that action is required

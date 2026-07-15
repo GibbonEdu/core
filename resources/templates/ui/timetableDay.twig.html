@@ -43,7 +43,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 <div class="flex w-full items-start justify-between border-gray-500 px-1.5 py-1">
                     <span class="text-xxs text-gray-500 ">{{ item.duration >= 15 ? item.title }}</span>
-                    <span class="inline md:hidden lg:inline text-xxs text-gray-500 opacity-0 group-hover:opacity-100 transition duration-300">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
+                    <span class="inline md:hidden lg:inline text-xxs text-gray-500 opacity-0 group-hover:opacity-100 transition duration-300">{{ formatUsing('timeRange', item.timeStart, item.timeEnd) }}</span>
                 </div>
 
                 {% set lastTimeEnd = item.timeEnd %}

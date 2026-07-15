@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -95,6 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                         exit;
                     } else {
                         $partialFail = false;
+                        $fileMetaData = null;
 
                         if ($type == 'File' && !empty($_FILES['file']['tmp_name'])) {
                             $fileUploader = new Gibbon\FileUploader($pdo, $session);
@@ -104,8 +106,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                             // Upload the file, return the /uploads relative path
                             $content = $fileUploader->uploadFromPost($file, $name);
 
-                            if (empty($attachment)) {
+                            if (empty($content)) {
                                 $partialFail = true;
+                            } else {
+                                $fileMetaData = $fileUploader->getFileMetaData($content);
                             }
                         }
 
@@ -201,12 +205,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                     $pdo->delete("DELETE FROM gibbonResourceTag WHERE count=0");
 
                     //Write to database
-
+                    try {
                         $data = array('type' => $type, 'content' => $content, 'name' => $name, 'category' => $category, 'purpose' => $purpose, 'tags' => substr($tagList, 0, -1), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'description' => $description, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonResourceID' => $gibbonResourceID);
                         $sql = 'UPDATE gibbonResource SET type=:type, content=:content, name=:name, category=:category, purpose=:purpose, tags=:tags, gibbonYearGroupIDList=:gibbonYearGroupIDList, description=:description, gibbonPersonID=:gibbonPersonID WHERE gibbonResourceID=:gibbonResourceID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
 
+                    // Record file tracking (only if new file uploaded)
+                    if (!empty($fileMetaData) && !empty($gibbonResourceID)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonResource', $gibbonResourceID, 'content');
+
+                        if (empty($gibbonFileID)) {
+                            $partialFail = true;
+                        }
+                    }
+                    
                     if ($partialFail == true) {
                         $URL .= '&return=warning1';
                         header("Location: {$URL}");

@@ -19,13 +19,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Comms\EmailTemplate;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Domain\System\EmailTemplateGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
 
 require_once '../../gibbon.php';
 
@@ -107,7 +111,16 @@ if ($proceed == false) {
     $referenceEmail1 = $_POST['referenceEmail1'] ?? '';
     $referenceEmail2 = $_POST['referenceEmail2'] ?? '';
     $agreement = isset($_POST['agreement']) ? ($_POST['agreement'] == 'on' ? 'Y' : 'N') : null;
+    
+    if (!empty($gibbonPersonID)) {
+        $staffDetails = $container->get(UserGateway::class)->getSafeUserData($gibbonPersonID);
 
+        if (!empty($staffDetails)) {
+            $officialName = $staffDetails['officialName'];
+            $email = $staffDetails['email'];
+            $gender = $staffDetails['gender'];
+        }
+    }
 
     //VALIDATE INPUTS
     if (count($gibbonStaffJobOpeningIDs) < 1 or ($gibbonPersonID == null and ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageFirst == '' or $email == '' or $homeAddress == '' or $homeAddressDistrict == '' or $homeAddressCountry == '' or $phone1 == '')) or (isset($_POST['referenceEmail1']) and $referenceEmail1 == '') or (isset($_POST['referenceEmail2']) and $referenceEmail2 == '') or (isset($_POST['agreement']) and $agreement != 'Y')) {
@@ -142,8 +155,8 @@ if ($proceed == false) {
                 for ($i = 0; $i < $fileCount; ++$i) {
                     if (empty($_FILES["file$i"]['tmp_name'])) continue;
 
-                    $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
-                    $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
+                    $file = (isset($_FILES["file$i"])) ? $_FILES["file$i"] : null;
+                    $fileName = (isset($_POST["fileName$i"])) ? $_POST["fileName$i"] : null;
 
                     // Upload the file, return the /uploads relative path
                     $attachment = $fileUploader->uploadFromPost($file, 'StaffApplicationDocument');
@@ -154,6 +167,10 @@ if ($proceed == false) {
                     }
                 }
             }
+
+            // Initialise the mailer
+            $mail = $container->get(Mailer::class);
+            $mail->SMTPKeepAlive = true;
 
             //Submit one copy for each job opening checking
             foreach ($gibbonStaffJobOpeningIDs as $gibbonStaffJobOpeningID) {
@@ -174,7 +191,7 @@ if ($proceed == false) {
                     $jobTitle = $row['jobTitle'];
                     $type = $row['type'];
 
-                    //Write to database
+                    // Write to database
                     try {
                         $data = array('gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID, 'questions' => $questions, 'gibbonPersonID' => $gibbonPersonID, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'referenceEmail1' => $referenceEmail1, 'referenceEmail2' => $referenceEmail2, 'agreement' => $agreement, 'staffFields' => $staffFields, 'fields' => $fields, 'timestamp' => date('Y-m-d H:i:s'));
                         $sql = 'INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, gibbonPersonID=:gibbonPersonID, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, referenceEmail1=:referenceEmail1, referenceEmail2=:referenceEmail2, agreement=:agreement, fields=:fields, staffFields=:staffFields, timestamp=:timestamp';
@@ -195,15 +212,36 @@ if ($proceed == false) {
                         $params = ['staff' => true, 'applicationForm' => true];
                         $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonStaffApplicationForm', $AI, $params, $partialFail);
 
+                        // Manage custom field file uploads for User context
+                        if (!empty($fields)) {
+                            $filesRecorded = $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('User', ['staff' => 1, 'applicationForm' => 1], $fields, 'gibbonStaffApplicationForm', $AI);
+                        }
+
+                        // Manage custom field file uploads for Staff context
+                        if (!empty($staffFields)) {
+                            $staffFilesRecorded = $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Staff', ['applicationForm' => 1, 'prefix' => 'customStaff'], $staffFields, 'gibbonStaffApplicationForm', $AI);
+                        }
+
                         // Attach required documents
                         if ($requiredDocuments != false && !empty($uploadedDocuments) && is_array($uploadedDocuments)) {
                             foreach ($uploadedDocuments as $fileName => $attachment) {
-                                //Write files to database, one for each attachment
+                                // Write files to database, one for each attachment
+                                $fileMetaData = $fileUploader->getFileMetaData($attachment);
 
-                                    $dataFile = array('gibbonStaffApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
-                                    $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
-                                    $resultFile = $connection2->prepare($sqlFile);
-                                    $resultFile->execute($dataFile);
+                                $dataFile = array('gibbonStaffApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
+                                $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
+                                $resultFile = $connection2->prepare($sqlFile);
+                                $resultFile->execute($dataFile);
+                                    
+                                // Record file tracking
+                                if (!empty($fileMetaData)) {
+                                    $gibbonStaffApplicationFormFileID = $connection2->lastInsertID();
+                                    $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonStaffApplicationFormFile', $gibbonStaffApplicationFormFileID, 'path');
+
+                                    if (empty($gibbonFileID)) {
+                                        $partialFail = true;
+                                    }
+                                }
                             }
                         }
 
@@ -216,37 +254,100 @@ if ($proceed == false) {
 
                         $event->sendNotifications($pdo, $session);
 
-                        //Email reference form link to referee
+                        // Email reference form link to referee
                         $applicationFormRefereeLink = unserialize($settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink'));
+
                         if (is_array($applicationFormRefereeLink) && !empty($applicationFormRefereeLink[$type]) and ($referenceEmail1 != '' or $refereeEmail2 != '') and $session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
-                            //Prep message
-                            $subject = __('Request For Reference');
-                            $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), Format::name('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $session->get('organisationHRName'), '<br/><br/>', $jobTitle);
+                            // Prep template 
+                            $emailTemplateRef = $container->get(EmailTemplateGateway::class)->selectTemplatesByModule('Staff', 'Staff Application Form Reference Request')->fetch();
+                            $templateRef = $container->get(EmailTemplate::class)->setTemplate($emailTemplateRef['templateName']);
 
-                            $mail = $container->get(Mailer::class);
-                            $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
-                            if ($referenceEmail1 != '') {
-                                $mail->AddBCC($referenceEmail1);
-                            }
-                            if ($referenceEmail2 != '') {
-                                $mail->AddBCC($referenceEmail2);
-                            }
-                            $mail->Subject = $subject;
-                            $mail->renderBody('mail/email.twig.html', [
-                                'title'  => $subject,
-                                'body'   => $body,
-                                'button' => [
-                                    'url'  => $applicationFormRefereeLink[$type],
-                                    'text' => __('Click Here'),
-                                    'external' => true,
-                                ],
-                            ]);
+                            $dataRef = [
+                                'preferredName'     => $preferredName ?? '',
+                                'surname'           => $surname ?? '',
+                                'date'              => Format::date(date('Y-m-d')),
+                                'jobTitle'          => $jobTitle,
+                                'applicationID'     => $AI,
+                                'applicationRefereeLink'  => $applicationFormRefereeLink[$type],
+                                'organisationHRName' => $session->get('organisationHRName'),
+                                'organisationNameShort'  => $session->get('organisationName'),
+                            ];
 
-                            $mail->Send();
+                            // Render the email
+                            $subjectRef = $templateRef->renderSubject($dataRef);
+                            $bodyRef = $templateRef->renderBody($dataRef);
+
+                            // Send individual emails to each referee
+                            if (!empty($referenceEmail1)) {
+                                $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
+                                $mail->AddAddress($referenceEmail1);
+                                $mail->setDefaultSender($subjectRef);
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subjectRef,
+                                    'body'   => $bodyRef,
+                                    'button' => [
+                                        'url'  => $applicationFormRefereeLink[$type],
+                                        'text' => __('Click Here'),
+                                        'external' => true,
+                                    ],
+                                ]);
+
+                                $mail->Send();
+                                $mail->ClearAllRecipients();
+                            }
+
+                            if (!empty($referenceEmail2)) {
+                                $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
+                                $mail->AddAddress($referenceEmail2);
+                                $mail->setDefaultSender($subjectRef);
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subjectRef,
+                                    'body'   => $bodyRef,
+                                    'button' => [
+                                        'url'  => $applicationFormRefereeLink[$type],
+                                        'text' => __('Click Here'),
+                                        'external' => true,
+                                    ],
+                                ]);
+
+                                $mail->Send();
+                                $mail->ClearAllRecipients();
+                            }
                         }
+
+                        // Send a FORM SUBMISSION confirmation email to the applicant
+                        $emailTemplate = $container->get(EmailTemplateGateway::class)->selectTemplatesByModule('Staff', 'Staff Application Form Confirmation')->fetch();
+                        $template = $container->get(EmailTemplate::class)->setTemplate($emailTemplate['templateName']);
+
+                        $data = [
+                            'preferredName'     => $preferredName ?? '',
+                            'surname'           => $surname ?? '',
+                            'date'              => Format::date(date('Y-m-d')),
+                            'jobTitle'          => $jobTitle,
+                            'applicationID'     => $AI,
+                            'organisationName'  => $session->get('organisationName'),
+                            'organisationEmail' => $session->get('organisationEmail'),
+                        ];
+
+                        // Render the email
+                        $subject = $template->renderSubject($data);
+                        $body = $template->renderBody($data);
+
+                        $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
+                        $mail->AddAddress($email, Format::name('', $preferredName, $surname, 'Staff', false, true));
+                        $mail->setDefaultSender($subject);
+                        $mail->renderBody('mail/email.twig.html', [
+                            'title'  => $subject,
+                            'body'   => $body,
+                        ]);
+
+                        $mail->Send();
+                        $mail->ClearAllRecipients();
                     }
                 }
             }
+
+            $mail->smtpClose();
 
             if ($ids != '') {
                 $ids = substr($ids, 0, -2);

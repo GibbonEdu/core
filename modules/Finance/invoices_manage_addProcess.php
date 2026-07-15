@@ -444,7 +444,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                     header("Location: {$URL}");
                 } else {
                     $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    header("Location: {$URL}&editID={$gibbonFinanceInvoiceID}");
                 }
             }
         }

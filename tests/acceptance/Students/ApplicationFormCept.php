@@ -1,4 +1,13 @@
 <?php
+/**
+ * @covers modules/Students/applicationForm.php
+ * @covers modules/Students/applicationForm_payFee.php
+ * @covers modules/Students/applicationForm_manage_edit.php
+ * @covers modules/Students/applicationForm_manage_delete.php
+ * @covers modules/User Admin/applicationFormSettings.php
+ * @covers modules/User Admin/userSettings.php
+ * @covers modules/User Admin/studentsSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit a student application form with most settings enabled');
 $I->loginAsAdmin();
@@ -199,6 +208,8 @@ $I->seeInFormFields('#content form', $formValues);
 
 $file0path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload0']);
 $file1path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload1']);
+$I->assertNotEmpty($file0path);
+$I->assertNotEmpty($file1path);
 
 // Check to see the uploaded files are there
 $I->see('FileUpload0');
@@ -206,8 +217,16 @@ $I->see(basename($file0path));
 $I->see('FileUpload1');
 $I->see(basename($file1path));
 
+// Test Payment Page -----------------------------------------
+
+$I->click('Logout', 'a');
+$I->amOnModulePage('Students', 'applicationForm_payFee.php', array('key' => $applicationFormHash, 'gibbonApplicationFormID' => $gibbonApplicationFormID));
+$I->seeBreadcrumb('Application Fee');
+$I->dontSeeErrors();
+
 // Cleanup ------------------------------------------------
 
+$I->loginAsAdmin();
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
 $I->amOnModulePage('Students', 'applicationForm_manage_delete.php', $urlParams );
 

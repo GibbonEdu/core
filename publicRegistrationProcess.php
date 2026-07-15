@@ -151,6 +151,11 @@ if ($proceed == false) {
     // Create the status log
     $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Public Registration')]);
 
+    // Manage custom field file uploads
+    if (!empty($fields)) {
+        $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('User', ['publicRegistration' => true], $fields, 'gibbonPerson', $gibbonPersonID);
+    }
+
     if ($status == 'Pending Approval') {
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'New Public Registration');

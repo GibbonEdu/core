@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     }
     
     //Write to database
-    $inserted = $noteGateway->insert([
+    $gibbonStudentNoteID = $noteGateway->insert([
         'gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID,
         'title' => $title,
         'note' => $note,
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         'timestamp' => date('Y-m-d H:i:s', time()),
     ]);
 
-    if (!$inserted) {
+    if (!$gibbonStudentNoteID) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
@@ -135,5 +135,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     }
 
     $URL .= '&return=success0';
-    header("Location: {$URL}");
+    header("Location: {$URL}&editID={$gibbonStudentNoteID}");
 }

@@ -19,19 +19,23 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\View\GridView;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Tables\Prefab\ClassGroupTable;
+use Gibbon\Tables\View\GridView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 $settingGateway = $container->get(SettingGateway::class);
+$courseGateway = $container->get(CourseGateway::class);
+$courseClassGateway = $container->get(CourseClassGateway::class);
 
 $makeDepartmentsPublic = $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
@@ -47,23 +51,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         if (!empty($gibbonDepartmentID)) {
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = "SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.name AS classLong, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance, gibbonCourseClass.fields
-                    FROM gibbonCourse
-                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                    JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID)
-                    WHERE gibbonCourseClassID=:gibbonCourseClassID";
+            $result = $courseGateway->getCourseClassDetails($gibbonCourseClassID);
         } else {
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = "SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.name AS classLong, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance, gibbonCourseClass.fields
-                    FROM gibbonCourse
-                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                    WHERE gibbonCourseClassID=:gibbonCourseClassID";
+            $result = $courseGateway->getCourseClassInfoByID($gibbonCourseClassID);
         }
 
-        $row = $pdo->selectOne($sql, $data);
+        $row = $result;
 
         if (empty($row)) {
             $page->addError(__('The specified record does not exist.'));
@@ -176,13 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $sidebarExtra = '';
 
                 //Print related class list
-                try {
-                    $dataCourse = array('gibbonCourseID' => $row['gibbonCourseID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlCourse = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY class';
-                    $resultCourse = $connection2->prepare($sqlCourse);
-                    $resultCourse->execute($dataCourse);
-                } catch (PDOException $e) {
-                }
+                $resultCourse = $courseClassGateway->selectClassesByCourseID($row['gibbonCourseID']);
 
                 if ($resultCourse->rowCount() > 0) {
                     $sidebarExtra .= '<div class="column-no-break">';
@@ -207,16 +194,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
                 $form->addHiddenValue('q', '/modules/'.$session->get('module').'/department_course_class.php');
 
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
-                        FROM gibbonCourse
-                        JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-                        WHERE gibbonSchoolYearID=:gibbonSchoolYearID
-                        ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+                $resultClasses = $courseGateway->selectCoursesAndClassesBySchoolYear($session->get('gibbonSchoolYearID'));
 
                 $row = $form->addRow();
                     $row->addSelect('gibbonCourseClassID')
-                        ->fromQuery($pdo, $sql, $data)
+                        ->fromResults($resultClasses)
                         ->selected($gibbonCourseClassID)
                         ->placeholder()
                         ->setClass('w-full');

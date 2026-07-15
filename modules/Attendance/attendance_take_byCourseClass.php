@@ -23,8 +23,13 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Domain\Timetable\CourseClassPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -51,20 +56,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     $gibbonTTDayRowClassID = $_GET['gibbonTTDayRowClassID'] ?? '';
 
     if (empty($gibbonCourseClassID)) {
-        try {
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonSchoolYear.firstDay, gibbonSchoolYear.lastDay
-                    FROM gibbonCourse
-                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                    JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                    WHERE gibbonPersonID=:gibbonPersonID
-                    AND gibbonCourseClass.attendance='Y'
-                    AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-        }
+        $result = $container->get(CourseClassGateway::class)->selectAttendanceClassesByStudent($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
 
         if ($result->rowCount() > 0) {
             $gibbonCourseClassID = $result->fetchColumn(0);
@@ -124,26 +116,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 $defaultAttendanceType = $settingGateway->getSettingByScope('Attendance', 'defaultClassAttendanceType');
                 $crossFillClasses = $settingGateway->getSettingByScope('Attendance', 'crossFillClasses');
 
-                // Check class
-                try {
-                    $data = array("gibbonCourseClassID" => $gibbonCourseClassID, "gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
-                    $sql = "SELECT gibbonCourseClass.*, gibbonCourse.gibbonSchoolYearID,firstDay, lastDay,
-                    gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse
-                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                    WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID";
+                $result = $container->get(CourseGateway::class)->getCourseClassDetails($gibbonCourseClassID);
 
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                }
-
-                if ($result->rowCount() == 0) {
+                if (empty($result)) {
                     echo $page->getBlankSlate();
                     return;
                 }
 
-                $class = $result->fetch();
+                $class = $result;
 
                 if ($class["attendance"] == 'N') {
                     echo '<div class="error">';
@@ -157,19 +137,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         echo Format::alert(__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.'), 'warning');
                     }
 
-                    //Show attendance log for the current day
-                    try {
-                        $dataLog = array("gibbonCourseClassID" => $gibbonCourseClassID, "date" => $currentDate . "%", 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID);
-                        $sqlLog = "SELECT * 
-                            FROM gibbonAttendanceLogCourseClass, gibbonPerson 
-                            WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID 
-                            AND date LIKE :date 
-                            AND (gibbonTTDayRowClassID=:gibbonTTDayRowClassID OR gibbonTTDayRowClassID IS NULL)
-                            ORDER BY timestampTaken";
-                        $resultLog = $connection2->prepare($sqlLog);
-                        $resultLog->execute($dataLog);
-                    } catch (PDOException $e) {
-                    }
+                    // Show attendance log for the current day
+                    $resultLog = $container->get(AttendanceLogCourseClassGateway::class)->selectAttendanceLogByClassAndDate($gibbonCourseClassID, $currentDate . "%", $gibbonTTDayRowClassID);
+
                     if ($resultLog->rowCount() < 1) {
                         echo "<div class='error'>";
                         echo __("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.");
@@ -185,29 +155,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         echo "</div>";
                     }
 
-                    //Show form group grid
-                    $dataCourseClass = array("gibbonCourseClassID" => $gibbonCourseClassID, 'date' => $currentDate);
-                    $sqlCourseClass = "SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.image_240, gibbonPerson.dob FROM gibbonCourseClassPerson
-                        INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
-                        LEFT JOIN (SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ";
-
                     if (!empty($gibbonTTDayRowClassID)) {
-                        $dataCourseClass['gibbonTTDayRowClassID'] = $gibbonTTDayRowClassID;
-                        $sqlCourseClass .= " ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonTTDayRowClassSubset.gibbonTTDayRowClassID=:gibbonTTDayRowClassID) ";
+                        $resultCourseClass = $container->get(CourseClassGateway::class)->selectStudentsByClassAndPeriod($gibbonCourseClassID, $currentDate, $gibbonTTDayRowClassID);
                     } else {
-                        $sqlCourseClass .= " ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) ";
+                        $resultCourseClass = $container->get(CourseClassPersonGateway::class)->selectStudentsByClass($gibbonCourseClassID, $currentDate);
                     }
-                        
-                    $sqlCourseClass .= "
-                        LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
-                        WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
-                        AND status='Full' AND role='Student'
-                        AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL OR dateEnd>=:date) 
-                        GROUP BY gibbonCourseClassPerson.gibbonPersonID
-                        HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
-                        ORDER BY surname, preferredName";
-
-                    $resultCourseClass = $pdo->select($sqlCourseClass, $dataCourseClass);
 
                     if ($resultCourseClass->rowCount() < 1) {
                         echo $page->getBlankSlate();
@@ -216,44 +168,19 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $countPresent = 0;
                         $columns = 4;
 
-                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y');
+                        $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y'];
                         $students = $resultCourseClass->fetchAll();
 
                         // Build the attendance log data per student
                         foreach ($students as $key => $student) {
-                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%', 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID);
-                            $sql = "SELECT gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason, gibbonAttendanceLogPerson.comment, gibbonAttendanceLogPerson.direction, gibbonAttendanceLogPerson.context, timestampTaken FROM gibbonAttendanceLogPerson
-                                    JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
-                                    JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                    WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                    AND date LIKE :date
-                                    AND gibbonAttendanceLogPerson.context='Class' AND gibbonCourseClassID=:gibbonCourseClassID";
-                            if ($crossFillClasses == "N") {
-                                $sql .= " AND (gibbonTTDayRowClassID=:gibbonTTDayRowClassID OR gibbonTTDayRowClassID IS NULL)";
-                            } else {
-                                $sql .= " AND (gibbonTTDayRowClassID=:gibbonTTDayRowClassID OR gibbonAttendanceCode.prefill='Y')";
-                            }
-                            $sql .= " ORDER BY timestampTaken DESC";
-                            
-                            $result = $pdo->executeQuery($data, $sql);
+                            $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogByStudentAndClassID($student['gibbonPersonID'], $currentDate, $gibbonCourseClassID, $gibbonTTDayRowClassID, $crossFillClasses);
 
                             $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
                             $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
 
-                            //Check for school prefill if attendance not taken in this class
-                            if ($result->rowCount() == 0) {
-                                $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
-                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceCode.direction, context, timestampTaken, gibbonAttendanceCode.prefill
-                                        FROM gibbonAttendanceLogPerson
-                                        JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                        JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
-                                        WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                        AND date LIKE :date";
-                                if ($crossFillClasses == "N") {
-                                    $sql .= " AND NOT context='Class'";
-                                }
-                                $sql .= " ORDER BY timestampTaken DESC";
-                                $result = $pdo->executeQuery($data, $sql);
+                            // Check for school prefill if attendance not taken in this class
+                            if ($result->rowCount() == 0) {                                
+                                $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($session->get('gibbonPersonID'), $currentDate, $crossFillClasses);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
                                 $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';

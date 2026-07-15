@@ -25,6 +25,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\FormGroupTable;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php') == false) {
     // Access denied
@@ -32,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        //Fail 0
+        // Fail
        $URL .= '&return=error0';
        header("Location: {$URL}");
     } else {
@@ -40,45 +41,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
             ->add(__('View Form Groups'), 'formGroups.php');
 
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+
         if ($gibbonFormGroupID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
-            try {
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFormGroupID' => $gibbonFormGroupID);
-                if ($highestAction == "View Form Groups_all") {
-                    $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
-                        FROM gibbonFormGroup
-                            JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                            LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
-                        WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
-                            AND gibbonFormGroupID=:gibbonFormGroupID';
-                }
-                else {
-                    $data['gibbonPersonID'] = $session->get('gibbonPersonID');
-                    $data['today'] = date('Y-m-d');
-                    $sql = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroup.gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
-                        FROM gibbonFormGroup
-                            JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                            JOIN (
-                                SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID FROM gibbonStudentEnrolment
-                                JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
-                                ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
-                            ) AS students ON (students.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                            JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=students.gibbonPersonID)
-                            JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                            LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
-                        WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
-                            AND gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID
-                            AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
+
+            if ($highestAction == "View Form Groups_all") {
+                $result = $container->get(FormGroupGateway::class)->getFormGroupDetailsByID($gibbonFormGroupID);
+            }
+            else {
+                $result = $container->get(FormGroupGateway::class)->getFormGroupDetailsByFamilyAdult($gibbonFormGroupID, $session->get('gibbonPersonID'));
             }
 
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $row = $result->fetch();
@@ -88,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                 $userGateway = $container->get(UserGateway::class);
                 $primaryTutor240 = $userGateway->getByID($row['gibbonPersonIDTutor'])['image_240'] ?? '';
 
-                //Set up for foramtting
+                // Set up for formatting
                 $linkStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
 
                 $formatStaff = function (&$staff) use ($userGateway, $linkStaff) {
@@ -101,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                     }
                 };
 
-                //Format Tutors
+                // Format Tutors
                 $tutors = array_filter(array($row['gibbonPersonIDTutor'], $row['gibbonPersonIDTutor2'], $row['gibbonPersonIDTutor3']));
                 array_walk($tutors, $formatStaff);
 
@@ -111,12 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 
                 $row['tutors'] = implode('<br/>', $tutors);
 
-                //Format Educational Assistants
+                // Format Educational Assistants
                 $eduAssits = array_filter(array($row['gibbonPersonIDEA'], $row['gibbonPersonIDEA2'], $row['gibbonPersonIDEA3']));
                 array_walk($eduAssits, $formatStaff);
                 $row['educationalAssistants'] = implode('<br/>', $eduAssits);
 
-                //Create Details Table
+                // Create Details Table
                 $table = DataTable::createDetails('basicInfo');
                 $table->setTitle(__('Basic Information'));
 
@@ -137,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 
                 echo $table->render([$row]);
 
-                //Create Form
+                // Create Form
                 $sortBy = $_GET['sortBy'] ?? 'rollOrder, surname, preferredName';
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
@@ -165,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 
                 echo $table->getOutput();
 
-                //Set sidebar
+                // Set sidebar
                 $session->set('sidebarExtra', Format::userPhoto($primaryTutor240, 240));
             }
         }

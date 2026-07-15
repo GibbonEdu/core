@@ -220,6 +220,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
                 $AI = $connection2->lastInsertID();
 
+                // Manage custom field file uploads
+                if (!empty($fields) && !empty($AI)) {
+                    $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Lesson Plan', [], $fields, 'gibbonPlannerEntry', $AI);
+                }
+
                 //Scan through guests
                 $guests = $_POST['guests'] ?? [];
 

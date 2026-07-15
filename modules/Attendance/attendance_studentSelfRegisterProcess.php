@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 require_once '../../gibbon.php';
 
@@ -51,17 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
             header("Location: {$URL}");
         }
         else {
-            //Check for existence of records today
-            try {
-                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'date' => $currentDate);
-                $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            // Check for existence of records today
+            $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($session->get('gibbonPersonID'), $currentDate, 'N');
 
             if ($result->rowCount() > 0) { //Records! Return error
                 $URL .= '&return=error1';

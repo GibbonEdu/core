@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -40,15 +41,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(CourseClassGateway::class)->getCourseClass($gibbonCourseClassID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $row = $result->fetch();
+            $row = $result;
 
             $page->breadcrumbs
                 ->add(__('Manage {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]), 'internalAssessment_manage.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
@@ -62,13 +60,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sql = "SELECT gibbonYearGroup.name as groupBy, gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonYearGroup ON (gibbonCourse.gibbonYearGroupIDList LIKE concat( '%', gibbonYearGroup.gibbonYearGroupID, '%' )) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY gibbonYearGroup.sequenceNumber, name";
-
+            $results = $container->get(CourseClassGateway::class)->selectClassesByYear($session->get('gibbonSchoolYearID'));
+            
             $row = $form->addRow();
                 $row->addLabel('gibbonCourseClassIDMulti', __('Class'));
                 $row->addSelect('gibbonCourseClassIDMulti')
-                    ->fromQuery($pdo, $sql, $data, 'groupBy')
+                    ->fromResults($results, 'groupBy')
                     ->selectMultiple()
                     ->required()
                     ->selected($gibbonCourseClassID);

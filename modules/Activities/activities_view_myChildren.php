@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonPersonID = $session->get('gibbonPersonID');
 
-    $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)->fetchAll();
+    $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)->fetchGroupedUnique();
 
     if (empty($children)) {
         echo Format::alert(__('There are no records to display.'), 'message');

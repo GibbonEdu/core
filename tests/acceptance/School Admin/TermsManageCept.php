@@ -1,4 +1,10 @@
 <?php
+/**
+ * @covers modules/School Admin/schoolYearTerm_manage.php
+ * @covers modules/School Admin/schoolYearTerm_manage_add.php
+ * @covers modules/School Admin/schoolYearTerm_manage_edit.php
+ * @covers modules/School Admin/schoolYearTerm_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete school year terms');
 $I->loginAsAdmin();

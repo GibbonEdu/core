@@ -36,6 +36,26 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
+        // Fetch old record for comparison
+        try {
+            $data = ['gibbonFamilyID' => $gibbonFamilyID];
+            $sql = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if (empty($result)) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        $oldFamilyRecord = $result->fetch();
+
         //Validate Inputs
         $name = $_POST['name'] ?? '';
         $status = $_POST['status'] ?? '';
@@ -65,6 +85,11 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
+        }
+
+        // Manage custom field file uploads
+        if(!empty($fields) && !empty($gibbonFamilyID)) {
+            $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Family', [], $fields, 'gibbonFamily', $gibbonFamilyID, $oldFamilyRecord['fields'] ?? null);
         }
 
         //Success 0

@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -49,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         header("Location: {$URL}");
     } else {
         $attachment = '';
+        $fileMetaData = null;
         //Move attached image  file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
             $fileUploader = new Gibbon\FileUploader($pdo, $session);
@@ -57,9 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
             // Upload the file, return the /uploads relative path
             $attachment = $fileUploader->uploadFromPost($file, 'externalAssessmentUpload');
-
+            
             if (empty($attachment)) {
                 $partialFail = true;
+            } else {
+                $fileMetaData = $fileUploader->getFileMetaData($attachment);
             }
         }
 
@@ -76,6 +80,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         }
 
         $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
+
+        // Record file tracking
+        if (!empty($fileMetaData)) {
+            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonExternalAssessmentStudent', $AI, 'attachment');
+
+            if (empty($gibbonFileID)) {
+                $partialFail = true;
+            }
+        }
 
         //Scan through fields
         $partialFail = false;

@@ -52,6 +52,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(255);
 
+    
+    $setting = $settingGateway->getSettingByScope('Library', 'libraryAPIKey', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(255);
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

@@ -102,11 +102,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $direction = $attendanceCode['direction'];
 
         // Check for last record on same day
-        $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $currentDate.'%'];
-        $sql = "SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC";
+        $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($gibbonPersonID, $currentDate.'%', 'N');
+        $recentLog = $result->fetch();
         
-        $recentLog = $pdo->selectOne($sql, $data);
-
         // Check context and type, updating only if not a match
         $existing = false;
         $gibbonAttendanceLogPersonID = '';

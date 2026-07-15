@@ -29,6 +29,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 include '../../gibbon.php';
 
@@ -163,6 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     header("Location: {$URL}");
                 } else {
                     $attachment1 = null;
+                    $fileMetaData = null;
                     $imageFail = false;
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
@@ -179,6 +181,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
+                            } else {
+                                $fileMetaData = $fileUploader->getFileMetaData($attachment1);
                             }
                         }
                     }
@@ -200,6 +204,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
+
+                    // Record file tracking
+                    if (!empty($fileMetaData) && !empty($AI)) {
+                        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPerson', $AI, 'image_240');
+                                                
+                        if (empty($gibbonFileID)) {
+                            $imageFail = true;
+                        }
+                    }
 
                     // Create the status log
                     $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);

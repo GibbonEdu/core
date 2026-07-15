@@ -73,5 +73,6 @@ $fp = fopen($absolutePath.'/'.$imgPath, 'w');
 fwrite($fp, $img);
 fclose($fp);
 
+// Image Upload Tracking is skipped as image path will be tracked when form is submitted and path is stored in database
 // Return image path to AJAX
 echo $imgPath;

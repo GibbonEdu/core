@@ -27,6 +27,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Timetable\CourseClassPersonGateway;
 use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
@@ -136,8 +137,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $keys = array_flip(array_keys($progress));
     $values = array_values($progress);
 
-    $prevStudent = $values[$keys[$gibbonPersonIDStudent] -1] ?? $values[count($values)-1];
-    $nextStudent = $values[$keys[$gibbonPersonIDStudent] +1] ?? $values[0];
+    if (!empty($keys[$gibbonPersonIDStudent])) {
+        $prevStudent = $values[$keys[$gibbonPersonIDStudent] -1] ?? $values[count($values)-1] ?? 0;
+        $nextStudent = $values[$keys[$gibbonPersonIDStudent] +1] ?? $values[0] ?? 0;
+    }
 
     echo $page->fetchFromTemplate('ui/reportingStudentHeader.twig.html', [
         'canWriteReport' => $canWriteReport,
@@ -145,13 +148,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         'student' => $student,
         'scopeDetails' => $scopeDetails,
         'relatedReports' => $relatedReports,
-        'prevStudent' => $prevStudent,
-        'nextStudent' => $nextStudent,
+        'prevStudent' => $prevStudent ?? '',
+        'nextStudent' => $nextStudent ?? '',
         'params' => $urlParams,
     ]);
 
     // PER STUDENT CRITERIA
     $reportingCriteria = $reportingAccessGateway->selectReportingCriteriaByStudentAndScope($reportingScope['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $gibbonPersonIDStudent)->fetchAll();
+
+    // CLASS TEACHER CHECK
+    $classTeachers = [];
+    if ($reportingScope['scopeType'] == 'Course') {
+        $classTeachers = $container->get(CourseClassPersonGateway::class)->selectTeachersByClass($urlParams['scopeTypeID'])->fetchGroupedUnique();
+    }
 
     // FORM
     $form = Form::create('reportingWrite', $session->get('absoluteURL').'/modules/Reports/reporting_write_byStudentProcess.php');
@@ -163,12 +172,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $form->addHiddenValue('gibbonReportingCycleID', $reportingScope['gibbonReportingCycleID']);
     $form->addHiddenValue('gibbonReportingScopeID', $reportingScope['gibbonReportingScopeID']);
     $form->addHiddenValue('gibbonPersonIDStudent', $gibbonPersonIDStudent);
-    $form->addHiddenValue('gibbonPersonIDNext', $nextStudent['gibbonPersonID']);
+    $form->addHiddenValue('gibbonPersonIDNext', $nextStudent['gibbonPersonID'] ?? '');
     $form->addHiddenValue('scopeTypeID', $urlParams['scopeTypeID']);
     $form->addHiddenValue('allStudents', $urlParams['allStudents']);
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
-    $form->addRow()->addClass('reportStatus')->addContent(Format::alert($scopeDetails['name'], 'empty'))->wrap('<h4 class="p-0">', '</h4>');
+    $form->addRow()->addClass('reportStatus')->addContent(Format::alert($scopeDetails['name'] ?? '', 'empty'))->wrap('<h4 class="p-0">', '</h4>');
 
     // HOOKS
     // Custom hooks can replace form fields by criteria type using a custom include.
@@ -187,9 +196,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     };
 
     $lastCategory = '';
+    $manualAuthorSelect = null;
+
     foreach ($reportingCriteria as $criteria) {
         $fieldName = "value[{$criteria['gibbonReportingCriteriaID']}]";
         $fieldID = "value{$criteria['gibbonReportingCriteriaID']}";
+
+        // All scopes: check if report author is not the same as report editor or current user
+        // Course scope: check if report author not a class teacher
+        if ((!empty($criteria['gibbonPersonIDCreated']) && $criteria['gibbonPersonIDCreated'] != $session->get('gibbonPersonID')) || (!empty($criteria['gibbonPersonIDModified']) && $criteria['gibbonPersonIDModified'] != $criteria['gibbonPersonIDCreated']) || (!empty($classTeachers) && empty($classTeachers[$criteria['gibbonPersonIDCreated']])) ) {
+            $manualAuthorSelect = $criteria['gibbonPersonIDCreated'];
+        }
 
         if (!empty($criteria['category']) && $criteria['category'] != $lastCategory) {
             $row = $form->addRow()->addContent($criteria['category'])->wrap('<h5 class="my-2 p-0 text-sm normal-case border-0">', '</h5>');
@@ -262,6 +279,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         $lastCategory = $criteria['category'];
     }
 
+    // Enable manually selecting the author
+    if ($canWriteReport && !empty($manualAuthorSelect)) {
+        $row = $form->addRow();
+        $row->addLabel($fieldName, __('Report Author'))->description(__('When a report is edited by multiple users, you can manually attribute the report to a specific staff member.'));
+        $row->addSelectStaff('gibbonPersonIDCreated')->selected($manualAuthorSelect);
+    }
+
     if ($reportingScope['scopeType'] == 'Form Group') {
         $reportingRemarks = $reportingAccessGateway->selectAllRemarksByStudent($reportingScope['gibbonReportingCycleID'], $gibbonPersonIDStudent)->fetchAll();
 
@@ -324,8 +348,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         echo $page->fetchFromTemplate('ui/reportingStudentFooter.twig.html', [
             'student' => $student,
             'scopeDetails' => $scopeDetails,
-            'prevStudent' => $prevStudent,
-            'nextStudent' => $nextStudent,
+            'prevStudent' => $prevStudent ?? '',
+            'nextStudent' => $nextStudent ?? '',
             'params' => $urlParams,
         ]);
     }

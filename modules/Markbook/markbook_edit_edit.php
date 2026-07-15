@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $row = $form->addRow();
                             $row->addLabel('description', __('Description'));
                             $col = $row->addColumn('description');
-                            $col->addTextField('description')->required()->maxLength(1000);
+                            $col->addTextField('description')->required()->maxLength(1000)->addClass('flex-1');
                             $col->addColor('columnColor')->hideField()->setPalette('background')->addClass('ml-2');
 
                         // TYPE

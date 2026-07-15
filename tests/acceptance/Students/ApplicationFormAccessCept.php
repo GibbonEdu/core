@@ -1,4 +1,8 @@
 <?php
+/**
+ * @covers modules/Students/applicationForm.php
+ * @covers modules/User Admin/applicationFormSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure the Student Application Form is only accessible when public');
 $I->loginAsAdmin();

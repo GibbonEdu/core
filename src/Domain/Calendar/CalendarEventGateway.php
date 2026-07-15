@@ -103,9 +103,9 @@ class CalendarEventGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->cols([
-                'gibbonCalendarEvent.gibbonCalendarEventID as id', 'gibbonCalendarEvent.name as title', 'gibbonCalendarEvent.description', 
+                'gibbonCalendarEvent.gibbonCalendarEventID as id', 'gibbonCalendarEvent.name as eventName', 'gibbonCalendarEvent.name as title', 'gibbonCalendarEvent.description', 
                 "(CASE WHEN allDay='N' THEN CONCAT(gibbonCalendarEvent.dateStart, 'T', timeStart) ELSE gibbonCalendarEvent.dateStart END) as start", 
-                "(CASE WHEN allDay='N' THEN CONCAT(gibbonCalendarEvent.dateEnd, 'T', timeEnd) ELSE DATE_ADD(gibbonCalendarEvent.dateEnd, INTERVAL 1 DAY) END) as end",
+                "(CASE WHEN allDay='N' THEN CONCAT(gibbonCalendarEvent.dateEnd, 'T', timeEnd) ELSE DATE_ADD(gibbonCalendarEvent.dateEnd, INTERVAL 1 DAY) END) as end", 'gibbonCalendarEvent.dateStart', 'gibbonCalendarEvent.dateEnd',
                 'gibbonCalendar.color', 'gibbonCalendarEventType.type', 'gibbonCalendarEvent.allDay', 'gibbonCalendarEvent.timeStart', 'gibbonCalendarEvent.timeEnd',
                 'gibbonCalendar.name as calendar', 'gibbonCalendarEvent.locationType', 'gibbonSpace.phoneInternal AS phone',
                 '(CASE WHEN gibbonCalendarEvent.locationType="Internal" THEN gibbonSpace.name ELSE gibbonCalendarEvent.locationDetail END) AS location'

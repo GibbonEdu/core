@@ -86,7 +86,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     $col = $form->createBulkActionColumn($bulkActions);
         $col->addSelect('templateName')
             ->fromArray($templateOptions)
-            ->required()
             ->placeholder();
         $col->addSubmit(__('Go'));
 

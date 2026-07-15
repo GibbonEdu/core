@@ -55,6 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            // Fetch old record for comparison
+            $oldMedicalRecord = $result->fetch();
+
             $longTermMedication = $_POST['longTermMedication'] ?? 'N';
             $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
             $comment = $_POST['comment'] ?? '';
@@ -80,6 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                 exit();
             }
 
+            // Manage custom field file uploads
+            if (!empty($fields) && !empty($gibbonPersonMedicalID)) {
+                $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Medical Form', [], $fields, 'gibbonPersonMedical', $gibbonPersonMedicalID, $oldMedicalRecord['fields'] ?? null);
+            }
+            
             $URL .= '&return=success0';
             header("Location: {$URL}");
         }

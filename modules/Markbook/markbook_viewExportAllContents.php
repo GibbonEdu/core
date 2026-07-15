@@ -84,6 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         // Build the markbook object for this class
         $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $settingGateway);
 
+        $markbookTerm = $session->get('markbookTerm', 0);
+
+
         // Calculate and cache all weighting data
         if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
             $markbook->cacheWeightings( );
@@ -188,10 +191,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             $finalColumnNum = ($columns * ($subColCount));
             $finalColumnStart = $finalColumnNum+1;
 
+            // Add Weighted Type Grades, if enabled & available
+            if ($markbook->getSetting('enableGroupByTerm') == 'Y') {
+
+                if ($markbook->getSetting('enableTypeWeighting') == 'Y' && $markbookTerm > 0) {
+                    foreach ($markbook->getGroupedMarkbookTypes('term') as $type) {
+                        // Term Weighted Types
+                        $finalColumnNum++;
+                        $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, $type );
+                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
+                    }
+                } else {
+                    foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
+                        // Final Weighted Types
+                        $finalColumnNum++;
+                        $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, $type );
+                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
+                    }
+                }
+            }
+
             // Add Term Grades, if enabled & available
             if ($markbook->getSetting('enableGroupByTerm') == 'Y' && !empty($terms)) {
 
                 foreach ($terms as $termCount => $term) {
+                    if ($markbookTerm > 0 && $markbookTerm != $term['gibbonSchoolYearTermID']) continue;
+
                     $finalColumnNum++;
                     $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
                     $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, $term['name'] ?? $termCount );
@@ -208,23 +237,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
 
             // Add Final Grades, if enabled & available
-            if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0) {
+            if ($markbook->getSetting('enableTypeWeighting') == 'Y' && $markbookTerm <= 0) {
 
-                foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
-                    // Final Weighted Types
-                    $finalColumnNum++;
-                    $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
-                    $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, $type );
-                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
-                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
-                }
-
-                // Final Grade
                 $finalColumnNum++;
                 $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
                 $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __('Final Grade'));
                 $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
                 $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
+            
             }
 
             $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnStart, 1, __('Overall Grades'));
@@ -304,10 +324,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
                     $finalColumnNum = 1 + ($columns * ($subColCount));
 
+                    // Type averages
+                    if ($markbook->getSetting('enableGroupByTerm') == 'Y') {
+                        if ($markbook->getSetting('enableTypeWeighting') == 'Y' && $markbookTerm > 0) {
+                            foreach ($markbook->getGroupedMarkbookTypes('term') as $type) {
+                                // Term Weighted Types
+                                $typeAverage = number_format(round($markbook->getTypeAverage($rowStudents['gibbonPersonID'], $markbookTerm, $type), 2), 2).$markSuffix;
+                                $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $typeAverage);
+                                $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                                $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
+                                $finalColumnNum++;
+                            }
+                        } else {
+                            foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
+                                // Final Weighted Types
+                                $typeAverage = number_format(round($markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type), 2), 2).$markSuffix;
+                                $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $typeAverage);
+                                $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                                $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
+                                $finalColumnNum++;
+                            }
+                        }
+                    }
+
                     // Add Term Grades, if enabled & available
                     $terms = $markbook->getCurrentTerms();
                     if ($markbook->getSetting('enableGroupByTerm') == 'Y' && !empty($terms)) {
                         foreach ($terms as $termCount => $term) {
+                            if ($markbookTerm > 0 && $markbookTerm != $term['gibbonSchoolYearTermID']) continue;
+
                             $termAverage = number_format(round($markbook->getTermAverage($rowStudents['gibbonPersonID'], $term['gibbonSchoolYearTermID']), 2), 2).$markSuffix;
                             $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $termAverage);
                             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
@@ -326,22 +371,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                     $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
                     $finalColumnNum++;
 
-                    if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0) {
-
-                        foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
-                            // Final Weighted Types
-                            $typeAverage = number_format(round($markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type), 2), 2).$markSuffix;
-                            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $typeAverage);
-                            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
-                            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
-                            $finalColumnNum++;
-                        }
-
-                        // Final Grade
+                    // Final Grade
+                    if ($markbook->getSetting('enableTypeWeighting') == 'Y' && $markbookTerm <= 0) {
                         $finalAverage = number_format(round($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']), 2), 2).$markSuffix;
                         $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $finalAverage);
                         $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
-                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
                     }
                 }
             }

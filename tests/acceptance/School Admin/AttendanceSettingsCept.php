@@ -1,6 +1,12 @@
 <?php
+/**
+ * @covers modules/School Admin/attendanceSettings.php
+ * @covers modules/School Admin/attendanceSettings_manage_add.php
+ * @covers modules/School Admin/attendanceSettings_manage_edit.php
+ * @covers modules/School Admin/attendanceSettings_manage_delete.php
+ */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('update Attendance Settings');
+$I->wantTo('update Attendance Settings and manage attendance codes');
 $I->loginAsAdmin();
 $I->amOnModulePage('School Admin', 'attendanceSettings.php');
 
@@ -35,3 +41,55 @@ $I->seeInFormFields('#content form', $newFormValues);
 $I->submitForm('#content form', $originalFormValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $originalFormValues);
+
+// Add Attendance Code ------------------------------------------
+$I->clickNavigation('Add');
+$I->seeBreadcrumb('Add Attendance Code');
+
+$uniqueID = uniqid();
+$addFormValues = array(
+    'name'           => 'Test Code ' . $uniqueID,
+    'nameShort'      => 'TC' . substr($uniqueID, -2),
+    'direction'      => 'In',
+    'scope'          => 'Onsite',
+    'sequenceNumber' => '99',
+    'active'         => 'Y',
+    'reportable'     => 'Y',
+    'prefill'        => 'Y',
+    'future'         => 'Y',
+);
+
+$I->submitForm('#content form', $addFormValues, 'Submit');
+$I->seeSuccessMessage();
+
+$gibbonAttendanceCodeID = $I->grabEditIDFromURL();
+
+// Edit Attendance Code -----------------------------------------
+$I->amOnModulePage('School Admin', 'attendanceSettings_manage_edit.php', array(
+    'gibbonAttendanceCodeID' => $gibbonAttendanceCodeID
+));
+$I->seeBreadcrumb('Edit Attendance Code');
+
+$I->seeInField('nameText', 'Test Code ' . $uniqueID);
+
+$editFormValues = array(
+    'direction'      => 'Out',
+    'scope'          => 'Offsite',
+    'sequenceNumber' => '98',
+    'active'         => 'N',
+    'reportable'     => 'N',
+    'prefill'        => 'N',
+    'future'         => 'N',
+);
+
+$I->submitForm('#content form', $editFormValues, 'Submit');
+$I->seeSuccessMessage();
+
+// Delete Attendance Code ---------------------------------------
+$I->amOnModulePage('School Admin', 'attendanceSettings_manage_delete.php', array(
+    'gibbonAttendanceCodeID' => $gibbonAttendanceCodeID
+));
+
+$I->click('Yes');
+$I->seeSuccessMessage();
+

@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -35,26 +37,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $result = $container->get(CourseGateway::class)->getCourseClassDetails($gibbonCourseClassID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
+            $result2 = $container->get(InternalAssessmentColumnGateway::class)->getByID($gibbonInternalAssessmentColumnID);
 
-                $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
-                $sql2 = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID';
-                $result2 = $connection2->prepare($sql2);
-                $result2->execute($data2);
-
-            if ($result2->rowCount() != 1) {
+            if (empty($result2)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                //Let's go!
-                $values = $result->fetch();
-                $values2 = $result2->fetch();
+                // Let's go!
+                $values = $result;
+                $values2 = $result2;
 
                 $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/internalAssessment_manage_deleteProcess.php");
 

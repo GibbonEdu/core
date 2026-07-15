@@ -19,43 +19,41 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        //Proceed!
-        //Check if gibbonBehaviourID specified
+        // Proceed!
+        // Check if gibbonBehaviourID specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
         if ($gibbonBehaviourID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
+            $result = $container->get(BehaviourGateway::class)->getByID($gibbonBehaviourID);
 
-                $data = array('gibbonBehaviourID' => $gibbonBehaviourID);
-                $sql = 'SELECT * FROM gibbonBehaviour WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/behaviour_manage_deleteProcess.php?type=".$_GET['type']);
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/behaviour_manage_deleteProcess.php?type=".($_GET['type'] ?? ''), true, false);
 
                 $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
-                $form->addHiddenValue('gibbonPersonID', $_GET['gibbonPersonID']);
-                $form->addHiddenValue('gibbonFormGroupID', $_GET['gibbonFormGroupID']);
-                $form->addHiddenValue('gibbonYearGroupID', $_GET['gibbonYearGroupID']);          
+                $form->addHiddenValue('gibbonPersonID', $_GET['gibbonPersonID'] ?? '');
+                $form->addHiddenValue('gibbonFormGroupID', $_GET['gibbonFormGroupID'] ?? '');
+                $form->addHiddenValue('gibbonYearGroupID', $_GET['gibbonYearGroupID'] ?? '');          
 
-	            echo $form->getOutput();
+	            $form->addRow()->addConfirmSubmit();
+                echo $form->getOutput();
             }
         }
     }

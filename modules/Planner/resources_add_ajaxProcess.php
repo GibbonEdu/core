@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -63,6 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         } else {
             if ($type == 'File') {
                 $fileUploader = new Gibbon\FileUploader($pdo, $session);
+                $fileMetaData = null;
 
                 if (!empty($_FILES[$id.'file']['tmp_name'])) {
                     $file = (isset($_FILES[$id.'file']))? $_FILES[$id.'file'] : null;
@@ -78,6 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                         exit();
                     } else {
                         $content = $attachment;
+                        $fileMetaData = $fileUploader->getFileMetaData($attachment);
                     }
                 }
             }
@@ -133,6 +136,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                 echo "<span style='font-weight: bold; color: #ff0000'>";
                 echo '</span>';
                 exit();
+            }
+
+            $gibbonResourceID = $connection2->lastInsertID();
+
+            // Record file tracking (only if file uploaded)
+            if (!empty($fileMetaData) && !empty($gibbonResourceID)) {
+                $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonResource', $gibbonResourceID, 'content');
+
+                if (empty($gibbonFileID)) {
+                    $partialFail = true;
+                }
             }
 
             if ($partialFail == true) {

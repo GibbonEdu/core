@@ -35,6 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_detail
 
     $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
 
+    if (empty($gibbonStaffCoverageID)) {
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+        return;
+    }
+
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $coverage = $container->get(StaffCoverageGateway::class)->getByID($gibbonStaffCoverageID);
     

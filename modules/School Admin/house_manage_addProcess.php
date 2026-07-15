@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 include '../../gibbon.php';
 
@@ -58,6 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             //Deal with file upload
             $logo = '';
             $imageFail = false;
+            $fileMetaData = null;
             if (!empty($_FILES['file1']['tmp_name'])) {
                 $fileUploader = new Gibbon\FileUploader($pdo, $session);
                 
@@ -68,6 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
                 if (empty($logo)) {
                     $imageFail = true;
+                } else {
+                    $fileMetaData = $fileUploader->getFileMetaData($logo);
                 }
             }
 
@@ -85,6 +89,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 3, '0', STR_PAD_LEFT);
+
+            // Record file tracking
+            if (!empty($fileMetaData) && !empty($AI)) {
+                $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonHouse', $AI, 'logo');
+                
+                if (empty($gibbonFileID)) {
+                    $imageFail = true;
+                }
+            }
 
             if ($imageFail) {
                 $URL .= "&return=warning1&editID=$AI";

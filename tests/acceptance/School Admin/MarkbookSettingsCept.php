@@ -1,4 +1,7 @@
 <?php
+/**
+ * @covers modules/School Admin/markbookSettings.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Markbook Settings');
 $I->loginAsAdmin();

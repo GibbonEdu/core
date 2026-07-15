@@ -19,12 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\FileUploader;
+use Gibbon\Contracts\Filesystem\FileHandler;
+
 
 require_once '../../gibbon.php';
 
@@ -80,6 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     $personalDocumentGateway = $container->get(PersonalDocumentGateway::class);
     
+    $fileHandler = $container->get(FileHandler::class);
     $fileUploader = $container->get(FileUploader::class);
     $files = $fileUploader->uploadFromZIP($absolutePath.'/'.$zipFile);
 
@@ -106,6 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $partialFail = true;
             continue;
         }
+
+        // File tracking state
+        $updateBackupPhoto = false;
+        $fileTrackingTable = $fileTrackingID = $fileTrackingColumn = null;
 
         // Check if there is an existing value for this upload
         if ($type == 'customFields') {
@@ -135,29 +142,58 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         if ($type == 'customFields') {
             $fields[$gibbonCustomFieldID] = $file['relativePath'];
             $updated = $customFieldGateway->updateCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID'], $fields);
+            $contextInfo = $customFieldGateway->getContextTableByPerson($gibbonCustomFieldID, $userData['gibbonPersonID']);
+            $fileTrackingTable = $contextInfo['foreignTable'] ?? null;
+            $fileTrackingID = $contextInfo['foreignTableID'] ?? null;
+            $fileTrackingColumn = "fields[{$gibbonCustomFieldID}]";
 
         } elseif ($type == 'personalDocuments') {
-            $documentData = $personalDocumentGateway->getPersonalDocumentDataByID($gibbonPersonalDocumentTypeID, 'gibbonPerson', $userData['gibbonPersonID']);
-            $updated = $personalDocumentGateway->update($documentData['gibbonPersonalDocumentID'], [
+            if (empty($document['gibbonPersonalDocumentID'])) {
+                unlink($file['absolutePath']);
+                $partialFail = true;
+                continue;
+            }
+            $updated = $personalDocumentGateway->update($document['gibbonPersonalDocumentID'], [
                 'filePath'              => $file['relativePath'],
                 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
                 'timestamp'             => date('Y-m-d H:i:s'),
             ]);
+            $fileTrackingTable = 'gibbonPersonalDocument';
+            $fileTrackingID = $document['gibbonPersonalDocumentID'];
+            $fileTrackingColumn = 'filePath';
+
         } else {
             // Rename the file to match the identifier for this user, then resize & crop, and upload
             $renameFilename = $userData['username'].'.'.$file['extension'];
             $renameFilePath = str_replace($file['filename'], $renameFilename, $file['absolutePath']);
 
-            $file['absolutePath'] = $fileUploader->resizeImage($file['absolutePath'], $renameFilePath, 480, 100, $zoom, $focalX, $focalY);
+            rename($file['absolutePath'], $renameFilePath);
+
+            $file['absolutePath'] = $fileUploader->resizeImage($renameFilePath, $renameFilePath, 480, 100, $zoom, $focalX, $focalY);
             $file['relativePath'] = str_replace($file['filename'], $renameFilename, $file['relativePath']);
             
             $updated = $userGateway->update($userData['gibbonPersonID'], [
                 'image_240' => $file['relativePath'],
             ]);
+            $fileTrackingTable = 'gibbonPerson';
+            $fileTrackingID = $userData['gibbonPersonID'];
+            $fileTrackingColumn = 'image_240';
         }
 
         if ($updated) {
             $count++;
+
+            // Record file in the central file tracking system
+            if (!empty($fileTrackingTable) && !empty($fileTrackingID)) {
+                $fileMetaData = $fileUploader->getFileMetaData($file['relativePath']);
+                if (!empty($fileMetaData)) {
+                    $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, $fileTrackingTable, $fileTrackingID, $fileTrackingColumn);
+                    if (empty($gibbonFileID)) {
+                        $partialFail = true;
+                    }
+                }
+            }
+
             // For user photos, also update/insert into the backup photo table
             if ($updateBackupPhoto && !empty($file['relativePath'])) {
                 $personPhotoGateway = $container->get(PersonPhotoGateway::class);
@@ -171,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
                     'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
                 ]);
                 
-                $partialFail = !$photoUpdated;
+                $partialFail = $partialFail || !$photoUpdated;
             }
         }
     }

@@ -1,4 +1,12 @@
 <?php 
+/**
+ * @covers modules/Data Updater/data_personal.php
+ * @covers modules/Data Updater/data_personal_manage_edit.php
+ * @covers modules/Data Updater/data_personal_manage_delete.php
+ * @covers modules/User Admin/userSettings.php
+ * @covers modules/User Admin/studentsSettings.php
+ * @covers modules/User Admin/user_manage_edit.php
+ */
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit and approve a personal data update');
 $I->loginAsAdmin();

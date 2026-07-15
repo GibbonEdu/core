@@ -2784,7 +2784,7 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `version`, `active`, `
 (0046, 'uk_UA', 'українська мова - Україна', '21.0.00', 'Y', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd.m.Y', 'N'),
 (0047, 'es_DO', 'Español - República Dominicana', NULL, 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0048, 'lt_LT', 'Lietuvių Kalba - Lithuanian', '25.0.00', 'Y', 'N', 'N', 'yyyy.mm.dd', '/^[0-9]{4}.(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y.m.d', 'N'),
-(0049, 'ca_CA', 'Català - Catalonia', '30.0.00', 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');
+(0049, 'ca_ES', 'Català - Catalonia', '30.0.00', 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');
 
 -- --------------------------------------------------------
 
@@ -4190,7 +4190,9 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000054096, 001, 0001025),
 (0000054097, 002, 0001025),
 (0000054098, 002, 0001020),
-(0000054099, 001, 0001026);
+(0000054099, 001, 0001026),
+(0000054100, 001, 0000011),
+(0000054101, 001, 0000609);
 
 -- --------------------------------------------------------
 
@@ -8800,7 +8802,7 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54100;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54102;
 
 --
 -- AUTO_INCREMENT for table `gibbonPerson`

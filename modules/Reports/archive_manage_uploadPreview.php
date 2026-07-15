@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     // Upload the temporary file to the archive
     if (!empty($tempFile['tmp_name'])) {
         $fileUploader = new FileUploader($pdo, $session);
-        $file = $fileUploader->upload($tempFile['name'], $tempFile['tmp_name'], $archive['path'].'/temp');
+        $file = $fileUploader->upload($tempFile['name'], $tempFile['tmp_name'], $archive['path'].'/temp');   // This is a temporary file and will be deleted after preview.
     } else {
         $page->addError(__('Failed to write file to disk.'));
         return;
