@@ -40,6 +40,7 @@ node_modules
 mysqltosheets
 resources
 i18n
+.vscode/ftp-kr.sync.cache.json
 
 # Large local backup artifacts
 core_gyansetu_bak_2022-05-17.zip

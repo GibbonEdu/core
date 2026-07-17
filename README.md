@@ -12,6 +12,15 @@ The Core repository represents the bulk of Gibbon, including all of its primary 
 
 Gibbon is open source, and maintained for the benefit of teachers, students, parents and schools.
 
+# SHEF Gibbon Customisation
+
+This repository contains customisations of GibbonEdu for shef.ngo.
+
+The project is based on GibbonEdu/core:
+https://github.com/GibbonEdu/core
+
+Customisations for shef.ngo are maintained in this repository.
+
 ## Documentation
 
 For full documentation, visit [docs.gibbonedu.org](https://docs.gibbonedu.org/).
