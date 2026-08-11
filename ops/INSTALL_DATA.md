@@ -6,7 +6,7 @@ This document provides instructions for installing example data on your Docker D
 
 ## Before you start
 
-Make sure you have executed `up.sh` and you can see Gibbon with its INSTALLATION - STEP 1 page at http://localhost:8080.
+Make sure you have executed `./up.sh` from the repository root directory, and you can see Gibbon with its INSTALLATION - STEP 1 page at http://localhost:8080.
 
 ## Steps
 
