@@ -18,8 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\FileUploader;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
+use Gibbon\FileUploader;
 
 require_once '../../gibbon.php';
 
@@ -59,17 +60,17 @@ $file = current($_FILES);
 if (is_uploaded_file($file['tmp_name'])) {
 
     // Verify extension
+    $fileHandler = $container->get(FileHandler::class);
     $fileUploader = $container->get(FileUploader::class);
     $fileTypes = $fileUploader->getFileExtensions(['Document', 'Spreadsheet', 'Presentation', 'Graphics/Design']);
     $imageTypes = $fileUploader->getFileExtensions('Graphics/Design');
     $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
+    // These are not temporary uploads, we will need to think of a possible way to track them.
     if (in_array($fileExtension, $imageTypes)) {
         $fileUploader->setFileExtensions($imageTypes);
-        $attachment = $fileUploader->uploadAndResizeImage($file, '', 2048, 85); // This is a temporary upload for TinyMCE that is used during content editing and is not stored in any database record until the form is saved.
-
+        $attachment = $fileUploader->uploadAndResizeImage($file, '', 2048, 85);
     } elseif (in_array($fileExtension, $fileTypes)) {
-        // These are not temporary uploads, we will need to think of a possible way to track them.
         $fileUploader->setFileExtensions($fileTypes);
         $attachment = $fileUploader->uploadFromPost($file);
     } else {
@@ -78,6 +79,11 @@ if (is_uploaded_file($file['tmp_name'])) {
     }
 
     if (!empty($attachment)) {
+        $fileMetaData = $fileUploader->getFileMetaData($attachment);
+        if (!empty($fileMetaData)) {
+            $gibbonFileID =$fileHandler->stageEditorUpload($fileMetaData);
+        }
+
         echo json_encode(['location' => $session->get('absoluteURL') . '/' . $attachment], JSON_FORCE_OBJECT);
         exit;
     }

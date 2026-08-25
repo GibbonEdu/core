@@ -204,6 +204,27 @@ class FileHandler implements FileHandlerInterface
         return true;
     }
 
+    /**
+     * Stage an editor upload in gibbonFile without creating a pointer
+     * @param array $metaData File metadata array
+     * @return string|false gibbonFileID on success, false on failure
+     */
+    public function stageEditorUpload(array $metaData)
+    {
+        $existing = $this->fileGateway->getByFilePath($metaData['filePath'] ?? '');
+
+        if (!empty($existing)) {
+            return $existing['gibbonFileID'];
+        }
+
+        if (!file_exists($metaData['absolutePath'] ?? '')) {
+            return false;
+        }
+
+        $gibbonFileID = $this->insertAndUpdateFile($metaData);
+        return $gibbonFileID ?? false;
+    }
+
     ////-/-/--/-/-/-/-/ FOR PHASE-2 /-/-/-/--/--//
 
     //  /**
