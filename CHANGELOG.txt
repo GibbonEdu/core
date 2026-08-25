@@ -40,6 +40,7 @@ v31.0.00
         System: added Peruvian Sol as a currency option
         System: ensured Twig cache is turned off for Development installs
         System: added a new fileHandler class to track and monitor file uploads
+        System: secured uploaded file downloads via session-based access control (requires Apache mod_rewrite)
         Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed

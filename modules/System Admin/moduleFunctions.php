@@ -446,16 +446,19 @@ function camelToWords($name)
  * Performs a HTTP GET request on the uploads folder 
  *
  * @param string $absoluteURL
- * @return string
+ * @return bool true when uploads do not appear publicly accessible
  */
 function checkUploadsFolderStatus($absoluteURL) : bool
 {
+    global $session;
+
     $statusCode = '';
     $responseBody = '';
     try {
         $client = new Client();
         $response = $client->request('GET', $absoluteURL.'/uploads', [
             'headers' => ['Referer' => $absoluteURL.'/index.php'],
+            'http_errors' => false,
         ]);
         $statusCode = $response->getStatusCode();
         $responseBody = $response->getBody();
@@ -467,6 +470,29 @@ function checkUploadsFolderStatus($absoluteURL) : bool
 
     if (stripos($responseBody, 'Index of') !== false || stripos($responseBody, 'Parent Directory') !== false) {
         return false;
+    }
+
+    // Check if uploads folder is publicly accessible
+    $canaryName = '.gibbon_upload_access_check';
+    $absolutePath = $session->get('absolutePath') ?? '';
+    if ($absolutePath !== '') {
+        $canaryPath = $absolutePath.'/uploads/'.$canaryName;
+        if (!is_file($canaryPath)) {
+            @file_put_contents($canaryPath, 'gibbon-upload-access-check');
+        }
+
+        if (is_file($canaryPath)) {
+            try {
+                $fileResponse = (new Client())->request('GET', $absoluteURL.'/uploads/'.$canaryName, [
+                    'headers' => ['Referer' => $absoluteURL.'/index.php'],
+                    'http_errors' => false,
+                ]);
+                if ((int) $fileResponse->getStatusCode() === 200) {
+                    return false;
+                }
+            } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            }
+        }
     }
 
     if (substr($statusCode, 0, 1) == '4') {
