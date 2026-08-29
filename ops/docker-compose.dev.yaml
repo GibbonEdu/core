@@ -1,7 +1,7 @@
 services:
     app:
         ports:
-            - "8080:80"
+            - "${APP_PORT:-8080}:80"
         volumes:
             ## Mount project root so live edits are immediately reflected without rebuilding the image.
             - .:/var/www/html

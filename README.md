@@ -43,7 +43,7 @@ This script will:
 - Check that Docker Desktop is installed and running
 - Build and start the Gibbon development server container
 
-Gibbon will be available at **http://localhost:8080**
+Gibbon will be available at **http://localhost:8080** by default. If the port is already in use, `up.sh` will use the next available port and print the actual URL. To start scanning from a different port, set `APP_PORT` in `.env`, for example `APP_PORT=9000`.
 
 ## Useful Commands
 
