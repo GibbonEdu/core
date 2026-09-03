@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\UsernameGenerator;
 
 //Gibbon system-wide include
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
     die( __('Your request failed because you do not have access to this action.') );

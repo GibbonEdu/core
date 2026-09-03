@@ -27,7 +27,7 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['officeNotes' => 'HTML']);
 

@@ -23,7 +23,7 @@ use Gibbon\Http\Url;
 use Gibbon\Domain\User\RoleGateway;
 
 // Gibbon system-wide include
-require_once './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
 $gibbonRoleID = str_pad(intval($gibbonRoleID), 3, '0', STR_PAD_LEFT);

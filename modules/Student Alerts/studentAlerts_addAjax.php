@@ -21,7 +21,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_add.php')) {
     // Access denied

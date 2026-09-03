@@ -28,7 +28,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\UI\Components\Alert;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

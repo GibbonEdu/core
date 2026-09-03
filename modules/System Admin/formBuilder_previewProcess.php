@@ -25,7 +25,7 @@ use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
 $identifier = $_REQUEST['identifier'] ?? null;

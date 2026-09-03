@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (!isset($_SESSION[$guid]) || !$session->exists('gibbonPersonID')) {
     die( __('Your request failed because you do not have access to this action.') );

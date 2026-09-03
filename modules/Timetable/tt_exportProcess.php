@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\NotificationGateway;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     // Access denied

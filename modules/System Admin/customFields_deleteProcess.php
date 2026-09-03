@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\CustomFieldGateway;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $gibbonCustomFieldID = $_POST['gibbonCustomFieldID'] ?? '';
 

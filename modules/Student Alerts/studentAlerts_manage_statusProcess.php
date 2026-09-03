@@ -28,7 +28,7 @@ use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

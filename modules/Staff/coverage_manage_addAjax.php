@@ -26,7 +26,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $request = [
     'dateStart' => $_POST['dateStart'] ?? '',

@@ -27,7 +27,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $action = $_POST['action'] ?? '';
 $gibbonActivityID = $_POST['gibbonActivityID'] ?? '';

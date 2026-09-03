@@ -35,7 +35,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
 use Gibbon\UI\Components\Alert;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

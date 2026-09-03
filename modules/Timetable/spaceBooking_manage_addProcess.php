@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

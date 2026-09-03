@@ -23,7 +23,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

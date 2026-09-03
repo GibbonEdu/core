@@ -28,7 +28,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 
-include './gibbon.php';
+include __DIR__ . '/gibbon.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';

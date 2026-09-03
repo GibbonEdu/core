@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Module\Staff\Forms\CoverageRequestForm;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $dateStart = $_POST['dateStart'] ?? '';

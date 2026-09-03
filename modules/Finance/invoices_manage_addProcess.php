@@ -23,7 +23,7 @@ use Gibbon\Data\PasswordPolicy;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['notes' => 'HTML']);
 

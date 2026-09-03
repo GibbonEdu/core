@@ -26,7 +26,7 @@ use Gibbon\Domain\Planner\UnitClassBlockGateway;
 use Gibbon\Domain\Planner\UnitGateway;
 use Gibbon\Domain\Planner\UnitBlockGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
 

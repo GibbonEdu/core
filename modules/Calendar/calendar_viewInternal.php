@@ -24,7 +24,7 @@ use Gibbon\UI\Timetable\Palette;
 use Gibbon\Services\Format;
 use Gibbon\UI\Timetable\Layers\SchoolCalendarLayer;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_view.php') == false) {
     // Access denied
