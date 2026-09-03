@@ -25,9 +25,9 @@ services:
             - MYSQL_DATABASE=${MYSQL_DATABASE:-gibbon}
             # MySQL application user credentials
             - MYSQL_USER=${MYSQL_USER:-gibbon}
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Create .env from resources/ops/.env-example and set a password.}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Create .env from resources/ops/configuration/gibbon/.env-example and set a password.}
             # MySQL root password — keep this strong in production
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Create .env from resources/ops/.env-example and set a password.}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Create .env from resources/ops/configuration/gibbon/.env-example and set a password.}
         ports:
             - target: 3306
               published: 3306

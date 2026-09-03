@@ -8,21 +8,25 @@
 # =============================================================
 set -euo pipefail
 
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OPS_DIR="${PROJECT_DIR}/resources/ops"
+GIBBON_CONF_DIR="${OPS_DIR}/configuration/gibbon"
+
 ## Ensure the script is always run from the project root
-if [ ! -f "resources/ops/compose.yaml" ]; then
+if [ ! -f "${OPS_DIR}/compose.yaml" ]; then
     echo "Error: Run this script from the project root (where up.sh lives)."
     exit 1
 fi
 
 ## Ensure the local environment file exists
 if [ ! -f ".env" ]; then
-    if [ ! -f "resources/ops/.env-example" ]; then
-        echo "Error: .env was not found and resources/ops/.env-example is missing."
+    if [ ! -f "${GIBBON_CONF_DIR}/.env-example" ]; then
+        echo "Error: .env was not found and ${GIBBON_CONF_DIR}/.env-example is missing."
         exit 1
     fi
 
-    cp resources/ops/.env-example .env
-    echo "Created .env from resources/ops/.env-example"
+    cp "${GIBBON_CONF_DIR}/.env-example" .env
+    echo "Created .env from ${GIBBON_CONF_DIR}/.env-example"
     echo "Review .env to customize local settings if needed."
 fi
 
