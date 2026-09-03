@@ -28,7 +28,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Form;
 
 // Gibbon system-wide includes
-include './gibbon.php';
+include __DIR__ . '/gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     // Access denied

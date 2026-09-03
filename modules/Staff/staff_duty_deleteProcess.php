@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Staff\StaffDutyPersonGateway;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $gibbonStaffDutyPersonID = $_POST['gibbonStaffDutyPersonID'] ?? '';
 

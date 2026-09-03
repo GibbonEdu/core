@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $urlParams = [
     'gibbonReportingScopeID' =>  $_POST['gibbonReportingScopeID'] ?? '',

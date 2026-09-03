@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\UsernameGenerator;
 
-include './gibbon.php';
+include __DIR__ . '/gibbon.php';
 
 $username = $_POST['username'] ?? '';
 $currentUsername = $_POST['currentUsername'] ?? '';

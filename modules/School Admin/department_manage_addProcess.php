@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['blurb' => 'HTML']);
 

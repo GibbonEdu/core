@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $output = '';
 

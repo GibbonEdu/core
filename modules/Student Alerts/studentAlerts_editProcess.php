@@ -25,7 +25,7 @@ use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML']);
 

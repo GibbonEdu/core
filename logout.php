@@ -24,7 +24,7 @@ use Gibbon\Http\Url;
 use Gibbon\Auth\Adapter\DefaultAdapter;
 
 // Gibbon system-wide include
-require_once './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 $URL = Url::fromRoute();
 if (isset($_GET['timeout'])) {

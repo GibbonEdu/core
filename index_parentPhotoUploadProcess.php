@@ -25,7 +25,7 @@ use Gibbon\Http\Url;
 use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-include './gibbon.php';
+include __DIR__ . '/gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = Url::fromRoute();

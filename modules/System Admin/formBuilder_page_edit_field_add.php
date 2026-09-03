@@ -27,7 +27,7 @@ use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use League\Container\Exception\NotFoundException;
 
-// require_once '../../gibbon.php';
+// require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
     // Access denied

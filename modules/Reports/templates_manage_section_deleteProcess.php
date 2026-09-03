@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 $gibbonReportTemplateSectionID = $_POST['gibbonReportTemplateSectionID'] ?? '';

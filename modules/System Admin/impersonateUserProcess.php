@@ -26,7 +26,7 @@ use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\System\ThemeGateway;
 use Gibbon\Domain\System\I18nGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

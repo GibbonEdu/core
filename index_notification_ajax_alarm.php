@@ -25,7 +25,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
 // Gibbon system-wide includes
-include './gibbon.php';
+include __DIR__ . '/gibbon.php';
 
 $type = $_GET['type'] ?? '';
 

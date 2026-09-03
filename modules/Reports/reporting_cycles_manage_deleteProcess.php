@@ -27,7 +27,7 @@ use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
 

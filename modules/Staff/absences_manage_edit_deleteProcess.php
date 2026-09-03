@@ -26,7 +26,7 @@ $_POST['address'] = '/modules/Staff/absences_manage_edit.php';
 $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
 $gibbonStaffAbsenceDateID = $_GET['gibbonStaffAbsenceDateID'] ?? '';
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage_edit.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 

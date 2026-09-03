@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Messenger\GroupGateway;
 
-include '../../gibbon.php';
+include __DIR__ . '/../../gibbon.php';
 
 $gibbonGroupID = $_POST['gibbonGroupID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';

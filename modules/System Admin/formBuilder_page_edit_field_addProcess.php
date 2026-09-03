@@ -23,7 +23,7 @@ use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['label' => 'HTML', 'description' => 'HTML', 'options' => 'RAW']);
 
