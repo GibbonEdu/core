@@ -26,7 +26,7 @@ use Gibbon\Data\PasswordPolicy;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
-include __DIR__ . '/gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 // Load site's password policy
 /** @var PasswordPolicy */

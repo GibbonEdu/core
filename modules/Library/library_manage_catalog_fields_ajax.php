@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\FormFactory;
 
 //Gibbon system-wide include
-include __DIR__ . '/../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 //Module includes
 include $session->get('absolutePath').'/modules/Library/moduleFunctions.php';
