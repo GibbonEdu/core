@@ -26,7 +26,7 @@ use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 //Gibbon system-wide includes
-include __DIR__ . '/../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 //Module includes
 include __DIR__ . '/moduleFunctions.php';

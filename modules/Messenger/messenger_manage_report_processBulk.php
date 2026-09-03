@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Messenger\MessageProcess;
 
-include __DIR__ . '/../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';

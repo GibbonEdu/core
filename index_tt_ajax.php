@@ -26,7 +26,7 @@ use Gibbon\UI\Timetable\Timetable;
 use Gibbon\UI\Timetable\TimetableContext;
 
 // Gibbon system-wide includes
-include __DIR__ . '/gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 // Setup variables
 $gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;

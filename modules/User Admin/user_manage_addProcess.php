@@ -31,7 +31,7 @@ use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-include __DIR__ . '/../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
 

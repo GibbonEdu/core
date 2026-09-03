@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
 
-include __DIR__ . '/../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $gibbonInternalAssessmentColumnID = $_POST['gibbonInternalAssessmentColumnID'] ?? '';
