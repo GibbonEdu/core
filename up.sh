@@ -51,7 +51,7 @@ case "${1:-up}" in
         echo "To follow logs:       ./up.sh logs"
         ;;
     logs)
-        docker compose logs -f
+        ${DOCKER_COMPOSE} logs -f
         ;;
     *)
         echo "Usage: $0 [up|down|logs]"
