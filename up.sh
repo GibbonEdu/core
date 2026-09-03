@@ -9,20 +9,20 @@
 set -euo pipefail
 
 ## Ensure the script is always run from the project root
-if [ ! -f "ops/compose.yaml" ]; then
+if [ ! -f "resources/ops/compose.yaml" ]; then
     echo "Error: Run this script from the project root (where up.sh lives)."
     exit 1
 fi
 
 ## Ensure the local environment file exists
 if [ ! -f ".env" ]; then
-    if [ ! -f "ops/.env-example" ]; then
-        echo "Error: .env was not found and ops/.env-example is missing."
+    if [ ! -f "resources/ops/.env-example" ]; then
+        echo "Error: .env was not found and resources/ops/.env-example is missing."
         exit 1
     fi
 
-    cp ops/.env-example .env
-    echo "Created .env from ops/.env-example"
+    cp resources/ops/.env-example .env
+    echo "Created .env from resources/ops/.env-example"
     echo "Review .env to customize local settings if needed."
 fi
 

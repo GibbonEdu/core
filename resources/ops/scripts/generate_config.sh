@@ -27,7 +27,7 @@ THIS_SCRIPT_DIR=`dirname "$BASH_SOURCE"`
 #echo "Running ${THIS_SCRIPT_DIR}/generate_config.sh"
 
 # Generate config files for Gibbon application using sed
-SOURCE=${APP_SOURCE}/ops/configuration/gibbon/config.php.dist
+SOURCE=${APP_SOURCE}/resources/ops/configuration/gibbon/config.php.dist
 TARGET=${APP_SOURCE}/config.php
 # Explicit list of placeholders to replace (only these will be expanded)
 VARS='${MYSQL_HOST} ${MYSQL_USER} ${MYSQL_PASSWORD} ${MYSQL_DATABASE} ${GUID} ${CACHING_FACTOR}'
