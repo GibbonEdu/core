@@ -30,7 +30,8 @@ use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST);
 
 //Module includes for User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
@@ -146,10 +147,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $data = [
                         'gibbonPersonID'             => $gibbonPersonID,
                         'title'                      => $_POST['title'] ?? $values['title'],
-                        'surname'                    => $_POST['surname'] ?? $values['surname'],
-                        'firstName'                  => $_POST['firstName'] ?? $values['firstName'],
-                        'preferredName'              => $_POST['preferredName'] ?? $values['preferredName'],
-                        'officialName'               => $_POST['officialName'] ?? $values['officialName'],
+                        'surname'                    => $validator->sanitizePersonName($_POST['surname'] ?? $values['surname']),
+                        'firstName'                  => $validator->sanitizePersonName($_POST['firstName'] ?? $values['firstName']),
+                        'preferredName'              => $validator->sanitizePersonName($_POST['preferredName'] ?? $values['preferredName']),
+                        'officialName'               => $validator->sanitizePersonName($_POST['officialName'] ?? $values['officialName']),
                         'nameInCharacters'           => $_POST['nameInCharacters'] ?? $values['nameInCharacters'],
                         'dob'                        => isset($_POST['dob']) ? Format::dateConvert($_POST['dob']) : $values['dob'],
                         'email'                      => filter_var(trim($_POST['email'] ?? $values['email']), FILTER_SANITIZE_EMAIL),

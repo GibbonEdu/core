@@ -25,7 +25,8 @@ use Gibbon\Domain\Messenger\MailingListRecipientGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST);
 
 $gibbonMessengerMailingListRecipientID = $_POST['gibbonMessengerMailingListRecipientID'] ?? '';
 
@@ -41,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
 
     $data = [
-        'surname'                           => $_POST['surname'] ?? '',
-        'preferredName'                     => $_POST['preferredName'] ?? '',
+        'surname'                           => $validator->sanitizePersonName($_POST['surname'] ?? ''),
+        'preferredName'                     => $validator->sanitizePersonName($_POST['preferredName'] ?? ''),
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'organisation'                      => $_POST['organisation'] ?? '',
         'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),

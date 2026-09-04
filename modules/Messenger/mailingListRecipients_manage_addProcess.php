@@ -26,7 +26,8 @@ use Gibbon\Domain\Messenger\MailingListRecipientGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST);
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/mailingListRecipients_manage_add.php";
 
@@ -40,8 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     $randStrGenerator = new PasswordPolicy(true, true, false, 40);
     
     $data = [
-        'surname'                           => $_POST['surname'] ?? '',
-        'preferredName'                     => $_POST['preferredName'] ?? '',
+        'surname'                           => $validator->sanitizePersonName($_POST['surname'] ?? ''),
+        'preferredName'                     => $validator->sanitizePersonName($_POST['preferredName'] ?? ''),
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'key'                               => $randStrGenerator->generate(),    
         'organisation'                      => $_POST['organisation'] ?? '',

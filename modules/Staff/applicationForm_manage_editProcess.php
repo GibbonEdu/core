@@ -27,7 +27,8 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['questions' => 'HTML']);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST, ['questions' => 'HTML']);
 
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
@@ -82,10 +83,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'] ?? '';
             $questions = $_POST['questions'] ?? '';
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $surname = $_POST['surname'] ?? '';
-            $firstName = $_POST['firstName'] ?? '';
-            $preferredName = $_POST['preferredName'] ?? '';
-            $officialName = $_POST['officialName'] ?? '';
+            $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
+            $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
+            $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
+            $officialName = $validator->sanitizePersonName($_POST['officialName'] ?? '');
             $nameInCharacters = $_POST['nameInCharacters'] ?? '';
             $gender = $_POST['gender'] ?? '';
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;

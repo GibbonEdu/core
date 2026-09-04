@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\UsernameGenerator;
+use Gibbon\Data\Validator;
 
 //Gibbon system-wide include
 include '../../gibbon.php';
@@ -27,10 +28,11 @@ include '../../gibbon.php';
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
     die( __('Your request failed because you do not have access to this action.') );
 } else {
+    $validator = $container->get(Validator::class);
     $gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '003';
-    $preferredName = isset($_POST['preferredName'])? $_POST['preferredName'] : '';
-    $firstName = isset($_POST['firstName'])? $_POST['firstName'] : '';
-    $surname = isset($_POST['surname'])? $_POST['surname'] : '';
+    $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
+    $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
+    $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
 
     if (empty($gibbonRoleID) || $gibbonRoleID == 'Please select...' || empty($preferredName) || empty($firstName) || empty($surname)) {
         echo '0';

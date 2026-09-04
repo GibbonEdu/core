@@ -245,6 +245,17 @@ class Validator
     }
 
     /**
+     * Sanitize a person name so that it may only contain naming conventions
+     *
+     * @param string $value
+     * @return string
+     */
+    public function sanitizePersonName(string $value)
+    {
+        return preg_replace('/[^\p{L}\p{M}\s\'\-\.\,\(\)]/u', '', trim($value));
+    }
+
+    /**
      * Sanitize a string so that it may only contain numeric values.
      *
      * @param string $value

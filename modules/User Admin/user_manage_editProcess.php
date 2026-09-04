@@ -32,7 +32,8 @@ use Gibbon\Domain\System\NotificationGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST, ['website' => 'URL']);
 
 //Module includes
 include './moduleFunctions.php';
@@ -96,10 +97,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             //Proceed!
             $title = $_POST['title'] ?? '';
-            $surname = trim($_POST['surname'] ?? '');
-            $firstName = trim($_POST['firstName'] ?? '');
-            $preferredName = trim($_POST['preferredName'] ?? '');
-            $officialName = trim($_POST['officialName'] ?? '');
+            $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
+            $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
+            $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
+            $officialName = $validator->sanitizePersonName($_POST['officialName'] ?? '');
             $nameInCharacters = $_POST['nameInCharacters'] ?? '';
             $gender = $_POST['gender'] ?? '';
             $username = isset($_POST['username'])? $_POST['username'] : $values['username'];

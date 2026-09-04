@@ -30,7 +30,8 @@ use Gibbon\Forms\PersonalDocumentHandler;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST);
 
 //Check to see if system settings are set from databases
 if (!$session->has('systemSettingsSet')) {
@@ -81,10 +82,10 @@ if ($proceed == false) {
         }
 
         //GET STUDENT FIELDS
-        $surname = $_POST['surname'] ?? '';
-        $firstName = trim($_POST['firstName'] ?? '');
-        $preferredName = trim($_POST['preferredName'] ?? '');
-        $officialName = trim($_POST['officialName'] ?? '');
+        $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
+        $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
+        $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
+        $officialName = $validator->sanitizePersonName($_POST['officialName'] ?? '');
         $nameInCharacters = $_POST['nameInCharacters'] ?? '';
         $gender = $_POST['gender'] ?? '';
         $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
@@ -141,10 +142,10 @@ if ($proceed == false) {
         //GET PARENT1 FEILDS
         $parent1gibbonPersonID = $_POST['parent1gibbonPersonID'] ?? null;
         $parent1title = $_POST['parent1title'] ?? null;
-        $parent1surname = trim($_POST['parent1surname'] ?? '');
-        $parent1firstName = trim($_POST['parent1firstName'] ?? '');
-        $parent1preferredName = trim($_POST['parent1preferredName'] ?? '');
-        $parent1officialName = trim($_POST['parent1officialName'] ?? '');
+        $parent1surname = $validator->sanitizePersonName($_POST['parent1surname'] ?? '');
+        $parent1firstName = $validator->sanitizePersonName($_POST['parent1firstName'] ?? '');
+        $parent1preferredName = $validator->sanitizePersonName($_POST['parent1preferredName'] ?? '');
+        $parent1officialName = $validator->sanitizePersonName($_POST['parent1officialName'] ?? '');
         $parent1nameInCharacters = $_POST['parent1nameInCharacters'] ?? null;
         $parent1gender = $_POST['parent1gender'] ?? null;
         $parent1relationship = $_POST['parent1relationship'] ?? null;
@@ -168,10 +169,10 @@ if ($proceed == false) {
 
         //GET PARENT2 FEILDS
         $parent2title = $_POST['parent2title'] ?? null;
-        $parent2surname = trim($_POST['parent2surname'] ?? '');
-        $parent2firstName = trim($_POST['parent2firstName'] ?? '');
-        $parent2preferredName = trim($_POST['parent2preferredName'] ?? '');
-        $parent2officialName = trim($_POST['parent2officialName'] ?? '');
+        $parent2surname = $validator->sanitizePersonName($_POST['parent2surname'] ?? '');
+        $parent2firstName = $validator->sanitizePersonName($_POST['parent2firstName'] ?? '');
+        $parent2preferredName = $validator->sanitizePersonName($_POST['parent2preferredName'] ?? '');
+        $parent2officialName = $validator->sanitizePersonName($_POST['parent2officialName'] ?? '');
         $parent2nameInCharacters = $_POST['parent2nameInCharacters'] ?? null;
         $parent2gender = $_POST['parent2gender'] ?? null;
         $parent2relationship = $_POST['parent2relationship'] ?? null;
