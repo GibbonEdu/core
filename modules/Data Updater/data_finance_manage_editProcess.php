@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 
 require_once '../../gibbon.php';
 
@@ -39,23 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
-            $sql = 'SELECT * FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $result = $container->get(FinanceUpdateGateway::class)->getByID($gibbonFinanceInvoiceeUpdateID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Set values
-            $data = array();
+            // Set values
+            $data = [];
             $set = '';
             if (isset($_POST['newinvoiceToOn'])) {
                 if ($_POST['newinvoiceToOn'] == 'on') {
@@ -113,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
             }
 
             if (strlen($set) > 1) {
-                //Write to database
+                // Write to database
                 try {
                     $data['gibbonFinanceInvoiceeID'] = $gibbonFinanceInvoiceeID;
                     $sql = 'UPDATE gibbonFinanceInvoicee SET '.substr($set, 0, (strlen($set) - 2)).' WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';

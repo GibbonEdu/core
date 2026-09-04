@@ -19,14 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\UI\Components\Alert;
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
 require_once '../../gibbon.php';
 
@@ -49,27 +50,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     } else {
         $medicalGateway = $container->get(MedicalGateway::class);
 
-        try {
-            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $result = $container->get(MedicalUpdateGateway::class)->getByID($gibbonPersonMedicalUpdateID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $row = $result->fetch();
+            $row = $result;
             $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
             $row2 = $medicalGateway->getByID($gibbonPersonMedicalID);
             $conditions = [];
 
-            //Set values
+            // Set values
             $data = array();
             $sqlSet = '';
             if (isset($_POST['longTermMedicationOn'])) {
@@ -97,12 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
             $partialFail = false;
 
-            //Write to database
-            //If form already exisits
+            // Write to database
+            // If form already exisits
             $count = 0;
             $count2 = 0;
             if ($_POST['formExists'] == true) {
-                //Scan through existing conditions
+                // Scan through existing conditions
                 if (isset($_POST['count'])) {
                     $count = $_POST['count'] ?? '';
                 }
@@ -191,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                 }
 
-                //Scan through new conditions
+                // Scan through new conditions
                 $gibbonAlertLevelID = 001;
                 if (isset($_POST['count2'])) {
                     $count2 = $_POST['count2'] ?? '';
@@ -307,7 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } else {
-                    //Write to database
+                    // Write to database
                     try {
                         $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
                         $sql = "UPDATE gibbonPersonMedicalUpdate SET status='Complete' WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
@@ -320,8 +312,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                 }
             }
-
-            //If form does not already exist
+            // If form does not already exist
             else {
                 try {
                     if ($sqlSet != '') {
@@ -341,20 +332,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
                 $gibbonPersonMedicalID = $connection2->lastInsertID();
 
-                //Scan through new conditions
+                // Scan through new conditions
                 if (isset($_POST['count2'])) {
                     $count2 = $_POST['count2'] ?? '';
                 }
                 for ($i = ($count + 1); $i <= ($count + $count2); ++$i) {
                     if ($_POST["nameOn$i"] == 'on' and $_POST["gibbonAlertLevelIDOn$i"] == 'on') {
-                        //Scan through existing conditions
+                        // Scan through existing conditions
                         $dataCond = array();
                         $sqlSetCond = '';
                         if (isset($_POST["nameOn$i"])) {
                             if ($_POST["nameOn$i"] == 'on') {
                                 $dataCond['name'] = $_POST["name$i"] ?? '';
                                 $sqlSetCond .= 'name=:name, ';
-
                             }
                         }
                         if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
@@ -446,7 +436,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } else {
-                    //Write to database
+                    // Write to database
                     try {
                         $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
                         $sql = "UPDATE gibbonPersonMedicalUpdate SET status='Complete' WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
@@ -462,7 +452,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
             // ALERTS: possible change to Medical alert status, recalculate alerts
             $container->get(Alert::class)->recalculateAlerts($gibbonPersonID);
-
+            
             if (!empty($conditions)) {
                 $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
                 $alert = $container->get(AlertLevelGateway::class)->getByID($gibbonAlertLevelID);

@@ -423,6 +423,18 @@ class StudentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectActiveStudentsBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql  = "SELECT gibbonPerson.gibbonPersonID, username, surname, preferredName
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectStudentEnrolmentHistory($gibbonPersonID)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID];

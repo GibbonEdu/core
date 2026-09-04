@@ -20,27 +20,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_manage_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
-    //Check if gibbonPersonMedicalUpdateID specified
+    // Proceed!
+    // Check if gibbonPersonMedicalUpdateID specified
     $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'] ?? '';
     if ($gibbonPersonMedicalUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
+        $result = $container->get(MedicalUpdateGateway::class)->getByID($gibbonPersonMedicalUpdateID);
 
-            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_medical_manage_deleteProcess.php");

@@ -23,6 +23,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Finance\FinanceFeeCategoryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -113,12 +114,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 $row->addTextField('companyPhone')->maxLength(20);
 
             // COMPANY FEE CATEGORIES
-            $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
-            $resultFees = $pdo->executeQuery(array(), $sqlFees);
+            $categories = $container->get(FinanceFeeCategoryGateway::class)->selectActiveFeeCategories();
 
             $form->loadAllValuesFrom($values);
 
-            if (!$resultFees || $resultFees->rowCount() == 0) {
+            if (!$categories || $categories->rowCount() == 0) {
                 $form->addHiddenValue('companyAll', 'Y');
             } else {
                 $checked = (empty($values['companyAll']) || $values['companyAll'] == 'Y') ? 'Y' : 'N';
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 $row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))
                     ->description(__('If the specified company is not paying all fees, which categories are they paying?'));
                 $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
-                    ->fromResults($resultFees)
+                    ->fromResults($categories)
                     ->fromArray(array('0001' => __('Other')))
                     ->loadFromCSV($values);
             }

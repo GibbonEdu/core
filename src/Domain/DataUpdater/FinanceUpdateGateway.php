@@ -66,4 +66,20 @@ class FinanceUpdateGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function getInvoiceeByUpdateID($gibbonFinanceInvoiceeUpdateID)
+    {
+        $data = ['gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID];
+        $sql = "SELECT gibbonFinanceInvoicee.* FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+      public function getInvoiceeUpdateByID($gibbonFinanceInvoiceeUpdateID)
+    {
+        $data = ['gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID];
+        $sql = "SELECT gibbonFinanceInvoiceeUpdate.* FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID";
+        
+        return $this->db()->selectOne($sql, $data);
+    }
 }

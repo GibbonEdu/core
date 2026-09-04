@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\Students\PersonMedicalConditionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_delete.php') == false) {
     // Access denied
@@ -34,13 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
-            $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
-            $sql = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $result = $container->get(PersonMedicalConditionGateway::class)->getByID($gibbonPersonMedicalConditionID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/medicalForm_manage_condition_deleteProcess.php?search=$search");

@@ -19,8 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\Finance\InvoiceeGateway;
 
 require_once '../../gibbon.php';
 
@@ -46,32 +48,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             $URL .= "&return=error0$params";
             header("Location: {$URL}");
         } else {
-            //Check access to person
+            // Check access to person
             $checkCount = 0;
+            $invoiceeGateway = $container->get(InvoiceeGateway::class);
             if ($highestAction == 'Update Finance Data_any') {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_finance.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
 
-
-                    $dataSelect = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
-                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoicee.* FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID ORDER BY surname, preferredName";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
+                $resultSelect = $invoiceeGateway->selectInvoiceeByID($gibbonFinanceInvoiceeID);
+                
                 $checkCount = $resultSelect->rowCount();
                 $values = $resultSelect->fetch();
             } else {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
 
-
-                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-                    $resultCheck = $connection2->prepare($sqlCheck);
-                    $resultCheck->execute($dataCheck);
+                $resultCheck = $container->get(FamilyGateway::class)->selectFamilyIDAndNameByAdultID($session->get('gibbonPersonID'));
                 while ($rowCheck = $resultCheck->fetch()) {
+                    $resultCheck2 = $invoiceeGateway->selectInvoiceeByFamilyID($rowCheck['gibbonFamilyID']);
 
-                        $dataCheck2 = array('gibbonFamilyID' => $rowCheck['gibbonFamilyID']);
-                        $sqlCheck2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonFinanceInvoicee.* FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
-                        $resultCheck2 = $connection2->prepare($sqlCheck2);
-                        $resultCheck2->execute($dataCheck2);
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonFinanceInvoiceeID == $rowCheck2['gibbonFinanceInvoiceeID']) {
                             ++$checkCount;

@@ -126,4 +126,12 @@ class PersonUpdateGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function getUserDetailsByUpdateID($gibbonPersonUpdateID)
+    {
+        $data = ['gibbonPersonUpdateID' => $gibbonPersonUpdateID];
+        $sql = 'SELECT gibbonPerson.* FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

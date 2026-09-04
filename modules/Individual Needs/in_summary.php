@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     $row = $form->addRow();
     	$row->addLabel('gibbonINDescriptorID', __('Descriptor'));
-        $row->addSelect('gibbonINDescriptorID')->fromResults($result)->selected($gibbonINDescriptorID)->placeholder();
+      $row->addSelect('gibbonINDescriptorID')->fromResults($result)->selected($gibbonINDescriptorID)->placeholder();
 
     $result = $container->get(AlertLevelGateway::class)->selectAlertLevels();
 

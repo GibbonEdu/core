@@ -166,4 +166,20 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->select($sql, $data);
     }
+    
+    public function getFamilyByFamilyUpdateID($gibbonFamilyUpdateID)
+    {
+        $data = ['gibbonFamilyUpdateID' => $gibbonFamilyUpdateID];
+        $sql = "SELECT gibbonFamily.* FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getFamilyUpdateByFamilyUpdateID($gibbonFamilyUpdateID)
+    {
+        $data = ['gibbonFamilyUpdateID' => $gibbonFamilyUpdateID];
+        $sql = "SELECT gibbonFamilyUpdate.* FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

@@ -32,7 +32,7 @@ use Gibbon\Domain\Traits\ScrubByPerson;
  * @version v21
  * @since   v21
  */
-class MedicalConditionGateway extends QueryableGateway implements ScrubbableGateway
+class PersonMedicalConditionGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;

@@ -45,5 +45,11 @@ class FamilyChildGateway extends QueryableGateway implements ScrubbableGateway
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['comment' => ''];
-    
+
+    public function selectStudentsByFamilyID($gibbonFamilyID) {
+        $data = ['gibbonFamilyID' => $gibbonFamilyID, 'gibbonFamilyID2' => $gibbonFamilyID];
+        $sql = "(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonRoleIDAll FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonRoleIDAll FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID2)";
+
+        return $this->db()->select($sql, $data);
+    }
 }

@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\FamilyGateway;
 
 require_once '../../gibbon.php';
 
@@ -49,27 +50,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
             //Check access to person
             if ($highestAction == 'Update Family Data_any') {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_family.php&gibbonFamilyID='.$gibbonFamilyID;
-
-
-                    $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID);
-                    $sqlCheck = 'SELECT gibbonFamily.* FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
-                    $resultCheck = $connection2->prepare($sqlCheck);
-                    $resultCheck->execute($dataCheck);
+                $resultCheck = $container->get(FamilyGateway::class)->getByID($gibbonFamilyID);
             } else {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFamilyID='.$gibbonFamilyID;
-
-
-                    $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sqlCheck = "SELECT gibbonFamily.* FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID";
-                    $resultCheck = $connection2->prepare($sqlCheck);
-                    $resultCheck->execute($dataCheck);
+                $resultCheck = $container->get(FamilyGateway::class)->selectFamilyIDByAdultID($gibbonFamilyID, $session->get('gibbonPersonID'))->fetchAll();
             }
 
-            if ($resultCheck->rowCount() != 1) {
+            if (empty($resultCheck)) {
                 $URL .= '&return=warning';
                 header("Location: {$URL}");
             } else {
-                $values = $resultCheck->fetch();
+                $values = $resultCheck;
 
                 //Proceed!
                 $data = [

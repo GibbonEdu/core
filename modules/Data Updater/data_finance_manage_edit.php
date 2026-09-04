@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -37,27 +38,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
         ->add(__('Finance Data Updates'), 'data_finance_manage.php', $urlParams)
         ->add(__('Edit Request'));
 
-    //Check if gibbonFinanceInvoiceeUpdateID specified
+    // Check if gibbonFinanceInvoiceeUpdateID specified
     $gibbonFinanceInvoiceeUpdateID = $_GET['gibbonFinanceInvoiceeUpdateID'] ?? '';
+    $financeUpdateGateway = $container->get(FinanceUpdateGateway::class);
     if ($gibbonFinanceInvoiceeUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
+        $result = $financeUpdateGateway->getInvoiceeByUpdateID($gibbonFinanceInvoiceeUpdateID);
 
-            $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
-            $sql = "SELECT gibbonFinanceInvoicee.* FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
-            $sql = "SELECT gibbonFinanceInvoiceeUpdate.* FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID";
-            $newResult = $pdo->executeQuery($data, $sql);
-
-            //Let's go!
-            $oldValues = $result->fetch();
-            $newValues = $newResult->fetch();
+            $newResult = $financeUpdateGateway->getInvoiceeUpdateByID($gibbonFinanceInvoiceeUpdateID);
+            
+            // Let's go!
+            $oldValues = $result;
+            $newValues = $newResult;
 
             // Provide a link back to edit the associated record
             if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == true && !empty($oldValues['gibbonFinanceInvoiceeID'])) {

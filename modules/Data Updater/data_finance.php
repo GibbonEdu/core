@@ -21,6 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\Finance\InvoiceeGateway;
+use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
+use Gibbon\Domain\Finance\FinanceFeeCategoryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        //Proceed!
+        // Proceed!
         $page->breadcrumbs->add(__('Update Finance Data'));
 
         if ($highestAction == 'Update Finance Data_any') {
@@ -47,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             echo '</p>';
         }
 
-        $customResponces = array();
+        $customResponces = [];
         $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
         if ($session->get('organisationDBAEmail') != '' and $session->get('organisationDBAName') != '') {
             $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationDBAEmail')."'>".$session->get('organisationDBAName').'</a>');
@@ -67,27 +71,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
         echo '</h2>';
 
 		$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? null;
+        $invoiceeGateway = $container->get(InvoiceeGateway::class);
 
         $form = Form::create('selectInvoicee', $session->get('absoluteURL').'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_finance.php');
 
         if ($highestAction == 'Update Finance Data_any') {
-            $data = array();
-            $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+            $result = $invoiceeGateway->selectInvoiceesDetails();
         } else {
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID, gibbonFinanceInvoicee.gibbonFinanceInvoiceeID
-					FROM gibbonFamilyAdult
-					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-					JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-					JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
-					JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=child.gibbonPersonID)
-					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
-					AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full'
-					ORDER BY gibbonFamily.name, child.surname, child.preferredName";
+            $result = $invoiceeGateway->selectInvoiceeByAdultID($session->get('gibbonPersonID'));
 		}
-		$result = $pdo->executeQuery($data, $sql);
-		$resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+		$resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : [];
 
 		$invoicees = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
 			$id = $person['gibbonFinanceInvoiceeID'];
@@ -96,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 				$carry[$id] .= ' ('.$person['username'].')';
 			}
 			return $carry;
-		}, array());
+		}, []);
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeID', __('Invoicee'))->description(__('Individual for whom invoices are generated.'));
@@ -111,33 +105,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
 		echo $form->getOutput();
 
-
         if ($gibbonFinanceInvoiceeID != '') {
             echo '<h2>';
             echo __('Update Data');
             echo '</h2>';
 
-            //Check access to person
+            // Check access to person
             $checkCount = 0;
-            if ($highestAction == 'Update Finance Data_any') {
-
-                    $dataSelect = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
-                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID ORDER BY surname, preferredName";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
+            if ($highestAction == 'Update Finance Data_any') {                    
+                $resultSelect = $invoiceeGateway->selectInvoiceeByID($gibbonFinanceInvoiceeID);
                 $checkCount = $resultSelect->rowCount();
             } else {
+                $resultCheck = $container->get(FamilyGateway::class)->selectFamilyIDAndNameByAdultID($session->get('gibbonPersonID'));
 
-                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-                    $resultCheck = $connection2->prepare($sqlCheck);
-                    $resultCheck->execute($dataCheck);
                 while ($rowCheck = $resultCheck->fetch()) {
+                    $resultCheck2 = $invoiceeGateway->selectInvoiceeByFamilyID($rowCheck['gibbonFamilyID']);
 
-                        $dataCheck2 = array('gibbonFamilyID' => $rowCheck['gibbonFamilyID']);
-                        $sqlCheck2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonFinanceInvoiceeID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
-                        $resultCheck2 = $connection2->prepare($sqlCheck2);
-                        $resultCheck2->execute($dataCheck2);
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonFinanceInvoiceeID == $rowCheck2['gibbonFinanceInvoiceeID']) {
                             ++$checkCount;
@@ -149,14 +132,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             if ($checkCount < 1) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                //Check if there is already a pending form for this user
+                // Check if there is already a pending form for this user
                 $existing = false;
                 $proceed = false;
 
-                    $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'));
-                    $sql = "SELECT * FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $result = $container->get(FinanceUpdateGateway::class)->selectBy(['gibbonFinanceInvoiceeID'=> $gibbonFinanceInvoiceeID, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'), 'status' => 'Pending']);
 
                 if ($result->rowCount() > 1) {
                     $page->addError(__('Your request failed due to a database error.'));
@@ -166,31 +146,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                     echo __('You have already submitted a form, which is awaiting processing by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been processed.');
                     echo '</div>';
                     $proceed = true;
+                    $values = $result->fetch();
                 } else {
-                    //Get user's data
+                    // Get user's data
+                    $result = $container->get(InvoiceeGateway::class)->getByID($gibbonFinanceInvoiceeID);
 
-                        $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
-                        $sql = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    if ($result->rowCount() != 1) {
+                    if (empty($result)) {
                         $page->addError(__('The specified record cannot be found.'));
                     } else {
                         $proceed = true;
+                        $values = $result;
                     }
                 }
 
                 if ($proceed == true) {
-
-                    //Let's go!
-					$values = $result->fetch();
-
+                    // Let's go!
 					$required = ($highestAction != 'Update Finance Data_any');
 
 					$form = Form::create('updateFinance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_financeProcess.php?gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID);
 
                     $form->addHiddenValue('address', $session->get('address'));
-					$form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
+					$form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID']) ? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
 
 					$form->addRow()->addHeading('Invoice To', __('Invoice To'));
 
@@ -199,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 					$row = $form->addRow();
 						$row->addLabel('invoiceTo', __('Send Invoices To'));
 						$row->addRadio('invoiceTo')
-							->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
+							->fromArray(['Family' => __('Family'), 'Company' => __('Company')])
 							->inline();
 
 					$form->toggleVisibilityByClass('paymentCompany')->onRadio('invoiceTo')->when('Company');
@@ -230,10 +206,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 						$row->addTextField('companyPhone')->maxLength(20);
 
 					// COMPANY FEE CATEGORIES
-					$sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
-					$resultFees = $pdo->executeQuery(array(), $sqlFees);
+                    $categories = $container->get(FinanceFeeCategoryGateway::class)->selectActiveFeeCategories();
 
-					if (!$resultFees || $resultFees->rowCount() == 0) {
+					if (!$categories || $categories->rowCount() == 0) {
 						$form->addHiddenValue('companyAll', 'Y');
 					} else {
 						$row = $form->addRow()->addClass('paymentCompany');
@@ -246,8 +221,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 						$row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))
 							->description(__('If the specified company is not paying all fees, which categories are they paying?'));
 						$row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
-							->fromResults($resultFees)
-							->fromArray(array('0001' => __('Other')))
+							->fromResults($categories)
+							->fromArray(['0001' => __('Other')])
 							->loadFromCSV($values);
 					}
 

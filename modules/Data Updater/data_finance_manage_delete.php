@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,17 +35,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     if ($gibbonFinanceInvoiceeUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-
-            $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
-            $sql = 'SELECT * FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+        $result = $container->get(FinanceUpdateGateway::class)->getByID($gibbonFinanceInvoiceeUpdateID);
+        
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            //Let's go!
-
+            // Let's go!
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_finance_manage_deleteProcess.php");
             $form->addHiddenValue('gibbonFinanceInvoiceeUpdateID', $gibbonFinanceInvoiceeUpdateID);
             echo $form->getOutput();

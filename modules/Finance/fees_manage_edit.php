@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Finance\FinanceFeeCategoryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.php') == false) {
     // Access denied
@@ -90,11 +91,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
                 $row->addLabel('description', __('Description'));
                 $row->addTextArea('description');
 
-            $data = array();
-            $sql = "SELECT gibbonFinanceFeeCategoryID AS value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
+             $categories = $container->get(FinanceFeeCategoryGateway::class)->selectActiveFeeCategories();
+
             $row = $form->addRow();
                 $row->addLabel('gibbonFinanceFeeCategoryID', __('Category'));
-                $row->addSearchSelect('gibbonFinanceFeeCategoryID')->fromQuery($pdo, $sql, $data)->fromArray(array('1' => __('Other')))->required()->placeholder();
+                $row->addSelect('gibbonFinanceFeeCategoryID')->fromResults($categories)->fromArray(['1' => __('Other')])->required()->placeholder();
+
 
             $row = $form->addRow();
                 $row->addLabel('fee', __('Fee'))

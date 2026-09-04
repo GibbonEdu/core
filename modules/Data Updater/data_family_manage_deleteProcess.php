@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -31,40 +33,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
+    // Proceed!
+    $partialFail = false;
+
     if ($gibbonFamilyUpdateID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-            $sql = 'SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+        $result = $container->get(FamilyUpdateGateway::class)->getByID($gibbonFamilyUpdateID);
+        
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
-            exit();
         }
 
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //Write to database
-            try {
-                $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-                $sql = 'DELETE FROM gibbonFamilyUpdate WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+        $deleted = $container->get(FamilyUpdateGateway::class)->delete($gibbonFamilyUpdateID);
+        $partialFail &= !$deleted;
 
-            $URLDelete = $URLDelete.'&return=success0';
-            header("Location: {$URLDelete}");
-        }
+        $URLDelete .= $partialFail ? '&return=warning1' : '&return=success0';
+        header("Location: {$URLDelete}");
     }
 }

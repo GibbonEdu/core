@@ -53,4 +53,18 @@ class MedicalConditionGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectAllMedicalConditions()
+    {
+        $sql = "SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name";
+
+        return $this->db()->select($sql);
+    }
+
+    public function selectAllMedicalConditionNames()
+    {
+        $sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
+
+        return $this->db()->select($sql);
+    }
 }

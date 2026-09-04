@@ -19,16 +19,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Data\Validator;
-use Gibbon\Domain\User\RoleGateway;
-use Gibbon\UI\Components\Alert;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 require_once '../../gibbon.php';
 
@@ -53,40 +56,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
-            $sql = 'SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $result = $container->get(PersonUpdateGateway::class)->getByID($gibbonPersonUpdateID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            try {
-                $data2 = array('gibbonPersonID' => $gibbonPersonID);
-                $sql2 = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                $result2 = $connection2->prepare($sql2);
-                $result2->execute($data2);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            $result2 = $container->get(UserGateway::class)->getByID($gibbonPersonID);
 
-            if ($result2->rowCount() != 1) {
+            if (empty($result2)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $row = $result->fetch();
-                $row2 = $result2->fetch();
+                $row = $result;
+                $row2 = $result2;
 
-                //Get categories
+                // Get categories
                 $staff = false;
                 $student = false;
                 $parent = false;
@@ -436,11 +421,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     //Notify tutors of change to privacy settings
                     if (isset($_POST['newprivacyOn'])) {
                         if ($_POST['newprivacyOn'] == 'on') {
+                            $resultDetail = $container->get(FormGroupGateway::class)->selectTutorsAndYearGroupByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
-                                $dataDetail = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-                                $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonYearGroupID FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
-                                $resultDetail = $connection2->prepare($sqlDetail);
-                                $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
 

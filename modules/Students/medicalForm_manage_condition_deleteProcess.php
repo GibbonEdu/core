@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Students\PersonMedicalConditionGateway;
+
 include '../../gibbon.php';
 
 //Check if gibbonPersonMedicalID and gibbonPersonMedicalConditionID specified
@@ -34,28 +36,19 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        //Proceed!
-        //Check if condition specified
+        // Proceed!
+        // Check if condition specified
         if ($gibbonPersonMedicalConditionID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
-                $sql = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            $result = $container->get(PersonMedicalConditionGateway::class)->getByID($gibbonPersonMedicalConditionID);
 
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                //Write to database
+                // Write to database
                 try {
                     $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
                     $sql = 'DELETE FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';

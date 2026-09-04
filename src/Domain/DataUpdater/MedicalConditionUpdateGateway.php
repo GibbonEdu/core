@@ -45,4 +45,18 @@ class MedicalConditionUpdateGateway extends QueryableGateway implements Scrubbab
 
     private static $scrubbableKey = ['gibbonPersonID', 'gibbonPersonMedical', 'gibbonPersonMedicalID'];
     private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> null];
+
+    public function selectMedicalConditionUpdatesByID($gibbonPersonMedicalUpdateID, $existing = false)
+    {
+        $data = ['gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID];
+        $sql = "SELECT * FROM gibbonPersonMedicalConditionUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
+
+        if ($existing) {
+            $sql .= " AND NOT gibbonPersonMedicalConditionID IS NULL ORDER BY gibbonPersonMedicalConditionUpdateID";
+        } else {
+            $sql .= " AND gibbonPersonMedicalConditionID IS NULL ORDER BY name";
+        }
+        
+        return $this->db()->select($sql, $data);
+    }
 }

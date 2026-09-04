@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,17 +35,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     if ($gibbonFamilyUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-
-            $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-            $sql = 'SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+            $result = $container->get(FamilyUpdateGateway::class)->getByID($gibbonFamilyUpdateID);
+            
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            //Let's go!
-            
+            // Let's go!
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_family_manage_deleteProcess.php");
             $form->addHiddenValue('gibbonFamilyUpdateID', $gibbonFamilyUpdateID);
             echo $form->getOutput();

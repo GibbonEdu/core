@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -28,7 +29,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
-use Gibbon\Http\Url;
+use Gibbon\Domain\Finance\FinanceFeeCategoryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -786,10 +787,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row->addTextField('companyPhone')->maxLength(20);
 
         // COMPANY FEE CATEGORIES
-        $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
-        $resultFees = $pdo->executeQuery(array(), $sqlFees);
+        $categories = $container->get(FinanceFeeCategoryGateway::class)->selectActiveFeeCategories();
 
-        if (!$resultFees || $resultFees->rowCount() == 0) {
+        if (!$categories || $categories->rowCount() == 0) {
             $form->addHiddenValue('companyAll', 'Y');
         } else {
             $row = $form->addRow()->addClass('paymentCompany');
@@ -803,7 +803,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
                 $row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))->description(__('If the specified company is not paying all fees, which categories are they paying?'));
                 $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
-                    ->fromResults($resultFees)
+                    ->fromResults($categories)
                     ->fromArray(array('0001' => __('Other')))
                     ->loadFromCSV($application);
         }

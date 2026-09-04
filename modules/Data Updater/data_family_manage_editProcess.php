@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 
 require_once '../../gibbon.php';
 
@@ -39,23 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-            $sql = 'SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
+        $result = $container->get(FamilyUpdateGateway::class)->getByID($gibbonFamilyUpdateID);
+        
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
             //Set values
-            $data = array();
+            $data = [];
             $set = '';
             if (isset($_POST['newnameAddressOn'])) {
                 if ($_POST['newnameAddressOn'] == 'on') {

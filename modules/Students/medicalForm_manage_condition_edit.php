@@ -20,9 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\MedicalGateway;
-use Gibbon\Services\Format;
+use Gibbon\Domain\School\MedicalConditionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_edit.php') == false) {
     // Access denied
@@ -70,11 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $row = $form->addRow();
                 $row->addLabel('personName', __('Student'));
                 $row->addTextField('personName')->setValue(Format::name('', $values['preferredName'], $values['surname']), 'Student')->required()->readonly();
-
-            $sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
+                
+            $results = $container->get(MedicalConditionGateway::class)->selectAllMedicalConditionNames();
+            
             $row = $form->addRow();
                 $row->addLabel('name', __('Condition Name'));
-                $row->addSearchSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
+                $row->addSelect('name')->fromResults($results)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('gibbonAlertLevelID', __('Risk'));

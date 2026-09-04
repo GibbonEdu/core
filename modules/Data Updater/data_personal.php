@@ -22,11 +22,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
-use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -36,12 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        //Proceed!
+        // Proceed!
         $page->breadcrumbs->add(__('Update Personal Data'));
 
         if ($highestAction == 'Update Personal Data_any') {
@@ -54,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             echo '</p>';
         }
 
-        $customResponces = array();
+        $customResponces = [];
         $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
         if ($session->get('organisationDBAEmail') != '' and $session->get('organisationDBAName') != '') {
             $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationDBAEmail')."'>".$session->get('organisationDBAName').'</a>');
@@ -79,27 +83,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_personal.php');
 
         if ($highestAction == 'Update Personal Data_any') {
-            $data = array();
-            $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
-        } else {
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = "(SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID
-                    FROM gibbonFamilyAdult
-                    JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                    JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                    JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
-                    WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
-                    AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full')
-                UNION (SELECT gibbonFamily.gibbonFamilyID, gibbonFamily.name as familyName, adult.surname, adult.preferredName, adult.gibbonPersonID
-                    FROM gibbonFamilyAdult
-                    JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                    JOIN gibbonFamilyAdult as familyAdult ON (familyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                    JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID)
-                    WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND adult.status='Full')
-                ORDER BY surname, preferredName";
+            $result = $container->get(UserGateway::class)->selectUserNamesByStatus();
+        } else {            
+            $result = $container->get(FamilyGateway::class)->selectAllUsersByAdultID($session->get('gibbonPersonID'));
+
         }
-        $result = $pdo->executeQuery($data, $sql);
-        $resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+        $resultSet = ($result && $result->rowCount() > 0) ? $result->fetchAll() : [];
 
         // Collect a list of people with formatted names, add username for Data_any access
         $people = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
@@ -109,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $carry[$id] .= ' ('.$person['username'].')';
             }
             return $carry;
-        }, array());
+        }, []);
 
         // Add self to people if not in the list
         if (array_key_exists($session->get('gibbonPersonID'), $people) == false) {
@@ -134,34 +123,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             echo __('Update Data');
             echo '</h2>';
 
-            //Check access to person
+            // Check access to person
             $checkCount = 0;
             $self = false;
             if ($highestAction == 'Update Personal Data_any') {
-
-                    $dataSelect = array();
-                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
+                $resultSelect = $container->get(UserGateway::class)->selectBy(['status' => 'Full'], ['surname', 'preferredName', 'gibbonPersonID']);
                 $checkCount = $resultSelect->rowCount();
                 $self = true;
             } else {
-
-                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-                    $resultCheck = $connection2->prepare($sqlCheck);
-                    $resultCheck->execute($dataCheck);
+                $resultCheck = $container->get(FamilyGateway::class)->selectFamilyIDAndNameByAdultID($session->get('gibbonPersonID'));
+                
                 while ($rowCheck = $resultCheck->fetch()) {
+                    $resultCheck2 = $container->get(FamilyChildGateway::class)->selectStudentsByFamilyID($rowCheck['value']);
 
-                        $dataCheck2 = array('gibbonFamilyID1' => $rowCheck['gibbonFamilyID'], 'gibbonFamilyID2' => $rowCheck['gibbonFamilyID']);
-                        $sqlCheck2 = "(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID1) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID2)";
-                        $resultCheck2 = $connection2->prepare($sqlCheck2);
-                        $resultCheck2->execute($dataCheck2);
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonPersonID == $rowCheck2['gibbonPersonID']) {
                             ++$checkCount;
                         }
-                        //Check for self
+                        // Check for self
                         if ($rowCheck2['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                             $self = true;
                         }
@@ -176,15 +155,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             if ($checkCount < 1) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                //Get categories
+                // Get categories
+                $resultSelect = $container->get(UserGateway::class)->getByID($gibbonPersonID, ['gibbonRoleIDAll', 'gibbonRoleIDPrimary']);
 
-                    $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-                    $sqlSelect = 'SELECT gibbonRoleIDAll, gibbonRoleIDPrimary FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                if ($resultSelect->rowCount() == 1) {
-                    $rowSelect = $resultSelect->fetch();
-                    //Get categories
+                if (!empty($resultSelect)) {
+                    $rowSelect = $resultSelect;
+                    // Get categories
                     $staff = $student = $parent = $other = false;
                     $roles = explode(',', $rowSelect['gibbonRoleIDAll']);
                     /** @var RoleGateway */
@@ -201,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 }
 
-                //Check if there is already a pending form for this user
+                // Check if there is already a pending form for this user
                 $existing = false;
                 $proceed = false;
                 $requiredFields = [];
@@ -241,11 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 }
 
-
-                    $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'));
-                    $sql = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $result = $container->get(PersonUpdateGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'), 'status' => 'Pending']);
 
                 if ($result->rowCount() > 1) {
                     $page->addError(__('Your request failed due to a database error.'));
@@ -261,13 +233,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $proceed = true;
                     }
                 } else {
-                    //Get user's data
+                    // Get user's data
+                    $result = $container->get(UserGateway::class)->getByID($gibbonPersonID);
 
-                        $data = array('gibbonPersonID' => $gibbonPersonID);
-                        $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    if ($result->rowCount() != 1) {
+                    if (empty($result)) {
                         $page->addError(__('The specified record cannot be found.'));
                     } else {
                         if ($highestAction != 'Update Personal Data_any') {
@@ -279,8 +248,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
 
                 if ($proceed == true) {
-                    //Let's go!
-                    $values = $result->fetch();
+                    // Let's go!
+                    $values = is_array($result) ? $result : $result->fetch();
 
                     // Closure: Check if a field is visible.
                     $isVisible = function ($name) use ($requiredFields) {
@@ -393,7 +362,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('emailAlternate', __('Alternate Email'));
                         $row->addEmail('emailAlternate');
 
-                    $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
+                    $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '') ? 'Yes' : '';
 
                     $row = $form->addRow()->onlyIf($isVisible('address1'));
                         $row->addLabel('showAddresses', __('Enter Personal Address?'));
@@ -425,18 +394,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     if ($values['address1'] != '' && $isVisible('address1')) {
 
-                            $dataAddress = array(
-                                'gibbonPersonID' => $values['gibbonPersonID'],
-                                'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%',
-                                'gibbonFamilyPeople' => implode(',', array_keys($people)),
-                            );
-                            $sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category
-                                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
-                                WHERE status='Full' AND address1 LIKE :addressMatch
-                                AND FIND_IN_SET(gibbonPersonID, :gibbonFamilyPeople) AND NOT gibbonPersonID=:gibbonPersonID
-                                ORDER BY surname, preferredName";
-                            $resultAddress = $connection2->prepare($sqlAddress);
-                            $resultAddress->execute($dataAddress);
+                        $resultAddress = $container->get(UserGateway::class)->selectAddressByFamilyAndPersonID($values['gibbonPersonID'], '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%', implode(',', array_keys($people)));
 
                         if ($resultAddress->rowCount() > 0) {
                             $addressCount = 0;

@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -36,22 +38,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
+        $result = $container->get(MedicalUpdateGateway::class)->getByID($gibbonPersonMedicalUpdateID);
+        
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Write to database
+            // Write to database
             try {
                 $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
                 $sql = 'DELETE FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';

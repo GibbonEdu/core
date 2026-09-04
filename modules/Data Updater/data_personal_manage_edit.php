@@ -19,12 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 //Module includes
 include './modules/User Admin/moduleFunctions.php';
@@ -47,22 +49,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     if ($gibbonPersonUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
+        $result = $container->get(PersonUpdateGateway::class)->getUserDetailsByUpdateID($gibbonPersonUpdateID);
 
-            $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
-            $sql = 'SELECT gibbonPerson.* FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
-            $sql = "SELECT gibbonPersonUpdate.* FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID";
-            $newResult = $pdo->executeQuery($data, $sql);
+            $newResult = $container->get(PersonUpdateGateway::class)->getByID($gibbonPersonUpdateID);
 
-            //Let's go!
-            $oldValues = $result->fetch();
-            $newValues = $newResult->fetch();
+            // Let's go!
+            $oldValues = $result;
+            $newValues = $newResult;
 
             /** @var RoleGateway */
             $roleGateway = $container->get(RoleGateway::class);
@@ -187,10 +183,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $newValues['email'] = filter_var(trim($newValues['email']), FILTER_SANITIZE_EMAIL);
                     $uniqueEmailAddress = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'uniqueEmailAddress');
                     if ($uniqueEmailAddress == 'Y') {
-                        $data = array('gibbonPersonID' => $oldValues['gibbonPersonID'], 'email' => $newValues['email']);
-                        $sql = "SELECT COUNT(*) FROM gibbonPerson WHERE email=:email AND gibbonPersonID<>:gibbonPersonID";
-                        $result = $pdo->executeQuery($data, $sql);
-                        $isNonUnique = ($result && $result->rowCount() == 1)? $result->fetchColumn(0) > 0 : false;
+                        $result = $container->get(UserGateway::class)->selectCountOfMatchingEmailAddress($oldValues['gibbonPersonID'], $newValues['email']);
+
+                        $isNonUnique = ($result && $result->rowCount() == 1) ? $result->fetchColumn(0) > 0 : false;
                     }
                 }
 

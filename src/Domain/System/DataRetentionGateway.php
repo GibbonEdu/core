@@ -43,7 +43,7 @@ use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 use Gibbon\Domain\IndividualNeeds\INArchiveGateway;
 use Gibbon\Domain\Students\FirstAidFollowupGateway;
-use Gibbon\Domain\Students\MedicalConditionGateway;
+use Gibbon\Domain\Students\PersonMedicalConditionGateway;
 use Gibbon\Domain\Staff\StaffApplicationFormGateway;
 use Gibbon\Domain\Students\ApplicationFormFileGateway;
 use Gibbon\Domain\Staff\StaffApplicationFormFileGateway;
@@ -88,7 +88,7 @@ class DataRetentionGateway extends QueryableGateway
                 'context' => ['Student'],
                 'gateways' => [
                     MedicalGateway::class,
-                    MedicalConditionGateway::class,
+                    PersonMedicalConditionGateway::class,
                     MedicalUpdateGateway::class,
                     MedicalConditionUpdateGateway::class,
                     FirstAidGateway::class,

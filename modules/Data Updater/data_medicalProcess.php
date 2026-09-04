@@ -20,10 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\FileUploader;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Contracts\Filesystem\FileHandler;
@@ -57,41 +61,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             if ($highestAction == 'Update Medical Data_any') {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_medical.php&gibbonPersonID='.$gibbonPersonID;
 
-                try {
-                    $dataSelect = array();
-                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                    $URL .= "&return=error2$params";
-                    header("Location: {$URL}");
-                    exit();
-                }
+                $resultSelect = $container->get(UserGateway::class)->selectBy(['status' => 'Full'], ['surname', 'preferredName', 'gibbonPersonID']);
+
                 $checkCount = $resultSelect->rowCount();
             } else {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
+                
+                $resultCheck = $container->get(FamilyGateway::class)->selectFamilyIDAndNameByAdultID($session->get('gibbonPersonID'));
 
-                try {
-                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-                    $resultCheck = $connection2->prepare($sqlCheck);
-                    $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                    $URL .= "&return=error2$params";
-                    header("Location: {$URL}");
-                    exit();
-                }
                 while ($rowCheck = $resultCheck->fetch()) {
-                    try {
-                        $dataCheck2 = array('gibbonFamilyID' => $rowCheck['gibbonFamilyID'], 'gibbonFamilyID2' => $rowCheck['gibbonFamilyID']);
-                        $sqlCheck2 = '(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID2)';
-                        $resultCheck2 = $connection2->prepare($sqlCheck2);
-                        $resultCheck2->execute($dataCheck2);
-                    } catch (PDOException $e) {
-                        $URL .= "&return=error2$params";
-                        header("Location: {$URL}");
-                        exit();
-                    }
+                    $resultCheck2 = $container->get(FamilyChildGateway::class)->selectStudentsByFamilyID($rowCheck['value']);
+
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonPersonID == $rowCheck2['gibbonPersonID']) {
                             ++$checkCount;

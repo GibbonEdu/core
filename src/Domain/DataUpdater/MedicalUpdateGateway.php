@@ -68,7 +68,7 @@ class MedicalUpdateGateway extends QueryableGateway implements ScrubbableGateway
 
     public function selectMedicalConditionUpdatesByID($gibbonPersonMedicalUpdateID)
     {
-        $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
+        $data = ['gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID];
         $sql = "SELECT gibbonPersonMedicalConditionUpdate.*, gibbonAlertLevel.name AS risk, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalConditionUpdate.name END) as name 
                 FROM gibbonPersonMedicalConditionUpdate
                 JOIN gibbonAlertLevel ON (gibbonPersonMedicalConditionUpdate.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID)
@@ -77,5 +77,13 @@ class MedicalUpdateGateway extends QueryableGateway implements ScrubbableGateway
                 ORDER BY gibbonPersonMedicalConditionUpdate.name";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getMedicalDetailsByUpdateID($gibbonPersonMedicalUpdateID)
+    {
+        $data = ['gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID];
+        $sql = "SELECT gibbonPersonMedical.* FROM gibbonPersonMedicalUpdate LEFT JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID) WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }

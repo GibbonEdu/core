@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -41,22 +42,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     if ($gibbonFamilyUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
+        $result = $container->get(FamilyUpdateGateway::class)->getFamilyByFamilyUpdateID($gibbonFamilyUpdateID);
 
-            $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-            $sql = 'SELECT gibbonFamily.* FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-			$data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-			$sql = 'SELECT gibbonFamilyUpdate.* FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
-			$newResult = $pdo->executeQuery($data, $sql);
+            $newResult = $container->get(FamilyUpdateGateway::class)->getFamilyUpdateByFamilyUpdateID($gibbonFamilyUpdateID);
 
             //Let's go!
-			$oldValues = $result->fetch();
-			$newValues = $newResult->fetch();
+			$oldValues = $result;
+			$newValues = $newResult;
 			
 			// Provide a link back to edit the associated record
             if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php')) {

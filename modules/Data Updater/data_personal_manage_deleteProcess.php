@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 include '../../gibbon.php';
 
@@ -38,22 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
-            $sql = 'SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $result = $container->get(PersonUpdateGateway::class)->getByID($gibbonPersonUpdateID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Write to database
+            // Write to database
             try {
                 $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
                 $sql = 'DELETE FROM gibbonPersonUpdate WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';

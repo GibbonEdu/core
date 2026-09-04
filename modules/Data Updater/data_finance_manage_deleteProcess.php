@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -31,27 +33,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
+    // Proceed!
     if ($gibbonFinanceInvoiceeUpdateID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
-            $sql = 'SELECT * FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
+        $result = $container->get(FinanceUpdateGateway::class)->getByID($gibbonFinanceInvoiceeUpdateID);
+        
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Write to database
+            // Write to database
             try {
                 $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
                 $sql = 'DELETE FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
