@@ -83,10 +83,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'] ?? '';
             $questions = $_POST['questions'] ?? '';
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
-            $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
-            $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
-            $officialName = $validator->sanitizePersonName($_POST['officialName'] ?? '');
+            $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+            $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+            $preferredName = $validator->sanitizeName($_POST['preferredName'] ?? '');
+            $officialName = $validator->sanitizeName($_POST['officialName'] ?? '');
             $nameInCharacters = $_POST['nameInCharacters'] ?? '';
             $gender = $_POST['gender'] ?? '';
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;

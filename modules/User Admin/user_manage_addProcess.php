@@ -43,10 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 } else {
     //Proceed!
     $title = $_POST['title'] ?? '';
-    $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
-    $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
-    $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
-    $officialName = $validator->sanitizePersonName($_POST['officialName'] ?? '');
+    $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+    $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+    $preferredName = $validator->sanitizeName($_POST['preferredName'] ?? '');
+    $officialName = $validator->sanitizeName($_POST['officialName'] ?? '');
     $nameInCharacters = $_POST['nameInCharacters'] ?? '';
     $gender = $_POST['gender'] ?? '';
     $username = trim($_POST['username'] ?? '');

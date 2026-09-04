@@ -30,9 +30,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 } else {
     $validator = $container->get(Validator::class);
     $gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '003';
-    $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
-    $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
-    $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
+    $preferredName = $validator->sanitizeName($_POST['preferredName'] ?? '');
+    $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+    $surname = $validator->sanitizeName($_POST['surname'] ?? '');
 
     if (empty($gibbonRoleID) || $gibbonRoleID == 'Please select...' || empty($preferredName) || empty($firstName) || empty($surname)) {
         echo '0';

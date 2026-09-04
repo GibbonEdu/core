@@ -75,10 +75,10 @@ if ($proceed == false) {
     $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'] ?? '';
     $questions = $_POST['questions'] ?? '';
     $gibbonPersonID = !empty($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : null;
-    $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
-    $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
-    $preferredName = $validator->sanitizePersonName($_POST['preferredName'] ?? '');
-    $officialName = $validator->sanitizePersonName($_POST['officialName'] ?? '');
+    $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+    $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+    $preferredName = $validator->sanitizeName($_POST['preferredName'] ?? '');
+    $officialName = $validator->sanitizeName($_POST['officialName'] ?? '');
     $nameInCharacters = $_POST['nameInCharacters'] ?? '';
     $gender = $_POST['gender'] ?? 'Unspecified';
     $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;

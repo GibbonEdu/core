@@ -62,8 +62,8 @@ if ($proceed == false) {
     }
 
     //Proceed!
-    $surname = $validator->sanitizePersonName($_POST['surname'] ?? '');
-    $firstName = $validator->sanitizePersonName($_POST['firstName'] ?? '');
+    $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+    $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
     $preferredName = $firstName;
     $officialName = $firstName.' '.$surname;
     $gender = $_POST['gender'] ?? '';

@@ -245,17 +245,6 @@ class Validator
     }
 
     /**
-     * Sanitize a person name so that it may only contain naming conventions
-     *
-     * @param string $value
-     * @return string
-     */
-    public function sanitizePersonName(string $value)
-    {
-        return preg_replace('/[^\p{L}\p{M}\s\'\-\.\,\(\)]/u', '', trim($value));
-    }
-
-    /**
      * Sanitize a string so that it may only contain numeric values.
      *
      * @param string $value
@@ -264,6 +253,17 @@ class Validator
     public function sanitizeNumeric(string $value, bool $allowDecimals = false)
     {
         return preg_replace($allowDecimals ? '/[^0-9,.]/' : '/[^0-9]/', '', $value);
+    }
+
+    /**
+     * Sanitize a name so that it may only contain naming conventions (Unicode letters, accents, numbers, spaces, hyphens, apostrophes, periods, commas, and parentheses).
+     *
+     * @param string $value
+     * @return string
+     */
+    public function sanitizeName(string $value)
+    {
+        return preg_replace('/[^\p{L}\p{M}\d\s\'\-\.\,\(\)]/u', '', trim($value));
     }
 
     /**

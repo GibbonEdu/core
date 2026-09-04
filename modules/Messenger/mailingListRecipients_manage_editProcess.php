@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
 
     $data = [
-        'surname'                           => $validator->sanitizePersonName($_POST['surname'] ?? ''),
-        'preferredName'                     => $validator->sanitizePersonName($_POST['preferredName'] ?? ''),
+        'surname'                           => $validator->sanitizeName($_POST['surname'] ?? ''),
+        'preferredName'                     => $validator->sanitizeName($_POST['preferredName'] ?? ''),
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'organisation'                      => $_POST['organisation'] ?? '',
         'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),

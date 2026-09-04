@@ -690,6 +690,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '<li><b>'.__('Family Name')."</b>: $familyName </li>";
                             echo '<li><b>'.__('Roles').'</b>: '.__('System has tried to assign parents "Parent" role access if they did not already have it.').'</li>';
                             echo '</ul>';
+
+                            // Update the application information with the linked family ID, when connecting Sibling Applications 
+                            $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonFamilyID' => $values['gibbonFamilyID']);
+                            $sql = 'UPDATE gibbonApplicationForm SET gibbonFamilyID=:gibbonFamilyID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                            $resultUpdateFamilyID = $pdo->executeQuery($data, $sql);
                         }
                     } else {
                         //CREATE A NEW FAMILY
