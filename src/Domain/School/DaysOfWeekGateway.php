@@ -53,5 +53,11 @@ class DaysOfWeekGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
-    
+    public function selectDaysOfWeek()
+    {
+        $sql = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
+        
+        return $this->db()->select($sql);
+
+    }
 }

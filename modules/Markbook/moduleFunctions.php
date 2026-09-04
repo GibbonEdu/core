@@ -101,7 +101,15 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         if (isset($currentTerm['gibbonSchoolYearTermID'])) {
             $selectTerm = $currentTerm['gibbonSchoolYearTermID'];
         }
+        $result = $container->get(SchoolYearTermGateway::class)->selectSchoolYearTermName($session->get('gibbonSchoolYearID'));
+        $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
+        $col->addContent(__('Term').':')->prepend('&nbsp;&nbsp;');
+        $col->addSelect('gibbonSchoolYearTermID')
+            ->fromArray(array('-1' => __('All Terms')))
+            ->fromArray($terms)
+            ->selected($selectTerm)
+            ->setClass('shortWidth');
     }
     
     $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));

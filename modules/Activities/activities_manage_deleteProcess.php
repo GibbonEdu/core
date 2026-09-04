@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityGateway;
+
 include '../../gibbon.php';
 
 $gibbonActivityID = $_POST['gibbonActivityID']  ?? '';
@@ -36,17 +38,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $values = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        if ($result->rowCount() != 1) {
+        if (empty($values)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {

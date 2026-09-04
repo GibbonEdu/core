@@ -40,7 +40,8 @@ class ActivityStaffGateway extends QueryableGateway
 
     private static $searchableColumns = ['surname', 'preferredName'];
 
-    public function selectActivityStaff($gibbonActivityID) {
+    public function selectActivityStaff($gibbonActivityID) 
+    {
         $select = $this
             ->newSelect()
             ->cols(['preferredName, surname, gibbonActivityStaff.*'])
@@ -123,18 +124,21 @@ class ActivityStaffGateway extends QueryableGateway
 
     public function selectStaffByActivity($gibbonActivityID) {
         $gibbonActivityID = is_array($gibbonActivityID) ? $gibbonActivityID : [$gibbonActivityID];
-        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $data = ['gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d')];
         $sql = "SELECT gibbonActivity.*, gibbonActivityStaff.gibbonPersonID, gibbonActivityStaff.role 
             FROM gibbonActivity 
             JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) 
+            JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonActivityStaff.gibbonPersonID)
             WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID 
             AND gibbonActivityStaff.role='Organiser' AND active='Y' 
+            AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)
             ORDER BY name";
 
         return $this->db()->select($sql, $data);
     }
 
-    public function selectActivityOrganiserByPerson($gibbonActivityID, $gibbonPersonID) {
+    public function selectActivityOrganiserByPerson($gibbonActivityID, $gibbonPersonID) 
+    {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID];
         $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND active='Y' ORDER BY name";
 
@@ -183,11 +187,28 @@ class ActivityStaffGateway extends QueryableGateway
         ]);
     }
 
-    public function insertActivityStaff($gibbonActivityID, $gibbonPersonID, $role) {
+    public function insertActivityStaff($gibbonActivityID, $gibbonPersonID, $role) 
+    {
         return $this->insert([
             'gibbonPersonID' 	=> $gibbonPersonID,
             'gibbonActivityID' 	=> $gibbonActivityID,
             'role'				=> $role
         ]);
     }
+
+   public function selectActivityByStaff($gibbonPersonID) 
+   {
+    $data = ['gibbonPersonID' => $gibbonPersonID];
+    $sql = "SELECT gibbonActivity.gibbonActivityID AS value, name, programStart FROM gibbonActivityStaff JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID = gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND (gibbonActivityStaff.role='Organiser' OR gibbonActivityStaff.role='Assistant' OR gibbonActivityStaff.role='Coach') ORDER BY name, programStart";
+    
+    return $this->db()->select($sql, $data);
+   }
+
+   public function selectStaffRoleByActivity($gibbonPersonID, $gibbonActivityID ) 
+   {
+    $dataCheck = ['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID];
+    $sqlCheck = "SELECT role FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID";
+    
+    return $this->db()->select($sqlCheck, $dataCheck);
+   }
 }

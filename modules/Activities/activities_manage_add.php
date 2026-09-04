@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
@@ -105,10 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $row->addCheckboxSchoolYearTerm('gibbonSchoolYearTermIDList', $session->get('gibbonSchoolYearID'))->checkAll();
     } else {
         $listingStart = $listingEnd = $programStart = $programEnd = new DateTime();
+        $result = $container->get(SchoolYearTermGateway::class)->selectBySchoolYear($session->get('gibbonSchoolYearID'));
 
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
-        $sql = "SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND lastDay>=:today ORDER BY sequenceNumber";
-        $result = $pdo->executeQuery($data, $sql);
         if ($result->rowCount() > 0) {
             if ($currentTerm = $result->fetch()) {
                 $listingStart = (new DateTime($currentTerm['lastDay']))->modify('-2 weeks');
@@ -206,13 +206,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $form->addRow()->addHeading('Time Slots', __('Time Slots'));
 
     //Block template
-    $sqlWeekdays = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
+    
+    $result = $container->get(DaysOfWeekGateway::class)->selectDaysOfWeek();
 
     $slotBlock = $form->getFactory()->createTable()->setClass('blank');
         $row = $slotBlock->addRow();
             $row->addLabel('gibbonDaysOfWeekID', __('Slot Day'));
             $row->addSelect('gibbonDaysOfWeekID')
-                ->fromQuery($pdo, $sqlWeekdays)
+                ->fromResults($result)
                 ->placeholder()
                 ->addClass('floatLeft');
 

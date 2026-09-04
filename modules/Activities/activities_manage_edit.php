@@ -22,10 +22,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityPhotoGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
@@ -232,13 +233,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $form->addRow()->addHeading('Time Slots', __('Time Slots'));
 
             //Block template
-            $sqlWeekdays = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
+            $result = $container->get(DaysOfWeekGateway::class)->selectDaysOfWeek();
 
             $slotBlock = $form->getFactory()->createTable()->setClass('blank');
                 $row = $slotBlock->addRow();
                     $row->addLabel('gibbonDaysOfWeekID', __('Slot Day'));
                     $row->addSelect('gibbonDaysOfWeekID')
-                        ->fromQuery($pdo, $sqlWeekdays)
+                        ->fromResults($result)
                         ->placeholder()
                         ->addClass('floatLeft');
 
