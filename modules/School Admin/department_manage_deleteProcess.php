@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Departments\DepartmentResourceGateway;
+
 include '../../gibbon.php';
 
 $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
@@ -71,6 +74,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 header("Location: {$URL}");
                 exit();
             }
+
+            // Delete related department resources and files
+            $fileHandler = $container->get(FileHandler::class); 
+            $departmentResourceGateway = $container->get(DepartmentResourceGateway::class);             
+            $resourceResult = $departmentResourceGateway->selectBy(['gibbonDepartmentID' => $gibbonDepartmentID, 'type' => 'File'], ['gibbonDepartmentResourceID'])->fetchAll();
+
+            foreach ($resourceResult as $resource) {
+                $resourceDeleted = $fileHandler->deleteFile('gibbonDepartmentResource', $resource['gibbonDepartmentResourceID'], 'url');
+            }
+            
+            $deleted = $departmentResourceGateway->deleteWhere(['gibbonDepartmentID' => $gibbonDepartmentID]);          
+             
+            $fileDeleted = $fileHandler->deleteFile('gibbonDepartment', $gibbonDepartmentID, 'logo');
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

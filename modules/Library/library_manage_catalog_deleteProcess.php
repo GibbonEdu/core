@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+
 include '../../gibbon.php';
 
 include './moduleFunctions.php';
@@ -57,6 +59,8 @@ if (isActionAccessible($guid, $connection2, $queryArr['q']) == false) {
         }
 
         //Success 0
+        $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonLibraryItem', $queryArr['gibbonLibraryItemID'], 'imageLocation');
+
         $queryArr['q'] = "/modules/".getModuleName($_POST['address'])."/library_manage_catalog.php";
         $queryArr['return'] = "success0";
         header("Location: " . $baseURL . http_build_query($queryArr));

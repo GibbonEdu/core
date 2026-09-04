@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Activities\ActivityPhotoGateway;
+
 include '../../gibbon.php';
 
 $gibbonActivityID = $_POST['gibbonActivityID']  ?? '';
@@ -50,6 +53,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            // Delete file attachments for all activity photos before deleting the activity
+            $activityPhotos = $container->get(ActivityPhotoGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID], ['gibbonActivityPhotoID'])->fetchAll();
+            
+            foreach ($activityPhotos as $photo) {
+                $photoDeleted = $container->get(FileHandler::class)->deleteFile('gibbonActivityPhoto', $photo['gibbonActivityPhotoID'], 'filePath');
+            }
+
             //Write to database
             try {
                 $data = array('gibbonActivityID' => $gibbonActivityID);

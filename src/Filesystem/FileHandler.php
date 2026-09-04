@@ -197,7 +197,7 @@ class FileHandler implements FileHandlerInterface
         $this->db->commit();
 
         // Delete physical file only after successful commit (if no other pointers existed)
-        if ($pointerCount == 0 &&!empty($absolutePath) && file_exists($absolutePath)) {
+        if ($pointerCount == 0 && !empty($absolutePath) && file_exists($absolutePath)) {
             unlink($absolutePath);
         }
         

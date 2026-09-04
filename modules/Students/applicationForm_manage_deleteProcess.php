@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Students\ApplicationFormFileGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
@@ -68,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 exit();
             }
 
-            //Attempt to write logo
+            //Attempt to write log
             $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Students', $session->get('gibbonPersonID'), 'Application Form - Delete', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'applicationFormContents' => serialize($row)), $_SERVER['REMOTE_ADDR']);
 
 
@@ -101,6 +103,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $personalDocumentGateway->deletePersonalDocuments('gibbonApplicationForm', $gibbonApplicationFormID);
             $personalDocumentGateway->deletePersonalDocuments('gibbonApplicationFormParent1', $gibbonApplicationFormID);
             $personalDocumentGateway->deletePersonalDocuments('gibbonApplicationFormParent2', $gibbonApplicationFormID);
+
+            // Delete file attachments for all application form files
+            $appFiles = $container->get(ApplicationFormFileGateway::class)->selectBy(['gibbonApplicationFormID' => $gibbonApplicationFormID], ['gibbonApplicationFormFileID'])->fetchAll();
+
+            foreach ($appFiles as $appFile) {
+                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonApplicationFormFile', $appFile['gibbonApplicationFormFileID'], 'path');
+            }
+
+            //Delete files, but don't return error if it fails
+            $data = ['gibbonApplicationFormID' => $gibbonApplicationFormID];
+            $sql = 'DELETE FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

@@ -19,7 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Markbook\MarkbookEntryGateway;
 
 require_once '../../gibbon.php';
 
@@ -55,6 +57,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
         }
 
         $URL .= '&return=success0';
+
+        // Delete the file attachment for this entry response
+        $entryRow = $container->get(MarkbookEntryGateway::class)->selectBy(['gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID], ['gibbonMarkbookEntryID'])->fetch();
+        
+        if (!empty($entryRow)) {
+            $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonMarkbookEntry', $entryRow['gibbonMarkbookEntryID'], 'response');
+        }
+
         //Success 0
         header("Location: {$URL}");
     }

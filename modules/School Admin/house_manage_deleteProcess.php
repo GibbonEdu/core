@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+
 include '../../gibbon.php';
 
 $gibbonHouseID = $_POST['gibbonHouseID'] ?? '';
@@ -61,6 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                 header("Location: {$URL}");
                 exit();
             }
+
+            $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonHouse', $gibbonHouseID, 'logo');
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

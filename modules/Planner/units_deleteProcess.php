@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
@@ -111,6 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
                         header("Location: {$URL}");
                         exit();
                     }
+                    
+                    $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonUnit', $gibbonUnitID, 'attachment');
 
                     $URLDelete = $URLDelete.'&return=success0';
                     header("Location: {$URLDelete}");

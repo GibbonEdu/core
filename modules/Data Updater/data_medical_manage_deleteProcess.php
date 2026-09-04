@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\DataUpdater\MedicalConditionUpdateGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
@@ -51,6 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            // Fetch child condition update IDs before deleting the parent record
+            $conditionUpdates = $container->get(MedicalConditionUpdateGateway::class)->selectBy(['gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID], ['gibbonPersonMedicalConditionUpdateID'])->fetchAll();
+
             //Write to database
             try {
                 $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
@@ -61,6 +67,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
+            }
+            
+            // Delete file attachments for all condition updates linked to this medical update
+            foreach ($conditionUpdates as $conditionUpdate) {
+                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPersonMedicalConditionUpdate', $conditionUpdate['gibbonPersonMedicalConditionUpdateID'], 'attachment');
             }
 
             $URLDelete = $URLDelete.'&return=success0';

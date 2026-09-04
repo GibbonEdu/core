@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Gibbon system-wide includes
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Http\Url;
 
 include './gibbon.php';
@@ -47,6 +48,8 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID'))
         header("Location: {$URL->withReturn('error2')}");
     } else {
         //UPDATE
+        $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
+
         try {
             $data = array('gibbonPersonID' => $gibbonPersonID);
             $sql = "UPDATE gibbonPerson SET image_240='' WHERE gibbonPersonID=:gibbonPersonID";

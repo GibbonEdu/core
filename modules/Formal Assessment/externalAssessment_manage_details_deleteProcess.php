@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -20,6 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 
 include '../../gibbon.php';
 
@@ -79,6 +80,8 @@ if ($gibbonPersonID == '' or $gibbonExternalAssessmentStudentID == '') { echo 'F
                     header("Location: {$URL}");
                     exit();
                 }
+
+                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonExternalAssessmentStudent', $gibbonExternalAssessmentStudentID, 'attachment');
 
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");

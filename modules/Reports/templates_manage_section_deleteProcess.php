@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\System\FilePointerGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 
@@ -53,6 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
         exit;
     }
 
+    // Delete any file attachments associated with this section (dynamic config columns)
+    $pointers = $container->get(FilePointerGateway::class)->selectBy(['foreignTable' => 'gibbonReportTemplateSection', 'foreignTableID' => $gibbonReportTemplateSectionID])->fetchAll();
+
+    foreach ($pointers as $pointer) {
+        $fileDeleted = $container->get(FileHandler::class)->deleteFile($pointer['foreignTable'], $pointer['foreignTableID'], $pointer['foreignColumn']);
+    }
+    
     $deleted = $templateSectionGateway->delete($gibbonReportTemplateSectionID);
 
     $URL .= !$deleted

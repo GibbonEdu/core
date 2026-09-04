@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Departments\DepartmentResourceGateway;
 
 include '../../gibbon.php';
@@ -72,6 +73,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                     header("Location: {$URL}");
                     exit();
                 }
+
+                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonDepartmentResource', $gibbonDepartmentResourceID, 'url');
 
                 $URL .= '&return=success0';
                 header("Location: {$URL}");

@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentEntryGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once '../../gibbon.php';
 
@@ -55,6 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         }
 
         $URL .= '&return=success0';
+
+        $entryRow = $container->get(InternalAssessmentEntryGateway::class)->selectBy(['gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID], ['gibbonInternalAssessmentEntryID'])->fetch();
+
+        if (!empty($entryRow)) {
+            $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonInternalAssessmentEntry', $entryRow['gibbonInternalAssessmentEntryID'], 'response');
+        }
+
         //Success 0
         header("Location: {$URL}");
     }

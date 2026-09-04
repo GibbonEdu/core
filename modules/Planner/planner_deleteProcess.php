@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
+
 include '../../gibbon.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
@@ -85,7 +88,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                 $URL .= "&return=error2$params";
                 header("Location: {$URL}");
             } else {
-                //Write to database
+                //Write to database          
+
+                // Delete file attachments for all homework entries before deleting the planner entry
+                $homeworkRows = $container->get(PlannerEntryHomeworkGateway::class)->selectBy(['gibbonPlannerEntryID' => $gibbonPlannerEntryID], ['gibbonPlannerEntryHomeworkID'])->fetchAll();
+
+                foreach ($homeworkRows as $homework) {
+                    $homeWorkFileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPlannerEntryHomework', $homework['gibbonPlannerEntryHomeworkID'], 'location');
+                }
+                
                 try {
                     $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                     $sql = 'DELETE FROM gibbonPlannerEntryOutcome WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';

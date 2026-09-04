@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Staff\StaffApplicationFormFileGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 include '../../gibbon.php';
@@ -61,6 +63,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
+            }
+
+            // Delete file attachments for all staff application form files
+            $staffAppFiles = $container->get(StaffApplicationFormFileGateway::class)->selectBy(['gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID], ['gibbonStaffApplicationFormFileID'])->fetchAll();
+
+            foreach ($staffAppFiles as $staffAppFile) {
+                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonStaffApplicationFormFile', $staffAppFile['gibbonStaffApplicationFormFileID'], 'path');
             }
 
             //Delete files, but don't return error if it fails

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -73,6 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 header("Location: {$URL}");
                 exit();
             }
+
+            $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPlannerEntryHomework', $gibbonPlannerEntryHomeworkID, 'location');
 
             $URL .= '&return=success0';
             header("Location: {$URL}");
