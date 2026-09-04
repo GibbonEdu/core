@@ -20,4 +20,4 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 // Gibbon system-wide include
-require_once './gibbon.php';
+require_once __DIR__ . '/gibbon.php';

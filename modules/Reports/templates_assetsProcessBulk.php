@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //use Gibbon\Data\Validator;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $action = $_POST['action'] ?? '';
 $search = $_POST['search'] ?? '';

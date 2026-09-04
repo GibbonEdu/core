@@ -25,7 +25,7 @@ use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $pageNumber = $_REQUEST['page'] ?? 1;
 $source = $_REQUEST['source'] ?? '';

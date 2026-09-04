@@ -26,7 +26,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML', 'teacherNotes' => 'HTML', 'homeworkDetails' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
 

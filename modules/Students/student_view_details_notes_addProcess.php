@@ -30,7 +30,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['note' => 'HTML']);
 

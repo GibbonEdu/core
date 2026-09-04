@@ -322,6 +322,7 @@ class ClassesLayer extends AbstractTimetableLayer
 
         $canViewClasses = Access::allows('Departments', 'department_course_class');
         $canAddChanges = Access::allows('Timetable', 'spaceChange_manage_add');
+        $canEditLocation = Access::allows('Timetable', 'tt_space_edit');
         $canEditTTDays = Access::allows('Timetable Admin', 'tt_edit_day_edit_class_edit');
 
         foreach ($classes as $class) {
@@ -373,10 +374,10 @@ class ClassesLayer extends AbstractTimetableLayer
                 ]);
             }
 
-            if ($canEditTTDays) {
+            if ($canEditTTDays || $canEditLocation) {
                 $item->set('secondaryAction', [
                     'name'      => 'edit',
-                    'label'     => __('Edit Class in Period'),
+                    'label'     => $canEditLocation ? __('Edit Facility'): __('Edit Class in Period'),
                     'url'       => Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_edit')->withQueryParams(['gibbonSchoolYearID' => $context->get('gibbonSchoolYearID'), 'gibbonTTID' => $class['gibbonTTID'], 'gibbonTTDayID' => $class['gibbonTTDayID'], 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'gibbonTTColumnRowID' => $class['gibbonTTColumnRowID'], 'gibbonCourseClassID' => $class['gibbonCourseClassID']]),
                     'icon'      => 'edit',
                     'iconClass' => 'text-gray-600 hover:text-gray-800',

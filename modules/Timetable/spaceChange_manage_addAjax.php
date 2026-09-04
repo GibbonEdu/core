@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\School\FacilityGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php';
 

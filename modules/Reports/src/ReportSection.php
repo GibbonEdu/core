@@ -48,7 +48,7 @@ class ReportSection
     {
         $sources = is_string($sources)
             ? json_decode($sources) ?? []
-            : $source ?? [];
+            : $sources ?? [];
 
         foreach ($sources as $alias => $className) {
             $this->addDataSource($alias, $className);

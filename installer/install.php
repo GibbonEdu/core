@@ -27,7 +27,7 @@ use Gibbon\Install\Http\InstallController;
 use Gibbon\Install\Installer;
 
 include '../version.php';
-include '../gibbon.php';
+require_once __DIR__ . '/../gibbon.php';
 
 //Module includes
 require_once '../modules/System Admin/moduleFunctions.php';

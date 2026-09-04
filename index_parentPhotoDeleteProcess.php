@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = Url::fromRoute();

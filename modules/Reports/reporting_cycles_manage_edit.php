@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -110,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     // Add existing milestones
     $milestones = json_decode($values['milestones'], true);
-    foreach ($milestones ?? [] as $index => $milestone) {
+    foreach ($milestones as $index => $milestone) {
         $milestone['milestoneDate'] = $milestone['milestoneDate'];
         $customBlocks->addBlock($index, $milestone);
     }

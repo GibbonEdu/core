@@ -24,7 +24,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\SettingGateway;
 
 // Gibbon system-wide includes
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 $result = ['count' => 0, 'alarm' => false, 'timeout' => 'expire'];
 

@@ -51,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/pettyCash.php') ==
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', '/modules/Finance/pettyCash.php');
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred name, surname, username'));
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/pettyCash.php') ==
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($session, 'Clear Filters', ['view', 'sidebar']);
+        $row->addSearchSubmit($session, 'Clear Filters', ['view', 'sidebar', 'gibbonSchoolYearID']);
 
     echo $form->getOutput();
 

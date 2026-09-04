@@ -22,6 +22,41 @@ For installation instructions, visit [Getting Started: Installing Gibbon](https:
 
 For support visit [ask.gibbonedu.org](https://ask.gibbonedu.org) or see [our documentation](https://docs.gibbonedu.org).
 
+## Docker Development Setup
+
+This Docker setup allows developers to run a local development setup so contributors can run Gibbon without manually installing and configuring PHP, Apache, and MySQL on their machine.
+
+## Prerequisites
+
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+## Start The Development Environment
+
+From the project root, run:
+
+```bash
+./up.sh
+```
+
+This script will:
+- Check `.env` file exists and create it if not.
+- Check that Docker Desktop is installed and running
+- Build and start the Gibbon development server container
+
+Gibbon will be available at **http://localhost:8080**
+
+## Useful Commands
+
+Stop the development environment and remove volumes:
+```bash
+./up.sh down
+```
+
+View live container logs:
+```bash
+./up.sh logs
+```
+
 ## Cutting Edge
 If you want to run the latest version of Gibbon, prerelease, you can get the source from our [GitHub repository](https://github.com/GibbonEdu/core). Remember, though, it is not stable, and you may lose data. This is not for the faint of heart.
 

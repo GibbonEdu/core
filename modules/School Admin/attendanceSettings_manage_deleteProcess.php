@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonAttendanceCodeID = (isset($_POST['gibbonAttendanceCodeID']))? $_POST['gibbonAttendanceCodeID'] : NULL;
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$gibbonAttendanceCodeID;

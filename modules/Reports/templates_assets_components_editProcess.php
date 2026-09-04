@@ -26,7 +26,7 @@ use Gibbon\Data\Validator;
 ini_set('display_errors', 1);
 ini_set('error_reporting', E_ALL);
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['templateContent' => 'RAW']);
 require_once __DIR__.'/moduleFunctions.php';

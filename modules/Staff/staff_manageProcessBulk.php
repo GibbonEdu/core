@@ -24,7 +24,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Comms\NotificationEvent;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $action =  $_POST['action'] ?? '';
 $gibbonStaffID =  $_POST['gibbonStaffID'] ?? array();

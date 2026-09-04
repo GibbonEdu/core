@@ -136,9 +136,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 });
             }
 
-            $row = $form->addRow();
-                $row->addLabel('Members', __('Classes'));
-                $row->addSelect('Members')->fromArray($classes)->selectMultiple();
+            // $row = $form->addRow();
+            //     $row->addLabel('Members', __('Classes'));
+            //     $row->addSelect('Members')->fromArray($classes)->selectMultiple();
+
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('Members', __('Classes'));
+                $select = $col->addMultiSelect('Members')->required();
+                $select->source()->fromArray($classes['--'.__('All Classes').'--'] ?? []);
 
             $roles = array(
                 'Student'    => __('Student'),

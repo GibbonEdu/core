@@ -24,7 +24,7 @@ use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
 $action = $_POST['action'] ?? '';

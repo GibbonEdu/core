@@ -1902,11 +1902,11 @@ class MessageTargets
                         $currentStudent="";
                         $lastStudent="";
                         while ($row=$result->fetch()) {
-                        $currentStudent=$row["gibbonPersonID"] ;
-                        if (in_array($row["type"], $choices) AND $currentStudent!=$lastStudent) {
-                            $selectedStudents[]=$currentStudent ;
-                        }
-                        $lastStudent=$currentStudent ;
+                            $currentStudent=$row["gibbonPersonID"] ;
+                            if (in_array($row["type"], $choices) AND $currentStudent!=$lastStudent) {
+                                $selectedStudents[]=$currentStudent ;
+                            }
+                            $lastStudent=$currentStudent ;
                         }
 
                         if (count($selectedStudents)>=1) {
@@ -1953,15 +1953,16 @@ class MessageTargets
                             }
                             }
                         } //end get emails
+                        
                         //Get SMS
                         if ($sms=="Y" AND $countryCode!="") {
                             if ($parents=="Y") {
                             try { //Get the familyIDs for each student logged
-                            $dataFamily=array();
-                            $sqlFamily="SELECT DISTINCT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID IN (".implode(",",$selectedStudents).")" ;
-                            $resultFamily=$connection2->prepare($sqlFamily);
-                            $resultFamily->execute($dataFamily);
-                            $resultFamilies = $resultFamily->fetchAll();
+                                $dataFamily=array("gibbonPersonIDs"=>implode(",", $selectedStudents));
+                                $sqlFamily="SELECT DISTINCT gibbonFamilyID FROM gibbonFamilyChild WHERE FIND_IN_SET(gibbonPersonID, :gibbonPersonIDs)" ;
+                                $resultFamily=$connection2->prepare($sqlFamily);
+                                $resultFamily->execute($dataFamily);
+                                $resultFamilies = $resultFamily->fetchAll();
                             }
                             catch(\PDOException $e) { }
 
@@ -1994,24 +1995,24 @@ class MessageTargets
                             }
                             }
                             if ($students=="Y") {
-                            try { //Get the phone numbers for each student
-                                foreach ($selectedStudents as $t) {
-                                $dataSMS=array("gibbonPersonID"=>$t);
-                                $sqlSMS="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $sqlSMS.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $sqlSMS.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $sqlSMS.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT  phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $resultSMS=$connection2->prepare($sqlSMS);
-                                $resultSMS->execute($dataSMS);
+                                try { //Get the phone numbers for each student
+                                    foreach ($selectedStudents as $t) {
+                                    $dataSMS=array("gibbonPersonID"=>$t);
+                                    $sqlSMS="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                    $sqlSMS.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                    $sqlSMS.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                    $sqlSMS.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT  phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                    $resultSMS=$connection2->prepare($sqlSMS);
+                                    $resultSMS->execute($dataSMS);
+                                    }
+                                } catch(\PDOException $e) { }
+                            
+                                while ($rowSMS=$resultSMS->fetch()) {
+                                    $countryCodeTemp = $countryCode;
+                                        if ($rowSMS["countryCode"]=="")
+                                            $countryCodeTemp = $rowSMS["countryCode"];
+                                        $this->reportAdd($emailReceipt, $rowSMS['gibbonPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowSMS["phone"]);
                                 }
-                            }
-                            catch(\PDOException $e) { }
-                            while ($rowSMS=$resultSMS->fetch()) {
-                                $countryCodeTemp = $countryCode;
-                                    if ($rowSMS["countryCode"]=="")
-                                        $countryCodeTemp = $rowSMS["countryCode"];
-                                    $this->reportAdd($emailReceipt, $rowSMS['gibbonPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowSMS["phone"]);
-                            }
                             }
                         } //END SMS
                         }

@@ -31,9 +31,10 @@ use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST, ['website' => 'URL']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
 
@@ -43,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 } else {
     //Proceed!
     $title = $_POST['title'] ?? '';
-    $surname = trim($_POST['surname'] ?? '');
-    $firstName = trim($_POST['firstName'] ?? '');
-    $preferredName = trim($_POST['preferredName'] ?? '');
-    $officialName = trim($_POST['officialName'] ?? '');
+    $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+    $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+    $preferredName = $validator->sanitizeName($_POST['preferredName'] ?? '');
+    $officialName = $validator->sanitizeName($_POST['officialName'] ?? '');
     $nameInCharacters = $_POST['nameInCharacters'] ?? '';
     $gender = $_POST['gender'] ?? '';
     $username = trim($_POST['username'] ?? '');

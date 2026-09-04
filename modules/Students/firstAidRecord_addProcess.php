@@ -26,7 +26,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Students\FirstAidGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

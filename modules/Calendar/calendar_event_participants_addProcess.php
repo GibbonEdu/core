@@ -28,7 +28,7 @@ use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Support\Facades\Access;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

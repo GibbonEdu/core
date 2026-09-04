@@ -1,0 +1,29 @@
+# Never bake local credentials or environment config into the image
+config.php
+.env
+
+# Git history
+.git
+.gitignore
+
+# Local dev/test artifacts
+/uploads/*
+!/uploads/.htaccess
+/var/*
+!/var/.htaccess
+
+# Composer dev cache
+vendor/
+
+# Docker files themselves
+Dockerfile
+docker-compose*.yaml
+.dockerignore
+ops/resources/ops/compose*.yaml
+resources/ops/configuration/gibbon/.env-example
+up.sh
+
+# IDE and OS files
+.DS_Store
+*.code-workspace
+.vscode/

@@ -40,6 +40,7 @@ v31.0.00
         System: added Peruvian Sol as a currency option
         System: ensured Twig cache is turned off for Development installs
         System: added a new fileHandler class to track and monitor file uploads
+        System: added next year and previous year buttons to the Year Switcher
         Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
@@ -72,6 +73,7 @@ v31.0.00
         System Admin: added new Marks By Term importer for Markbook Column
         System Admin: added new importer to import Internal Assessment Columns
         Timetable: added class and location details to non-timetabled lessons in the Timetable
+        Tiemtable: added a permission to enable certain users to edit a class location/facility
         Tracking: fixed the post variable validation
         User Admin: linked user names to Student and Staff profiles in Manage Users
         User Admin: fixed the bug to display user's personal address if turned on
@@ -79,12 +81,15 @@ v31.0.00
 
     Bug Fixes
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
+        School Admin: fixed the issue of Form Group Location not being displayed in edit page
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         System: renamed ca_CA locale to ca_ES and updated locale files
-        Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data 
+        Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
+        Messenger: fixed the issue of non-parameterized input in Messenger Gateway
         Messenger: fixed overflowing images and iframes on Message Wall
         Planner: fixed "present in room" attendance counts in Lesson Plan to exclude Present - Offsite
         Reports: fixed non-reportable classes being counted when checking report progress
+        Reports: fixed reporting cycle milestones saving as Array by enforcing JSON/null storage
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         Staff: fixed the issue of including staff email while submitting a job application form
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment

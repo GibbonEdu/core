@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\FacilityChangeGateway;
 use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

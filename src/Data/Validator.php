@@ -256,6 +256,17 @@ class Validator
     }
 
     /**
+     * Sanitize a name so that it may only contain naming conventions (Unicode letters, accents, numbers, spaces, hyphens, apostrophes, periods, commas, and parentheses).
+     *
+     * @param string $value
+     * @return string
+     */
+    public function sanitizeName(string $value)
+    {
+        return preg_replace('/[^\p{L}\p{M}\d\s\'\-\.\,\(\)]/u', '', trim($value));
+    }
+
+    /**
      * Sanitize an array of values that may only contain numeric IDs.
      *
      * @param array $value

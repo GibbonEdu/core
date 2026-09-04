@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\UI\Components\Alert;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? '';
 $address = $_POST['address'] ?? '';

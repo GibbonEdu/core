@@ -24,7 +24,7 @@ use Gibbon\Domain\Library\LibraryGateway;
 use Gibbon\Domain\Library\LibraryShelfGateway;
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

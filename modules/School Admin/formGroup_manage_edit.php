@@ -50,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
         } else {
             //Let's go!
             $values = $result->fetch();
+            $values['gibbonSpaceID'] = str_pad($values['gibbonSpaceID'] ?? '', 10, '0', STR_PAD_LEFT);
 
             $form = Form::create('formGroupEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/formGroup_manage_editProcess.php?gibbonFormGroupID='.$gibbonFormGroupID);
             $form->setFactory(DatabaseFormFactory::create($pdo));

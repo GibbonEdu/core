@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Activities\ActivityTypeGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonActivityTypeID = $_POST['gibbonActivityTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/activitySettings.php';

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Planner\PlannerEntryStudentTrackerGateway;
 use Gibbon\Domain\Planner\PlannerEntryStudentHomeworkGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) {
     die('error0');

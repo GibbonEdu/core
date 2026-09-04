@@ -21,8 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\IndividualNeeds\StudentSupportPlanGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_myChildren.php') == false) {
     // Access denied
@@ -113,6 +116,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                 </table>
                 <?php
 
+            }
+
+            // Student Support Plans section
+            $planGateway = $container->get(StudentSupportPlanGateway::class);
+            $planCriteria = $planGateway->newQueryCriteria()
+                ->fromPOST();
+            $planCriteria->filterBy('viewableParents', 'Y');
+            $planCriteria->filterBy('active', 'Y');
+
+            $plans = $planGateway->queryPlansByStudent($planCriteria, $gibbonPersonID);
+
+            $plansBySchoolYear = array_reduce($plans->toArray(), function ($group, $item) {
+                $group[$item['schoolYear']][] = $item;
+                return $group;
+            }, []);
+
+            if (!empty($plansBySchoolYear)) {
+                echo '<h3>'.__('Student Support Plans').'</h3>';
+
+                foreach ($plansBySchoolYear as $schoolYear => $schoolYearPlans) {
+                    $table = DataTable::create('supportPlans_'.preg_replace('/[^A-Za-z0-9]/', '', $schoolYear));
+                    $table->setTitle($schoolYear);
+
+                    $table->addColumn('name', __('Name'));
+                    $table->addColumn('description', __('Description'));
+
+                    $table->addActionColumn()
+                        ->addParam('gibbonPersonID', $gibbonPersonID)
+                        ->addParam('gibbonStudentSupportPlanID', '')
+                        ->format(function ($plan, $actions) {
+                            $actions->addParam('gibbonStudentSupportPlanID', $plan['gibbonStudentSupportPlanID']);
+
+                            if ($plan['type'] == 'File') {
+                                $actions->addAction('view', __('View'))
+                                    ->isModal(1150, 1100)
+                                    ->setURL('/modules/Individual Needs/in_supportPlan_view.php');
+                                $actions->addAction('download', __('Download'))
+                                    ->directLink()
+                                    ->addParam('action', 'download')
+                                    ->setURL('/modules/Individual Needs/in_supportPlan_download.php');
+                            } else {
+                                $actions->addAction('view', __('View'))
+                                    ->directLink()
+                                    ->setTarget('_blank')
+                                    ->setURL('/modules/Individual Needs/in_supportPlan_download.php');
+                            }
+                        });
+
+                    echo $table->render(new DataSet($schoolYearPlans));
+                }
             }
         }
     }

@@ -23,7 +23,7 @@ use Gibbon\Data\PasswordPolicy;
 use Gibbon\Http\Url;
 use Gibbon\Domain\User\UserGateway;
 
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 //Check password address is not blank
 $password = $_POST['password'] ?? '';

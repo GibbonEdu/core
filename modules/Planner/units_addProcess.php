@@ -23,7 +23,7 @@ use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['details' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
 

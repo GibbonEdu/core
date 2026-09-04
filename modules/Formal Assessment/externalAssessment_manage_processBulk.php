@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentEntryGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $action = $_POST['action'] ?? '';
 $search = $_POST['search'] ?? '';

@@ -679,7 +679,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     echo '</h2>';
 
                     //Add year Switcher
-                    $form = Form::createBlank('yearSwitcher', $this->session->get('absoluteURL').'/yearSwitcherProcess.php', 'post')->enableQuickSubmit();
+                    $form = Form::createBlank('yearSwitcher', $this->session->get('absoluteURL').'/yearSwitcherProcess.php', 'post')->enableQuickSubmit()->setAttribute('hx-trigger', 'change from:.auto-submit');
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setAutocomplete(false);
                     $form->setClass('max-w-full');
@@ -692,16 +692,25 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     else if ($row['futureYearsLogin'] == 'N' && $row['pastYearsLogin'] == 'Y') {
                         $status = 'Recent';
                     }
+
+                    $gibbonSchoolYearID = $this->session->get('gibbonSchoolYearID');
+                    $previousYear = $this->schoolYearGateway->getPreviousSchoolYearByID($gibbonSchoolYearID);
+                    $nextYear = $this->schoolYearGateway->getNextSchoolYearByID($gibbonSchoolYearID);
+
                     $row = $form->addRow()->addClass('flex');
+                        $row->addButton('', $previousYear ? "document.querySelector('#yearSwitcher [name=gibbonSchoolYearID]').value='{$previousYear['gibbonSchoolYearID']}';document.getElementById('yearSwitcher').requestSubmit()" : '')
+                            ->setIcon('basic', 'chevron-left')
+                            ->groupAlign('left')
+                            ->setDisabled(empty($previousYear));
                         $row->addSelectSchoolYear('gibbonSchoolYearID', $status)
                             ->placeholder(null)
-                            ->addClass('flex-grow')
-                            ->groupAlign('left')
-                            ->selected($this->session->get('gibbonSchoolYearID'));
-                        $row->addSubmit(__('Switch'), 'yearSwitch')
-                            ->setType('quickSubmit')
+                            ->addClass('flex-grow auto-submit')
+                            ->groupAlign('middle')
+                            ->selected($gibbonSchoolYearID);
+                        $row->addButton('', $nextYear ? "document.querySelector('#yearSwitcher [name=gibbonSchoolYearID]').value='{$nextYear['gibbonSchoolYearID']}';document.getElementById('yearSwitcher').requestSubmit()" : '')
+                            ->setIcon('basic', 'chevron-right')
                             ->groupAlign('right')
-                            ->setClass('flex');
+                            ->setDisabled(empty($nextYear));
 
                     echo $form->getOutput();
 

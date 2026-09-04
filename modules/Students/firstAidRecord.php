@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
     $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/firstAidRecord.php");
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
@@ -70,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($session);
+        $row->addSearchSubmit($session, __('Clear Filters'), ['gibbonSchoolYearID']);
 
     echo $form->getOutput();
 

@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $settingGateway = $container->get(SettingGateway::class);
 $from = $settingGateway->getSettingByScope('Finance', 'email');

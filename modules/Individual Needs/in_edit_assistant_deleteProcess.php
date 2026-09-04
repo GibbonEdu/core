@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonPersonIDAssistant = $_GET['gibbonPersonIDAssistant'] ?? '';
 $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
 $gibbonApplicationFormID = $_POST['gibbonApplicationFormID'] ?? '';

@@ -24,7 +24,7 @@ use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

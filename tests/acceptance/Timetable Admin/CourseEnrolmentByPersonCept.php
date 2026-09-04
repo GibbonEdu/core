@@ -32,8 +32,9 @@ $I->click('Edit', '#courseEnrolmentByPerson');
 $I->seeInCurrentUrl('courseEnrolment_manage_byPerson_edit.php');
 $I->dontSeeErrors();
 
-$I->selectFromDropdown('Members', 1);
-$I->click('Submit');
+$gibbonCourseClassID = $I->grabFromDatabase('gibbonCourseClass', 'gibbonCourseClassID', []);
+$I->submitForm('#content form', ['Members' => [$gibbonCourseClassID]]);
+
 $I->see('Your request was completed successfully.', '.success');
 
 // Nested Edit action (DataTable) -----------------

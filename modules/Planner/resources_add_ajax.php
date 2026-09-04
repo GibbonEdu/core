@@ -24,7 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Gibbon system-wide includes
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

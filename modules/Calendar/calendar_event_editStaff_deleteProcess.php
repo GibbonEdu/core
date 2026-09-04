@@ -23,7 +23,7 @@ use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Support\Facades\Access;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
 $gibbonCalendarEventPersonID = $_POST['gibbonCalendarEventPersonID'] ?? '';

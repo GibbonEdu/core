@@ -54,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Calendar/calendar_event_manage.php');
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__m('Event name, type, description, organiser, calendar name'));
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($session, __('Clear Filters'), ['view', 'sidebar']);
+        $row->addSearchSubmit($session, __('Clear Filters'), ['view', 'sidebar', 'gibbonSchoolYearID']);
 
     echo $form->getOutput();
 
@@ -69,8 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
     $canManageAllEvents = Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all');
     $gibbonPersonIDEditor = $canManageAllEvents ? null : $session->get('gibbonPersonID');
 
-    $events = $calendarEventGateway->queryEvents($criteria, $gibbonPersonIDEditor);
-    $calendars = $calendarGateway->selectEditableCalendarsByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonIDEditor)->fetchKeyPair();
+    $events = $calendarEventGateway->queryEvents($criteria, $gibbonSchoolYearID, $gibbonPersonIDEditor);
+    $calendars = $calendarGateway->selectEditableCalendarsByPerson($gibbonSchoolYearID, $gibbonPersonIDEditor)->fetchKeyPair();
 
     // FORM
     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/calendar_event_manageProcessBulk.php');
@@ -100,6 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ma
         return $row;
     });
 
+    $table->addMetaData('post', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
     $table->addMetaData('filterOptions', [
         'status:confirmed' => __('Status').': '.__('Confirmed'),
         'status:tentative'  => __('Status').': '.__('Tentative'),

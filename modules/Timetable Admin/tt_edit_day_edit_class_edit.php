@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Support\Facades\Access;
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_edit.php') == false) {
+if (!Access::allows('Timetable Admin', 'tt_edit_day_edit_class_edit') && !Access::allows('Timetable', 'tt_space_edit')) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
