@@ -365,7 +365,7 @@ class Importer
                 if ($importType->isFieldRelational($fieldName) && !empty($this->cachedData[$rowIndex][$fieldName])) {
                     // Grab existing cached relational data, to prevent multiple identical queries in multi-table imports
                     $value = $this->cachedData[$rowIndex][$fieldName];
-                } elseif ($importType->isFieldRelational($fieldName)) {
+                } elseif ($importType->isFieldRelational($fieldName) && !$importType->isFieldLinked($fieldName)) {
                     // Otherwise build a query to grab the relational data.
                     $join = $on = '';
                     extract($importType->getField($fieldName, 'relationship'));

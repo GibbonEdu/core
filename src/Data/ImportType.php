@@ -266,6 +266,7 @@ class ImportType
 
             if (isset($fileData['details']) && isset($fileData['details']['type'])) {
                 $fileData['details']['grouping'] = (isset($fileData['access']['module']))? $fileData['access']['module'] : 'General';
+                $fileData = self::applyDynamicFormFields($fileData);
                 $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $passwordPolicy, $pdo, $validateStructure);
             }
         }
@@ -283,6 +284,7 @@ class ImportType
             if (isset($fileData['details']) && isset($fileData['details']['type'])) {
                 $fileData['details']['grouping'] = '* Custom Imports';
                 $fileData['details']['custom'] = true;
+                $fileData = self::applyDynamicFormFields($fileData);
                 $importTypes[ $fileData['details']['type'] ] = new ImportType(
                     $fileData,
                     $passwordPolicy,
@@ -343,8 +345,34 @@ class ImportType
 
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
+        $fileData = self::applyDynamicFormFields($fileData);
 
         return new ImportType($fileData, $passwordPolicy, $pdo);
+    }
+
+    /**
+     * Merge live form fields into YAML import types that opt in via details.dynamicForm.
+     *
+     * @param array $fileData
+     * @return array
+     */
+    protected static function applyDynamicFormFields(array $fileData)
+    {
+        global $container;
+
+        if (($fileData['details']['dynamicForm'] ?? '') !== 'plannerLessonAdd') {
+            return $fileData;
+        }
+
+        if (empty($container)) {
+            return $fileData;
+        }
+
+        try {
+            return LessonPlanFormFieldParser::mergeIntoImportData($fileData, $container);
+        } catch (\Throwable $e) {
+            return $fileData;
+        }
     }
 
     /**
@@ -502,7 +530,16 @@ class ImportType
                         $this->setField($fieldName, 'kind', 'char');
                         $this->setField($fieldName, 'type', 'varchar');
                         $this->setField($fieldName, 'length', $this->customFields[ $customFieldName ]['options']);
-                    } elseif ($type == 'select') {
+                    } elseif ($type == 'yesno' || $type == 'checkbox') {
+                        $this->setField($fieldName, 'kind', 'yesno');
+                        $this->setField($fieldName, 'type', 'enum');
+                        $this->setField($fieldName, 'elements', ['Y', 'N']);
+                        $args = $this->getField($fieldName, 'args');
+                        if (is_array($args)) {
+                            $args['filter'] = 'yesno';
+                            $this->setField($fieldName, 'args', $args);
+                        }
+                    } elseif ($type == 'select' || $type == 'radio' || $type == 'checkboxes') {
                         $this->setField($fieldName, 'kind', 'enum');
                         $this->setField($fieldName, 'type', 'enum');
                         $elements = explode(',', $this->customFields[ $customFieldName ]['options']);
@@ -591,9 +628,14 @@ class ImportType
 
         switch ($this->getField($fieldName, 'filter')) {
             case 'string':  $type = 'text'; $kind = 'text'; break;
+            case 'html':    $type = 'text'; $kind = 'text'; break;
             case 'date':    $type = 'date'; $kind = 'date'; break;
+            case 'time':    $type = 'time'; $kind = 'time'; break;
             case 'url':     $type = 'text'; $kind = 'text'; break;
             case 'email':   $type = 'text'; $kind = 'text'; break;
+            case 'yesno':   $type = 'enum'; $kind = 'yesno'; break;
+            case 'numeric': $type = 'int'; $kind = 'integer'; break;
+            case 'csv':     $type = 'text'; $kind = 'enum'; break;
         }
 
         $this->setField($fieldName, 'type', $type);
@@ -1239,8 +1281,11 @@ class ImportType
                 return __('True or False');
 
             case 'enum':
-                $options = implode('<br/>', (array) $this->getField($fieldName, 'elements'));
-                return '<abbr title="'.$options.'">'.__('Options').'</abbr>';
+                $elements = array_filter((array) $this->getField($fieldName, 'elements'));
+                if (!empty($elements)) {
+                    return __('One of: {options}', ['options' => implode(', ', $elements)]);
+                }
+                return __('Options');
 
             default:
                 return __(ucfirst($kind));

@@ -404,6 +404,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addCheckbox('notify')->description(__('Notify all class participants'));
                 $row->addSubmit();
 
+            // Module hooks that add fields to the add-lesson form (also used for Import columns)
+            \Gibbon\Domain\Planner\LessonPlanAddFormBuilder::applyLessonPlannerAddHooks($container, $form);
+
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], '');
 
