@@ -14,6 +14,10 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libonig-dev \
     gettext \
+    locales \
+    && sed -i -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen es_ES.UTF-8 \
+    && update-locale LANG=es_ES.UTF-8 LC_ALL=es_ES.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Install PHP Extensions
