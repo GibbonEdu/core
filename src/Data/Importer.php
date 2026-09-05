@@ -460,7 +460,7 @@ class Importer
                         // Otherwise collect values in an array
                         $customField = $importType->getField($fieldName, 'customField');
                         if (empty($customField)) $customField = $importType->getField($fieldName, 'name');
-                        $this->serializeData[$serialize][$customField] = $value;
+                        $this->serializeData[$serialize][$customField] = $importType->storedFieldValue($fieldName, $value);
                     }
                 } else {
                     // Add the field to the field set for this row

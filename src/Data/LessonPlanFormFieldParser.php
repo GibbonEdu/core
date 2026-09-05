@@ -270,6 +270,13 @@ class LessonPlanFormFieldParser
             $args['required'] = true;
         }
 
+        if ($filter === 'yesno' && $element instanceof CustomField) {
+            $options = self::customFieldOptions($element);
+            if (count($options) === 1) {
+                $args['checkboxOnValue'] = $options[0];
+            }
+        }
+
         if (preg_match('/^custom(\d+)$/', $fieldName, $match)) {
             $args['readonly'] = true;
             $args['serialize'] = 'fields';
@@ -326,6 +333,7 @@ class LessonPlanFormFieldParser
     protected static function filterFromElement($element): string
     {
         $customType = '';
+        $customField = $element instanceof CustomField ? $element : null;
         if ($element instanceof CustomField) {
             $customType = strtolower(self::customFieldType($element));
             $inner = self::unwrapCustomField($element);
@@ -349,6 +357,10 @@ class LessonPlanFormFieldParser
             case 'checkbox':
                 return 'yesno';
             case 'checkboxes':
+                if ($customField instanceof CustomField && count(self::customFieldOptions($customField)) <= 1) {
+                    return 'yesno';
+                }
+                return 'csv';
             case 'radio':
             case 'select':
                 return 'csv';
@@ -390,6 +402,28 @@ class LessonPlanFormFieldParser
         }
 
         return 'string';
+    }
+
+    /**
+     * @param CustomField $element
+     * @return string[]
+     */
+    protected static function customFieldOptions(CustomField $element): array
+    {
+        try {
+            $reflection = new \ReflectionProperty($element, 'fields');
+            $reflection->setAccessible(true);
+            $fields = $reflection->getValue($element);
+            $options = $fields['options'] ?? '';
+        } catch (\ReflectionException $e) {
+            return [];
+        }
+
+        if (is_array($options)) {
+            return array_values(array_filter(array_map('trim', $options), 'strlen'));
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', (string) $options)), 'strlen'));
     }
 
     /**

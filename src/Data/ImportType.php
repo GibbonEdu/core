@@ -526,25 +526,28 @@ class ImportType
                     }
 
                     $type = $this->customFields[ $customFieldName ]['type'];
+                    $options = array_values(array_filter(array_map('trim', explode(',', (string) $this->customFields[ $customFieldName ]['options'])), 'strlen'));
                     if ($type == 'varchar') {
                         $this->setField($fieldName, 'kind', 'char');
                         $this->setField($fieldName, 'type', 'varchar');
                         $this->setField($fieldName, 'length', $this->customFields[ $customFieldName ]['options']);
-                    } elseif ($type == 'yesno' || $type == 'checkbox') {
+                    } elseif ($type == 'yesno' || $type == 'checkbox' || ($type == 'checkboxes' && count($options) <= 1)) {
                         $this->setField($fieldName, 'kind', 'yesno');
                         $this->setField($fieldName, 'type', 'enum');
                         $this->setField($fieldName, 'elements', ['Y', 'N']);
                         $args = $this->getField($fieldName, 'args');
                         if (is_array($args)) {
                             $args['filter'] = 'yesno';
+                            if ($type == 'checkboxes' && count($options) === 1) {
+                                $args['checkboxOnValue'] = $options[0];
+                            }
                             $this->setField($fieldName, 'args', $args);
                         }
                     } elseif ($type == 'select' || $type == 'radio' || $type == 'checkboxes') {
                         $this->setField($fieldName, 'kind', 'enum');
                         $this->setField($fieldName, 'type', 'enum');
-                        $elements = explode(',', $this->customFields[ $customFieldName ]['options']);
-                        $this->setField($fieldName, 'elements', $elements);
-                        $this->setField($fieldName, 'length', count($elements));
+                        $this->setField($fieldName, 'elements', $options);
+                        $this->setField($fieldName, 'length', count($options));
                     } elseif ($type == 'text' || $type == 'date') {
                         $this->setField($fieldName, 'kind', $type);
                         $this->setField($fieldName, 'type', $type);
@@ -1018,6 +1021,24 @@ class ImportType
     }
 
     /**
+     * Map a validated import value onto the stored custom-field value.
+     * Single checkboxes use yesno (Y/N) like other imports, but persist the option text when checked.
+     *
+     * @param string $fieldName
+     * @param mixed  $value
+     * @return mixed
+     */
+    public function storedFieldValue($fieldName, $value)
+    {
+        $onValue = $this->getField($fieldName, 'checkboxOnValue');
+        if ($onValue !== '' && $onValue !== false && $onValue !== null) {
+            return $value === 'Y' ? $onValue : '';
+        }
+
+        return $value;
+    }
+
+    /**
      * Compares the value type, legth and properties with the expected values for the table column
      *
      * @param   string  Field name
@@ -1032,6 +1053,11 @@ class ImportType
 
         if ($this->isFieldRelational($fieldName)) {
             return true;
+        }
+
+        // Optional fields may be blank (unchecked checkboxes, unused dropdowns, etc.)
+        if ($value === '' || $value === null) {
+            return $this->isFieldRequired($fieldName) ? false : $value;
         }
 
         // Validate based on filter type (from args)
@@ -1118,8 +1144,13 @@ class ImportType
 
             case 'enum':    $elements = $this->getField($fieldName, 'elements');
                             $elements = array_map('trim', (array) $elements);
-                            if (!in_array($value, $elements)) {
-                                return false;
+                            $values = $filter == 'csv'
+                                ? array_filter(array_map('trim', explode(',', (string) $value)), 'strlen')
+                                : [$value];
+                            foreach ($values as $item) {
+                                if (!in_array($item, $elements)) {
+                                    return false;
+                                }
                             }
                             break;
         }
