@@ -109,7 +109,9 @@ class FormatTest extends TestCase
         Format::setup(['code' => 'en_US']);
 
         $this->assertEquals('May 18, 2018', Format::dateReadable('2018-05-18'));
-        $this->assertEquals('May 18, 2018, 1:24 Pm', Format::dateTimeReadable('2018-05-18 13:24'));
+        // Use narrow no-break space (U+202F)
+        $nnbsp = "\u{202F}";
+        $this->assertEquals('May 18, 2018, 1:24' . $nnbsp . 'Pm', Format::dateTimeReadable('2018-05-18 13:24'));
         $this->assertEquals('Saturday, February 3, 2018', Format::dateReadable($dateString, Format::FULL));
         $this->assertEquals('Saturday, February 3', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
         $this->assertEquals('February 3, 2018', Format::dateReadable($dateString, Format::LONG));
@@ -120,9 +122,9 @@ class FormatTest extends TestCase
         $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
         $this->assertEquals('February', Format::monthName($dateString));
         $this->assertEquals('Feb', Format::monthName($dateString, true));
-        $this->assertEquals('Feb 3, 2018, 1:24 Pm', Format::dateTimeReadable($dateString));
-        $this->assertEquals('February 3, 2018 At 1:24 Pm', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
-        $this->assertEquals('1:24 Pm', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+        $this->assertEquals('Feb 3, 2018, 1:24' . $nnbsp .  'Pm', Format::dateTimeReadable($dateString));
+        $this->assertEquals('February 3, 2018 At 1:24' . $nnbsp . 'Pm', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
+        $this->assertEquals('1:24' . $nnbsp . 'Pm', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
 
         // Verify fidelity of formatting output using generic fallbacks 
 
