@@ -14,6 +14,10 @@ services:
             db:
                 condition: service_healthy
         restart: unless-stopped
+        networks:
+            web-tier:
+                ipv4_address: 172.16.238.10
+            db-tier:
 
     db:
         image: mysql:${MYSQL_VERSION:-8.0}
@@ -44,12 +48,41 @@ services:
             retries: 5
             start_period: 30s
         restart: unless-stopped
+        networks:
+            - db-tier
 
     config:
         image: rija/docker-alpine-shell-tools:1.0.1
         volumes:
             - ../../:/var/www/html
         command: /var/www/html/resources/ops/scripts/generate_config.sh
+
+    test:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                PHP_VERSION: ${PHP_VERSION:-8.3}
+        container_name: gibbon_test
+        volumes:
+            ## Mount project root so live edits are immediately reflected without rebuilding the image.
+            - ../..:/var/www/html
+            ## Mount PHP config so values can be changed without an image rebuild.
+            - ./ops/configuration/php/gibbon.ini:/usr/local/etc/php/conf.d/gibbon.ini:ro
+        networks:
+            - web-tier
+            - db-tier
+        extra_hosts:
+            - "gibbon.test:172.16.238.10"
+
+networks:
+    web-tier:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.238.0/24
+    db-tier:
 
 volumes:
     gibbon_db_data:
