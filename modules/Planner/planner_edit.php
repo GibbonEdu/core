@@ -171,6 +171,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $form->addMeta()->addDefaultContent('editProcess');
 
                 $form->addHiddenValue('address', $session->get('address'));
+
+                // Posted even when Advanced Options are hidden (those inputs are disabled and omitted from POST).
+                $form->addHiddenValue('viewableStudents', $values['viewableStudents'] ?? 'Y');
+                $form->addHiddenValue('viewableParents', $values['viewableParents'] ?? 'N');
+                $form->addHiddenValue('videoLink', $fields['videoLink'] ?? '');
                 
                 if (!empty($gibbonMarkbookColumnID)) {
                     $form->addHeaderAction('markbook', __('Linked Markbook'))

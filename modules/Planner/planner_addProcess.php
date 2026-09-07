@@ -25,6 +25,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\Builder\Storage\FormSessionStorage;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -178,8 +179,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $gibbonSpaceID = $_POST['gibbonSpaceID'] ?? null;
             $gibbonTTDayRowClassID = $_POST['gibbonTTDayRowClassID'] ?? null;
-            $viewableParents = $_POST['viewableParents'] ?? 'Y';
-            $viewableStudents = $_POST['viewableStudents'] ?? 'Y';
+            $settingGateway = $container->get(SettingGateway::class);
+            $viewableParents = $_POST['viewableParents'] ?? $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents') ?: 'N';
+            $viewableStudents = $_POST['viewableStudents'] ?? $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents') ?: 'Y';
             $gibbonPersonIDCreator = $session->get('gibbonPersonID');
             $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 

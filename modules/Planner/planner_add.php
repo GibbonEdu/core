@@ -155,6 +155,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $form->addHiddenValue('address', $session->get('address'));
 
+            // Posted even when Advanced Options are hidden (those inputs are disabled and omitted from POST).
+            $form->addHiddenValue('viewableStudents', $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents'));
+            $form->addHiddenValue('viewableParents', $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents'));
+
             //BASIC INFORMATION
             $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 

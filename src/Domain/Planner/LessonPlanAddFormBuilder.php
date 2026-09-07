@@ -169,6 +169,11 @@ class LessonPlanAddFormBuilder
                     $column->addCheckbox('homeworkCrowdAssessOtherParentsRead')->description(__('Other Parents'));
         }
 
+        $sharingDefaultStudents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents');
+        $sharingDefaultParents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents');
+        $form->addHiddenValue('viewableStudents', $sharingDefaultStudents);
+        $form->addHiddenValue('viewableParents', $sharingDefaultParents);
+
         $form->addRow()->addHeading('Advanced Options', __('Advanced Options'));
 
         $form->toggleVisibilityByClass('advanced')->onCheckbox('advanced')->when('Y');
@@ -177,12 +182,10 @@ class LessonPlanAddFormBuilder
 
         $form->addRow()->addClass('advanced')->addHeading('Access', __('Access'));
 
-        $sharingDefaultStudents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents');
         $row = $form->addRow()->addClass('advanced');
             $row->addLabel('viewableStudents', __('Viewable by Students'));
             $row->addYesNo('viewableStudents')->required()->selected($sharingDefaultStudents);
 
-        $sharingDefaultParents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents');
         $row = $form->addRow()->addClass('advanced');
             $row->addLabel('viewableParents', __('Viewable by Parents'));
             $row->addYesNo('viewableParents')->required()->selected($sharingDefaultParents);
