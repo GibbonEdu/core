@@ -365,7 +365,7 @@ class Importer
                 if ($importType->isFieldRelational($fieldName) && !empty($this->cachedData[$rowIndex][$fieldName])) {
                     // Grab existing cached relational data, to prevent multiple identical queries in multi-table imports
                     $value = $this->cachedData[$rowIndex][$fieldName];
-                } elseif ($importType->isFieldRelational($fieldName)) {
+                } elseif ($importType->isFieldRelational($fieldName) && !$importType->isFieldLinked($fieldName)) {
                     // Otherwise build a query to grab the relational data.
                     $join = $on = '';
                     extract($importType->getField($fieldName, 'relationship'));
@@ -460,7 +460,7 @@ class Importer
                         // Otherwise collect values in an array
                         $customField = $importType->getField($fieldName, 'customField');
                         if (empty($customField)) $customField = $importType->getField($fieldName, 'name');
-                        $this->serializeData[$serialize][$customField] = $value;
+                        $this->serializeData[$serialize][$customField] = $importType->storedFieldValue($fieldName, $value);
                     }
                 } else {
                     // Add the field to the field set for this row

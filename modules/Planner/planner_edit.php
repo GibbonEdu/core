@@ -171,6 +171,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $form->addMeta()->addDefaultContent('editProcess');
 
                 $form->addHiddenValue('address', $session->get('address'));
+
+                // Posted even when Advanced Options are hidden (those inputs are disabled and omitted from POST).
+                $form->addHiddenValue('viewableStudents', $values['viewableStudents'] ?? 'Y');
+                $form->addHiddenValue('viewableParents', $values['viewableParents'] ?? 'N');
+                $form->addHiddenValue('videoLink', $fields['videoLink'] ?? '');
                 
                 if (!empty($gibbonMarkbookColumnID)) {
                     $form->addHeaderAction('markbook', __('Linked Markbook'))
@@ -372,13 +377,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addYesNo('markbook')->required()->checked('N');
                 }
 
+                // ADVANCED OPTIONS
+                $form->addRow()->addHeading('Advanced Options', __('Advanced Options'));
+
+                $form->toggleVisibilityByClass('advanced')->onCheckbox('advanced')->when('Y');
+                $row = $form->addRow();
+                    $row->addCheckbox('advanced')->setValue('Y')->checked(true)->description(__('Show Advanced Options'));
+
                 // OUTCOMES
-                $form->addRow()->addHeading('Outcomes', __('Outcomes'));
-                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
+                $form->addRow()->addClass('advanced')->addHeading('Outcomes', __('Outcomes'));
+                $form->addRow()->addClass('advanced')->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
 
                 $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
 
-                $row = $form->addRow();
+                $row = $form->addRow()->addClass('advanced');
                     $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
                 $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
@@ -397,13 +409,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 
 
                 //Access
-                $form->addRow()->addHeading('Access', __('Access'));
+                $form->addRow()->addClass('advanced')->addHeading('Access', __('Access'));
 
-                $row = $form->addRow();
+                $row = $form->addRow()->addClass('advanced');
                     $row->addLabel('viewableStudents', __('Viewable by Students'));
                     $row->addYesNo('viewableStudents')->required();
 
-                $row = $form->addRow();
+                $row = $form->addRow()->addClass('advanced');
                     $row->addLabel('viewableParents', __('Viewable by Parents'));
                     $row->addYesNo('viewableParents')->required();
 
@@ -412,7 +424,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addURL('videoLink')->setValue($fields['videoLink'] ?? '');
 
                 //Guests
-                $form->addRow()->addHeading('Guests', __('Current Guests'));
+                $form->addRow()->addClass('advanced')->addHeading('Guests', __('Current Guests'));
 
                 $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                 $sql = "SELECT title, preferredName, surname, category, gibbonPlannerEntryGuest.* FROM gibbonPlannerEntryGuest JOIN gibbonPerson ON (gibbonPlannerEntryGuest.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY surname, preferredName";
@@ -420,11 +432,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $results = $pdo->executeQuery($data, $sql);
 
                 if ($results->rowCount() == 0) {
-                    $form->addRow()->addAlert(__('There are no records to display.'), 'error');
+                    $form->addRow()->addClass('advanced')->addAlert(__('There are no records to display.'), 'error');
                 } else {
-                    $form->addRow()->addContent('<b>'.__('Warning').'</b>: '.__('If you delete a guest, any unsaved changes to this planner entry will be lost!'))->wrap('<i>', '</i>');
+                    $form->addRow()->addClass('advanced')->addContent('<b>'.__('Warning').'</b>: '.__('If you delete a guest, any unsaved changes to this planner entry will be lost!'))->wrap('<i>', '</i>');
 
-                    $table = $form->addRow()->addTable()->addClass('colorOddEven');
+                    $table = $form->addRow()->addClass('advanced')->addTable()->addClass('colorOddEven');
 
                     $header = $table->addHeaderRow();
                     $header->addContent(__('Name'));
@@ -439,9 +451,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     }
                 }
 
-                $form->addRow()->addHeading('New Guests', __('New Guests'));
+                $form->addRow()->addClass('advanced')->addHeading('New Guests', __('New Guests'));
 
-                $row = $form->addRow();
+                $row = $form->addRow()->addClass('advanced');
                     $row->addLabel('guests', __('Guest List'));
                     $row->addSelectUsers('guests', $session->get('gibbonSchoolYearID'))->selectMultiple();
 
@@ -453,7 +465,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     'Guest Parent' => __('Guest Parent'),
                     'Other Guest' => __('Other Guest'),
                 );
-                $row = $form->addRow();
+                $row = $form->addRow()->addClass('advanced');
                     $row->addLabel('role', __('Role'));
                     $row->addSelect('role')->fromArray($roles);
 
