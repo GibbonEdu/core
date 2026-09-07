@@ -4,3 +4,7 @@ modules:
         - PhpBrowser:
             url: "%ABSOLUTE_URL%"
         - \Helper\Install
+    config:
+      PhpBrowser:
+        url: "http://gibbon.test"
+
