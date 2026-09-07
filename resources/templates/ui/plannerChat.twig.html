@@ -9,7 +9,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% if discussion is empty %}
-    <div class="rounded border bg-gray-50 text-gray-600 text-sm font-sans p-6 text-center">
+    <div class="rounded-lg bg-blue-50 text-gray-600 text-sm font-sans p-6 text-center">
         {{ __('There are no records to display.') }}
     </div>
 {% endif %}
@@ -17,7 +17,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% for item in discussion %}
 <div class="flex gap-3 sm:gap-4 mb-4 font-sans">
     <div class="flex-none">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-200 border">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-blue-100">
             {% if item.image_240 %}
                 <img class="w-full h-full object-cover" src="{{ absoluteURL }}/{{ item.image_240 }}" alt="" />
             {% else %}
@@ -27,9 +27,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
 
     <div class="flex-1 min-w-0">
-        <div class="rounded-sm border bg-white shadow-sm overflow-hidden">
-            <div class="px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-gray-50 border-b">
-                <div class="text-sm text-gray-800">
+        <div class="rounded-lg bg-blue-50 overflow-hidden">
+            <div class="px-4 py-3 flex flex-row items-center justify-between gap-3 bg-blue-100">
+                <div class="text-sm text-gray-800 min-w-0">
                     <span class="font-bold">
                         {{- formatUsing('name', item.title, item.preferredName, item.surname, item.category ?? 'Staff', false, true) -}}
                     </span>
@@ -42,26 +42,26 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 </div>
 
                 {% if item.replyURL or item.deleteURL %}
-                <div class="flex items-center gap-2">
+                <div class="flex-none flex items-center justify-end gap-2 ml-auto">
                     {% if item.replyURL %}
-                        <a class="tag dull" href="{{ item.replyURL }}">{{ __('Reply') }}</a>
+                        <a class="tag message no-underline" href="{{ item.replyURL }}">{{ __('Reply') }}</a>
                     {% endif %}
                     {% if item.deleteURL %}
-                        <a class="tag dull" href="{{ item.deleteURL }}">{{ __('Delete') }}</a>
+                        <a class="tag message no-underline" href="{{ item.deleteURL }}">{{ __('Delete') }}</a>
                     {% endif %}
                 </div>
                 {% endif %}
             </div>
 
             {% if item.comment %}
-            <div class="p-4 text-sm text-gray-700 leading-relaxed">
+            <div class="px-4 py-4 text-sm text-gray-700 leading-relaxed">
                 {{ item.comment|raw }}
             </div>
             {% endif %}
         </div>
 
         {% if item.replies %}
-            <div class="mt-3 ml-1 pl-4 border-l-2 border-gray-200">
+            <div class="mt-3 ml-2 pl-4">
                 {{ include('ui/plannerChat.twig.html', {discussion: item.replies}) }}
             </div>
         {% endif %}
