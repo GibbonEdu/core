@@ -25,7 +25,9 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Planner\PlannerEntryDiscussGateway;
 use Gibbon\Forms\Input\Editor;
+use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
@@ -197,6 +199,45 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
     if ($outerBlock) {
         echo '</div>';
     }
+}
+
+function getPlannerEntryDiscussion($gibbonPlannerEntryID, array $urlParams = [], $canReply = false, $canDelete = false)
+{
+    global $container, $session;
+
+    $discussGateway = $container->get(PlannerEntryDiscussGateway::class);
+    $validator = $container->get(Validator::class);
+
+    $build = function ($parent) use (&$build, $discussGateway, $validator, $gibbonPlannerEntryID, $urlParams, $canReply, $canDelete, $session) {
+        $discussion = [];
+        $items = $discussGateway->selectDiscussionByPlannerEntryID($gibbonPlannerEntryID, $parent)->fetchAll();
+
+        foreach ($items as $item) {
+            $item['comment'] = $validator->sanitizeRichText($item['comment']);
+            $item['label'] = $item['category'] ?? '';
+            $item['replies'] = $build($item['gibbonPlannerEntryDiscussID']);
+
+            if ($canReply) {
+                $item['attachmentLocation'] = (string) Url::fromModuleRoute('Planner', 'planner_view_full_post')
+                    ->withQueryParams($urlParams + ['replyTo' => $item['gibbonPlannerEntryDiscussID']]);
+                $item['attachmentText'] = __('Reply');
+                $item['attachmentTarget'] = '';
+            }
+
+            if ($canDelete) {
+                $deleteURL = $session->get('absoluteURL').'/modules/Planner/planner_view_full_post_deleteProcess.php?'.http_build_query($urlParams + [
+                    'gibbonPlannerEntryDiscussID' => $item['gibbonPlannerEntryDiscussID'],
+                ]);
+                $item['extra'] = Format::link($deleteURL, __('Delete'));
+            }
+
+            $discussion[] = $item;
+        }
+
+        return $discussion;
+    };
+
+    return $build(0);
 }
 
 function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, $self, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role, $links = true, $narrow = false)

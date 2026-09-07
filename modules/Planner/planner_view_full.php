@@ -1129,26 +1129,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
                         echo '</table>';
 
-                        // Temporarily disabled
-                        if (false && $highestAction != 'Lesson Planner_viewOnly') {
+                        $canReply = $highestAction != 'Lesson Planner_viewOnly';
+                        $canDelete = ($values['role'] ?? '') == 'Teacher';
+                        $chatParams = [
+                            'gibbonPlannerEntryID' => $gibbonPlannerEntryID,
+                            'viewBy' => $viewBy,
+                            'subView' => $subView,
+                            'gibbonCourseClassID' => $gibbonCourseClassID,
+                            'date' => $date,
+                            'search' => $gibbonPersonID,
+                        ];
+                        $discussion = getPlannerEntryDiscussion($gibbonPlannerEntryID, $chatParams, $canReply, $canDelete);
 
-                          echo "<a name='chat'></a>";
-                          echo "<h2 style='padding-top: 30px'>".__('Chat').'</h2>';
-                          echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
-                          echo '<tr>';
-                          echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important;' colspan=3>";
+                        echo '<a name="chat"></a>';
+                        echo '<h2>'.__('Chat').'</h2>';
 
-                              echo "<div style='margin: 0px' class='linkTop'>";
-                              echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$paramsVar#chat'>".__('Refresh')."<img style='margin-left: 5px' title='".__('Refresh')."' src='./themes/".$session->get('gibbonThemeName')."/img/refresh.png'/></a> <a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a> ";
-                              echo '</div>';
-
-                              //Get discussion
-                              echo getThread($guid, $connection2, $gibbonPlannerEntryID, null, 0, null, $viewBy, $subView, $date, @$class, $gibbonCourseClassID, $gibbonPersonID, $values['role']);
-
-                          echo '</td>';
-                          echo '</tr>';
+                        if ($canReply) {
+                            echo '<div class="linkTop">';
+                            echo Format::link((string) Url::fromModuleRoute('Planner', 'planner_view_full_post')->withQueryParams($chatParams), __('Add'));
+                            echo '</div>';
                         }
-                        echo '</table>';
+
+                        echo $page->fetchFromTemplate('ui/discussion.twig.html', [
+                            'compact' => true,
+                            'discussion' => $discussion,
+                            'blankSlate' => __('There are no records to display.'),
+                        ]);
 
                         //Participants & Attendance
                         $gibbonCourseClassID = $values['gibbonCourseClassID'];
