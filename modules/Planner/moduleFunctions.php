@@ -218,17 +218,14 @@ function getPlannerEntryDiscussion($gibbonPlannerEntryID, array $urlParams = [],
             $item['replies'] = $build($item['gibbonPlannerEntryDiscussID']);
 
             if ($canReply) {
-                $item['attachmentLocation'] = (string) Url::fromModuleRoute('Planner', 'planner_view_full_post')
+                $item['replyURL'] = (string) Url::fromModuleRoute('Planner', 'planner_view_full_post')
                     ->withQueryParams($urlParams + ['replyTo' => $item['gibbonPlannerEntryDiscussID']]);
-                $item['attachmentText'] = __('Reply');
-                $item['attachmentTarget'] = '';
             }
 
             if ($canDelete) {
-                $deleteURL = $session->get('absoluteURL').'/modules/Planner/planner_view_full_post_deleteProcess.php?'.http_build_query($urlParams + [
+                $item['deleteURL'] = $session->get('absoluteURL').'/modules/Planner/planner_view_full_post_deleteProcess.php?'.http_build_query($urlParams + [
                     'gibbonPlannerEntryDiscussID' => $item['gibbonPlannerEntryDiscussID'],
                 ]);
-                $item['extra'] = Format::link($deleteURL, __('Delete'));
             }
 
             $discussion[] = $item;

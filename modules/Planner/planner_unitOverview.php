@@ -437,8 +437,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     $discussion = getPlannerEntryDiscussion($rowLessons['gibbonPlannerEntryID']);
                                     if (!empty($discussion)) {
                                         echo '<h5>'.__('Chat').'</h5>';
-                                        echo $page->fetchFromTemplate('ui/discussion.twig.html', [
-                                            'compact' => true,
+                                        echo $page->fetchFromTemplate('ui/plannerChat.twig.html', [
                                             'discussion' => $discussion,
                                         ]);
                                     }

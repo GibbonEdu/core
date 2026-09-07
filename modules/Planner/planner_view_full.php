@@ -1142,19 +1142,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $discussion = getPlannerEntryDiscussion($gibbonPlannerEntryID, $chatParams, $canReply, $canDelete);
 
                         echo '<a name="chat"></a>';
-                        echo '<h2>'.__('Chat').'</h2>';
+
+                        $chatForm = Form::createBlank('plannerChat', '');
+                        $chatForm->setTitle(__('Chat'));
 
                         if ($canReply) {
-                            echo '<div class="linkTop">';
-                            echo Format::link((string) Url::fromModuleRoute('Planner', 'planner_view_full_post')->withQueryParams($chatParams), __('Add'));
-                            echo '</div>';
+                            $chatForm->addHeaderAction('add', __('Add'))
+                                ->setURL('/modules/Planner/planner_view_full_post.php')
+                                ->addParams($chatParams)
+                                ->displayLabel();
                         }
 
-                        echo $page->fetchFromTemplate('ui/discussion.twig.html', [
-                            'compact' => true,
+                        $chatForm->addRow()->addContent($page->fetchFromTemplate('ui/plannerChat.twig.html', [
                             'discussion' => $discussion,
-                            'blankSlate' => __('There are no records to display.'),
-                        ]);
+                        ]));
+
+                        echo $chatForm->getOutput();
 
                         //Participants & Attendance
                         $gibbonCourseClassID = $values['gibbonCourseClassID'];
