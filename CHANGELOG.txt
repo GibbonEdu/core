@@ -41,6 +41,7 @@ v31.0.00
         System: ensured Twig cache is turned off for Development installs
         System: added a new fileHandler class to track and monitor file uploads
         System: added next year and previous year buttons to the Year Switcher
+        System: added gibbon log when a password reset email fails to send
         Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
