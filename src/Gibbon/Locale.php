@@ -164,11 +164,23 @@ class Locale implements LocaleInterface
 
             if ($pdo->getConnection() != null) {
                 $data = array();
-                $sql = "SELECT original, replacement, mode, caseSensitive FROM gibbonString WHERE (gibbonPersonIDList IS NULL OR gibbonPersonIDList='')";
+                $sql = "SELECT original, replacement, mode, caseSensitive FROM gibbonString";
 
-                if (!empty($gibbonPersonID)) {
-                    $data['gibbonPersonID'] = (string) intval($gibbonPersonID);
-                    $sql .= " OR FIND_IN_SET(:gibbonPersonID, gibbonPersonIDList)";
+                // Keep working before System Admin > Update adds gibbonPersonIDList
+                $hasPersonIDList = $session->get('gibbonStringHasPersonIDList');
+                if ($hasPersonIDList !== true) {
+                    $columnCheck = $pdo->select("SHOW COLUMNS FROM gibbonString LIKE 'gibbonPersonIDList'");
+                    $hasPersonIDList = $columnCheck && $columnCheck->rowCount() > 0;
+                    $session->set('gibbonStringHasPersonIDList', $hasPersonIDList);
+                }
+
+                if ($hasPersonIDList) {
+                    $sql .= " WHERE (gibbonPersonIDList IS NULL OR gibbonPersonIDList='')";
+
+                    if (!empty($gibbonPersonID)) {
+                        $data['gibbonPersonID'] = (string) intval($gibbonPersonID);
+                        $sql .= " OR FIND_IN_SET(:gibbonPersonID, gibbonPersonIDList)";
+                    }
                 }
 
                 $sql .= " ORDER BY priority DESC, original";

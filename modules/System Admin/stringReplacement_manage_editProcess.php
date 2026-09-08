@@ -71,8 +71,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             } else {
                 //Write to database
                 try {
-                    $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonPersonIDList' => $gibbonPersonIDList, 'gibbonStringID' => $gibbonStringID);
-                    $sql = 'UPDATE gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority, gibbonPersonIDList=:gibbonPersonIDList WHERE gibbonStringID=:gibbonStringID';
+                    $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonStringID' => $gibbonStringID);
+                    $sql = 'UPDATE gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority';
+
+                    $columnCheck = $pdo->select("SHOW COLUMNS FROM gibbonString LIKE 'gibbonPersonIDList'");
+                    if ($columnCheck && $columnCheck->rowCount() > 0) {
+                        $data['gibbonPersonIDList'] = $gibbonPersonIDList;
+                        $sql .= ', gibbonPersonIDList=:gibbonPersonIDList';
+                    }
+
+                    $sql .= ' WHERE gibbonStringID=:gibbonStringID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
