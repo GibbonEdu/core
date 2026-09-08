@@ -52,9 +52,15 @@ class StringGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonString.gibbonStringID', 'gibbonString.original', 'gibbonString.replacement', 'gibbonString.mode', 'gibbonString.caseSensitive', 'gibbonString.priority', 'gibbonString.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.title'
-            ])
-            ->leftJoin('gibbonPerson', 'gibbonString.gibbonPersonID=gibbonPerson.gibbonPersonID');
+                'gibbonString.gibbonStringID',
+                'gibbonString.original',
+                'gibbonString.replacement',
+                'gibbonString.mode',
+                'gibbonString.caseSensitive',
+                'gibbonString.priority',
+                'gibbonString.gibbonPersonIDList',
+                "(SELECT GROUP_CONCAT(DISTINCT CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) ORDER BY gibbonPerson.surname, gibbonPerson.preferredName SEPARATOR '; ') FROM gibbonPerson WHERE FIND_IN_SET(gibbonPerson.gibbonPersonID, gibbonString.gibbonPersonIDList)) as userList",
+            ]);
 
         return $this->runQuery($query, $criteria);
     }

@@ -446,5 +446,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction WHERE name='View Timetable by Facility_editLocation' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable')));end
 UPDATE `gibbonReportingCycle` SET `milestones`='[]' WHERE TRIM(`milestones`) IN ('Array', '\"Array\"') OR `milestones` IS NULL;end
 ALTER TABLE `gibbonString` ADD `gibbonPersonID` INT(10) UNSIGNED ZEROFILL DEFAULT NULL AFTER `priority`;end
+ALTER TABLE `gibbonString` CHANGE `gibbonPersonID` `gibbonPersonIDList` TEXT DEFAULT NULL;end
+UPDATE `gibbonString` SET `gibbonPersonIDList` = CAST(`gibbonPersonIDList` AS UNSIGNED) WHERE `gibbonPersonIDList` IS NOT NULL AND `gibbonPersonIDList` != '' AND `gibbonPersonIDList` NOT LIKE '%,%';end
 
 ";

@@ -37,7 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $mode = $_POST['mode'] ?? '';
     $caseSensitive = $_POST['caseSensitive'] ?? '';
     $priority = $_POST['priority'] ?? '';
-    $gibbonPersonID = !empty($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : null;
+    $gibbonPersonIDList = $_POST['gibbonPersonIDList'] ?? [];
+    if (!is_array($gibbonPersonIDList)) {
+        $gibbonPersonIDList = empty($gibbonPersonIDList) ? [] : [$gibbonPersonIDList];
+    }
+    $gibbonPersonIDList = array_filter(array_map('intval', $gibbonPersonIDList));
+    $gibbonPersonIDList = empty($gibbonPersonIDList) ? null : implode(',', $gibbonPersonIDList);
 
     //Validate Inputs
     if ($original == '' or $replacement == '' or $mode == '' or $caseSensitive == '' or $priority == '') {
@@ -46,8 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     } else {
         //Write to database
         try {
-            $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonPersonID' => $gibbonPersonID);
-            $sql = 'INSERT INTO gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority, gibbonPersonID=:gibbonPersonID';
+            $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonPersonIDList' => $gibbonPersonIDList);
+            $sql = 'INSERT INTO gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority, gibbonPersonIDList=:gibbonPersonIDList';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

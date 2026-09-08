@@ -71,7 +71,7 @@ v31.0.00
         Students: added an indicator at the top of view student profile to indicate attendance status and current location of the student
         Students: Added a checkbox to the Medical Data Summary to exclude students with no medical conditions
         System Admin: added a validation to check for error in email twig templates
-        System Admin: added the option to apply a string replacement to a specific user
+        System Admin: added the option to apply a string replacement to specific users
         System Admin: added new Marks By Term importer for Markbook Column
         System Admin: added new importer to import Internal Assessment Columns
         Timetable: added class and location details to non-timetabled lessons in the Timetable

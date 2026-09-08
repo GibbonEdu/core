@@ -74,8 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         $row->addYesNo('caseSensitive')->selected('N')->required();
 
     $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', __('User'))->description(__('Leave blank to apply to all users.'));
-        $row->addSelectUsers('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder();
+        $row->addLabel('gibbonPersonIDList', __('Users'))->description(__('Leave blank to apply to all users.'));
+        $row->addSelectUsers('gibbonPersonIDList', $session->get('gibbonSchoolYearID'))->selectMultiple();
 
     $row = $form->addRow();
         $row->addLabel('priority', __('Priority'))->description(__('Higher priorities are substituted first.'));

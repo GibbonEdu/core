@@ -58,7 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             $mode = $_POST['mode'] ?? '';
             $caseSensitive = $_POST['caseSensitive'] ?? '';
             $priority = $_POST['priority'] ?? '';
-            $gibbonPersonID = !empty($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : null;
+            $gibbonPersonIDList = $_POST['gibbonPersonIDList'] ?? [];
+            if (!is_array($gibbonPersonIDList)) {
+                $gibbonPersonIDList = empty($gibbonPersonIDList) ? [] : [$gibbonPersonIDList];
+            }
+            $gibbonPersonIDList = array_filter(array_map('intval', $gibbonPersonIDList));
+            $gibbonPersonIDList = empty($gibbonPersonIDList) ? null : implode(',', $gibbonPersonIDList);
 
             if ($original == '' or $replacement == '' or $mode == '' or $caseSensitive == '' or $priority == '') {
                 $URL .= '&return=error3';
@@ -66,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             } else {
                 //Write to database
                 try {
-                    $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonPersonID' => $gibbonPersonID, 'gibbonStringID' => $gibbonStringID);
-                    $sql = 'UPDATE gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority, gibbonPersonID=:gibbonPersonID WHERE gibbonStringID=:gibbonStringID';
+                    $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonPersonIDList' => $gibbonPersonIDList, 'gibbonStringID' => $gibbonStringID);
+                    $sql = 'UPDATE gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority, gibbonPersonIDList=:gibbonPersonIDList WHERE gibbonStringID=:gibbonStringID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

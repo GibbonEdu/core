@@ -164,11 +164,11 @@ class Locale implements LocaleInterface
 
             if ($pdo->getConnection() != null) {
                 $data = array();
-                $sql = "SELECT original, replacement, mode, caseSensitive FROM gibbonString WHERE gibbonPersonID IS NULL";
+                $sql = "SELECT original, replacement, mode, caseSensitive FROM gibbonString WHERE (gibbonPersonIDList IS NULL OR gibbonPersonIDList='')";
 
                 if (!empty($gibbonPersonID)) {
-                    $data['gibbonPersonID'] = $gibbonPersonID;
-                    $sql .= " OR gibbonPersonID=:gibbonPersonID";
+                    $data['gibbonPersonID'] = (string) intval($gibbonPersonID);
+                    $sql .= " OR FIND_IN_SET(:gibbonPersonID, gibbonPersonIDList)";
                 }
 
                 $sql .= " ORDER BY priority DESC, original";
