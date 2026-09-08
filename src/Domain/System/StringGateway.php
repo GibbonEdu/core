@@ -52,8 +52,9 @@ class StringGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStringID', 'original', 'replacement', 'mode', 'caseSensitive', 'priority'
-            ]);
+                'gibbonString.gibbonStringID', 'gibbonString.original', 'gibbonString.replacement', 'gibbonString.mode', 'gibbonString.caseSensitive', 'gibbonString.priority', 'gibbonString.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.title'
+            ])
+            ->leftJoin('gibbonPerson', 'gibbonString.gibbonPersonID=gibbonPerson.gibbonPersonID');
 
         return $this->runQuery($query, $criteria);
     }

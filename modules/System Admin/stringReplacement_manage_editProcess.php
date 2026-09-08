@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             $mode = $_POST['mode'] ?? '';
             $caseSensitive = $_POST['caseSensitive'] ?? '';
             $priority = $_POST['priority'] ?? '';
+            $gibbonPersonID = !empty($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : null;
 
             if ($original == '' or $replacement == '' or $mode == '' or $caseSensitive == '' or $priority == '') {
                 $URL .= '&return=error3';
@@ -65,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             } else {
                 //Write to database
                 try {
-                    $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonStringID' => $gibbonStringID);
-                    $sql = 'UPDATE gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority WHERE gibbonStringID=:gibbonStringID';
+                    $data = array('original' => $original, 'replacement' => $replacement, 'mode' => $mode, 'caseSensitive' => $caseSensitive, 'priority' => $priority, 'gibbonPersonID' => $gibbonPersonID, 'gibbonStringID' => $gibbonStringID);
+                    $sql = 'UPDATE gibbonString SET original=:original, replacement=:replacement, mode=:mode, caseSensitive=:caseSensitive, priority=:priority, gibbonPersonID=:gibbonPersonID WHERE gibbonStringID=:gibbonStringID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

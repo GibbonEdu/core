@@ -78,6 +78,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $table->addColumn('replacement', __('Replacement String'));
     $table->addColumn('mode', __('Mode'))->translatable();
     $table->addColumn('caseSensitive', __('Case Sensitive'))->format(Format::using('yesNo', 'caseSensitive'));
+    $table->addColumn('user', __('User'))
+        ->format(function ($row) {
+            if (empty($row['gibbonPersonID'])) {
+                return __('All Users');
+            }
+
+            return Format::name($row['title'] ?? '', $row['preferredName'], $row['surname'], 'Staff', true, true);
+        });
     $table->addColumn('priority', __('Priority'));
 
     $table->addActionColumn()

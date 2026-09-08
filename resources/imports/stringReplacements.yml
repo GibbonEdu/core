@@ -9,7 +9,7 @@ access:
 primaryKey:
     gibbonStringID
 uniqueKeys:
-    - [ original, mode ]
+    - [ original, mode, gibbonPersonID ]
 table:
     original: 
         name: "Original String"
@@ -31,3 +31,8 @@ table:
         name: "Priority"
         desc: "Higher priorities are substituted first."
         args: { filter: numeric, required: true, custom: true }
+    gibbonPersonID:
+        name: "User"
+        desc: "Username or Email (if unique). Leave blank to apply to all users."
+        args: { filter: nospaces, required: false, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }

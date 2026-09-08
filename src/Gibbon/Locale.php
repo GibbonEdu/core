@@ -154,15 +154,24 @@ class Locale implements LocaleInterface
     public function setStringReplacementList(Session $session, Connection $pdo, $forceRefresh = false)
     {
         $stringReplacements = $session->get('stringReplacement', null);
+        $gibbonPersonID = $session->get('gibbonPersonID');
+        $stringReplacementPersonID = $session->get('stringReplacementPersonID');
 
-        // Do this once per session, only if the value doesn't exist
-        if ($forceRefresh || $stringReplacements === null) {
+        // Do this once per session, only if the value doesn't exist or the current user has changed
+        if ($forceRefresh || $stringReplacements === null || $stringReplacementPersonID !== $gibbonPersonID) {
 
             $stringReplacements = array();
 
             if ($pdo->getConnection() != null) {
                 $data = array();
-                $sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original";
+                $sql = "SELECT original, replacement, mode, caseSensitive FROM gibbonString WHERE gibbonPersonID IS NULL";
+
+                if (!empty($gibbonPersonID)) {
+                    $data['gibbonPersonID'] = $gibbonPersonID;
+                    $sql .= " OR gibbonPersonID=:gibbonPersonID";
+                }
+
+                $sql .= " ORDER BY priority DESC, original";
 
                 $result = $pdo->select($sql, $data);
 
@@ -171,7 +180,8 @@ class Locale implements LocaleInterface
                 }
             }
 
-            $session->set('stringReplacement', $stringReplacements );
+            $session->set('stringReplacement', $stringReplacements);
+            $session->set('stringReplacementPersonID', $gibbonPersonID);
         }
 
         $this->stringReplacements = $stringReplacements;

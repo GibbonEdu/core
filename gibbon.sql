@@ -6317,7 +6317,8 @@ CREATE TABLE `gibbonString` (
   `replacement` varchar(255) NOT NULL,
   `mode` enum('Whole','Partial') NOT NULL,
   `caseSensitive` enum('Y','N') NOT NULL,
-  `priority` int NOT NULL DEFAULT '0'
+  `priority` int NOT NULL DEFAULT '0',
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
@@ -7933,7 +7934,8 @@ ALTER TABLE `gibbonStaffUpdate`
 -- Indexes for table `gibbonString`
 --
 ALTER TABLE `gibbonString`
-  ADD PRIMARY KEY (`gibbonStringID`);
+  ADD PRIMARY KEY (`gibbonStringID`),
+  ADD KEY `gibbonPersonID` (`gibbonPersonID`);
 
 --
 -- Indexes for table `gibbonStudentEnrolment`
