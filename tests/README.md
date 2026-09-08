@@ -12,6 +12,17 @@ Execute all unit tests:
 tests/test_unit.sh 
 ```
 
+Execute unit tests for a specific module:
+```bash
+tests/run_unit.sh tests/unit/Data
+```
+
+Execute specific unit test file:
+```bash
+tests/run_unit.sh tests/unit/Data/ValidatorTest.php
+```
+
+
 ## Run installer test
 
 Deploy a local instance of Gibbon using Docker:
