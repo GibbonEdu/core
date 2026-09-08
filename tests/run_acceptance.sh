@@ -8,4 +8,5 @@ docker compose --project-directory "${PROJECT_DIR}" \
     run --rm test \
         /var/www/html/vendor/codeception/codeception/codecept \
         -c /var/www/html/tests/codeception.yml \
-        run acceptance
+        run \
+        "${1:-acceptance}"
