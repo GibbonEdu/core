@@ -758,14 +758,22 @@ if (!empty($_GET['return'])) {
  * TODO: rewrite the Sidebar class as a template file.
  */
 $sidebarContents = '';
+$sidebar = $container->get(Gibbon\UI\Components\Sidebar::class);
+
 if ($page['showSidebar']) {
     $page->addSidebarExtra($session->get('sidebarExtra'));
     $session->set('sidebarExtra', '');
 
     $page->addData([
         'sidebar'         => $page['showSidebar'],
-        'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
+        'sidebarContents' => $sidebar->getOutput(),
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
+    ]);
+}
+
+if ($isLoggedIn) {
+    $page->addData([
+        'sidebarBackLink' => $sidebar->getBackLink(),
     ]);
 }
 
