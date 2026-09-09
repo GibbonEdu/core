@@ -19,10 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Attendance\AttendanceCodeGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -122,25 +126,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         return;
     }
 
-    // Get attendance codes
-    try {
-        if (!empty($gibbonAttendanceCodeID)) {
-            $dataCodes = array( 'gibbonAttendanceCodeID' => $gibbonAttendanceCodeID);
-            $sqlCodes = "SELECT direction as groupBy, gibbonAttendanceCode.* FROM gibbonAttendanceCode WHERE gibbonAttendanceCodeID=:gibbonAttendanceCodeID";
-        } else {
-            $dataCodes = array();
-            $sqlCodes = "SELECT direction as groupBy, gibbonAttendanceCode.* FROM gibbonAttendanceCode WHERE active = 'Y' AND reportable='Y' ORDER BY sequenceNumber ASC, name";
-        }
+    $attendanceCodeGateway = $container->get(AttendanceCodeGateway::class);
 
-        $resultCodes = $pdo->select($sqlCodes, $dataCodes);
-    } catch (PDOException $e) {
+    // Get attendance codes
+    if (!empty($gibbonAttendanceCodeID)) {
+        $resultCodes = $attendanceCodeGateway->getByID($gibbonAttendanceCodeID);
+        $attendanceCodes = $resultCodes;
+    } else {
+        $resultCodes = $attendanceCodeGateway->selectReportableActiveAttendanceCodes();
+        $attendanceCodes = $resultCodes->fetchGrouped();
     }
 
-    $attendanceCodes = $resultCodes->fetchGrouped();
     $attendanceReasons = explode(',', $settingGateway->getSettingByScope('Attendance', 'attendanceReasons') );
     $attendanceReasons[] = 'No Reason';
 
-    if ($resultCodes->rowCount() == 0) {
+    if (empty($resultCodes)) {
         echo "<div class='error'>";
         echo __('There are no attendance codes defined.');
         echo '</div>';
@@ -156,21 +156,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);
         echo '</h2>';
 
+        $resultSchoolDays = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByDate($session->get('gibbonSchoolYearID'), $dateStart, $dateEnd);
 
-            $dataSchoolDays = array( 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sqlSchoolDays = "SELECT 
-                COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.date>=gibbonSchoolYear.firstDay AND gibbonAttendanceLogPerson.date<=gibbonSchoolYear.lastDay THEN gibbonAttendanceLogPerson.date END) as total, COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.date>=:dateStart AND gibbonAttendanceLogPerson.date <=:dateEnd THEN gibbonAttendanceLogPerson.date END) as dateRange 
-            FROM gibbonAttendanceLogPerson
-                JOIN gibbonSchoolYearTerm ON (gibbonAttendanceLogPerson.date>=gibbonSchoolYearTerm.firstDay AND gibbonAttendanceLogPerson.date <= gibbonSchoolYearTerm.lastDay)
-                JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID )
-                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID=gibbonSchoolYearTerm.gibbonSchoolYearTermID AND gibbonSchoolYearSpecialDay.date = gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
-            WHERE  
-                gibbonAttendanceLogPerson.date <= NOW() 
-                AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonSchoolYearSpecialDay.gibbonSchoolYearSpecialDayID IS NULL";
-
-            $resultSchoolDays = $connection2->prepare($sqlSchoolDays);
-            $resultSchoolDays->execute($dataSchoolDays);
         $schoolDayCounts = $resultSchoolDays->fetch();
 
         echo '<p style="color:#666;">';
@@ -178,62 +165,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo __('Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
         echo '</p>';
 
-        $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
 
-        //Produce array of attendance data
-        try {
-            $orderBy = 'ORDER BY surname, preferredName, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken';
-            if ($sort == 'preferredName')
-                $orderBy = 'ORDER BY preferredName, surname, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken';
-            if ($sort == 'formGroup')
-                $orderBy = ' ORDER BY LENGTH(formGroup), formGroup, surname, preferredName, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken';
+        // Produce array of attendance data
+        $attendanceLogs = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsSummaryByDate($session->get('gibbonSchoolYearID'), $dateStart, $dateEnd, $group, $gibbonCourseClassID, $gibbonFormGroupID, $gibbonAttendanceCodeID, $countClassAsSchool, $sort);
 
-            if ($group == 'all') {
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, gibbonAttendanceLogPerson.*, gibbonAttendanceCode.nameShort as code FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
-            }
-            else if ($group == 'class') {
-                $data['gibbonCourseClassID'] = $gibbonCourseClassID;
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, gibbonAttendanceLogPerson.*, gibbonAttendanceCode.nameShort as code FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonAttendanceLogPerson.context='Class' AND gibbonAttendanceLogPerson.gibbonCourseClassID=:gibbonCourseClassID";
-            }
-            else if ($group == 'formGroup') {
-                $data['gibbonFormGroupID'] = $gibbonFormGroupID;
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, gibbonAttendanceLogPerson.*, gibbonAttendanceCode.nameShort as code FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID";
-            }
-
-            if ( !empty($gibbonAttendanceCodeID) ) {
-                $data['gibbonAttendanceCodeID'] = $gibbonAttendanceCodeID;
-                $sql .= ' AND gibbonAttendanceCode.gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
-            }
-
-            if ($countClassAsSchool == 'N' && $group != 'class') {
-                $sql .= " AND NOT context='Class'";
-            }
-
-            $sql .= ' '. $orderBy;
-
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-        }
-
-        if ($result->rowCount() < 1) {
+        if (empty($attendanceLogs)) {
             echo $page->getBlankSlate();
         } else {
-
             if (empty($daysOfWeek)) {
-                $sql = "SELECT nameShort, name FROM gibbonDaysOfWeek where schoolDay='Y'";
-                $daysOfWeek = $pdo->select($sql)->fetchKeyPair();
+                $result = $container->get(DaysOfWeekGateway::class)->selectBy(['schoolDay' => 'Y'], ['nameShort', 'name']);
+                $daysOfWeek = $result->fetchKeyPair();
             }
     
-            if (empty($schoolClosures)) {
-                $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
-                $sql = "SELECT gibbonSchoolYearSpecialDay.date, gibbonSchoolYearSpecialDay.name 
-                        FROM gibbonSchoolYear 
-                        JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                        JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID)
-                        WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonSchoolYearSpecialDay.type='School Closure' AND gibbonSchoolYearSpecialDay.date BETWEEN :dateStart AND :dateEnd
-                        ORDER BY date";
-                $schoolClosures = $pdo->select($sql, $data)->fetchKeyPair();
+            if (empty($schoolClosures)) {                
+                $result = $container->get(SchoolYearSpecialDayGateway::class)->selectSchoolClosureByDateRange($session->get('gibbonSchoolYearID'), $dateStart, $dateEnd);
+                $schoolClosures = $result->fetchKeyPair();
             }
 
             $dateRange = new DatePeriod(
@@ -243,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             );
 
             // Group the results by person first, then by date
-            $attendanceResult = array_reduce($result->fetchAll(), function ($group, $item) {
+            $attendanceResult = array_reduce($attendanceLogs->fetchAll(), function ($group, $item) {
                 if (!isset($group[$item['gibbonPersonID']])) {
                     $group[$item['gibbonPersonID']] = [];
                 }

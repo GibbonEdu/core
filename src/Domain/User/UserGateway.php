@@ -217,7 +217,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
     public function selectActiveUsersBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName, gibbonRole.category FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID = gibbonPerson.gibbonRoleIDPrimary) LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPerson.status = 'Full' ORDER BY surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, preferredName, surname, username, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name AS formGroupName, gibbonFormGroup.nameShort AS formGroup, gibbonRole.category FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID = gibbonPerson.gibbonRoleIDPrimary) LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPerson.status = 'Full' ORDER BY surname, preferredName, formGroup";
 
         return $this->db()->select($sql, $data);
     }

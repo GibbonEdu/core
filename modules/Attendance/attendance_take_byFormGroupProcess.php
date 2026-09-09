@@ -19,10 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Services\Format;
-use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Domain\Attendance\AttendanceLogFormGroupGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Gibbon system-wide includes
 require __DIR__ . '/../../gibbon.php';
@@ -43,60 +45,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        //Proceed!
-        //Check if gibbonFormGroupID and currentDate specified
+        // Proceed!
+        // Check if gibbonFormGroupID and currentDate specified
         if ($gibbonFormGroupID == '' and $currentDate == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                if ($highestAction == 'Attendance By Form Group_all') {
-                    $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
-                    $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
-                }
-                else {
-                    $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonIDTutor1' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sql = "SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.attendance = 'Y' AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY LENGTH(name), name";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+            if ($highestAction == 'Attendance By Form Group_all') {
+                $result = $container->get(FormGroupGateway::class)->getByID($gibbonFormGroupID);
+            } else {
+                $result = $container->get(FormGroupGateway::class)->selectFormGroupsByTutor($session->get('gibbonPersonID'));
             }
 
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                //Check that date is not in the future
+                // Check that date is not in the future
                 if ($currentDate > $today) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
-                    //Check that date is a school day
+                    // Check that date is a school day
                     if (isSchoolOpen($guid, $currentDate, $connection2) == false) {
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
                     } else {
-                        //Write to database
+                        // Write to database
                         require_once __DIR__ . '/src/AttendanceView.php';
                         $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
-                        try {
-                            $data = array('gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                            $sql = 'INSERT INTO gibbonAttendanceLogFormGroup SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonFormGroupID=:gibbonFormGroupID, date=:date, timestampTaken=:timestampTaken';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
+                        $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+                        $attendanceLogFormGroupGateway = $container->get(AttendanceLogFormGroupGateway::class);
+
+                        $data = [
+                            'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                            'gibbonFormGroupID' => $gibbonFormGroupID,
+                            'date' => $currentDate,
+                            'timestampTaken' => date('Y-m-d H:i:s')
+                        ];
+
+                        $inserted = $attendanceLogFormGroupGateway->insert($data);
+
+                        if (!$inserted) {
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
                         }
-
-                        $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
-
+                        
                         $count = $_POST['count'] ?? '';
                         $partialFail = false;
 

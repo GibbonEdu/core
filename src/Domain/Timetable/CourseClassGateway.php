@@ -138,4 +138,20 @@ class CourseClassGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function selectClassesByDateRange($dateStart, $dateEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectScheduledClassesByTTDate($gibbonSchoolYearID, $dateStart, $dateEnd)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount, gibbonTTColumnRow.name as 'Period' FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDayDate ON(gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd GROUP BY gibbonCourseClass.gibbonCourseClassID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort;";
+
+        return $this->db()->select($sql, $data);
+    }
 }

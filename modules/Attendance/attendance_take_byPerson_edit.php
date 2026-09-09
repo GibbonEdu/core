@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
@@ -50,16 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 	    $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
+		$values = $container->get(AttendanceLogPersonGateway::class)->getStudentAttendanceLogDetailsByID($gibbonAttendanceLogPersonID, $gibbonPersonID);
 
-			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
-			$sqlPerson = "SELECT p.preferredName, p.surname, type, reason, comment, date, context, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, t.preferredName as teacherPreferredName, t.surname as teacherSurname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson p ON (gibbonAttendanceLogPerson.gibbonPersonID=p.gibbonPersonID) JOIN gibbonPerson t ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=t.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
-			$resultPerson = $connection2->prepare($sqlPerson);
-			$resultPerson->execute($dataPerson);
-
-	    if ($resultPerson->rowCount() != 1) {
+	    if (empty($values)) {
 	    	$page->addError(__('The specified record does not exist.'));
 	    } else {
-            $values = $resultPerson->fetch();
             $currentDate = Format::date($values['date']);
 
 			$form = Form::create('attendanceEdit', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/attendance_take_byPerson_editProcess.php');

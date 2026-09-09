@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\User\UserGateway;
 
 //Gibbon system-wide includes
 require __DIR__ . '/../../gibbon.php';
@@ -40,39 +41,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Check if gibbonPersonID and currentDate specified
+    // Proceed!
+    // Check if gibbonPersonID and currentDate specified
     if ($gibbonPersonID == '' and $currentDate == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonPersonID' => $gibbonPersonID);
-            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $result = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Check that date is not in the future
+            // Check that date is not in the future
             if ($currentDate > $today) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                //Check that date is a school day
+                // Check that date is a school day
                 if (isSchoolOpen($guid, $currentDate, $connection2) == false) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
                     //Write to database
                     require_once __DIR__ . '/src/AttendanceView.php';
+                    $attendanceLogPersonGateway = $container->get(AttendanceLogPersonGateway::class);
                     $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
                     $fail = false;
@@ -99,34 +92,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                     if (!$existing) {
                         // If no records then create one
-                        try {
-                            $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                            $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Person\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
-                            $resultUpdate = $connection2->prepare($sqlUpdate);
-                            $resultUpdate->execute($dataUpdate);
-                        } catch (PDOException $e) {
+                        $data = [
+                            'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+                            'gibbonPersonID' => $gibbonPersonID,
+                            'type' => $type,
+                            'context' => 'Person',
+                            'reason' => $reason,
+                            'comment' => $comment,
+                            'direction' => $direction,
+                            'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                            'date' => $currentDate,
+                            'timestampTaken' => date('Y-m-d H:i:s')
+                        ];
+
+                        $inserted = $attendanceLogPersonGateway->insert($data);
+
+                        if (!$inserted) {
                             $fail = true;
                         }
+
                     } else {
-                        //If direction same then update
+                        
+                        // If direction same then update
                         if ($row['direction'] == $direction && $row['gibbonCourseClassID'] == 0) {
-                            try {
-                                $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'), 'gibbonAttendanceLogPersonID' => $row['gibbonAttendanceLogPersonID']);
-                                $sqlUpdate = 'UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Person\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
-                                $resultUpdate = $connection2->prepare($sqlUpdate);
-                                $resultUpdate->execute($dataUpdate);
-                            } catch (PDOException $e) {
+                            $dataUpdate = [
+                                'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'direction' => $direction,
+                                'context' => 'Person',
+                                'type' => $type,
+                                'reason' => $reason,
+                                'comment' => $comment,
+                                'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                                'date' => $currentDate,
+                                'timestampTaken' => date('Y-m-d H:i:s')
+                            ];
+
+                            $updated = $attendanceLogPersonGateway->update($row['gibbonAttendanceLogPersonID'], $dataUpdate);
+
+                            if (!$updated) {
                                 $fail = true;
                             }
-                        }
-                        //Else create a new record
-                        else {
-                            try {
-                                $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Person\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
-                                $resultUpdate = $connection2->prepare($sqlUpdate);
-                                $resultUpdate->execute($dataUpdate);
-                            } catch (PDOException $e) {
+                        } else {  // Else create a new record
+                            
+                            $data = [
+                                'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'direction' => $direction,
+                                'context' => 'Person',
+                                'type' => $type,
+                                'reason' => $reason,
+                                'comment' => $comment,
+                                'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                                'date' => $currentDate,
+                                'timestampTaken' => date('Y-m-d H:i:s')
+                            ];
+
+                            $inserted = $attendanceLogPersonGateway->insert($data);
+
+                            if (!$inserted) {
                                 $fail = true;
                             }
                         }

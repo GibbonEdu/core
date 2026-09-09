@@ -19,11 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Services\Format;
+use Gibbon\Domain\Attendance\AttendanceLogFormGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -104,11 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
         $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
-        //Produce array of attendance data
-        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-        $sql = 'SELECT date, nameShort, gibbonAttendanceLogFormGroup.gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) as timestamp, timestampTaken, gibbonPersonIDTaker FROM gibbonAttendanceLogFormGroup JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonAttendanceLogFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        // Produce array of attendance data
+        $result = $container->get(AttendanceLogFormGroupGateway::class)->selectFormGroupAttendanceByDateRange($lastNSchoolDays[count($lastNSchoolDays)-1], $lastNSchoolDays[0]);
+
         $log = [];
         $logAll = [];
         while ($row = $result->fetch()) {
@@ -116,10 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             $logAll[$row['gibbonFormGroupID']][] = $row;
         }
 
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $result = $container->get(FormGroupGateway::class)->selectFormGroupsBySchoolYear($session->get('gibbonSchoolYearID'));
 
         if ($result->rowCount() < 1) {
             echo $page->getBlankSlate();
@@ -128,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             echo __('The specified date is in the future: it must be today or earlier.');
             echo '</div>';
         } else {
-            //Produce array of form groups
+            // Produce array of form groups
             $formGroups = $result->fetchAll();
 
             $form = Form::createBlank('buttons');
@@ -243,14 +240,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                     if ($row['gibbonPersonIDTutor'] == '' and $row['gibbonPersonIDTutor2'] == '' and $row['gibbonPersonIDTutor3'] == '') {
                         echo '<i>Not set</i>';
                     } else {
-
-                        $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
-                        $sqlTutor = "SELECT surname, preferredName FROM gibbonPerson WHERE (gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3) AND gibbonPerson.status='Full'";
-                        $resultTutor = $connection2->prepare($sqlTutor);
-                        $resultTutor->execute($dataTutor);
-
-                        while ($rowTutor = $resultTutor->fetch()) {
-                            echo Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
+                        $tutors = $container->get(FormGroupGateway::class)->selectTutorsByFormGroup($row['gibbonFormGroupID']);
+                        
+                        while ($tutor = $tutors->fetch()) {
+                            echo Format::name('', $tutor['preferredName'], $tutor['surname'], 'Staff', true, true).'<br/>';
                         }
                     }
                     echo '</td>';
