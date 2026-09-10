@@ -82,6 +82,15 @@ UPDATE gibbonSetting
 SQL
 log "OK: absolutePath value is /var/www/html"
 
+log "Updating absoluteURL value in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+UPDATE gibbonSetting
+  SET value = 'http://localhost:8080'
+  WHERE name = 'absoluteURL'
+SQL
+log "OK: absoluteURL value is http://localhost:8080"
+
 log "Updating installType to Development in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'

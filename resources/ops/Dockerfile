@@ -15,13 +15,11 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     gettext \
     locales \
-    && sed -i -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' /etc/locale.gen \
-    && locale-gen es_ES.UTF-8 \
-    && update-locale LANG=es_ES.UTF-8 LC_ALL=es_ES.UTF-8 \
-    && sed -i -e 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' /etc/locale.gen \
-    && locale-gen en_GB.UTF-8 \
-    && update-locale LANG=en_GB.UTF-8 LC_ALL=en_GB.UTF-8 \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && sed -i -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' \
+              -e 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen es_ES.UTF-8 en_GB.UTF-8 \
+    && update-locale LANG=en_GB.UTF-8 LC_ALL=en_GB.UTF-8
 
 # 2. Install PHP Extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
