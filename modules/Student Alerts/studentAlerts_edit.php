@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\StudentAlerts\AlertGateway;
-use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
-use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Support\Facades\Access;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
+use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 
 if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_edit.php')) {
 	// Access denied

@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
@@ -26,8 +28,6 @@ use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\Timetable\CourseClassGateway;
-use Gibbon\Http\Url;
-use Gibbon\Services\Format;
 
 require_once __DIR__ . '/../../gibbon.php';
 

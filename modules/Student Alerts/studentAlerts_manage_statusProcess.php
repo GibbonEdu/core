@@ -19,14 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Http\Url;
-use Gibbon\Services\Format;
-use Gibbon\Support\Facades\Access;
 
 require_once __DIR__ . '/../../gibbon.php';
 
