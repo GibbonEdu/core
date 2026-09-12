@@ -73,6 +73,35 @@ else
   exit 1
 fi
 
+log 'Rolling back version number in gibbonSetting table'
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+    UPDATE gibbonSetting
+      SET value = '30.0.01'
+      WHERE name = 'version'
+SQL
+
+log 'Running SQL commands in CHANGEDB.php'
+docker compose exec app php -r "
+require '/var/www/html/gibbon.php';
+include '/var/www/html/CHANGEDB.php';
+foreach (\$sql as \$entry) {
+    if (version_compare(\$entry[0], '31.0.00', '>=')) {
+        foreach (explode(';end', \$entry[1]) as \$query) {
+            if (trim(\$query) !== '') {
+                try {
+                    \$connection2->query(\$query);
+                } catch (Exception \$e) {
+                    echo \"Error in {\$entry[0]}: \" . \$e->getMessage() . PHP_EOL;
+                }
+            }
+        }
+    }
+}
+echo \"Finished executing SQL from v31.0.00 onwards.\n\";
+"
+log 'OK: Finished running SQL commands in CHANGEDB.php'
+
 log "Updating absolutePath value in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'

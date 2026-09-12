@@ -25,7 +25,7 @@ if [ -f "${PROJECT_DIR}/.env" ]; then
   source "${PROJECT_DIR}/.env"
 fi
 
-log "Updating absoluteURL value in gibbonSetting table"
+log 'Updating absoluteURL value in gibbonSetting table'
 ${DOCKER_COMPOSE} exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
     mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
         UPDATE gibbonSetting
@@ -34,13 +34,15 @@ ${DOCKER_COMPOSE} exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
 SQL
 log 'OK: absoluteURL value is http://172.16.238.10'
 
+log 'Running acceptance tests'
 ${DOCKER_COMPOSE} run --rm test \
     /var/www/html/vendor/codeception/codeception/codecept \
     -c /var/www/html/tests/codeception.yml \
     run \
     "${1:-acceptance}"
+log 'OK: Finished running acceptance tests'
 
-log "Reverting absoluteURL value in gibbonSetting table"
+log 'Reverting absoluteURL value in gibbonSetting table'
 ${DOCKER_COMPOSE} exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
     mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
         UPDATE gibbonSetting
