@@ -288,7 +288,10 @@ class PlannerEntryGateway extends QueryableGateway
             ->where("gibbonPlannerEntry.homework='Y'")
             ->where('(gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)')
             ->where("(gibbonCourseClassPerson.role NOT LIKE '%Left' OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)")
-            ->where("(gibbonPlannerEntry.date < :todayDate OR (gibbonPlannerEntry.date=:todayDate AND timeEnd <= :todayTime))")
+            ->where("(
+                (gibbonPlannerEntry.homeworkSubmission = 'Y' AND COALESCE(gibbonPlannerEntry.homeworkSubmissionDateOpen, gibbonPlannerEntry.date) <= :todayDate)
+                OR (gibbonPlannerEntry.homeworkSubmission <> 'Y' AND (gibbonPlannerEntry.date < :todayDate OR (gibbonPlannerEntry.date=:todayDate AND timeEnd <= :todayTime)))
+            )")
             ->bindValue('todayDate', date('Y-m-d'))
             ->bindValue('todayTime', date('H:i:s'));
           
