@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             if ($_POST['homeworkSubmissionDateOpen'] != '') {
                                 $homeworkSubmissionDateOpen = Format::dateConvert($_POST['homeworkSubmissionDateOpen']);
                             } else {
-                                $homeworkSubmissionDateOpen = date('Y-m-d');
+                                $homeworkSubmissionDateOpen = $date;
                             }
                             
                             $homeworkSubmissionDrafts = !empty($_POST['homeworkSubmissionDrafts']) ? $_POST['homeworkSubmissionDrafts'] : null;
