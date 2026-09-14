@@ -39,7 +39,7 @@ ${DOCKER_COMPOSE} run --rm test \
     /var/www/html/vendor/codeception/codeception/codecept \
     -c /var/www/html/tests/codeception.yml \
     run \
-    "${1:-acceptance}"
+    "${@:-acceptance}"
 log 'OK: Finished running acceptance tests'
 
 log 'Reverting absoluteURL value in gibbonSetting table'

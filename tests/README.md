@@ -52,3 +52,12 @@ Execute all acceptance tests:
 tests/test_acceptance.sh
 ```
 
+Execute acceptance tests in a module:
+```bash
+tests/run_acceptance.sh acceptance Markbook
+```
+
+Execute specific acceptance test file:
+```bash
+tests/run_acceptance.sh acceptance Markbook/ViewMyMarksCept
+```
