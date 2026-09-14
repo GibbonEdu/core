@@ -19,6 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v30.0.02
+--------
+
+    Security
+        System: applied a sanitizeName method for input sanitization
+        Messenger: resolved non-paramaterised input in MessengerGateway
+
+
 v30.0.01
 --------
 
