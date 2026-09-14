@@ -136,11 +136,12 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
 
     $table->addColumn('name', __('Name'))
         ->sortable(['surname', 'preferredName'])
+        ->context('primary')
         ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'roleCategory', true, true]));
 
-    $table->addColumn('roleCategory', __('Role'));
+    $table->addColumn('roleCategory', __('Role'))->context('secondary');
 
-    $table->addColumn('formGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'))->context('primary');
 
     $table->addColumn('role', __('Event Role'))
         ->format(function ($values) {
