@@ -23,6 +23,7 @@ v30.0.02
 --------
 
     Security
+        System: improved user access checks for AJAX scripts
         System: applied a sanitizeName method for input sanitization
         Messenger: resolved non-paramaterised input in MessengerGateway
 

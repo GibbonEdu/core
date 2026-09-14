@@ -19,7 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Support\Facades\Access;
+
 include '../../gibbon.php';
+
+if (Access::denies('Students', 'student_view_details_notes_add')) {
+    die(__('Your request failed because you do not have access to this action.'));
+}
 
 include './moduleFunctions.php';
 
