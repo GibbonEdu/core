@@ -34,6 +34,10 @@ if (!$session->has('gibbonPersonID')) {
     return;
 }
 
+if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_byStudent.php') == false && isActionAccessible($guid, $connection2, '/modules/ATL/atl_write_data.php') == false) {
+    return;
+}
+
 if (empty($img) || empty($gibbonPersonID) || empty($absolutePath)) {
     return;
 }
