@@ -300,9 +300,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('homeworkSubmission', __('Online Submission?'));
                 $row->addYesNo('homeworkSubmission')->required()->checked('N');
 
+            $lessonDate = ($viewBy == 'date') ? $date : ($nextDate ?? $date ?? '');
             $row = $form->addRow()->setClass('homeworkSubmission');
-                $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
-                $row->addDate('homeworkSubmissionDateOpen')->required();
+                $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'))->description(__('Defaults to the lesson date.'));
+                $row->addDate('homeworkSubmissionDateOpen')->setValue(!empty($lessonDate) ? $lessonDate : '');
 
             $row = $form->addRow()->setClass('homeworkSubmission');
                 $row->addLabel('homeworkSubmissionDrafts', __('Drafts'));
@@ -418,6 +419,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $form->enableAutoSave($formId, $autoSaveUrl);
 
             echo $form->getOutput();
+            echo getPlannerHomeworkOpenDateScript();
         }
 
         //Print sidebar

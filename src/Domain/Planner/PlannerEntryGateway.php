@@ -288,7 +288,10 @@ class PlannerEntryGateway extends QueryableGateway
             ->where("gibbonPlannerEntry.homework='Y'")
             ->where('(gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)')
             ->where("(gibbonCourseClassPerson.role NOT LIKE '%Left' OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)")
-            ->where("(gibbonPlannerEntry.date < :todayDate OR (gibbonPlannerEntry.date=:todayDate AND timeEnd <= :todayTime))")
+            ->where("(
+                (gibbonPlannerEntry.homeworkSubmission = 'Y' AND COALESCE(gibbonPlannerEntry.homeworkSubmissionDateOpen, gibbonPlannerEntry.date) <= :todayDate)
+                OR (gibbonPlannerEntry.homeworkSubmission <> 'Y' AND (gibbonPlannerEntry.date < :todayDate OR (gibbonPlannerEntry.date=:todayDate AND timeEnd <= :todayTime)))
+            )")
             ->bindValue('todayDate', date('Y-m-d'))
             ->bindValue('todayTime', date('H:i:s'));
           
@@ -416,7 +419,7 @@ class PlannerEntryGateway extends QueryableGateway
                 AND (role='Teacher' OR (role='Student' AND $viewableBy='Y')) 
                 AND homeworkDueDateTime>:todayTime 
                 AND gibbonPlannerEntry.homeworkSubmission='Y'
-                AND ((date<:todayDate) OR (date=:todayDate AND timeEnd<=:time))
+                AND COALESCE(gibbonPlannerEntry.homeworkSubmissionDateOpen, gibbonPlannerEntry.date) <= :todayDate
                 AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)
                 AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)
             )
@@ -540,7 +543,12 @@ class PlannerEntryGateway extends QueryableGateway
             FROM gibbonPlannerEntry 
             JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
             JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-            WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND homework='Y' AND homeworkDueDateTime>:homeworkDueDateTime AND ((date<:date1) OR (date=:date2 AND timeEnd<=:timeEnd)) ORDER BY homeworkDueDateTime";
+            WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND homework='Y' AND homeworkDueDateTime>:homeworkDueDateTime
+            AND (
+                (homeworkSubmission='Y' AND COALESCE(homeworkSubmissionDateOpen, date) <= :date1)
+                OR (homeworkSubmission<>'Y' AND ((date<:date1) OR (date=:date2 AND timeEnd<=:timeEnd)))
+            )
+            ORDER BY homeworkDueDateTime";
 
         return $this->db()->select($sql, $data);
     }
@@ -560,7 +568,11 @@ class PlannerEntryGateway extends QueryableGateway
             WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
             AND gibbonSchoolYearID=:gibbonSchoolYearID  
             AND NOT role='Student - Left' AND NOT role='Teacher - Left' 
-            AND homework='Y' AND date<=:today 
+            AND homework='Y'
+            AND (
+                date<=:today
+                OR (homeworkSubmission='Y' AND COALESCE(homeworkSubmissionDateOpen, date) <= :today)
+            ) 
             AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)
             AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.date)
             ORDER BY name";

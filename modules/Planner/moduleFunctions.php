@@ -750,4 +750,28 @@ function getResourceLink($guid, $gibbonResourceID, $type, $name, $content)
     return $output;
 }
 
+/**
+ * Keep Submission Open Date in sync with the lesson date unless the teacher set a different value.
+ */
+function getPlannerHomeworkOpenDateScript()
+{
+    return '<script>
+htmx.onLoad(function () {
+    var dateField = document.querySelector(\'form input[name="date"]\');
+    var openField = document.querySelector(\'form input[name="homeworkSubmissionDateOpen"]\');
+    if (!dateField || !openField) return;
+    var lastLessonDate = dateField.value;
+    if (!openField.value && dateField.value) {
+        openField.value = dateField.value;
+    }
+    dateField.addEventListener(\'change\', function () {
+        if (!openField.value || openField.value === lastLessonDate) {
+            openField.value = dateField.value;
+        }
+        lastLessonDate = dateField.value;
+    });
+});
+</script>';
+}
+
 ?>
