@@ -34,6 +34,7 @@ v31.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+        System: added a Back to previous page link at the top of the sidebar
         System: updated TinyMCE to version 8 and added a minimal mode to Editor fields
         System: added a User module to organise user preferences and settings
         System: enabled configuring the time format as 12-hour clock or 24-hour clock in System Settings
