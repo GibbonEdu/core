@@ -31,3 +31,7 @@ table:
         name: "Priority"
         desc: "Higher priorities are substituted first."
         args: { filter: numeric, required: true, custom: true }
+    gibbonPersonIDList:
+        name: "Users"
+        desc: "Comma-separated person IDs. Leave blank to apply to all users."
+        args: { filter: string, required: false, custom: true }

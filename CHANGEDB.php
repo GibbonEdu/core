@@ -445,5 +445,8 @@ UPDATE `gibbonAction` SET name='View Timetable by Facility_viewOnly' WHERE name=
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`, `menuShow`, `entrySidebar`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable'), 'View Timetable by Facility_editLocation', 1, 'View Timetables', 'View facility usage and edit class facilities.', 'tt_space.php,tt_space_view.php,tt_space_edit.php', 'tt_space.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'Y');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction WHERE name='View Timetable by Facility_editLocation' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable')));end
 UPDATE `gibbonReportingCycle` SET `milestones`='[]' WHERE TRIM(`milestones`) IN ('Array', '\"Array\"') OR `milestones` IS NULL;end
+ALTER TABLE `gibbonString` ADD `gibbonPersonID` INT(10) UNSIGNED ZEROFILL DEFAULT NULL AFTER `priority`;end
+ALTER TABLE `gibbonString` CHANGE `gibbonPersonID` `gibbonPersonIDList` TEXT DEFAULT NULL;end
+UPDATE `gibbonString` SET `gibbonPersonIDList` = CAST(`gibbonPersonIDList` AS UNSIGNED) WHERE `gibbonPersonIDList` IS NOT NULL AND `gibbonPersonIDList` != '' AND `gibbonPersonIDList` NOT LIKE '%,%';end
 
 ";

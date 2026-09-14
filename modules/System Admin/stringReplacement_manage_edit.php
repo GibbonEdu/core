@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplacement_manage_edit.php') == false) {
     // Access denied
@@ -56,6 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             }
 
             $form = Form::create('editString', $session->get('absoluteURL').'/modules/'.$session->get('module').'/stringReplacement_manage_editProcess.php?gibbonStringID='.$values['gibbonStringID'].'&search='.$search);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
 
@@ -83,6 +85,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             $row = $form->addRow();
                 $row->addLabel('caseSensitive', __('Case Sensitive'));
                 $row->addYesNo('caseSensitive')->selected('N')->required()->selected($values['caseSensitive']);
+
+            $row = $form->addRow();
+                $row->addLabel('gibbonPersonIDList', __('Users'))->description(__('Leave blank to apply to all users.'));
+                $row->addSelectUsers('gibbonPersonIDList', $session->get('gibbonSchoolYearID'))
+                    ->selectMultiple()
+                    ->selected(array_filter(explode(',', $values['gibbonPersonIDList'] ?? '')));
 
             $row = $form->addRow();
                 $row->addLabel('priority', __('Priority'))->description(__('Higher priorities are substituted first.'));

@@ -154,15 +154,36 @@ class Locale implements LocaleInterface
     public function setStringReplacementList(Session $session, Connection $pdo, $forceRefresh = false)
     {
         $stringReplacements = $session->get('stringReplacement', null);
+        $gibbonPersonID = $session->get('gibbonPersonID');
+        $stringReplacementPersonID = $session->get('stringReplacementPersonID');
 
-        // Do this once per session, only if the value doesn't exist
-        if ($forceRefresh || $stringReplacements === null) {
+        // Do this once per session, only if the value doesn't exist or the current user has changed
+        if ($forceRefresh || $stringReplacements === null || $stringReplacementPersonID !== $gibbonPersonID) {
 
             $stringReplacements = array();
 
             if ($pdo->getConnection() != null) {
                 $data = array();
-                $sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original";
+                $sql = "SELECT original, replacement, mode, caseSensitive FROM gibbonString";
+
+                // Keep working before System Admin > Update adds gibbonPersonIDList
+                $hasPersonIDList = $session->get('gibbonStringHasPersonIDList');
+                if ($hasPersonIDList !== true) {
+                    $columnCheck = $pdo->select("SHOW COLUMNS FROM gibbonString LIKE 'gibbonPersonIDList'");
+                    $hasPersonIDList = $columnCheck && $columnCheck->rowCount() > 0;
+                    $session->set('gibbonStringHasPersonIDList', $hasPersonIDList);
+                }
+
+                if ($hasPersonIDList) {
+                    $sql .= " WHERE (gibbonPersonIDList IS NULL OR gibbonPersonIDList='')";
+
+                    if (!empty($gibbonPersonID)) {
+                        $data['gibbonPersonID'] = (string) intval($gibbonPersonID);
+                        $sql .= " OR FIND_IN_SET(:gibbonPersonID, gibbonPersonIDList)";
+                    }
+                }
+
+                $sql .= " ORDER BY priority DESC, original";
 
                 $result = $pdo->select($sql, $data);
 
@@ -171,7 +192,8 @@ class Locale implements LocaleInterface
                 }
             }
 
-            $session->set('stringReplacement', $stringReplacements );
+            $session->set('stringReplacement', $stringReplacements);
+            $session->set('stringReplacementPersonID', $gibbonPersonID);
         }
 
         $this->stringReplacements = $stringReplacements;

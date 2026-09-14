@@ -6317,7 +6317,8 @@ CREATE TABLE `gibbonString` (
   `replacement` varchar(255) NOT NULL,
   `mode` enum('Whole','Partial') NOT NULL,
   `caseSensitive` enum('Y','N') NOT NULL,
-  `priority` int NOT NULL DEFAULT '0'
+  `priority` int NOT NULL DEFAULT '0',
+  `gibbonPersonIDList` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
