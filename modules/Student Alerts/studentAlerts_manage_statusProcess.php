@@ -17,16 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
+use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Support\Facades\Access;
-use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Timetable\CourseGateway;
-use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\User\UserGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -119,7 +119,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
     ];
 
     if (!empty($alert['gibbonCourseClassID'])) {
-        $class = $container->get(CourseGateway::class)->getCourseClassByID($alert['gibbonCourseClassID']);
+        $class = $container->get(CourseClassGateway::class)->getCourseClassByID($alert['gibbonCourseClassID']);
         $notificationDetails = [
             __('Class') => Format::courseClassName($class['courseNameShort'] ?? '', $class['nameShort'] ?? ''),
         ] + $notificationDetails;
