@@ -95,26 +95,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $form->addHiddenValue('address', $session->get('address'));
 
-            $people = array();
+                $allUsers = $userGateway->selectUserNamesByStatus(['Full', 'Expected'], null, $gibbonSchoolYearID)->fetchAll();
 
-            $enrolableStudents = $courseEnrolmentGateway->selectEnrolableStudentsByYearGroup($gibbonSchoolYearID, $values['gibbonYearGroupIDList'])->fetchAll();
-            if (!empty($enrolableStudents)) {
-                $people['--'.__('Enrolable Students').'--'] = Format::keyValue($enrolableStudents, 'gibbonPersonID', function ($item) {
-                    return $item['formGroupName'].' - '.Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].')';
-                });
-            }
+            $people = Format::keyValue($allUsers, 'gibbonPersonID', function ($item) {
+                    $name = $item['surname'].', '.$item['preferredName'].' ('.__($item['roleCategory']);
+                if ($item['roleCategory'] == 'Student' && $item['formGroupName'] != '') {
+                    $name .= ', '.$item['formGroupName'];
+                }
+                    $name .= ', '.$item['username'].')';
 
-            $allUsers = $userGateway->selectUserNamesByStatus(['Full', 'Expected'])->fetchAll();
-            if (!empty($allUsers)) {
-                $people['--'.__('All Users').'--'] = Format::keyValue($allUsers, 'gibbonPersonID', function ($item) {
-                    $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
-                    return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.__($item['roleCategory']).')'.$expected;
-                });
-            }
+                if ($item['status'] == 'Expected') {
+                    $name .= ' ('.__('Expected').')';
+                }
 
-            $row = $form->addRow();
-                $row->addLabel('Members', __('Participants'));
-                $row->addSelect('Members')->fromArray($people)->selectMultiple();
+                return $name;
+            });
+
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('Members', __('Participants'));
+                $col->addMultiSelect('Members')->required()->source()->fromArray($people);
 
             $roles = array(
                 'Student'    => __('Student'),
