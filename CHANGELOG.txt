@@ -58,6 +58,7 @@ v31.0.00
         Messenger: creator of targeted message can now view it in Message Wall
         Planner: improved the Deploy Unit page with a drag-drop interface and new tools
         Planner: added the option to set a location for non-timetables lessons in Lesson Planner
+        Planner: restored lesson plan Chat comments using the discussion UI, keeping existing records
         Reports: added error detection while editing twig templates
         Reports: improved the file path checking while managing archives and uploading bulk reports
         Reports: added the option to set the report author in Write Reports by Student

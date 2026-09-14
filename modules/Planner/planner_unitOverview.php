@@ -434,19 +434,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     }
 
 									//Print chats
-                                    try {
-                                        $dataDiscuss = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID']);
-                                        $sqlDiscuss = 'SELECT gibbonPlannerEntryDiscuss.*, title, surname, preferredName, category FROM gibbonPlannerEntryDiscuss JOIN gibbonPerson ON (gibbonPlannerEntryDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY timestamp';
-                                        $resultDiscuss = $connection2->prepare($sqlDiscuss);
-                                        $resultDiscuss->execute($dataDiscuss);
-                                    } catch (PDOException $e) {}
-
-                                    if ($resultDiscuss->rowCount() > 0) {
-                                        echo "<h5 style='font-size: 85%'>".__('Chat').'</h5>';
-                                        echo '<style type="text/css">';
-                                        echo 'table.chatbox { width: 90%!important }';
-                                        echo '</style>';
-                                        echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1] ?? '', $session->get('gibbonPersonID'), 'Teacher', false, true);
+                                    $discussion = getPlannerEntryDiscussion($rowLessons['gibbonPlannerEntryID']);
+                                    if (!empty($discussion)) {
+                                        echo '<h5>'.__('Chat').'</h5>';
+                                        echo $page->fetchFromTemplate('ui/plannerChat.twig.html', [
+                                            'discussion' => $discussion,
+                                        ]);
                                     }
                                 }
                             }
