@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
 require_once '../../gibbon.php';
 
@@ -35,117 +37,121 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
-    if ($highestAction == false) {
+    //Proceed!
+    $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner_view_full_submit_edit.php', $connection2); 
+    if (empty($highestAction)) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
+        exit;
+    } 
+
+    //Check if planner specified
+    if ($gibbonPlannerEntryID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
+    $plannerEntryHomeworkGateway = $container->get(PlannerEntryHomeworkGateway::class);
+
+    $values = $plannerEntryGateway->getByID($gibbonPlannerEntryID);
+    if (empty($values)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if ($_POST['submission'] != 'true' and $_POST['submission'] != 'false') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    if ($_POST['submission'] == 'true') {
+        $submission = true;
+        $gibbonPlannerEntryHomeworkID = $_POST['gibbonPlannerEntryHomeworkID'] ?? '';
     } else {
-        //Proceed!
-        //Check if planner specified
-        if ($gibbonPlannerEntryID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+        $submission = false;
+    }
+
+    $type = $_POST['type'] ?? '';
+    $version = $_POST['version'] ?? '';
+    $link = $_POST['link'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
+    $count = $_POST['count'] ?? '';
+    $lesson = $_POST['lesson'] ?? '';
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+
+
+    if (($submission == true and $gibbonPlannerEntryHomeworkID == '') or ($submission == false and ($gibbonPersonID == '' or $type == '' or $version == '' or ($type == 'File' and $_FILES['file']['name'] == '') or ($type == 'Link' and $link == '') or $status == '' or $lesson == '' or $count == ''))) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+    
+    // Ensure the student and/or teacher is part of the target class
+    if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
+        $plannerClass = $plannerEntryGateway->getPlannerClassAccessByPerson($gibbonPlannerEntryID, $gibbonPersonID);
+    } elseif ($highestAction == 'Lesson Planner_viewAllEditMyClasses') {
+        $plannerClass = $plannerEntryGateway->getPlannerClassAccessByPerson($gibbonPlannerEntryID, $session->get('gibbonPersonID'));
+    }
+
+    if (empty($plannerClass)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if ($submission == true) {
+        $plannerEntryHomeworkGateway->update($gibbonPlannerEntryHomeworkID, ['status' => $status]);
+
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    $partialFail = false;
+    $attachment = null;
+    if ($type == 'Link') {
+        if (substr($link, 0, 7) != 'http://' and substr($link, 0, 8) != 'https://') {
+            $partialFail = true;
         } else {
-            try {
-                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                $sql = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-            } else {
-                if ($_POST['submission'] != 'true' and $_POST['submission'] != 'false') {
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
-                } else {
-                    if ($_POST['submission'] == 'true') {
-                        $submission = true;
-                        $gibbonPlannerEntryHomeworkID = $_POST['gibbonPlannerEntryHomeworkID'] ?? '';
-                    } else {
-                        $submission = false;
-                        $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-                    }
-
-                    $type = $_POST['type'] ?? '';
-                    $version = $_POST['version'] ?? '';
-                    $link = $_POST['link'] ?? '';
-                    $status = $_POST['status'] ?? '';
-                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-                    $count = $_POST['count'] ?? '';
-                    $lesson = $_POST['lesson'] ?? '';
-
-
-                    if (($submission == true and $gibbonPlannerEntryHomeworkID == '') or ($submission == false and ($gibbonPersonID == '' or $type == '' or $version == '' or ($type == 'File' and $_FILES['file']['name'] == '') or ($type == 'Link' and $link == '') or $status == '' or $lesson == '' or $count == ''))) {
-                        $URL .= '&return=error1';
-                        header("Location: {$URL}");
-                    } else {
-                        if ($submission == true) {
-                            try {
-                                $data = array('status' => $status, 'gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID);
-                                $sql = 'UPDATE gibbonPlannerEntryHomework SET status=:status WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $URL .= '&return=error2';
-                                header("Location: {$URL}");
-                                exit();
-                            }
-                            $URL .= '&return=success0';
-                            header("Location: {$URL}");
-                        } else {
-                            $partialFail = false;
-                            $attachment = null;
-                            if ($type == 'Link') {
-                                if (substr($link, 0, 7) != 'http://' and substr($link, 0, 8) != 'https://') {
-                                    $partialFail = true;
-                                } else {
-                                    $attachment = $link;
-                                }
-                            }
-                            if ($type == 'File') {
-                                $fileUploader = new Gibbon\FileUploader($pdo, $session);
-
-                                $file = (isset($_FILES['file']))? $_FILES['file'] : null;
-
-                                // Upload the file, return the /uploads relative path
-                                $attachment = $fileUploader->uploadFromPost($file, $session->get('username').'_'.$lesson);
-
-                                if (empty($attachment)) {
-                                    $partialFail = true;
-                                }
-                            }
-
-                            //Deal with partial fail
-                            if ($partialFail == true) {
-                                $URL .= '&return=error6';
-                                header("Location: {$URL}");
-                            } else {
-                                //Write to database
-                                try {
-                                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $attachment, 'count' => ($count + 1), 'timestamp' => date('Y-m-d H:i:s'));
-                                    $sql = 'INSERT INTO gibbonPlannerEntryHomework SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, type=:type, version=:version, status=:status, location=:location, count=:count, timestamp=:timestamp';
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
-                                } catch (PDOException $e) {
-                                    $URL .= '&return=error2';
-                                    header("Location: {$URL}");
-                                    exit();
-                                }
-
-                                $URL .= '&return=success0';
-                                header("Location: {$URL}");
-                            }
-                        }
-                    }
-                }
-            }
+            $attachment = $link;
         }
     }
+
+    if ($type == 'File') {
+        $fileUploader = new Gibbon\FileUploader($pdo, $session);
+
+        $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+        // Upload the file, return the /uploads relative path
+        $attachment = $fileUploader->uploadFromPost($file, $session->get('username').'_'.$lesson);
+
+        if (empty($attachment)) {
+            $partialFail = true;
+        }
+    }
+
+    //Deal with partial fail
+    if ($partialFail == true) {
+        $URL .= '&return=error6';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    //Write to database
+    $inserted = $plannerEntryHomeworkGateway->insert(['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $attachment, 'count' => ($count + 1), 'timestamp' => date('Y-m-d H:i:s')]);
+
+    if (!$inserted) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $URL .= '&return=success0';
+    header("Location: {$URL}");
+    exit;
 }

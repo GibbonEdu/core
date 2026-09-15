@@ -583,6 +583,20 @@ class PlannerEntryGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function getPlannerClassAccessByPerson($gibbonPlannerEntryID, $gibbonPersonID)
+    {
+        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class 
+                FROM gibbonPlannerEntry 
+                JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                WHERE gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID
+                AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getLatestLessonByClass($gibbonCourseClassID)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID];

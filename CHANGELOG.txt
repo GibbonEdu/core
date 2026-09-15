@@ -27,6 +27,7 @@ v30.0.02
         System: added url source validation to internal HTTP_REFERER redirects
         System: applied a sanitizeName method for input sanitization
         Messenger: resolved non-paramaterised input in MessengerGateway
+        Planner: improved direct object reference checks for homework scripts
         Rubrics: improved direct object reference checks for AJAX scripts
 
 

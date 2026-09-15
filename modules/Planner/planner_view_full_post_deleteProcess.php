@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+
 //Gibbon system-wide includes
 include '../../gibbon.php';
 
@@ -38,40 +40,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     header("Location: {$URL}");
 } else {
     //Proceed!
+
+    $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner_view_full.php', $connection2); 
+
     //Check if planner specified
     if ($gibbonPlannerEntryID == '' or $gibbonPlannerEntryDiscussID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        try {
-            $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-            $sql = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //INSERT
-            try {
-                $data = array('gibbonPlannerEntryDiscussID' => $gibbonPlannerEntryDiscussID);
-                $sql = 'DELETE FROM gibbonPlannerEntryDiscuss WHERE gibbonPlannerEntryDiscussID=:gibbonPlannerEntryDiscussID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-        }
+        exit;
     }
+
+    $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
+    
+    $values = $plannerEntryGateway->getByID($gibbonPlannerEntryID);
+    if (empty($values)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses") {
+        $data = ['gibbonPlannerEntryDiscussID' => $gibbonPlannerEntryDiscussID];
+        $sql = 'DELETE FROM gibbonPlannerEntryDiscuss WHERE gibbonPlannerEntryDiscussID=:gibbonPlannerEntryDiscussID';
+        $deleted = $pdo->delete($sql, $data);
+    } else {
+        $data = ['gibbonPlannerEntryDiscussID' => $gibbonPlannerEntryDiscussID, 'gibbonPersonID' => $session->get('gibbonPersonID')];
+        $sql = 'DELETE FROM gibbonPlannerEntryDiscuss WHERE gibbonPlannerEntryDiscussID=:gibbonPlannerEntryDiscussID AND gibbonPersonID=:gibbonPersonID';
+        $deleted = $pdo->delete($sql, $data);
+    }
+
+    
+    if (!$deleted) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit();
+    }
+
+    $URL .= '&return=success0';
+    header("Location: {$URL}");
 }
