@@ -28,6 +28,7 @@ v30.0.02
         System: applied a sanitizeName method for input sanitization
         System: added additional file extensions to htaccess deny list
         Activities: added role-level authorisation checks to registration by student and parent
+        Markbook: improved direct object reference checks for markbook scripts
         Messenger: resolved non-paramaterised input in MessengerGateway
         Planner: improved direct object reference checks for homework scripts
         Rubrics: improved direct object reference checks for AJAX scripts

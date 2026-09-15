@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Markbook\MarkbookColumnGateway;
+
 include '../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
@@ -36,36 +38,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
     if ($gibbonMarkbookColumnID == '' or $gibbonCourseClassID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
+    } 
+    
+    $markbookColumnGateway = $container->get(MarkbookColumnGateway::class);
+    $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit_delete.php', $connection2);
+
+    if ($highestAction == 'Edit Markbook_everything' || $highestAction == 'Edit Markbook_multipleClassesAcrossSchool') {
+        $markbookColumn = $markbookColumnGateway->getByID($gibbonMarkbookColumnID);
+    } elseif ($highestAction == 'Edit Markbook_multipleClassesInDepartment') {
+        $markbookColumn = $markbookColumnGateway->getMarkbookColumnByDepartmentPerson($gibbonMarkbookColumnID, $session->get('gibbonPersonID'));
     } else {
-        try {
-            $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //Write to database
-            try {
-                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
-                $sql = 'DELETE FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $URLDelete = $URLDelete.'&return=success0';
-            header("Location: {$URLDelete}");
-        }
+        $markbookColumn = $markbookColumnGateway->getMarkbookColumnByTeacher($gibbonMarkbookColumnID, $session->get('gibbonPersonID'));
     }
+
+    if (empty($markbookColumn) || $markbookColumn['gibbonMarkbookColumnID'] != $gibbonMarkbookColumnID) {
+        $URL .= '&return=error0';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $deleted = $markbookColumnGateway->delete($gibbonMarkbookColumnID);
+    
+    if (!$deleted) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit();
+    }
+
+    $URLDelete = $URLDelete.'&return=success0';
+    header("Location: {$URLDelete}");
+    
 }
