@@ -125,7 +125,7 @@ docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
       SET value = '30.0.01'
       WHERE name = 'version'
 SQL
-log 'Gibbon version number is now 30.0.01'
+log 'OK: Gibbon version number is now 30.0.01'
 
 log 'Running Updater'
 docker compose exec -T app php -r '
@@ -134,12 +134,11 @@ $updater = $container->get(\Gibbon\Database\Updater::class);
 if ($updater->isUpdateRequired()) {
     $errors = $updater->update();
     if (empty($errors)) {
-        echo "Update completed successfully.\n";
+        echo "OK: Updater completed successfully.\n";
     } else {
         print_r($errors);
     }
 } else {
-    echo "Database is already up-to-date.\n";
+    echo "OK: Database is already up-to-date.\n";
 }
 '
-log 'Update finished'
