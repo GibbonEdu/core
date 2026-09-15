@@ -73,6 +73,33 @@ else
   exit 1
 fi
 
+log "Updating absolutePath value in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+UPDATE gibbonSetting
+  SET value = '/var/www/html'
+  WHERE name = 'absolutePath'
+SQL
+log "OK: absolutePath value is /var/www/html"
+
+log "Updating absoluteURL value in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+UPDATE gibbonSetting
+  SET value = 'http://localhost:8080'
+  WHERE name = 'absoluteURL'
+SQL
+log "OK: absoluteURL value is http://localhost:8080"
+
+log "Updating installType to Development in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+UPDATE gibbonSetting
+  SET value = 'Development'
+  WHERE name = 'installType'
+SQL
+log "OK: installType is Development"
+
 log "Creating admin user"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
@@ -90,3 +117,28 @@ INSERT INTO gibbonPerson (
 )
 SQL
 log "OK: Created admin user"
+
+log 'Rolling back version number in gibbonSetting table'
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+    UPDATE gibbonSetting
+      SET value = '30.0.01'
+      WHERE name = 'version'
+SQL
+log 'OK: Gibbon version number is now 30.0.01'
+
+log 'Running Updater'
+docker compose exec -T app php -r '
+require "/var/www/html/gibbon.php";
+$updater = $container->get(\Gibbon\Database\Updater::class);
+if ($updater->isUpdateRequired()) {
+    $errors = $updater->update();
+    if (empty($errors)) {
+        echo "OK: Updater completed successfully.\n";
+    } else {
+        print_r($errors);
+    }
+} else {
+    echo "OK: Database is already up-to-date.\n";
+}
+'

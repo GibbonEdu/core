@@ -41,7 +41,7 @@ if ! docker info >/dev/null 2>&1; then
     exit 1
 fi
 
-DOCKER_COMPOSE="docker compose --project-directory ."
+DOCKER_COMPOSE="docker compose --project-directory ${PROJECT_DIR} -f ${OPS_DIR}/compose.yaml -f ${OPS_DIR}/compose.dev.yaml"
 
 case "${1:-up}" in
     up)

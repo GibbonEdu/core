@@ -14,7 +14,12 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libonig-dev \
     gettext \
-    && rm -rf /var/lib/apt/lists/*
+    locales \
+    && rm -rf /var/lib/apt/lists/* \
+    && sed -i -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' \
+              -e 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen es_ES.UTF-8 en_GB.UTF-8 \
+    && update-locale LANG=en_GB.UTF-8 LC_ALL=en_GB.UTF-8
 
 # 2. Install PHP Extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
