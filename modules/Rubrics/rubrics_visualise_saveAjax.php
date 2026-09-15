@@ -51,6 +51,20 @@ if ($img === false || mb_stripos($type, 'image/png') === false) {
     return;
 }
 
+// Size Validation (max 5 Megabytes)
+$maxFileSize = 5 * 1024 * 1024; 
+if (strlen($img) > $maxFileSize) {
+    return;
+}
+
+// Inspect the actual byte headers of the decoded content
+$finfo = new finfo(FILEINFO_MIME_TYPE);
+$mimeType = $finfo->buffer($img);
+
+if ($mimeType !== 'image/png') {
+    return;
+}
+
 // Strip directory off of the path, only use sanitized filename
 $imgPath = !empty($_POST['path']) ? basename($_POST['path']) : '';
 $imgPath = mb_substr($imgPath, 0, mb_strrpos($imgPath, '.'));
