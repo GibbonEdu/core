@@ -20,11 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Data\Validator;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
@@ -66,6 +67,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             header("Location: {$URL}");
             exit;
         } else {
+            // Check for student access to registration
+            if ($highestAction == 'View Activities_studentRegister' && $gibbonPersonID != $session->get('gibbonPersonID')) {
+                $URL .= '&return=error0';
+                header("Location: {$URL}");
+                exit;
+            }
+            
+            // Check for parent access to registration via child access
+            if ($highestAction == 'View Activities_studentRegisterByParent') {
+                $children = $container->get(StudentGateway::class)
+                    ->selectAnyStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
+                    ->fetchGroupedUnique();
+
+                if (empty($children[$gibbonPersonID])) {
+                    $URL .= '&return=error0';
+                    header("Location: {$URL}");
+                    exit;
+                }
+            }
+
             //Proceed!
             //Check if gibbonActivityID and gibbonPersonID specified
             if ($gibbonActivityID == '' or $gibbonPersonID == '') {

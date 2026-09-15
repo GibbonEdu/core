@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_view_register.php', $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
@@ -83,6 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $continue = false;
                     //Student
                     if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
+                        $gibbonPersonID = $session->get('gibbonPersonID');
 
                             $dataStudent = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                             $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
