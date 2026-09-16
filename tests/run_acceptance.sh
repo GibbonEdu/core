@@ -29,10 +29,10 @@ log 'Updating absoluteURL value in gibbonSetting table'
 ${DOCKER_COMPOSE} exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
     mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
         UPDATE gibbonSetting
-        SET value = 'http://172.16.238.10'
+        SET value = 'http://gibbon.test'
         WHERE name = 'absoluteURL'
 SQL
-log 'OK: absoluteURL value is http://172.16.238.10'
+log 'OK: absoluteURL value is http://gibbon.test'
 
 log 'Running acceptance tests'
 ${DOCKER_COMPOSE} run --rm test \
