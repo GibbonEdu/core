@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
@@ -36,14 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) || empty($currentDate) ) {
 		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
-	    //Proceed!
+	    // Proceed!
+		$resultPerson = $container->get(AttendanceLogPersonGateway::class)->selectBy(['gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID, 'gibbonPersonID' => $gibbonPersonID]);
 
-			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
-			$sqlPerson = "SELECT gibbonAttendanceLogPersonID FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
-			$resultPerson = $connection2->prepare($sqlPerson);
-			$resultPerson->execute($dataPerson);
-
-	    if ($resultPerson->rowCount() != 1) {
+	    if (empty($resultPerson)) {
 	    	$page->addError(__('The specified record does not exist.'));
 	    } else {
 			$form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module'). '/attendance_take_byPerson_deleteProcess.php');

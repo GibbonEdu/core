@@ -124,14 +124,15 @@ class FormGroupGateway extends QueryableGateway
     public function selectFormGroupsByTutor($gibbonPersonID)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonFormGroup.*, gibbonSpace.name as spaceName
+        $sql = "SELECT gibbonFormGroup.*, gibbonFormGroup.gibbonFormGroupID AS value, gibbonSpace.name as spaceName, gibbonSchoolYear.firstDay, gibbonSchoolYear.lastDay
                 FROM gibbonFormGroup
                 LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonFormGroup.gibbonSpaceID)
+                LEFT JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                 WHERE (gibbonFormGroup.gibbonPersonIDTutor = :gibbonPersonID
                     OR gibbonFormGroup.gibbonPersonIDTutor2 = :gibbonPersonID
                     OR gibbonFormGroup.gibbonPersonIDTutor3 = :gibbonPersonID)
-                AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1)
-                ORDER BY gibbonFormGroup.nameShort";
+                AND gibbonFormGroup.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1)
+                ORDER BY gibbonFormGroup.nameShort, gibbonFormGroup.name";
 
         return $this->db()->select($sql, $data);
     }
@@ -186,27 +187,11 @@ class FormGroupGateway extends QueryableGateway
     public function getFormGroupDetailsByID($gibbonFormGroupID)
     {
         $data = ['gibbonFormGroupID' => $gibbonFormGroupID];
-        $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonFormGroupID=:gibbonFormGroupID';
+        $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, attendance, gibbonSpace.name AS space, website, gibbonSchoolYear.firstDay, gibbonSchoolYear.lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonFormGroupID=:gibbonFormGroupID';
         
-        return $this->db()->select($sql, $data);
-    }
-  
-    public function selectFormGroupListBySchoolYear($gibbonSchoolYearID)
-    {
-        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
-        $sql = 'SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-        
-        return $this->db()->select($sql, $data);
+        return $this->db()->selectOne($sql, $data);
     }
 
-    public function selectFormGroupsByStaff($gibbonSchoolYearID, $gibbonPersonID)
-    {
-        $data = ["gibbonSchoolYearID" => $gibbonSchoolYearID, "gibbonPersonID" => $gibbonPersonID];
-        $sql = "SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
-        
-        return $this->db()->select($sql, $data);
-    }
-  
     public function getFormGroupDetailsByFamilyAdult($gibbonFormGroupID, $gibbonPersonID)
     {
         $data = ['gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
@@ -220,6 +205,14 @@ class FormGroupGateway extends QueryableGateway
         WHERE gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID
         AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID";
 
+        return $this->db()->selectOne($sql, $data);
+    }
+    
+    public function selectFormGroupListBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = 'SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+        
         return $this->db()->select($sql, $data);
     }
 

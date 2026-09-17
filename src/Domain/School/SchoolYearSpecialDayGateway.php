@@ -128,4 +128,17 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectSchoolClosureByDateRange($gibbonSchoolYearID, $dateStart, $dateEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonSchoolYearSpecialDay.date, gibbonSchoolYearSpecialDay.name 
+        FROM gibbonSchoolYear 
+        JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+        JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID)
+        WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonSchoolYearSpecialDay.type='School Closure' AND gibbonSchoolYearSpecialDay.date BETWEEN :dateStart AND :dateEnd
+        ORDER BY date";
+
+        return $this->db()->select($sql, $data);
+    }
 }

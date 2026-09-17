@@ -19,9 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Attendance\AttendanceLogFormGroupGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
 
@@ -40,19 +44,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        //Proceed!
+        // Proceed!
         $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
         $settingGateway = $container->get(SettingGateway::class);
+        $formGroupGateway = $container->get(FormGroupGateway::class);
 
         $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
         $gibbonFormGroupID = '';
         if (isset($_GET['gibbonFormGroupID']) == false) {
-                $data = array('gibbonPersonIDTutor1' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $result = $formGroupGateway->selectFormGroupsByTutor($session->get('gibbonPersonID'));
+
             if ($result->rowCount() > 0) {
                 $row = $result->fetch();
                 $gibbonFormGroupID = $row['gibbonFormGroupID'];
@@ -98,20 +101,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 } else {
                     $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
                     $defaultAttendanceType = $settingGateway->getSettingByScope('Attendance', 'defaultFormGroupAttendanceType');
+                    
+                    // Check form group
+                    $result = $formGroupGateway->getFormGroupDetailsByID($gibbonFormGroupID);
 
-                    //Check form group
-
-                        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                        $sql = 'SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-
-                    if ($result->rowCount() == 0) {
+                    if (empty($result)) {
                         echo $page->getBlankSlate();
                         return;
                     }
 
-                    $formGroup = $result->fetch();
+                    $formGroup = $result;
 
                     if ($formGroup['attendance'] == 'N') {
                         print "<div class='error'>" ;
@@ -119,11 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         print "</div>" ;
                     } else {
 
-                        //Show attendance log for the current day
-                            $dataLog = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate.'%');
-                            $sqlLog = 'SELECT * FROM gibbonAttendanceLogFormGroup, gibbonPerson WHERE gibbonAttendanceLogFormGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonFormGroupID=:gibbonFormGroupID AND date LIKE :date ORDER BY timestampTaken';
-                            $resultLog = $connection2->prepare($sqlLog);
-                            $resultLog->execute($dataLog);
+                        // Show attendance log for the current day
+                        $resultLog = $container->get(AttendanceLogFormGroupGateway::class)->getFormGroupAttendanceByDate($gibbonFormGroupID, $currentDate);
 
                         if ($resultLog->rowCount() < 1) {
                             echo "<div class='error'>";
@@ -140,12 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             echo '</div>';
                         }
 
-                        //Show form group grid
-
-                            $dataFormGroup = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate);
-                            $sqlFormGroup = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
-                            $resultFormGroup = $connection2->prepare($sqlFormGroup);
-                            $resultFormGroup->execute($dataFormGroup);
+                        // Show form group grid
+                        $resultFormGroup = $container->get(StudentGateway::class)->selectActiveStudentsByFormGroup($gibbonFormGroupID, $currentDate);
 
                         if ($resultFormGroup->rowCount() < 1) {
                             echo $page->getBlankSlate();
@@ -154,26 +146,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $countPresent = 0;
                             $columns = 4;
 
-                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
+                            $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0];
                             $students = $resultFormGroup->fetchAll();
 
                             // Build the attendance log data per student
                             foreach ($students as $key => $student) {
-                                $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate);
-                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceLogPerson.gibbonFormGroupID
-                                        FROM gibbonAttendanceLogPerson
-                                        JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                        JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
-                                        WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                        AND date LIKE :date";
+                                $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $currentDate, $countClassAsSchool);
 
-                                if ($countClassAsSchool == 'N') {
-                                    $sql .= " AND NOT context='Class'";
-                                }
-                                $sql .= " ORDER BY timestampTaken DESC";
-                                $result = $pdo->executeQuery($data, $sql);
-
-                                $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
+                                $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
 
                                 if ($log['prefill'] == 'N' && (($log['context'] == 'Form Group' && $log['gibbonFormGroupID'] != $gibbonFormGroupID) || $log['context'] == 'Class') ) {
                                     $log = $defaults;

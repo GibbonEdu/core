@@ -418,7 +418,7 @@ class MessageForm extends Form
             }
             else {
                 if ($this->roleCategory == "Staff") {
-                    $formGroupResults = $this->formGroupGateway->selectFormGroupsByStaff($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
+                    $formGroupResults = $this->formGroupGateway->selectFormGroupsByTutor($this->session->get('gibbonPersonID'));
                 }
                 else if ($this->roleCategory == "Student") {
                     $formGroupResults = $this->formGroupGateway->selectFormGroupsByStudent($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));

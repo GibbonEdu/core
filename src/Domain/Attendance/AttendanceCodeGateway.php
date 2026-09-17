@@ -67,4 +67,11 @@ class AttendanceCodeGateway extends QueryableGateway
 
         return $this->db()->select($sql);
     }
+
+    public function selectReportableActiveAttendanceCodes()
+    {
+        $sql = "SELECT direction as groupBy, gibbonAttendanceCode.* FROM gibbonAttendanceCode WHERE active = 'Y' AND reportable='Y' ORDER BY sequenceNumber ASC, name";
+        
+        return $this->db()->select($sql);
+    }
 }

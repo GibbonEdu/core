@@ -58,4 +58,12 @@ class AttendanceLogCourseClassGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectClassAttendanceByDateRange($dateStart, $dateEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
+
+        return $this->db()->select($sql, $data);
+    }
 }

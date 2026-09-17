@@ -19,10 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Services\Format;
+use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\Timetable\CourseClassPersonGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -103,32 +106,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
         $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
-        //Produce array of attendance data
-        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
-        $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
+        // Produce array of attendance data
+        $result = $container->get(AttendanceLogCourseClassGateway::class)->selectClassAttendanceByDateRange($lastNSchoolDays[count($lastNSchoolDays)-1], $lastNSchoolDays[0]);
 
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        $log = array();
+        $log = [];
         while ($row = $result->fetch()) {
             $log[$row['gibbonCourseClassID']][$row['date']] = true;
         }
 
         // Produce an array of scheduled classes
-        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-        $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
+        $result = $container->get(CourseClassGateway::class)->selectClassesByDateRange($lastNSchoolDays[count($lastNSchoolDays)-1], $lastNSchoolDays[0]);
 
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        $tt = array();
+        $tt = [];
         while ($row = $result->fetch()) {
             $tt[$row['gibbonCourseClassID']][$row['date']] = true;
         }
 
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
-        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount, gibbonTTColumnRow.name as 'Period' FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDayDate ON(gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd GROUP BY gibbonCourseClass.gibbonCourseClassID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort;";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $result = $container->get(CourseClassGateway::class)->selectScheduledClassesByTTDate($session->get('gibbonSchoolYearID'), $lastNSchoolDays[count($lastNSchoolDays)-1], $lastNSchoolDays[0]);
 
         if ($result->rowCount() < 1) {
             echo $page->getBlankSlate();
@@ -138,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             echo __('The specified date is in the future: it must be today or earlier.');
             echo '</div>';
         } else {
-            //Produce array of form groups
+            // Produce array of form groups
             $classes = $result->fetchAll();
 
             $form = Form::createBlank('buttons');
@@ -268,10 +262,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo '</td>';
                     echo '<td>';
 
-                    $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
-                    $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher" AND gibbonPerson.status="Full"';
-                    $resultTutor = $connection2->prepare($sqlTutor);
-                    $resultTutor->execute($dataTutor);
+                    $resultTutor = $container->get(CourseClassPersonGateway::class)->selectTeachersByClass($row['gibbonCourseClassID']);
 
                     if ($resultTutor->rowCount() > 0) {
                         while ($rowTutor = $resultTutor->fetch()) {
