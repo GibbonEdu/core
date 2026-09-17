@@ -45,6 +45,7 @@ v31.0.00
         Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
+        Admissions: improved the logic to automatically assign a house based on siblings or parents
         Attendance: student attendance history now ordered by timetable period
         Attendance: fixed the Consecutive Absences check to only count the final status for each day
         Attendance: added a foreign table field to attendance logs for recording target of future absences

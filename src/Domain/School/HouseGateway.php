@@ -128,4 +128,39 @@ class HouseGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    /**
+     * Find an existing house assignment for a student by family
+     *
+     * @param int $gibbonFamilyID
+     * @param int $gibbonPersonIDStudent Person to exclude when checking siblings
+     * @return array|false
+     */
+    public function selectExistingHouseByFamilyID($gibbonFamilyID, $gibbonPersonIDStudent)
+    {
+        $data = ['gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent];
+
+        $sql = "SELECT gibbonHouseID, house FROM (
+                    SELECT gibbonHouse.gibbonHouseID, gibbonHouse.name AS house, 1 AS priority, gibbonFamilyAdult.contactPriority
+                    FROM gibbonFamilyAdult
+                    JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                    JOIN gibbonHouse ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID)
+                    WHERE gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID
+                    AND gibbonPerson.status='Full'
+                    AND gibbonRole.category='Staff'
+                    UNION ALL
+                    SELECT gibbonHouse.gibbonHouseID, gibbonHouse.name AS house, 2 AS priority, 0 AS contactPriority
+                    FROM gibbonFamilyChild
+                    JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonHouse ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID)
+                    WHERE gibbonFamilyChild.gibbonFamilyID=:gibbonFamilyID
+                    AND gibbonPerson.gibbonPersonID!=:gibbonPersonIDStudent
+                    AND gibbonPerson.status='Full'
+                ) AS familyHouse
+                ORDER BY priority, contactPriority
+                LIMIT 1";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
