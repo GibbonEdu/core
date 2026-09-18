@@ -23,28 +23,13 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\Calendar\CalendarEventGateway;
 use Gibbon\Domain\Calendar\CalendarEventPersonGateway;
 use Gibbon\Module\Calendar\CalendarEventNotificationProcess;
+use Gibbon\Support\Facades\Access;
 
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['notes' => 'HTML']);
 $gibbonCalendarEventID = $_POST['gibbonCalendarEventID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Calendar/calendar_event_view.php&gibbonCalendarEventID='.$gibbonCalendarEventID;
-
-if (empty($gibbonCalendarEventID)) {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
-    exit;
-}
-
-$criteria = $container->get(CalendarEventPersonGateway::class)->newQueryCriteria()
-            ->sortBy(['surname', 'preferredName', 'category'])
-            ->fromPOST();
-$students = $container->get(CalendarEventPersonGateway::class)->queryEventAttendees($criteria, $gibbonCalendarEventID)->toArray();
-if (empty($students)) {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
-    exit;
-}
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_edit.php') == false) {
     $URL .= '&return=error0';
@@ -54,6 +39,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     // Proceed!
     $calendarEventGateway = $container->get(CalendarEventGateway::class);
     $calendarEventPersonGateway = $container->get(CalendarEventPersonGateway::class);
+
+    $event = $calendarEventGateway->getEventDetailsByID($gibbonCalendarEventID, $session->get('gibbonPersonID'));
+    if (empty($gibbonCalendarEventID) || empty($event)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $canEditEvent = $event['editor'] == 'Y' && Access::allows('Calendar', 'calendar_event_edit');
+    if (!$canEditEvent && !Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all')) {
+        $URL .= '&return=error0';
+        header("Location: {$URL}");
+        exit;
+    }
+    
+    $criteria = $container->get(CalendarEventPersonGateway::class)->newQueryCriteria()
+        ->sortBy(['surname', 'preferredName', 'category'])
+        ->fromPOST();
+    $students = $container->get(CalendarEventPersonGateway::class)->queryEventAttendees($criteria, $gibbonCalendarEventID)->toArray();
+    if (empty($students)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
 
     $subject = $_POST['subject'] ?? '';
     $notes = $_POST['notes'] ?? '';
