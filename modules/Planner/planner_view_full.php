@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     if ($gibbonCourseClassID == '') {
                         $gibbonCourseClassID = $values['gibbonCourseClassID'];
                     }
-                    if (($values['role'] == 'Student' and $values['viewableStudents'] == 'N') and ($highestAction == 'Lesson Planner_viewMyChildrensClasses' and $values['viewableParents'] == 'N')) {
+                    if (($values['role'] == 'Student' and $values['viewableStudents'] == 'N') or ($highestAction == 'Lesson Planner_viewMyChildrensClasses' and $values['viewableParents'] == 'N')) {
                         echo "<div class='warning'>";
                         echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';

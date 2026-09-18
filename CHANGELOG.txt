@@ -90,6 +90,7 @@ v31.0.00
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway
         Messenger: fixed overflowing images and iframes on Message Wall
         Planner: fixed "present in room" attendance counts in Lesson Plan to exclude Present - Offsite
+        Planner: fixed viewableStudents and viewableParents options in Lesson Planner
         Reports: fixed non-reportable classes being counted when checking report progress
         Reports: fixed reporting cycle milestones saving as Array by enforcing JSON/null storage
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
