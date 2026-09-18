@@ -122,10 +122,10 @@ log 'Rolling back version number in gibbonSetting table'
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
     UPDATE gibbonSetting
-      SET value = '30.0.01'
+      SET value = '30.0.00'
       WHERE name = 'version'
 SQL
-log 'OK: Gibbon version number is now 30.0.01'
+log 'OK: Gibbon version number is now 30.0.00'
 
 log 'Running Updater'
 docker compose exec -T app php -r '
