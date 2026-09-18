@@ -33,6 +33,7 @@ v30.0.02
         Planner: improved direct object reference checks for homework scripts
         Rubrics: improved direct object reference checks for AJAX scripts
         Rubrics: applied byte-level and file size checks to visualisation AJAX script
+        Timetable: improved direct object reference checks for timetable AJAX script
 
 
 v30.0.01

@@ -19,14 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Services\Format;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\UI\Timetable\Timetable;
 use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\Domain\Timetable\TimetableGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\User\UserGateway;
 
 // Gibbon system-wide includes
-include './gibbon.php';
+require_once __DIR__.'/gibbon.php';
 
 // Setup variables
 $gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
@@ -39,7 +40,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     // Access denied
     echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
 } else {
-    include './modules/Timetable/moduleFunctions.php';
+    require_once __DIR__.'/modules/Timetable/moduleFunctions.php';
+
+    // Check if the user has access to the requested person's timetable
+    if (!empty($gibbonPersonID)) {
+        $highestAction = getHighestGroupedAction($guid, '/modules/Timetable/tt.php', $connection2);
+        if ($highestAction == 'View Timetable by Person_allYears' || $highestAction == 'View Timetable by Person') {
+            $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+        } elseif ($highestAction == 'View Timetable by Person_my') {
+            $gibbonPersonID = $session->get('gibbonPersonID');
+        } elseif ($highestAction == 'View Timetable by Person_myChildren') {
+            $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetchGroupedUnique();
+            if (empty($children[$gibbonPersonID])) {
+                echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
+                exit;
+            }
+        }
+    }
+
+    // Check if the user has access to the requested timetable within the current school year
+    if (!empty($gibbonTTID) && $highestAction != 'View Timetable by Person_allYears') {
+        $timetable = $container->get(TimetableGateway::class)->selectBy(['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearIDCurrent')])->fetch();
+        if (empty($timetable)) {
+            echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
+            exit;
+        }
+    }
 
     $ttDate = null;
 
