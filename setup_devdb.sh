@@ -91,6 +91,15 @@ UPDATE gibbonSetting
 SQL
 log "OK: absoluteURL value is http://localhost:8080"
 
+log "Updating timezone in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${TIMEZONE:-Asia/Hong_Kong}"
+  WHERE name = 'timezone';
+SQL
+log "OK: timezone is ${TIMEZONE:-Asia/Hong_Kong}"
+
 log "Updating installType to Development in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
