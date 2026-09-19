@@ -100,6 +100,78 @@ UPDATE gibbonSetting
 SQL
 log "OK: timezone is ${TIMEZONE:-Asia/Hong_Kong}"
 
+log "Updating currency in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${CURRENCY:-HKD $}"
+  WHERE name = 'currency';
+SQL
+log "OK: currency is ${CURRENCY:-HKD $}"
+
+log "Updating organisation name in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${ORGANISATION_NAME:-Syndicate of Worldwide Gibbon Testers}"
+  WHERE name = 'organisationName';
+SQL
+log "OK: organisation name is ${ORGANISATION_NAME:-Syndicate of Worldwide Gibbon Testers}"
+
+log "Updating organisation name short in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${ORGANISATION_NAME_SHORT:-JA}"
+  WHERE name = 'organisationNameShort';
+SQL
+log "OK: organisation name short is ${ORGANISATION_NAME_SHORT:-JA}"
+
+log "Updating organisation email in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${ORGANISATION_EMAIL:-contact@mailinator.com}"
+  WHERE name = 'organisationEmail';
+SQL
+log "OK: organisation email is ${ORGANISATION_EMAIL:-contact@mailinator.com}"
+
+log "Updating country in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${COUNTRY:-Hong Kong}"
+  WHERE name = 'country';
+SQL
+log "OK: country is ${COUNTRY:-Hong Kong}"
+
+log "Updating email link in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${EMAIL_LINK:-http://email.test}"
+  WHERE name = 'emailLink';
+SQL
+log "OK: email link is ${EMAIL_LINK:-http://email.test}"
+
+log "Updating web link in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = "${WEB_LINK:-http://web.test}"
+  WHERE name = 'webLink';
+SQL
+log "OK: web link is ${WEB_LINK:-http://web.test}"
+
+log "Updating analytics in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = '<script></script>'
+  WHERE name = 'analytics';
+SQL
+log "OK: analytics is ${ANALYTICS:-<script></script>}"
+
 log "Updating installType to Development in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
@@ -108,24 +180,6 @@ UPDATE gibbonSetting
   WHERE name = 'installType'
 SQL
 log "OK: installType is Development"
-
-log "Creating admin user"
-docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
-  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
-INSERT INTO gibbonPerson (
-  gibbonPersonID, title, surname, firstName, preferredName, officialName,
-  gender, username, email, passwordStrong, passwordStrongSalt, passwordForceReset,
-  status, canLogin, gibbonRoleIDPrimary, gibbonRoleIDAll,
-  viewCalendarSchool, viewCalendarPersonal, viewCalendarSpaceBooking, receiveNotificationEmails
-) VALUES (
-  '0000000001', 'Mr.', 'Bar', 'Foo', 'Foo', 'Foo Bar',
-  'M', 'admin', 'foobar_gibbon@mailinator.com',
-  '5532db23077db329701297a10220be053d9cd87b8eb6023a069dbab66692f26b', 'JtexpYdvkayAIsACKmpWHq', 'N',
-  'Full', 'Y', '0000000001', '001',
-  'Y', 'Y', 'Y', 'Y'
-)
-SQL
-log "OK: Created admin user"
 
 log 'Rolling back version number in gibbonSetting table'
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
@@ -151,3 +205,57 @@ if ($updater->isUpdateRequired()) {
     echo "OK: Database is already up-to-date.\n";
 }
 '
+
+log "Creating admin user"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+INSERT INTO gibbonPerson (
+  gibbonPersonID, title, surname, firstName, preferredName, officialName,
+  gender, username, email, passwordStrong, passwordStrongSalt, passwordForceReset,
+  status, canLogin, gibbonRoleIDPrimary, gibbonRoleIDAll,
+  viewCalendarSchool, viewCalendarPersonal, viewCalendarSpaceBooking, receiveNotificationEmails
+) VALUES (
+  0000000001, 'Mr.', 'Bar', 'Foo', 'Foo', 'Bar, Foo',
+  'M', 'admin', 'foobar_gibbon@mailinator.com',
+  '5532db23077db329701297a10220be053d9cd87b8eb6023a069dbab66692f26b', 'JtexpYdvkayAIsACKmpWHq', 'N',
+  'Full', 'Y', 001, '001,002,003,004,006',
+  'Y', 'Y', 'Y', 'Y'
+)
+SQL
+log "OK: Created admin user"
+
+log "Updating organisationAdministrator in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = '0000001117'
+  WHERE name = 'organisationAdministrator';
+SQL
+log "OK: organisationAdministrator is 0000001117"
+
+log "Updating organisationDBA in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = '0000001117'
+  WHERE name = 'organisationDBA';
+SQL
+log "OK: organisationDBA is 0000001117"
+
+log "Updating organisationAdmissions in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = '0000001117'
+  WHERE name = 'organisationAdmissions';
+SQL
+log "OK: organisationAdmissions is 0000001117"
+
+log "Updating organisationHR in gibbonSetting table"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
+UPDATE gibbonSetting
+  SET value = '0000001117'
+  WHERE name = 'organisationHR';
+SQL
+log "OK: organisationAdmissions is 0000001117"
