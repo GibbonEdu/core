@@ -210,12 +210,12 @@ log "Creating admin user"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
 INSERT INTO gibbonPerson (
-  gibbonPersonID, title, surname, firstName, preferredName, officialName,
+  title, surname, firstName, preferredName, officialName,
   gender, username, email, passwordStrong, passwordStrongSalt, passwordForceReset,
   status, canLogin, gibbonRoleIDPrimary, gibbonRoleIDAll,
   viewCalendarSchool, viewCalendarPersonal, viewCalendarSpaceBooking, receiveNotificationEmails
 ) VALUES (
-  0000000001, 'Mr.', 'Bar', 'Foo', 'Foo', 'Bar, Foo',
+  'Mr.', 'Bar', 'Foo', 'Foo', 'Bar, Foo',
   'M', 'admin', 'foobar_gibbon@mailinator.com',
   '5532db23077db329701297a10220be053d9cd87b8eb6023a069dbab66692f26b', 'JtexpYdvkayAIsACKmpWHq', 'N',
   'Full', 'Y', 001, '001,002,003,004,006',
