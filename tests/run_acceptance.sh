@@ -34,6 +34,13 @@ ${DOCKER_COMPOSE} exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
 SQL
 log 'OK: absoluteURL value is http://gibbon.test'
 
+log "Delete admin user"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+    DELETE FROM gibbonPerson WHERE email='foobar_gibbon@mailinator.com';
+SQL
+log "OK: Deleted admin user"
+
 log 'Running acceptance tests'
 ${DOCKER_COMPOSE} run --rm test \
     /var/www/html/vendor/codeception/codeception/codecept \
@@ -50,3 +57,21 @@ ${DOCKER_COMPOSE} exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
         WHERE name = 'absoluteURL'
 SQL
 log 'OK: absoluteURL value is http://localhost:8080'
+
+log "Creating admin user"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+INSERT INTO gibbonPerson (
+  gibbonPersonID, title, surname, firstName, preferredName, officialName,
+  gender, username, email, passwordStrong, passwordStrongSalt, passwordForceReset,
+  status, canLogin, gibbonRoleIDPrimary, gibbonRoleIDAll,
+  viewCalendarSchool, viewCalendarPersonal, viewCalendarSpaceBooking, receiveNotificationEmails
+) VALUES (
+  '0000000001', 'Mr.', 'Bar', 'Foo', 'Foo', 'Bar, Foo',
+  'M', 'admin', 'foobar_gibbon@mailinator.com',
+  '5532db23077db329701297a10220be053d9cd87b8eb6023a069dbab66692f26b', 'JtexpYdvkayAIsACKmpWHq', 'N',
+  'Full', 'Y', 001, '001,002,003,004,006',
+  'Y', 'Y', 'Y', 'Y'
+)
+SQL
+log "OK: Created admin user"
