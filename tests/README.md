@@ -30,9 +30,14 @@ Deploy a local instance of Gibbon using Docker:
 ./up.sh
 ```
 
-Execute installer tests:
+Execute installer test:
 ```bash
 tests/run_install.sh
+```
+
+Execute installer test in debug mode:
+```bash
+tests/run_install.sh --debug -vvv install
 ```
 
 ## Run acceptance tests

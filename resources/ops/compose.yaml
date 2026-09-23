@@ -67,6 +67,12 @@ services:
             - .:/var/www/html
             ## Mount PHP config so values can be changed without an image rebuild.
             - ./resources/ops/configuration/php/gibbon.ini:/usr/local/etc/php/conf.d/gibbon.ini:ro
+        environment:
+            - DB_HOST=${DB_HOST:-gibbon_db}
+            - DB_NAME=${DB_NAME:-gibbon}
+            - DB_USERNAME=${DB_USERNAME:-gibbon}
+            - DB_PASSWORD=${DB_PASSWORD:-change_me}
+            - ABSOLUTE_URL=${ABSOLUTE_URL:-http://gibbon.test}
         networks:
             - web-tier
             - db-tier
