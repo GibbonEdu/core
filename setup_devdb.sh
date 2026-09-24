@@ -224,38 +224,52 @@ INSERT INTO gibbonPerson (
 SQL
 log "OK: Created admin user"
 
+log "Creating row in gibbonStaff for admin user"
+docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
+  mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<'SQL'
+INSERT INTO gibbonStaff (
+    gibbonPersonID, type, initials, jobTitle, firstAidQualified,
+    firstAidQualification, firstAidExpiry, countryOfOrigin, qualifications,
+    biography, biographicalGrouping, biographicalGroupingPriority,
+    coverageExclude, coveragePriority, fields
+) VALUES (
+    0000000001,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL
+)
+SQL
+log "OK: Created gibbonStaff row"
+
 log "Updating organisationAdministrator in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
 UPDATE gibbonSetting
-  SET value = '0000001117'
+  SET value = '0000000001'
   WHERE name = 'organisationAdministrator';
 SQL
-log "OK: organisationAdministrator is 0000001117"
+log "OK: organisationAdministrator is 0000000001"
 
 log "Updating organisationDBA in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
 UPDATE gibbonSetting
-  SET value = '0000001117'
+  SET value = '0000000001'
   WHERE name = 'organisationDBA';
 SQL
-log "OK: organisationDBA is 0000001117"
+log "OK: organisationDBA is 0000000001"
 
 log "Updating organisationAdmissions in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
 UPDATE gibbonSetting
-  SET value = '0000001117'
+  SET value = '0000000001'
   WHERE name = 'organisationAdmissions';
 SQL
-log "OK: organisationAdmissions is 0000001117"
+log "OK: organisationAdmissions is 0000000001"
 
 log "Updating organisationHR in gibbonSetting table"
 docker compose exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db \
   mysql --init-command="SET SESSION sql_mode='';" -uroot "${MYSQL_DATABASE}" <<SQL
 UPDATE gibbonSetting
-  SET value = '0000001117'
+  SET value = '0000000001'
   WHERE name = 'organisationHR';
 SQL
-log "OK: organisationAdmissions is 0000001117"
+log "OK: organisationAdmissions is 0000000001"
