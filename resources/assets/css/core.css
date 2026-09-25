@@ -60,6 +60,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     break-inside: avoid;
 }
 
+.sidebarBackLink + * h2:first-of-type {
+    margin-top: 0.5rem;
+}
+
 #loadingIndicator {
     opacity: 0;
     position: fixed;

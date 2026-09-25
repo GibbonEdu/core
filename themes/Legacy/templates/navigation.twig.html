@@ -13,6 +13,8 @@ collapsed drop-down list in 'mini' view-mode.
 -->#}
 
 
+{% set extraTop = (sidebar and sidebarPosition != 'bottom') ? (page.extraSidebar|default([])|filter(v => v is not empty)) : [] %}
+
 <div class="">
 
     {% if menuModule %}
@@ -22,27 +24,35 @@ collapsed drop-down list in 'mini' view-mode.
     </button>
     {% endif %}
 
-    {% if sidebar and sidebarPosition != 'bottom' %}
-        {% for code in page.extraSidebar %}
-            {% if code is not empty %}
-                <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6">
+    {% if extraTop %}
+        {% for code in extraTop %}
+            <div class="{{ loop.first and sidebarBackLink ? 'pt-6' : 'pt-6 sm:pt-16 lg:pt-6' }}">
+                {% if loop.first and sidebarBackLink %}
+                <div class="sidebarBackLink text-xsm text-gray-600">{{ sidebarBackLink|raw }}</div>
+                {% endif %}
+                <div class="md:column-2 lg:column-1">
                     {{ code|raw }}
                 </div>
-            {% endif %}
+            </div>
         {% endfor %}
     {% endif %}
-
 
     {% if sidebar and sidebarContents is iterable %}
         {% for sidebarContent in sidebarContents %}
             {% if sidebarContent %}
             <div class="md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} ">
+                {% if extraTop is empty and loop.first and sidebarBackLink %}
+                <div class="sidebarBackLink text-xsm text-gray-600">{{ sidebarBackLink|raw }}</div>
+                {% endif %}
                 {{ sidebarContent|raw }}
             </div>
             {% endif %}
         {% endfor %}
     {% elseif sidebar and sidebarContents %}
         <div class="md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} ">
+            {% if extraTop is empty and sidebarBackLink %}
+            <div class="sidebarBackLink text-xsm text-gray-600">{{ sidebarBackLink|raw }}</div>
+            {% endif %}
             {{ sidebarContents|raw }}
         </div>
     {% endif %}
