@@ -60,7 +60,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                     <p class="mt-2 mb-1 ">
                         {% if criteria.comment %} 
-                            {{ criteria.comment }}
+                            {{ criteria.comment|nl2br }}
                         {% else %}
                             <span class="text-xxs text-gray-600 italic">{{ __('N/A') }} </span>
                         {% endif%}
