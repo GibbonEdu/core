@@ -66,3 +66,13 @@ Execute specific acceptance test file:
 ```bash
 tests/run_acceptance.sh acceptance Markbook/ViewMyMarksCept
 ```
+
+Execute specific acceptance test file in debug mode:
+```bash
+tests/run_acceptance.sh acceptance --debug 'Calendar/CalendarEventManageCept.php'
+```
+
+For debugging purposes, it can be useful to add the `skip_cleanup_if_failed: true`
+configuration into the `Db` module in `acceptance.suite.yml` so the database is
+not reset and current state of the data is kept when investigating failing
+acceptance tests.
