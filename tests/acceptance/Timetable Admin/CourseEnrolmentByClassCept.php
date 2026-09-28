@@ -28,9 +28,8 @@ $I->seeInCurrentUrl('courseEnrolment_manage_class_edit.php');
 $I->dontSeeErrors();
 
 // Add a member to the class --------------------------
-
-$I->selectFromDropdown('Members', 1);
-$I->click('Submit');
+$gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['status' => 'Full']);
+$I->submitForm('#content form', ['Members' => [$gibbonPersonID]]);
 $I->see('Your request was completed successfully.', '.success');
 
 // Nested Edit action (DataTable) -----------------
