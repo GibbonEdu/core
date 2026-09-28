@@ -182,6 +182,7 @@ class Date extends TextField
             'outerClass' => $this->getOuterClass(),
             'groupClass' => $this->getGroupClass(),
             'todayButton' => $this->todayButton,
+            'useDateActions' => !empty($this->todayButton) || !empty($this->dayOffsetButtons),
             'dayOffsetButtons' => $this->dayOffsetButtons,
             'readonly' => $this->getReadonly(),
         ]);
