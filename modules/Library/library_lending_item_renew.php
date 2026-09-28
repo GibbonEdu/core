@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $loanLength = (is_numeric($loanLength) == false or $loanLength < 0) ? 7 : $loanLength ;
             $row = $form->addRow();
                 $row->addLabel('returnExpected', __('Expected Return Date'))->description(sprintf(__('Default renew length is today plus %1$s day(s)'), $loanLength));
-                $row->addDate('returnExpected')->setValue(date($session->get('i18n')['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->required();
+                $row->addDate('returnExpected')->setValue(date($session->get('i18n')['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->required()->addTodayButton()->addDayOffsetButtons([1, 7]);
 
             $row = $form->addRow();
                 $row->addFooter();

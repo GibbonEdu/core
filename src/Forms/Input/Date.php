@@ -41,6 +41,7 @@ class Date extends TextField
     protected $from;
     protected $to;
     protected $todayButton = false;
+    protected $dayOffsetButtons = [];
 
     /**
      * Overload the base loadFrom method to handle converting date formats.
@@ -132,6 +133,18 @@ class Date extends TextField
     }
 
     /**
+     * Add quick-select buttons that add the given number of days to the current value.
+     *
+     * @param int[] $days
+     * @return self
+     */
+    public function addDayOffsetButtons(array $days = [1, 7])
+    {
+        $this->dayOffsetButtons = array_values(array_filter(array_map('intval', $days)));
+        return $this;
+    }
+
+    /**
      * Provide the ID of another date input to connect the input values in a date range.
      * Chaining a value TO another date range will set the upper limit to that date's value.
      * @param   string  $value
@@ -169,6 +182,7 @@ class Date extends TextField
             'outerClass' => $this->getOuterClass(),
             'groupClass' => $this->getGroupClass(),
             'todayButton' => $this->todayButton,
+            'dayOffsetButtons' => $this->dayOffsetButtons,
             'readonly' => $this->getReadonly(),
         ]);
     }
