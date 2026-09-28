@@ -31,6 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     header("Location: {$URL}");
 } else {
     //Proceed!
+    $enableNegativeBehaviour = $_POST['enableNegativeBehaviour'] ?? '';
+    $enablePositiveBehaviour = $_POST['enablePositiveBehaviour'] ?? '';
+    $enableObservationBehaviour = $_POST['enableObservationBehaviour'] ?? '';
     $enableDescriptors = $_POST['enableDescriptors'] ?? '';
     $enableLevels = $_POST['enableLevels'] ?? '';
     $enableNegativeBehaviourLetters = $_POST['enableNegativeBehaviourLetters'] ?? '';
@@ -75,12 +78,32 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     $policyLink = $_POST['policyLink'] ?? '';
 
     //Validate Inputs
-    if ($enableDescriptors == '' or $enableLevels == '' or ($positiveDescriptors == '' and $enableDescriptors == 'Y') or ($negativeDescriptors == '' and $enableDescriptors == 'Y') or ($levels == '' and $enableLevels == 'Y') or (($behaviourLettersNegativeLetter1Count == '' or $behaviourLettersNegativeLetter2Count == '' or $behaviourLettersNegativeLetter3Count == '') and $enableNegativeBehaviourLetters == 'Y')) {
+    $allTypesDisabled = $enableNegativeBehaviour == 'N' && $enablePositiveBehaviour == 'N' && $enableObservationBehaviour == 'N';
+    $descriptorsInvalid = $enableDescriptors == '' || ($enableDescriptors == 'Y' && ($positiveDescriptors == '' || $negativeDescriptors == ''));
+    $levelsInvalid = $enableLevels == '' || ($enableLevels == 'Y' && $levels == '');
+    $negativeLetterCountsInvalid = $enableNegativeBehaviourLetters == 'Y' && ($behaviourLettersNegativeLetter1Count == '' || $behaviourLettersNegativeLetter2Count == '' || $behaviourLettersNegativeLetter3Count == '');
+
+    if ($allTypesDisabled || $descriptorsInvalid || $levelsInvalid || $negativeLetterCountsInvalid) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
         //Write to database
         $fail = false;
+
+        foreach ([
+            'enableNegativeBehaviour' => $enableNegativeBehaviour,
+            'enablePositiveBehaviour' => $enablePositiveBehaviour,
+            'enableObservationBehaviour' => $enableObservationBehaviour,
+        ] as $name => $value) {
+            try {
+                $data = ['value' => $value];
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='$name'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
+        }
 
         try {
             $data = ['value' => $enableDescriptors];

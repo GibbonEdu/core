@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive'), 'Observation' => __('Observation')])->placeholder()->selected($type);
+            $row->addSelectBehaviourType('type')->placeholder()->selected($type);
 
             if ($enableDescriptors == 'Y') {
                 $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');

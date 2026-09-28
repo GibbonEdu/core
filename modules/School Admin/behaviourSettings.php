@@ -39,6 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 
     $form->addHiddenValue('address', $session->get('address'));
 
+    $row = $form->addRow()->addHeading('Types', __('Types'));
+
+    foreach (['enableNegativeBehaviour', 'enablePositiveBehaviour', 'enableObservationBehaviour'] as $settingName) {
+        $setting = $settingGateway->getSettingByScope('Behaviour', $settingName, true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+    }
+
     $row = $form->addRow()->addHeading('Descriptors', __('Descriptors'));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors', true);
