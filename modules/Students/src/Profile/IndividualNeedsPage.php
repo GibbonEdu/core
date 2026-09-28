@@ -93,16 +93,25 @@ class IndividualNeedsPage extends ProfilePage
         }
 
         $output = '';
+        $form = Form::createBlank('buttons');
 
         // Edit link button
         if (Access::allows('Individual Needs', 'in_edit')) {
-            $form = Form::createBlank('buttons');
             $form->addHeaderAction('edit', __('Edit Individual Needs Record'))
                 ->setURL('/modules/Individual Needs/in_edit.php')
                 ->addParam('gibbonPersonID', $this->gibbonPersonID)
                 ->displayLabel();
-            $output .= $form->getOutput();
         }
+
+        if (Access::allows('Individual Needs', 'in_supportPlan_manage')) {
+            $form->addHeaderAction('manage', __('Student Support Plans'))
+                ->setIcon('planner')
+                ->setURL('/modules/Individual Needs/in_supportPlan_manage.php')
+                ->addParam('gibbonPersonID', $this->gibbonPersonID)
+                ->displayLabel();
+        }
+
+        $output .= $form->getOutput();
 
         // Include module functions for status table
         include './modules/Individual Needs/moduleFunctions.php';
