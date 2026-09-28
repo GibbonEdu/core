@@ -405,7 +405,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                 // Deal with email receipt and body finalisation
                 if ($message['emailReceipt'] == 'Y') {
                     $bodyReadReceipt = '<hr style="border: 1px solid #dddddd;"><a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowReceipt['gibbonPersonID'].'&key='.$rowReceipt['key'].'">'.$message['emailReceiptText'].'</a><hr style="border: 1px solid #dddddd;"><br/>';
-                    if (strpos($bodyReminder, '[confirmLink]') !== false) {
+                    if (stripos($message['body'], '[confirmLink]') !== false) {
                         $bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $message['body']);
                     } else {
                         $bodyOut = $bodyReminder.$bodyReadReceipt.$message['body'];
