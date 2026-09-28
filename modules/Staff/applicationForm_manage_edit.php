@@ -308,7 +308,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             //REFERENCES
             $applicationFormRefereeLink = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink');
-            if ($applicationFormRefereeLink != '') {
+            $applicationFormRefereeLink = !empty($applicationFormRefereeLink) ? unserialize($applicationFormRefereeLink) : [];
+            if (is_array($applicationFormRefereeLink) && !empty(array_filter($applicationFormRefereeLink))) {
                 $heading = $form->addRow()->addHeading('References', __('References'));
 
                 $row = $form->addRow();

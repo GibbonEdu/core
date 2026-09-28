@@ -102,10 +102,11 @@ v31.0.00
         Reports: fixed reporting cycle milestones saving as Array by enforcing JSON/null storage
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         Staff: fixed the issue of including staff email while submitting a job application form
+        Staff: fixed the bug of applicationFormRefereeLink condition always true when URLs are empty
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment
         System Admin: fixed incorrect required status of Emergency Contact fields in Form Builder
         Timetable: fixed incorrect Staff Cover information for activity cover on the timetable
-        Timetable Admin: fixed error preventing the copy of courses to next year.
+        Timetable Admin: fixed error preventing the copy of courses to next year
 
     Deprecations
 
