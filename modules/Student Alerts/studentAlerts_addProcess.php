@@ -162,6 +162,10 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
         $event->addRecipient($formGroup['gibbonPersonIDTutor'] ?? '');
         $event->addRecipient($formGroup['gibbonPersonIDTutor2'] ?? '');
         $event->addRecipient($formGroup['gibbonPersonIDTutor3'] ?? '');
+
+        // Head of Year
+        $yearGroup = $container->get(YearGroupGateway::class)->getByID($student['gibbonYearGroupID']);
+        $event->addRecipient($yearGroup['gibbonPersonIDHOY'] ?? '');
     }
 
     $event->addScope('gibbonPersonIDStudent',  $student['gibbonPersonID']);
