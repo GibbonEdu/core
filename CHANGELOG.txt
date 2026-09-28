@@ -51,7 +51,7 @@ v31.0.00
         Attendance: fixed the Consecutive Absences check to only count the final status for each day
         Attendance: added a foreign table field to attendance logs for recording target of future absences
         Attendance: added Class as a target option for Set Future Absence
-        Behaviour: change behaviour type to a setting
+        Behaviour: added settings to control which behaviour types are enabled
         Calendar: switched default sorting of Manage Events to newest first
         Calendar: remove future absence when deleting participant or editing the date
         Data Updater: added a new notification event to notify if any flagged personal field has been updated
@@ -77,6 +77,7 @@ v31.0.00
         System Admin: added a validation to check for error in email twig templates
         System Admin: added new Marks By Term importer for Markbook Column
         System Admin: added new importer to import Internal Assessment Columns
+        System Admin: enabled Notification Event Listeners for targeted contexts
         Timetable: added class and location details to non-timetabled lessons in the Timetable
         Timetable: added a permission to enable certain users to edit a class location/facility
         Tracking: fixed the post variable validation

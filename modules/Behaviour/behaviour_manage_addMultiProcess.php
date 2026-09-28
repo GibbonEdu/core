@@ -44,7 +44,7 @@ $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDesc
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 $address = $_POST['address'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $type = $_GET['type'] ?? '';
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $student = $userGateway->getUserDetails($gibbonPersonID, $gibbonSchoolYearID);
             $rowDetail = !empty($resultDetail) ? $resultDetail->fetch() : null;
 
-            if (!empty($rowDetail) && !empty($student)) {
+            if (!empty($student)) {
                 $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
                 $actionLink  = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
 
@@ -184,6 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $event->setActionLink($actionLink);
                 $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                 $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+                $event->addScope('context', $descriptor);
 
                 // Add notifications for Educational Assistants
                 if ($inAssistantGateway !== null) {

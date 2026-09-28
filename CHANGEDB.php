@@ -450,5 +450,9 @@ UPDATE `gibbonAction` SET `URLList`='firstAidRecord.php, firstAidRecord_add.php,
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enableNegativeBehaviour', 'Enable Negative Behaviour', '', 'Y');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enablePositiveBehaviour', 'Enable Positive Behaviour', '', 'Y');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enableObservationBehaviour', 'Enable Observation Behaviour', '', 'Y');end
+ALTER TABLE `gibbonNotificationListener` ADD `scopeContext` VARCHAR(255) NULL AFTER `scopeID`;end
+ALTER TABLE `gibbonNotificationEvent` ADD `contextName` VARCHAR(255) NULL AFTER `scopes`;end
+UPDATE `gibbonNotificationEvent` SET `contextName`='Role Category', `scopes`='All,context' WHERE `event`='Flagged Field Data Updates' AND `moduleName`='Data Updater' AND `actionName`='Personal Data Updates';end
+UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,context,gibbonPersonIDStudent,gibbonYearGroupID' WHERE `event` LIKE '% Record' AND `moduleName`='Behaviour';end
 
 ";

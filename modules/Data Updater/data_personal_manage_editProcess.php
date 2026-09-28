@@ -525,10 +525,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     if (!empty($flaggedChanges)) {
                         $event = new NotificationEvent('Data Updater', 'Flagged Field Data Updates');
-                        $notificationText = sprintf(__('The flagged personal data fields for %1$s have been updated:'), $studentName).'<br/><br/>';
+                        $notificationText = __('One or more flagged personal data fields for {name} ({username}) have been updated', ['name' => $studentName, 'username' => $row2['username']]).':<br/><br/>';
                         $notificationText .= implode(', ', $flaggedChanges);
                         $event->setNotificationText($notificationText);
                         $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
+                        $event->addScope('context', $roleCategory);
+
                         $event->sendNotifications($pdo, $session);
                     }
 
