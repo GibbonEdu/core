@@ -135,6 +135,23 @@ class StaffGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getStaffDetailsByID(string $gibbonPersonID, bool $allStaff = false)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidQualification, firstAidExpiry, gibbonStaff.fields as fieldsStaff
+                FROM gibbonPerson
+                LEFT JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+
+        if (!$allStaff) {
+            $data['today'] = date('Y-m-d');
+            $sql .= " AND status='Full' 
+                AND (dateStart IS NULL OR dateStart<=:today) 
+                AND (dateEnd IS NULL OR dateEnd>=:today)";
+        }
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function selectStaffByStaffID($gibbonStaffID) {
         $data = array('gibbonStaffID' => $gibbonStaffID);
         $sql = 'SELECT gibbonStaff.*, title, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
