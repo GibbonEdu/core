@@ -454,5 +454,8 @@ ALTER TABLE `gibbonNotificationListener` ADD `scopeContext` VARCHAR(255) NULL AF
 ALTER TABLE `gibbonNotificationEvent` ADD `contextName` VARCHAR(255) NULL AFTER `scopes`;end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Role Category', `scopes`='All,context' WHERE `event`='Flagged Field Data Updates' AND `moduleName`='Data Updater' AND `actionName`='Personal Data Updates';end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,context,gibbonPersonIDStudent,gibbonYearGroupID' WHERE `event` LIKE '% Record' AND `moduleName`='Behaviour';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'formGroupAttendanceSessions', 'Form Group Attendance Sessions', 'Comma-separated list of registration sessions each day, such as AM,PM. Leave blank to take form group attendance once per day.', '');end
+ALTER TABLE `gibbonAttendanceLogFormGroup` ADD `session` VARCHAR(20) NULL DEFAULT NULL AFTER `date`;end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD `session` VARCHAR(20) NULL DEFAULT NULL AFTER `date`;end
 
 ";

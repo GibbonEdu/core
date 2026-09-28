@@ -64,6 +64,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $today = date('Y-m-d');
         $currentDate = isset($_GET['currentDate'])? Format::dateConvert($_GET['currentDate']) : $today;
 
+        // Registration sessions, such as AM and PM: when not selected, default to the first one not yet taken
+        $sessions = getFormGroupAttendanceSessions($settingGateway);
+        $attendanceSession = null;
+        if (!empty($sessions)) {
+            $attendanceSession = $_GET['session'] ?? '';
+            if (!in_array($attendanceSession, $sessions)) {
+                $sessionsTaken = [];
+                if ($gibbonFormGroupID != '') {
+                    $sessionsTaken = $pdo->select('SELECT DISTINCT session FROM gibbonAttendanceLogFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID AND date=:date', ['gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate])->fetchAll(\PDO::FETCH_COLUMN);
+                }
+                $sessionsNotTaken = array_values(array_diff($sessions, $sessionsTaken));
+                $attendanceSession = $sessionsNotTaken[0] ?? end($sessions);
+            }
+        }
+
         echo '<h2>'.__('Choose Form Group')."</h2>";
 
         $form = Form::create('filter', $session->get('absoluteURL') . '/index.php', 'get');
@@ -79,6 +94,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
             $row->addDate('currentDate')->required()->setValue(Format::date($currentDate));
+
+        if (!empty($sessions)) {
+            $row = $form->addRow();
+                $row->addLabel('session', __('Session'));
+                $row->addSelect('session')->fromArray($sessions)->required()->selected($attendanceSession);
+        }
 
         $row = $form->addRow();
             $row->addSearchSubmit($session);
@@ -121,15 +142,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         //Show attendance log for the current day
                             $dataLog = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate.'%');
-                            $sqlLog = 'SELECT * FROM gibbonAttendanceLogFormGroup, gibbonPerson WHERE gibbonAttendanceLogFormGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonFormGroupID=:gibbonFormGroupID AND date LIKE :date ORDER BY timestampTaken';
+                            $sqlLog = 'SELECT * FROM gibbonAttendanceLogFormGroup, gibbonPerson WHERE gibbonAttendanceLogFormGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonFormGroupID=:gibbonFormGroupID AND date LIKE :date';
+                            if (!empty($attendanceSession)) {
+                                $dataLog['session'] = $attendanceSession;
+                                $sqlLog .= ' AND session=:session';
+                            }
+                            $sqlLog .= ' ORDER BY timestampTaken';
                             $resultLog = $connection2->prepare($sqlLog);
                             $resultLog->execute($dataLog);
 
                         if ($resultLog->rowCount() < 1) {
-                            echo Format::alert(__("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data."), 'error');
+                            if (!empty($attendanceSession)) {
+                                echo Format::alert(sprintf(__('Attendance has not been taken for this group yet for the %1$s session on the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.'), htmlPrep($attendanceSession)), 'error');
+                            } else {
+                                echo Format::alert(__("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data."), 'error');
+                            }
                         } else {
                             echo "<div class='success'>";
-                            echo __('Attendance has been taken at the following times for the specified date for this group:');
+                            if (!empty($attendanceSession)) {
+                                echo sprintf(__('Attendance has been taken at the following times for the %1$s session on the specified date for this group:'), htmlPrep($attendanceSession));
+                            } else {
+                                echo __('Attendance has been taken at the following times for the specified date for this group:');
+                            }
                             echo '<ul>';
                             while ($rowLog = $resultLog->fetch()) {
                                 echo '<li>'.sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog['timestampTaken'], 11), Format::date(substr($rowLog['timestampTaken'], 0, 10)), Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true)).'</li>';
@@ -168,7 +202,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 if ($countClassAsSchool == 'N') {
                                     $sql .= " AND NOT context='Class'";
                                 }
-                                $sql .= " ORDER BY timestampTaken DESC";
+                                if (!empty($attendanceSession)) {
+                                    // Show this session's own register first, then the latest record for the day
+                                    $data['session'] = $attendanceSession;
+                                    $sql .= " ORDER BY (gibbonAttendanceLogPerson.context='Form Group' AND gibbonAttendanceLogPerson.session=:session) DESC, timestampTaken DESC";
+                                } else {
+                                    $sql .= " ORDER BY timestampTaken DESC";
+                                }
                                 $result = $pdo->executeQuery($data, $sql);
 
                                 $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
@@ -207,8 +247,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
                             $form->addHiddenValue('currentDate', $currentDate);
                             $form->addHiddenValue('count', count($students));
+                            if (!empty($attendanceSession)) {
+                                $form->addHiddenValue('session', $attendanceSession);
+                            }
 
-                            $form->addRow()->addHeading(__('Take Attendance') . ': '. htmlPrep($formGroup['name']));
+                            $form->addRow()->addHeading(__('Take Attendance') . ': '. htmlPrep($formGroup['name']) . (!empty($attendanceSession) ? ' ('.htmlPrep($attendanceSession).')' : ''));
 
                             $grid = $form->addRow()->addGrid('attendance')->setBreakpoints('w-1/2 sm:w-1/4 md:w-1/5 lg:w-1/4');
 

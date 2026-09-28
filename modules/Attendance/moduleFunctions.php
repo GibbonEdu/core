@@ -172,3 +172,34 @@ function getColourArray()
 
     return $return;
 }
+
+/**
+ * Returns the named registration sessions used for form group attendance, such as ['AM', 'PM'].
+ * An empty array means one form group register per day, which is the default.
+ *
+ * @param SettingGateway $settingGateway
+ * @return array
+ */
+function getFormGroupAttendanceSessions($settingGateway)
+{
+    $sessions = $settingGateway->getSettingByScope('Attendance', 'formGroupAttendanceSessions');
+
+    return array_values(array_unique(array_filter(array_map('trim', explode(',', $sessions ?? '')), 'strlen')));
+}
+
+/**
+ * Returns TRUE if attendance has been recorded for every session in the list, or for any session when
+ * sessions are not in use. Takes the session values of the form group logs recorded for one day.
+ *
+ * @param array $sessionsTaken
+ * @param array $sessions
+ * @return bool
+ */
+function isFormGroupAttendanceComplete($sessionsTaken, $sessions)
+{
+    if (empty($sessions)) {
+        return !empty($sessionsTaken);
+    }
+
+    return count(array_intersect($sessions, $sessionsTaken)) == count($sessions);
+}

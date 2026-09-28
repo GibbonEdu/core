@@ -148,9 +148,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $table->addColumn('where', __('Where'))
                     ->width('25%')
                     ->format(function ($log) {
-                        return ($log['context'] == 'Class' && !empty($log['gibbonCourseClassID']))
-                            ? __($log['context']).' ('.Format::courseClassName($log['courseName'], $log['className']).')'
-                            : __($log['context']);
+                        if ($log['context'] == 'Class' && !empty($log['gibbonCourseClassID'])) {
+                            return __($log['context']).' ('.Format::courseClassName($log['courseName'], $log['className']).')';
+                        }
+
+                        return __($log['context']).(!empty($log['session']) ? ' ('.htmlPrep($log['session']).')' : '');
                     });
 
                 $table->addColumn('timestampTaken', __('Recorded By'))
