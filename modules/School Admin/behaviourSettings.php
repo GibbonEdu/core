@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading('Types', __('Types'));
+    $row = $form->addRow()->addHeading('Types', __('Types'))->append(__('Gibbon has three types of behaviour records: Negative, Positive, and Observation. You can enable or disable each type as needed for your school.'));
 
     foreach (['enableNegativeBehaviour', 'enablePositiveBehaviour', 'enableObservationBehaviour'] as $settingName) {
         $setting = $settingGateway->getSettingByScope('Behaviour', $settingName, true);
