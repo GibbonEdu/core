@@ -51,6 +51,7 @@ v31.0.00
         Attendance: fixed the Consecutive Absences check to only count the final status for each day
         Attendance: added a foreign table field to attendance logs for recording target of future absences
         Attendance: added Class as a target option for Set Future Absence
+        Attendance: improved the display of attendance counts when attendance is not yet taken
         Behaviour: added settings to control which behaviour types are enabled
         Calendar: switched default sorting of Manage Events to newest first
         Calendar: remove future absence when deleting participant or editing the date
