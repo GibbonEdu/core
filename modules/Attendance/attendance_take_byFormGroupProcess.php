@@ -110,6 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $type = $_POST[$i.'-type'] ?? '';
                             $reason = $_POST[$i.'-reason'] ?? '';
                             $comment = $_POST[$i.'-comment'] ?? '';
+                            $minutesLate = $_POST[$i.'-minutesLate'] ?? '';
+                            $minutesLate = $attendance->isTypeLate($type) && is_numeric($minutesLate) ? max(0, min(999, intval($minutesLate))) : null;
 
                             $attendanceCode = $attendance->getAttendanceCodeByType($type);
                             $direction = $attendanceCode['direction'];
@@ -140,6 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 'gibbonFormGroupID'      => $gibbonFormGroupID,
                                 'date'                   => $currentDate,
                                 'session'                => $attendanceSession,
+                                'minutesLate'            => $minutesLate,
                                 'timestampTaken'         => date('Y-m-d H:i:s'),
                             ];
 

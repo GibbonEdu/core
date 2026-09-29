@@ -457,5 +457,8 @@ UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,c
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'formGroupAttendanceSessions', 'Form Group Attendance Sessions', 'Comma-separated list of registration sessions each day, such as AM,PM. Leave blank to take form group attendance once per day.', '');end
 ALTER TABLE `gibbonAttendanceLogFormGroup` ADD `session` VARCHAR(20) NULL DEFAULT NULL AFTER `date`;end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD `session` VARCHAR(20) NULL DEFAULT NULL AFTER `date`;end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD `minutesLate` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `session`;end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`, `menuShow`, `entrySidebar`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Attendance Percentage by Student', 0, 'Reports', 'Shows each student''s attendance percentage, absences and lateness between two dates, counted by registration session when sessions are in use.', 'report_attendancePercentage.php', 'report_attendancePercentage.php', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction WHERE name='Attendance Percentage by Student' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance')));end
 
 ";

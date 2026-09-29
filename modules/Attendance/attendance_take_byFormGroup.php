@@ -186,13 +186,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $countPresent = 0;
                             $columns = 4;
 
-                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
+                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0, 'session' => null, 'minutesLate' => '');
                             $students = $resultFormGroup->fetchAll();
+
+                            // With registration sessions, count absent sessions rather than days
+                            $sessionCounts = !empty($sessions)
+                                ? getAttendanceCounts($pdo, $settingGateway, array_column($students, 'gibbonPersonID'), $formGroup['firstDay'], $formGroup['lastDay'])
+                                : [];
+
+                            // Attendance types that record lateness, which show a Minutes Late box
+                            $lateTypes = array_values(array_filter(array_keys($attendance->getAttendanceTypes(true)), [$attendance, 'isTypeLate']));
 
                             // Build the attendance log data per student
                             foreach ($students as $key => $student) {
                                 $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate);
-                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceLogPerson.gibbonFormGroupID
+                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, gibbonAttendanceLogPerson.session, gibbonAttendanceLogPerson.minutesLate, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceLogPerson.gibbonFormGroupID
                                         FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                         JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
@@ -217,6 +225,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     $log = $defaults;
                                 }
 
+                                // Minutes late belong to the session they were recorded for, so they are not carried over
+                                if (!empty($attendanceSession) && $log['session'] != $attendanceSession) {
+                                    $log['minutesLate'] = '';
+                                }
+
                                 $students[$key]['cellHighlight'] = '';
                                 if ($attendance->isTypeAbsent($log['type'])) {
                                     $students[$key]['cellHighlight'] = 'dayAbsent';
@@ -227,10 +240,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 }
 
                                 $students[$key]['absenceCount'] = '';
-                                $absenceCount = getAbsenceCount($guid, $student['gibbonPersonID'], $connection2, $formGroup['firstDay'], $formGroup['lastDay']);
-                                if ($absenceCount !== false) {
-                                    $absenceText = ($absenceCount == 1)? __('%1$s Day Absent') : __('%1$s Days Absent');
+                                if (!empty($sessions)) {
+                                    $absenceCount = $sessionCounts[$student['gibbonPersonID']]['absent'] ?? 0;
+                                    $absenceText = ($absenceCount == 1)? __('%1$s Session Absent') : __('%1$s Sessions Absent');
                                     $students[$key]['absenceCount'] = sprintf($absenceText, $absenceCount);
+                                } else {
+                                    $absenceCount = getAbsenceCount($guid, $student['gibbonPersonID'], $connection2, $formGroup['firstDay'], $formGroup['lastDay']);
+                                    if ($absenceCount !== false) {
+                                        $absenceText = ($absenceCount == 1)? __('%1$s Day Absent') : __('%1$s Days Absent');
+                                        $students[$key]['absenceCount'] = sprintf($absenceText, $absenceCount);
+                                    }
                                 }
 
                                 if ($attendance->isTypePresent($log['type']) && $attendance->isTypeOnsite($log['type'])) {
@@ -242,6 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                             $form = Form::create('attendanceByFormGroup', $session->get('absoluteURL').'/modules/'.$session->get('module'). '/attendance_take_byFormGroupProcess.php');
                             $form->setAutocomplete('off');
+                            $form->setAttribute('data-late-types', json_encode($lateTypes));
 
                             $form->addHiddenValue('address', $session->get('address'));
                             $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
@@ -288,6 +308,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                      ->maxLength(255)
                                      ->setValue($student['log']['comment'])
                                      ->setClass('mx-auto float-none w-32 m-0 mb-2');
+                                $cell->addNumber($count.'-minutesLate')
+                                     ->onlyInteger(true)
+                                     ->minimum(0)
+                                     ->maximum(999)
+                                     ->setValue($student['log']['minutesLate'] ?? '')
+                                     ->placeholder(__('Minutes Late'))
+                                     ->setTitle(__('Minutes Late'))
+                                     ->setClass('minutesLate mx-auto float-none w-32 m-0 mb-2 flex-grow-0')
+                                     ->addClass(in_array($student['log']['type'], $lateTypes) ? '' : 'hidden');
                                 $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Form Group'));
 
                                 $count++;
