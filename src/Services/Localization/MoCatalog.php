@@ -22,10 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services\Localization;
 
 /**
- * Reads GNU gettext .mo catalogs in pure PHP.
  *
  * Used when the system locale cannot be activated for native gettext
- * (common on some shared hosts / CageFS environments).
  *
  * @version v30
  * @since   v30
@@ -33,9 +31,7 @@ namespace Gibbon\Services\Localization;
 class MoCatalog
 {
     /**
-     * Process-lifetime cache of parsed catalogs.
-     *
-     * Keyed by absolute path + filemtime so PHP-FPM/Apache workers parse each
+     * 
      * .mo once, and automatically reload if the file is updated on disk.
      *
      * @var array<string, self>
@@ -58,11 +54,11 @@ class MoCatalog
     protected $pluralFunc;
 
     /**
-     * Load a .mo file from disk (or from the per-worker cache).
+     * Load a .mo file from disk
      *
-     * @param string $moFile Absolute path to a .mo file
+     * @param string
      *
-     * @return static|null Null when the file is missing or invalid
+     * @return static|null
      */
     public static function load(string $moFile): ?self
     {
@@ -103,7 +99,7 @@ class MoCatalog
     }
 
     /**
-     * Clear the process-lifetime cache (intended for tests).
+     * Clear the process-lifetime cache
      */
     public static function clearCache(): void
     {
@@ -244,13 +240,94 @@ class MoCatalog
             return;
         }
 
+        $expr = $this->parenthesizeTernaries($expr);
+
         $this->nplurals = $nplurals;
         $this->pluralFunc = static function (int $n) use ($expr): int {
-            $result = 0;
-            // Expression comes from trusted Gibbon-shipped .mo headers, with a character whitelist above.
-            eval('$result = (int) (' . $expr . ');');
-            return $result;
+            try {
+                $result = 0;
+                eval('$result = (int) (' . $expr . ');');
+                return $result;
+            } catch (\Throwable $e) {
+                return $n == 1 ? 0 : 1;
+            }
         };
+    }
+
+    /**
+     * Make nested ternary operators explicitly right-associative for PHP 8+.
+     */
+    protected function parenthesizeTernaries(string $expr): string
+    {
+        $expr = trim($expr);
+
+        // Unwrap balanced outer parentheses so nested ternaries inside
+        while ($this->hasBalancedOuterParentheses($expr)) {
+            $expr = trim(substr($expr, 1, -1));
+        }
+
+        $length = strlen($expr);
+        $depth = 0;
+        $questionPos = null;
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $expr[$i];
+
+            if ($char === '(') {
+                $depth++;
+                continue;
+            }
+            if ($char === ')') {
+                $depth--;
+                continue;
+            }
+            if ($depth !== 0) {
+                continue;
+            }
+
+            if ($char === '?' && $questionPos === null) {
+                $questionPos = $i;
+                continue;
+            }
+
+            if ($char === ':' && $questionPos !== null) {
+                $condition = trim(substr($expr, 0, $questionPos));
+                $ifTrue = $this->parenthesizeTernaries(trim(substr($expr, $questionPos + 1, $i - $questionPos - 1)));
+                $ifFalse = $this->parenthesizeTernaries(trim(substr($expr, $i + 1)));
+
+                return $condition.' ? '.$ifTrue.' : ('.$ifFalse.')';
+            }
+        }
+
+        return $expr;
+    }
+
+    /**
+     * Whether the expression is fully wrapped in one balanced parenthesis pair.
+     */
+    protected function hasBalancedOuterParentheses(string $expr): bool
+    {
+        if ($expr === '' || $expr[0] !== '(' || substr($expr, -1) !== ')') {
+            return false;
+        }
+
+        $depth = 0;
+        $length = strlen($expr);
+        for ($i = 0; $i < $length; $i++) {
+            if ($expr[$i] === '(') {
+                $depth++;
+            } elseif ($expr[$i] === ')') {
+                $depth--;
+                if ($depth === 0 && $i < $length - 1) {
+                    return false;
+                }
+                if ($depth < 0) {
+                    return false;
+                }
+            }
+        }
+
+        return $depth === 0;
     }
 
     protected function pluralIndex(int $n): int

@@ -45,7 +45,6 @@ class Locale implements LocaleInterface
     protected $supportsGetText = true;
 
     /**
-     * Whether native gettext can resolve translations for the active locale.
      * When false, translations are served from parsed .mo catalogs instead.
      *
      * @var bool
@@ -98,9 +97,6 @@ class Locale implements LocaleInterface
     /**
      * Attempt to activate a system locale for native gettext.
      *
-     * Returns true only when setlocale succeeds for a locale that matches the
-     * requested language. putenv alone is not enough — getenv() can look correct
-     * while LC_MESSAGES remains C and gettext returns English msgids.
      *
      * @param string $i18ncode
      *
@@ -117,7 +113,6 @@ class Locale implements LocaleInterface
         ];
 
         // LANGUAGE should be a language[_territory] code without charset.
-        // LC_ALL / LANG prefer a full system locale name.
         if (function_exists('putenv')) {
             putenv('LANGUAGE='.$i18ncode);
             putenv('LC_ALL='.$variants[0]);
@@ -253,8 +248,8 @@ class Locale implements LocaleInterface
      * Bind a domain for native gettext and/or load a PHP .mo fallback catalog.
      *
      * @param string $domain
-     * @param string $i18nPath  Path containing {locale}/LC_MESSAGES/{domain}.mo
-     * @param bool   $default   Whether this domain should become the default textdomain
+     * @param string $i18nPath
+     * @param bool   $default
      */
     protected function bindDomain(string $domain, string $i18nPath, bool $default = false)
     {
