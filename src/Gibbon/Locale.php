@@ -24,7 +24,7 @@ namespace Gibbon;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
-use Gibbon\Contracts\Services\Session as SessionInterface;
+use Gibbon\Services\Localization\MoCatalog;
 
 /**
  * Localization & Internationalization Class
@@ -44,6 +44,20 @@ class Locale implements LocaleInterface
 
     protected $supportsGetText = true;
 
+    /**
+     * Whether native gettext can resolve translations for the active locale.
+     * When false, translations are served from parsed .mo catalogs instead.
+     *
+     * @var bool
+     */
+    protected $nativeLocaleActive = false;
+
+    /**
+     * Fallback message catalogs keyed by domain name.
+     *
+     * @var array<string, MoCatalog>
+     */
+    protected $catalogs = [];
 
     /**
      * Construct
@@ -54,7 +68,12 @@ class Locale implements LocaleInterface
     public function __construct(string $absolutePath)
     {
         $this->absolutePath = $absolutePath;
-        $this->supportsGetText = function_exists('gettext') && function_exists('dgettext');
+        $this->supportsGetText = function_exists('gettext')
+            && function_exists('dgettext')
+            && function_exists('ngettext')
+            && function_exists('dngettext')
+            && function_exists('bindtextdomain')
+            && function_exists('textdomain');
     }
 
     /**
@@ -65,18 +84,100 @@ class Locale implements LocaleInterface
     public function setLocale($i18ncode)
     {
         // Cancel if there's no code set
-        if (empty($i18ncode)) return;
+        if (empty($i18ncode)) {
+            return;
+        }
 
         $this->i18ncode = $i18ncode;
+        $this->nativeLocaleActive = false;
+        $this->catalogs = [];
 
-        putenv('LC_ALL='.$this->i18ncode.'.utf8');
-        putenv('LANG='.$this->i18ncode.'.utf8');
-        putenv('LANGUAGE='.$this->i18ncode.'.utf8');
-        $localeSet = setlocale(LC_ALL, $this->i18ncode.'.utf8',
-                                       $this->i18ncode.'.UTF8',
-                                       $this->i18ncode.'.utf-8',
-                                       $this->i18ncode.'.UTF-8',
-                                       $this->i18ncode);
+        $this->nativeLocaleActive = $this->activateSystemLocale($i18ncode);
+    }
+
+    /**
+     * Attempt to activate a system locale for native gettext.
+     *
+     * Returns true only when setlocale succeeds for a locale that matches the
+     * requested language. putenv alone is not enough — getenv() can look correct
+     * while LC_MESSAGES remains C and gettext returns English msgids.
+     *
+     * @param string $i18ncode
+     *
+     * @return bool
+     */
+    protected function activateSystemLocale(string $i18ncode): bool
+    {
+        $variants = [
+            $i18ncode.'.utf8',
+            $i18ncode.'.UTF-8',
+            $i18ncode.'.utf-8',
+            $i18ncode.'.UTF8',
+            $i18ncode,
+        ];
+
+        // LANGUAGE should be a language[_territory] code without charset.
+        // LC_ALL / LANG prefer a full system locale name.
+        if (function_exists('putenv')) {
+            putenv('LANGUAGE='.$i18ncode);
+            putenv('LC_ALL='.$variants[0]);
+            putenv('LANG='.$variants[0]);
+            putenv('LC_MESSAGES='.$variants[0]);
+        }
+
+        $localeSet = false;
+
+        // Prefer LC_MESSAGES when available — this is what gettext uses.
+        if (defined('LC_MESSAGES')) {
+            $localeSet = setlocale(LC_MESSAGES, ...$variants);
+        }
+
+        if ($localeSet === false) {
+            $localeSet = setlocale(LC_ALL, ...$variants);
+        }
+
+        // Some platforms read locale from the environment after putenv().
+        if ($localeSet === false) {
+            $localeSet = setlocale(LC_ALL, '');
+        }
+
+        if ($localeSet === false) {
+            return false;
+        }
+
+        return $this->localeMatches($localeSet, $i18ncode);
+    }
+
+    /**
+     * Check whether a setlocale() result corresponds to the requested code.
+     */
+    protected function localeMatches($localeSet, string $i18ncode): bool
+    {
+        if ($localeSet === false || $localeSet === null) {
+            return false;
+        }
+
+        $current = is_string($localeSet) ? $localeSet : (string) $localeSet;
+        if ($current === '' || $current === 'C' || $current === 'POSIX') {
+            return false;
+        }
+
+        // setlocale(LC_ALL, 0) may return a detailed category string.
+        if (defined('LC_MESSAGES')) {
+            $messages = setlocale(LC_MESSAGES, 0);
+            if (is_string($messages) && $messages !== '') {
+                $current = $messages;
+            }
+        }
+
+        if ($current === 'C' || $current === 'POSIX' || strpos($current, 'LC_MESSAGES=C') !== false) {
+            return false;
+        }
+
+        $normalizedCurrent = strtolower(str_replace('-', '_', $current));
+        $normalizedCode = strtolower(str_replace('-', '_', $i18ncode));
+
+        return strpos($normalizedCurrent, $normalizedCode) !== false;
     }
 
     /**
@@ -86,6 +187,14 @@ class Locale implements LocaleInterface
      */
     public function getLocale() {
         return $this->i18ncode;
+    }
+
+    /**
+     * Whether native system gettext is active for the current locale.
+     */
+    public function isNativeLocaleActive(): bool
+    {
+        return $this->nativeLocaleActive;
     }
 
     public function setTimezone($timezone)
@@ -126,11 +235,7 @@ class Locale implements LocaleInterface
      */
     public function setSystemTextDomain($absolutePath)
     {
-        if (!$this->supportsGetText) return;
-
-        bindtextdomain('gibbon', $absolutePath.'/i18n');
-        bind_textdomain_codeset('gibbon', 'UTF-8');
-        textdomain('gibbon');
+        $this->bindDomain('gibbon', $absolutePath.'/i18n', true);
     }
 
     /**
@@ -141,15 +246,106 @@ class Locale implements LocaleInterface
      */
     public function setModuleTextDomain($module, $absolutePath)
     {
-        if (!$this->supportsGetText) return;
+        $this->bindDomain($module, $absolutePath.'/modules/'.$module.'/i18n', false);
+    }
 
-        bindtextdomain($module, $absolutePath.'/modules/'.$module.'/i18n');
+    /**
+     * Bind a domain for native gettext and/or load a PHP .mo fallback catalog.
+     *
+     * @param string $domain
+     * @param string $i18nPath  Path containing {locale}/LC_MESSAGES/{domain}.mo
+     * @param bool   $default   Whether this domain should become the default textdomain
+     */
+    protected function bindDomain(string $domain, string $i18nPath, bool $default = false)
+    {
+        if ($this->supportsGetText && $this->nativeLocaleActive) {
+            bindtextdomain($domain, $i18nPath);
+            bind_textdomain_codeset($domain, 'UTF-8');
+            if ($default) {
+                textdomain($domain);
+            }
+            return;
+        }
+
+        // Native locale unavailable: load .mo directly so translations still work.
+        $moFile = $this->findMoFile($i18nPath, $domain);
+        if ($moFile !== null) {
+            $catalog = MoCatalog::load($moFile);
+            if ($catalog instanceof MoCatalog) {
+                $this->catalogs[$domain] = $catalog;
+            }
+        }
+    }
+
+    /**
+     * Locate a domain .mo file for the current locale.
+     */
+    protected function findMoFile(string $i18nPath, string $domain): ?string
+    {
+        if (empty($this->i18ncode)) {
+            return null;
+        }
+
+        $localeNames = [
+            $this->i18ncode,
+            $this->i18ncode.'.utf8',
+            $this->i18ncode.'.UTF-8',
+            $this->i18ncode.'.utf-8',
+            $this->i18ncode.'.UTF8',
+        ];
+
+        foreach ($localeNames as $localeName) {
+            $moFile = $i18nPath.'/'.$localeName.'/LC_MESSAGES/'.$domain.'.mo';
+            if (is_readable($moFile)) {
+                return $moFile;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve a translated string through native gettext or the .mo fallback.
+     */
+    protected function getTranslatedText(string $text, string $domain = ''): string
+    {
+        if ($this->supportsGetText && $this->nativeLocaleActive) {
+            return $domain === '' ? gettext($text) : dgettext($domain, $text);
+        }
+
+        $catalogDomain = $domain !== '' ? $domain : 'gibbon';
+        if (isset($this->catalogs[$catalogDomain])) {
+            return $this->catalogs[$catalogDomain]->translate($text);
+        }
+
+        return $text;
+    }
+
+    /**
+     * Resolve a plural translated string through native gettext or the .mo fallback.
+     */
+    protected function getTranslatedTextPlural(string $singular, string $plural, int $n, string $domain = ''): string
+    {
+        if ($this->supportsGetText && $this->nativeLocaleActive) {
+            return $domain === ''
+                ? ngettext($singular, $plural, $n)
+                : dngettext($domain, $singular, $plural, $n);
+        }
+
+        $catalogDomain = $domain !== '' ? $domain : 'gibbon';
+        if (isset($this->catalogs[$catalogDomain])) {
+            return $this->catalogs[$catalogDomain]->translatePlural($singular, $plural, $n);
+        }
+
+        return $n == 1 ? $singular : $plural;
     }
 
     /**
      * Get and store custom string replacements in session
      *
+     * @param   Gibbon\Contracts\Services\Session  $session
      * @param   Gibbon\Contracts\Database\Connection  $pdo
+     * @param   bool $forceRefresh
      */
     public function setStringReplacementList(Session $session, Connection $pdo, $forceRefresh = false)
     {
@@ -303,11 +499,7 @@ class Locale implements LocaleInterface
         $domain = $options['domain'] ?? '';
 
         // get raw translated string with or without domain.
-        if ($this->supportsGetText) {
-            $text = empty($domain) ?
-                gettext($text) :
-                dgettext($domain, $text);
-        }
+        $text = $this->getTranslatedText($text, $domain);
 
         // apply custom string replacement logics and return.
         $text = $this->doStringReplacement($text);
@@ -346,13 +538,7 @@ class Locale implements LocaleInterface
         $domain = $options['domain'] ?? '';
 
         // get raw translated string with or without domain.
-        if ($this->supportsGetText) {
-            $text = empty($domain) ?
-                ngettext($singular, $plural, $n) :
-                dngettext($domain, $singular, $plural, $n);
-        } else {
-            $text = $n > 1 ? $plural : $singular;
-        }
+        $text = $this->getTranslatedTextPlural($singular, $plural, $n, $domain);
 
         // apply named replacement parameters, if presents.
         $text = static::formatString($text ?? '', $params);
