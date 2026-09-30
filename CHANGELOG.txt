@@ -32,6 +32,7 @@ v31.0.00
     Security
 
     Changes With Important Notices
+        System: increased minimum PHP version to 8.1
 
     Tweaks & Additions
         System: updated TinyMCE to version 8 and added a minimal mode to Editor fields
