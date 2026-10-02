@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+
 //Gibbon system-wide includes
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -39,19 +41,21 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
     $URL .= '&return=error1';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    try {
-        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID);
-        $sql = "DELETE FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
+    // Proceed!
+    $attendanceLogPersonGateway = $container->get(AttendanceLogPersonGateway::class);
+
+    $deleted = $attendanceLogPersonGateway->deleteWhere([
+        'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID,
+        'gibbonPersonID' => $gibbonPersonID
+    ]);
+
+    if (!$deleted) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit();
     }
 
-    //Success 0
+    // Success
     $URL .= '&return=success0';
     header("Location: {$URL}");
 }

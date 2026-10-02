@@ -19,14 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Attendance\AttendanceCodeGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Services\Format;
 
 require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-//Module includes
+// Module includes
 include './moduleFunctions.php';
 
 $gibbonAttendanceLogPersonID = $_POST['gibbonAttendanceLogPersonID'] ?? '';
@@ -43,18 +45,13 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
     $URL .= '&return=error1';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-
+    // Proceed!
     $type = $_POST['type'] ?? '';
     $reason = $_POST['reason'] ?? '';
     $comment = $_POST['comment'] ?? '';
 
-    // Get attendance codes
-
-        $dataCode = array( 'name' => $type );
-        $sqlCode = "SELECT direction FROM gibbonAttendanceCode WHERE active = 'Y' AND name=:name LIMIT 1";
-        $resultCode = $connection2->prepare($sqlCode);
-        $resultCode->execute($dataCode);
+    // Get attendance code
+    $resultCode = $container->get(AttendanceCodeGateway::class)->selectBy(['name' => $type, 'active' => 'Y']);
 
     if ($resultCode->rowCount() != 1) {
         $URL .= '&return=error1';
@@ -65,25 +62,34 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
     $attendanceCode = $resultCode->fetch();
     $direction = $attendanceCode['direction'];
 
-    //Check if values specified
+    // Check if values specified
     if ($type == '' || $direction == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
 
-        //UPDATE
-        try {
-            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'direction' => $direction, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID') );
-            $sql = 'UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), type=:type, reason=:reason, comment=:comment, direction=:direction, gibbonPersonIDTaker=:gibbonPersonIDTaker, timestampTaken=NOW() WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+        // UPDATE
+        $attendanceLogPersonGateway = $container->get(AttendanceLogPersonGateway::class);
+
+        $data = [
+            'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+            'type' => $type,
+            'reason' => $reason,
+            'comment' => $comment,
+            'direction' => $direction,
+            'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+            'timestampTaken' => date('Y-m-d H:i:s')
+        ];
+
+        $updated = $attendanceLogPersonGateway->updateWhere(['gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID], $data);
+
+        if (!$updated) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        //Success 0
+        // Success
         $URL .= '&return=success0';
         header("Location: {$URL}");
     }

@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
             if (empty($result)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                $row = $result->fetch();
+                $row = $result;
 
                 $page->breadcrumbs->add($row['name']);
 

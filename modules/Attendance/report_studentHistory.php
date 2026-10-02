@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 
@@ -72,14 +73,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             if ($gibbonPersonID != '') {
                 $output = '';
 
-                $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-                if ($result->rowCount() != 1) {
+                $result = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
+
+                if (empty($result)) {
                     $page->addError(__('The specified record does not exist.'));
                 } else {
-                    $row = $result->fetch();
+                    $row = $result;
 
                     // ATTENDANCE DATA
                     $attendanceData = $container
@@ -108,13 +107,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     echo $table->render($attendanceData);
                 }
             }
-        }
-        else if ($highestAction == 'Student History_myChildren') {
+        } else if ($highestAction == 'Student History_myChildren') {
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
                 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
             }
-
             // Test data access field for permission
             $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
 
@@ -166,12 +163,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                         return;
                     }
 
-                    $data = ['gibbonPersonID' => $gibbonPersonID];
-                    $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
-                    if ($result->rowCount() != 1) {
+                    if (empty($result)) {
                         $page->addError(__('The specified record does not exist.'));
                     } else {
                         $row = $result->fetch();
@@ -190,18 +184,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     }
                 }
             }
-        }
-        else if ($highestAction == 'Student History_my') {
+        } else if ($highestAction == 'Student History_my') {
             $output = '';
 
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-            if ($result->rowCount() != 1) {
+            $result = $container->get(UserGateway::class)->getUserDetails($session->get('gibbonPersonID'), $session->get('gibbonSchoolYearID'));
+
+            if (empty($result)) {
                 $page->addError(__('The specified record does not exist.'));
             } else {
-                $row = $result->fetch();
+                $row = $result;
 
                 // ATTENDANCE DATA
                 $attendanceData = $container
