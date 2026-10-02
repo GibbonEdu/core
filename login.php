@@ -34,7 +34,7 @@ use Gibbon\Domain\System\LogGateway;
 use League\Container\Exception\NotFoundException;
 
 // Gibbon system-wide include
-require_once './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 $session->forget('pageLoads');
 $URL = Url::fromRoute();

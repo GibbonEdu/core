@@ -23,7 +23,7 @@ use Gibbon\Forms\FormFactory;
 use Gibbon\Http\Url;
 use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNameConflicts.php') == false) {
     exit;

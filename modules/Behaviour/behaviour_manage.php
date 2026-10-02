@@ -65,15 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addLabel('gibbonYearGroupID',__('Year Group'));
             $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
-        $arrTypes = array(
-            'Negative' => __('Negative'),
-            'Positive' => __('Positive'),
-            'Observation' => __('Observation')
-        );
-
         $row = $form->addRow();
             $row->addLabel('type',__('Type'));
-            $row->addSelect('type')->fromArray($arrTypes)->selected($type)->placeholder();
+            $row->addSelectBehaviourType('type')->selected($type)->placeholder();
 
 
         $row = $form->addRow()->addSearchSubmit($session, __('Clear Filters'));

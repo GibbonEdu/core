@@ -29,7 +29,7 @@ use Gibbon\Module\Reports\Renderer\MpdfRenderer;
 use Gibbon\Module\Reports\Renderer\TcpdfRenderer;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

@@ -26,7 +26,7 @@ use Gibbon\Module\Staff\AbsenceNotificationProcess;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
 use Gibbon\Domain\System\SettingGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

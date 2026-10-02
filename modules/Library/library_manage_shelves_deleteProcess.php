@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Library\LibraryShelfGateway;
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonLibraryShelfID = $_POST['gibbonLibraryShelfID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_shelves.php';

@@ -38,7 +38,7 @@ use Gibbon\Database\Updater;
 	</head>
 	<body>
 		<?php
-        include './gibbon.php';
+        include __DIR__ . '/gibbon.php';
         include './config.php';
         include './version.php';
 

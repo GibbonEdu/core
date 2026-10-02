@@ -6,4 +6,4 @@ services:
             ## Mount project root so live edits are immediately reflected without rebuilding the image.
             - .:/var/www/html
             ## Mount PHP config so values can be changed without an image rebuild.
-            - ./ops/php/gibbon.ini:/usr/local/etc/php/conf.d/gibbon.ini:ro
+            - ./resources/ops/configuration/php/gibbon.ini:/usr/local/etc/php/conf.d/gibbon.ini:ro

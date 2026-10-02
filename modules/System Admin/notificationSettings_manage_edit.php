@@ -104,9 +104,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 ->width('15%')
                 ->format(Format::using('yesNo', 'receiveNotificationEmails'));
 
-            $table->addColumn('scope', __('Scope'))->format(function ($listener) use (&$pdo) {
+            $table->addColumn('scope', __('Scope'))->format(function ($listener) use (&$pdo, $event) {
                 if ($listener['scopeType'] == 'All') {
                     return __('All');
+                } elseif ($listener['scopeType'] == 'context') {
+                    return $event['contextName'].' - '.$listener['scopeContext'];
                 } else {
                     switch($listener['scopeType']) {
                         case 'gibbonPersonIDStudent':   $data = array('gibbonPersonID' => $listener['scopeID']);
@@ -182,6 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                         'gibbonPersonIDStudent' => __('Student'),
                         'gibbonPersonIDStaff'   => __('Staff'),
                         'gibbonYearGroupID'     => __('Year Group'),
+                        'context'               => __('Context'),
                     );
 
                     $eventScopes = array_combine(explode(',', $event['scopes']), explode(',', trim($event['scopes'])));
@@ -205,6 +208,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     $row = $form->addRow()->addClass('scopeTypeYearGroup');
                         $row->addLabel('gibbonYearGroupID', __('Year Group'));
                         $row->addSelectYearGroup('gibbonYearGroupID')->required()->placeholder();
+
+                    $form->toggleVisibilityByClass('scopeTypeContext')->onSelect('scopeType')->when('context');
+                    $row = $form->addRow()->addClass('scopeTypeContext');
+                        $row->addLabel('scopeContext', __('Context'))->description($event['contextName']);
+                        $row->addTextField('scopeContext')->required()->placeholder();
                 }
 
                 $row = $form->addRow();

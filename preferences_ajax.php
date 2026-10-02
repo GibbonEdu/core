@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\UserGateway;
 
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
     exit;

@@ -188,7 +188,9 @@ class NotificationGateway extends QueryableGateway
             foreach ($scopes as $scope) {
                 $data['scopeType'.$i] = $scope['type'];
                 $data['scopeTypeID'.$i] = $scope['id'];
-                $sql .= " OR (scopeType=:scopeType{$i} AND scopeID=:scopeTypeID{$i})";
+                $data['scopeContext'.$i] = $scope['id'];
+                $sql .= " OR (scopeType=:scopeType{$i} AND scopeID=:scopeTypeID{$i} AND scopeID<>0)";
+                $sql .= " OR (scopeType='context' AND scopeContext=:scopeContext{$i} AND scopeID=0)";
                 $i++;
             }
             $sql .= ")";
@@ -201,7 +203,7 @@ class NotificationGateway extends QueryableGateway
 
     public function insertNotificationListener($data)
     {
-        $sql = 'INSERT INTO gibbonNotificationListener SET gibbonNotificationEventID=:gibbonNotificationEventID, gibbonPersonID=:gibbonPersonID, scopeType=:scopeType, scopeID=:scopeID';
+        $sql = 'INSERT INTO gibbonNotificationListener SET gibbonNotificationEventID=:gibbonNotificationEventID, gibbonPersonID=:gibbonPersonID, scopeType=:scopeType, scopeID=:scopeID, scopeContext=:scopeContext';
 
         return $this->db()->insert($sql, $data);
     }

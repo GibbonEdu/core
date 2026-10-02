@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonLibraryShelfItemID = $_POST['gibbonLibraryShelfItemID'] ?? '';
 $gibbonLibraryShelfID = $_POST['gibbonLibraryShelfID'] ?? '';

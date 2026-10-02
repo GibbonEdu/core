@@ -22,12 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\Process;
 
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\View\AssignHouseView;
-use Gibbon\Domain\School\HouseGateway;
-use Gibbon\Domain\User\UserGateway;
 
 class AssignHouse extends AbstractFormProcess implements ViewableProcess
 {
@@ -58,15 +58,25 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
     {
         if (!$formData->has('gibbonPersonIDStudent')) return;
 
-        // Get pseudo-randomly assigned house
-        $assignedHouse = $this->houseGateway->selectAssignedHouseByGender($this->session->get('gibbonSchoolYearIDCurrent'), $formData->get('gibbonYearGroupIDEntry'), $formData->get('gender'))->fetch();
+        $assignedHouse = null;
+        $gibbonFamilyID = $formData->get('gibbonFamilyID');
+        $gibbonPersonIDStudent = $formData->get('gibbonPersonIDStudent');
+
+        if (!empty($gibbonFamilyID)) {
+            $assignedHouse = $this->houseGateway->selectExistingHouseByFamilyID($gibbonFamilyID, $gibbonPersonIDStudent);
+        }
+
+        // Fallback to gender-based assignment if no family assignment found
+        if (empty($assignedHouse)) {
+            $assignedHouse = $this->houseGateway->selectAssignedHouseByGender($this->session->get('gibbonSchoolYearIDCurrent'), $formData->get('gibbonYearGroupIDEntry'), $formData->get('gender'))->fetch();
+        }
 
         if (empty($assignedHouse)) return;
 
         $formData->set('gibbonHouseID', $assignedHouse['gibbonHouseID']);
 
         // Update the user data for this student
-        $this->userGateway->update($formData->has('gibbonPersonIDStudent'), [
+        $this->userGateway->update($gibbonPersonIDStudent, [
             'gibbonHouseID' => $formData->get('gibbonHouseID'),
         ]);
 
@@ -77,7 +87,7 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
     {
         if (!$formData->has('gibbonPersonIDStudent')) return;
 
-        $this->userGateway->update($formData->has('gibbonPersonIDStudent'), [
+        $this->userGateway->update($formData->get('gibbonPersonIDStudent'), [
             'gibbonHouseID' => null,
         ]);
 

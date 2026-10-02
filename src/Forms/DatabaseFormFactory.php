@@ -362,6 +362,25 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($statuses);
     }
 
+    public function createSelectBehaviourType($name)
+    {
+        $sql = "SELECT name, value FROM gibbonSetting WHERE scope='Behaviour' AND name IN ('enableNegativeBehaviour', 'enablePositiveBehaviour', 'enableObservationBehaviour')";
+        $settings = $this->pdo->select($sql)->fetchKeyPair();
+
+        $types = [];
+        if (($settings['enableNegativeBehaviour'] ?? '') == 'Y') {
+            $types['Negative'] = __('Negative');
+        }
+        if (($settings['enablePositiveBehaviour'] ?? '') == 'Y') {
+            $types['Positive'] = __('Positive');
+        }
+        if (($settings['enableObservationBehaviour'] ?? '') == 'Y') {
+            $types['Observation'] = __('Observation');
+        }
+
+        return $this->createSelect($name)->fromArray($types);
+    }
+
     public function createSelectStaff($name)
     {
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username

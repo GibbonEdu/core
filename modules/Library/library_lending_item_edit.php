@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('returnExpected', __('Expected Return Date'));
-                $row->addDate('returnExpected')->setValue(Format::date($values['returnExpected']))->required();
+                $row->addDate('returnExpected')->setValue(Format::date($values['returnExpected']))->required()->addTodayButton()->addDayOffsetButtons([1, 7]);
 
 
             $row = $form->addRow()->addHeading('On Return', __('On Return'));

@@ -23,7 +23,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

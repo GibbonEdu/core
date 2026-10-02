@@ -6,7 +6,7 @@ services:
             # Context is project root so COPY . . captures all source code
             context: .
             # Path to Dockerfile is relative to the build context (project root)
-            dockerfile: ops/Dockerfile
+            dockerfile: resources/ops/Dockerfile
             args:
                 PHP_VERSION: ${PHP_VERSION:-8.3}
         container_name: gibbon_app
@@ -25,9 +25,14 @@ services:
             - MYSQL_DATABASE=${MYSQL_DATABASE:-gibbon}
             # MySQL application user credentials
             - MYSQL_USER=${MYSQL_USER:-gibbon}
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Create .env from ops/.env-example and set a password.}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Create .env from resources/ops/configuration/gibbon/.env-example and set a password.}
             # MySQL root password — keep this strong in production
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Create .env from ops/.env-example and set a password.}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Create .env from resources/ops/configuration/gibbon/.env-example and set a password.}
+        ports:
+            - target: 3306
+              published: 3306
+              protocol: tcp
+              mode: host
         volumes:
             - gibbon_db_data:/var/lib/mysql
         # Native password plugin ensures PHP can connect easily
@@ -39,6 +44,12 @@ services:
             retries: 5
             start_period: 30s
         restart: unless-stopped
+
+    config:
+        image: rija/docker-alpine-shell-tools:1.0.1
+        volumes:
+            - ../../:/var/www/html
+        command: /var/www/html/resources/ops/scripts/generate_config.sh
 
 volumes:
     gibbon_db_data:

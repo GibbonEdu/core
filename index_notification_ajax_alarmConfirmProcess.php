@@ -23,7 +23,7 @@ use Gibbon\Domain\System\AlarmGateway;
 use Gibbon\Http\Url;
 
 //Gibbon system-wide includes
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 $gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';

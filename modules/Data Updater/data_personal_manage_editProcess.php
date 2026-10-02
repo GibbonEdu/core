@@ -26,11 +26,12 @@ use Gibbon\Domain\System\LogGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\UI\Components\Alert;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -85,6 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             } else {
                 $row = $result->fetch();
                 $row2 = $result2->fetch();
+                $studentName = Format::name('', $row2['preferredName'], $row2['surname'], 'Student', false);
 
                 //Get categories
                 $staff = false;
@@ -393,6 +395,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 }
 
+                $flaggedChanges = [];
+                $requiredFieldsSetting = unserialize($container->get(SettingGateway::class)->getSettingByScope('User Admin', 'personalDataUpdaterRequiredFields'));
+                $flaggedFields = is_array($requiredFieldsSetting) && is_array($requiredFieldsSetting['flag'] ?? null) ? $requiredFieldsSetting['flag'] : [];
+
+                foreach ($flaggedFields as $fieldName => $flag) {
+                    if ($flag != 'Y' || !array_key_exists($fieldName, $data) || !array_key_exists($fieldName, $row2)) {
+                        continue;
+                    }
+
+                    $oldValue = $row2[$fieldName];
+                    $newValue = $data[$fieldName];
+                    if ((string) ($oldValue ?? '') === (string) ($newValue ?? '')) {
+                        continue;
+                    }
+
+                    $fieldLabel = ucwords(preg_replace('/(?<=[a-z])(?=[A-Z0-9])|(?<=[0-9])(?=[A-Z])/', ' ', $fieldName));
+                    $displayValue = ($newValue === null || $newValue === '') ? __('None') : htmlPrep((string) $newValue);
+                    $flaggedChanges[] = '<strong>'.__($fieldLabel).'</strong>: '.$displayValue;
+                }
+
                 // CUSTOM FIELDS
                 $params = compact('student', 'staff', 'parent', 'other');
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('User', $params, $row2['fields']);
@@ -452,7 +474,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 $event = new NotificationEvent('Students', 'Updated Privacy Settings');
 
                                 $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
-                                $studentName = Format::name('', $row2['preferredName'], $row2['surname'], 'Student', false);
                                 $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
                                 $privacyText = __('Privacy').' (<i>'.__('New Value').'</i>): ';
@@ -500,6 +521,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             $logGateway->addLog($session->get("gibbonSchoolYearID"), 'User Admin', $session->get("gibbonPersonID"), 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
 
                         }
+                    }
+
+                    if (!empty($flaggedChanges)) {
+                        $event = new NotificationEvent('Data Updater', 'Flagged Field Data Updates');
+                        $notificationText = __('One or more flagged personal data fields for {name} ({username}) have been updated', ['name' => $studentName, 'username' => $row2['username']]).':<br/><br/>';
+                        $notificationText .= implode(', ', $flaggedChanges);
+                        $event->setNotificationText($notificationText);
+                        $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
+                        $event->addScope('context', $roleCategory);
+
+                        $event->sendNotifications($pdo, $session);
                     }
 
                     $URL .= '&return=success0';

@@ -27,7 +27,7 @@ use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $accessToken = $_GET['token'] ?? '';
 $gibbonPersonIDAccessed = $_GET['gibbonPersonIDAccessed'] ?? $session->get('gibbonPersonID');

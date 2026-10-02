@@ -38,7 +38,7 @@ class CalendarEventGateway extends QueryableGateway
     private static $searchableColumns = ['gibbonCalendarEvent.name', 'gibbonCalendarEvent.description', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonCalendar.name', 'gibbonCalendarEventType.type',];
 
 
-     public function queryEvents(QueryCriteria $criteria, $gibbonPersonID = null)
+     public function queryEvents(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID = null)
     {
         $query = $this
             ->newQuery()
@@ -73,6 +73,8 @@ class CalendarEventGateway extends QueryableGateway
             ->leftJoin('gibbonCalendarEventPerson', 'gibbonCalendarEventPerson.gibbonCalendarEventID=gibbonCalendarEvent.gibbonCalendarEventID')
             ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCalendarEvent.gibbonPersonIDOrganiser')
             ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonCalendarEvent.gibbonSpaceID')
+            ->where('gibbonCalendar.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->groupBy(['gibbonCalendarEvent.gibbonCalendarEventID']);
 
         if (!empty($gibbonPersonID)) {

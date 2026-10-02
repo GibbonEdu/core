@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -53,15 +53,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     $data['dateStart'] = Format::dateConvert($data['dateStart']);
     $data['dateEnd'] = Format::dateConvert($data['dateEnd']);
 
-    // Sort and save milestones as a JSON blob
-    if (!empty($data['milestones'])) {
-        $data['milestones'] = array_map(function ($item) {
+    // Sort and save milestones as JSON array data
+    if (!empty($data['milestones']) && is_array($data['milestones'])) {
+        $milestones = array_map(function ($item) {
             $item['milestoneDate'] = Format::dateConvert($item['milestoneDate']);
             return $item;
         }, $data['milestones']);
-        $data['milestones'] = array_combine(array_keys($_POST['order']), array_values($data['milestones']));
-        ksort($data['milestones']);
-        $data['milestones'] = json_encode($data['milestones']);
+
+        $orderKeys = array_keys($_POST['order'] ?? []);
+        if (!empty($orderKeys) && count($orderKeys) === count($milestones)) {
+            $milestones = array_combine($orderKeys, array_values($milestones));
+            ksort($milestones);
+        }
+
+        $data['milestones'] = json_encode($milestones);
+    } else {
+        $data['milestones'] = json_encode([]);
     }
 
     // Validate the required values are present

@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Messenger\GroupGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage.php";

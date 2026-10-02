@@ -19,8 +19,8 @@ vendor/
 Dockerfile
 docker-compose*.yaml
 .dockerignore
-ops/docker-compose*.yaml
-ops/.env-example
+ops/resources/ops/compose*.yaml
+resources/ops/configuration/gibbon/.env-example
 up.sh
 
 # IDE and OS files

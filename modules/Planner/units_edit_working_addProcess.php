@@ -24,7 +24,7 @@ use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

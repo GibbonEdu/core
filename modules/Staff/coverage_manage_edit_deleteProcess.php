@@ -25,7 +25,7 @@ $_POST['address'] = '/modules/Staff/coverage_manage_edit.php';
 $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
 $gibbonStaffCoverageDateID = $_GET['gibbonStaffCoverageDateID'] ?? '';
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_manage_edit.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
 

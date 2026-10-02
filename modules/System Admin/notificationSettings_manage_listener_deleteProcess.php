@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\NotificationGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonNotificationEventID = $_GET['gibbonNotificationEventID'] ?? null;
 $gibbonNotificationListenerID = $_GET['gibbonNotificationListenerID'] ?? null;

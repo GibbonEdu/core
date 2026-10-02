@@ -32,6 +32,7 @@ use Matthewbdaly\SMS\Drivers\Twilio;
 use Matthewbdaly\SMS\Drivers\Nexmo;
 use Matthewbdaly\SMS\Drivers\Clockwork;
 use Matthewbdaly\SMS\Drivers\TextLocal;
+use Matthewbdaly\SMS\Drivers\MNotify;
 use Matthewbdaly\SMS\Exceptions\ClientException;
 use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
 
@@ -90,6 +91,12 @@ class SMS implements SMSInterface
                 case 'TextLocal':
                     $this->batchSize = 10;
                     $this->driver = new TextLocal(new GuzzleClient(), new Response(), [
+                        'api_key' => $config['smsUsername'],
+                    ]);
+                    break;
+
+                case 'MNotify':
+                    $this->driver = new MNotify(new GuzzleClient(), new Response(), [
                         'api_key' => $config['smsUsername'],
                     ]);
                     break;

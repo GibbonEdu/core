@@ -23,9 +23,10 @@ use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Messenger\MailingListRecipientGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST);
 
 $gibbonMessengerMailingListRecipientID = $_POST['gibbonMessengerMailingListRecipientID'] ?? '';
 
@@ -42,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
 
     $mailingListList = $_POST['gibbonMessengerMailingListIDList'] ?? '';
     $data = [
-        'surname'                           => $_POST['surname'] ?? '',
-        'preferredName'                     => $_POST['preferredName'] ?? '',
+        'surname'                           => $validator->sanitizeName($_POST['surname'] ?? ''),
+        'preferredName'                     => $validator->sanitizeName($_POST['preferredName'] ?? ''),
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'organisation'                      => $_POST['organisation'] ?? '',
         'gibbonMessengerMailingListIDList'  => is_array($mailingListList) ? implode(',', $mailingListList) : '',
