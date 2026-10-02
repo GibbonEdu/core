@@ -25,7 +25,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Services\Format;
 
-require getcwd().'/../gibbon.php';
+require __DIR__.'/../gibbon.php';
 
 //Check for CLI, so this cannot be run through browser
 $settingGateway = $container->get(SettingGateway::class);

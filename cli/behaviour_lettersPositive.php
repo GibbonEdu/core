@@ -30,7 +30,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Domain\Behaviour\BehaviourLetterGateway;
 
-require getcwd().'/../gibbon.php';
+require __DIR__.'/../gibbon.php';
 
 //Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 7200);
