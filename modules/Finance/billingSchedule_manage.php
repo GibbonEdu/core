@@ -48,13 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         $form = Form::create("searchBox", $session->get('absoluteURL') . "/index.php", "get", "noIntBorder w-full standardForm");
         $form->setClass('noIntBorder w-full');
         $form->addHiddenValue("q", "/modules/Finance/billingSchedule_manage.php");
+        $form->addHiddenValue("gibbonSchoolYearID", $gibbonSchoolYearID);
 
         $row = $form->addRow();
             $row->addLabel("search", __("Search For"))->description(__("Billing schedule name."));
             $row->addTextField("search")->maxLength(20)->setValue($search);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($session, __("Clear Search"));
+            $row->addSearchSubmit($session, __("Clear Search"), ['gibbonSchoolYearID']);
 
         echo $form->getOutput();
 

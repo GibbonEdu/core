@@ -23,7 +23,6 @@ use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
@@ -67,7 +66,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
         if ($highestAction == 'View Behaviour Records_all' || $highestAction == 'View Behaviour Records_myself') {
             $result = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID);
         } else if ($highestAction == 'View Behaviour Records_myChildren') {
-            $result = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+            $children = $container->get(StudentGateway::class)
+                ->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
+                ->fetchGroupedUnique();
+
+            if (empty($children[$gibbonPersonID])) {
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+                return;
+            }
+
+            $result = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID);
         } else if ($highestAction == 'View Behaviour Records_my') {
             $result = $container->get(BehaviourGateway::class)->selectBehavioursByCreatorAndStudent($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'), $gibbonPersonID);
         }  else {

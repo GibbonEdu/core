@@ -70,7 +70,7 @@ class PhoneNumber extends Input
             ->addSelect($name.'Type')
             ->fromArray($types)
             ->placeholder()
-            ->addClass('inline-flex mr-1 w-1/3 sm:w-1/4');
+            ->addClass('mr-1 w-1/3 sm:w-1/4');
         
         $this->phoneCodes = $this->column
             ->addSearchSelect($name.'CountryCode')

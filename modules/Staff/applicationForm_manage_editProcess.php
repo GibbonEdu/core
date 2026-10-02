@@ -26,9 +26,10 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Data\Validator;
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['questions' => 'HTML']);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST, ['questions' => 'HTML']);
 
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
@@ -86,10 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'] ?? '';
             $questions = $_POST['questions'] ?? '';
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $surname = $_POST['surname'] ?? '';
-            $firstName = $_POST['firstName'] ?? '';
-            $preferredName = $_POST['preferredName'] ?? '';
-            $officialName = $_POST['officialName'] ?? '';
+            $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+            $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+            $preferredName = $validator->sanitizeName($_POST['preferredName'] ?? '');
+            $officialName = $validator->sanitizeName($_POST['officialName'] ?? '');
             $nameInCharacters = $_POST['nameInCharacters'] ?? '';
             $gender = $_POST['gender'] ?? '';
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;

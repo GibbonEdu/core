@@ -28,7 +28,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -62,9 +62,9 @@ if ($proceed == false) {
     }
 
     //Proceed!
-    $surname = trim($_POST['surname']);
-    $firstName = trim($_POST['firstName']);
-    $preferredName = trim($firstName);
+    $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+    $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+    $preferredName = $firstName;
     $officialName = $firstName.' '.$surname;
     $gender = $_POST['gender'] ?? '';
     $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;

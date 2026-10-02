@@ -53,7 +53,7 @@ class ReportingValueGateway extends QueryableGateway
     public function selectReportingCommentsByCycle($gibbonReportingCycleID)
     {
         $data = ['gibbonReportingCycleID' => $gibbonReportingCycleID];
-        $sql = "SELECT gibbonReportingValue.gibbonReportingValueID, gibbonReportingValue.comment, gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonReportingScope.scopeType, (CASE WHEN scopeType='Course' THEN gibbonReportingValue.gibbonCourseClassID WHEN scopeType='Form Group' THEN gibbonReportingCriteria.gibbonFormGroupID WHEN scopeType='Year Group' THEN gibbonReportingCriteria.gibbonYearGroupID END) as scopeTypeID, gibbonReportingScope.gibbonReportingScopeID, gibbonReportingCriteria.name as criteriaName
+        $sql = "SELECT gibbonReportingValue.gibbonReportingValueID, gibbonReportingValue.comment, gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gender, gibbonReportingScope.scopeType, (CASE WHEN scopeType='Course' THEN gibbonReportingValue.gibbonCourseClassID WHEN scopeType='Form Group' THEN gibbonReportingCriteria.gibbonFormGroupID WHEN scopeType='Year Group' THEN gibbonReportingCriteria.gibbonYearGroupID END) as scopeTypeID, gibbonReportingScope.gibbonReportingScopeID, gibbonReportingCriteria.name as criteriaName, gibbonReportingProgress.gibbonReportingProgressID, gibbonReportingProgress.checked
                 FROM gibbonReportingCycle
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID)
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -61,11 +61,18 @@ class ReportingValueGateway extends QueryableGateway
                 JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID)
                 JOIN gibbonReportingCriteriaType ON (gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID)
                 JOIN gibbonReportingScope ON (gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID)
+                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID  AND (
+                    (gibbonReportingProgress.gibbonCourseClassID=gibbonReportingValue.gibbonCourseClassID AND scopeType='Course')
+                    OR (gibbonReportingProgress.gibbonFormGroupID=gibbonReportingCriteria.gibbonFormGroupID AND scopeType='Form Group')
+                    OR (gibbonReportingProgress.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID AND scopeType='Year Group')
+                    ) AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonReportingValue.gibbonPersonIDStudent
+                )
                 WHERE gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
                 AND gibbonReportingCriteriaType.valueType='Comment'
                 AND gibbonReportingCriteria.target = 'Per Student'
                 AND (gibbonReportingValue.comment IS NOT NULL AND gibbonReportingValue.comment <> '')
-                ORDER BY gibbonPerson.surname, gibbonPerson.preferredName, gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
+                GROUP BY gibbonReportingValue.gibbonReportingValueID
+                ORDER BY gibbonReportingProgress.checked, gibbonPerson.surname, gibbonPerson.preferredName, gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
 
         return $this->db()->select($sql, $data);
     }

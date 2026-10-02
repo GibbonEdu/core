@@ -185,15 +185,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
     $table->addColumn('name', __('Name'))
         ->description(__('Role'))
         ->sortable(['surname', 'preferredName'])
+        ->context('primary')
         ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'roleCategory', true, true]))
         ->formatDetails(function ($values) {
             return Format::small($values['roleCategory']);
         });
 
-    $table->addColumn('formGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'))->context('primary');
 
     $table->addColumn('role', __('Event Role'))
         ->description(__('Added On'))
+        ->context('secondary')
         ->format(function ($values) {
             $status = $values['role'] != 'Attendee' ? 'message' : 'dull';
             return Format::tag(__($values['role']), $status);

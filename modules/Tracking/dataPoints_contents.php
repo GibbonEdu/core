@@ -31,7 +31,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 ini_set('max_execution_time', 600);
 
 //System includes
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 include '../../version.php';
 
 //Module includes

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\DataUpdater\MedicalConditionUpdateGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 $gibbonPersonMedicalUpdateID = $_POST['gibbonPersonMedicalUpdateID'] ?? '';

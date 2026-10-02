@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonStudentNoteID = $_POST['gibbonStudentNoteID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';

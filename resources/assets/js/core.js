@@ -410,7 +410,7 @@ function updateComments(element) {
             (heFound && gender == "F") || (sheFound && gender == "M");
         $(
             ".characterInfo .commentStatusPronoun",
-            $(element).parent()
+            $(element).parent().parent()
         ).toggleClass("hidden", !pronounMismatch);
     }
 }

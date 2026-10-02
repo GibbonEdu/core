@@ -432,7 +432,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $row = $table->addRow()->setID($student['gibbonPersonID']);
 
-                        $row->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
+                        $reverseName = ($studentOrderBy == 'surname' || $studentOrderBy == 'rollOrder' || empty($studentOrderBy));
+                        $row->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', $reverseName))
                             ->setURL($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php')
                             ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                             ->addParam('subpage', 'Markbook')

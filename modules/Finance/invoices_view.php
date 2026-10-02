@@ -54,13 +54,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
         if ($highestAction == "View Invoices_myChildren") {
             // Get children for this adult
-            $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchAll();
+            $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
             
             if (empty($children)) {
                 echo $page->getBlankSlate();
             } elseif (count($children) == 1) {
-                $gibbonPersonID = key($children);
-                $student = $children[$gibbonPersonID];
+                $gibbonPersonID = array_key_first($children);
+                $student = $children[$gibbonPersonID] ?? [];
             } else {
                 // Get child list
                 $count = 0;
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
                     $gibbonPersonID = $search;
 
-                    if  (empty($children[$gibbonPersonID])) {
+                    if (empty($children[$gibbonPersonID])) {
                         $page->addError(__('You do not have access to this action.'));
                         return;
                     }
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
         } else if ($highestAction == 'View Invoices_mine') {
             $gibbonPersonID = $session->get("gibbonPersonID");
-            $student = $studentGateway->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID);
+            $student = $studentGateway->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
         }
 
         if (!empty($gibbonPersonID) && !empty($gibbonSchoolYearID)) {

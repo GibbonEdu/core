@@ -26,7 +26,7 @@ use Gibbon\Data\PasswordPolicy;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 // Load site's password policy
 /** @var PasswordPolicy */
@@ -148,17 +148,20 @@ else {
                 ],
             ]);
 
+            $details = [
+                'gibbonPersonID' => $gibbonPersonID,
+                'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
+                'IPAddress' => $_SERVER['REMOTE_ADDR'],
+            ];
+
             if ($mail->Send()) {
                 // Log this password reset request
-                $details = [
-                    'gibbonPersonID' => $gibbonPersonID,
-                    'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
-                    'IPAddress' => $_SERVER['REMOTE_ADDR'],
-                ];
-                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Initiated ', $details, $_SERVER['REMOTE_ADDR']);
+                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Initiated', $details, $_SERVER['REMOTE_ADDR']);
 
                 header("Location: {$URL->withReturn('success0')}");
             } else {
+                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Email Failed', $details, $_SERVER['REMOTE_ADDR']);
+
                 header("Location: {$URL->withReturn('error3')}");
             }
         }

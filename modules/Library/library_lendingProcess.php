@@ -25,7 +25,7 @@ use Gibbon\Domain\Library\LibraryItemGateway;
 use Gibbon\Domain\Library\LibraryItemEventGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

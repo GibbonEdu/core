@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonReportingScopeID = $_POST['gibbonReportingScopeID'] ?? '';
 $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';

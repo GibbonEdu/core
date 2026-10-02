@@ -196,7 +196,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </span>
         </button>
 
-        <input name='ttDateChooser' id='ttDateChooser' aria-label='{{ __('Choose Date') }}' maxlength=10 value='{{ structure.getCurrentDate|date('Y-m-d') }}' type='date' required class='inline-flex border rounded-r bg-gray-100 text-xs/6 h-8 font-sans w-10 md:w-36 px-2 md:px-3'> 
+        <div class='inline-flex items-center gap-1' x-data='{ setToday() { const today = new Date(); const month = ("0" + (today.getMonth() + 1)).slice(-2); const day = ("0" + today.getDate()).slice(-2); this.$refs.dateInput.value = today.getFullYear() + "-" + month + "-" + day; this.$refs.dateInput.dispatchEvent(new Event("change", { bubbles: true })); } }'>
+            <input name='ttDateChooser' id='ttDateChooser' x-ref='dateInput' aria-label='{{ __('Choose Date') }}' maxlength=10 value='{{ structure.getCurrentDate|date('Y-m-d') }}' type='date' required class='inline-flex border rounded-md bg-gray-100 text-xs/6 h-8 font-sans w-10 md:w-36 px-2 md:px-3'>
+            <button type='button' x-on:click='setToday()' class='inline-flex shrink-0 items-center whitespace-nowrap rounded-md px-3 py-2 border border-gray-400 bg-white text-xs font-medium text-gray-600 hover:border-blue-700 hover:bg-blue-200 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500' aria-label='{{ __('Today') }}' title='{{ __('Today') }}'>{{ __('Today') }}</button>
+        </div>
     </div>
 
     </nav>

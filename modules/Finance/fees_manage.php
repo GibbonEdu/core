@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
             $row->addTextField('search')->setValue($search);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($session, __('Clear Search'));
+            $row->addSearchSubmit($session, __('Clear Search'), ['gibbonSchoolYearID']);
 
             echo $form->getOutput();
 

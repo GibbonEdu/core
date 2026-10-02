@@ -27,9 +27,10 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST);
 
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
@@ -98,10 +99,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $username = $_POST['username'] ?? '';
             $studentID = $_POST['studentID'] ?? '';
             $notes = $_POST['notes'] ?? '';
-            $surname = trim($_POST['surname'] ?? '');
-            $firstName = trim($_POST['firstName'] ?? '');
-            $preferredName = trim($_POST['preferredName'] ?? '');
-            $officialName = trim($_POST['officialName'] ?? '');
+            $surname = $validator->sanitizeName($_POST['surname'] ?? '');
+            $firstName = $validator->sanitizeName($_POST['firstName'] ?? '');
+            $preferredName = $validator->sanitizeName($_POST['preferredName'] ?? '');
+            $officialName = $validator->sanitizeName($_POST['officialName'] ?? '');
             $nameInCharacters = $_POST['nameInCharacters'] ?? '';
             $gender = $_POST['gender'] ?? '';
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
@@ -165,10 +166,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             //GET PARENT1 FEILDS
             $parent1gibbonPersonID = $_POST['parent1gibbonPersonID'] ?? null;
             $parent1title = $_POST['parent1title'] ?? null;
-            $parent1surname = trim($_POST['parent1surname'] ?? '');
-            $parent1firstName = trim($_POST['parent1firstName'] ?? '');
-            $parent1preferredName = trim($_POST['parent1preferredName'] ?? '');
-            $parent1officialName = trim($_POST['parent1officialName'] ?? '');
+            $parent1surname = $validator->sanitizeName($_POST['parent1surname'] ?? '');
+            $parent1firstName = $validator->sanitizeName($_POST['parent1firstName'] ?? '');
+            $parent1preferredName = $validator->sanitizeName($_POST['parent1preferredName'] ?? '');
+            $parent1officialName = $validator->sanitizeName($_POST['parent1officialName'] ?? '');
             $parent1nameInCharacters = $_POST['parent1nameInCharacters'] ?? null;
             $parent1gender = $_POST['parent1gender'] ?? null;
             $parent1relationship = $_POST['parent1relationship'] ?? null;
@@ -192,10 +193,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             //GET PARENT2 FEILDS
             $parent2title = $_POST['parent2title'] ?? null;
-            $parent2surname = trim($_POST['parent2surname'] ?? '');
-            $parent2firstName = trim($_POST['parent2firstName'] ?? '');
-            $parent2preferredName = trim($_POST['parent2preferredName'] ?? '');
-            $parent2officialName = trim($_POST['parent2officialName'] ?? '');
+            $parent2surname = $validator->sanitizeName($_POST['parent2surname'] ?? '');
+            $parent2firstName = $validator->sanitizeName($_POST['parent2firstName'] ?? '');
+            $parent2preferredName = $validator->sanitizeName($_POST['parent2preferredName'] ?? '');
+            $parent2officialName = $validator->sanitizeName($_POST['parent2officialName'] ?? '');
             $parent2nameInCharacters = $_POST['parent2nameInCharacters'] ?? null;
             $parent2gender = $_POST['parent2gender'] ?? null;
             $parent2relationship = $_POST['parent2relationship'] ?? null;

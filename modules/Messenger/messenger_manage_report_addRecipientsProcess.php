@@ -24,7 +24,7 @@ use Gibbon\Module\Messenger\MessageProcess;
 use Gibbon\Module\Messenger\MessageTargets;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 // Module includes
 include './moduleFunctions.php';

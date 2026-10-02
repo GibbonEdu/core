@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
                     // Parent
                     else if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '') {
-                        $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchAll();
+                        $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
 
                         if (empty($children)) {
                             echo $page->getBlankSlate();
@@ -111,19 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $page->addError(__('You do not have access to this action.'));
                                 return;
                             }
-                            
-                            $countChild = 0;
 
-                            foreach($children as $child) {
-                                ++$countChild;
-                                $gibbonYearGroupID = intval($rowChild['gibbonYearGroupID']);
-                            }
-
-                            if ($countChild > 0) {
-                                if ($gibbonYearGroupID != '') {
-                                    $continue = true;
-                                    $and = " AND gibbonYearGroupIDList LIKE '%$gibbonYearGroupID%'";
-                                }
+                            $gibbonYearGroupID = intval($children[$gibbonPersonID]['gibbonYearGroupID'] ?? 0);
+                            if ($gibbonYearGroupID != '') {
+                                $continue = true;
+                                $and = " AND gibbonYearGroupIDList LIKE '%$gibbonYearGroupID%'";
                             }
                         }
                     }

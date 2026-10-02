@@ -28,7 +28,7 @@ use Gibbon\Domain\IndividualNeeds\INGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 use Gibbon\UI\Components\Alert;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['targets' => 'HTML', 'strategies' => 'HTML', 'notes' => 'HTML']);
 

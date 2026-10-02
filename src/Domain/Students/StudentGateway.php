@@ -237,8 +237,8 @@ class StudentGateway extends QueryableGateway
                 AND gibbonFamilyAdult.childDataAccess='Y'
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonPerson.status='Full'
-                AND (dateStart IS NULL OR dateStart<=:today)
-                AND (dateEnd IS NULL  OR dateEnd>=:today)
+                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
+                AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)
                 GROUP BY gibbonPerson.gibbonPersonID
                 ORDER BY surname, preferredName";
 

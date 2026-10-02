@@ -27,6 +27,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Timetable\CourseClassPersonGateway;
 use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
@@ -155,6 +156,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     // PER STUDENT CRITERIA
     $reportingCriteria = $reportingAccessGateway->selectReportingCriteriaByStudentAndScope($reportingScope['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $gibbonPersonIDStudent)->fetchAll();
 
+    // CLASS TEACHER CHECK
+    $classTeachers = [];
+    if ($reportingScope['scopeType'] == 'Course') {
+        $classTeachers = $container->get(CourseClassPersonGateway::class)->selectTeachersByClass($urlParams['scopeTypeID'])->fetchGroupedUnique();
+    }
+
     // FORM
     $form = Form::create('reportingWrite', $session->get('absoluteURL').'/modules/Reports/reporting_write_byStudentProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -189,9 +196,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     };
 
     $lastCategory = '';
+    $manualAuthorSelect = null;
+
     foreach ($reportingCriteria as $criteria) {
         $fieldName = "value[{$criteria['gibbonReportingCriteriaID']}]";
         $fieldID = "value{$criteria['gibbonReportingCriteriaID']}";
+
+        // All scopes: check if report author is not the same as report editor or current user
+        // Course scope: check if report author not a class teacher
+        if ((!empty($criteria['gibbonPersonIDCreated']) && $criteria['gibbonPersonIDCreated'] != $session->get('gibbonPersonID')) || (!empty($criteria['gibbonPersonIDModified']) && $criteria['gibbonPersonIDModified'] != $criteria['gibbonPersonIDCreated']) || (!empty($classTeachers) && empty($classTeachers[$criteria['gibbonPersonIDCreated']])) ) {
+            $manualAuthorSelect = $criteria['gibbonPersonIDCreated'];
+        }
 
         if (!empty($criteria['category']) && $criteria['category'] != $lastCategory) {
             $row = $form->addRow()->addContent($criteria['category'])->wrap('<h5 class="my-2 p-0 text-sm normal-case border-0">', '</h5>');
@@ -262,6 +277,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         }
 
         $lastCategory = $criteria['category'];
+    }
+
+    // Enable manually selecting the author
+    if ($canWriteReport && !empty($manualAuthorSelect)) {
+        $row = $form->addRow();
+        $row->addLabel($fieldName, __('Report Author'))->description(__('When a report is edited by multiple users, you can manually attribute the report to a specific staff member.'));
+        $row->addSelectStaff('gibbonPersonIDCreated')->selected($manualAuthorSelect);
     }
 
     if ($reportingScope['scopeType'] == 'Form Group') {

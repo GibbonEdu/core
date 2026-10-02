@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         if ($highestAction == 'View External Assessments_myChildrens') { // MY CHILDREN
             $page->breadcrumbs->add(__('View My Childrens\'s External Assessments'));
 
-            $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetchAll();
+            $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetchGroupedUnique();
             
             if (empty($children)) {
                 echo $page->getBlankSlate();

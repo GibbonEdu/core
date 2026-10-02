@@ -186,6 +186,40 @@ class CustomFieldGateway extends QueryableGateway
         return !empty($fields) ? $fields : [];
     }
 
+    public function getContextTableByPerson($gibbonCustomFieldID, $gibbonPersonID)
+    {
+        $customField = $this->getByID($gibbonCustomFieldID, ['context']);
+
+        if (empty($customField)) {
+            return [];
+        }
+
+        switch ($customField['context']) {
+            case 'Staff':
+                $foreignTable = 'gibbonStaff';
+                $sql = "SELECT gibbonStaffID FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID";
+                break;
+
+            case 'Individual Needs':
+                $foreignTable = 'gibbonIN';
+                $sql = "SELECT gibbonINID FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID";
+                break;
+
+            case 'Medical Form':
+                $foreignTable = 'gibbonPersonMedical';
+                $sql = "SELECT gibbonPersonMedicalID FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID";
+                break;
+
+            default:
+            case 'User':
+                return ['foreignTable' => 'gibbonPerson', 'foreignTableID' => $gibbonPersonID];
+        }
+
+        $foreignTableID = $this->db()->selectOne($sql, ['gibbonPersonID' => $gibbonPersonID]);
+
+        return !empty($foreignTableID) ? ['foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID] : [];
+    }
+
     public function updateCustomFieldDataByUser($gibbonCustomFieldID, $gibbonPersonID, $value)
     {
         $customField = $this->getByID($gibbonCustomFieldID, ['context']);

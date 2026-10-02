@@ -25,7 +25,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\UI\Components\Alert;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 include '../../config.php';

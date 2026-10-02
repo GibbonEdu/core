@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide include
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDPrimary')) {
     die(__('Your request failed because you do not have access to this action.'));

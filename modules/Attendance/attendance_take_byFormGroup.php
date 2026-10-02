@@ -126,9 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $resultLog->execute($dataLog);
 
                         if ($resultLog->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.');
-                            echo '</div>';
+                            echo Format::alert(__("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data."), 'error');
                         } else {
                             echo "<div class='success'>";
                             echo __('Attendance has been taken at the following times for the specified date for this group:');
@@ -252,12 +250,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $count++;
                             }
 
-                            $form->addRow()->addAlert(__('Total students:').' '. $count, 'success')->setClass('right')
-                                ->append('<br/><span title="'.__('e.g. Present or Present - Late').'">'.__('Total students present in room:').' '. $countPresent.'</span>')
-                                ->append('<br/><span title="'.__('e.g. not Present and not Present - Late').'">'.__('Total students absent from room:').' '. ($count-$countPresent).'</span>')
-                                ->wrap('<b>', '</b>');
+                            // Summary of attendance counts
+                            $alertText = Format::bold(__('Total students:') . ' ' . $count).'<br>';
+                            $alertText .= Format::tooltip(__('Students present in room:') . ' ' . $countPresent, __('e.g. Present or Present - Late')).'<br>';
+                            $alertText .= Format::tooltip(__('Students absent from room:') . ' ' . ($count - $countPresent), __('e.g. not Present and not Present - Late'));
 
-                            $row = $form->addRow();
+                            $col = $form->addRow()->addColumn();
+                            if ($resultLog->rowCount() < 1) {
+                                $col->addAlert(__('Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.'), 'error');
+                            }
+                            $col->addAlert($alertText, $resultLog->rowCount() < 1 ? 'dull' : 'success')->setClass('right');
 
                             // Drop-downs to change the whole group at once
                             $row = $form->addRow()->setAttribute('x-data', "{'changeAll': false}");

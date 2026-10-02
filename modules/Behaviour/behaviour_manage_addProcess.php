@@ -35,7 +35,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
 use Gibbon\UI\Components\Alert;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -45,7 +45,7 @@ $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDesc
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 $address = $_POST['address'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $type = $_GET['type'] ?? '';
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $resultDetail = $container->get(FormGroupGateway::class)->selectTutorsByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
             $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
-            if (!empty($resultDetail) && !empty($student)) {
+            if (!empty($student)) {
                 $rowDetail = $resultDetail->fetch();
 
                 // Initialize the notification sender & gateway objects
@@ -178,6 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $event->setActionLink($actionLink);
                 $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                 $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+                $event->addScope('context', $data['descriptor']);
 
                 // Add notifications for Educational Assistants
                 if ($settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants') == 'Y') {

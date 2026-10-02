@@ -102,12 +102,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             $studentGateway = $container->get(StudentGateway::class);
 
             // Test data access field for permission
-            $children = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchAll();
-
+            $children = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
+            
             if (empty($children)) {
                 echo $page->getBlankSlate();
             } elseif (count($children) == 1) {
-                $gibbonPersonID = key($children);
+                $gibbonPersonID = array_key_first($children);
             } else {
                 $options = [];
                 $count = 0;
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             }
         }
 
-        if (!empty($gibbonPersonID) && !empty($children[$gibbonPersonID])) {
+        if (!empty($gibbonPersonID) && !empty($children) && !empty($children[$gibbonPersonID])) {
             $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
 
             if (empty($student)) {

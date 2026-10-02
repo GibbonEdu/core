@@ -21,8 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-include '../../gibbon.php';
-
+require_once __DIR__ . '/../../gibbon.php';
 include './moduleFunctions.php';
 
 $queryArr = [

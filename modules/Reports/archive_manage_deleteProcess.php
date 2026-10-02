@@ -23,7 +23,7 @@ use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
 

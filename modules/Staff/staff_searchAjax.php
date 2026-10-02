@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffGateway;
 
 // Gibbon system-wide include
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == false) {
     // Access denied

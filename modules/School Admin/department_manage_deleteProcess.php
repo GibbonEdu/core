@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Departments\DepartmentResourceGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_manage_delete.php&gibbonDepartmentID=$gibbonDepartmentID";

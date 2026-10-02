@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Domain\System\ActionGateway;
 
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     die( __('Your request failed because you do not have access to this action.') );

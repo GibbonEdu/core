@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\User\UserGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -82,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 			$page->breadcrumbs->add(__('View My Childrens\'s Internal Assessments'));
 
 			// Test data access field for permission
-			$children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetchAll();
+			$children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetchGroupedUnique();
 
 			if (empty($children)) {
 				echo $page->getBlankSlate();

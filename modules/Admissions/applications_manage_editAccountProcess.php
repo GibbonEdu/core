@@ -23,7 +23,7 @@ use Gibbon\Http\Url;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 $gibbonAdmissionsApplicationID = $_POST['gibbonAdmissionsApplicationID'] ?? '';

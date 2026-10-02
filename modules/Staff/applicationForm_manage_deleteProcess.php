@@ -23,7 +23,7 @@ use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Staff\StaffApplicationFormFileGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonStaffApplicationFormID = $_POST['gibbonStaffApplicationFormID'] ?? '';
 $search = $_GET['search'] ?? '';

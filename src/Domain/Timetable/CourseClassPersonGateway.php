@@ -44,8 +44,8 @@ class CourseClassPersonGateway extends QueryableGateway
      */
 
 
-     public function selectStudentsByClass($gibbonCourseClassID, $date = null)
-     {
+    public function selectStudentsByClass($gibbonCourseClassID, $date = null)
+    {
         $today = $date ?? date('Y-m-d');
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'today' => $today];
         $sql = "SELECT gibbonCourseClassPerson.role, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.email, gibbonPerson.studentID, gibbonFormGroup.nameShort as formGroup FROM gibbonCourseClassPerson JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)";
@@ -61,6 +61,21 @@ class CourseClassPersonGateway extends QueryableGateway
         }
 
         $sql .= " ORDER BY surname, preferredName, role DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectTeachersByClass($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, gibbonCourseClassPerson.role, gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.email
+            FROM gibbonCourseClassPerson 
+            JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
+            WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+            AND gibbonPerson.status='Full'
+            AND gibbonCourseClassPerson.role='Teacher'
+            AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)
+            ORDER BY surname, preferredName, role DESC";
 
         return $this->db()->select($sql, $data);
     }

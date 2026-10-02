@@ -22,9 +22,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST);
 
 $gibbonNotificationEventID = $_POST['gibbonNotificationEventID'] ?? null;
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
@@ -49,9 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
             exit;
         }
 
-        $gibbonPersonID = (isset($_POST['gibbonPersonID']))? $_POST['gibbonPersonID'] : '';
-        $scopeType = (isset($_POST['scopeType']))? $_POST['scopeType'] : '';
-        $scopeID = (isset($_POST[$scopeType]))? $_POST[$scopeType] : 0;
+        $gibbonPersonID = $validator->sanitizeNumeric($_POST['gibbonPersonID'] ?? '');
+        $scopeType = $validator->sanitizeAlphaNumeric($_POST['scopeType'] ?? '');
+        $scopeID = $validator->sanitizeNumeric($_POST[$scopeType] ?? 0);
+        $scopeContext = $validator->sanitizeName($_POST['scopeContext'] ?? '');
 
         if (empty($gibbonPersonID) || empty($scopeType)) {
             $URL .= '&return=error1';
@@ -62,7 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 'gibbonNotificationEventID' => $gibbonNotificationEventID,
                 'gibbonPersonID'            => $gibbonPersonID,
                 'scopeType'                 => $scopeType,
-                'scopeID'                   => $scopeID
+                'scopeID'                   => $scopeID,
+                'scopeContext'              => $scopeContext,
             );
 
             $result = $gateway->insertNotificationListener($listener);

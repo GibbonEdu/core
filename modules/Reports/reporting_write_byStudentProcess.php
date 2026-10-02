@@ -29,7 +29,7 @@ use Gibbon\Data\Validator;
 use Gibbon\FileUploader;
 use Gibbon\Contracts\Filesystem\FileHandler;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -104,7 +104,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         'gibbonSchoolYearID'        => $reportingCycle['gibbonSchoolYearID'],
         'gibbonCourseClassID'       => $reportingScope['scopeType'] == 'Course' ? $urlParams['scopeTypeID'] : '',
         'gibbonPersonIDStudent'     => $gibbonPersonIDStudent,
-        'gibbonPersonIDCreated'     => $session->get('gibbonPersonID'),
     ];
     
     // Insert or update each record
@@ -142,16 +141,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         if (!empty($existing)) {
             $gibbonReportingValueID = $existing['gibbonReportingValueID'];
             $updated = $reportingValueGateway->update($gibbonReportingValueID, $data + [
-                'value' => $data['value'],
-                'comment' => $data['comment'],
-                'gibbonScaleGradeID' => $data['gibbonScaleGradeID'],
+                'value'                  => $data['value'],
+                'comment'                => $data['comment'],
+                'gibbonScaleGradeID'     => $data['gibbonScaleGradeID'],
                 'gibbonPersonIDModified' => $session->get('gibbonPersonID'),
-                'timestampModified' => date('Y-m-d H:i:s'),
+                'gibbonPersonIDCreated'  => $_POST['gibbonPersonIDCreated'] ?? $existing['gibbonPersonIDCreated'] ?? $session->get('gibbonPersonID'),
+                'timestampModified'      => date('Y-m-d H:i:s'),
             ]);
 
             $partialFail = !$updated;
         } else {
-            $gibbonReportingValueID = $reportingValueGateway->insert($data);
+            $gibbonReportingValueID = $reportingValueGateway->insert($data + [
+                'gibbonPersonIDCreated' => $_POST['gibbonPersonIDCreated'] ?? $session->get('gibbonPersonID'),
+            ]);
 
             $partialFail = !$gibbonReportingValueID;
         }

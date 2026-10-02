@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $viewBy = $_POST['viewBy'] ?? '';

@@ -23,7 +23,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

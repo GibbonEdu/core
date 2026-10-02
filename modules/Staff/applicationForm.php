@@ -264,7 +264,8 @@ if ($proceed == false) {
 
         //REFERENCES
         $applicationFormRefereeLink = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink');
-        if ($applicationFormRefereeLink != '') {
+        $applicationFormRefereeLink = !empty($applicationFormRefereeLink) ? unserialize($applicationFormRefereeLink) : [];
+        if (is_array($applicationFormRefereeLink) && !empty(array_filter($applicationFormRefereeLink))) {
             $heading = $form->addRow()->addHeading('References', __('References'));
                 $heading->append(__('Your nominated referees will be emailed a confidential form to complete on your behalf.'));
 

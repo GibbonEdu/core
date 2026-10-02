@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 
 // Gibbon system-wide includes
-include './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     // Access denied
