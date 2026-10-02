@@ -79,4 +79,26 @@ class CourseClassPersonGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    /**
+     * Select all classes for a student by person ID and school year
+     * 
+     * @param string $gibbonPersonID
+     * @param string $gibbonSchoolYearID
+     * @return Result
+     */
+    public function selectClassesByStudent($gibbonPersonID, $gibbonSchoolYearID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT DISTINCT gibbonCourse.name AS courseFull, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class
+                FROM gibbonCourseClassPerson
+                    JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                    JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                WHERE gibbonCourseClassPerson.role='Student' 
+                    AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
+                    AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                ORDER BY course, class";
+
+        return $this->db()->select($sql, $data);
+    }
 }

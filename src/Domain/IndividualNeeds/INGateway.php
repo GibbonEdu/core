@@ -233,7 +233,7 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
       $data = ['gibbonPersonID' => $gibbonPersonID];
       $sql = "SELECT surname, preferredName, gibbonIN.* FROM gibbonPerson JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
 
-      return $this->db()->select($sql, $data);
+      return $this->db()->selectOne($sql, $data);
     }
 
     public function selectINDescriptor()
@@ -242,5 +242,40 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
       $sql = "SELECT gibbonINDescriptorID as value, name FROM gibbonINDescriptor ORDER BY sequenceNumber";
       
       return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Select educational assistants for a student
+     * 
+     * @param string $gibbonPersonID Student person ID
+     * @param string $gibbonSchoolYearID School year ID
+     * @return Result
+     */
+    public function selectEducationalAssistantsByStudent($gibbonPersonID, $gibbonSchoolYearID)
+    {
+        $data = [
+            'gibbonPersonID1' => $gibbonPersonID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonPersonID2' => $gibbonPersonID
+        ];
+        
+        $sql = "(SELECT DISTINCT surname, preferredName, email
+                FROM gibbonPerson
+                    JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE status='Full'
+                    AND gibbonPersonIDStudent=:gibbonPersonID1)
+            UNION
+            (SELECT DISTINCT surname, preferredName, email
+                FROM gibbonPerson
+                    JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
+            )
+            ORDER BY preferredName, surname, email";
+        
+        return $this->db()->select($sql, $data);
     }
 }
