@@ -72,6 +72,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
+    // Registration sessions, such as AM,PM: tidy the list and keep each name short enough for the session column
+    $formGroupAttendanceSessions = array_unique(array_filter(array_map(function ($name) {
+        return mb_substr(trim($name), 0, 20);
+    }, explode(',', $_POST['formGroupAttendanceSessions'] ?? '')), 'strlen'));
+    try {
+        $data = array('value' => implode(',', $formGroupAttendanceSessions));
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='formGroupAttendanceSessions'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
     $defaultFormGroupAttendanceType = (isset($_POST['defaultFormGroupAttendanceType'])) ? $_POST['defaultFormGroupAttendanceType'] : NULL;
     try {
         $data = array('value' => $defaultFormGroupAttendanceType);
