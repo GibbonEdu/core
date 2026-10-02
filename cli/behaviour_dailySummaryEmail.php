@@ -23,7 +23,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
-require getcwd().'/../gibbon.php';
+require __DIR__.'/../gibbon.php';
 
 //Check for CLI, so this cannot be run through browser
 $remoteCLIKey = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'remoteCLIKey');

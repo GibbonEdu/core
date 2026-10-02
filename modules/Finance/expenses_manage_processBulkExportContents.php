@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-include '../../config.php';
+include __DIR__ . '/../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
     // Access denied
