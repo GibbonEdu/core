@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                     $returns = array();
                     $returns['error6'] = __('An error occured with your submission, most likely because a submitted file was too large.');
-                    $returns['error7'] = __('The specified date is in the future: it must be today or earlier.');
+                    $returns['error7'] = __('Online submission is not open yet.');
                     $page->return->addReturns($returns);
 
                     if ($gibbonCourseClassID == '') {
@@ -543,8 +543,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($values['role'] == 'Student' and ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses')) {
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission').'</span><br/>';
                                     echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
-                                    if (date('Y-m-d') < $values['homeworkSubmissionDateOpen']) {
-                                        echo '<i>Submission opens on '.Format::date($values['homeworkSubmissionDateOpen']).'</i>';
+                                    $homeworkSubmissionOpenDate = $values['homeworkSubmissionDateOpen'] ?: ($values['date'] ?? '');
+                                    if (date('Y-m-d') < $homeworkSubmissionOpenDate) {
+                                        echo '<i>'.__('Submission opens on {date}.', ['date' => Format::date($homeworkSubmissionOpenDate)]).'</i>';
                                     } else {
                                         //Check previous submissions!
                                         $dataVersion = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
@@ -704,8 +705,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 } elseif ($values['role'] == 'Student' and $highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission')."</span><br/>";
                                     echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
-                                    if (date('Y-m-d') < $values['homeworkSubmissionDateOpen']) {
-                                        echo '<i>Submission opens on '.Format::date($values['homeworkSubmissionDateOpen']).'</i>';
+                                    $homeworkSubmissionOpenDate = $values['homeworkSubmissionDateOpen'] ?: ($values['date'] ?? '');
+                                    if (date('Y-m-d') < $homeworkSubmissionOpenDate) {
+                                        echo '<i>'.__('Submission opens on {date}.', ['date' => Format::date($homeworkSubmissionOpenDate)]).'</i>';
                                     } else {
                                         //Check previous submissions!
                                         $dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);

@@ -323,10 +323,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addLabel('homeworkSubmission', __('Online Submission?'));
                     $row->addYesNo('homeworkSubmission')->required()->checked('N');
 
-                $values['homeworkSubmissionDateOpen'] = (!empty($values['homeworkSubmissionDateOpen'])) ? $values['homeworkSubmissionDateOpen'] : date('Y-m-d') ;
+                $values['homeworkSubmissionDateOpen'] = (!empty($values['homeworkSubmissionDateOpen'])) ? $values['homeworkSubmissionDateOpen'] : ($values['date'] ?? '') ;
                 $row = $form->addRow()->setClass('homeworkSubmission');
-                    $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
-                    $row->addDate('homeworkSubmissionDateOpen')->required();
+                    $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'))->description(__('Defaults to the lesson date.'));
+                    $row->addDate('homeworkSubmissionDateOpen');
 
                 $row = $form->addRow()->setClass('homeworkSubmission');
                     $row->addLabel('homeworkSubmissionDrafts', __('Drafts'));
@@ -467,6 +467,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], $values['fields'] ?? '');
 
                 echo $form->getOutput();
+                echo getPlannerHomeworkOpenDateScript();
 
             }
         }
