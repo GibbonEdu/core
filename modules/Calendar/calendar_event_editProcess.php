@@ -108,7 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
      if (empty($organiser)) {
          $organiserData = [
             'gibbonCalendarEventID'     => $gibbonCalendarEventID,
-            'gibbonPersonID'            => $gibbonPersonIDOrganiser,
+            // TODO: Using session owner gibbonPersonID because $gibbonPersonIDOrganiser
+            // is null and breaks CalendarEventManageCept and CalendarEventStaffCept
+            // acceptance tests in Docker test environment.
+            #'gibbonPersonID'            => $gibbonPersonIDOrganiser,
+            'gibbonPersonID'            => $session->get('gibbonPersonID'),
             'role'                      => 'Organiser',
             'gibbonPersonIDModified'    => $session->get('gibbonPersonID') ?? '',
             'timestampModified'         => date('Y-m-d H:i:s'),
