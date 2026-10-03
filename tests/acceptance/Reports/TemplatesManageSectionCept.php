@@ -84,4 +84,4 @@ $I->seeSuccessMessage();
 
 $I->deleteFromDatabase('gibbonReportPrototypeSection', ['gibbonReportPrototypeSectionID' => $gibbonReportPrototypeSectionID]);
 $I->deleteFromDatabase('gibbonReportTemplate', ['gibbonReportTemplateID' => $gibbonReportTemplateID]);
-$I->deleteFile('../'.$file);
+$I->dontSeeFileFound('../'.$file);

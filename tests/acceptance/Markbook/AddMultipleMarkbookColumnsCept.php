@@ -60,6 +60,4 @@ $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', array(
 
 $I->click('Delete');
 $I->seeSuccessMessage();
-
-// Cleanup ------------------------------------------------
-$I->deleteFile('../'.$file);
+$I->dontSeeFileFound('../'.$file);
