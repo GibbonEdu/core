@@ -1,0 +1,156 @@
+details:
+    type: plannerLessons
+    name: Lessons
+    table: gibbonPlannerEntry
+    dynamicForm: plannerLessonAdd
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Planner
+    action: Lesson Planner_viewEditAllClasses
+primaryKey:
+    gibbonPlannerEntryID
+uniqueKeys:
+    - [ gibbonCourseClassID, date, timeStart, name ]
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, readonly: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonCourseID:
+        name: "Course"
+        desc: "Short Name"
+        args: { filter: string, required: true, readonly: true, custom: true }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
+    gibbonCourseClassID:
+        name: "Class"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
+    gibbonUnitID:
+        name: "Unit"
+        desc: "Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonUnit, key: gibbonUnitID, field: [ name, gibbonCourseID ]  }
+    name:
+        name: "Lesson Name"
+        desc: ""
+        args: { filter: string, required: true }
+    summary:
+        name: "Summary"
+        desc: ""
+        args: { filter: string }
+    date:
+        name: "Date"
+        desc: ""
+        args: { filter: date, required: true }
+    timeStart:
+        name: "Start Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, required: true, custom: true }
+    timeEnd:
+        name: "End Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, required: true, custom: true }
+    gibbonSpaceID:
+        name: "Location"
+        desc: ""
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name  }
+    description:
+        name: "Lesson Details"
+        desc: ""
+        args: { filter: html }
+    teachersNotes:
+        name: "Teacher's Notes"
+        desc: ""
+        args: { filter: html }
+    homework:
+        name: "Add Homework?"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    homeworkDueDateTime:
+        name: "Due Date"
+        desc: "Date is required, time is optional."
+        args: { filter: timestamp, custom: true }
+    homeworkTimeCap:
+        name: "Time Cap?"
+        desc: "The maximum time, in minutes, for students to work on this."
+        args: { filter: numeric, custom: true }
+    homeworkDetails:
+        name: "Homework Details"
+        desc: ""
+        args: { filter: html }
+    homeworkSubmission:
+        name: "Online Submission?"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    homeworkSubmissionDateOpen:
+        name: "Submission Open Date"
+        desc: ""
+        args: { filter: date, custom: true }
+    homeworkSubmissionDrafts:
+        name: "Drafts"
+        desc: "Blank for none, or 1, 2, or 3."
+        args: { filter: string, custom: true }
+    homeworkSubmissionType:
+        name: "Submission Type"
+        desc: "Link, File, or Link/File"
+        args: { filter: string, custom: true }
+    homeworkSubmissionRequired:
+        name: "Submission Required"
+        desc: "Optional or Required"
+        args: { filter: string, custom: true }
+    homeworkCrowdAssess:
+        name: "Crowd Assessment?"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    homeworkCrowdAssessClassmatesRead:
+        name: "Classmates"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    homeworkCrowdAssessOtherStudentsRead:
+        name: "Other Students"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    homeworkCrowdAssessOtherTeachersRead:
+        name: "Other Teachers"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    homeworkCrowdAssessSubmitterParentsRead:
+        name: "Submitter's Parents"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    homeworkCrowdAssessClassmatesParentsRead:
+        name: "Classmates's Parents"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    homeworkCrowdAssessOtherParentsRead:
+        name: "Other Parents"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    viewableStudents:
+        name: "Viewable by Students"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    viewableParents:
+        name: "Viewable by Parents"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    videoLink:
+        name: "Online Lesson"
+        desc: "Displays a video link for online lessons"
+        args: { filter: url, custom: true, readonly: true, serialize: fields, customField: videoLink }
+    gibbonPersonIDCreator:
+        name: "Created By"
+        desc: "Username or Email (if unique)"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }
+    gibbonPersonIDLastEdit:
+        name: "Last Edited By"
+        desc: "Copied from Created By"
+        args: { filter: string, hidden: true, linked: gibbonPersonIDCreator, custom: true }
+    fields:
+        name: "Custom Fields"
+        desc: ""
+        args: { filter: customfield, serialize: fields, custom: true, hidden: true }
