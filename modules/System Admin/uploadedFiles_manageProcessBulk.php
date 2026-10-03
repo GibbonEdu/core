@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\System\FileGateway;
 use Gibbon\Data\Validator;
 
@@ -45,26 +46,20 @@ if (empty($action) || empty($gibbonPersonID) || empty($gibbonFileIDs)) {
 }
 
 $fileGateway = $container->get(FileGateway::class);
+$fileHandler = $container->get(FileHandler::class);
 $partialFail = false;
 
 if ($action == 'Delete') {
     foreach ($gibbonFileIDs as $gibbonFileID) {
         $file = $fileGateway->getByID($gibbonFileID);
 
-        // Skip if not found or still in use
+        // Skip if not found or in use
         if (empty($file) || $file['isUsed'] !== 'N') {
             $partialFail = true;
             continue;
         }
 
-        // Delete the physical file from server
-        $absoluteFilePath = $session->get('absolutePath').'/'.$file['filePath'];
-        if (file_exists($absoluteFilePath)) {
-            unlink($absoluteFilePath);
-        }
-
-        // Delete the database record
-        if (!$fileGateway->delete($gibbonFileID)) {
+        if (!$fileHandler->deleteUnusedEditorFile($gibbonFileID)) {
             $partialFail = true;
         }
     }

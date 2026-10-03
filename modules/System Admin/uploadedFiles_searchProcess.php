@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\System\FileGateway;
 use Gibbon\Data\Validator;
 
@@ -45,33 +46,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/uploadedFiles
         exit;
     }
 
-    // Discover all text columns across all base tables
-    $textColumns = $fileGateway->selectTextColumns()->fetchAll();
-
-    if (empty($textColumns)) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit;
-    }
-
+    $fileHandler = $container->get(FileHandler::class);
     $partialFail = false;
 
     foreach ($stagedFiles as $file) {
-        $gibbonFileID = $file['gibbonFileID'];
-        $filePath = $file['filePath'];
-        $found = false;
-
-        // Scan every text column — keep the file if it appears anywhere in the DB
-        foreach ($textColumns as $col) {
-            if ($fileGateway->isFilePathInColumn($col['TABLE_NAME'], $col['COLUMN_NAME'], $filePath)) {
-                $found = true;
-                break;
+        if ($fileHandler->isEditorFileUsed($file['filePath'], $file['gibbonFileID'])) {
+            if ($file['isUsed'] === 'N' && !$fileGateway->update($file['gibbonFileID'], ['isUsed' => 'Y'])) {
+                $partialFail = true;
             }
+            continue;
         }
 
-        if (!$found) {
-            // File is not referenced anywhere — flag it as unused
-            $updated = $fileGateway->markAsUnused($gibbonFileID);
+        if ($file['isUsed'] !== 'N') {
+            $updated = $fileGateway->markAsUnused($file['gibbonFileID']);
             $partialFail = $partialFail || !$updated;
         }
     }

@@ -48,4 +48,20 @@ interface FileHandler
      * @return bool
      */
     public function deleteFile(string $foreignTable, int|string $foreignTableID, string $foreignColumn);
+
+    /**
+     * Stage an editor upload in gibbonFile without creating a pointer.
+     * @return string|false gibbonFileID on success, false on failure
+     */
+    public function stageEditorUpload(array $metaData);
+
+    /**
+     * A file is still in use when another record stores its path.
+     */
+    public function isEditorFileUsed(string $filePath, int|string $gibbonFileID): bool;
+
+    /**
+     * Remove one unused editor file.
+     */
+    public function deleteUnusedEditorFile(int|string $gibbonFileID): bool;
 }

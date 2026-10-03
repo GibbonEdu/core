@@ -80,8 +80,9 @@ if (is_uploaded_file($file['tmp_name'])) {
 
     if (!empty($attachment)) {
         $fileMetaData = $fileUploader->getFileMetaData($attachment);
-        if (!empty($fileMetaData)) {
-            $gibbonFileID =$fileHandler->stageEditorUpload($fileMetaData);
+        if (empty($fileMetaData) || empty($fileHandler->stageEditorUpload($fileMetaData))) {
+            header("HTTP/1.1 500 Server Error");
+            exit;
         }
 
         echo json_encode(['location' => $session->get('absoluteURL') . '/' . $attachment], JSON_FORCE_OBJECT);

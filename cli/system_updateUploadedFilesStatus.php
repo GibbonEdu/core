@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\System\FileGateway;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -42,36 +43,21 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
         return;
     }
 
-    // Discover all text columns across all base tables
-    $textColumns = $fileGateway->selectTextColumns()->fetchAll();
-
-    if (empty($textColumns)) {
-        print __("No text columns found in the DB.") ;
-        return;
-    }
-
+    $fileHandler = $container->get(FileHandler::class);
     $markedUnused = 0;
     $kept = 0;
 
     foreach ($stagedFiles as $file) {
-        $gibbonFileID = $file['gibbonFileID'];
-        $filePath = $file['filePath'];
-        $found = false;
-
-        // Scan through every text column
-        foreach ($textColumns as $col) {
-            if ($fileGateway->isFilePathInColumn($col['TABLE_NAME'], $col['COLUMN_NAME'], $filePath)) {
-                $found = true;
-                $kept++;
-                break;
+        if ($fileHandler->isEditorFileUsed($file['filePath'], $file['gibbonFileID'])) {
+            if ($file['isUsed'] === 'N') {
+                $fileGateway->update($file['gibbonFileID'], ['isUsed' => 'Y']);
             }
+            $kept++;
+            continue;
         }
 
-        if (!$found) {
-            // File is not referenced anywhere so flag it as not being used
-            if ($fileGateway->markAsUnused($gibbonFileID)) {
-                $markedUnused++;
-            }
+        if ($file['isUsed'] === 'N' || $fileGateway->markAsUnused($file['gibbonFileID'])) {
+            $markedUnused++;
         }
     }
 
