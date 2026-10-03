@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\UI\Components\Alert;
 
@@ -67,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 // ALERTS: possible change to Behaviour alert status, recalculate alerts
                 $container->get(Alert::class)->recalculateAlerts($row['gibbonPersonID']);
+                $container->get(FileHandler::class)->deleteFilesForRecord('gibbonBehaviour', $gibbonBehaviourID);
 
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");

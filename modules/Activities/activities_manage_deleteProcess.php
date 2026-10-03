@@ -55,10 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             // Delete file attachments for all activity photos before deleting the activity
             $activityPhotos = $container->get(ActivityPhotoGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID], ['gibbonActivityPhotoID'])->fetchAll();
-            
-            foreach ($activityPhotos as $photo) {
-                $photoDeleted = $container->get(FileHandler::class)->deleteFile('gibbonActivityPhoto', $photo['gibbonActivityPhotoID'], 'filePath');
-            }
+            $container->get(FileHandler::class)->deleteFilesForRecord('gibbonActivityPhoto', array_column($activityPhotos, 'gibbonActivityPhotoID'));
 
             //Write to database
             try {

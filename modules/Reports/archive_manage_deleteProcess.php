@@ -52,10 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_del
 
     // Delete file attachments for all entries in this archive before deleting the archive
     $archiveEntries = $container->get(ReportArchiveEntryGateway::class)->selectBy(['gibbonReportArchiveID' => $gibbonReportArchiveID], ['gibbonReportArchiveEntryID'])->fetchAll();
-
-    foreach ($archiveEntries as $entry) {
-        $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonReportArchiveEntry', $entry['gibbonReportArchiveEntryID'], 'filePath');
-    }
+    $container->get(FileHandler::class)->deleteFilesForRecord('gibbonReportArchiveEntry', array_column($archiveEntries, 'gibbonReportArchiveEntryID'));
 
     $deleted = $reportArchiveGateway->delete($gibbonReportArchiveID);
     $partialFail &= !$deleted;

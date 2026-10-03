@@ -106,16 +106,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             // Delete file attachments for all application form files
             $appFiles = $container->get(ApplicationFormFileGateway::class)->selectBy(['gibbonApplicationFormID' => $gibbonApplicationFormID], ['gibbonApplicationFormFileID'])->fetchAll();
-
-            foreach ($appFiles as $appFile) {
-                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonApplicationFormFile', $appFile['gibbonApplicationFormFileID'], 'path');
-            }
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonApplicationFormFile', array_column($appFiles, 'gibbonApplicationFormFileID'));
 
             //Delete files, but don't return error if it fails
             $data = ['gibbonApplicationFormID' => $gibbonApplicationFormID];
             $sql = 'DELETE FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
+
+            foreach (['gibbonApplicationForm', 'gibbonApplicationFormParent1', 'gibbonApplicationFormParent2'] as $applicationTable) {
+                $fileHandler->deleteFilesForRecord($applicationTable, $gibbonApplicationFormID);
+            }
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

@@ -201,6 +201,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $partialFail = true;
                             }
                         }
+
+                        $attachments = $_POST['attachment'] ?? [];
+                        foreach ($attachments as $gibbonStaffApplicationFormFileID => $attachment) {
+                            if (empty($gibbonStaffApplicationFormFileID) || !empty($attachment)) {
+                                continue;
+                            }
+
+                            $container->get(FileHandler::class)->deleteFile('gibbonStaffApplicationFormFile', $gibbonStaffApplicationFormFileID, 'path');
+
+                            try {
+                                $dataFile = ['gibbonStaffApplicationFormFileID' => $gibbonStaffApplicationFormFileID];
+                                $sqlFile = 'DELETE FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormFileID=:gibbonStaffApplicationFormFileID';
+                                $resultFile = $connection2->prepare($sqlFile);
+                                $resultFile->execute($dataFile);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        }
                     }
 
                     if ($partialFail == true) {

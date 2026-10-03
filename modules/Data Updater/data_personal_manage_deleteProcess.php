@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
@@ -67,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
             // Personal Documents
             $container->get(PersonalDocumentGateway::class)->deletePersonalDocuments('gibbonPersonUpdate', $gibbonPersonUpdateID);
+            $container->get(FileHandler::class)->deleteFilesForRecord('gibbonPersonUpdate', $gibbonPersonUpdateID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

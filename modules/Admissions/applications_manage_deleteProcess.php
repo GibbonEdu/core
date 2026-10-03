@@ -19,7 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Domain\Forms\FormUploadGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -47,7 +49,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         exit;
     }
 
+    $formUploadGateway = $container->get(FormUploadGateway::class);
+    $fileHandler = $container->get(FileHandler::class);
+    $uploads = $formUploadGateway->selectBy([
+        'foreignTable' => 'gibbonAdmissionsApplication',
+        'foreignTableID' => $gibbonAdmissionsApplicationID,
+    ])->fetchAll();
+
     $deleted = $admissionsApplicationGateway->delete($gibbonAdmissionsApplicationID);
+
+    if ($deleted) {
+        $fileHandler->deleteFilesForRecord('gibbonFormUpload', array_column($uploads, 'gibbonFormUploadID'));
+        $formUploadGateway->deleteWhere(['foreignTable' => 'gibbonAdmissionsApplication', 'foreignTableID' => $gibbonAdmissionsApplicationID]);
+    }
 
     $URL .= !$deleted
         ? '&return=error2'

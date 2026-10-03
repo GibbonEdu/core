@@ -281,26 +281,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 for ($i = 0; $i < count($requiredDocumentsList); $i++) {
                     $form->addHiddenValue('fileName'.$i, $requiredDocumentsList[$i]);
 
+                    $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $requiredDocumentsList[$i]);
+                    $sqlFile = "SELECT CONCAT('attachment[', gibbonStaffApplicationFormFileID, ']') as id, path FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND name=:name ORDER BY gibbonStaffApplicationFormFileID DESC";
+                    $resultFile = $connection2->prepare($sqlFile);
+                    $resultFile->execute($dataFile);
+                    $attachments = ($resultFile && $resultFile->rowCount() > 0) ? $resultFile->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
                     $row = $form->addRow();
                         $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
-
-
-                        $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $requiredDocumentsList[$i]);
-                        $sqlFile = 'SELECT * FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND name=:name ORDER BY name';
-                        $resultFile = $connection2->prepare($sqlFile);
-                        $resultFile->execute($dataFile);
-                    if ($resultFile->rowCount() == 0) {
-                            $row->addFileUpload('file'.$i)
-                                ->accepts($fileUploader->getFileExtensions())
-                                ->setMaxUpload(false);
-                    }
-                    else {
-                        $rowFile = $resultFile->fetch();
-                        $row->addWebLink(__('Download'))
-                            ->addClass('right')
-                            ->setURL($session->get('absoluteURL').'/'.$rowFile['path'])
-                            ->setTarget('_blank');
-                    }
+                        $row->addFileUpload('file'.$i)
+                            ->accepts($fileUploader->getFileExtensions())
+                            ->setAttachments($session->get('absoluteURL'), $attachments)
+                            ->canDelete(true)
+                            ->setMaxUpload(false);
                 }
 
                 $form->addHiddenValue('fileCount', count($requiredDocumentsList));

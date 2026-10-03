@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Students\MedicalConditionGateway;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'] ?? '';
@@ -51,6 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            $conditionIDs = array_column($container->get(MedicalConditionGateway::class)->selectBy(['gibbonPersonMedicalID' => $gibbonPersonMedicalID], ['gibbonPersonMedicalConditionID'])->fetchAll(), 'gibbonPersonMedicalConditionID');
+
             //Write to database
             try {
                 $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
@@ -73,6 +78,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                 header("Location: {$URL}");
                 exit();
             }
+
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonPersonMedicalCondition', $conditionIDs);
+            $fileHandler->deleteFilesForRecord('gibbonPersonMedical', $gibbonPersonMedicalID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

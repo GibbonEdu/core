@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\User\PersonPhotoGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -68,7 +69,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
             // Personal Documents
             $container->get(PersonalDocumentGateway::class)->deletePersonalDocuments('gibbonPerson', $gibbonPersonID);
 
-            $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
+            $fileHandler = $container->get(FileHandler::class);
+            $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+            $photos = $personPhotoGateway->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonPersonPhotoID'])->fetchAll();
+            $fileHandler->deleteFilesForRecord('gibbonPersonPhoto', array_column($photos, 'gibbonPersonPhotoID'));
+            $personPhotoGateway->deleteWhere(['gibbonPersonID' => $gibbonPersonID]);
+            $fileHandler->deleteFilesForRecord('gibbonPerson', $gibbonPersonID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

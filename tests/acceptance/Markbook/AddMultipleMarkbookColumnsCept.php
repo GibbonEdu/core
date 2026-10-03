@@ -52,12 +52,23 @@ $gibbonMarkbookColumnID = $I->grabFromDatabase('gibbonMarkbookColumn', 'gibbonMa
 $file = $I->grabFromDatabase('gibbonMarkbookColumn', 'attachment', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
 $I->assertNotEmpty($file);
 
-// Clean up - Delete the created column
-$I->amOnModulePage('Markbook', 'markbook_edit_delete.php', array(
-    'gibbonCourseClassID' => $gibbonCourseClassID,
-    'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID
-));
+// The same upload is shared by every class column. Deleting one location
+// must leave the file in place until the last column is removed.
+$columnIDs = $I->grabColumnFromDatabase('gibbonMarkbookColumn', 'gibbonMarkbookColumnID', ['name' => 'Multi Test Column']);
+$I->assertNotEmpty($columnIDs);
 
-$I->click('Delete');
-$I->seeSuccessMessage();
+foreach ($columnIDs as $index => $columnID) {
+    $classID = $I->grabFromDatabase('gibbonMarkbookColumn', 'gibbonCourseClassID', ['gibbonMarkbookColumnID' => $columnID]);
+    $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', [
+        'gibbonCourseClassID' => $classID,
+        'gibbonMarkbookColumnID' => $columnID,
+    ]);
+    $I->click('Delete');
+    $I->seeSuccessMessage();
+
+    if ($index < count($columnIDs) - 1) {
+        $I->seeFileFound('../'.$file);
+    }
+}
+
 $I->dontSeeFileFound('../'.$file);

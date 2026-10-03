@@ -70,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             }
             
             // Delete file attachments for all condition updates linked to this medical update
-            foreach ($conditionUpdates as $conditionUpdate) {
-                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPersonMedicalConditionUpdate', $conditionUpdate['gibbonPersonMedicalConditionUpdateID'], 'attachment');
-            }
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonPersonMedicalConditionUpdate', array_column($conditionUpdates, 'gibbonPersonMedicalConditionUpdateID'));
+            $fileHandler->deleteFilesForRecord('gibbonPersonMedicalUpdate', $gibbonPersonMedicalUpdateID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

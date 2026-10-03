@@ -48,4 +48,15 @@ interface FileHandler
      * @return bool
      */
     public function deleteFile(string $foreignTable, int|string $foreignTableID, string $foreignColumn);
+
+    /**
+     * Point another record at a file. Reuses a tracked path, adopts a file already on disk, or replaces this record's pointer when it already points somewhere else.
+     */
+    public function linkExistingFile(string $foreignTable, int|string $foreignTableID, string $foreignColumn, string $filePath);
+
+    /**
+     * Delete every tracked file for one record, or for a list of records in the same table.
+     * The physical file is removed only when nothing else still uses it.
+     */
+    public function deleteFilesForRecord(string $foreignTable, int|string|array $foreignTableID): void;
 }

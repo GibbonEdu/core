@@ -67,14 +67,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
                 exit();
             }
 
-            // Delete file attachments for all markbook entry responses for this column
-            $entryRows = $container->get(MarkbookEntryGateway::class)->selectBy(['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID], ['gibbonMarkbookEntryID'])->fetchAll();
-        
-            foreach ($entryRows as $entryRow) {
-                $entryFileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonMarkbookEntry', $entryRow['gibbonMarkbookEntryID'], 'response');
-            }
-            
-            $columnFileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonMarkbookColumn', $gibbonMarkbookColumnID, 'attachment');
+            $entryGateway = $container->get(MarkbookEntryGateway::class);
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonMarkbookEntry', array_column($entryGateway->selectBy(['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID], ['gibbonMarkbookEntryID'])->fetchAll(), 'gibbonMarkbookEntryID'));
+            $entryGateway->deleteWhere(['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
+            $fileHandler->deleteFilesForRecord('gibbonMarkbookColumn', $gibbonMarkbookColumnID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

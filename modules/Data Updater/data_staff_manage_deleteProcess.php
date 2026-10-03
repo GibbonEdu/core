@@ -1,5 +1,6 @@
 <?php
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
 /*
 Gibbon: the flexible, open school platform
@@ -57,6 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
         header("Location: {$URL}");
         return;
     }
+
+    $container->get(FileHandler::class)->deleteFilesForRecord('gibbonStaffUpdate', $gibbonStaffUpdateID);
 
     $URLDelete .= '&return=success0';
     header("Location: {$URLDelete}");

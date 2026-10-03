@@ -80,13 +80,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             $departmentResourceGateway = $container->get(DepartmentResourceGateway::class);             
             $resourceResult = $departmentResourceGateway->selectBy(['gibbonDepartmentID' => $gibbonDepartmentID, 'type' => 'File'], ['gibbonDepartmentResourceID'])->fetchAll();
 
-            foreach ($resourceResult as $resource) {
-                $resourceDeleted = $fileHandler->deleteFile('gibbonDepartmentResource', $resource['gibbonDepartmentResourceID'], 'url');
-            }
-            
-            $deleted = $departmentResourceGateway->deleteWhere(['gibbonDepartmentID' => $gibbonDepartmentID]);          
-             
-            $fileDeleted = $fileHandler->deleteFile('gibbonDepartment', $gibbonDepartmentID, 'logo');
+            $fileHandler->deleteFilesForRecord('gibbonDepartmentResource', array_column($resourceResult, 'gibbonDepartmentResourceID'));
+            $departmentResourceGateway->deleteWhere(['gibbonDepartmentID' => $gibbonDepartmentID]);
+            $fileHandler->deleteFilesForRecord('gibbonDepartment', $gibbonDepartmentID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

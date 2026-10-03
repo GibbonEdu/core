@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide includes
 
 use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Http\Url;
 
 require_once __DIR__ . '/gibbon.php';
@@ -48,7 +49,14 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID'))
         header("Location: {$URL->withReturn('error2')}");
     } else {
         //UPDATE
-        $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
+        $fileHandler = $container->get(FileHandler::class);
+        $existingPhotos = $container->get(PersonPhotoGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonPersonPhotoID', 'personImage'])->fetchAll();
+        foreach ($existingPhotos as $existingPhoto) {
+            if (!empty($existingPhoto['personImage'])) {
+                $fileHandler->linkExistingFile('gibbonPersonPhoto', $existingPhoto['gibbonPersonPhotoID'], 'personImage', $existingPhoto['personImage']);
+            }
+        }
+        $fileHandler->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
 
         try {
             $data = array('gibbonPersonID' => $gibbonPersonID);

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Library\LibraryGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 include './moduleFunctions.php';
@@ -45,6 +46,10 @@ if (isActionAccessible($guid, $connection2, $queryArr['q']) == false) {
         $queryArr['return'] = "error1";
         header("Location: " . $baseURL . http_build_query($queryArr));
     } else {
+        $libraryGateway = $container->get(LibraryGateway::class);
+        $item = $libraryGateway->getByID($queryArr['gibbonLibraryItemID']);
+        $children = $libraryGateway->selectBy(['gibbonLibraryItemIDParent' => $queryArr['gibbonLibraryItemID']], ['gibbonLibraryItemID', 'imageLocation'])->fetchAll();
+
         //Write to database
         try {
             $data = array('gibbonLibraryItemID' => $queryArr['gibbonLibraryItemID']);
@@ -57,8 +62,15 @@ if (isActionAccessible($guid, $connection2, $queryArr['q']) == false) {
             exit();
         }
 
-        //Success 0
-        $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonLibraryItem', $queryArr['gibbonLibraryItemID'], 'imageLocation');
+        $fileHandler = $container->get(FileHandler::class);
+        if (($item['imageType'] ?? '') == 'File' && !empty($item['imageLocation'])) {
+            foreach ($children as $child) {
+                if (($child['imageLocation'] ?? '') === $item['imageLocation']) {
+                    $fileHandler->linkExistingFile('gibbonLibraryItem', $child['gibbonLibraryItemID'], 'imageLocation', $item['imageLocation']);
+                }
+            }
+        }
+        $fileHandler->deleteFile('gibbonLibraryItem', $queryArr['gibbonLibraryItemID'], 'imageLocation');
 
         $queryArr['q'] = "/modules/".getModuleName($_POST['address'])."/library_manage_catalog.php";
         $queryArr['return'] = "success0";

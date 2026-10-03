@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentEntryGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -58,7 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 exit();
             }
 
-            $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonInternalAssessmentColumn', $gibbonInternalAssessmentColumnID, 'attachment');
+            $entryGateway = $container->get(InternalAssessmentEntryGateway::class);
+            $entryIDs = array_column($entryGateway->selectBy(['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID], ['gibbonInternalAssessmentEntryID'])->fetchAll(), 'gibbonInternalAssessmentEntryID');
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonInternalAssessmentEntry', $entryIDs);
+            $entryGateway->deleteWhere(['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID]);
+            $fileHandler->deleteFilesForRecord('gibbonInternalAssessmentColumn', $gibbonInternalAssessmentColumnID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

@@ -92,10 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
 
                 // Delete file attachments for all homework entries before deleting the planner entry
                 $homeworkRows = $container->get(PlannerEntryHomeworkGateway::class)->selectBy(['gibbonPlannerEntryID' => $gibbonPlannerEntryID], ['gibbonPlannerEntryHomeworkID'])->fetchAll();
-
-                foreach ($homeworkRows as $homework) {
-                    $homeWorkFileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPlannerEntryHomework', $homework['gibbonPlannerEntryHomeworkID'], 'location');
-                }
+                $container->get(FileHandler::class)->deleteFilesForRecord('gibbonPlannerEntryHomework', array_column($homeworkRows, 'gibbonPlannerEntryHomeworkID'));
                 
                 try {
                     $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
@@ -118,6 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                     header("Location: {$URL}");
                     exit();
                 }
+
+                $container->get(FileHandler::class)->deleteFilesForRecord('gibbonPlannerEntry', $gibbonPlannerEntryID);
 
                 $URLDelete = $URLDelete."&return=success0$params";
                 header("Location: {$URLDelete}");

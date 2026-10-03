@@ -67,10 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             // Delete file attachments for all staff application form files
             $staffAppFiles = $container->get(StaffApplicationFormFileGateway::class)->selectBy(['gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID], ['gibbonStaffApplicationFormFileID'])->fetchAll();
-
-            foreach ($staffAppFiles as $staffAppFile) {
-                $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonStaffApplicationFormFile', $staffAppFile['gibbonStaffApplicationFormFileID'], 'path');
-            }
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonStaffApplicationFormFile', array_column($staffAppFiles, 'gibbonStaffApplicationFormFileID'));
 
             //Delete files, but don't return error if it fails
             $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
@@ -80,6 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             // Personal Documents
             $container->get(PersonalDocumentGateway::class)->deletePersonalDocuments('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID);
+            $fileHandler->deleteFilesForRecord('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");
