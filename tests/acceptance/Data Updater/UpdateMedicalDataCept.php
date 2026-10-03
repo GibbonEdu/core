@@ -127,6 +127,4 @@ $gibbonPersonMedicalID = $I->grabFromDatabase('gibbonPersonMedical', 'gibbonPers
 
 $I->deleteFromDatabase('gibbonPersonMedicalCondition', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID]);
 $I->deleteFromDatabase('gibbonPersonMedical', ['gibbonPersonID' => $gibbonPersonID]);
-
-$I->deleteFile('../'.$file);
-
+$I->dontSeeFileFound('../'.$file);

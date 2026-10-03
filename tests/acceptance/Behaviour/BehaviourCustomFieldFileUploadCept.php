@@ -69,5 +69,5 @@ $I->seeSuccessMessage();
 $I->deleteFromDatabase('gibbonCustomField', ['gibbonCustomFieldID' => $gibbonCustomFieldID]);
 
 if (!empty($file)) {
-    $I->deleteFile('../'.$file);
+    $I->dontSeeFileFound('../'.$file);
 }

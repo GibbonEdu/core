@@ -18,6 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Library\LibraryGateway;
 
@@ -113,6 +114,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
             if (!$inserted) {
                 $partialFail = true;
+            } elseif ($imageType == 'File' && !empty($imageLocation)) {
+                $fileHandler = $container->get(FileHandler::class);
+                $fileHandler->linkExistingFile('gibbonLibraryItem', $gibbonLibraryItemID, 'imageLocation', $imageLocation);
+                $fileHandler->linkExistingFile('gibbonLibraryItem', $inserted, 'imageLocation', $imageLocation);
             }
         }
 

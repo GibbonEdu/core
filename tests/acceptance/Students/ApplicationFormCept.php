@@ -232,12 +232,8 @@ $I->amOnModulePage('Students', 'applicationForm_manage_delete.php', $urlParams )
 
 $I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
-
-// Delete Files ------------------------------------------------
-
-$I->deleteFile('../'.$file0path);
-$I->deleteFile('../'.$file1path);
-$I->deleteFromDatabase('gibbonApplicationFormFile', ['gibbonApplicationFormID' => $gibbonApplicationFormID]);
+$I->dontSeeFileFound('../'.$file0path);
+$I->dontSeeFileFound('../'.$file1path);
 
 // Restore Original Settings -----------------------------------
 

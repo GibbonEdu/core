@@ -115,10 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
             'gibbonPersonID' => $studentEnrolment['gibbonPersonID'],
         ])->fetch();
 
-        // Optionally overwrite exiting files or skip them
-        if (!empty($existingReport) && $overwrite == 'Y') {
-            unlink($absolutePath.'/'.$archive['path'].'/'.$existingReport['filePath']);
-        } elseif (!empty($existingReport) && $overwrite == 'N') {
+        // Skip files that already exist when overwrite is off. A replacement is tracked below.
+        if (!empty($existingReport) && $overwrite == 'N') {
             unlink($report['absolutePath']);
             continue;
         }
@@ -140,13 +138,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         ];
 
         $inserted = $reportArchiveEntryGateway->insertAndUpdate($archiveEntry, $archiveEntry);
-        if ($inserted) {
+        $entryID = $inserted ?: ($existingReport['gibbonReportArchiveEntryID'] ?? null);
+        if ($entryID) {
             $count++;
             
             // Record file tracking
             $fileMetaData = $fileUploader->getFileMetaData($archiveEntry['filePath']);
+            if (!empty($fileMetaData) && !empty($existingReport['filePath'])) {
+                $fileMetaData['previousFilePath'] = $existingReport['filePath'];
+            }
             if (!empty($fileMetaData)) {
-                $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonReportArchiveEntry', $inserted, 'filePath');
+                $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonReportArchiveEntry', $entryID, 'filePath');
                 
                 if (empty($gibbonFileID)) {
                     $partialFail = true;
