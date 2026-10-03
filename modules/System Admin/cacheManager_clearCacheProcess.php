@@ -28,10 +28,10 @@ use Gibbon\UI\Components\Alert;
 require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
-include '../../config.php';
+include __DIR__ . '/../../config.php';
 
 //Module includes
-include './moduleFunctions.php';
+include __DIR__ . '/moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
 

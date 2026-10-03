@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 
-include '../../config.php';
+include __DIR__ . '/../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     // Access denied
