@@ -404,6 +404,7 @@ class Chart
         }
 
         $config['options'] = $this->options;
+        unset($config['options']['height'], $config['options']['width']);
 
         if (!empty($this->metadata)) {
             $config['metadata'] = $this->metadata;
@@ -439,12 +440,28 @@ class Chart
      */
     public function render()
     {
+        $height = $this->toCssSize($this->options['height'] ?? '300px');
+        $width = $this->toCssSize($this->options['width'] ?? '100%');
 
-        $canvas = '<div class="chart-container" style="position: relative; height:'.($this->options['height'] ?? '300px').'; width:'.($this->options['width'] ?? '100%').';">';
+        $canvas = '<div class="chart-container" style="position: relative; height:'.$height.'; max-height:'.$height.'; width:'.$width.';">';
         $canvas .= '<canvas id="'.$this->getElementID().'" ></canvas>';
         $canvas .= '</div>';
         $script = '<script type="text/javascript">'.$this->getScriptContents().'</script>';
 
         return $canvas . $script;
+    }
+
+    /**
+     * Numeric values are converted to pixels
+     * @param mixed $value
+     * @return string
+     */
+    protected function toCssSize($value)
+    {
+        if (is_numeric($value)) {
+            return $value.'px';
+        }
+
+        return (string) $value;
     }
 }
