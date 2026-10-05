@@ -37,25 +37,58 @@ class FilePointerGateway extends QueryableGateway
     private static $tableName = 'gibbonFilePointer';
     private static $primaryKey = 'gibbonFilePointerID';
 
-    public function getFileAndPointerID(string $foreignTable, int|string $foreignTableID, string $foreignColumn)
+    public function getFileAndPointerID(string $foreignTable, int|string $foreignTableID, string $foreignColumn, bool $lock = false)
     {
         $data = ['foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID, 'foreignColumn' => $foreignColumn];
 
         $sql = "SELECT gibbonFilePointer.gibbonFilePointerID, gibbonFile.gibbonFileID, gibbonFile.filePath
                 FROM gibbonFilePointer
-                JOIN gibbonFile ON gibbonFilePointer.gibbonFileID = gibbonFile.gibbonFileID
+                JOIN gibbonFile ON (gibbonFilePointer.gibbonFileID = gibbonFile.gibbonFileID)
                 WHERE gibbonFilePointer.foreignTable = :foreignTable
                 AND gibbonFilePointer.foreignTableID = :foreignTableID
                 AND gibbonFilePointer.foreignColumn = :foreignColumn";
+        if ($lock) {
+            $sql .= " FOR UPDATE";
+        }
 
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function countPointersByFileID(int $gibbonFileID)
+    public function countPointersByFileID(int $gibbonFileID, bool $lock = false)
     {
         $data = ['gibbonFileID' => $gibbonFileID];
-        $sql = "SELECT COUNT(*) as count FROM gibbonFilePointer WHERE gibbonFileID = :gibbonFileID";
-        
-       return $this->db()->select($sql, $data);
+        $sql = "SELECT COUNT(*) AS count FROM gibbonFilePointer WHERE gibbonFileID = :gibbonFileID";
+        if ($lock) {
+            $sql .= " FOR UPDATE";
+        }
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectByRecordIDs(string $foreignTable, array $foreignTableIDs)
+    {
+        $foreignTableIDs = array_values(array_filter($foreignTableIDs, function ($id) {
+            return is_scalar($id) && !is_bool($id) && $id !== '';
+        }));
+
+        if ($foreignTable === '' || $foreignTableIDs === []) {
+            $sql = "SELECT gibbonFilePointerID FROM gibbonFilePointer WHERE gibbonFilePointerID = :gibbonFilePointerID";
+            return $this->db()->select($sql, ['gibbonFilePointerID' => '']);
+        }
+
+        $data = ['foreignTable' => $foreignTable];
+        $keys = [];
+        foreach ($foreignTableIDs as $i => $id) {
+            $data['id'.$i] = $id;
+            $keys[] = ':id'.$i;
+        }
+
+        $sql = "SELECT gibbonFilePointer.gibbonFilePointerID, gibbonFilePointer.gibbonFileID, gibbonFilePointer.foreignTable, gibbonFilePointer.foreignTableID, gibbonFilePointer.foreignColumn, gibbonFile.filePath
+                FROM gibbonFilePointer
+                JOIN gibbonFile ON (gibbonFile.gibbonFileID = gibbonFilePointer.gibbonFileID)
+                WHERE gibbonFilePointer.foreignTable = :foreignTable
+                AND gibbonFilePointer.foreignTableID IN (".implode(', ', $keys).")";
+
+        return $this->db()->select($sql, $data);
     }
 }

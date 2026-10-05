@@ -564,7 +564,9 @@ class CustomFieldHandler
                 $fileMetaData = $this->fileUploader->getFileMetaData($newValue);
 
                 if (!empty($fileMetaData)) {
-                    // Record new file upload (automatically handles old file deletion if pointer exists)
+                    if ($hasOldFile && $oldValue !== $newValue) {
+                        $fileMetaData['previousFilePath'] = $oldValue;
+                    }
                     $gibbonFileID = $this->fileHandler->recordFileUpload($fileMetaData, $foreignTable, $foreignTableID, $foreignColumn);
                     
                     if (!empty($gibbonFileID)) {

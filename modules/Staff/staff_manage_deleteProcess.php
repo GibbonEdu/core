@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Staff\StaffContractGateway;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonStaffID = $_POST['gibbonStaffID'] ?? '';
@@ -69,6 +72,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_delete.
                 header("Location: {$URL}");
                 exit();
             }
+
+            $contractGateway = $container->get(StaffContractGateway::class);
+            $contractIDs = array_column($contractGateway->selectBy(['gibbonStaffID' => $gibbonStaffID], ['gibbonStaffContractID'])->fetchAll(), 'gibbonStaffContractID');
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonStaffContract', $contractIDs);
+            $contractGateway->deleteWhere(['gibbonStaffID' => $gibbonStaffID]);
+            $fileHandler->deleteFilesForRecord('gibbonStaff', $gibbonStaffID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

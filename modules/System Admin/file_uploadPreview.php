@@ -197,8 +197,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $row->addYesNo('overwrite')->selected('Y');
 
             $row = $form->addRow();
-            $row->addLabel('deleteFiles', __('Delete'))->description(__('Should original files be deleted from the server when overwriting files?'));
-            $row->addYesNo('deleteFiles')->selected('N');
+            $row->addLabel('deleteFiles', __('Delete'));
+            $row->addContent(__('An existing file is removed only when no other record still uses it.'));
     }
 
     // DATA TABLE

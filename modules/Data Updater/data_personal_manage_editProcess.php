@@ -422,6 +422,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $data['fields'] = $fields;
                     $set .= 'gibbonPerson.fields=:fields, ';
                 }
+                $oldPersonFields = $row2['fields'] ?? null;
 
                 if (strlen($set) > 1) {
                     //Write to database
@@ -434,6 +435,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    if (!empty($fields)) {
+                        $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('User', $params, $fields, 'gibbonPerson', $gibbonPersonID, $oldPersonFields);
                     }
 
                     //Write to database

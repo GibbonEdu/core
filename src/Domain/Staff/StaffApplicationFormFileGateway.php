@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Staff;
 
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
@@ -47,4 +49,15 @@ class StaffApplicationFormFileGateway extends QueryableGateway implements Scrubb
     
     private static $scrubbableKey = ['timestamp', 'gibbonStaffApplicationForm', 'gibbonStaffApplicationFormID'];
     private static $scrubbableColumns = ['path' => 'deleteFile'];
+
+    /**
+     * @var FileHandler
+     */
+    private $fileHandler;
+
+    public function __construct(Connection $db, FileHandler $fileHandler)
+    {
+        parent::__construct($db);
+        $this->fileHandler = $fileHandler;
+    }
 }

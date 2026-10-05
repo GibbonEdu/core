@@ -19,7 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -51,6 +52,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_mig
             ON DUPLICATE KEY UPDATE timestampModified=arrArchive.created";
 
     $inserted = $pdo->affectingStatement($sql, $data);
+
+    if ($pdo->getQuerySuccess()) {
+        $fileHandler = $container->get(FileHandler::class);
+        $entries = $container->get(ReportArchiveEntryGateway::class)->selectBy(['gibbonReportArchiveID' => $gibbonReportArchiveID], ['gibbonReportArchiveEntryID', 'filePath'])->fetchAll();
+        foreach ($entries as $entry) {
+            if (!empty($entry['filePath'])) {
+                $fileHandler->linkExistingFile('gibbonReportArchiveEntry', $entry['gibbonReportArchiveEntryID'], 'filePath', $entry['filePath']);
+            }
+        }
+    }
 
     $URL .= !$pdo->getQuerySuccess()
         ? "&return=warning1"

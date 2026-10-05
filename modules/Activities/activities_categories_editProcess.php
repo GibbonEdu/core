@@ -108,6 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
 
     // Get the old record to check for file deletion
     $oldRecord = $categoryGateway->getByID($gibbonActivityCategoryID);
+    if (!empty($fileMetaData) && !empty($oldRecord['backgroundImage'])) {
+        $fileMetaData['previousFilePath'] = $oldRecord['backgroundImage'];
+    }
 
     // Update the record
     $updated = $categoryGateway->update($gibbonActivityCategoryID, $data);

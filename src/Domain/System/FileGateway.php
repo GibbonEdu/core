@@ -50,4 +50,28 @@ class FileGateway extends QueryableGateway
         $sql = "SELECT gibbonFileID, filePath, fileName, uploadedAt FROM gibbonFile";
         return $this->db()->select($sql);
     }
+
+    public function getByFilePath($filePath, $lock = false)
+    {
+        $data = ['filePath' => $filePath];
+        $sql = "SELECT gibbonFileID, filePath
+                FROM gibbonFile
+                WHERE filePath = :filePath
+                LIMIT 1";
+        if ($lock) {
+            $sql .= " FOR UPDATE";
+        }
+
+        return $this->db()->selectOne($sql, $data);
+    }
+    
+    public function deleteIfUnreferenced($gibbonFileID): int
+    {
+        $data = ['gibbonFileID' => $gibbonFileID, 'gibbonFileIDCheck' => $gibbonFileID];
+        $sql = "DELETE FROM gibbonFile
+                WHERE gibbonFileID = :gibbonFileID
+                AND NOT EXISTS (SELECT gibbonFilePointerID FROM gibbonFilePointer WHERE gibbonFilePointer.gibbonFileID = :gibbonFileIDCheck)";
+
+        return $this->db()->delete($sql, $data);
+    }
 }

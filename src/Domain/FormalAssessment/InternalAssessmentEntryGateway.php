@@ -19,43 +19,23 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\Students;
+namespace Gibbon\Domain\FormalAssessment;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
-use Gibbon\Domain\ScrubbableGateway;
-use Gibbon\Domain\Traits\Scrubbable;
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\Traits\ScrubByTimestamp;
 
 /**
- * @version v21
- * @since   v21
+ * @version v31
+ * @since   v31
  */
-class ApplicationFormFileGateway extends QueryableGateway implements ScrubbableGateway
+class InternalAssessmentEntryGateway extends QueryableGateway
 {
     use TableAware;
-    use Scrubbable;
-    use ScrubByTimestamp;
 
-    private static $tableName = 'gibbonApplicationFormFile';
-    private static $primaryKey = 'gibbonApplicationFormFileID';
+    private static $tableName = 'gibbonInternalAssessmentEntry';
+    private static $primaryKey = 'gibbonInternalAssessmentEntryID';
 
     private static $searchableColumns = [];
-
-    private static $scrubbableKey = ['timestamp', 'gibbonApplicationForm', 'gibbonApplicationFormID'];
-    private static $scrubbableColumns = ['path' => 'deleteFile'];
-
-    /**
-     * @var FileHandler
-     */
-    private $fileHandler;
-
-    public function __construct(Connection $db, FileHandler $fileHandler)
-    {
-        parent::__construct($db);
-        $this->fileHandler = $fileHandler;
-    }
+    
 }

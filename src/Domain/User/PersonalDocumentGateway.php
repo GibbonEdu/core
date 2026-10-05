@@ -21,13 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\User;
 
-use Gibbon\Services\Format;
-use Gibbon\Domain\QueryCriteria;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByTimestamp;
+use Gibbon\Domain\Traits\TableAware;
 
 /**
  * @version v22
@@ -46,6 +47,17 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
 
     private static $scrubbableKey = 'timestamp';
     private static $scrubbableColumns = ['documentNumber' => null,'documentName' => null,'documentType' => null,'dateIssue' => null,'dateExpiry' => null,'filePath' => 'deleteFile','country' => null];
+
+    /**
+     * @var FileHandler
+     */
+    private $fileHandler;
+
+    public function __construct(Connection $db, FileHandler $fileHandler)
+    {
+        parent::__construct($db);
+        $this->fileHandler = $fileHandler;
+    }
 
     /**
      * @param QueryCriteria $criteria
@@ -171,6 +183,15 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
 
     public function deletePersonalDocuments($foreignTable, $foreignTableID)
     {
+        // Clean up file pointers before deleting records
+        $data = ['foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID];
+        $sql = "SELECT gibbonPersonalDocumentID FROM gibbonPersonalDocument WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID AND (filePath IS NOT NULL AND filePath != '')";
+        $documents = $this->db()->select($sql, $data)->fetchAll();
+
+        foreach ($documents as $document) {
+            $this->fileHandler->deleteFile('gibbonPersonalDocument', $document['gibbonPersonalDocumentID'], 'filePath');
+        }
+
         $data = ['foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID];
         $sql = "DELETE FROM gibbonPersonalDocument 
                 WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID";

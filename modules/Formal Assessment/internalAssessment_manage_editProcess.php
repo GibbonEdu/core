@@ -110,6 +110,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $partialFail = true;
                     } else {
                         $fileMetaData = $fileUploader->getFileMetaData($attachment);
+                        if (!empty($fileMetaData) && !empty($row['attachment'])) {
+                            $fileMetaData['previousFilePath'] = $row['attachment'];
+                        }
                     }
                 } else {
                     // Remove the attachment if it has been deleted, otherwise retain the original value

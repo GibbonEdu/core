@@ -174,6 +174,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                             $partialFail = true;
                         } else {
                             $fileMetaData = $fileUploader->getFileMetaData($attachment);
+                            if (!empty($fileMetaData) && !empty($row['attachment'])) {
+                                $fileMetaData['previousFilePath'] = $row['attachment'];
+                            }
                         }
                     } else {
                         // Remove the attachment if it has been deleted, otherwise retain the original value

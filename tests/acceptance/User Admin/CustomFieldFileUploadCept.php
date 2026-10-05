@@ -85,7 +85,7 @@ $I->seeSuccessMessage();
 // Delete the custom field
 $I->deleteFromDatabase('gibbonCustomField', ['gibbonCustomFieldID' => $gibbonCustomFieldID]);
 
-// Delete the uploaded file
+// The record delete already removed the uploaded file
 if (!empty($file)) {
-    $I->deleteFile('../'.$file);
+    $I->dontSeeFileFound('../'.$file);
 }

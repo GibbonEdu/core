@@ -220,7 +220,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                     // Insert the image into GibbonPersonPhoto to keep a backup record
                     if (!empty($attachment1)) {
-                        $container->get(PersonPhotoGateway::class)->insert(['gibbonPersonID' => $AI, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'personImage' => $attachment1,'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                        $photoID = $container->get(PersonPhotoGateway::class)->insert(['gibbonPersonID' => $AI, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'personImage' => $attachment1,'gibbonPersonIDCreated' => $session->get('gibbonPersonID')]);
+                        if (!empty($photoID) && !empty($fileMetaData)) {
+                            $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPersonPhoto', $photoID, 'personImage');
+                        }
                     }
 
                     // ALERTS: possible change to Privacy alert status, recalculate alerts

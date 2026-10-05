@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -60,6 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_dele
 
     // Then delete the coverage itself
     $partialFail &= !$staffCoverageGateway->delete($gibbonStaffCoverageID);
+
+    $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonStaffCoverage', $gibbonStaffCoverageID, 'attachmentContent');
 
     // Check for other coverage linked to this absence
     $otherCoverage = $staffCoverageGateway->selectBy(['gibbonStaffAbsenceID' => $values['gibbonStaffAbsenceID']])->fetchAll();
