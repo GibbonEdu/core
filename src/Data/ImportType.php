@@ -1258,10 +1258,10 @@ class ImportType
     public function doImportFunction($fieldName)
     {
         $method = $this->getField($fieldName, 'function');
+        $params = $this->getField($fieldName, 'params', []);
 
         if (!empty($method) && method_exists($this, 'userFunc_'.$method)) {
-            $parameters = $method == 'generateRandomHexKey' ? [$fieldName] : [];
-            return call_user_func_array(array($this, 'userFunc_'.$method), $parameters);
+            return call_user_func_array(array($this, 'userFunc_'.$method), $params);
         } else {
             return null;
         }
@@ -1293,9 +1293,8 @@ class ImportType
      * @param string $fieldName
      * @return string Random hexadecimal key sized
      */
-    protected function userFunc_generateRandomHexKey($fieldName)
+    protected function userFunc_generateRandomHexKey(int $length)
     {
-        $length = max(1, (int) $this->getField($fieldName, 'length', 40));
-        return substr(bin2hex(random_bytes((int) ceil($length / 2))), 0, $length);
+        return substr(bin2hex(random_bytes((int) ceil($length / 2))), 0, max(1, $length));
     }
 }

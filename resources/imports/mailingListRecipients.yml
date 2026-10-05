@@ -36,4 +36,4 @@ table:
     key:
         name: "Unsubscribe Key"
         desc: ""
-        args: { filter: string, hidden: true, function: generateRandomHexKey }
+        args: { filter: string, hidden: true, function: generateRandomHexKey, params: [40] }
