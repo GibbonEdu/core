@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
+set -Eeuo pipefail
+
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DOCKER_COMPOSE="docker compose --project-directory ${PROJECT_DIR} -f ${PROJECT_DIR}/resources/ops/compose.yaml -f ${PROJECT_DIR}/resources/ops/compose.dev.yaml"
+# shellcheck disable=SC1091
+source "${PROJECT_DIR}/resources/ops/scripts/dev-common.sh"
 
-# Export variables to be substituted in templates
-set -a
+load_env
+require_docker
 
-${DOCKER_COMPOSE} run --rm test \
-    /var/www/html/vendor/phpunit/phpunit/phpunit \
-    --bootstrap /var/www/html/tests/bootstrap.php \
-    --verbose \
-    "${1:-/var/www/html/tests/unit}"
+if [[ $# -eq 0 ]]; then
+    run_codecept unit
+else
+    run_codecept "$@"
+fi

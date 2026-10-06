@@ -1,71 +1,41 @@
 #!/usr/bin/env bash
 
-# Run bash in strict mode
 set -Eeuo pipefail
 
-# Simple logger
-log() { printf '%s\n' "$*"; }
-err() { printf 'ERROR: %s\n' "$*" >&2; }
-
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck disable=SC1091
+source "${PROJECT_DIR}/resources/ops/scripts/dev-common.sh"
 
-DOCKER_COMPOSE=(docker compose \
-    --project-directory "${PROJECT_DIR}" \
-    -f "${PROJECT_DIR}/resources/ops/compose.yaml" \
-    -f "${PROJECT_DIR}/resources/ops/compose.dev.yaml")
-    
-DEFAULT_TEST_URL='http://gibbon.test'
-DEFAULT_DEV_URL='http://localhost:8080'
+load_env
+require_docker
 
-# Load env file if present
-if [ -f "${PROJECT_DIR}/.env" ]; then
-  set -a
-  source "${PROJECT_DIR}"/.env
-  set +a
-fi
+: "${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Copy .env-example to .env.}"
+: "${MYSQL_DATABASE:?MYSQL_DATABASE is not set. Copy .env-example to .env.}"
+: "${ABSOLUTE_URL:=http://localhost:8080}"
+: "${TEST_ABSOLUTE_URL:=http://gibbon.test}"
 
-# -------
-# Helpers
-# -------
-mysql_root() { "${DOCKER_COMPOSE[@]}" exec -T -e MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" db mysql -uroot "${MYSQL_DATABASE}" "$@"; }
+wait_for_mysql || { err "MySQL did not become ready. Run ./up.sh first."; exit 3; }
 
-# ---------
-# Preflight
-# ---------
-command -v docker >/dev/null 2>&1 || { err "docker not found in PATH"; exit 1; }
-docker compose version >/dev/null 2>&1 || { err "docker compose plugin not found"; exit 1; }
-: "${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set}"
+restore_absolute_url() {
+    log "Reverting absoluteURL value in gibbonSetting table"
+    mysql_root "${MYSQL_DATABASE}" -e "UPDATE gibbonSetting SET value = '$(sql_escape "${ABSOLUTE_URL}")' WHERE name = 'absoluteURL';"
+    log "OK: absoluteURL value is ${ABSOLUTE_URL}"
+}
+trap restore_absolute_url EXIT
 
-# ---------------------
-# Reset tests directory
-# ---------------------
 log "Cleaning up tests directory"
-rm -f "${PROJECT_DIR}"/tests/_output/*fail.html 2>/dev/null || true
-rm -f "${PROJECT_DIR}/tests/_output/failed" 2>/dev/null || true
+rm -f "${PROJECT_DIR}/tests/_output/"*fail.html || true
+rm -f "${PROJECT_DIR}/tests/_output/failed" || true
 log "OK: Old test output files deleted"
 
-# -----------------------------------
-# Configure database for test execution
-# -----------------------------------
-log 'Updating absoluteURL value in gibbonSetting table'
-mysql_root -e "UPDATE gibbonSetting SET value = '${DEFAULT_TEST_URL}' WHERE name = 'absoluteURL';"
-log "OK: absoluteURL value is ${DEFAULT_TEST_URL}"
+log "Updating absoluteURL value in gibbonSetting table"
+mysql_root "${MYSQL_DATABASE}" -e "UPDATE gibbonSetting SET value = '$(sql_escape "${TEST_ABSOLUTE_URL}")' WHERE name = 'absoluteURL';"
+log "OK: absoluteURL value is ${TEST_ABSOLUTE_URL}"
 
-# Always restore database setting, even if tests or this script fails
-restore_db() {
-  log 'Reverting absoluteURL value in gibbonSetting table'
-  mysql_root -e "UPDATE gibbonSetting SET value = '${DEFAULT_DEV_URL}' WHERE name = 'absoluteURL';"
-  log "OK: absoluteURL value is ${DEFAULT_DEV_URL}"
-}
-trap restore_db EXIT
-
-# --------------
-# Test execution
-# --------------
-log 'Running acceptance tests'
-"${DOCKER_COMPOSE[@]}" run --rm test \
-    /var/www/html/vendor/codeception/codeception/codecept \
-    -c /var/www/html/tests/codeception.yml \
-    run \
-    "${@:-acceptance}"
-log 'OK: Finished running acceptance tests'
+log "Running acceptance tests"
+if [[ $# -eq 0 ]]; then
+    run_codecept acceptance
+else
+    run_codecept "$@"
+fi
+log "OK: Finished running acceptance tests"

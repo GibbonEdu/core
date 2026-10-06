@@ -3,8 +3,8 @@ name: gibbon
 services:
     app:
         build:
-            # Define directory path to Dockerfile relative to project root
-            context: ./resources/ops/
+            context: .
+            dockerfile: resources/ops/Dockerfile
             args:
                 PHP_VERSION: ${PHP_VERSION:-8.3}
         container_name: gibbon_app
@@ -14,23 +14,19 @@ services:
         restart: unless-stopped
         networks:
             web-tier:
-                ipv4_address: 172.16.238.10
+                aliases:
+                    - gibbon.test
             db-tier:
 
     db:
         image: mysql:${MYSQL_VERSION:-8.0}
         container_name: gibbon_db
-        # Gibbon Docker Environment Variables
         environment:
-            # MySQL database name (default: gibbon)
-            - MYSQL_DATABASE=${MYSQL_DATABASE:-gibbon}
-            # MySQL application user credentials
-            - MYSQL_USER=${MYSQL_USER:-gibbon}
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Create .env from resources/ops/configuration/gibbon/.env-example and set a password.}
-            # MySQL root password — keep this strong in production
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Create .env from resources/ops/configuration/gibbon/.env-example and set a password.}
-            - MYSQL_DATABASE=${MYSQL_DATABASE:-gibbon}
-            - TZ=${TIMEZONE:-Asia/Hong_Kong}
+            MYSQL_DATABASE: ${MYSQL_DATABASE:-gibbon}
+            MYSQL_USER: ${MYSQL_USER:-gibbon}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Copy resources/ops/configuration/gibbon/.env-example to .env and set a password.}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Copy resources/ops/configuration/gibbon/.env-example to .env and set a password.}
+            TZ: ${TIMEZONE:-UTC}
         ports:
             - target: 3306
               published: 3306
@@ -38,10 +34,9 @@ services:
               mode: host
         volumes:
             - gibbon_db_data:/var/lib/mysql
-        # Native password plugin ensures PHP can connect easily
         command: --default-authentication-plugin=mysql_native_password
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+            test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -52,40 +47,38 @@ services:
 
     config:
         image: rija/docker-alpine-shell-tools:1.0.1
+        platform: linux/amd64
         volumes:
-            - ../../:/var/www/html
+            - .:/var/www/html
         command: /var/www/html/resources/ops/scripts/generate_config.sh
 
     test:
         build:
-            context: ./resources/ops/
+            context: .
+            dockerfile: resources/ops/Dockerfile
             args:
                 PHP_VERSION: ${PHP_VERSION:-8.3}
-        container_name: gibbon_test
         volumes:
-            ## Mount project root so live edits are immediately reflected without rebuilding the image.
             - .:/var/www/html
-            ## Mount PHP config so values can be changed without an image rebuild.
             - ./resources/ops/configuration/php/gibbon.ini:/usr/local/etc/php/conf.d/gibbon.ini:ro
         environment:
-            - DB_HOST=${DB_HOST:-gibbon_db}
-            - DB_NAME=${DB_NAME:-gibbon}
-            - DB_USERNAME=${DB_USERNAME:-gibbon}
-            - DB_PASSWORD=${DB_PASSWORD:-change_me}
-            - ABSOLUTE_URL=${ABSOLUTE_URL:-http://gibbon.test}
+            TEST_ENV: ${TEST_ENV:-codeception}
+            ABSOLUTE_URL: ${TEST_ABSOLUTE_URL:-http://gibbon.test}
+            DB_HOST: ${MYSQL_HOST:-gibbon_db}
+            DB_NAME: ${MYSQL_DATABASE:-gibbon}
+            DB_USERNAME: ${MYSQL_USER:-gibbon}
+            DB_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set. Copy resources/ops/configuration/gibbon/.env-example to .env and set a password.}
         networks:
             - web-tier
             - db-tier
-        extra_hosts:
-            - "gibbon.test:172.16.238.10"
+        depends_on:
+            app:
+                condition: service_started
+            db:
+                condition: service_healthy
 
 networks:
     web-tier:
-        driver: bridge
-        ipam:
-            driver: default
-            config:
-                - subnet: 172.16.238.0/24
     db-tier:
 
 volumes:

@@ -46,17 +46,3 @@ $caching = ${CACHING_FACTOR};
  * the list below. Allowed users must also have administrator access.
  */
 $allowImpersonateUser = [];
-
-
-/**
- * Test environment settings
- */
-$testEnvironment = 'codeception';
-
-$testDatabaseServer = '${MYSQL_HOST}';
-$testDatabaseUsername = '${MYSQL_USER}';
-$testDatabasePassword = '${MYSQL_PASSWORD}';
-$testDatabaseName = '${MYSQL_DATABASE}';
-
-$testURL = 'http://gibbon.test';
-$testPath = '/var/www/html';

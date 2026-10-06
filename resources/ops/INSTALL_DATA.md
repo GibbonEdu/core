@@ -20,17 +20,21 @@ If the script runs successfully, you should see the following output in the term
 $ ./setup_devdb.sh 
 Cleaning up environment
 OK: config.php deleted
+Waiting for MySQL to accept connections...
+OK: MySQL is ready
 OK: Recreated gibbon database
 Generating config.php
 OK: config.php created
-Waiting for MySQL to accept connections...
-OK: MySQL is ready
 Executing gibbon.sql (this may take a few minutes)
 OK: Imported schema
 Executing gibbon_demo.sql
 OK: Imported demo data
+Applying gibbonSetting overrides
+Checking whether a database update is required
 Creating admin user
 OK: Created admin user
+Creating gibbonStaff entry for admin user
+OK: Created gibbonStaff table entry
 ```
 
 2. Go to http://localhost:8080 on your browser and log into Gibbon with the following credentials:

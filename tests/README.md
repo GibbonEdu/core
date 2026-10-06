@@ -1,78 +1,37 @@
 # How to run tests
 
-## Run unit tests
+Developer Docker only. Start the stack first, then use the scripts below. They call the existing Codeception suites (`unit`, `install`, `acceptance`) inside the `test` container.
 
-Deploy a local instance of Gibbon using Docker:
 ```bash
 ./up.sh
 ```
 
-Execute all unit tests:
+## Unit tests
+
 ```bash
-tests/test_unit.sh 
+tests/run_unit.sh
+tests/run_unit.sh unit Data
+tests/run_unit.sh unit Data/ValidatorTest.php
 ```
 
-Execute unit tests for a specific module:
-```bash
-tests/run_unit.sh tests/unit/Data
-```
+## Installer test
 
-Execute specific unit test file:
-```bash
-tests/run_unit.sh tests/unit/Data/ValidatorTest.php
-```
+This deletes `config.php` and recreates the database.
 
-
-## Run installer test
-
-Deploy a local instance of Gibbon using Docker:
-```bash
-./up.sh
-```
-
-Execute installer test:
 ```bash
 tests/run_install.sh
-```
-
-Execute installer test in debug mode:
-```bash
 tests/run_install.sh --debug -vvv install
 ```
 
-## Run acceptance tests
+## Acceptance tests
 
-Deploy a local instance of Gibbon using Docker:
-```bash
-./up.sh
-```
+Load demo data first, then run the suite. The script temporarily sets `absoluteURL` to `TEST_ABSOLUTE_URL` (`http://gibbon.test`) and restores `ABSOLUTE_URL` when it finishes.
 
-Install example data into the database:
 ```bash
-./setup_db.sh
-```
-
-Execute all acceptance tests:
-```bash
-tests/test_acceptance.sh
-```
-
-Execute acceptance tests in a module:
-```bash
+./setup_devdb.sh
+tests/run_acceptance.sh
 tests/run_acceptance.sh acceptance Markbook
-```
-
-Execute specific acceptance test file:
-```bash
-tests/run_acceptance.sh acceptance Markbook/ViewMyMarksCept
-```
-
-Execute specific acceptance test file in debug mode:
-```bash
 tests/run_acceptance.sh acceptance --debug 'Calendar/CalendarEventManageCept.php'
 ```
 
-For debugging purposes, it can be useful to add the `skip_cleanup_if_failed: true`
-configuration into the `Db` module in `acceptance.suite.yml` so the database is
-not reset and current state of the data is kept when investigating failing
-acceptance tests.
+For debugging a failed acceptance test, you can add `skip_cleanup_if_failed: true` under the `Db` module in `acceptance.suite.yml` so the database is not reset.

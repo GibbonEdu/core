@@ -13,6 +13,8 @@ INSERT INTO `gibbonStaff` (`gibbonPersonID`, `type`, `jobTitle`) VALUES ((SELECT
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `username`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
 ('Mr. ', 'TestUser', 'Teacher', 'Teacher', 'Teacher TestUser Admin', '', 'testingteacher', '3ea8c6a760d223038a96c900994410950057390a0e4a48a39e760d50cab68040', '.aBdegGhlNoqRxzZ012369', 'N', 'Full', 'Y', 002, '002') ON DUPLICATE KEY UPDATE lastTimestamp=NOW(), `passwordStrong`=VALUES(passwordStrong), `passwordStrongSalt`=VALUES(passwordStrongSalt), failCount=0;
 
+INSERT INTO `gibbonStaff` (`gibbonPersonID`, `type`, `jobTitle`) VALUES ((SELECT `gibbonPersonID` FROM `gibbonPerson` WHERE `username`='testingteacher' LIMIT 1), 'Teaching', 'Test Teacher') ON DUPLICATE KEY UPDATE `jobTitle`='Test Teacher';
+
 -- User: testingstudent     WKLm9ELHLJL5
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `username`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
 ('Ms. ', 'TestUser', 'Student', 'Student', 'Student TestUser', '', 'testingstudent', '90ad15af1a18f0fcf9192997c93dda3731fa6d379bd25005711b659470fe0243', './aefFGhHIPrRTuvVwxz47', 'N', 'Full', 'Y', 003, '003') ON DUPLICATE KEY UPDATE lastTimestamp=NOW(), `passwordStrong`=VALUES(passwordStrong), `passwordStrongSalt`=VALUES(passwordStrongSalt), failCount=0;

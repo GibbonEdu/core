@@ -9403,7 +9403,6 @@ VALUES
 -- WHERE:  gibbonStaffID>1
 INSERT INTO `gibbonStaff` (`gibbonStaffID`, `gibbonPersonID`, `type`, `initials`, `jobTitle`, `firstAidQualified`, `firstAidQualification`, `firstAidExpiry`, `countryOfOrigin`, `qualifications`, `biography`, `biographicalGrouping`, `biographicalGroupingPriority`, `coverageExclude`, `coveragePriority`, `fields`)
 VALUES
-    (0000000001,0000000120,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000002,0000000136,'Support',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000003,0000000125,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000004,0000000132,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
@@ -9418,6 +9417,7 @@ VALUES
     (0000000013,0000000142,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000014,0000000139,'Support',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000015,0000000117,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
+    (0000000016,0000000120,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000017,0000000151,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000018,0000000143,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),
     (0000000019,0000000124,'Teaching',NULL,'','',NULL,NULL,'','','','',0,'N',0,NULL),

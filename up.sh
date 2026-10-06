@@ -1,64 +1,60 @@
-#=============================================================
-# Gibbon Local Development — Docker helper
-# =============================================================
+#!/usr/bin/env bash
+# Gibbon local development — Docker helper
 # Usage:
 #   ./up.sh          Start (or rebuild) the dev environment
 #   ./up.sh down     Stop containers and remove volumes (resets DB)
 #   ./up.sh logs     Tail live logs from all containers
-# =============================================================
+
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "${PROJECT_DIR}/resources/ops/scripts/dev-common.sh"
+
 OPS_DIR="${PROJECT_DIR}/resources/ops"
 GIBBON_CONF_DIR="${OPS_DIR}/configuration/gibbon"
 
-## Ensure the script is always run from the project root
-if [ ! -f "${OPS_DIR}/compose.yaml" ]; then
-    echo "Error: Run this script from the project root (where up.sh lives)."
+if [[ ! -f "${OPS_DIR}/compose.yaml" ]]; then
+    err "Run this script from the project root (where up.sh lives)."
     exit 1
 fi
 
-## Ensure the local environment file exists
-if [ ! -f ".env" ]; then
-    if [ ! -f "${GIBBON_CONF_DIR}/.env-example" ]; then
-        echo "Error: .env was not found and ${GIBBON_CONF_DIR}/.env-example is missing."
+if [[ ! -f "${PROJECT_DIR}/.env" ]]; then
+    if [[ ! -f "${GIBBON_CONF_DIR}/.env-example" ]]; then
+        err ".env was not found and ${GIBBON_CONF_DIR}/.env-example is missing."
         exit 1
     fi
-
-    cp "${GIBBON_CONF_DIR}/.env-example" .env
-    echo "Created .env from ${GIBBON_CONF_DIR}/.env-example"
-    echo "Review .env to customize local settings if needed."
+    cp "${GIBBON_CONF_DIR}/.env-example" "${PROJECT_DIR}/.env"
+    log "Created .env from ${GIBBON_CONF_DIR}/.env-example"
+    log "Review .env to customize local settings if needed."
 fi
 
-## Ensure Docker is installed and the daemon is running
-if ! command -v docker >/dev/null 2>&1; then
-    echo "Error: Docker is not installed or not available on PATH."
-    exit 1
-fi
+require_docker
 
 if ! docker info >/dev/null 2>&1; then
-    echo "Error: Docker is not running. Start Docker Desktop and try again."
+    err "Docker is not running. Start Docker Desktop and try again."
     exit 1
 fi
-
-DOCKER_COMPOSE="docker compose --project-directory ${PROJECT_DIR} -f ${OPS_DIR}/compose.yaml -f ${OPS_DIR}/compose.dev.yaml"
 
 case "${1:-up}" in
     up)
-        echo "Starting Gibbon dev environment..."
-        ${DOCKER_COMPOSE} build app db
-        ${DOCKER_COMPOSE} up -d app db
-        echo "Installing Composer dependencies (this may take a minute on first run)..."
-        ${DOCKER_COMPOSE} exec -T app composer install
-        echo ""
-        echo "Gibbon is running at: http://localhost:8080"
-        echo "To follow logs:       ./up.sh logs"
+        log "Starting Gibbon dev environment..."
+        docker_compose build app db
+        docker_compose up -d app db
+        log "Installing Composer dependencies (this may take a minute on first run)..."
+        docker_compose exec -T app composer install
+        log ""
+        log "Gibbon is running at: http://localhost:8080"
+        log "To follow logs:       ./up.sh logs"
+        ;;
+    down)
+        docker_compose down -v
         ;;
     logs)
-        ${DOCKER_COMPOSE} logs -f
+        docker_compose logs -f
         ;;
     *)
-        echo "Usage: $0 [up|down|logs]"
+        log "Usage: $0 [up|down|logs]"
         exit 1
         ;;
 esac
