@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LocaleFallbackTest extends TestCase
 {
-    public function testFallsBackToMoCatalogWhenSystemLocaleUnavailable()
+    public function testFallsBackToTranslationCatalogWhenSystemLocaleUnavailable()
     {
         $root = realpath(__DIR__ . '/../../../..');
         $moFile = $root . '/i18n/ar_SA/LC_MESSAGES/gibbon.mo';

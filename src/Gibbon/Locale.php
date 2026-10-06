@@ -24,7 +24,7 @@ namespace Gibbon;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
-use Gibbon\Services\Localization\MoCatalog;
+use Gibbon\Services\Localization\TranslationCatalog;
 
 /**
  * Localization & Internationalization Class
@@ -52,11 +52,23 @@ class Locale implements LocaleInterface
     protected $nativeLocaleActive = false;
 
     /**
-     * Fallback message catalogs keyed by domain name.
-     *
-     * @var array<string, MoCatalog>
+     * @var array<string, TranslationCatalog>
      */
     protected $catalogs = [];
+
+    /**
+     * The file is parsed on the first translation that needs that domain.
+     *
+     * @var array<string, string>
+     */
+    protected $textDomainPaths = [];
+
+    /**
+     * Text domains already checked that have no readable catalog.
+     *
+     * @var array<string, bool>
+     */
+    protected $missingTextDomains = [];
 
     /**
      * Construct
@@ -90,6 +102,8 @@ class Locale implements LocaleInterface
         $this->i18ncode = $i18ncode;
         $this->nativeLocaleActive = false;
         $this->catalogs = [];
+        $this->textDomainPaths = [];
+        $this->missingTextDomains = [];
 
         $this->nativeLocaleActive = $this->activateSystemLocale($i18ncode);
     }
@@ -102,7 +116,7 @@ class Locale implements LocaleInterface
      *
      * @return bool
      */
-    protected function activateSystemLocale(string $i18ncode): bool
+    protected function activateSystemLocale(string $i18ncode) : bool
     {
         $variants = [
             $i18ncode.'.utf8',
@@ -140,13 +154,13 @@ class Locale implements LocaleInterface
             return false;
         }
 
-        return $this->localeMatches($localeSet, $i18ncode);
+        return $this->isMatchingLocale($localeSet, $i18ncode);
     }
 
     /**
      * Check whether a setlocale() result corresponds to the requested code.
      */
-    protected function localeMatches($localeSet, string $i18ncode): bool
+    protected function isMatchingLocale($localeSet, string $i18ncode) : bool
     {
         if ($localeSet === false || $localeSet === null) {
             return false;
@@ -187,7 +201,7 @@ class Locale implements LocaleInterface
     /**
      * Whether native system gettext is active for the current locale.
      */
-    public function isNativeLocaleActive(): bool
+    public function isNativeLocaleActive() : bool
     {
         return $this->nativeLocaleActive;
     }
@@ -249,33 +263,57 @@ class Locale implements LocaleInterface
      *
      * @param string $domain
      * @param string $i18nPath
-     * @param bool   $default
+     * @param bool   $isDefault
      */
-    protected function bindDomain(string $domain, string $i18nPath, bool $default = false)
+    protected function bindDomain(string $domain, string $i18nPath, bool $isDefault = false)
     {
         if ($this->supportsGetText && $this->nativeLocaleActive) {
             bindtextdomain($domain, $i18nPath);
             bind_textdomain_codeset($domain, 'UTF-8');
-            if ($default) {
+            if ($isDefault) {
                 textdomain($domain);
             }
             return;
         }
 
-        // Native locale unavailable: load .mo directly so translations still work.
-        $moFile = $this->findMoFile($i18nPath, $domain);
-        if ($moFile !== null) {
-            $catalog = MoCatalog::load($moFile);
-            if ($catalog instanceof MoCatalog) {
-                $this->catalogs[$domain] = $catalog;
-            }
+        // Native locale unavailable: remember the path and parse on first use.
+        $this->textDomainPaths[$domain] = $i18nPath;
+    }
+
+    /**
+     * Parsed fallback catalog for a domain, loaded on first use.
+     */
+    protected function getCatalog(string $domain) : ?TranslationCatalog
+    {
+        if (isset($this->catalogs[$domain])) {
+            return $this->catalogs[$domain];
         }
+
+        if (isset($this->missingTextDomains[$domain])) {
+            return null;
+        }
+
+        $i18nPath = $this->textDomainPaths[$domain] ?? null;
+        if ($i18nPath === null) {
+            return null;
+        }
+
+        $filePath = $this->getMoFile($i18nPath, $domain);
+        $catalog = $filePath !== null ? TranslationCatalog::load($filePath) : null;
+        if (!$catalog instanceof TranslationCatalog) {
+            $this->missingTextDomains[$domain] = true;
+            return null;
+        }
+
+        $this->catalogs[$domain] = $catalog;
+
+        return $catalog;
     }
 
     /**
      * Locate a domain .mo file for the current locale.
      */
-    protected function findMoFile(string $i18nPath, string $domain): ?string
+    protected function getMoFile(string $i18nPath, string $domain) : ?string
     {
         if (empty($this->i18ncode)) {
             return null;
@@ -290,9 +328,9 @@ class Locale implements LocaleInterface
         ];
 
         foreach ($localeNames as $localeName) {
-            $moFile = $i18nPath.'/'.$localeName.'/LC_MESSAGES/'.$domain.'.mo';
-            if (is_readable($moFile)) {
-                return $moFile;
+            $filePath = $i18nPath.'/'.$localeName.'/LC_MESSAGES/'.$domain.'.mo';
+            if (is_readable($filePath)) {
+                return $filePath;
             }
         }
 
@@ -302,15 +340,16 @@ class Locale implements LocaleInterface
     /**
      * Resolve a translated string through native gettext or the .mo fallback.
      */
-    protected function getTranslatedText(string $text, string $domain = ''): string
+    protected function getTranslatedText(string $text, string $domain = '') : string
     {
         if ($this->supportsGetText && $this->nativeLocaleActive) {
             return $domain === '' ? gettext($text) : dgettext($domain, $text);
         }
 
         $catalogDomain = $domain !== '' ? $domain : 'gibbon';
-        if (isset($this->catalogs[$catalogDomain])) {
-            return $this->catalogs[$catalogDomain]->translate($text);
+        $catalog = $this->getCatalog($catalogDomain);
+        if ($catalog !== null) {
+            return $catalog->translate($text);
         }
 
         return $text;
@@ -319,7 +358,7 @@ class Locale implements LocaleInterface
     /**
      * Resolve a plural translated string through native gettext or the .mo fallback.
      */
-    protected function getTranslatedTextPlural(string $singular, string $plural, int $n, string $domain = ''): string
+    protected function getTranslatedTextN(string $singular, string $plural, int $n, string $domain = '') : string
     {
         if ($this->supportsGetText && $this->nativeLocaleActive) {
             return $domain === ''
@@ -328,8 +367,9 @@ class Locale implements LocaleInterface
         }
 
         $catalogDomain = $domain !== '' ? $domain : 'gibbon';
-        if (isset($this->catalogs[$catalogDomain])) {
-            return $this->catalogs[$catalogDomain]->translatePlural($singular, $plural, $n);
+        $catalog = $this->getCatalog($catalogDomain);
+        if ($catalog !== null) {
+            return $catalog->translateN($singular, $plural, $n);
         }
 
         return $n == 1 ? $singular : $plural;
@@ -533,7 +573,7 @@ class Locale implements LocaleInterface
         $domain = $options['domain'] ?? '';
 
         // get raw translated string with or without domain.
-        $text = $this->getTranslatedTextPlural($singular, $plural, $n, $domain);
+        $text = $this->getTranslatedTextN($singular, $plural, $n, $domain);
 
         // apply named replacement parameters, if presents.
         $text = static::formatString($text ?? '', $params);
