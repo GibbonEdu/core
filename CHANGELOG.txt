@@ -113,15 +113,35 @@ v31.0.00
 
     Deprecations
 
+v30.0.02
+--------
+
+    Security
+        System: improved user access checks for AJAX scripts
+        System: added url source validation to internal HTTP_REFERER redirects
+        System: applied a sanitizeName method for input sanitization
+        System: added additional file extensions to htaccess deny list
+        Activities: added role-level authorisation checks to registration by student and parent
+        Calendar: improved direct object reference checks for notification scripts
+        Markbook: improved direct object reference checks for markbook scripts
+        Messenger: resolved non-paramaterised input in MessengerGateway
+        Planner: improved direct object reference checks for homework scripts
+        Rubrics: improved direct object reference checks for AJAX scripts
+        Rubrics: applied byte-level and file size checks to visualisation AJAX script
+        Timetable: improved direct object reference checks for timetable AJAX script
+
 v30.0.01
 --------
 
     Bug Fixes
         System: fixed default collation in gibbon.sql causing installation issues for MariaDB systems
         System: added a upper character limit of 2048 to translation strings, to prevent gettext errors
+        System: fixed validation of Number fields not allowing decimal places for non-integer values
         Attendance: fixed empty list in Set Future Absence when using Select Students for Multiple Students
         Calendar: fixed access to View Event when users only have View Calendar access
         Planner: fixed an error on the Year Overview of the Lesson Planner
+        Reports: improved sanitization of file paths in Manage Archive
+        Tracking: improved validation of user inputs in Graphing page
 
 v30.0.00
 --------

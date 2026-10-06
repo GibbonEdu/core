@@ -279,6 +279,18 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function getCourseClassAccessByTeacher($gibbonCourseClassID, $gibbonPersonID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonCourseClassPerson.* 
+                FROM gibbonCourseClassPerson
+                WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
+                AND gibbonCourseClassPerson.role = 'Teacher'";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getEnrolmentDateBySchoolYear($gibbonSchoolYearID) {
         $data = ['gibbonSchoolYearIDEntry' => $gibbonSchoolYearID];
         $sql = "SELECT GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE)";
