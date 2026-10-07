@@ -14,7 +14,17 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libonig-dev \
     gettext \
-    && rm -rf /var/lib/apt/lists/*
+    locales \
+    && rm -rf /var/lib/apt/lists/* \
+    && sed -i \
+              -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' \
+              -e 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' \
+              -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' \
+              -e 's/# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' \
+              -e 's/# zh_TW.UTF-8 UTF-8/zh_TW.UTF-8 UTF-8/' \
+              /etc/locale.gen \
+    && locale-gen \
+    && update-locale LANG=en_GB.UTF-8 LC_ALL=en_GB.UTF-8
 
 # 2. Install PHP Extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -39,22 +49,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Steps 4–7 are intentionally commented out for the dev environment.
-
-# # 4. Copy application source from local context
-# COPY . .
-
-# # 5. Install PHP Dependencies
-# RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# # 6. Configure PHP for Gibbon
-# # Path is relative to build context (project root), so resources/ops/php/gibbon.ini
-# COPY resources/ops/php/gibbon.ini /usr/local/etc/php/conf.d/gibbon.ini
-
-# # 7. Permissions
-# RUN chown -R www-data:www-data /var/www/html \
-#     && find /var/www/html -not -path "*/vendor/*" -type d -exec chmod 755 {} + \
-#     && find /var/www/html -not -path "*/vendor/*" -type f -exec chmod 644 {} +
+# Application source is bind-mounted at /var/www/html by compose (developer Docker).
+# Do not COPY the repo into the image.
 
 EXPOSE 80
 

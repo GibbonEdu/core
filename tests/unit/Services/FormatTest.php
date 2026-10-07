@@ -108,8 +108,13 @@ class FormatTest extends TestCase
 
         Format::setup(['code' => 'en_US']);
 
+        // ICU 72+ may insert U+202F or U+00A0 before am/pm; treat them as a normal space.
+        $readable = static function (string $value): string {
+            return preg_replace('/[\x{00A0}\x{202F}]/u', ' ', $value);
+        };
+
         $this->assertEquals('May 18, 2018', Format::dateReadable('2018-05-18'));
-        $this->assertEquals('May 18, 2018, 1:24 Pm', Format::dateTimeReadable('2018-05-18 13:24'));
+        $this->assertEquals('May 18, 2018, 1:24 Pm', $readable(Format::dateTimeReadable('2018-05-18 13:24')));
         $this->assertEquals('Saturday, February 3, 2018', Format::dateReadable($dateString, Format::FULL));
         $this->assertEquals('Saturday, February 3', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
         $this->assertEquals('February 3, 2018', Format::dateReadable($dateString, Format::LONG));
@@ -120,12 +125,11 @@ class FormatTest extends TestCase
         $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
         $this->assertEquals('February', Format::monthName($dateString));
         $this->assertEquals('Feb', Format::monthName($dateString, true));
-        $this->assertEquals('Feb 3, 2018, 1:24 Pm', Format::dateTimeReadable($dateString));
-        $this->assertEquals('February 3, 2018 At 1:24 Pm', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
-        $this->assertEquals('1:24 Pm', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+        $this->assertEquals('Feb 3, 2018, 1:24 Pm', $readable(Format::dateTimeReadable($dateString)));
+        $this->assertEquals('February 3, 2018 At 1:24 Pm', $readable(Format::dateReadable($dateString, Format::LONG, Format::SHORT)));
+        $this->assertEquals('1:24 Pm', $readable(Format::dateReadable($dateString, Format::NONE, Format::SHORT)));
 
         // Verify fidelity of formatting output using generic fallbacks 
-
         Format::$intlFormatterAvailable = false;
 
         $this->assertEquals('May 18 2018', Format::dateReadable('2018-05-18'));
