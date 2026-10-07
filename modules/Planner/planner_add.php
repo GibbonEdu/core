@@ -155,6 +155,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $form->addHiddenValue('address', $session->get('address'));
 
+            // Posted even when Advanced Options are hidden (those inputs are disabled and omitted from POST).
+            $form->addHiddenValue('viewableStudents', $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents'));
+            $form->addHiddenValue('viewableParents', $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents'));
+
             //BASIC INFORMATION
             $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
@@ -403,6 +407,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $row->addCheckbox('notify')->description(__('Notify all class participants'));
                 $row->addSubmit();
+
+            // Module hooks that add fields to the add-lesson form (also used for Import columns)
+            \Gibbon\Domain\Planner\LessonPlanAddFormBuilder::applyLessonPlannerAddHooks($container, $form);
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], '');

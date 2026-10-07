@@ -70,10 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 try {
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
                         $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                        $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary, gibbonPlannerEntry.fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                        $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary, gibbonPlannerEntry.viewableParents, gibbonPlannerEntry.viewableStudents, gibbonPlannerEntry.fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
                     } else {
                         $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary, role, gibbonPlannerEntry.fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
+                        $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary, role, gibbonPlannerEntry.viewableParents, gibbonPlannerEntry.viewableStudents, gibbonPlannerEntry.fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -200,8 +200,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                     $gibbonSpaceID = $_POST['gibbonSpaceID'] ?? null;
                     $gibbonTTDayRowClassID = $_POST['gibbonTTDayRowClassID'] ?? null;
-                    $viewableParents = $_POST['viewableParents'] ?? '';
-                    $viewableStudents = $_POST['viewableStudents'] ?? '';
+                    $viewableParents = $_POST['viewableParents'] ?? ($row['viewableParents'] ?? '');
+                    $viewableStudents = $_POST['viewableStudents'] ?? ($row['viewableStudents'] ?? '');
                     $gibbonPersonIDCreator = $session->get('gibbonPersonID');
                     $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
@@ -209,10 +209,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $customRequireFail = false;
                     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Lesson Plan', [], $customRequireFail);
 
-                    if (isset($_POST['videoLink'])) {
-                        $fields = !empty($fields) ? json_decode($fields, true) : [];
-                        $fields = json_encode(['videoLink'=> $_POST['videoLink'] ?? ''] + $fields);
-                    }
+                    $existingFields = !empty($row['fields']) ? json_decode($row['fields'], true) : [];
+                    $fields = !empty($fields) ? json_decode($fields, true) : [];
+                    $fields = json_encode(['videoLink' => $_POST['videoLink'] ?? ($existingFields['videoLink'] ?? '')] + $fields);
 
                     if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
                         $URL .= "&return=error3$params";
