@@ -33,7 +33,12 @@ require_once __DIR__ . '/moduleFunctions.php';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".Format::date($currentDate);
+
+// Registration sessions, such as AM and PM, are optional: when not in use the session is left blank
+$sessions = getFormGroupAttendanceSessions($container->get(SettingGateway::class));
+$attendanceSession = !empty($sessions) ? ($_POST['session'] ?? '') : null;
+
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".Format::date($currentDate).(!empty($attendanceSession) ? '&session='.urlencode($attendanceSession) : '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byFormGroup.php') == false) {
     $URL .= '&return=error0';
@@ -45,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     } else {
         //Proceed!
         //Check if gibbonFormGroupID and currentDate specified
-        if ($gibbonFormGroupID == '' and $currentDate == '') {
+        if (($gibbonFormGroupID == '' and $currentDate == '') || (!empty($sessions) && !in_array($attendanceSession, $sessions))) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
@@ -85,8 +90,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
                         try {
-                            $data = array('gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                            $sql = 'INSERT INTO gibbonAttendanceLogFormGroup SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonFormGroupID=:gibbonFormGroupID, date=:date, timestampTaken=:timestampTaken';
+                            $data = array('gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate, 'session' => $attendanceSession, 'timestampTaken' => date('Y-m-d H:i:s'));
+                            $sql = 'INSERT INTO gibbonAttendanceLogFormGroup SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonFormGroupID=:gibbonFormGroupID, date=:date, session=:session, timestampTaken=:timestampTaken';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -105,6 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $type = $_POST[$i.'-type'] ?? '';
                             $reason = $_POST[$i.'-reason'] ?? '';
                             $comment = $_POST[$i.'-comment'] ?? '';
+                            $minutesLate = $_POST[$i.'-minutesLate'] ?? '';
+                            $minutesLate = $attendance->isTypeLate($type) && is_numeric($minutesLate) ? max(0, min(999, intval($minutesLate))) : null;
 
                             $attendanceCode = $attendance->getAttendanceCodeByType($type);
                             $direction = $attendanceCode['direction'];
@@ -117,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $gibbonAttendanceLogPersonID = '';
                             if ($result->rowCount() > 0) {
                                 $row = $result->fetch() ;
-                                if ($row['context'] == 'Form Group' && $row['type'] == $type && $row['direction'] == $direction ) {
+                                if ($row['context'] == 'Form Group' && $row['session'] == $attendanceSession && $row['type'] == $type && $row['direction'] == $direction ) {
                                     $existing = true ;
                                     $gibbonAttendanceLogPersonID = $row['gibbonAttendanceLogPersonID'];
                                 }
@@ -134,6 +141,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 'gibbonPersonIDTaker'    => $session->get('gibbonPersonID'),
                                 'gibbonFormGroupID'      => $gibbonFormGroupID,
                                 'date'                   => $currentDate,
+                                'session'                => $attendanceSession,
+                                'minutesLate'            => $minutesLate,
                                 'timestampTaken'         => date('Y-m-d H:i:s'),
                             ];
 

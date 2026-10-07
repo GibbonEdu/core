@@ -33,6 +33,8 @@ use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 
+require_once __DIR__ . '/AttendanceSessions.php';
+
 /**
  * Student History Data
  *
@@ -77,6 +79,7 @@ class StudentHistoryData
     {
         $countClassAsSchool = $this->settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
         $firstDayOfTheWeek = $this->settingGateway->getSettingByScope('System', 'firstDayOfTheWeek');
+        $sessions = AttendanceSessions::getSessions($this->settingGateway);
 		
 		// Get showIncompleteAttendance setting from gibbonSetting
 		$showIncomplete = $this->settingGateway->getSettingByScope('Attendance', 'showIncompleteAttendance');
@@ -248,6 +251,9 @@ class StudentHistoryData
                     $presentCount++;
                 }
 
+                // The log that decides each registration session (or the whole day), for counts and punctuality
+                $sessionLogs = AttendanceSessions::getSessionLogs(array_merge($logs[$dateYmd] ?? [], $classLogsForDay), $sessions, $countClassAsSchool == 'Y');
+
                 $dayData = [
                     'date'            => $dateYmd,
                     'dateDisplay'     => Format::date($dateYmd),
@@ -262,10 +268,12 @@ class StudentHistoryData
                     'absentCount'     => $absentCount,
                     'presentCount'    => $presentCount,
                     'partialCount'    => $partialCount,
+                    'sessionLogs'     => $sessionLogs,
                     'gibbonPersonID'  => $gibbonPersonID,
                 ];
 
                 $terms[$index]['daysOfWeek'] = $daysOfWeek;
+                $terms[$index]['sessions'] = $sessions;
                 $terms[$index]['weeks'][$week][$weekday] = $dayData;
                 $dayCount++;
             }

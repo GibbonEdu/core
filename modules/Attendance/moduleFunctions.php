@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Module\Attendance\AttendanceSessions;
 
 //Get's a count of absent days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error, or no data
 function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd, $gibbonCourseClassID = 0)
@@ -171,4 +172,75 @@ function getColourArray()
     $return[] = '152, 221, 95';
 
     return $return;
+}
+
+/**
+ * Returns the named registration sessions used for form group attendance, such as ['AM', 'PM'].
+ * An empty array means one form group register per day, which is the default.
+ *
+ * @param SettingGateway $settingGateway
+ * @return array
+ */
+function getFormGroupAttendanceSessions($settingGateway)
+{
+    require_once __DIR__ . '/src/AttendanceSessions.php';
+
+    return AttendanceSessions::getSessions($settingGateway);
+}
+
+/**
+ * Counts the attendance of one or more students between two dates (Y-m-d, inclusive), by registration
+ * session when sessions are in use, otherwise by day. School closures are skipped.
+ *
+ * @param Connection $pdo
+ * @param SettingGateway $settingGateway
+ * @param array $gibbonPersonIDList
+ * @param string $dateStart
+ * @param string $dateEnd
+ * @return array  gibbonPersonID => counts from AttendanceSessions::countStatuses
+ */
+function getAttendanceCounts($pdo, $settingGateway, $gibbonPersonIDList, $dateStart, $dateEnd)
+{
+    require_once __DIR__ . '/src/AttendanceSessions.php';
+
+    $sessions = AttendanceSessions::getSessions($settingGateway);
+    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool') == 'Y';
+
+    $data = ['gibbonPersonIDList' => implode(',', (array) $gibbonPersonIDList), 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+    $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID, gibbonAttendanceLogPerson.context, gibbonAttendanceLogPerson.session, gibbonAttendanceLogPerson.minutesLate, gibbonAttendanceLogPerson.timestampTaken, gibbonAttendanceCode.direction, gibbonAttendanceCode.scope
+            FROM gibbonAttendanceLogPerson
+            JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
+            LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
+            WHERE FIND_IN_SET(gibbonAttendanceLogPerson.gibbonPersonID, :gibbonPersonIDList)
+            AND gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd
+            AND gibbonSchoolYearSpecialDay.gibbonSchoolYearSpecialDayID IS NULL";
+
+    $logs = [];
+    foreach ($pdo->select($sql, $data)->fetchAll() as $log) {
+        $logs[intval($log['gibbonPersonID'])][$log['date']][] = $log;
+    }
+
+    $counts = [];
+    foreach ((array) $gibbonPersonIDList as $gibbonPersonID) {
+        $counts[$gibbonPersonID] = AttendanceSessions::countStatuses($logs[intval($gibbonPersonID)] ?? [], $sessions, $countClassAsSchool);
+    }
+
+    return $counts;
+}
+
+/**
+ * Returns TRUE if attendance has been recorded for every session in the list, or for any session when
+ * sessions are not in use. Takes the session values of the form group logs recorded for one day.
+ *
+ * @param array $sessionsTaken
+ * @param array $sessions
+ * @return bool
+ */
+function isFormGroupAttendanceComplete($sessionsTaken, $sessions)
+{
+    if (empty($sessions)) {
+        return !empty($sessionsTaken);
+    }
+
+    return count(array_intersect($sessions, $sessionsTaken)) == count($sessions);
 }

@@ -54,6 +54,10 @@ v31.0.00
         Attendance: added a foreign table field to attendance logs for recording target of future absences
         Attendance: added Class as a target option for Set Future Absence
         Attendance: improved the display of attendance counts when attendance is not yet taken
+        Attendance: added optional registration sessions, such as AM and PM, for taking form group attendance more than once per day
+        Attendance: added an attendance percentage, counted by session when sessions are in use, to the student attendance summary
+        Attendance: added the Attendance Percentage by Student report
+        Attendance: added Minutes Late to late attendance marks, which can be edited afterwards, with totals in the attendance summary and reports
         Behaviour: added settings to control which behaviour types are enabled
         Calendar: switched default sorting of Manage Events to newest first
         Calendar: remove future absence when deleting participant or editing the date
