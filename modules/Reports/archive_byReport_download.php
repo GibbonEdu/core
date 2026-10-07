@@ -25,7 +25,7 @@ use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byReport.php';
 

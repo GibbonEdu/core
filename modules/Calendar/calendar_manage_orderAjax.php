@@ -23,7 +23,7 @@ use Gibbon\Domain\Calendar\CalendarGateway;
 
 $_POST['address'] = '/modules/Calendar/calendar_manage.php';
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage.php') == false) {
     exit;

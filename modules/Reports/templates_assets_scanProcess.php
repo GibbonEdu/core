@@ -25,7 +25,7 @@ use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Symfony\Component\Yaml\Yaml;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 require_once __DIR__.'/moduleFunctions.php';

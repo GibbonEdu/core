@@ -17,20 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-use Gibbon\Data\Validator;
-use Gibbon\Services\Format;
-use Gibbon\Support\Facades\Access;
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Timetable\CourseGateway;
-use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\StudentAlerts\AlertGateway;
+use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\School\YearGroupGateway;
+use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML']);
 
@@ -129,7 +128,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
     ];
 
     if (!empty($data['gibbonCourseClassID'])) {
-        $class = $container->get(CourseGateway::class)->getCourseClassByID($data['gibbonCourseClassID']);
+        $class = $container->get(CourseClassGateway::class)->getCourseClassByID($data['gibbonCourseClassID']);
         $notificationDetails = [
             __('Class') => Format::courseClassName($class['courseNameShort'] ?? '', $class['nameShort'] ?? ''),
         ] + $notificationDetails;
@@ -163,6 +162,10 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
         $event->addRecipient($formGroup['gibbonPersonIDTutor'] ?? '');
         $event->addRecipient($formGroup['gibbonPersonIDTutor2'] ?? '');
         $event->addRecipient($formGroup['gibbonPersonIDTutor3'] ?? '');
+
+        // Head of Year
+        $yearGroup = $container->get(YearGroupGateway::class)->getByID($student['gibbonYearGroupID']);
+        $event->addRecipient($yearGroup['gibbonPersonIDHOY'] ?? '');
     }
 
     $event->addScope('gibbonPersonIDStudent',  $student['gibbonPersonID']);

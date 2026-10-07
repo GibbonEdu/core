@@ -8,21 +8,25 @@
 # =============================================================
 set -euo pipefail
 
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OPS_DIR="${PROJECT_DIR}/resources/ops"
+GIBBON_CONF_DIR="${OPS_DIR}/configuration/gibbon"
+
 ## Ensure the script is always run from the project root
-if [ ! -f "ops/docker-compose.yaml" ]; then
+if [ ! -f "${OPS_DIR}/compose.yaml" ]; then
     echo "Error: Run this script from the project root (where up.sh lives)."
     exit 1
 fi
 
 ## Ensure the local environment file exists
 if [ ! -f ".env" ]; then
-    if [ ! -f "ops/.env-example" ]; then
-        echo "Error: .env was not found and ops/.env-example is missing."
+    if [ ! -f "${GIBBON_CONF_DIR}/.env-example" ]; then
+        echo "Error: .env was not found and ${GIBBON_CONF_DIR}/.env-example is missing."
         exit 1
     fi
 
-    cp ops/.env-example .env
-    echo "Created .env from ops/.env-example"
+    cp "${GIBBON_CONF_DIR}/.env-example" .env
+    echo "Created .env from ${GIBBON_CONF_DIR}/.env-example"
     echo "Review .env to customize local settings if needed."
 fi
 
@@ -43,7 +47,7 @@ case "${1:-up}" in
     up)
         echo "Starting Gibbon dev environment..."
         ${DOCKER_COMPOSE} build app db
-        ${DOCKER_COMPOSE} up -d
+        ${DOCKER_COMPOSE} up -d app db
         echo "Installing Composer dependencies (this may take a minute on first run)..."
         ${DOCKER_COMPOSE} exec -T app composer install
         echo ""
@@ -51,7 +55,7 @@ case "${1:-up}" in
         echo "To follow logs:       ./up.sh logs"
         ;;
     logs)
-        docker compose logs -f
+        ${DOCKER_COMPOSE} logs -f
         ;;
     *)
         echo "Usage: $0 [up|down|logs]"

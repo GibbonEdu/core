@@ -3,9 +3,11 @@
  * @covers modules/Students/firstAidRecord.php
  * @covers modules/Students/firstAidRecord_add.php
  * @covers modules/Students/firstAidRecord_edit.php
+ * @covers modules/Students/firstAidRecord_delete.php
+ * @covers modules/Students/firstAidRecord_deleteProcess.php
  */
 $I = new AcceptanceTester($scenario);
-$I->wantTo('add and edit a first aid record');
+$I->wantTo('add, edit and delete a first aid record');
 $I->loginAsAdmin();
 $I->amOnModulePage('Students', 'firstAidRecord.php');
 $I->seeBreadcrumb('First Aid Records');
@@ -40,4 +42,10 @@ $editFormValues = array(
 );
 
 $I->submitForm('#content form', $editFormValues, 'Submit');
+$I->seeSuccessMessage();
+
+// Delete ------------------------------------------------
+$I->amOnModulePage('Students', 'firstAidRecord_delete.php', array('gibbonFirstAidID' => $gibbonFirstAidID));
+$I->fillField('confirm', 'Delete');
+$I->submitForm('#content form', [], 'Delete');
 $I->seeSuccessMessage();

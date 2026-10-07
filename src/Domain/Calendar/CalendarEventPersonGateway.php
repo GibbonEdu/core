@@ -60,7 +60,7 @@ class CalendarEventPersonGateway extends QueryableGateway
     public function queryAllEventParticipants($criteria, $gibbonCalendarEventID) {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonCalendarEventPerson.*', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category as roleCategory', 'gibbonFormGroup.nameShort as formGroup'])
+            ->cols(['gibbonCalendarEventPerson.*', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.image_240', 'gibbonRole.category as roleCategory', 'gibbonFormGroup.nameShort as formGroup'])
             ->from($this->getTableName())
             ->innerJoin('gibbonCalendarEvent', 'gibbonCalendarEventPerson.gibbonCalendarEventID=gibbonCalendarEvent.gibbonCalendarEventID')
             ->innerJoin('gibbonCalendar', 'gibbonCalendarEvent.gibbonCalendarID=gibbonCalendar.gibbonCalendarID')

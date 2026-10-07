@@ -19,21 +19,30 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+/**
+ * Sets the database connection information.
+ * You can supply an optional $databasePort if your server requires one.
+ */
+$databaseServer = '${MYSQL_HOST}';
+$databaseUsername = '${MYSQL_USER}';
+$databasePassword = '${MYSQL_PASSWORD}';
+$databaseName = '${MYSQL_DATABASE}';
 
-include './moduleFunctions.php';
+/**
+ * Sets a globally unique id, to allow multiple installs on a single server.
+ */
+$guid = '${GUID}';
 
-//Open Database connection
-if (!($connection = mysql_connect($databaseServer, $databaseUsername, $databasePassword))) {
-    showError();
-}
+/**
+ * Sets system-wide caching factor, used to balance performance and freshness.
+ * Value represents number of page loads between cache refresh.
+ * Must be positive integer. 1 means no caching.
+ */
+$caching = ${CACHING_FACTOR};
 
-//Select database
-if (!(mysql_select_db($databaseName, $connection))) {
-    showError();
-}
-
-mysql_set_charset('utf8');
-
-$gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
-echo rubricEdit($guid, $connection, $gibbonRubricID);
+/**
+ * Enables the System Admin > Impersonate User action, for testing and development.
+ * This option is off by default. Access can be granted by adding usernames to
+ * the list below. Allowed users must also have administrator access.
+ */
+$allowImpersonateUser = [];

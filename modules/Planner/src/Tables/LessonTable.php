@@ -316,8 +316,7 @@ class LessonTable
             ->format(function ($values) {
                 if (!empty($values['closure'])) return $values['closure'];
 
-                $output = Format::bold(Format::date($values['date'])).'<br/><br/>'
-                    .Format::monthName($values['date']);
+                $output = Format::bold(Format::date($values['date'])).'<br/>'.Format::monthName($values['date']);
                 
                 return $output;
             });

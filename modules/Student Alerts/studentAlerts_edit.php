@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Support\Facades\Access;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 use Gibbon\Domain\StudentAlerts\AlertTypeGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 
 if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_edit.php')) {
 	// Access denied
@@ -89,7 +89,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
         $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
     if (!empty($values['gibbonCourseClassID'])) {
-        $class = $container->get(CourseGateway::class)->getCourseClassByID($values['gibbonCourseClassID']);
+        $class = $container->get(CourseClassGateway::class)->getCourseClassByID($values['gibbonCourseClassID']);
         $row = $form->addRow();
             $row->addLabel('gibbonCourseClassID', __('Class'));
             $row->addTextField('gibbonCourseClassID')->readOnly()->setValue(Format::courseClassName($class['courseNameShort'] ?? '', $class['nameShort'] ?? ''));

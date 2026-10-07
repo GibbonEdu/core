@@ -35,7 +35,7 @@ use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
  * Gibbon. These are required for all scripts: page views, CLI and API.
  */
 // Gibbon system-wide include
-require_once './gibbon.php';
+require_once __DIR__ . '/gibbon.php';
 
 // Module include: Messenger has a bug where files have been relying on these
 // functions because this file was included via getNotificationTray()

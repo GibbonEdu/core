@@ -67,6 +67,12 @@ class PlannerEntryGateway extends QueryableGateway
                 ->where('gibbonCourseClassPerson.role NOT LIKE "%Left"')
                 ->where('(gibbonPlannerEntry.timeStart != "" AND gibbonPlannerEntry.timeStart IS NOT NULL)');
 
+                if ($viewingAs == 'Parent') {
+                    $query->where('viewableParents = "Y"');
+                } elseif ($viewingAs == 'Student') {
+                    $query->where('(gibbonCourseClassPerson.role = "Student" AND viewableStudents = "Y")');
+                }
+
             $this->unionAllWithCriteria($query, $criteria)
                 ->cols(array_merge($cols, ['gibbonPlannerEntryGuest.role', 'NULL AS myHomeworkDueDateTime', 'NULL as teacherIDs']))
                 ->from('gibbonPlannerEntry')
@@ -80,12 +86,6 @@ class PlannerEntryGateway extends QueryableGateway
                 ->bindValue('gibbonPersonID', $gibbonPersonID);
         } else {
             $query->cols(['NULL as role']);
-        }
-
-        if ($viewingAs == 'Parent') {
-            $query->having('(role = "Student" AND viewableParents = "Y")');
-        } elseif ($viewingAs == 'Student') {
-            $query->having('(role = "Student" AND viewableStudents = "Y")');
         }
 
         return $this->runQuery($query, $criteria);
@@ -125,6 +125,14 @@ class PlannerEntryGateway extends QueryableGateway
                 ->where('gibbonCourseClassPerson.role NOT LIKE "%Left"')
                 ->where('gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL');
 
+            if ($viewingAs == 'Parent') {
+                $query->where('viewableParents = "Y"');
+            } elseif ($viewingAs == 'Student') {
+                $query->where('(gibbonCourseClassPerson.role = "Student" AND viewableStudents = "Y")');
+            } elseif ($viewingAs == 'Teacher') {
+                $query->where('(gibbonCourseClassPerson.role = "Teacher")');
+            }
+
             $this->unionAllWithCriteria($query, $criteria)
                 ->cols(array_merge($cols, ['gibbonPlannerEntryGuest.role', 'NULL AS myHomeworkDueDateTime', 'NULL as teacherIDs', 'NULL as gibbonTTDayRowClassID']))
                 ->from('gibbonPlannerEntry')
@@ -138,14 +146,6 @@ class PlannerEntryGateway extends QueryableGateway
                 ->bindValue('gibbonPersonID', $gibbonPersonID);
         } else {
             $query->cols(['NULL as role']);
-        }
-
-        if ($viewingAs == 'Parent') {
-            $query->having('(role = "Student" AND viewableParents = "Y")');
-        } elseif ($viewingAs == 'Student') {
-            $query->having('(role = "Student" AND viewableStudents = "Y")');
-        } elseif ($viewingAs == 'Teacher') {
-            $query->having('(role = "Teacher")');
         }
 
         return $this->runQuery($query, $criteria);
@@ -365,6 +365,7 @@ class PlannerEntryGateway extends QueryableGateway
         WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
         AND gibbonPlannerEntry.date BETWEEN :dateStart AND :dateEnd
         AND gibbonCourseClassPerson.role NOT LIKE '%- Left'
+        AND ((gibbonCourseClassPerson.role = 'Student' AND viewableStudents='Y') OR (gibbonCourseClassPerson.role = 'Parent' AND viewableParents='Y') OR gibbonCourseClassPerson.role = 'Teacher' OR gibbonCourseClassPerson.role = 'Assistant')
         GROUP BY gibbonPlannerEntry.gibbonPlannerEntryID
         HAVING COUNT(gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID) = 0
         ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC";
@@ -589,6 +590,20 @@ class PlannerEntryGateway extends QueryableGateway
                 FROM gibbonCourseClass
                 JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
                 WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getPlannerClassAccessByPerson($gibbonPlannerEntryID, $gibbonPersonID)
+    {
+        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class 
+                FROM gibbonPlannerEntry 
+                JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                WHERE gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID
+                AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID";
 
         return $this->db()->selectOne($sql, $data);
     }

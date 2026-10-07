@@ -19,10 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 //Module includes
-include './moduleFunctions.php';
+include __DIR__ . '/moduleFunctions.php';
 
 $action = $_POST['action'] ?? '';
 $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
@@ -45,7 +45,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $action == '') { echo 'Fatal error load
             if ($action == 'export') {
                 $session->set('financeExpenseExportIDs', $gibbonFinanceExpenseIDs);
 
-				include './expenses_manage_processBulkExportContents.php';
+				include __DIR__ . '/expenses_manage_processBulkExportContents.php';
 
                 // THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
                     //$URL.="&bulkReturn=success0" ;

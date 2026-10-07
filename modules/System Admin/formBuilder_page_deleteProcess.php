@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Domain\Forms\FormFieldGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 $gibbonFormPageID = $_POST['gibbonFormPageID'] ?? '';

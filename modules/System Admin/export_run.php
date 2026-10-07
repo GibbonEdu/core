@@ -34,7 +34,7 @@ ini_set('memory_limit','1024M');
 set_time_limit(1200);
 
 // Gibbon Bootstrap
-include __DIR__ . '/../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 require __DIR__ . '/moduleFunctions.php';
 

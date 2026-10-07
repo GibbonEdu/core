@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 use Gibbon\Data\Validator;
 
-require_once "../../gibbon.php";
+require_once __DIR__ . "/../../gibbon.php";
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -34,6 +34,10 @@ if (!$session->has('gibbonPersonID')) {
     return;
 }
 
+if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_byStudent.php') == false && isActionAccessible($guid, $connection2, '/modules/ATL/atl_write_data.php') == false) {
+    return;
+}
+
 if (empty($img) || empty($gibbonPersonID) || empty($absolutePath)) {
     return;
 }
@@ -44,6 +48,20 @@ list(, $img)      = explode(',', $img);
 $img = base64_decode($img);
 
 if ($img === false || mb_stripos($type, 'image/png') === false) {
+    return;
+}
+
+// Size Validation (max 5 Megabytes)
+$maxFileSize = 5 * 1024 * 1024; 
+if (strlen($img) > $maxFileSize) {
+    return;
+}
+
+// Inspect the actual byte headers of the decoded content
+$finfo = new finfo(FILEINFO_MIME_TYPE);
+$mimeType = $finfo->buffer($img);
+
+if ($mimeType !== 'image/png') {
     return;
 }
 

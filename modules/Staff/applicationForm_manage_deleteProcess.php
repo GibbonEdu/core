@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonStaffApplicationFormID = $_POST['gibbonStaffApplicationFormID'] ?? '';
 $search = $_GET['search'] ?? '';

@@ -1,0 +1,39 @@
+details:
+    type: mailingListRecipients
+    name: Mailing List - Recipients
+    category: Messenger
+    table: gibbonMessengerMailingListRecipient
+    modes: { insert: true, export: true }
+access:
+    module: Messenger
+    action: Manage Mailing List Recipients
+primaryKey:
+    gibbonMessengerMailingListRecipientID
+uniqueKeys:
+    - email
+table:
+    surname:
+        name: "Surname"
+        desc: "Family name"
+        args: { filter: string, required: true }
+    preferredName:
+        name: "Preferred Name"
+        desc: "Given Name"
+        args: { filter: string, required: true }
+    email:
+        name: "Email"
+        desc: "Must be unique."
+        args: { filter: email, required: true }
+    organisation:
+        name: "Organisation"
+        desc: ""
+        args: { filter: string }
+    gibbonMessengerMailingListIDList:
+        name: "Mailing Lists"
+        desc: "Mailing List Names, Comma Separated"
+        args: { filter: csv, required: true, custom: true }
+        relationship: { table: gibbonMessengerMailingList, key: gibbonMessengerMailingListID, field: name }
+    key:
+        name: "Unsubscribe Key"
+        desc: ""
+        args: { filter: string, hidden: true, function: generateRandomHexKey, params: [40] }

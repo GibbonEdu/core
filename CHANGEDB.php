@@ -406,6 +406,11 @@ ALTER TABLE `gibbonCalendarEventType` CHANGE `color` `color` VARCHAR(7) NULL, CH
 $sql[$count][0] = '30.0.01';
 $sql[$count][1] = "";
 
+//v30.0.02
+++$count;
+$sql[$count][0] = '30.0.02';
+$sql[$count][1] = "";
+
 //v31.0.00
 ++$count;
 $sql[$count][0] = '31.0.00';
@@ -441,4 +446,18 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (002, (
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`, `menuShow`, `entrySidebar`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Student Support Plans_manage', 1, 'Individual Needs', 'Allows admins to manage student support plans.', 'in_supportPlan_manage.php, in_supportPlan_add.php, in_supportPlan_addProcess.php, in_supportPlan_edit.php, in_supportPlan_editProcess.php, in_supportPlan_delete.php, in_supportPlan_deleteProcess.php, in_supportPlan_view.php, in_supportPlan_download.php', 'in_supportPlan_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'N', 'Y');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction WHERE name='Student Support Plans_manage' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs')));end
 UPDATE `gibbonAction` SET URLList=CONCAT(URLList, ', in_supportPlan_view.php, in_supportPlan_download.php') WHERE name='View Individual Education Plans_myChildren' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs');end
+UPDATE `gibbonAction` SET name='View Timetable by Facility_viewOnly' WHERE name='View Timetable by Facility' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`, `menuShow`, `entrySidebar`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable'), 'View Timetable by Facility_editLocation', 1, 'View Timetables', 'View facility usage and edit class facilities.', 'tt_space.php,tt_space_view.php,tt_space_edit.php', 'tt_space.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'Y');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction WHERE name='View Timetable by Facility_editLocation' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable')));end
+UPDATE `gibbonReportingCycle` SET `milestones`='[]' WHERE TRIM(`milestones`) IN ('Array', '\"Array\"') OR `milestones` IS NULL;end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Flagged Field Data Updates', 'Data Updater', 'Personal Data Updates', 'Core', 'All', 'Y');end
+UPDATE `gibbonAction` SET `URLList`='firstAidRecord.php, firstAidRecord_add.php, firstAidRecord_edit.php, firstAidRecord_delete.php' WHERE name='First Aid Record_editAll' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enableNegativeBehaviour', 'Enable Negative Behaviour', '', 'Y');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enablePositiveBehaviour', 'Enable Positive Behaviour', '', 'Y');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enableObservationBehaviour', 'Enable Observation Behaviour', '', 'Y');end
+ALTER TABLE `gibbonNotificationListener` ADD `scopeContext` VARCHAR(255) NULL AFTER `scopeID`;end
+ALTER TABLE `gibbonNotificationEvent` ADD `contextName` VARCHAR(255) NULL AFTER `scopes`;end
+UPDATE `gibbonNotificationEvent` SET `contextName`='Role Category', `scopes`='All,context' WHERE `event`='Flagged Field Data Updates' AND `moduleName`='Data Updater' AND `actionName`='Personal Data Updates';end
+UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,context,gibbonPersonIDStudent,gibbonYearGroupID' WHERE `event` LIKE '% Record' AND `moduleName`='Behaviour';end
+
 ";

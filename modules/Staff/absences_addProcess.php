@@ -28,7 +28,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Module\Staff\AbsenceNotificationProcess;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

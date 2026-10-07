@@ -23,7 +23,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 $search = $_POST['search'] ?? '';

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Activities\ActivityPhotoGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'] ?? null;
 $action = $_POST['action'] ?? '';

@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_edit.php') == false) {
     exit;

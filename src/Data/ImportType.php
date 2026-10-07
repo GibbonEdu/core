@@ -1258,9 +1258,10 @@ class ImportType
     public function doImportFunction($fieldName)
     {
         $method = $this->getField($fieldName, 'function');
+        $params = $this->getField($fieldName, 'params', []);
 
         if (!empty($method) && method_exists($this, 'userFunc_'.$method)) {
-            return call_user_func(array($this, 'userFunc_'.$method));
+            return call_user_func_array(array($this, 'userFunc_'.$method), $params);
         } else {
             return null;
         }
@@ -1284,5 +1285,16 @@ class ImportType
     protected function userFunc_timestamp()
     {
         return date('Y-m-d H:i:s', time());
+    }
+
+     /**
+     * Custom function for generation of random hexadecimal keys
+     *
+     * @param string $fieldName
+     * @return string Random hexadecimal key sized
+     */
+    protected function userFunc_generateRandomHexKey(int $length)
+    {
+        return substr(bin2hex(random_bytes((int) ceil($length / 2))), 0, max(1, $length));
     }
 }

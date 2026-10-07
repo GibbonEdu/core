@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\Library\LibraryGateway;
 use Gibbon\Domain\Library\LibraryTypeGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';

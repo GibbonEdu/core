@@ -24,13 +24,13 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $settingGateway = $container->get(SettingGateway::class);
 $from = $settingGateway->getSettingByScope('Finance', 'email');
 
 //Module includes
-include './moduleFunctions.php';
+include __DIR__ . '/moduleFunctions.php';
 
 $logGateway = $container->get(LogGateway::class);
 $action = $_POST['action'] ?? '';
@@ -496,7 +496,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             elseif ($action == 'export') {
                 $session->set('financeInvoiceExportIDs', $gibbonFinanceInvoiceIDs);
 
-				include ('./invoices_manage_processBulkExportContents.php');
+				include __DIR__ . '/invoices_manage_processBulkExportContents.php';
             }
             // Mark as Paid
             elseif ($action == 'paid') {

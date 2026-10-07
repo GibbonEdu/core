@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportingCriteriaTypeGateway;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonReportingCriteriaTypeID = $_POST['gibbonReportingCriteriaTypeID'] ?? '';
 

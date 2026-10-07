@@ -24,7 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_manage.php') == false) {
     return;

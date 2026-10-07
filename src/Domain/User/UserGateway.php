@@ -165,17 +165,33 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectUserNamesByStatus($status = 'Full', $category = null)
+    public function selectUserNamesByStatus($status = 'Full', $category = null, $gibbonSchoolYearID = null)
     {
         $data = array('statusList' => is_array($status) ? implode(',', $status) : $status );
-        $sql = "SELECT gibbonPersonID, surname, preferredName, status, dateStart, dateEnd, username, lastTimestamp, gibbonRole.category as roleCategory
+        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, status, dateStart, dateEnd, username, lastTimestamp, gibbonRole.category as roleCategory";
+
+        if (!empty($gibbonSchoolYearID)) {
+            $data['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+            $sql .= ", gibbonFormGroup.name AS formGroupName
+                FROM gibbonPerson
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
+                LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE FIND_IN_SET(gibbonPerson.status, :statusList)";
+        } else {
+            $sql .= "
                 FROM gibbonPerson
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
                 WHERE FIND_IN_SET(gibbonPerson.status, :statusList)";
+        }
 
         if (!is_null($category)) {
             $data['category'] = $category;
             $sql .= " AND gibbonRole.category=:category";
+        }
+
+        if (!empty($gibbonSchoolYearID)) {
+            $sql .= " GROUP BY gibbonPerson.gibbonPersonID";
         }
 
         $sql .= " ORDER BY surname, preferredName";

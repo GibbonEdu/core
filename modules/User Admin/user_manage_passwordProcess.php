@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Services\Format;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 

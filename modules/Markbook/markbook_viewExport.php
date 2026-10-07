@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
@@ -46,6 +46,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         header("Location: {$URL}");
     } else {
         //Proceed!
-		include './markbook_viewExportContents.php';
+		include __DIR__ . '/markbook_viewExportContents.php';
     }
 }

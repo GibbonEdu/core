@@ -211,7 +211,7 @@ class CourseGateway extends QueryableGateway
                 FROM gibbonCourse
                 JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                 JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID)
+                LEFT JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID)
                 WHERE gibbonCourseClassID=:gibbonCourseClassID";
         
         return $this->db()->selectOne($sql, $data);

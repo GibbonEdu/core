@@ -24,13 +24,13 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['indexText' => 'HTML', 'analytics' => 'RAW', 'emailLink' => 'URL', 'webLink' => 'URL']);
-include '../../config.php';
+include __DIR__ . '/../../config.php';
 
 // Module includes
-include './moduleFunctions.php';
+include __DIR__ . '/moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/systemSettings.php';
 

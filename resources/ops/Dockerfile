@@ -1,4 +1,4 @@
-# PHP_VERSION can be overridden at build time via --build-arg or docker-compose.yaml
+# PHP_VERSION can be overridden at build time via --build-arg or compose.yaml
 ARG PHP_VERSION=8.3
 FROM php:${PHP_VERSION}-apache
 
@@ -48,8 +48,8 @@ WORKDIR /var/www/html
 # RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # # 6. Configure PHP for Gibbon
-# # Path is relative to build context (project root), so ops/php/gibbon.ini
-# COPY ops/php/gibbon.ini /usr/local/etc/php/conf.d/gibbon.ini
+# # Path is relative to build context (project root), so resources/ops/php/gibbon.ini
+# COPY resources/ops/php/gibbon.ini /usr/local/etc/php/conf.d/gibbon.ini
 
 # # 7. Permissions
 # RUN chown -R www-data:www-data /var/www/html \
