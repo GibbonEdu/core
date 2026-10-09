@@ -116,17 +116,17 @@ class PersonalPage extends ProfilePage
         }
 
         // Fetch student and person data
-        $personData = $this->fetchPersonData();
+        $student = $this->fetchStudentData($this->studentGateway);
         
         // Guard clause: check if person exists
-        if (empty($personData)) {
+        if (empty($student)) {
             return Format::alert(__('The selected record does not exist, or you do not have access to it.'));
         }
 
         $output = '';
 
         // Render personal information table
-        $output .= $this->renderPersonalInfoTable($personData);
+        $output .= $this->renderPersonalInfoTable($student);
 
         // Render personal documents section
         $output .= $this->renderPersonalDocuments();
@@ -135,31 +135,18 @@ class PersonalPage extends ProfilePage
     }
 
     /**
-     * Fetch person data from database
-     * 
-     * @return array Person data or empty array if not found
-     */
-    protected function fetchPersonData(): array
-    {
-        $personData = $this->studentGateway->selectActiveStudentByPerson($this->gibbonSchoolYearID, $this->gibbonPersonID)->fetch();
-        
-        return $personData ?: [];
-    }
-
-    /**
      * Render personal information table
      * 
-     * @param array $row Person data
+     * @param array $student Person data
      * @return string HTML for personal information table
      */
-    protected function renderPersonalInfoTable(array $row): string
+    protected function renderPersonalInfoTable(array $student): string
     {
         // Fetch related data
-        $student = $this->studentGateway->selectActiveStudentByPerson($this->gibbonSchoolYearID, $this->gibbonPersonID, false)->fetch();
         $tutors = $this->formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
         $yearGroup = $this->yearGroupGateway->getByID($student['gibbonYearGroupID'] ?? '', ['name', 'gibbonPersonIDHOY']);
         $headOfYear = $this->userGateway->getByID($yearGroup['gibbonPersonIDHOY'] ?? '', ['title', 'surname', 'preferredName', 'gibbonPersonID']);
-        $house = $this->houseGateway->getByID($row['gibbonHouseID'] ?? '', ['name']);
+        $house = $this->houseGateway->getByID($student['gibbonHouseID'] ?? '', ['name']);
 
         $table = DataTable::createDetails('overview');
 
@@ -175,7 +162,7 @@ class PersonalPage extends ProfilePage
         $this->addBasicInformationColumns($table);
 
         // Contact Information section
-        $this->addContactInformationColumns($table, $row);
+        $this->addContactInformationColumns($table, $student);
 
         // School Information section
         $this->addSchoolInformationColumns($table, $student, $tutors, $house, $headOfYear);
@@ -190,12 +177,12 @@ class PersonalPage extends ProfilePage
         $this->addSystemAccessColumns($table);
 
         // Miscellaneous section
-        $this->addMiscellaneousColumns($table, $row);
+        $this->addMiscellaneousColumns($table, $student);
 
         // Custom fields for User
-        $this->customFieldHandler->addCustomFieldsToTable($table, 'User', ['student' => 1], $row['fields']);
+        $this->customFieldHandler->addCustomFieldsToTable($table, 'User', ['student' => 1], $student['fields']);
 
-        return $table->render([$row]);
+        return $table->render([$student]);
     }
 
     /**
@@ -233,8 +220,16 @@ class PersonalPage extends ProfilePage
             $col->addColumn("phone$i", __('Phone '.$i))->format(Format::using('phone', ["phone{$i}", "phone{$i}CountryCode", "phone{$i}Type"]));
         }
         $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
-        $col->addColumn('emailAlternate', __('Alternate Email'))->format(Format::using('link', 'emailAlternate'));
-        $col->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
+        $col->addColumn('emailAlternate', __('Alternate Email'))->format(function ($values) {
+            return !empty($values['emailAlternate'])
+                ? Format::link('mailto:'.$values['emailAlternate'], $values['emailAlternate'])
+                : '';
+        });
+        $col->addColumn('website', __('Website'))->format(function ($values) {
+            return !empty($values['website'])
+                ? Format::link($values['website'], $values['website'])
+                : '';
+        });
     }
 
     /**

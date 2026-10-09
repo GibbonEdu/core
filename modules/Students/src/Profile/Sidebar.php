@@ -94,7 +94,7 @@ class Sidebar extends ProfilePage
 
         $search = $_GET['search'] ?? '';
         $allStudents = $_GET['allStudents'] ?? '';
-        $subpage = $_GET['subpage'] ?? '';
+        $subpage = $_GET['subpage'] ?? 'Overview';
         $hook = $_GET['hook'] ?? '';
         $address = $_GET['q'] ?? '';
 

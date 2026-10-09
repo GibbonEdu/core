@@ -92,7 +92,7 @@ class AttendancePage extends ProfilePage
         }
 
         // Fetch student data
-        $student = $this->fetchStudentData();
+        $student = $this->fetchStudentData($this->studentGateway);
         
         // Guard clause: check if student exists
         if (empty($student)) {
@@ -115,24 +115,5 @@ class AttendancePage extends ProfilePage
         $table = DataTable::create('studentHistory', $this->attendanceView);
         
         return $table->render($attendanceData);
-    }
-
-    /**
-     * Fetch student data from database
-     * 
-     * @return array Student data or empty array if not found
-     */
-    protected function fetchStudentData(): array
-    {
-        $result = $this->studentGateway->selectActiveStudentByPerson(
-            $this->gibbonSchoolYearID,
-            $this->gibbonPersonID
-        );
-        
-        if ($result->rowCount() != 1) {
-            return [];
-        }
-        
-        return $result->fetch();
     }
 }

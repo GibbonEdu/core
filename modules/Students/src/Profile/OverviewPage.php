@@ -65,7 +65,6 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
     private SettingGateway $settingGateway;
     private StudentAttendanceStatus $attendanceStatus;
     private CourseClassPersonGateway $courseClassPersonGateway;
-    private Connection $pdo;
 
     public function __construct(
         Session $session,
@@ -78,8 +77,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         HouseGateway $houseGateway,
         SettingGateway $settingGateway,
         StudentAttendanceStatus $attendanceStatus,
-        CourseClassPersonGateway $courseClassPersonGateway,
-        Connection $pdo
+        CourseClassPersonGateway $courseClassPersonGateway
     ) {
         parent::__construct($session);
         $this->medicalGateway = $medicalGateway;
@@ -92,7 +90,6 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $this->settingGateway = $settingGateway;
         $this->attendanceStatus = $attendanceStatus;
         $this->courseClassPersonGateway = $courseClassPersonGateway;
-        $this->pdo = $pdo;
     }
 
     /**
@@ -129,7 +126,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         }
 
         // Fetch student data
-        $student = $this->fetchStudentInfo();
+        $student = $this->fetchStudentData($this->studentGateway);
         
         // Guard clause: check if student exists
         if (empty($student)) {
@@ -154,25 +151,6 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $output .= $this->renderTimetable($student);
 
         return $output;
-    }
-
-    /**
-     * Fetch student information from database
-     * 
-     * @return array Student data or empty array if not found
-     */
-    protected function fetchStudentInfo(): array
-    {
-        $result = $this->studentGateway->selectActiveStudentByPerson(
-            $this->gibbonSchoolYearID,
-            $this->gibbonPersonID
-        );
-        
-        if ($result->rowCount() != 1) {
-            return [];
-        }
-        
-        return $result->fetch();
     }
 
     /**
@@ -213,6 +191,10 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
             return '';
         }
 
+        if ($student['status'] != 'Full') {
+            return '';
+        }
+
         $currentAttendanceStatus = $this->attendanceStatus->getCurrentAttendanceStatus(
             $this->gibbonSchoolYearID,
             $this->gibbonPersonID,
@@ -235,7 +217,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $table->setTitle(__('General Information'));
 
         // Add header actions if user has permission
-        if (Access::allows('User Admin', 'Manage Users_view')) {
+        if (Access::get('User Admin', 'user_manage')->allowsAny('Manage Users_edit', 'Manage Users_editDelete')) {
             $table->addHeaderAction('view', __('View Status Log'))
                 ->displayLabel()
                 ->addParam('gibbonPersonID', $this->gibbonPersonID)
@@ -395,13 +377,9 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
                 ->format(function($row) {
                     $output = '';
                     if ($row['privacy'] != '') {
-                        $output .= "<span style='color: #cc0000; background-color: #F6CECB'>";
-                        $output .= __('Privacy required:').' '.$row['privacy'];
-                        $output .= '</span>';
+                        $output .= Format::tag(__('Privacy required:').' '.$row['privacy'], 'error');
                     } else {
-                        $output .= "<span style='color: #390; background-color: #D4F6DC;'>";
-                        $output .= __('Privacy not required or not set.');
-                        $output .= '</span>';
+                        $output .= Format::tag(__('Privacy not required or not set.'), 'success');
                     }
                     return $output;
                 });

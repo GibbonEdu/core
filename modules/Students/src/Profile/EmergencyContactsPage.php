@@ -95,7 +95,10 @@ class EmergencyContactsPage extends ProfilePage
         }
 
         // Fetch student data
-        $student = $this->fetchStudentData();
+        $student = $this->studentGateway->selectFullStudentDetails(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID
+        )->fetch();
         
         // Guard clause: check if student exists
         if (empty($student)) {
@@ -128,25 +131,6 @@ class EmergencyContactsPage extends ProfilePage
         $output .= $this->renderFollowUpContacts($student);
 
         return $output;
-    }
-
-    /**
-     * Fetch student data from database
-     * 
-     * @return array Student data or empty array if not found
-     */
-    protected function fetchStudentData(): array
-    {
-        $result = $this->studentGateway->selectActiveStudentWithEmergencyContacts(
-            $this->gibbonSchoolYearID,
-            $this->gibbonPersonID
-        );
-        
-        if ($result->rowCount() != 1) {
-            return [];
-        }
-        
-        return $result->fetch();
     }
 
     /**

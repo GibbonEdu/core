@@ -89,7 +89,7 @@ class FirstAidPage extends ProfilePage
         }
 
         // Fetch student data for action column
-        $student = $this->fetchStudentData();
+        $student = $this->fetchStudentData($this->studentGateway);
         
         // Guard clause: check if student exists
         if (empty($student)) {
@@ -168,24 +168,5 @@ class FirstAidPage extends ProfilePage
             });
 
         return $table->render($firstAidRecords);
-    }
-
-    /**
-     * Fetch student data from database
-     * 
-     * @return array Student data or empty array if not found
-     */
-    protected function fetchStudentData(): array
-    {
-        $result = $this->studentGateway->selectActiveStudentByPerson(
-            $this->gibbonSchoolYearID,
-            $this->gibbonPersonID
-        );
-        
-        if ($result->rowCount() != 1) {
-            return [];
-        }
-        
-        return $result->fetch();
     }
 }

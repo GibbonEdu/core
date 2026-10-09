@@ -23,6 +23,7 @@ namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Students\StudentGateway;
 
 abstract class ProfilePage
 {
@@ -37,6 +38,14 @@ abstract class ProfilePage
         $this->session = $session;
     }
 
+    /**
+     * Set the student for the profile page
+     * 
+     * @param string $gibbonSchoolYearID The school year ID
+     * @param string $gibbonPersonID The person ID
+     * @param string|null $studentImage The student image URL (optional)
+     * @return self
+     */
     public function setStudent(string $gibbonSchoolYearID, string $gibbonPersonID, ?string $studentImage = ''): self
     {
         $this->gibbonSchoolYearID = $gibbonSchoolYearID;
@@ -44,6 +53,20 @@ abstract class ProfilePage
         $this->studentImage = $studentImage ?? '';
 
         return $this;
+    }
+
+    /**
+     * Fetch student data from database
+     * 
+     * @return array Student data or empty array if not found
+     */
+    protected function fetchStudentData(StudentGateway $studentGateway): array
+    {
+        return $studentGateway->selectActiveStudentByPerson(
+            $this->gibbonSchoolYearID,
+            $this->gibbonPersonID,
+            false
+        )->fetch();
     }
 
     public abstract function checkAccess(): bool;

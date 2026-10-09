@@ -88,7 +88,7 @@ class ExternalAssessmentPage extends ProfilePage
         }
 
         // Fetch student data to get year group
-        $student = $this->fetchStudentData();
+        $student = $this->fetchStudentData($this->studentGateway);
         
         // Guard clause: check if student exists
         if (empty($student)) {
@@ -102,24 +102,5 @@ class ExternalAssessmentPage extends ProfilePage
         \externalAssessmentDetails($this->session->get('guid'), $this->gibbonPersonID, $this->pdo->getConnection(), $student['gibbonYearGroupID'] ?? '');
         
         return ob_get_clean();
-    }
-
-    /**
-     * Fetch student data from database
-     * 
-     * @return array Student data or empty array if not found
-     */
-    protected function fetchStudentData(): array
-    {
-        $result = $this->studentGateway->selectActiveStudentByPerson(
-            $this->gibbonSchoolYearID,
-            $this->gibbonPersonID
-        );
-        
-        if ($result->rowCount() != 1) {
-            return [];
-        }
-        
-        return $result->fetch();
     }
 }

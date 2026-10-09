@@ -85,7 +85,7 @@ class BriefPage extends ProfilePage
         }
 
         // Fetch student data
-        $student = $this->fetchStudentInfo();
+        $student = $this->fetchStudentData($this->studentGateway);
         
         // Guard clause: check if student exists
         if (empty($student)) {
@@ -100,25 +100,6 @@ class BriefPage extends ProfilePage
 
         // Render brief profile information
         return $this->renderBriefProfile($student);
-    }
-
-    /**
-     * Fetch student information from database
-     * 
-     * @return array Student data or empty array if not found
-     */
-    protected function fetchStudentInfo(): array
-    {
-        $result = $this->studentGateway->selectActiveStudentByPerson(
-            $this->gibbonSchoolYearID,
-            $this->gibbonPersonID
-        );
-        
-        if ($result->rowCount() != 1) {
-            return [];
-        }
-        
-        return $result->fetch();
     }
 
     /**

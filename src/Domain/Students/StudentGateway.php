@@ -248,7 +248,7 @@ class StudentGateway extends QueryableGateway
     public function getStudentByFamilyAdult($gibbonPersonIDStudent, $gibbonPersonIDAdult)
     {
         $data = ['gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDAdult' => $gibbonPersonIDAdult, 'today' => date('Y-m-d')];
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.status
                 FROM gibbonFamilyChild 
                 JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
                 JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
@@ -261,7 +261,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID, $onlyFull = true)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, dob, image_240, gender, dateStart, dateEnd, transport, studentAgreements, gibbonPerson.gibbonHouseID, gibbonPerson.status, gibbonPerson.fields, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.fields as enrolmentFields, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, officialName, nameInCharacters, email, username, dob, image_240, gender, status, dateStart, dateEnd, studentID, transport, lockerNumber, studentAgreements, gibbonPerson.gibbonHouseID, gibbonPerson.status, gibbonPerson.fields, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.fields as enrolmentFields, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
                 FROM gibbonPerson
                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                 LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
@@ -444,28 +444,26 @@ class StudentGateway extends QueryableGateway
     }
 
     /**
-     * Select active student with emergency contact fields
+     * Select all fields for a given student, including current enrolment if it exists. 
+     * This should be used with caution as it may return a large amount of data.
      * 
      * @param string $gibbonSchoolYearID
      * @param string $gibbonPersonID
      * @return Result
      */
-    public function selectActiveStudentWithEmergencyContacts($gibbonSchoolYearID, $gibbonPersonID)
+    public function selectFullStudentDetails($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = [
             'gibbonSchoolYearID' => $gibbonSchoolYearID,
-            'gibbonPersonID' => $gibbonPersonID,
-            'today' => date('Y-m-d')
+            'gibbonPersonID' => $gibbonPersonID
         ];
         
         $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID 
                 FROM gibbonPerson 
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND status='Full' 
-                AND (dateStart IS NULL OR dateStart<=:today) 
-                AND (dateEnd IS NULL OR dateEnd>=:today) 
-                AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) 
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
+                AND gibbonRole.category='Student'";
         
         return $this->db()->select($sql, $data);
     }

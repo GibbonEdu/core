@@ -103,7 +103,7 @@ if (!Access::allows('Students', 'student_view_details')) {
         $gibbonPersonID = $session->get('gibbonPersonID');
         $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
     } elseif ($action->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
-        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStudents == 'on')->fetch();
+        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStudents != 'on')->fetch();
     } else {
         $page->addError(__('You do not have access to this action.'));
         return;
@@ -112,6 +112,10 @@ if (!Access::allows('Students', 'student_view_details')) {
     if (empty($student)) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
+    }
+
+    if ($student['status'] != 'Full') {
+        $page->addWarning(Format::bold(__('Warning: This student has been set to {status}.', ['status' => $student['status']])).' '.__('Some information may be unavailable or out of date.'), 'warning');
     }
 
     $page->breadcrumbs
