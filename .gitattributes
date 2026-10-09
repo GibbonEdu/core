@@ -1,1 +1,6 @@
 /composer.lock -merge
+
+# Shell scripts and the .env template are read by Linux containers, so keep LF line
+# endings even on Windows, where Git checks out text files with CRLF by default
+*.sh text eol=lf
+.env-example text eol=lf

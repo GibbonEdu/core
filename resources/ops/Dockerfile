@@ -47,6 +47,10 @@ RUN a2enmod rewrite \
 # 3. Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Unpacking large packages into the bind-mounted vendor folder can exceed Composer's
+# default 300 second process timeout on Docker Desktop (Windows and macOS)
+ENV COMPOSER_PROCESS_TIMEOUT=0
+
 WORKDIR /var/www/html
 
 # Application source is bind-mounted at /var/www/html by compose (developer Docker).
