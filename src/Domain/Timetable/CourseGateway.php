@@ -216,9 +216,7 @@ class CourseGateway extends QueryableGateway
         
         return $this->db()->selectOne($sql, $data);
     }
-
-    // SELECT gibbonCourseClass.*, firstDay, lastDay,
-
+    
     public function getCourseClassInfoByID($gibbonCourseClassID)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID];

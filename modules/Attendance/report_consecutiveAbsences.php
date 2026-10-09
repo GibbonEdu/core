@@ -20,10 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
-use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 
 //Module includes
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     echo $form->getOutput();
 
     if (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) {
-        //Get an array of days school is in session
+        // Get an array of days school is in session
         $dates = getLastNSchoolDays(
             $session->get('guid'),
             $connection2,
@@ -73,27 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             echo $page->getBlankSlate();
         } else {
 
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sql = "
-                SELECT
-                  gibbonPerson.gibbonPersonID,
-                  gibbonPerson.title,
-                  gibbonPerson.surname,
-                  gibbonPerson.preferredName,
-                  gibbonFormGroup.gibbonFormGroupID,
-                  gibbonFormGroup.name as formGroupName,
-                  gibbonFormGroup.nameShort AS formGroup
-                FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                WHERE status='Full'
-                  AND (dateStart IS NULL OR dateStart <= CURRENT_TIMESTAMP)
-                  AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)
-                  AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY surname, preferredName, LENGTH(formGroup), formGroup";
-
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(UserGateway::class)->selectActiveUsersBySchoolYear($session->get('gibbonSchoolYearID'));
 
             $absences = array_map(function ($row) use ($session, $connection2, $dates) {
               // Get number of absences within date range

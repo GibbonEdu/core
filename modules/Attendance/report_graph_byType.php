@@ -19,12 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
-use Gibbon\UI\Chart\Chart;
-use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
-use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Services\Format;
+use Gibbon\UI\Chart\Chart;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -107,11 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addLabel('reasons', __('Reasons'));
         $row->addSelect('reasons')->fromArray($reasonOptions)->selectMultiple()->selected($reasons);
 
-    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-    $sql = "SELECT gibbonFormGroupID as value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
+    $results = $container->get(FormGroupGateway::class)->selectFormGroupListBySchoolYear($session->get('gibbonSchoolYearID'));
+        
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelect('gibbonFormGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($formGroups);
+        $row->addSelect('gibbonFormGroupID')->fromArray(array('all' => __('All')))->fromResults($results)->selectMultiple()->selected($formGroups);
 
     $row = $form->addRow();
         $row->addFooter();
