@@ -55,6 +55,32 @@ class Action
     }
 
     /**
+     * Get the highest action allowed by precedence of the actions list.
+     *
+     * @return string|null
+     */
+    public function getHighestAction(): ?string
+    {
+        $key = array_key_first($this->actions);
+
+        return $key !== null ? $this->actions[$key] : null; 
+    }
+
+    /**
+     * Check if the given action is the highest allowed action.
+     *
+     * @param string $action  The action string to check.
+     *
+     * @return bool
+     */
+    public function highest(string $action): bool
+    {
+        $highest = $this->getHighestAction();
+
+        return $highest === $action && $highest != null;
+    }
+
+    /**
      * Check if an the resource access allow certain action.
      *
      * If the action is not provided, then simply check if any action is allowed
@@ -83,7 +109,7 @@ class Action
     public function allowsAny(string ...$actions): bool
     {
         if (empty($actions)) {
-            throw new \InvalidArgumentException('Must at least provide 1 action');
+            throw new \InvalidArgumentException('Must provide at least 1 action');
         }
         foreach ($actions as $action) {
             if (in_array($action, $this->actions)) {
@@ -103,7 +129,7 @@ class Action
     public function allowsAll(string ...$actions): bool
     {
         if (empty($actions)) {
-            throw new \InvalidArgumentException('Must at least provide 1 action');
+            throw new \InvalidArgumentException('Must provide at least 1 action');
         }
         foreach ($actions as $action) {
             if (!in_array($action, $this->actions)) {
