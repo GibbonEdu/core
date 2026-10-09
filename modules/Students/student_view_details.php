@@ -23,8 +23,9 @@ use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Services\ModuleLoader;
 use Gibbon\Support\Facades\Access;
-use Gibbon\Module\Students\Profile\Sidebar;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Students\Profile\HookPage;
+use Gibbon\Module\Students\Profile\Sidebar;
 
 if (!Access::allows('Students', 'student_view_details')) {
     $page->addError(__('You do not have access to this action.'));
@@ -51,7 +52,7 @@ if (!Access::allows('Students', 'student_view_details')) {
         return;
     }
 
-    $studentGateway = $container->get(\Gibbon\Domain\Students\StudentGateway::class);
+    $studentGateway = $container->get(StudentGateway::class);
 
     $skipBrief = false;
 

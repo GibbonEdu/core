@@ -273,7 +273,7 @@ class ActivityGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function selectActivityEnrolmentByStudent($gibbonSchoolYearID, $gibbonPersonID)
+    public function selectActivityEnrolmentByStudent($gibbonSchoolYearID, $gibbonPersonID, $onlyAccepted = false)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT gibbonActivity.gibbonActivityID AS groupBy, gibbonActivity.*, gibbonActivityStudent.* FROM gibbonActivityStudent 
@@ -282,8 +282,10 @@ class ActivityGateway extends QueryableGateway
                 WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID
                 AND gibbonActivity.active='Y'
-                AND gibbonActivityStudent.status='Accepted'
                 AND (gibbonActivityCategory.gibbonActivityCategoryID IS NULL OR CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate)";
+        if ($onlyAccepted) {
+            $sql .= " AND gibbonActivityStudent.status='Accepted'";
+        }
 
         return $this->db()->select($sql, $data);
     }

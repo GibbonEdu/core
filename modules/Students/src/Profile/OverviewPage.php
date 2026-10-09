@@ -182,6 +182,10 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function renderMedicalAlerts(): string
     {
+        if (!Access::get('Students', 'student_view_details')->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
+            return '';
+        }
+
         $alert = $this->medicalGateway->getHighestMedicalRisk($this->gibbonPersonID);
         
         if (empty($alert)) {
@@ -205,6 +209,10 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function renderAttendanceStatus(array $student): string
     {
+        if (!Access::get('Students', 'student_view_details')->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
+            return '';
+        }
+
         $currentAttendanceStatus = $this->attendanceStatus->getCurrentAttendanceStatus(
             $this->gibbonSchoolYearID,
             $this->gibbonPersonID,
@@ -343,11 +351,10 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
                 return '';
             });
 
-        $table->addColumn('website', __('Website'))
-            ->format(Format::using('link', ['website']));
-
         $table->addColumn('email', __('Email'))
             ->format(Format::using('link', ['email']));
+
+        $table->addColumn('studentID', __('Student ID'));
 
         $table->addColumn('schoolHistory', __('School History'))
             ->format(function($row) {
@@ -369,9 +376,9 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
                 return $output;
             });
 
-        $table->addColumn('lockerNumber', __('Locker Number'));
+        $table->addColumn('transport', __('Transport'));
 
-        $table->addColumn('studentID', __('Student ID'));
+        $table->addColumn('lockerNumber', __('Locker Number'));
 
         $table->addColumn('house', __('House'))
             ->format(function($row) {

@@ -248,7 +248,12 @@ class StudentGateway extends QueryableGateway
     public function getStudentByFamilyAdult($gibbonPersonIDStudent, $gibbonPersonIDAdult)
     {
         $data = ['gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDAdult' => $gibbonPersonIDAdult, 'today' => date('Y-m-d')];
-        $sql = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonIDStudent AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDAdult AND childDataAccess='Y'";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240
+                FROM gibbonFamilyChild 
+                JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+                JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+                JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonIDStudent AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDAdult AND childDataAccess='Y'";
         
         return $this->db()->selectOne($sql, $data);
     }

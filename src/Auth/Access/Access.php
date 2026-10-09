@@ -126,18 +126,6 @@ class Access
     }
 
     /**
-     * Get the highest action allowed for a given action by module route.
-     *
-     * @param string $module
-     * @param string $routePath
-     * @return string|null
-     */
-    public function getHighestAction(string $module, string $routePath): ?string
-    {
-        return $this->getAction(Resource::fromRoute($module, $routePath))->getHighestAction();
-    }
-
-    /**
      * Load the access descriptor of a certain resource of the current
      * session user.
      *

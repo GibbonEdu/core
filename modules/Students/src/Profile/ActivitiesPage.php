@@ -65,7 +65,7 @@ class ActivitiesPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
+        if (!Access::allows('Students', 'student_view_details')) {
             return false;
         }
 
@@ -103,11 +103,14 @@ class ActivitiesPage extends ProfilePage
         $schoolYears = array_reverse($schoolYears);
         $output = Format::paragraph(__('This report shows the current and historical activities that a student has enrolled in.'));
 
+        $canViewActivityStatus = Access::get('Students', 'student_view_details')->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes');
+
         foreach ($schoolYears as $schoolYear) {
 
             $result = $this->activityGateway->selectActivityEnrolmentByStudent(
                 $schoolYear['gibbonSchoolYearID'],
-                $this->gibbonPersonID
+                $this->gibbonPersonID,
+                !$canViewActivityStatus
             );
 
             $table = DataTable::create('activities');
@@ -121,7 +124,10 @@ class ActivitiesPage extends ProfilePage
                 return $row;
             });
 
-            $table->addColumn('name', __('Activity'));
+            $table->addColumn('name', __('Activity'))
+                ->formatDetails(function ($values) {
+                    return $values['status'] != 'Accepted' ? Format::small($values['status']) : '';
+                });
             
             $table->addColumn('type', __('Type'));
 

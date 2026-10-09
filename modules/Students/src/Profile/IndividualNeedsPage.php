@@ -62,7 +62,7 @@ class IndividualNeedsPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        if (!Access::allows('Students', 'student_view_details', 'View Student Profile_full')) {
+        if (!Access::get('Students', 'student_view_details')->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
             return false;
         }
 

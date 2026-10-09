@@ -59,7 +59,7 @@ class MedicalPage extends ProfilePage
      */
     public function checkAccess(): bool
     {
-        return Access::allows('Students', 'student_view_details', 'View Student Profile_full');
+        return Access::get('Students', 'student_view_details')->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes', 'View Student Profile_myChildren');
     }
 
     /**

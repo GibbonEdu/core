@@ -240,6 +240,10 @@ class EmergencyContactsPage extends ProfilePage
      */
     protected function renderFollowUpContacts(array $student): string
     {
+        if (!Access::get('Students', 'student_view_details')->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
+            return '';
+        }
+        
         $contacts = [];
         $emergencyFollowUpGroup = $this->settingGateway->getSettingByScope('Students', 'emergencyFollowUpGroup');
 
@@ -293,6 +297,7 @@ class EmergencyContactsPage extends ProfilePage
                     return '<span class="unselectable">'.__($person['type']).'</span>';
                 }
             });
+    
 
         return $table->render(new DataSet(array_merge($familyAdults, $contacts, $staff)));
     }
