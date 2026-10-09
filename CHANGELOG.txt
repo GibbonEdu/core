@@ -32,6 +32,7 @@ v31.0.00
     Security
 
     Changes With Important Notices
+        System: increased minimum PHP version to 8.1
 
     Tweaks & Additions
         System: updated TinyMCE to version 8 and added a minimal mode to Editor fields
@@ -43,6 +44,7 @@ v31.0.00
         System: added next year and previous year buttons to the Year Switcher
         System: added gibbon log when a password reset email fails to send
         System: added a new attribute and helper method to the Date class to add a "Today" button to a date object
+        System: added a new offset attribute and helper method to add defined no. of days to selected date
         Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
@@ -60,6 +62,7 @@ v31.0.00
         Library: updated automatic shelf lists so that lists are queried dynamically in Browse Library
         Library: added the option to edit the category and sub-category for an automatic shelf
         Library: added a new Library API Key in Library settings to call the Google Books API
+        Library: added a +1 and +7 options to the date selector in signout, renew and edit page.
         Messenger: creator of targeted message can now view it in Message Wall
         Planner: improved the Deploy Unit page with a drag-drop interface and new tools
         Planner: added the option to set a location for non-timetables lessons in Lesson Planner
@@ -102,12 +105,31 @@ v31.0.00
         Reports: fixed reporting cycle milestones saving as Array by enforcing JSON/null storage
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         Staff: fixed the issue of including staff email while submitting a job application form
+        Staff: fixed the bug of applicationFormRefereeLink condition always true when URLs are empty
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment
+        Student Alerts: fixed student not pre-selected when clicking Add button on Student Alerts by Class
         System Admin: fixed incorrect required status of Emergency Contact fields in Form Builder
         Timetable: fixed incorrect Staff Cover information for activity cover on the timetable
-        Timetable Admin: fixed error preventing the copy of courses to next year.
+        Timetable Admin: fixed error preventing the copy of courses to next year
 
     Deprecations
+
+v30.0.02
+--------
+
+    Security
+        System: improved user access checks for AJAX scripts
+        System: added url source validation to internal HTTP_REFERER redirects
+        System: applied a sanitizeName method for input sanitization
+        System: added additional file extensions to htaccess deny list
+        Activities: added role-level authorisation checks to registration by student and parent
+        Calendar: improved direct object reference checks for notification scripts
+        Markbook: improved direct object reference checks for markbook scripts
+        Messenger: resolved non-paramaterised input in MessengerGateway
+        Planner: improved direct object reference checks for homework scripts
+        Rubrics: improved direct object reference checks for AJAX scripts
+        Rubrics: applied byte-level and file size checks to visualisation AJAX script
+        Timetable: improved direct object reference checks for timetable AJAX script
 
 v30.0.01
 --------
@@ -115,9 +137,12 @@ v30.0.01
     Bug Fixes
         System: fixed default collation in gibbon.sql causing installation issues for MariaDB systems
         System: added a upper character limit of 2048 to translation strings, to prevent gettext errors
+        System: fixed validation of Number fields not allowing decimal places for non-integer values
         Attendance: fixed empty list in Set Future Absence when using Select Students for Multiple Students
         Calendar: fixed access to View Event when users only have View Calendar access
         Planner: fixed an error on the Year Overview of the Lesson Planner
+        Reports: improved sanitization of file paths in Manage Archive
+        Tracking: improved validation of user inputs in Graphing page
 
 v30.0.00
 --------
@@ -967,6 +992,7 @@ v23.0.02
         System: fixed SQL errors in the User Status Check & Fix CLI script
         System: fixed text field autocomplete issue caused by use of " in existing values
         System: fixed column order of Export to Excel option on Staff Dashboard
+        System: updated the chart.js javascript library to v3.9.1
         Attendance: fixed non-attendance classes showing up in Set Future Absence
         Finance: fixed HTML being removed from notes on invoices
         Markbook: fixed rubrics not displaying for large classes in Enter Data page

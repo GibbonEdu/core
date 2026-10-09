@@ -57,7 +57,9 @@ Miscellaneous
 
 ## Where to go next
 
-Try installing example data to explore Gibbon with more realistic data. See [Install example data for Gibbon](INSTALL_DATA.md) for instructions.
+Try installing example data to explore Gibbon with more realistic data. See [Install example data for Gibbon](INSTALL_DATA.md).
+
+To run unit, installer, and acceptance tests in this Docker environment, see [tests/README.md](../../tests/README.md).
 
 
 ## Troubleshooting

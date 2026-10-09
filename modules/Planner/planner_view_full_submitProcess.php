@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -47,112 +49,111 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     if (empty($_POST)) {
         $URL .= '&return=error6';
         header("Location: {$URL}");
-    } else {
-        //Proceed!
-        //Check if planner specified
-        if ($gibbonPlannerEntryID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+        exit;
+    } 
+    
+    //Proceed!
+    //Check if planner specified
+    if ($gibbonPlannerEntryID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
+    $plannerEntryHomeworkGateway = $container->get(PlannerEntryHomeworkGateway::class);
+
+    $values = $plannerEntryGateway->getByID($gibbonPlannerEntryID);
+    if (empty($values)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    //Check that date is not in the future
+    if ($currentDate > $today) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    //Get variables
+    $type = $_POST['type'] ?? '';
+    $version = $_POST['version'] ?? '';
+    $link = $_POST['link'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $timestamp = date('Y-m-d H:i:s') ?? '';
+    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
+    $count = $_POST['count'] ?? '';
+    $lesson = $_POST['lesson'] ?? '';
+
+    //Recheck status in case page held open during the deadline
+    if ($timestamp > $values['homeworkDueDateTime']) {
+        $status = 'Late';
+    }
+
+    //Validation
+    if ($type == '' || $version == '' || (empty($_FILES['file']['name']) && $link == '') || $status == '' || $count == '' || $lesson == '') {
+        $URL .= '&return=error3';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    $partialFail = false;
+    $attachment = null;
+    $fileMetaData = null;
+
+    if ($type == 'Link') {
+        if (substr($link, 0, 7) != 'http://' and substr($link, 0, 8) != 'https://') {
+            $partialFail = true;
         } else {
-            try {
-                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                $sql = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            $attachment = $link;
+        }
+    } elseif ($type == 'File') {
+        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
-            if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-            } else {
-                $row = $result->fetch();
-                //Check that date is not in the future
-                if ($currentDate > $today) {
-                    $URL .= '&return=error7';
-                    header("Location: {$URL}");
-                } else {
-                    //Get variables
-                    $type = $_POST['type'] ?? '';
-                    $version = $_POST['version'] ?? '';
-                    $link = $_POST['link'] ?? '';
-                    $status = $_POST['status'] ?? '';
-                    $timestamp = date('Y-m-d H:i:s') ?? '';
-                    //Recheck status in case page held open during the deadline
-                    if ($timestamp > $row['homeworkDueDateTime']) {
-                        $status = 'Late';
-                    }
-                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-                    $count = $_POST['count'] ?? '';
-                    $lesson = $_POST['lesson'] ?? '';
+        $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
-                    //Validation
-                    if ($type == '' or $version == '' or (empty($_FILES['file']['name']) and $link == '') or $status == '' or $count == '' or $lesson == '') {
-                        $URL .= '&return=error3';
-                        header("Location: {$URL}");
-                    } else {
-                        $partialFail = false;
-                        $fileMetaData = null;
-                        if ($type == 'Link') {
-                            if (substr($link, 0, 7) != 'http://' and substr($link, 0, 8) != 'https://') {
-                                $partialFail = true;
-                            } else {
-                                $attachment = $link;
-                            }
-                        }
-                        if ($type == 'File') {
-                            $fileUploader = new Gibbon\FileUploader($pdo, $session);
+        // Upload the file, return the /uploads relative path
+        $attachment = $fileUploader->uploadFromPost($file, $session->get('username').'_'.$lesson);
 
-                            $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+        if (empty($attachment)) {
+            $partialFail = true;
+        } else {
+            $fileMetaData = $fileUploader->getFileMetaData($attachment);
+        }
+    } else {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
 
-                            // Upload the file, return the /uploads relative path
-                            $attachment = $fileUploader->uploadFromPost($file, $session->get('username').'_'.$lesson);
+    // Write to database
+    $gibbonPlannerEntryHomeworkID = $plannerEntryHomeworkGateway->insert(['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $attachment, 'count' => ($count + 1), 'timestamp' => $timestamp]);
 
-                            if (empty($attachment)) {
-                                $partialFail = true;
-                            } else {
-                                $fileMetaData = $fileUploader->getFileMetaData($attachment);
-                            }
-                        }
+    if (!$gibbonPlannerEntryHomeworkID) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
 
-                        //Deal with partial fail
-                        if ($partialFail == true) {
-                            $URL .= '&return=error6';
-                            header("Location: {$URL}");
-                        } else {
-                            //Write to database
-                            try {
-                                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $attachment, 'count' => ($count + 1), 'timestamp' => $timestamp);
-                                $sql = 'INSERT INTO gibbonPlannerEntryHomework SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, type=:type, version=:version, status=:status, location=:location, count=:count, timestamp=:timestamp';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $URL .= '&return=error2';
-                                header("Location: {$URL}");
-                                exit();
-                            }
+    // Record file tracking (only if file uploaded)
+    if (!empty($fileMetaData) && !empty($gibbonPlannerEntryHomeworkID)) {
+        $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPlannerEntryHomework', $gibbonPlannerEntryHomeworkID, 'location');
 
-                            $gibbonPlannerEntryHomeworkID = $connection2->lastInsertID();
-
-                            // Record file tracking (only if file uploaded)
-                            if (!empty($fileMetaData) && !empty($gibbonPlannerEntryHomeworkID)) {
-                                $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPlannerEntryHomework', $gibbonPlannerEntryHomeworkID, 'location');
-
-                                if (empty($gibbonFileID)) {
-                                    $partialFail = true;
-                                }
-                            }
-
-                            $URL .= '&return=success0';
-                            header("Location: {$URL}");
-                        }
-                    }
-
-                }
-            }
+        if (empty($gibbonFileID)) {
+            $partialFail = true;
         }
     }
+
+    // Deal with partial fail
+    if ($partialFail == true) {
+        $URL .= '&return=error6';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $URL .= '&return=success0';
+    header("Location: {$URL}");
+
 }

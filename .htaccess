@@ -1,4 +1,4 @@
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|sql|neon|DS_Store|lock|json|yml|neon)$">
+<FilesMatch "\.(htaccess|htpasswd|ini|env|git|github|conf|config|log|sh|inc|bak|sql|neon|DS_Store|lock|json|yml|yaml|md|old|orig|swp|swo|tmp|temp|save|dist|backup|sqlite|sqlite3|db|dump|pem|key|crt|p12|pfx|asc|gitignore|gitattributes|gitlab-ci|editorconfig|dockerignore|kiro|vscode|svn|hg)$">
   Order Allow,Deny
   Deny from all
 </FilesMatch>

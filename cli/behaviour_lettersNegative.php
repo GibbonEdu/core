@@ -30,7 +30,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Domain\User\UserGateway;
 
-require getcwd().'/../gibbon.php';
+require __DIR__.'/../gibbon.php';
 
 //Check for CLI, so this cannot be run through browser
 $settingGateway = $container->get(SettingGateway::class);
