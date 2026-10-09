@@ -31,6 +31,7 @@ use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Services\Format;
@@ -53,6 +54,7 @@ class PersonalPage extends ProfilePage
     private FormGroupGateway $formGroupGateway;
     private HouseGateway $houseGateway;
     private SettingGateway $settingGateway;
+    private PersonalDataFieldSettings $personalDataFields;
     private PersonalDocumentGateway $personalDocumentGateway;
     private CustomFieldHandler $customFieldHandler;
     private \Gibbon\View\View $view;
@@ -66,6 +68,7 @@ class PersonalPage extends ProfilePage
         FormGroupGateway $formGroupGateway,
         HouseGateway $houseGateway,
         SettingGateway $settingGateway,
+        PersonalDataFieldSettings $personalDataFields,
         PersonalDocumentGateway $personalDocumentGateway,
         CustomFieldHandler $customFieldHandler,
         \Gibbon\View\View $view
@@ -78,6 +81,7 @@ class PersonalPage extends ProfilePage
         $this->formGroupGateway = $formGroupGateway;
         $this->houseGateway = $houseGateway;
         $this->settingGateway = $settingGateway;
+        $this->personalDataFields = $personalDataFields;
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->customFieldHandler = $customFieldHandler;
         $this->view = $view;
@@ -194,15 +198,23 @@ class PersonalPage extends ProfilePage
     {
         $col = $table->addColumn('Basic Information');
 
-        $col->addColumn('surname', __('Surname'));
+        if ($this->personalDataFields->isVisible('surname', 'Student')) {
+            $col->addColumn('surname', __('Surname'));
+        }
         $col->addColumn('firstName', __('First Name'))->addClass('col-span-2');
-        $col->addColumn('preferredName', __('Preferred Name'));
+        if ($this->personalDataFields->isVisible('preferredName', 'Student')) {
+            $col->addColumn('preferredName', __('Preferred Name'));
+        }
         $col->addColumn('officialName', __('Official Name'));
-        $col->addColumn('nameInCharacters', __('Name In Characters'));
+        if ($this->personalDataFields->isVisible('nameInCharacters', 'Student')) {
+            $col->addColumn('nameInCharacters', __('Name In Characters'));
+        }
         $col->addColumn('gender', __('Gender'))
             ->format(Format::using('genderName', 'gender'));
-        $col->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
-        $col->addColumn('age', __('Age'))->format(Format::using('age', 'dob'));
+        if ($this->personalDataFields->isVisible('dob', 'Student')) {
+            $col->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
+            $col->addColumn('age', __('Age'))->format(Format::using('age', 'dob'));
+        }
     }
 
     /**
@@ -216,15 +228,21 @@ class PersonalPage extends ProfilePage
         $col = $table->addColumn('Contact Information', __('Contact Information'));
 
         for ($i = 1; $i <= 4; $i++) {
-            if (empty($row["phone$i"])) continue;
+            if (empty($row["phone$i"]) || !$this->personalDataFields->isVisible("phone$i", 'Student')) {
+                continue;
+            }
             $col->addColumn("phone$i", __('Phone '.$i))->format(Format::using('phone', ["phone{$i}", "phone{$i}CountryCode", "phone{$i}Type"]));
         }
-        $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
-        $col->addColumn('emailAlternate', __('Alternate Email'))->format(function ($values) {
-            return !empty($values['emailAlternate'])
-                ? Format::link('mailto:'.$values['emailAlternate'], $values['emailAlternate'])
-                : '';
-        });
+        if ($this->personalDataFields->isVisible('email', 'Student')) {
+            $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
+        }
+        if ($this->personalDataFields->isVisible('emailAlternate', 'Student')) {
+            $col->addColumn('emailAlternate', __('Alternate Email'))->format(function ($values) {
+                return !empty($values['emailAlternate'])
+                    ? Format::link('mailto:'.$values['emailAlternate'], $values['emailAlternate'])
+                    : '';
+            });
+        }
         $col->addColumn('website', __('Website'))->format(function ($values) {
             return !empty($values['website'])
                 ? Format::link($values['website'], $values['website'])
@@ -288,13 +306,24 @@ class PersonalPage extends ProfilePage
     {
         $col = $table->addColumn('Background Information', __('Background Information'));
 
-        $col->addColumn('countryOfBirth', __('Country of Birth'))->translatable();
-        $col->addColumn('ethnicity', __('Ethnicity'));
-        $col->addColumn('religion', __('Religion'));
-
-        $col->addColumn('languageFirst', __('First Language'))->translatable();
-        $col->addColumn('languageSecond', __('Second Language'))->translatable();
-        $col->addColumn('languageThird', __('Third Language'))->translatable();
+        if ($this->personalDataFields->isVisible('countryOfBirth', 'Student')) {
+            $col->addColumn('countryOfBirth', __('Country of Birth'))->translatable();
+        }
+        if ($this->personalDataFields->isVisible('ethnicity', 'Student')) {
+            $col->addColumn('ethnicity', __('Ethnicity'));
+        }
+        if ($this->personalDataFields->isVisible('religion', 'Student')) {
+            $col->addColumn('religion', __('Religion'));
+        }
+        if ($this->personalDataFields->isVisible('languageFirst', 'Student')) {
+            $col->addColumn('languageFirst', __('First Language'))->translatable();
+        }
+        if ($this->personalDataFields->isVisible('languageSecond', 'Student')) {
+            $col->addColumn('languageSecond', __('Second Language'))->translatable();
+        }
+        if ($this->personalDataFields->isVisible('languageThird', 'Student')) {
+            $col->addColumn('languageThird', __('Third Language'))->translatable();
+        }
     }
 
     /**
@@ -328,7 +357,9 @@ class PersonalPage extends ProfilePage
             }
             return $output;
         });
-        $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
+        if ($this->personalDataFields->isVisible('vehicleRegistration', 'Student')) {
+            $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
+        }
         $col->addColumn('lockerNumber', __('Locker Number'));
 
         $privacySetting = $this->settingGateway->getSettingByScope('User Admin', 'privacy');

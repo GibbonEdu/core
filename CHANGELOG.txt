@@ -89,6 +89,7 @@ v31.0.00
         User Admin: fixed the bug to display user's personal address if turned on
         User Admin: fix the bug to display user's personal address if turned on
         User Admin: added an option to flag changes for personal fields
+        User Admin: applied Personal Data Field settings (required, optional, hidden) across Manage Users, profiles, and import/export
 
     Bug Fixes
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record

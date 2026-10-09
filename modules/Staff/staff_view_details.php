@@ -33,9 +33,9 @@ use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Module\Staff\StaffAttendanceStatus;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 
-// Module includes for User Admin (for custom fields)
-include './modules/User Admin/moduleFunctions.php';
+$personalDataFields = $container->get(PersonalDataFieldSettings::class);
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == false) {
     // Access denied
@@ -287,23 +287,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $col = $table->addColumn('Contacts', __('Contacts'));
 
                         for ($i = 1; $i < 5; ++$i) {
-                            if (empty($row['phone' . $i])) continue;
+                            if (empty($row['phone' . $i]) || !$personalDataFields->isVisible('phone'.$i, 'Staff')) {
+                                continue;
+                            }
                             if ($row['phone' . $i] != '') {
                                 $col->addColumn('phone' . $i, __('Phone') . " $i")
                                     ->format(Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']));
                             }
                         }
 
-                        $col->addColumn('email', __('Email'))
-                            ->format(Format::using('link', $row['email']));
+                        if ($personalDataFields->isVisible('email', 'Staff')) {
+                            $col->addColumn('email', __('Email'))
+                                ->format(Format::using('link', $row['email']));
+                        }
 
-                        $col->addColumn('emailAlternate', __('Alternate Email'))
-                            ->format(function($row) {
-                                if ($row['emailAlternate'] != '') {
-                                    return Format::link($row['emailAlternate']);
-                                }
-                                return '';
-                            });
+                        if ($personalDataFields->isVisible('emailAlternate', 'Staff')) {
+                            $col->addColumn('emailAlternate', __('Alternate Email'))
+                                ->format(function($row) {
+                                    if ($row['emailAlternate'] != '') {
+                                        return Format::link($row['emailAlternate']);
+                                    }
+                                    return '';
+                                });
+                        }
 
                         $col->addColumn('website', __('Website'))
                             ->format(Format::using('link', ['website', 'website']));
@@ -333,7 +339,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $col = $table->addColumn('Miscellaneous', __('Miscellaneous'));
 
                         $col->addColumn('transport', __('Transport'));
-                        $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
+                        if ($personalDataFields->isVisible('vehicleRegistration', 'Staff')) {
+                            $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
+                        }
                         $col->addColumn('lockerNumber', __('Locker Number'));
 
                         // CUSTOM FIELDS
@@ -482,16 +490,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                             for ($i = 1; $i <= 2; $i++) {
                                 $emergency = 'emergency' . $i;
-                                $table->addColumn($emergency . 'Name', __('Contact ' . $i))
-                                    ->format(function($row) use ($emergency) {
-                                        if ($row[$emergency . 'Relationship'] != '') {
-                                            return $row[$emergency . 'Name'] . ' (' . __($row[$emergency . 'Relationship']) . ')';
-                                        }
-                                        return $row[$emergency . 'Name'];
-                                    });
+                                if ($personalDataFields->isVisible($emergency.'Name', 'Staff')) {
+                                    $table->addColumn($emergency . 'Name', __('Contact ' . $i))
+                                        ->format(function($row) use ($emergency) {
+                                            if ($row[$emergency . 'Relationship'] != '') {
+                                                return $row[$emergency . 'Name'] . ' (' . __($row[$emergency . 'Relationship']) . ')';
+                                            }
+                                            return $row[$emergency . 'Name'];
+                                        });
+                                }
 
-                                $table->addColumn($emergency . 'Number1', __('Number 1'));
-                                $table->addColumn($emergency . 'Number2', __('Number 2'));
+                                if ($personalDataFields->isVisible($emergency.'Number1', 'Staff')) {
+                                    $table->addColumn($emergency . 'Number1', __('Number 1'));
+                                }
+                                if ($personalDataFields->isVisible($emergency.'Number2', 'Staff')) {
+                                    $table->addColumn($emergency . 'Number2', __('Number 2'));
+                                }
                             }
 
                             echo $table->render([$row]);

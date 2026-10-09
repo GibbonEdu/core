@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\RoleGateway;
@@ -205,40 +206,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $existing = false;
                 $proceed = false;
                 $requiredFields = [];
+                $rolesForSettings = array_values($roleCategories ?: [$primaryRoleCategory]);
 
                 $settingGateway = $container->get(SettingGateway::class);
+                $personalDataFields = $container->get(PersonalDataFieldSettings::class);
 
                 if ($highestAction != 'Update Personal Data_any') {
-                    $requiredFieldsSetting = unserialize($settingGateway->getSettingByScope('User Admin', 'personalDataUpdaterRequiredFields'));
-                    if (is_array($requiredFieldsSetting)) {
-                        if (!isset($requiredFieldsSetting[$primaryRoleCategory])) {
-                            // If there's no per-role settings then handle the original required field Y/N settings
-                            $requiredFields = array_map(function ($item) {
-                                return $item == 'Y'? 'required' : '';
-                            }, $requiredFieldsSetting);
-                        } elseif (is_array($roleCategories) && count($roleCategories) > 1) {
-                            // Flip the array from role=>field=>value to field=>role=>value
-                            // Loop by only the roles categories this user has.
-                            foreach ($roleCategories as $roleCategory) {
-                                $fields = $requiredFieldsSetting[$roleCategory] ?? [];
-                                foreach ($fields as $name => $value) {
-                                    $requiredFields[$name][$roleCategory] = $value;
-                                }
-                            }
-                            // Reduce each field to the setting with the greatest priority.
-                            // Eg: required by at least one role = a required field.
-                            $requiredFields = array_map(function ($field) {
-                                if (in_array('required', $field)) return 'required';
-                                if (in_array('', $field, true)) return '';
-                                if (in_array('readonly', $field)) return 'readonly';
-                                if (in_array('hidden', $field)) return 'hidden';
-                                return '';
-                            }, $requiredFields);
-                        } else {
-                            // Grab the required fields for the users primary roles
-                            $requiredFields = $requiredFieldsSetting[$primaryRoleCategory];
-                        }
-                    }
+                    $requiredFields = $personalDataFields->getSettings($rolesForSettings);
                 }
 
 
@@ -282,21 +256,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     //Let's go!
                     $values = $result->fetch();
 
-                    // Closure: Check if a field is visible.
-                    $isVisible = function ($name) use ($requiredFields) {
-                        return empty($requiredFields[$name]) || $requiredFields[$name] != 'hidden';
+                    // Admins with _any bypass field restrictions; otherwise use personal-data settings.
+                    $isVisible = function ($name) use ($requiredFields, $personalDataFields, $rolesForSettings) {
+                        if (empty($requiredFields)) {
+                            return true;
+                        }
+
+                        return $personalDataFields->isVisible($name, $rolesForSettings);
                     };
 
-                    // Closure: check if any field in a given array are visible.
-                    // Useful to hide headings in sections if not needed.
-                    $anyVisible = function ($names) use ($requiredFields) {
-                        if (empty($requiredFields)) return true;
-                        $fields = array_intersect_key($requiredFields, array_flip($names));
-                        $visible = array_filter($fields, function ($item) {
-                            return empty($item) || $item != 'hidden';
-                        });
+                    $anyVisible = function ($names) use ($requiredFields, $personalDataFields, $rolesForSettings) {
+                        if (empty($requiredFields)) {
+                            return true;
+                        }
 
-                        return count($visible) > 0;
+                        return $personalDataFields->anyVisible($names, $rolesForSettings);
                     };
 
                     $form = Form::create('updateFinance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_personalProcess.php?gibbonPersonID='.$gibbonPersonID);
@@ -399,7 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('showAddresses', __('Enter Personal Address?'));
                         $row->addYesNo('showAddresses')
                             ->setValue($addressSet ?? 'N')
-                            ->setDisabled(isset($requiredFields['address1']) && $requiredFields['address1'] == 'readonly');
+                            ->setDisabled(!empty($requiredFields) && $personalDataFields->isReadonly('address1', $rolesForSettings));
 
                     $form->toggleVisibilityByClass('address')->onClick('showAddresses')->when('Y');
 

@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -39,9 +40,6 @@ if (!$session->has('systemSettingsSet')) {
     getSystemSettings($guid, $connection2);
 }
 
-//Module includes from User Admin (for custom fields)
-include '../User Admin/moduleFunctions.php';
-
 //Module includes from Finance (for setting payment log)
 include '../Finance/moduleFunctions.php';
 
@@ -52,6 +50,7 @@ $proceed = false;
 $public = false;
 
 $settingGateway = $container->get(SettingGateway::class);
+$personalDataFields = $container->get(PersonalDataFieldSettings::class);
 
 if (!$session->has('username')) {
     $public = true;
@@ -96,6 +95,13 @@ if ($proceed == false) {
         $languageSecond = $_POST['languageSecond'] ?? '';
         $languageThird = $_POST['languageThird'] ?? '';
         $countryOfBirth = $_POST['countryOfBirth'] ?? '';
+
+        foreach (['countryOfBirth', 'languageFirst', 'languageSecond', 'languageThird'] as $field) {
+            if (!$personalDataFields->isVisible($field, 'Student')) {
+                $$field = '';
+            }
+        }
+
         $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
         $phone1Type = $_POST['phone1Type'] ?? '';
         if (!empty($_POST['phone1']) and $phone1Type == '') {
@@ -262,7 +268,9 @@ if ($proceed == false) {
                 }
             }
         }
-        if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $countryOfBirth == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or (isset($_POST['agreement']) and $agreement != 'Y') or $familyFail) {
+        $languageFirstRequired = $personalDataFields->isVisible('languageFirst', 'Student') && $languageFirst == '';
+        $countryOfBirthRequired = $personalDataFields->isVisible('countryOfBirth', 'Student') && $countryOfBirth == '';
+        if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirstRequired or $countryOfBirthRequired or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or (isset($_POST['agreement']) and $agreement != 'Y') or $familyFail) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
