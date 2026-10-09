@@ -31,8 +31,8 @@ if (!Access::allows('Staff', 'staff_view_details')) {
     return;
 } else {
     // Get action with highest precedence
-    $highestAction = Access::get('Staff', 'staff_view_details');
-    if (empty($highestAction)) {
+    $action = Access::get('Staff', 'staff_view_details');
+    if (empty($action)) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     } 
@@ -59,7 +59,7 @@ if (!Access::allows('Staff', 'staff_view_details')) {
     }
 
     // Handle brief profile view
-    if ($highestAction->allows('Staff Directory_brief') && !$highestAction->allows('Staff Directory_full')) {
+    if ($action->highest('Staff Directory_brief')) {
         $briefPage = $container->get(\Gibbon\Module\Staff\Profile\BriefPage::class);
         $briefPage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID);
         
@@ -72,10 +72,12 @@ if (!Access::allows('Staff', 'staff_view_details')) {
         
         echo $briefPage->getOutput();
         return;
+    } elseif (!$action->allows('Staff Directory_full')) {
+        $page->addError(__('You do not have access to this action.'));
+        return;
     }
 
     // Handle full profile view
-
     $page->breadcrumbs
         ->add(__('Staff Directory'), 'staff_view.php', ['search' => $search, 'allStaff' => $allStaff])
         ->add(Format::name('', $staffMember['preferredName'], $staffMember['surname'], 'Student'));
@@ -103,9 +105,7 @@ if (!Access::allows('Staff', 'staff_view_details')) {
         $hookPage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID);
         $hookPage->setHook($hook, $_GET['gibbonHookID'] ?? '');
         
-        echo '<h2>';
-        echo $hookPage->getPageName();
-        echo '</h2>';
+        echo Format::heading($hookPage->getPageName(), 'h2');
         
         if (!$hookPage->checkAccess()) {
             echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
@@ -117,9 +117,7 @@ if (!Access::allows('Staff', 'staff_view_details')) {
         $pageClass = $subpageClasses[$subpage];
         $profilePage = $container->get($pageClass);
 
-        echo '<h2>';
-        echo $profilePage->getPageName();
-        echo '</h2>';
+        echo Format::heading($profilePage->getPageName(), 'h2');
         
         // Set staff context
         $profilePage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID);

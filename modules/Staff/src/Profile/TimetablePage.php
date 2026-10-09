@@ -21,12 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Staff\Profile;
 
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\UI\Timetable\Timetable;
-use Gibbon\Services\Format;
-use Gibbon\Forms\Form;
+use Gibbon\UI\Timetable\TimetableContext;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 

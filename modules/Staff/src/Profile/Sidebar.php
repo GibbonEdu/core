@@ -117,8 +117,7 @@ class Sidebar extends ProfilePage
         ];
 
         // Emergency Contacts - check permission
-        $highestActionManage = Access::get('Staff', 'staff_manage');
-        if ($highestActionManage && $highestActionManage->allows('Manage Staff_confidential')) {
+        if (Access::allows('Staff', 'staff_manage', 'Manage Staff_confidential')) {
             $personalMenu[] = [
                 'name' => 'Emergency Contacts',
                 'url' => $baseURL.'&subpage=Emergency Contacts',
