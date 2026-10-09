@@ -94,11 +94,10 @@ class ActionGateway extends QueryableGateway
      * @return Result
      */
     public function selectModuleActionsByRole(
-        $gibbonRoleID,
+        string $gibbonRoleID,
         string $moduleName,
         string $routePath,
-        ?string $actionName = null,
-        bool $activeModuleOnly = true
+        ?string $actionName = null
     ): Result {
         $data = [
             'gibbonRoleID' => $gibbonRoleID,
@@ -113,17 +112,15 @@ class ActionGateway extends QueryableGateway
         WHERE
             gibbonAction.URLList LIKE :routePath
             AND gibbonPermission.gibbonRoleID=:gibbonRoleID
-            AND gibbonModule.name=:moduleName';
+            AND gibbonModule.name=:moduleName
+            AND gibbonModule.active="Y"';
 
         if (!empty($actionName)) {
             $data['actionName'] = $actionName;
             $sql .= ' AND gibbonAction.name=:actionName';
         }
 
-        if ($activeModuleOnly) {
-            $data['moduleIsActive'] = 'Y';
-            $sql .= ' AND gibbonModule.active=:moduleIsActive';
-        }
+        $sql .= ' ORDER BY gibbonAction.precedence DESC, gibbonAction.gibbonActionID';
 
         return $this->db()->select($sql, $data);
     }

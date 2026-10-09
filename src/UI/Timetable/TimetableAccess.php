@@ -51,17 +51,17 @@ class TimetableAccess
     {
         $action = Access::get('Timetable', 'tt');
 
-        if ($action->allows('View Timetable by Person_allYears')) return true;
+        if ($action->highest('View Timetable by Person_allYears')) return true;
         
         if ($this->session->get('gibbonSchoolYearIDCurrent') != $context->get('gibbonSchoolYearID')) return false;
 
-        if ($action->allows('View Timetable by Person')) return true;
+        if ($action->highest('View Timetable by Person')) return true;
 
-        if ($action->allows('View Timetable by Person_my')) {
+        if ($action->highest('View Timetable by Person_my')) {
             return $this->session->get('gibbonPersonID') == $context->get('gibbonPersonID');
         }
 
-        if ($action->allows('View Timetable by Person_myChildren')) {
+        if ($action->highest('View Timetable by Person_myChildren')) {
             $children = $this->studentGateway->selectActiveStudentsByFamilyAdult($context->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'))->fetchGroupedUnique();
 
             return !empty($children[$context->get('gibbonPersonID')]);
