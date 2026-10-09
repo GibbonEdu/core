@@ -54,7 +54,7 @@ class BriefPage extends ProfilePage
 
     public function getPageName(): string
     {
-        return 'Overview';
+        return __('Overview');
     }
 
     public function checkAccess(): bool
@@ -68,24 +68,13 @@ class BriefPage extends ProfilePage
             return Format::alert(__('You have not specified one or more required parameters.'), 'error');
         }
 
-        $staff = $this->fetchStaffData();
+        $staff = $this->fetchStaffData($this->staffGateway);
 
         if (empty($staff)) {
             return Format::alert(__('The selected record does not exist, or you do not have access to it.'), 'error');
         }
 
         return $this->renderBriefTable($staff);
-    }
-
-    /**
-     * Fetch basic staff data for brief profile view
-     * Only retrieves non-confidential information
-     * 
-     * @return array Staff data or empty array if not found
-     */
-    protected function fetchStaffData(): array
-    {
-        return $this->staffGateway->getStaffDetailsByID($this->gibbonPersonID);
     }
 
     /**

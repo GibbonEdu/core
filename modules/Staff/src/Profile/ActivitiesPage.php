@@ -50,7 +50,7 @@ class ActivitiesPage extends ProfilePage
 
     public function getPageName(): string
     {
-        return 'Activities';
+        return __('Activities');
     }
 
     /**
@@ -61,8 +61,7 @@ class ActivitiesPage extends ProfilePage
     public function checkAccess(): bool
     {
         // Allow access if user has either My Activities or Activities view permission
-        return Access::allows('Activities', 'activities_my', 'My Activities_view') 
-            || Access::allows('Activities', 'activities_view');
+        return (Access::allows('Activities', 'activities_my') && $this->gibbonPersonID == $this->session->get('gibbonPersonID')) || Access::allows('Activities', 'activities_view');
     }
 
     /**
@@ -202,6 +201,6 @@ class ActivitiesPage extends ProfilePage
      */
     protected function canAccessEnrolment(): bool
     {
-        return Access::allows('Activities', 'activities_manage_enrolment', 'Manage Activities_manage');
+        return Access::allows('Activities', 'activities_manage_enrolment',);
     }
 }

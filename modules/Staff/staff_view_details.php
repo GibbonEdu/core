@@ -61,7 +61,7 @@ if (!Access::allows('Staff', 'staff_view_details')) {
     // Handle brief profile view
     if ($action->highest('Staff Directory_brief')) {
         $briefPage = $container->get(\Gibbon\Module\Staff\Profile\BriefPage::class);
-        $briefPage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+        $briefPage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStaff == 'on');
         
         $session->set('sidebarExtra', Format::userPhoto($staffMember['image_240'], 240));
 
@@ -102,7 +102,7 @@ if (!Access::allows('Staff', 'staff_view_details')) {
         $hook = preg_replace('/[^a-zA-Z0-9-_\s]/', '', $hook);
 
         $hookPage = $container->get(HookPage::class);
-        $hookPage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+        $hookPage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStaff == 'on');
         $hookPage->setHook($hook, $_GET['gibbonHookID'] ?? '');
         
         echo Format::heading($hookPage->getPageName(), 'h2');
@@ -120,7 +120,7 @@ if (!Access::allows('Staff', 'staff_view_details')) {
         echo Format::heading($profilePage->getPageName(), 'h2');
         
         // Set staff context
-        $profilePage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+        $profilePage->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStaff == 'on');
         
         // Check access
         if (!$profilePage->checkAccess()) {
@@ -136,7 +136,7 @@ if (!Access::allows('Staff', 'staff_view_details')) {
 
     // Set sidebar
     $sidebar = $container->get(Sidebar::class);
-    $sidebar->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID, $staffMember['image_240']);
+    $sidebar->setStaff($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStaff == 'on', $staffMember['image_240']);
 
     $session->set('sidebarExtra', $sidebar->getOutput());
 }

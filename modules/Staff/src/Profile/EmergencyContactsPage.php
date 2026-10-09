@@ -86,7 +86,7 @@ class EmergencyContactsPage extends ProfilePage
         }
 
         // Fetch staff data
-        $staff = $this->fetchStaffData();
+        $staff = $this->fetchStaffData($this->staffGateway);
 
         // Guard clause: check if staff exists
         if (empty($staff)) {
@@ -116,16 +116,6 @@ class EmergencyContactsPage extends ProfilePage
         $output .= $this->renderEmergencyContacts($staff);
 
         return $output;
-    }
-
-    /**
-     * Fetch staff data including emergency contact information
-     * 
-     * @return array Staff data or empty array if not found
-     */
-    protected function fetchStaffData(): array
-    {
-        return $this->staffGateway->getStaffDetailsByID($this->gibbonPersonID);
     }
 
     /**

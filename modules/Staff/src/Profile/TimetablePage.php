@@ -50,7 +50,7 @@ class TimetablePage extends ProfilePage implements ContainerAwareInterface
 
     public function getPageName(): string
     {
-        return 'Timetable';
+        return __('Timetable');
     }
 
     public function checkAccess(): bool

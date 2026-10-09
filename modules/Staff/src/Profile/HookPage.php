@@ -73,7 +73,7 @@ class HookPage extends ProfilePage
      */
     public function getPageName(): string
     {
-        return $this->hookName;
+        return __($this->hookName);
     }
 
     /**

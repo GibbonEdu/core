@@ -57,7 +57,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
 
     public function getPageName(): string
     {
-        return 'Family';
+        return __('Family');
     }
 
     public function checkAccess(): bool
@@ -122,7 +122,7 @@ class FamilyPage extends ProfilePage implements ContainerAwareInterface
     protected function renderEditButton($families): string
     {
         // Guard: check if user has permission to manage families
-        if (!Access::allows('User Admin', 'family_manage_edit', 'Manage Families_view')) {
+        if (!Access::allows('User Admin', 'family_manage_edit')) {
             return '';
         }
 

@@ -50,7 +50,7 @@ class FacilitiesPage extends ProfilePage
 
     public function getPageName(): string
     {
-        return 'Facilities';
+        return __('Facilities');
     }
 
     /**

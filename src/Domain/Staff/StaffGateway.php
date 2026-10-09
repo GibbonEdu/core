@@ -140,7 +140,7 @@ class StaffGateway extends QueryableGateway
         $data = ['gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidQualification, firstAidExpiry, gibbonStaff.fields as fieldsStaff
                 FROM gibbonPerson
-                LEFT JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
 
         if (!$allStaff) {

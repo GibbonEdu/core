@@ -23,6 +23,7 @@ namespace Gibbon\Module\Staff\Profile;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Staff\StaffGateway;
 
 abstract class ProfilePage
 {
@@ -31,19 +32,32 @@ abstract class ProfilePage
     protected string $gibbonSchoolYearID;
     protected string $gibbonPersonID;
     protected string $userImage;
+    protected bool $allStaff;
 
     public function __construct(Session $session)
     {
         $this->session = $session;
     }
 
-    public function setStaff(string $gibbonSchoolYearID, string $gibbonPersonID, ?string $userImage = ''): self
+    public function setStaff(string $gibbonSchoolYearID, string $gibbonPersonID, bool $allStaff = false, ?string $userImage = ''): self
     {
         $this->gibbonSchoolYearID = $gibbonSchoolYearID;
         $this->gibbonPersonID = $gibbonPersonID;
+        $this->allStaff = $allStaff;
         $this->userImage = $userImage ?? '';
 
         return $this;
+    }
+
+    /**
+     * Fetch staff data including personal and custom fields
+     * 
+     * @param StaffGateway $staffGateway Staff data gateway
+     * @return array Staff data or empty array if not found
+     */
+    protected function fetchStaffData(StaffGateway $staffGateway): array
+    {
+        return $staffGateway->getStaffDetailsByID($this->gibbonPersonID, $this->allStaff);
     }
 
     public abstract function checkAccess(): bool;

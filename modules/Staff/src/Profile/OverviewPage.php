@@ -67,7 +67,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
 
     public function getPageName(): string
     {
-        return 'Overview';
+        return __('Overview');
     }
 
     public function checkAccess(): bool
@@ -83,7 +83,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         }
 
         // Fetch staff data
-        $staff = $this->fetchStaffData();
+        $staff = $this->fetchStaffData($this->staffGateway);
 
         // Guard: check data exists
         if (empty($staff)) {
@@ -105,16 +105,6 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
     }
 
     /**
-     * Fetch staff data including person and staff information
-     * 
-     * @return array Staff data or empty array if not found
-     */
-    protected function fetchStaffData(): array
-    {
-        return $this->staffGateway->getStaffDetailsByID($this->gibbonPersonID);
-    }
-
-    /**
      * Render staff attendance status if absent today
      * 
      * @param array $staff Staff data
@@ -122,6 +112,10 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
      */
     protected function renderAttendanceStatus(array $staff): string
     {
+        if ($staff['status'] != 'Full') {
+            return '';
+        }
+        
         return $this->staffAttendanceStatus->getCurrentAttendanceStatus(
             $this->gibbonSchoolYearID,
             $this->gibbonPersonID,
@@ -142,14 +136,14 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $table = DataTable::createDetails('overview');
 
         // Add header actions for editing
-        if (Access::allows('User Admin', 'user_manage_edit', 'Manage Users_edit')) {
+        if (Access::allows('User Admin', 'user_manage_edit')) {
             $table->addHeaderAction('edit', __('Edit User'))
                 ->setURL('/modules/User Admin/user_manage_edit.php')
                 ->addParam('gibbonPersonID', $this->gibbonPersonID)
                 ->displayLabel();
         }
 
-        if (Access::allows('Staff', 'staff_manage_edit', 'Manage Staff_edit')) {
+        if (Access::allows('Staff', 'staff_manage_edit')) {
             $table->addHeaderAction('edit2', __('Edit Staff'))
                 ->setIcon('config')
                 ->setURL('/modules/Staff/staff_manage_edit.php')
