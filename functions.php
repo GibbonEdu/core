@@ -785,6 +785,57 @@ function isCommandLineInterface()
 }
 
 /**
+ * Register an uploads path in the current session so file.php may serve it.
+ * @version  v31
+ * @param string $path
+ */
+function allowSecureFileAccess($path)
+{
+    global $session;
+
+    if (empty($session)) {
+        return;
+    }
+
+    $path = ltrim(trim((string) $path), '/');
+    if ($path === '' || !str_starts_with($path, 'uploads/')) {
+        return;
+    }
+
+    $now = time();
+    $allowed = $session->get('allowedUploads', []);
+
+    foreach ($allowed as $allowedPath => $timestamp) {
+        if ($now - (int) $timestamp > 7200) {
+            unset($allowed[$allowedPath]);
+        }
+    }
+
+    $allowed[$path] = $now;
+    $session->set('allowedUploads', $allowed);
+}
+
+/**
+ * Find uploads/ paths in rendered output and grant this session access to them.
+ *
+ * @param string $content
+ */
+function registerSecureUploadsInContent($content)
+{
+    if (!is_string($content) || $content === '') {
+        return;
+    }
+
+    if (!preg_match_all('#\buploads/[^\s"\'<>\\\\?]+#', $content, $matches)) {
+        return;
+    }
+
+    foreach (array_unique($matches[0]) as $path) {
+        allowSecureFileAccess(rawurldecode($path));
+    }
+}
+
+/**
  * @deprecated in v22. Use Page's ReturnMessage.
  */
 function returnProcess($guid, $return, $editLink = null, $customReturns = null)
