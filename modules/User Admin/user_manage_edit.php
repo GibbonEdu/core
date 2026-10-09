@@ -27,12 +27,10 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\DataRetentionGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\User\UserGateway;
-
-//Module includes
-require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
     // Access denied
@@ -104,30 +102,40 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             $form->addHiddenValue('address', $session->get('address'));
 
+            $roleCategories = array_keys(array_filter([
+                'Staff' => $staff,
+                'Student' => $student,
+                'Parent' => $parent,
+                'Other' => $other,
+            ])) ?: ['Other'];
+            $personalDataFields = $container->get(PersonalDataFieldSettings::class);
+            $isVisible = fn ($name) => $personalDataFields->isVisible($name, $roleCategories);
+            $isRequired = fn ($name) => $personalDataFields->isRequired($name, $roleCategories);
+
             // BASIC INFORMATION
             $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('title'));
                 $row->addLabel('title', __('Title'));
                 $row->addSelectTitle('title');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('surname'));
                 $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-                $row->addTextField('surname')->required()->maxLength(60);
+                $row->addTextField('surname')->required($isRequired('surname'))->maxLength(60);
 
             $row = $form->addRow();
                 $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
                 $row->addTextField('firstName')->required()->maxLength(60);
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('preferredName'));
                 $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-                $row->addTextField('preferredName')->required()->maxLength(60);
+                $row->addTextField('preferredName')->required($isRequired('preferredName'))->maxLength(60);
 
             $row = $form->addRow();
                 $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
                 $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('nameInCharacters'));
                 $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
                 $row->addTextField('nameInCharacters')->maxLength(60);
 
@@ -135,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $row->addLabel('gender', __('Gender'));
                 $row->addSelectGender('gender')->required();
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('dob'));
                 $row->addLabel('dob', __('Date of Birth'));
                 $row->addDate('dob');
 
@@ -244,30 +252,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             // CONTACT INFORMATION
             $form->addRow()->addHeading('Contact Information', __('Contact Information'));
 
-            $row = $form->addRow();
+            $settingGateway = $container->get(SettingGateway::class);
+
+            $row = $form->addRow()->onlyIf($isVisible('email'));
                 $emailLabel = $row->addLabel('email', __('Email'));
                 $email = $row->addEmail('email');
 
-            $settingGateway = $container->get(SettingGateway::class);
-
             $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
-            if ($uniqueEmailAddress == 'Y') {
+            if ($uniqueEmailAddress == 'Y' && $isVisible('email')) {
                 $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
             }
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('emailAlternate'));
                 $row->addLabel('emailAlternate', __('Alternate Email'));
                 $row->addEmail('emailAlternate');
 
             $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '') ? 'Y' : '';
+            $addressVisible = $isVisible('address1') || $isVisible('address1District') || $isVisible('address1Country') || $isVisible('address2') || $isVisible('address2District') || $isVisible('address2Country');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($addressVisible);
                 $row->addLabel('showAddresses', __('Enter Personal Address?'));
                 $row->addYesNo('showAddresses')->setValue($addressSet ?? 'N');
 
             $form->toggleVisibilityByClass('address')->onClick('showAddresses')->when('Y');
 
-            $row = $form->addRow()->addClass('address');
+            $row = $form->addRow()->addClass('address')->onlyIf($addressVisible);
             $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
                 ->append('<ol>')
                 ->append('<li>'.__('If the user is not in a family.').'</li>')
@@ -275,15 +284,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 ->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
                 ->append('</ol>');
 
-            $row = $form->addRow()->addClass('address');
+            $row = $form->addRow()->addClass('address')->onlyIf($isVisible('address1'));
                 $row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
                 $row->addTextArea('address1')->maxLength(255)->setRows(2);
 
-            $row = $form->addRow()->addClass('address');
+            $row = $form->addRow()->addClass('address')->onlyIf($isVisible('address1District'));
                 $row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
                 $row->addTextFieldDistrict('address1District');
 
-            $row = $form->addRow()->addClass('address');
+            $row = $form->addRow()->addClass('address')->onlyIf($isVisible('address1Country'));
                 $row->addLabel('address1Country', __('Address 1 Country'));
                 $row->addSelectCountry('address1Country');
 
@@ -315,20 +324,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 }
             }
 
-            $row = $form->addRow()->addClass('address');
+            $row = $form->addRow()->addClass('address')->onlyIf($isVisible('address2'));
                 $row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
                 $row->addTextArea('address2')->maxLength(255)->setRows(2);
 
-            $row = $form->addRow()->addClass('address');
+            $row = $form->addRow()->addClass('address')->onlyIf($isVisible('address2District'));
                 $row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
                 $row->addTextFieldDistrict('address2District');
 
-            $row = $form->addRow()->addClass('address');
+            $row = $form->addRow()->addClass('address')->onlyIf($isVisible('address2Country'));
                 $row->addLabel('address2Country', __('Address 2 Country'));
                 $row->addSelectCountry('address2Country');
 
             for ($i = 1; $i < 5; ++$i) {
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('phone'.$i));
                 $row->addLabel('phone'.$i, __('Phone').' '.$i)->description(__('Type, country code, number.'));
                 $row->addPhoneNumber('phone'.$i);
             }
@@ -395,24 +404,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             // BACKGROUND INFORMATION
             $form->addRow()->addHeading('Background Information', __('Background Information'));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('languageFirst'));
                 $row->addLabel('languageFirst', __('First Language'));
                 $row->addSelectLanguage('languageFirst');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('languageSecond'));
                 $row->addLabel('languageSecond', __('Second Language'));
                 $row->addSelectLanguage('languageSecond');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('languageThird'));
                 $row->addLabel('languageThird', __('Third Language'));
                 $row->addSelectLanguage('languageThird');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('countryOfBirth'));
                 $row->addLabel('countryOfBirth', __('Country of Birth'));
                 $row->addSelectCountry('countryOfBirth');
 
             $ethnicities = $settingGateway->getSettingByScope('User Admin', 'ethnicity');
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('ethnicity'));
                 $row->addLabel('ethnicity', __('Ethnicity'));
                 if (!empty($ethnicities)) {
                     $row->addSelect('ethnicity')->fromString($ethnicities)->placeholder();
@@ -421,7 +430,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 }
 
             $religions = $settingGateway->getSettingByScope('User Admin', 'religions');
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('religion'));
                 $row->addLabel('religion', __('Religion'));
                 if (!empty($religions)) {
                     $row->addSelect('religion')->fromString($religions)->placeholder();
@@ -445,15 +454,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             if ($parent) {
                 $form->addRow()->addHeading('Employment', __('Employment'));
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('profession'));
                     $row->addLabel('profession', __('Profession'));
                     $row->addTextField('profession')->maxLength(90);
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('employer'));
                     $row->addLabel('employer', __('Employer'));
                     $row->addTextField('employer')->maxLength(90);
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('jobTitle'));
                     $row->addLabel('jobTitle', __('Job Title'));
                     $row->addTextField('jobTitle')->maxLength(90);
             }
@@ -464,35 +473,35 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                 $form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency1Name'));
                     $row->addLabel('emergency1Name', __('Contact 1 Name'));
                     $row->addTextField('emergency1Name')->maxLength(90);
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency1Relationship'));
                     $row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
                     $row->addSelectEmergencyRelationship('emergency1Relationship');
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency1Number1'));
                     $row->addLabel('emergency1Number1', __('Contact 1 Number 1'));
                     $row->addTextField('emergency1Number1')->maxLength(30);
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency1Number2'));
                     $row->addLabel('emergency1Number2', __('Contact 1 Number 2'));
                     $row->addTextField('emergency1Number2')->maxLength(30);
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency2Name'));
                     $row->addLabel('emergency2Name', __('Contact 2 Name'));
                     $row->addTextField('emergency2Name')->maxLength(90);
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency2Relationship'));
                     $row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
                     $row->addSelectEmergencyRelationship('emergency2Relationship');
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency2Number1'));
                     $row->addLabel('emergency2Number1', __('Contact 2 Number 1'));
                     $row->addTextField('emergency2Number1')->maxLength(30);
 
-                $row = $form->addRow();
+                $row = $form->addRow()->onlyIf($isVisible('emergency2Number2'));
                     $row->addLabel('emergency2Number2', __('Contact 2 Number 2'));
                     $row->addTextField('emergency2Number2')->maxLength(30);
             }
@@ -535,7 +544,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     $row->addTextField('lockerNumber')->maxLength(20);
             }
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('vehicleRegistration'));
                 $row->addLabel('vehicleRegistration', __('Vehicle Registration'));
                 $row->addTextField('vehicleRegistration')->maxLength(20);
 

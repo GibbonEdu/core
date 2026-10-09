@@ -27,6 +27,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonPhotoGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
@@ -35,9 +36,6 @@ require_once __DIR__ . '/../../gibbon.php';
 
 $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST, ['website' => 'URL']);
-
-//Module includes
-include './moduleFunctions.php';
 
 $logGateway = $container->get(LogGateway::class);
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -245,8 +243,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $agreements = !empty($_POST['studentAgreements']) ? implode(',', $_POST['studentAgreements']) : null;
             $dayType = $_POST['dayType'] ?? null;
 
-            //Validate Inputs
-            if ($surname == '' || $firstName == '' || $preferredName == '' || $officialName == '' || $gender == '' || $username == '' || $status == '' || $gibbonRoleIDPrimary == '') {
+            // Keep existing DB values for Hidden personal-data fields
+            $personalDataFields = $container->get(PersonalDataFieldSettings::class);
+            $roleCategories = array_keys(array_filter(['Staff' => $staff, 'Student' => $student, 'Parent' => $parent, 'Other' => $other])) ?: ['Other'];
+            foreach ($personalDataFields->getHiddenFields($roleCategories) as $field) {
+                $$field = $row[$field] ?? '';
+            }
+
+            // Validate Inputs
+            $missingRequiredName = false;
+            foreach (['surname', 'firstName', 'preferredName', 'officialName'] as $nameField) {
+                if ($personalDataFields->isRequired($nameField, $roleCategories) && ${$nameField} == '') {
+                    $missingRequiredName = true;
+                    break;
+                }
+            }
+
+            if ($missingRequiredName || $gender == '' || $username == '' || $status == '' || $gibbonRoleIDPrimary == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {

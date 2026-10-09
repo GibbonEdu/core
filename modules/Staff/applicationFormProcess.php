@@ -29,6 +29,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Domain\User\UserGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
@@ -41,12 +42,10 @@ if (!$session->has('systemSettingsSet')) {
     getSystemSettings($guid, $connection2);
 }
 
-//Module includes from User Admin (for custom fields)
-include '../User Admin/moduleFunctions.php';
-
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/applicationForm.php';
 
 $settingGateway = $container->get(SettingGateway::class);
+$personalDataFields = $container->get(PersonalDataFieldSettings::class);
 
 $proceed = false;
 $public = false;
@@ -90,6 +89,13 @@ if ($proceed == false) {
     $languageSecond = $_POST['languageSecond'] ?? '';
     $languageThird = $_POST['languageThird'] ?? '';
     $countryOfBirth = $_POST['countryOfBirth'] ?? '';
+
+    foreach (['countryOfBirth', 'languageFirst', 'languageSecond', 'languageThird'] as $field) {
+        if (!$personalDataFields->isVisible($field, 'Staff')) {
+            $$field = '';
+        }
+    }
+
     $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
     $phone1Type = null;
     if (isset($_POST['phone1Type'])) {
@@ -124,7 +130,8 @@ if ($proceed == false) {
     }
 
     //VALIDATE INPUTS
-    if (count($gibbonStaffJobOpeningIDs) < 1 or ($gibbonPersonID == null and ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageFirst == '' or $email == '' or $homeAddress == '' or $homeAddressDistrict == '' or $homeAddressCountry == '' or $phone1 == '')) or (isset($_POST['referenceEmail1']) and $referenceEmail1 == '') or (isset($_POST['referenceEmail2']) and $referenceEmail2 == '') or (isset($_POST['agreement']) and $agreement != 'Y')) {
+    $languageFirstRequired = $personalDataFields->isVisible('languageFirst', 'Staff') && $languageFirst == '';
+    if (count($gibbonStaffJobOpeningIDs) < 1 or ($gibbonPersonID == null and ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageFirstRequired or $email == '' or $homeAddress == '' or $homeAddressDistrict == '' or $homeAddressCountry == '' or $phone1 == '')) or (isset($_POST['referenceEmail1']) and $referenceEmail1 == '') or (isset($_POST['referenceEmail2']) and $referenceEmail2 == '') or (isset($_POST['agreement']) and $agreement != 'Y')) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {

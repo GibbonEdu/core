@@ -27,6 +27,7 @@ use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -46,6 +47,7 @@ class EmergencyContactsPage extends ProfilePage
     private UserGateway $userGateway;
     private StudentGateway $studentGateway;
     private SettingGateway $settingGateway;
+    private PersonalDataFieldSettings $personalDataFields;
 
     public function __construct(
         Session $session,
@@ -53,12 +55,14 @@ class EmergencyContactsPage extends ProfilePage
         UserGateway $userGateway,
         StudentGateway $studentGateway,
         SettingGateway $settingGateway,
+        PersonalDataFieldSettings $personalDataFields,
     ) {
         parent::__construct($session);
         $this->familyGateway = $familyGateway;
         $this->userGateway = $userGateway;
         $this->studentGateway = $studentGateway;
         $this->settingGateway = $settingGateway;
+        $this->personalDataFields = $personalDataFields;
     }
 
     /**
@@ -201,16 +205,22 @@ class EmergencyContactsPage extends ProfilePage
 
         for ($i = 1; $i <= 2; $i++) {
             $emergency = 'emergency' . $i;
-            $table->addColumn($emergency . 'Name', __('Contact ' . $i))
-                ->format(function($row) use ($emergency) {
-                    if ($row[$emergency . 'Relationship'] != '') {
-                        return $row[$emergency . 'Name'] . ' (' . __($row[$emergency . 'Relationship']) . ')';
-                    }
-                    return $row[$emergency . 'Name'];
-                });
+            if ($this->personalDataFields->isVisible($emergency.'Name', 'Student')) {
+                $table->addColumn($emergency . 'Name', __('Contact ' . $i))
+                    ->format(function($row) use ($emergency) {
+                        if ($row[$emergency . 'Relationship'] != '') {
+                            return $row[$emergency . 'Name'] . ' (' . __($row[$emergency . 'Relationship']) . ')';
+                        }
+                        return $row[$emergency . 'Name'];
+                    });
+            }
 
-            $table->addColumn($emergency . 'Number1', __('Number 1'));
-            $table->addColumn($emergency . 'Number2', __('Number 2'));
+            if ($this->personalDataFields->isVisible($emergency.'Number1', 'Student')) {
+                $table->addColumn($emergency . 'Number1', __('Number 1'));
+            }
+            if ($this->personalDataFields->isVisible($emergency.'Number2', 'Student')) {
+                $table->addColumn($emergency . 'Number2', __('Number 2'));
+            }
         }
 
         return $table->render([$student]);

@@ -27,6 +27,8 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\PersonPhotoGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
@@ -97,6 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $countryOfBirth = $_POST['countryOfBirth'] ?? '';
     $ethnicity = $_POST['ethnicity'] ?? '';
     $religion = $_POST['religion'] ?? '';
+
     $profession = $_POST['profession'] ?? '';
     $employer = $_POST['employer'] ?? '';
     $jobTitle = $_POST['jobTitle'] ?? '';
@@ -124,10 +127,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $privacy = !empty($_POST['privacyOptions']) ? implode(',', $_POST['privacyOptions']) : null;
     $agreements = !empty($_POST['studentAgreements']) ? implode(',', $_POST['studentAgreements']) : null;
+
+    // Clear Hidden personal-data fields for the new user's primary role
+    $personalDataFields = $container->get(PersonalDataFieldSettings::class);
+    $roleCategory = $container->get(RoleGateway::class)->getRoleCategory($_POST['gibbonRoleIDPrimary'] ?? '') ?: 'Other';
+    foreach ($personalDataFields->getHiddenFields($roleCategory) as $field) {
+        $$field = '';
+    }
     $dayType = $_POST['dayType'] ?? null;
 
-    //Validate Inputs
-    if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $username == '' or $password == '' or $passwordConfirm == '' or $status == '' or $gibbonRoleIDPrimary == '') {
+    // Validate Inputs
+    $missingRequiredName = false;
+    foreach (['surname', 'firstName', 'preferredName', 'officialName'] as $nameField) {
+        if ($personalDataFields->isRequired($nameField, $roleCategory) && ${$nameField} == '') {
+            $missingRequiredName = true;
+            break;
+        }
+    }
+    if ($missingRequiredName or $gender == '' or $username == '' or $password == '' or $passwordConfirm == '' or $status == '' or $gibbonRoleIDPrimary == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {

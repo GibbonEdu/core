@@ -23,6 +23,7 @@ namespace Gibbon\Data;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -59,6 +60,11 @@ class ImportType
      * Has the structure been checked against the database?
      */
     protected $validated = false;
+
+    /**
+     * @var PersonalDataFieldSettings|null
+     */
+    protected $personalDataFields;
 
     /**
      * Relational data: System-wide (for filters)
@@ -102,10 +108,12 @@ class ImportType
         array $data,
         PasswordPolicy $passwordPolicy,
         Connection $pdo = null,
-        $validateStructure = true
+        $validateStructure = true,
+        ?PersonalDataFieldSettings $personalDataFields = null
     )
     {
         $this->passwordPolicy = $passwordPolicy;
+        $this->personalDataFields = $personalDataFields;
 
         if (isset($data['details'])) {
             $this->details = $data['details'];
@@ -266,7 +274,7 @@ class ImportType
 
             if (isset($fileData['details']) && isset($fileData['details']['type'])) {
                 $fileData['details']['grouping'] = (isset($fileData['access']['module']))? $fileData['access']['module'] : 'General';
-                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $passwordPolicy, $pdo, $validateStructure);
+                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $passwordPolicy, $pdo, $validateStructure, new PersonalDataFieldSettings($settingGateway));
             }
         }
 
@@ -287,7 +295,8 @@ class ImportType
                     $fileData,
                     $passwordPolicy,
                     $pdo,
-                    $validateStructure
+                    $validateStructure,
+                    new PersonalDataFieldSettings($settingGateway)
                 );
             }
         }
@@ -344,7 +353,7 @@ class ImportType
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
 
-        return new ImportType($fileData, $passwordPolicy, $pdo);
+        return new ImportType($fileData, $passwordPolicy, $pdo, true, new PersonalDataFieldSettings($settingGateway));
     }
 
     /**
@@ -1152,7 +1161,13 @@ class ImportType
         }
 
         $hidden = $this->fields[$fieldName]['args']['hidden'] ?? false;
-        return is_array($hidden) ? in_array($this->getCurrentTable(), $hidden): $hidden;
+        if (is_array($hidden) ? in_array($this->getCurrentTable(), $hidden) : $hidden) {
+            return true;
+        }
+
+        // Honour User Admin personal-data Hidden settings for import/export columns
+        return $this->personalDataFields
+            && $this->personalDataFields->isHiddenFromExport($fieldName);
     }
 
     /**
