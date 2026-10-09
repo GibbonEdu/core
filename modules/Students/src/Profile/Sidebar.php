@@ -90,7 +90,7 @@ class Sidebar extends ProfilePage
             return '';
         }
 
-        $highestAction = Access::get('Students', 'student_view_details');
+        $action = Access::get('Students', 'student_view_details');
 
         $search = $_GET['search'] ?? '';
         $allStudents = $_GET['allStudents'] ?? '';
@@ -100,7 +100,7 @@ class Sidebar extends ProfilePage
 
         // Prepare alert bar
         $alert = '';
-        if ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
+        if ($action->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
             $alert = $this->alert->getAlertBar($this->gibbonPersonID, ['wrap' => false, 'large' => true]);
         }
 

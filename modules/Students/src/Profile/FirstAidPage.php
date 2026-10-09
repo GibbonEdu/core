@@ -154,8 +154,8 @@ class FirstAidPage extends ProfilePage
         $highestActionFirstAid = Access::get('Students', 'firstAidRecord');
         $table->addActionColumn()
             ->addParam('gibbonPersonID', $this->gibbonPersonID)
-            ->addParam('gibbonFormGroupID', $student['gibbonFormGroupID'])
-            ->addParam('gibbonYearGroupID', $student['gibbonYearGroupID'])
+            ->addParam('gibbonFormGroupID', $student['gibbonFormGroupID'] ?? '')
+            ->addParam('gibbonYearGroupID', $student['gibbonYearGroupID'] ?? '')
             ->addParam('gibbonFirstAidID')
             ->format(function ($person, $actions) use ($highestActionFirstAid) {
                 if ($highestActionFirstAid->allows('First Aid Record_editAll')) {

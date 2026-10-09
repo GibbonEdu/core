@@ -250,8 +250,8 @@ class EmergencyContactsPage extends ProfilePage
 
         $staff = $this->studentGateway->selectAllRelatedUsersByStudent(
             $this->gibbonSchoolYearID,
-            $student['gibbonYearGroupID'],
-            $student['gibbonFormGroupID'],
+            $student['gibbonYearGroupID'] ?? '',
+            $student['gibbonFormGroupID'] ?? '',
             $this->gibbonPersonID,
             false
         )->fetchAll();

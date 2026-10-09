@@ -33,8 +33,8 @@ if (!Access::allows('Students', 'student_view_details')) {
     $page->scripts->add('chart');
 
     // Get action with highest precedence
-    $highestAction = Access::get('Students', 'student_view_details');
-    if (empty($highestAction)) {
+    $action = Access::get('Students', 'student_view_details');
+    if (empty($action)) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     }
@@ -56,29 +56,29 @@ if (!Access::allows('Students', 'student_view_details')) {
     $skipBrief = false;
 
     // Skip brief for those with _full or _fullNoNotes
-    if ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
+    if ($action->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
         $skipBrief = true;
     }
 
     // Test if View Student Profile_myChildren is available and parent has access to this student
-    if (Access::allows('Students', 'student_view_details', 'View Student Profile_myChildren')) {
+    if ($action->highest('View Student Profile_myChildren')) {
         $student = $studentGateway->getStudentByFamilyAdult($gibbonPersonID, $session->get('gibbonPersonID'));
         if (!empty($student)) {
             $skipBrief = true;
         }
     }
 
-    if (Access::allows('Students', 'student_view_details', 'View Student Profile_my')) {
+    if ($action->highest('View Student Profile_my')) {
         if ($gibbonPersonID == $session->get('gibbonPersonID')) {
             $skipBrief = true;
-        } elseif (!Access::allows('Students', 'student_view_details', 'View Student Profile_brief')) {
+        } elseif (!$action->allows('View Student Profile_brief')) {
             $page->addError(__('You do not have access to this action.'));
             return;
         }
     }
 
     // Handle brief profile view
-    if (Access::allows('Students', 'student_view_details', 'View Student Profile_brief') && !$skipBrief) {
+    if ($action->allows('View Student Profile_brief') && !$skipBrief) {
         $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
 
         $briefPage = $container->get(\Gibbon\Module\Students\Profile\BriefPage::class);
@@ -96,12 +96,12 @@ if (!Access::allows('Students', 'student_view_details')) {
     }
 
     // Handle full profile view
-    if ($highestAction->allows('View Student Profile_myChildren')) {
+    if ($action->highest('View Student Profile_myChildren')) {
         $student = $studentGateway->getStudentByFamilyAdult($gibbonPersonID, $session->get('gibbonPersonID'));
-    } elseif ($highestAction->allows('View Student Profile_my')) {
+    } elseif ($action->highest('View Student Profile_my')) {
         $gibbonPersonID = $session->get('gibbonPersonID');
         $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
-    } elseif ($highestAction->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
+    } elseif ($action->allowsAny('View Student Profile_full', 'View Student Profile_fullEditAllNotes', 'View Student Profile_fullNoNotes')) {
         $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, $allStudents == 'on')->fetch();
     } else {
         $page->addError(__('You do not have access to this action.'));
@@ -116,11 +116,6 @@ if (!Access::allows('Students', 'student_view_details')) {
     $page->breadcrumbs
         ->add(__('View Student Profiles'), 'student_view.php')
         ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
-
-    // When viewing left students, they won't have a year group ID
-    if (empty($student['gibbonYearGroupID'])) {
-        $student['gibbonYearGroupID'] = '';
-    }
 
     if (empty($subpage) && empty($hook)) {
         $subpage = 'Overview';
@@ -163,9 +158,7 @@ if (!Access::allows('Students', 'student_view_details')) {
         $hookPage->setStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
         $hookPage->setHook($hook, $_GET['gibbonHookID'] ?? '');
         
-        echo '<h2>';
-        echo $hookPage->getPageName();
-        echo '</h2>';
+        echo Format::heading($hookPage->getPageName(), 'h2');
         
         if (!$hookPage->checkAccess()) {
             echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
@@ -181,9 +174,7 @@ if (!Access::allows('Students', 'student_view_details')) {
         $pageClass = $subpageClasses[$subpage];
         $profilePage = $container->get($pageClass);
 
-        echo '<h2>';
-        echo $profilePage->getPageName();
-        echo '</h2>';
+        echo Format::heading($profilePage->getPageName(), 'h2');
         
         // Set student context
         $profilePage->setStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);

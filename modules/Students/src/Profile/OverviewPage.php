@@ -419,8 +419,8 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
     {
         $staff = $this->studentGateway->selectAllRelatedUsersByStudent(
             $this->gibbonSchoolYearID,
-            $student['gibbonYearGroupID'],
-            $student['gibbonFormGroupID'],
+            $student['gibbonYearGroupID'] ?? '',
+            $student['gibbonFormGroupID'] ?? '',
             $this->gibbonPersonID
         )->fetchAll();
         

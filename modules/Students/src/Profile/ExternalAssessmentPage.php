@@ -99,7 +99,7 @@ class ExternalAssessmentPage extends ProfilePage
         
         // Include module functions and render external assessment
         include './modules/Formal Assessment/moduleFunctions.php';
-        \externalAssessmentDetails($this->session->get('guid'), $this->gibbonPersonID, $this->pdo->getConnection(), $student['gibbonYearGroupID']);
+        \externalAssessmentDetails($this->session->get('guid'), $this->gibbonPersonID, $this->pdo->getConnection(), $student['gibbonYearGroupID'] ?? '');
         
         return ob_get_clean();
     }
