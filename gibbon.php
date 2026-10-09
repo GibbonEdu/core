@@ -129,7 +129,7 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
         // Find out the base installation URL path.
         $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
         $baseDir = realpath(__DIR__) . '/';
-        $urlBasePath = substr($baseDir, $prefixLength);
+        $urlBasePath = str_replace('\\', '/', substr($baseDir, $prefixLength));
 
         // Construct the full URL to the base URL path.
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
