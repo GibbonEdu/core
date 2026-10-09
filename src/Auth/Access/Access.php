@@ -49,7 +49,7 @@ class Access
      *
      * @var array
      */
-    protected array $cache;
+    protected array $cache = [];
 
     /**
      * Constructor.
@@ -75,7 +75,7 @@ class Access
      */
     public function allows(string $module, string $routePath, string $actionName = ''): bool
     {
-        return $this->getAction(Resource::fromRoute($module, $routePath, $actionName))->allows();
+        return $this->getAction(Resource::fromRoute($module, $routePath))->allows($actionName);
     }
 
     /**
@@ -88,7 +88,7 @@ class Access
      */
     public function denies(string $module, string $routePath, string $actionName = ''): bool
     {
-        return !$this->getAction(Resource::fromRoute($module, $routePath, $actionName))->allows();
+        return !$this->getAction(Resource::fromRoute($module, $routePath))->allows($actionName);
     }
 
     /**
@@ -96,12 +96,11 @@ class Access
      *
      * @param string $module
      * @param string $routePath
-     * @param string $actionName
      * @return Action
      */
-    public function get(string $module, string $routePath, string $actionName = ''): Action
+    public function get(string $module, string $routePath): Action
     {
-        return $this->getAction(Resource::fromRoute($module, $routePath, $actionName));
+        return $this->getAction(Resource::fromRoute($module, $routePath));
     }
 
     /**
@@ -114,6 +113,16 @@ class Access
     public function getHighestAction(string $module, string $routePath): ?string
     {
         return $this->getAction(Resource::fromRoute($module, $routePath))->getHighestAction();
+    }
+
+    /**
+     * Get the number of cached resources.
+     *
+     * @return int
+     */
+    public function getCacheCount(): int
+    {
+        return count($this->cache);
     }
 
     /**
@@ -151,8 +160,7 @@ class Access
         $results = $this->actionGateway->selectModuleActionsByRole(
             $this->session->get('gibbonRoleIDCurrent'),
             $resource->getModule(),
-            $resource->getRoutePath(),
-            $resource->getActionName()
+            $resource->getRoutePath()
         )->fetchAll();
 
         $actions = array_map(function ($row) {
