@@ -246,6 +246,16 @@ class Sidebar extends ProfilePage
             ];
         }
 
+        // Student Alerts
+        if (Access::allows('Student Alerts', 'studentAlerts_manage')) {
+            $studentMenuItems[] = [
+                'category' => $mainMenu['Student Alerts'],
+                'name' => 'Student Alerts',
+                'url' => $baseURL.'&subpage=Student Alerts',
+                'active' => $subpage == 'Student Alerts'
+            ];
+        }
+
         // Library Borrowing
         if (Access::allows('Library', 'library_browse')) {
             $studentMenuItems[] = [

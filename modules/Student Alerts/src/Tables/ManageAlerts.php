@@ -58,9 +58,10 @@ class ManageAlerts
      * @param string $gibbonYearGroupID
      * @param string $gibbonYearGroupIDHOY
      * @param bool   $includeHeaderActions
+     * @param bool   $includeFilters Table filters.
      * @return DataTable
      */
-    public function create($gibbonSchoolYearID, $gibbonPersonID = '', $gibbonFormGroupID = '', $gibbonYearGroupID = '', $gibbonYearGroupIDHOY = '', $includeHeaderActions = true)
+    public function create($gibbonSchoolYearID, $gibbonPersonID = '', $gibbonFormGroupID = '', $gibbonYearGroupID = '', $gibbonYearGroupIDHOY = '', $includeHeaderActions = true, $includeFilters = true)
     {
         $action = $this->access->get('Student Alerts', 'studentAlerts_manage');
         $gibbonPersonIDCurrent = $this->session->get('gibbonPersonID');
@@ -109,16 +110,18 @@ class ManageAlerts
             return $row;
         });
 
-        $table->addMetaData('filterOptions', [
-            'scope:global'      => __('Scope').': '.__('Global'),
-            'scope:class'       => __('Scope').': '.__('Class'),
-            'status:approved'   => __('Status').': '.__('Approved'),
-            'status:pending'    => __('Status').': '.__('Pending'),
-            'status:declined'   => __('Status').': '.__('Declined'),
-            'status:cancelled'  => __('Status').': '.__('Cancelled'),
-            'context:automatic' => __('Automatic'),
-            'context:manual'    => __('Manual'),
-        ]);
+        if ($includeFilters) {
+            $table->addMetaData('filterOptions', [
+                'scope:global'      => __('Scope').': '.__('Global'),
+                'scope:class'       => __('Scope').': '.__('Class'),
+                'status:approved'   => __('Status').': '.__('Approved'),
+                'status:pending'    => __('Status').': '.__('Pending'),
+                'status:declined'   => __('Status').': '.__('Declined'),
+                'status:cancelled'  => __('Status').': '.__('Cancelled'),
+                'context:automatic' => __('Automatic'),
+                'context:manual'    => __('Manual'),
+            ]);
+        }
 
         $table->addColumn('tag', __('Tag'))
             ->context('primary')
@@ -211,10 +214,8 @@ class ManageAlerts
                         ->setIcon('reject');
                 }
 
-                if ($alert['status'] != 'Pending') {
-                    $actions->addAction('view', __('View'))
-                        ->setURL('/modules/Student Alerts/studentAlerts_manage_view.php');
-                }
+                $actions->addAction('view', __('View'))
+                    ->setURL('/modules/Student Alerts/studentAlerts_manage_view.php');
 
                 if ($alert['context'] == 'Automatic') return;
 
