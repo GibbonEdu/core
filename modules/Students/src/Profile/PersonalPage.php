@@ -201,11 +201,15 @@ class PersonalPage extends ProfilePage
         if ($this->personalDataFields->isVisible('surname', 'Student')) {
             $col->addColumn('surname', __('Surname'));
         }
-        $col->addColumn('firstName', __('First Name'))->addClass('col-span-2');
+        if ($this->personalDataFields->isVisible('firstName', 'Student')) {
+            $col->addColumn('firstName', __('First Name'))->addClass('col-span-2');
+        }
         if ($this->personalDataFields->isVisible('preferredName', 'Student')) {
             $col->addColumn('preferredName', __('Preferred Name'));
         }
-        $col->addColumn('officialName', __('Official Name'));
+        if ($this->personalDataFields->isVisible('officialName', 'Student')) {
+            $col->addColumn('officialName', __('Official Name'));
+        }
         if ($this->personalDataFields->isVisible('nameInCharacters', 'Student')) {
             $col->addColumn('nameInCharacters', __('Name In Characters'));
         }

@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // Honour personal-data field settings across all role categories
     $personalDataFields = $container->get(PersonalDataFieldSettings::class);
     $roleCategoriesAll = ['Staff', 'Student', 'Parent', 'Other'];
-    $isVisible = fn ($name) => $personalDataFields->isVisible($name, $roleCategoriesAll);
+    $isVisible = fn ($name) => $personalDataFields->isVisible($name, $roleCategoriesAll, true);
     $isRequired = fn ($name) => $personalDataFields->isRequired($name, $roleCategoriesAll);
 
     // BASIC INFORMATION
@@ -79,17 +79,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
         $row->addTextField('surname')->required($isRequired('surname'))->maxLength(60);
 
-    $row = $form->addRow();
+    $row = $form->addRow()->onlyIf($isVisible('firstName'));
         $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-        $row->addTextField('firstName')->required()->maxLength(60);
+        $row->addTextField('firstName')->required($isRequired('firstName'))->maxLength(60);
 
     $row = $form->addRow()->onlyIf($isVisible('preferredName'));
         $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
         $row->addTextField('preferredName')->required($isRequired('preferredName'))->maxLength(60);
 
-    $row = $form->addRow();
+    $row = $form->addRow()->onlyIf($isVisible('officialName'));
         $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-        $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+        $row->addTextField('officialName')->required($isRequired('officialName'))->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
 
     $row = $form->addRow()->onlyIf($isVisible('nameInCharacters'));
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));

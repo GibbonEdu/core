@@ -128,10 +128,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $privacy = !empty($_POST['privacyOptions']) ? implode(',', $_POST['privacyOptions']) : null;
     $agreements = !empty($_POST['studentAgreements']) ? implode(',', $_POST['studentAgreements']) : null;
 
-    // Clear Hidden personal-data fields for the new user's primary role
+    // Clear Disabled fields only
     $personalDataFields = $container->get(PersonalDataFieldSettings::class);
     $roleCategory = $container->get(RoleGateway::class)->getRoleCategory($_POST['gibbonRoleIDPrimary'] ?? '') ?: 'Other';
-    foreach ($personalDataFields->getHiddenFields($roleCategory) as $field) {
+    foreach ($personalDataFields->getHiddenFields($roleCategory, true) as $field) {
         $$field = '';
     }
     $dayType = $_POST['dayType'] ?? null;

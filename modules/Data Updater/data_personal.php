@@ -373,7 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('showAddresses', __('Enter Personal Address?'));
                         $row->addYesNo('showAddresses')
                             ->setValue($addressSet ?? 'N')
-                            ->setDisabled(!empty($requiredFields) && $personalDataFields->isReadonly('address1', $rolesForSettings));
+                            ->setDisabled(!empty($requiredFields) && $personalDataFields->isReadOnly('address1', $rolesForSettings));
 
                     $form->toggleVisibilityByClass('address')->onClick('showAddresses')->when('Y');
 

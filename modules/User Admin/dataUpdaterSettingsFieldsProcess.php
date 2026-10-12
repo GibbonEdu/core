@@ -35,8 +35,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     $settings = $_POST['settings'] ?? [];
 
     foreach (['Staff', 'Student', 'Parent', 'Other'] as $roleCategory) {
-        foreach (PersonalDataFieldSettings::ALWAYS_REQUIRED as $field) {
-            $settings[$roleCategory][$field] = 'required';
+        foreach (PersonalDataFieldSettings::CANNOT_DISABLE as $field) {
+            if (($settings[$roleCategory][$field] ?? '') === 'disabled') {
+                $settings[$roleCategory][$field] = '';
+            }
         }
     }
 

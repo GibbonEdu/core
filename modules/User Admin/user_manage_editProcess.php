@@ -243,10 +243,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $agreements = !empty($_POST['studentAgreements']) ? implode(',', $_POST['studentAgreements']) : null;
             $dayType = $_POST['dayType'] ?? null;
 
-            // Keep existing DB values for Hidden personal-data fields
+            // Keep existing DB values for Disabled fields.
             $personalDataFields = $container->get(PersonalDataFieldSettings::class);
             $roleCategories = array_keys(array_filter(['Staff' => $staff, 'Student' => $student, 'Parent' => $parent, 'Other' => $other])) ?: ['Other'];
-            foreach ($personalDataFields->getHiddenFields($roleCategories) as $field) {
+            foreach ($personalDataFields->getHiddenFields($roleCategories, true) as $field) {
                 $$field = $row[$field] ?? '';
             }
 

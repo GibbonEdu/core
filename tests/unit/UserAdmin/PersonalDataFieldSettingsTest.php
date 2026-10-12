@@ -73,6 +73,7 @@ class PersonalDataFieldSettingsTest extends TestCase
         $this->assertTrue($service->isRequired('title', 'Student'));
         $this->assertTrue($service->isRequired('firstName', 'Student'));
         $this->assertTrue($service->isRequired('officialName', 'Student'));
+        $this->assertTrue($service->isVisible('ethnicity', 'Student', true));
     }
 
     public function testLegacyFlatYnSettingsAreConverted()
@@ -115,11 +116,13 @@ class PersonalDataFieldSettingsTest extends TestCase
         ]);
 
         $this->assertFalse($service->isVisible('ethnicity', 'Student'));
+        $this->assertTrue($service->isVisible('ethnicity', 'Student', true));
         $this->assertTrue($service->isVisible('ethnicity', 'Staff'));
         $this->assertTrue($service->isHiddenFromExport('ethnicity'));
         $this->assertTrue($service->isHiddenFromExport('address1'));
         $this->assertFalse($service->isHiddenFromExport('email'));
         $this->assertSame(['ethnicity', 'address1'], $service->getHiddenFields('Student'));
+        $this->assertSame([], $service->getHiddenFields('Student', true));
         $this->assertTrue($service->anyVisible(['email', 'ethnicity'], 'Student'));
         $this->assertFalse($service->anyVisible(['ethnicity', 'address1'], 'Student'));
     }
@@ -151,35 +154,45 @@ class PersonalDataFieldSettingsTest extends TestCase
         $this->assertFalse($service->isVisible('dob', 'Student'));
     }
 
-    public function testSurnameCanBeOptionalWhileCoreNamesStayRequired()
+    public function testNamesCanBeHiddenButNotDisabled()
     {
         $service = $this->createService($this->forAllRoles([
             'surname' => '',
-            'preferredName' => 'required',
             'firstName' => 'hidden',
-            'officialName' => 'readonly',
+            'officialName' => 'disabled',
         ]));
 
-        $this->assertFalse($service->isRequired('surname', 'Student'));
-        $this->assertTrue($service->isRequired('preferredName', 'Student'));
-        $this->assertTrue($service->isRequired('firstName', 'Student'));
-        $this->assertTrue($service->isRequired('officialName', 'Student'));
-        $this->assertTrue($service->isVisible('firstName', 'Student'));
+        $this->assertFalse($service->canDisable('firstName'));
+        $this->assertFalse($service->isVisible('firstName', 'Student'));
+        $this->assertTrue($service->isVisible('firstName', 'Student', true));
+        $this->assertTrue($service->isHiddenFromExport('firstName'));
+        $this->assertSame('', $service->getSettings('Student')['officialName']);
         $this->assertTrue($service->isVisible('officialName', 'Student'));
-        $this->assertFalse($service->isReadonly('officialName', 'Student'));
-        $this->assertFalse($service->isHiddenFromExport('firstName'));
-        $this->assertTrue($service->isAlwaysRequired('firstName'));
-        $this->assertTrue($service->isAlwaysRequired('officialName'));
-        $this->assertFalse($service->isAlwaysRequired('surname'));
-        $this->assertSame('required', $service->getSettings('Student')['firstName']);
-        $this->assertSame('required', $service->getSettings('Student')['officialName']);
+        $this->assertFalse($service->isHiddenFromExport('officialName'));
+    }
+
+    public function testDisabledHidesAdminAndExportWhileHiddenDoesNotHideAdmin()
+    {
+        $service = $this->createService($this->forAllRoles([
+            'ethnicity' => 'hidden',
+            'religion' => 'disabled',
+        ]));
+
+        $this->assertTrue($service->isVisible('ethnicity', 'Student', true));
+        $this->assertFalse($service->isVisible('ethnicity', 'Student'));
+        $this->assertFalse($service->isVisible('religion', 'Student', true));
+        $this->assertFalse($service->isVisible('religion', 'Student'));
+        $this->assertTrue($service->isHiddenFromExport('ethnicity'));
+        $this->assertTrue($service->isHiddenFromExport('religion'));
+        $this->assertSame(['religion'], $service->getHiddenFields('Student', true));
+        $this->assertSame(['ethnicity', 'religion'], $service->getHiddenFields('Student'));
     }
 
     public function testReadonlySetting()
     {
         $service = $this->createService($this->forAllRoles(['preferredName' => 'readonly']));
 
-        $this->assertTrue($service->isReadonly('preferredName', 'Student'));
+        $this->assertTrue($service->isReadOnly('preferredName', 'Student'));
         $this->assertFalse($service->isRequired('preferredName', 'Student'));
     }
 
@@ -211,8 +224,7 @@ class PersonalDataFieldSettingsTest extends TestCase
 
         $this->assertTrue($importType->isFieldHidden('ethnicity'));
         $this->assertFalse($importType->isFieldHidden('email'));
-        // Always-required names are never hidden from import/export
-        $this->assertFalse($importType->isFieldHidden('firstName'));
+        $this->assertTrue($importType->isFieldHidden('firstName'));
         // ImportType's own linked/hidden args still apply
         $this->assertTrue($importType->isFieldHidden('linkedField'));
         $this->assertTrue($importType->isFieldHidden('yamlHidden'));

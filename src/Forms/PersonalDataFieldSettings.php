@@ -24,33 +24,25 @@ namespace Gibbon\Forms;
 use Gibbon\Domain\System\SettingGateway;
 
 /**
- * Resolves personal-data field settings from User Admin
- * personalDataUpdaterRequiredFields (per Staff/Student/Parent/Other).
- *
- * Merge priority matches Data Updater: required > blank > readonly > hidden.
- * firstName and officialName are always required.
+ * Personal Data Field Settings
  *
  * @version v31
  * @since   v31
  */
 class PersonalDataFieldSettings
 {
-    public const ALWAYS_REQUIRED = ['firstName', 'officialName'];
+    public const CANNOT_DISABLE = ['firstName', 'officialName'];
 
-    protected const LEGACY_REQUIRED = ['surname', 'preferredName', 'title'];
+    protected const LEGACY_REQUIRED = ['surname', 'preferredName', 'officialName', 'title', 'firstName'];
     protected const ROLE_CATEGORIES = ['Staff', 'Student', 'Parent', 'Other'];
-    protected const MERGE_PRIORITY = ['required', '', 'readonly', 'hidden'];
+    protected const MERGE_PRIORITY = ['required', '', 'readonly', 'hidden', 'disabled'];
 
     protected SettingGateway $settingGateway;
 
-    /** @var array|null|false */
-    protected $rawSettings = false;
-
-    /** @var array */
-    protected $resolved = [];
-
-    /** @var array|null */
-    protected $hiddenFromExport = null;
+    protected bool $rawSettingsLoaded = false;
+    protected ?array $rawSettings = null;
+    protected array $resolved = [];
+    protected ?array $hiddenFromExport = null;
 
     public function __construct(SettingGateway $settingGateway)
     {
@@ -58,10 +50,12 @@ class PersonalDataFieldSettings
     }
 
     /**
-     * @param string|string[] $roleCategories
-     * @return array fieldName => ''|required|readonly|hidden
+     * Merged field settings for the given role categories.
+     *
+     * @param string|array $roleCategories
+     * @return array
      */
-    public function getSettings($roleCategories = ['Other']): array
+    public function getSettings(string|array $roleCategories = ['Other']): array
     {
         $roleCategories = (array) $roleCategories;
         $cacheKey = implode(',', $roleCategories);
@@ -72,7 +66,9 @@ class PersonalDataFieldSettings
 
         $raw = $this->loadRawSettings();
         if ($raw === null) {
-            return $this->resolved[$cacheKey] = [];
+            $this->resolved[$cacheKey] = [];
+
+            return [];
         }
 
         $byField = [];
@@ -84,47 +80,60 @@ class PersonalDataFieldSettings
 
         $fields = [];
         foreach ($byField as $name => $values) {
-            $fields[$name] = $this->mergeValues($values);
+            $fields[$name] = $this->normalizeSetting($name, $this->mergeValues($values));
         }
 
-        foreach (self::ALWAYS_REQUIRED as $name) {
-            $fields[$name] = 'required';
-        }
+        $this->resolved[$cacheKey] = $fields;
 
-        return $this->resolved[$cacheKey] = $fields;
+        return $fields;
     }
 
     /**
-     * @param string|string[] $roleCategories
+     * Field is shown for these roles. In User Admin, only Disabled is hidden.
+     *
+     * @param string|array $roleCategories
+     * @param bool $admin
+     * @return bool
      */
-    public function isVisible(string $fieldName, $roleCategories = ['Other']): bool
+    public function isVisible(string $fieldName, string|array $roleCategories = ['Other'], bool $admin = false): bool
     {
-        return $this->settingFor($fieldName, $roleCategories) !== 'hidden';
+        $setting = $this->settingFor($fieldName, $roleCategories);
+
+        if ($setting === 'disabled') {
+            return false;
+        }
+
+        return $admin || $setting !== 'hidden';
     }
 
     /**
-     * @param string|string[] $roleCategories
+     * @param string|array $roleCategories
+     * @return bool
      */
-    public function isRequired(string $fieldName, $roleCategories = ['Other']): bool
+    public function isRequired(string $fieldName, string|array $roleCategories = ['Other']): bool
     {
         return $this->settingFor($fieldName, $roleCategories) === 'required';
     }
 
     /**
-     * @param string|string[] $roleCategories
+     * @param string|array $roleCategories
+     * @return bool
      */
-    public function isReadonly(string $fieldName, $roleCategories = ['Other']): bool
+    public function isReadOnly(string $fieldName, string|array $roleCategories = ['Other']): bool
     {
         return $this->settingFor($fieldName, $roleCategories) === 'readonly';
     }
 
     /**
-     * True if any role category has this field Hidden (import/export).
+     * True if any role has this field Hidden or Disabled.
+     *
+     * @param string $fieldName
+     * @return bool
      */
     public function isHiddenFromExport(string $fieldName): bool
     {
         $fieldName = $this->normalizeFieldName($fieldName);
-        if ($fieldName === '' || in_array($fieldName, self::ALWAYS_REQUIRED, true)) {
+        if ($fieldName === '') {
             return false;
         }
 
@@ -134,7 +143,11 @@ class PersonalDataFieldSettings
             if (is_array($raw)) {
                 foreach (self::ROLE_CATEGORIES as $roleCategory) {
                     foreach (($raw[$roleCategory] ?? []) as $name => $value) {
-                        if ($value === 'hidden') {
+                        if (!is_string($value)) {
+                            continue;
+                        }
+                        $value = $this->normalizeSetting($name, $value);
+                        if ($value === 'hidden' || $value === 'disabled') {
                             $this->hiddenFromExport[$name] = true;
                         }
                     }
@@ -146,17 +159,18 @@ class PersonalDataFieldSettings
     }
 
     /**
-     * Hidden field names for these roles, including phone Type/CountryCode companions.
+     * Fields to omit when saving. In User Admin, only Disabled is omitted.
      *
-     * @param string|string[] $roleCategories
+     * @param string|array $roleCategories
+     * @param bool $admin
      * @return string[]
      */
-    public function getHiddenFields($roleCategories = ['Other']): array
+    public function getHiddenFields(string|array $roleCategories = ['Other'], bool $admin = false): array
     {
         $hidden = [];
 
-        foreach ($this->getSettings($roleCategories) as $field => $setting) {
-            if ($setting !== 'hidden') {
+        foreach (array_keys($this->getSettings($roleCategories)) as $field) {
+            if ($this->isVisible($field, $roleCategories, $admin)) {
                 continue;
             }
 
@@ -173,10 +187,11 @@ class PersonalDataFieldSettings
     /**
      * True if any of the given fields are visible for these roles.
      *
-     * @param string[]        $fieldNames
-     * @param string|string[] $roleCategories
+     * @param string[]     $fieldNames
+     * @param string|array $roleCategories
+     * @return bool
      */
-    public function anyVisible(array $fieldNames, $roleCategories = ['Other']): bool
+    public function anyVisible(array $fieldNames, string|array $roleCategories = ['Other']): bool
     {
         foreach ($fieldNames as $fieldName) {
             if ($this->isVisible($fieldName, $roleCategories)) {
@@ -187,13 +202,20 @@ class PersonalDataFieldSettings
         return false;
     }
 
-    public function isAlwaysRequired(string $fieldName): bool
+    /**
+     * @param string $fieldName
+     * @return bool
+     */
+    public function canDisable(string $fieldName): bool
     {
-        return in_array($this->normalizeFieldName($fieldName), self::ALWAYS_REQUIRED, true);
+        return !in_array($this->normalizeFieldName($fieldName), self::CANNOT_DISABLE, true);
     }
 
     /**
      * Map related POST/column names onto the settings key (e.g. phone1Type -> phone1).
+     *
+     * @param string $fieldName
+     * @return string
      */
     public function normalizeFieldName(string $fieldName): string
     {
@@ -205,17 +227,14 @@ class PersonalDataFieldSettings
     }
 
     /**
-     * @param string|string[] $roleCategories
+     * @param string|array $roleCategories
+     * @return string
      */
-    protected function settingFor(string $fieldName, $roleCategories): string
+    protected function settingFor(string $fieldName, string|array $roleCategories): string
     {
         $fieldName = $this->normalizeFieldName($fieldName);
 
-        if (in_array($fieldName, self::ALWAYS_REQUIRED, true)) {
-            return 'required';
-        }
-
-        // No modern settings: keep historical required name fields
+        // No saved settings: keep historical required name fields
         if ($this->loadRawSettings() === null) {
             return in_array($fieldName, self::LEGACY_REQUIRED, true) ? 'required' : '';
         }
@@ -223,6 +242,10 @@ class PersonalDataFieldSettings
         return $this->getSettings($roleCategories)[$fieldName] ?? '';
     }
 
+    /**
+     * @param string[] $values
+     * @return string
+     */
     protected function mergeValues(array $values): string
     {
         foreach (self::MERGE_PRIORITY as $priority) {
@@ -235,15 +258,31 @@ class PersonalDataFieldSettings
     }
 
     /**
+     * firstName and officialName cannot be stored as disabled.
+     *
+     * @param string $fieldName
+     * @param string $value
+     * @return string
+     */
+    protected function normalizeSetting(string $fieldName, string $value): string
+    {
+        if ($value === 'disabled' && !$this->canDisable($fieldName)) {
+            return '';
+        }
+
+        return $value;
+    }
+
+    /**
      * @return array|null
      */
-    protected function loadRawSettings()
+    protected function loadRawSettings(): ?array
     {
-        if ($this->rawSettings !== false) {
+        if ($this->rawSettingsLoaded) {
             return $this->rawSettings;
         }
 
-        $this->rawSettings = null;
+        $this->rawSettingsLoaded = true;
 
         try {
             $decoded = @unserialize(
@@ -256,7 +295,7 @@ class PersonalDataFieldSettings
             if (isset($decoded['Staff']) || isset($decoded['Student'])) {
                 $this->rawSettings = $decoded;
             } else {
-                // Legacy flat Y/N settings → role-keyed required/blank
+                // Legacy flat Y/N settings become role-keyed required or blank
                 $flat = [];
                 foreach ($decoded as $name => $value) {
                     if ($name === 'flag' || is_array($value)) {
@@ -264,6 +303,7 @@ class PersonalDataFieldSettings
                     }
                     $flat[$name] = ($value === 'Y') ? 'required' : '';
                 }
+                $this->rawSettings = [];
                 foreach (self::ROLE_CATEGORIES as $roleCategory) {
                     $this->rawSettings[$roleCategory] = $flat;
                 }

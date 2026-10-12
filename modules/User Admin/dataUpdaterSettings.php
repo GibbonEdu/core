@@ -140,14 +140,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         'required' => __('Required'),
         'readonly' => __('Read Only'),
         'hidden'   => __('Hidden'),
+        'disabled' => __('Disabled'),
     ];
 
     $nonRequiredOptions = $allOptions;
     unset($nonRequiredOptions['required']);
 
-    $alwaysRequiredOptions = [
-        'required' => __('Required'),
-    ];
+    $cannotDisableOptions = $allOptions;
+    unset($cannotDisableOptions['disabled']);
 
     $row = $form->addRow()->setClass('break heading');
         $row->addContent(__('Field'));
@@ -159,24 +159,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     
     foreach ($settingDefaults as $id => $field) {
         $row = $form->addRow();
-        $alwaysRequired = in_array($id, PersonalDataFieldSettings::ALWAYS_REQUIRED, true);
+        $cannotDisable = in_array($id, PersonalDataFieldSettings::CANNOT_DISABLE, true);
 
         if ($field['default'] == 'non-required') {
             $row->addLabel($id, $field['label'])->description(__('This field cannot be required'));
             $options = $nonRequiredOptions;
-        } elseif ($alwaysRequired) {
+        } elseif ($cannotDisable) {
             $row->addLabel($id, $field['label']);
-            $options = $alwaysRequiredOptions;
+            $options = $cannotDisableOptions;
         } else {
             $row->addLabel($id, $field['label']);
             $options = $allOptions;
         }
 
-        $selected = $alwaysRequired ? 'required' : null;
-        $row->addSelect("settings[Staff][{$id}]")->fromArray($options)->selected($selected ?? ($settings['Staff'][$id] ?? $field['default']))->setClass('w-24 float-none')->setTitle(__('Staff'));
-        $row->addSelect("settings[Student][{$id}]")->fromArray($options)->selected($selected ?? ($settings['Student'][$id] ?? $field['default']))->setClass('w-24 float-none')->setTitle(__('Student'));
-        $row->addSelect("settings[Parent][{$id}]")->fromArray($options)->selected($selected ?? ($settings['Parent'][$id] ?? $field['default']))->setClass('w-24 float-none')->setTitle(__('Parent'));
-        $row->addSelect("settings[Other][{$id}]")->fromArray($options)->selected($selected ?? ($settings['Other'][$id] ?? $field['default']))->setClass('w-24 float-none')->setTitle(__('Other'));
+        $row->addSelect("settings[Staff][{$id}]")->fromArray($options)->selected($settings['Staff'][$id] ?? $field['default'])->setClass('w-24 float-none')->setTitle(__('Staff'));
+        $row->addSelect("settings[Student][{$id}]")->fromArray($options)->selected($settings['Student'][$id] ?? $field['default'])->setClass('w-24 float-none')->setTitle(__('Student'));
+        $row->addSelect("settings[Parent][{$id}]")->fromArray($options)->selected($settings['Parent'][$id] ?? $field['default'])->setClass('w-24 float-none')->setTitle(__('Parent'));
+        $row->addSelect("settings[Other][{$id}]")->fromArray($options)->selected($settings['Other'][$id] ?? $field['default'])->setClass('w-24 float-none')->setTitle(__('Other'));
         $row->addCheckbox("settings[flag][{$id}]")->setValue('Y')->checked($settings['flag'][$id] ?? '')->alignLeft()->setOuterClass('w-24')->setLabelClass('hidden')->setTitle(__('Flag Changes'));
     }
 
