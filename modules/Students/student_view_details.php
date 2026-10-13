@@ -153,6 +153,7 @@ if (!Access::allows('Students', 'student_view_details')) {
         'Activities'          => \Gibbon\Module\Students\Profile\ActivitiesPage::class,
         'Homework'            => \Gibbon\Module\Students\Profile\HomeworkPage::class,
         'Behaviour'           => \Gibbon\Module\Students\Profile\BehaviourPage::class,
+        'Student Alerts'      => \Gibbon\Module\Students\Profile\StudentsAlertsPage::class,
     ];
 
     // Handle hook-based subpages (third-party integrations)
@@ -174,6 +175,7 @@ if (!Access::allows('Students', 'student_view_details')) {
         $container->get(ModuleLoader::class)->registerModuleNamespace('Attendance');
         $container->get(ModuleLoader::class)->registerModuleNamespace('Reports');
         $container->get(ModuleLoader::class)->registerModuleNamespace('Planner');
+        $container->get(ModuleLoader::class)->registerModuleNamespace('Student Alerts');
 
         // Handle class-based subpages
         $pageClass = $subpageClasses[$subpage];
