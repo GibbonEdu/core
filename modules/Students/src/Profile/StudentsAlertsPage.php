@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Students\Profile;
 
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Module\StudentAlerts\Tables\ManageAlerts;
+use Gibbon\Module\StudentAlerts\Tables\ManageAlertsTable;
 use Gibbon\Services\Format;
 use Gibbon\Support\Facades\Access;
 
@@ -33,12 +33,12 @@ use Gibbon\Support\Facades\Access;
  */
 class StudentsAlertsPage extends ProfilePage
 {
-    private ManageAlerts $manageAlerts;
+    private ManageAlertsTable $manageAlertsTable;
 
-    public function __construct(Session $session, ManageAlerts $manageAlerts)
+    public function __construct(Session $session, ManageAlertsTable $manageAlertsTable)
     {
         parent::__construct($session);
-        $this->manageAlerts = $manageAlerts;
+        $this->manageAlertsTable = $manageAlertsTable;
     }
 
     /**
@@ -60,7 +60,7 @@ class StudentsAlertsPage extends ProfilePage
             return Format::alert(__('You have not specified one or more required parameters.'));
         }
 
-        $table = $this->manageAlerts->create($this->gibbonSchoolYearID, $this->gibbonPersonID, includeFilters: false);
+        $table = $this->manageAlertsTable->create($this->gibbonSchoolYearID, $this->gibbonPersonID, includeFilters: false);
 
         return $table->getOutput();
     }

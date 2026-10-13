@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Module\StudentAlerts\Tables\ManageAlerts;
+use Gibbon\Module\StudentAlerts\Tables\ManageAlertsTable;
 
 if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAlerts_manage.php')) {
 	// Access denied
@@ -71,7 +71,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Student Alerts/studentAle
     
 
     // ALERTS TABLE
-    $table = $container->get(ManageAlerts::class)->create(
+    $table = $container->get(ManageAlertsTable::class)->create(
         $session->get('gibbonSchoolYearID'),
         $gibbonPersonID,
         $gibbonFormGroupID,

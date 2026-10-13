@@ -30,13 +30,13 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\StudentAlerts\AlertGateway;
 
 /**
- * ManageAlerts
+ * ManageAlertsTable
  *  DataTable for listing student alerts and the actions available on each row.
  *
  * @version v30
  * @since   v30
  */
-class ManageAlerts
+class ManageAlertsTable
 {
     protected $session;
     protected $access;
