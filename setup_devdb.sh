@@ -90,7 +90,9 @@ log "OK: Recreated gibbon database"
 log "Generating config.php"
 docker_compose run --rm config
 [[ -f "${PROJECT_DIR}/config.php" ]] || { err "config.php was not created"; exit 1; }
-php -l "${PROJECT_DIR}/config.php" >/dev/null || { err "generated config.php is not valid PHP (check GUID and CACHING_FACTOR in .env)"; exit 1; }
+# Lint inside the app container so PHP is not needed on the host. The path is relative to the
+# container working directory (/var/www/html) because Git Bash on Windows rewrites absolute paths.
+docker_compose exec -T app php -l config.php >/dev/null || { err "generated config.php is not valid PHP (check GUID and CACHING_FACTOR in .env)"; exit 1; }
 log "OK: config.php created"
 
 log "Executing $(basename "$SCHEMA_FILE") (this may take a few minutes)"

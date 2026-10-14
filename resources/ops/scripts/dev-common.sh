@@ -56,9 +56,11 @@ wait_for_mysql() {
 }
 
 run_codecept() {
+    # Paths are relative to the container working directory (/var/www/html) because
+    # Git Bash on Windows rewrites absolute paths passed to docker.
     docker_compose run --rm --no-deps test \
-        /var/www/html/vendor/codeception/codeception/codecept \
-        -c /var/www/html/tests/codeception.yml \
+        vendor/codeception/codeception/codecept \
+        -c tests/codeception.yml \
         run \
         "$@"
 }
