@@ -14,7 +14,8 @@ require_docker
 : "${ABSOLUTE_URL:=http://localhost:8080}"
 : "${TEST_ABSOLUTE_URL:=http://gibbon.test}"
 
-wait_for_mysql || { err "MySQL did not become ready. Run ./up.sh first."; exit 3; }
+wait_for_mysql || { err "MySQL did not become ready. Run ./up.sh first; if it persists, reset old data with ./up.sh down."; exit 3; }
+wait_for_app || { err "App did not become ready. Run ./up.sh first."; exit 3; }
 
 restore_absolute_url() {
     log "Reverting absoluteURL value in gibbonSetting table"

@@ -6,6 +6,8 @@ Developer Docker only. Start the stack first, then use the scripts below. They c
 ./up.sh
 ```
 
+> **Windows:** run these scripts from Git Bash or WSL2 (see [resources/ops/README.md](../resources/ops/README.md)). Container paths in these scripts are kept relative to `/var/www/html` because Git Bash rewrites absolute paths passed to docker.
+
 ## Unit tests
 
 ```bash

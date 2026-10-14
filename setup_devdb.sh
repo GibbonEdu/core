@@ -10,6 +10,11 @@ source "${PROJECT_DIR}/resources/ops/scripts/dev-common.sh"
 SCHEMA_FILE="${SCHEMA_FILE:-${PROJECT_DIR}/gibbon.sql}"
 DEMO_DATA_FILE="${DEMO_DATA_FILE:-${PROJECT_DIR}/gibbon_demo.sql}"
 
+if [[ "${1:-}" == "--schema-only" ]]; then
+    # Schema only, no demo data (e.g. for testing migrations).
+    DEMO_DATA_FILE=""
+fi
+
 load_env
 require_docker
 
@@ -72,7 +77,7 @@ apply_settings() {
 }
 
 docker_compose config -q >/dev/null
-for f in "$SCHEMA_FILE" "$DEMO_DATA_FILE"; do
+for f in "$SCHEMA_FILE" ${DEMO_DATA_FILE:+"$DEMO_DATA_FILE"}; do
     [[ -r "$f" ]] || { err "cannot read $f"; exit 1; }
 done
 
@@ -80,28 +85,34 @@ log "Cleaning up environment"
 rm -f "${PROJECT_DIR}/config.php"
 log "OK: config.php deleted"
 
+# Generate and check config.php first, so a bad .env value aborts here
+# instead of after the database is dropped and recreated below.
+log "Generating config.php"
+docker_compose run --rm --no-deps -T app bash resources/ops/scripts/generate_config.sh
+[[ -f "${PROJECT_DIR}/config.php" ]] || { err "config.php was not created"; exit 1; }
+# Syntax-check config.php inside the app image, so PHP is not needed on the host.
+# Paths stay relative to /var/www/html: Git Bash rewrites absolute paths passed to docker.
+docker_compose run --rm --no-deps -T app php -l config.php || { err "generated config.php is not valid PHP (check GUID and CACHING_FACTOR in .env)"; exit 1; }
+log "OK: config.php created"
+
 log "Waiting for MySQL to accept connections..."
-wait_for_mysql || { err "MySQL did not become ready within 60s"; exit 3; }
+wait_for_mysql || { err "MySQL did not become ready. Run ./up.sh first; if it persists, reset old data with ./up.sh down."; exit 3; }
 log "OK: MySQL is ready"
 
 mysql_root -e "DROP DATABASE IF EXISTS \`${MYSQL_DATABASE}\`; CREATE DATABASE \`${MYSQL_DATABASE}\`;"
 log "OK: Recreated gibbon database"
 
-log "Generating config.php"
-docker_compose run --rm config
-[[ -f "${PROJECT_DIR}/config.php" ]] || { err "config.php was not created"; exit 1; }
-# Lint inside the app container so PHP is not needed on the host. The path is relative to the
-# container working directory (/var/www/html) because Git Bash on Windows rewrites absolute paths.
-docker_compose exec -T app php -l config.php >/dev/null || { err "generated config.php is not valid PHP (check GUID and CACHING_FACTOR in .env)"; exit 1; }
-log "OK: config.php created"
-
 log "Executing $(basename "$SCHEMA_FILE") (this may take a few minutes)"
 mysql_root "${MYSQL_DATABASE}" < "${SCHEMA_FILE}" || { err "Import schema failed"; exit 1; }
 log "OK: Imported schema"
 
-log "Executing $(basename "$DEMO_DATA_FILE")"
-mysql_relaxed "${MYSQL_DATABASE}" < "${DEMO_DATA_FILE}" || { err "Import demo data failed"; exit 1; }
-log "OK: Imported demo data"
+if [[ -n "$DEMO_DATA_FILE" ]]; then
+    log "Executing $(basename "$DEMO_DATA_FILE")"
+    mysql_relaxed "${MYSQL_DATABASE}" < "${DEMO_DATA_FILE}" || { err "Import demo data failed"; exit 1; }
+    log "OK: Imported demo data"
+else
+    log "Skipping demo data import (--schema-only)"
+fi
 
 log "Applying gibbonSetting overrides"
 add_setting absolutePath           /var/www/html
@@ -123,7 +134,7 @@ apply_settings
 # gibbon.sql already records the current schema version. Only run Updater if
 # version.php is ahead of the dump (cutting-edge / unreleased CHANGEDB lines).
 log "Checking whether a database update is required"
-docker_compose exec -T app php -r '
+docker_compose run --rm --no-deps -T app php -r '
 require "/var/www/html/gibbon.php";
 $updater = $container->get(\Gibbon\Database\Updater::class);
 if (!$updater->isUpdateRequired()) {
