@@ -23,6 +23,7 @@ use Gibbon\Data\ImportType;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\PasswordPolicy;
+use Gibbon\Forms\PersonalDataFieldSettings;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_history_view.php") == false) {
     // Access denied
@@ -48,7 +49,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     }
 
 
-    $importType = ImportType::loadImportType($importData['type'], $container->get(SettingGateway::class), $container->get(PasswordPolicy::class), $pdo);
+    $importType = ImportType::loadImportType($importData['type'], $container->get(SettingGateway::class), $container->get(PasswordPolicy::class), $container->get(PersonalDataFieldSettings::class), $pdo);
     $importData['name'] = $importType->getDetail('name');
 
     echo $page->fetchFromTemplate('importer.twig.html', array_merge($importData, $importResults));
