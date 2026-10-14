@@ -27,6 +27,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\Renderer\RendererInterface;
 
+require_once __DIR__ . '/AttendanceSessions.php';
+
 /**
  * Student History View
  *
@@ -61,12 +63,29 @@ class StudentHistoryView extends DataTableView implements RendererInterface
     protected function getSummaryCounts(DataSet $dataSet)
     {
         $summary = ['total' => 0, 'present' => 0, 'partial' => 0, 'absent' => 0, '' => 0];
+        $summary['sessions'] = [];
+        $summary['sessionCounts'] = ['total' => 0, 'present' => 0, 'partial' => 0, 'absent' => 0];
+        $summary['lateCount'] = $summary['minutesLate'] = 0;
 
         foreach ($dataSet as $terms) {
             if (empty($terms['weeks'])) continue;
-            
+            $summary['sessions'] = $terms['sessions'] ?? [];
+
             foreach ($terms['weeks'] as $week) {
                 foreach ($week as $dayData) {
+                    if ($dayData['specialDay'] || $dayData['outsideTerm']) continue;
+
+                    // Count each registration session (or the whole day), and how late the student was
+                    foreach ($dayData['sessionLogs'] ?? [] as $log) {
+                        if (empty($log)) continue;
+                        $summary['sessionCounts'][AttendanceSessions::getStatus($log)]++;
+                        $summary['sessionCounts']['total']++;
+                        if (AttendanceSessions::isLate($log)) {
+                            $summary['lateCount']++;
+                            $summary['minutesLate'] += intval($log['minutesLate'] ?? 0);
+                        }
+                    }
+
                     if (empty($dayData['endOfDay'])) continue;
                     if (!$dayData['specialDay'] && !$dayData['outsideTerm']) {
                         $summary['total'] += 1;
@@ -78,6 +97,10 @@ class StudentHistoryView extends DataTableView implements RendererInterface
                 }
             }
         }
+
+        $counts = $summary['sessionCounts'];
+        $summary['sessionCounts']['attended'] = $counts['present'] + $counts['partial'];
+        $summary['percentage'] = $counts['total'] > 0 ? round(($counts['present'] + $counts['partial']) / $counts['total'] * 100, 1) : null;
 
         return $summary;
     }
