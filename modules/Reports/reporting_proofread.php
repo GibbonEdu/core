@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     if ($gibbonPersonID == $session->get('gibbonPersonID')) {
         $filterOptions = $form->getFactory()->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('auto-submit filters float-none w-24 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200 rounded-md w-full min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5')
+            ->setClass('auto-submit filters float-none w-24 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200 rounded-md w-full min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6')
             ->placeholder(__('Filters'))
             ->selected($filter)
             ->getOutput();
@@ -322,7 +322,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
                 $actions = ['Accepted' => __('Accept').'&nbsp;&nbsp;', 'Declined' => __('Decline').'&nbsp;&nbsp;', 'Revised' => __('Edit Comment').'&nbsp;&nbsp;'];
             } else {
-                $section->addContent($criteria['comment'])
+                $section->addContent(nl2br(htmlPrep($criteria['comment'])))
                     ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-6">', '</div>');
 
                 $actions = ['Revised' => __('Edit Comment').'&nbsp;&nbsp;'];
@@ -358,7 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
             $proofText = $proof['status'] == 'Edited'
                 ? $differ->htmlDiff(htmlPrep($criteria['comment']), htmlPrep($proof['comment']))
-                : htmlPrep($criteria['comment']);
+                : nl2br(htmlPrep($criteria['comment']));
 
             $section->addContent($proofText)
                     ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-6">', '</div>');
@@ -410,7 +410,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 $('.statusInput input[type="radio"]').change(function() {
     var details = $(this).parents('details').first();
     var textarea = details.find('textarea.commentEditor');
-    
+    console.log(textarea);
+
     if ($(this).val() == 'Done' || $(this).val() == 'Accepted') {
         details.removeClass('message bg-blue-100').removeClass('error bg-red-100').removeClass('bg-gray-100');
         details.addClass('success bg-green-100');
