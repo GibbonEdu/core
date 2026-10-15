@@ -23,6 +23,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Timetable\TimetableAccess;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\UI\Timetable\Timetable;
 
@@ -128,11 +129,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                         ->prepend((!empty($search)) ? ' | ' : '');
                     }
 
-                    if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+                    $exportPersonID = $container->get(TimetableAccess::class)->getExportablePersonID($_GET['gibbonPersonID'] ?? '');
+                    if ($exportPersonID != '') {
                         $table->addHeaderAction('export', __('Export'))
                             ->modalWindow()
                             ->setURL('/modules/Timetable/tt_manage_subscription.php')
-                            ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
+                            ->addParam('gibbonPersonID', $exportPersonID)
                             ->setIcon('download')
                             ->displayLabel();
                     }

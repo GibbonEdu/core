@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\UI\Timetable\Timetable;
+use Gibbon\UI\Timetable\TimetableAccess;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
@@ -227,11 +228,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                     ->displayLabel();
                             }
 
-                            if ($gibbonPersonID == $session->get('gibbonPersonID')) {
+                            $exportPersonID = $container->get(TimetableAccess::class)->getExportablePersonID($gibbonPersonID);
+                            if ($exportPersonID != '') {
                                 $table->addHeaderAction('export', __('Export'))
                                     ->modalWindow()
                                     ->setURL('/modules/Timetable/tt_manage_subscription.php')
-                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('gibbonPersonID', $exportPersonID)
                                     ->setIcon('download')
                                     ->displayLabel();
                             }
