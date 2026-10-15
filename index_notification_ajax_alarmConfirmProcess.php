@@ -19,17 +19,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
+use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\System\AlarmGateway;
 use Gibbon\Http\Url;
 
 //Gibbon system-wide includes
 require_once __DIR__ . '/gibbon.php';
 
+$_POST = $container->get(Validator::class)->sanitize($_POST);
+
 $gibbonAlarmID = $_POST['gibbonAlarmID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = Url::fromRoute();
 
-//Proceed!
+// Proceed!
 if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCategory') != 'Staff' || !isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php')) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
@@ -37,22 +41,37 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
     header("Location: {$URL}");
     exit;
 } else {
-    //Check alarm
     $alarmGateway = $container->get(AlarmGateway::class);
 
-    $alarm = $alarmGateway->getByID($gibbonAlarmID);
-
-    if (!empty($alarm) && $alarm['status'] == 'Current') {
-        //Check confirmation of alarm
-        $alarmConfirm = $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbonPersonID);
-
-        if (empty($alarmConfirm)) {
-            //Insert confirmation
-            $dataConfirm = ['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbonPersonID, 'timestamp' => date('Y-m-d H:i:s')];
-            $alarmGateway->insertAlarmConfirm($dataConfirm);
-        }
+    // Require an existing alarm that is currently active
+    $alarm = $alarmGateway->selectBy(['gibbonAlarmID' => $gibbonAlarmID, 'status' => 'Current'])->fetch();
+    if (empty($alarm)) {
+        header("Location: {$URL}");
+        exit;
     }
 
-    //Success 0
+    // Sounder is already marked in the report; do not create a confirmation row for them
+    if ($gibbonPersonID == $alarm['gibbonPersonID']) {
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Reject ids that are not current/active staff (status Full + gibbonStaff record)
+    $staff = $container->get(StaffGateway::class)->selectStaffByID($gibbonPersonID)->fetch();
+    if (empty($staff) || empty($staff['type'])) {
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Check confirmation of alarm
+    $alarmConfirm = $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbonPersonID);
+
+    if (empty($alarmConfirm)) {
+        //Insert confirmation
+        $dataConfirm = ['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbonPersonID, 'timestamp' => date('Y-m-d H:i:s')];
+        $alarmGateway->insertAlarmConfirm($dataConfirm);
+    }
+
+    // Success 0
     header("Location: {$URL}");
 }
