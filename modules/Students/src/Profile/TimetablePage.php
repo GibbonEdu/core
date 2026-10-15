@@ -24,6 +24,7 @@ namespace Gibbon\Module\Students\Profile;
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\UI\Timetable\Timetable;
+use Gibbon\UI\Timetable\TimetableAccess;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -155,12 +156,12 @@ class TimetablePage extends ProfilePage implements ContainerAwareInterface
             }
         }
 
-        // Add export action if viewing own timetable
-        if ($this->gibbonPersonID == $this->session->get('gibbonPersonID')) {
+        $exportPersonID = $this->getContainer()->get(TimetableAccess::class)->getExportablePersonID($this->gibbonPersonID);
+        if ($exportPersonID != '') {
             $table->addHeaderAction('export', __('Export'))
                 ->modalWindow()
                 ->setURL('/modules/Timetable/tt_manage_subscription.php')
-                ->addParam('gibbonPersonID', $this->gibbonPersonID)
+                ->addParam('gibbonPersonID', $exportPersonID)
                 ->setIcon('download')
                 ->displayLabel();
         }

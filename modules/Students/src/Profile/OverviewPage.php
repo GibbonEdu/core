@@ -41,6 +41,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\View\GridView;
 use Gibbon\UI\Timetable\Timetable;
+use Gibbon\UI\Timetable\TimetableAccess;
 use Gibbon\UI\Timetable\TimetableContext;
 
 /**
@@ -521,11 +522,12 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
                 }
             }
 
-            if ($this->gibbonPersonID == $this->session->get('gibbonPersonID')) {
+            $exportPersonID = $this->getContainer()->get(TimetableAccess::class)->getExportablePersonID($this->gibbonPersonID);
+            if ($exportPersonID != '') {
                 $table->addHeaderAction('export', __('Export'))
                     ->modalWindow()
                     ->setURL('/modules/Timetable/tt_manage_subscription.php')
-                    ->addParam('gibbonPersonID', $this->gibbonPersonID)
+                    ->addParam('gibbonPersonID', $exportPersonID)
                     ->setIcon('download')
                     ->displayLabel();
             }
