@@ -35,11 +35,12 @@ if (empty($gibbonLogID)) return;
 if (!$session->has('username')) return;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.php')) {
-    $log = $container->get(LogGateway::class)->getByID($gibbonLogID);
+    $logGateway = $container->get(LogGateway::class);
+    $log = $logGateway->getByID($gibbonLogID);
     if (empty($log)) return;
 
-    $data = unserialize($log['serialisedArray']) ?? [];
-    $status = $data['status'];
+    $data = $logGateway->getLogData($log['serialisedArray'] ?? '');
+    $status = $data['status'] ?? '';
 
     if ($status == 'Running' || $status == 'Ready') {
         echo '<img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif">'
