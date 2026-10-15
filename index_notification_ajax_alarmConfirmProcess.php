@@ -25,23 +25,24 @@ use Gibbon\Http\Url;
 //Gibbon system-wide includes
 require_once __DIR__ . '/gibbon.php';
 
-$gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonAlarmID = $_POST['gibbonAlarmID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = Url::fromRoute();
 
 //Proceed!
-if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCategory') != 'Staff' || !isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php')) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
-} elseif (empty($gibbonAlarmID) or empty($gibbonPersonID)) {
+} elseif (empty($gibbonAlarmID) || empty($gibbonPersonID)) {
     header("Location: {$URL}");
+    exit;
 } else {
     //Check alarm
     $alarmGateway = $container->get(AlarmGateway::class);
 
     $alarm = $alarmGateway->getByID($gibbonAlarmID);
 
-    if (!empty($alarm)) {
+    if (!empty($alarm) && $alarm['status'] == 'Current') {
         //Check confirmation of alarm
         $alarmConfirm = $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbonPersonID);
 

@@ -23,6 +23,7 @@ use Gibbon\View\View;
 use Gibbon\Domain\System\AlarmGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Session\TokenHandler;
 
 // Gibbon system-wide includes
 require_once __DIR__ . '/gibbon.php';
@@ -50,7 +51,17 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
         $group[] = $item['gibbonPersonID'];
         return $group;
     }, []);
-    
+
+    $tokenHandler = $container->get(TokenHandler::class);
+    if ($canViewReport) {
+        foreach ($confirmationReport as &$person) {
+            if ($person['gibbonPersonID'] != $alarm['gibbonPersonID'] && empty($person['gibbonAlarmConfirmID'])) {
+                $person['nonce'] = $tokenHandler->getNonce();
+            }
+        }
+        unset($person);
+    }
+
     echo $container->get(View::class)->fetchFromTemplate('ui/alarmOverlay.twig.html', [
         'alarm'              => $alarm,
         'confirmed'          => $confirmed,
@@ -59,5 +70,6 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
         'canViewReport'      => $canViewReport,
         'confirmationReport' => $canViewReport ? $confirmationReport : [],
         'staffAbsences'      => $absences,
+        'csrftoken'          => $tokenHandler->getCSRF(),
     ]);
 }
