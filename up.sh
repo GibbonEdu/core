@@ -25,10 +25,12 @@ if [[ ! -f "${PROJECT_DIR}/.env" ]]; then
         exit 1
     fi
     cp "${GIBBON_CONF_DIR}/.env-example" "${PROJECT_DIR}/.env"
+    chmod 600 "${PROJECT_DIR}/.env"
     log "Created .env from ${GIBBON_CONF_DIR}/.env-example"
     log "Review .env to customize local settings if needed."
 fi
 
+load_env
 require_docker
 
 if ! docker info >/dev/null 2>&1; then
@@ -39,13 +41,19 @@ fi
 case "${1:-up}" in
     up)
         log "Starting Gibbon dev environment..."
-        docker_compose build app db
+        # Only app is buildable (db and mail use stock images).
+        docker_compose build app
         docker_compose up -d app db
+        if [[ ",${COMPOSE_PROFILES:-}," == *",mail,"* ]]; then
+            docker_compose up -d mail
+        fi
         log "Installing Composer dependencies (this may take a minute on first run)..."
         docker_compose exec -T app composer install
         log ""
-        log "Gibbon is running at: http://localhost:8080"
+        log "Gibbon is running at: ${ABSOLUTE_URL:-http://localhost:8080}"
         log "To follow logs:       ./up.sh logs"
+        log "Next steps:           open the URL above to run the installer, or"
+        log "                      run ./setup_devdb.sh to load the demo database"
         ;;
     down)
         docker_compose down -v

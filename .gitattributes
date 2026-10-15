@@ -1,1 +1,6 @@
 /composer.lock -merge
+
+# Shell scripts and dev environment files are read by containers
+*.sh text eol=lf
+.env* text eol=lf
+resources/ops/** text eol=lf

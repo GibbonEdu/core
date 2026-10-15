@@ -283,9 +283,19 @@ class Column
      *
      * @return array
      */
-    public function getColumns()
+    public function getColumns(bool $onlyVisible = true)
     {
-        return $this->columns;
+        return  array_reduce(
+            $this->columns,
+            function ($group, $column) use ($onlyVisible) {
+                if (!$onlyVisible || $column->isVisible()) {
+                    $group[$column->getID()] = $column;
+                }
+
+                return $group;
+            },
+            []
+        );
     }
 
     /**
@@ -332,6 +342,38 @@ class Column
         return $count;
     }
 
+    /**
+     * Hides this column if the supplied condition is false.
+     *
+     * @param bool $condition
+     * @return self
+     */
+    public function onlyIf($condition)
+    {
+        if (!$condition) {
+            $this->setID(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns true if this column is visible, false if it has been hidden by onlyIf().
+     *
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return !empty($this->getID());
+    }
+
+    /**
+     * Renders the column details by either passing the row $data to a formatter, 
+     * or grabbing the row data by key based on the column name.
+     *
+     * @param array $data
+     * @return string
+     */
     public function getDetailsOutput(&$data = [])
     {
         return $this->hasDetailsFormatter() ? call_user_func($this->detailsFormatter, $data) : '';

@@ -45,6 +45,7 @@ v31.0.00
         System: added gibbon log when a password reset email fails to send
         System: added a new attribute and helper method to the Date class to add a "Today" button to a date object
         System: added a new offset attribute and helper method to add defined no. of days to selected date
+        System: added a disabled field setting and applied Personal Data Field settings across Manage Users, profiles, and import/export
         Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
@@ -76,6 +77,7 @@ v31.0.00
         Staff: added an indicator at the top of view staff profile to indicate the attendance status and current location location of the staff
         Staff: added a bulk action to reject multiple staff application forms
         Staff: added the feature to send an automated email for staff application confirmation
+        Students: added Student Alerts subpage to View Student Profile Details
         Students: added an indicator at the top of view student profile to indicate attendance status and current location of the student
         Students: Added a checkbox to the Medical Data Summary to exclude students with no medical conditions
         System Admin: added a validation to check for error in email twig templates
@@ -95,6 +97,7 @@ v31.0.00
         School Admin: fixed the issue of Form Group Location not being displayed in edit page
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         System: renamed ca_CA locale to ca_ES and updated locale files
+        System: fixed the Docker development environment and test scripts failing on Windows hosts
         Calendar: fixed missing photos and student names on mobile view of participant list
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway

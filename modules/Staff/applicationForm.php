@@ -24,11 +24,10 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\PersonalDocumentHandler;
-
-//Module includes from User Admin (for custom fields)
-include './modules/User Admin/moduleFunctions.php';
+use Gibbon\Forms\PersonalDataFieldSettings;
 
 $settingGateway = $container->get(SettingGateway::class);
+$personalDataFields = $container->get(PersonalDataFieldSettings::class);
 
 $proceed = false;
 $public = false;
@@ -174,19 +173,21 @@ if ($proceed == false) {
 
             $form->addRow()->addHeading('Background Data', __('Background Data'));
 
-            $row = $form->addRow();
+            $isVisible = fn ($name) => $personalDataFields->isVisible($name, 'Staff');
+
+            $row = $form->addRow()->onlyIf($isVisible('languageFirst'));
                 $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
                 $row->addSelectLanguage('languageFirst')->required();
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('languageSecond'));
                 $row->addLabel('languageSecond', __('Second Language'));
                 $row->addSelectLanguage('languageSecond')->placeholder('');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('languageThird'));
                 $row->addLabel('languageThird', __('Third Language'));
                 $row->addSelectLanguage('languageThird')->placeholder('');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->onlyIf($isVisible('countryOfBirth'));
                 $row->addLabel('countryOfBirth', __('Country of Birth'));
                 $row->addSelectCountry('countryOfBirth')->required();
 

@@ -21,16 +21,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Staff\Profile;
 
-use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Module\Staff\StaffAttendanceStatus;
-use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\UI\Timetable\Timetable;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Timetable\Timetable;
+use Gibbon\UI\Timetable\TimetableContext;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 
@@ -50,19 +51,22 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
     private HouseGateway $houseGateway;
     private CustomFieldHandler $customFieldHandler;
     private StaffAttendanceStatus $staffAttendanceStatus;
+    private PersonalDataFieldSettings $personalDataFields;
 
     public function __construct(
         Session $session,
         StaffGateway $staffGateway,
         HouseGateway $houseGateway,
         CustomFieldHandler $customFieldHandler,
-        StaffAttendanceStatus $staffAttendanceStatus
+        StaffAttendanceStatus $staffAttendanceStatus,
+        PersonalDataFieldSettings $personalDataFields   
     ) {
         parent::__construct($session);
         $this->staffGateway = $staffGateway;
         $this->houseGateway = $houseGateway;
         $this->customFieldHandler = $customFieldHandler;
         $this->staffAttendanceStatus = $staffAttendanceStatus;
+        $this->personalDataFields = $personalDataFields;
     }
 
     public function getPageName(): string
@@ -159,7 +163,9 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $col->addColumn('type', __('Staff Type'))->translatable();
         $col->addColumn('jobTitle', __('Job Title'));
         $col->addColumn('username', __('Username'));
-        $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
+        $col->addColumn('email', __('Email'))
+            ->onlyIf($this->personalDataFields->isVisible('email', 'Staff'))
+            ->format(Format::using('link', 'email'));
         
         if (!empty($staff['website'])) {
             $col->addColumn('website', __('Website'))->format(Format::using('link', 'website'));

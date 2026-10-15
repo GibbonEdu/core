@@ -24,6 +24,7 @@ namespace Gibbon\Module\Staff\Profile;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Support\Facades\Access;
@@ -45,15 +46,18 @@ class EmergencyContactsPage extends ProfilePage
 {
     private StaffGateway $staffGateway;
     private FamilyGateway $familyGateway;
+    private PersonalDataFieldSettings $personalDataFields;
 
     public function __construct(
         Session $session,
         StaffGateway $staffGateway,
-        FamilyGateway $familyGateway
+        FamilyGateway $familyGateway,
+        PersonalDataFieldSettings $personalDataFields
     ) {
         parent::__construct($session);
         $this->staffGateway = $staffGateway;
         $this->familyGateway = $familyGateway;
+        $this->personalDataFields = $personalDataFields;
     }
 
     public function getPageName(): string
@@ -183,6 +187,7 @@ class EmergencyContactsPage extends ProfilePage
         for ($i = 1; $i <= 2; $i++) {
             $emergency = 'emergency' . $i;
             $table->addColumn($emergency . 'Name', __('Contact ' . $i))
+                ->onlyIf($this->personalDataFields->isVisible($emergency.'Name', 'Staff'))
                 ->format(function($row) use ($emergency) {
                     if ($row[$emergency . 'Relationship'] != '') {
                         return $row[$emergency . 'Name'] . ' (' . __($row[$emergency . 'Relationship']) . ')';
@@ -190,8 +195,10 @@ class EmergencyContactsPage extends ProfilePage
                     return $row[$emergency . 'Name'];
                 });
 
-            $table->addColumn($emergency . 'Number1', __('Number 1'));
-            $table->addColumn($emergency . 'Number2', __('Number 2'));
+            $table->addColumn($emergency . 'Number1', __('Number 1'))
+                ->onlyIf($this->personalDataFields->isVisible($emergency.'Number1', 'Staff'));
+            $table->addColumn($emergency . 'Number2', __('Number 2'))
+                ->onlyIf($this->personalDataFields->isVisible($emergency.'Number2', 'Staff'));
         }
 
         return $table->render([$staff]);

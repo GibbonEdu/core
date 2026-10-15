@@ -21,12 +21,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Staff\Profile;
 
-use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Staff\StaffGateway;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Tables\DataTable;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -51,17 +52,20 @@ class PersonalPage extends ProfilePage implements ContainerAwareInterface
     private StaffGateway $staffGateway;
     private CustomFieldHandler $customFieldHandler;
     private PersonalDocumentGateway $personalDocumentGateway;
+    private PersonalDataFieldSettings $personalDataFields;
 
     public function __construct(
         Session $session,
         StaffGateway $staffGateway,
         CustomFieldHandler $customFieldHandler,
-        PersonalDocumentGateway $personalDocumentGateway
+        PersonalDocumentGateway $personalDocumentGateway,
+        PersonalDataFieldSettings $personalDataFields
     ) {
         parent::__construct($session);
         $this->staffGateway = $staffGateway;
         $this->customFieldHandler = $customFieldHandler;
         $this->personalDocumentGateway = $personalDocumentGateway;
+        $this->personalDataFields = $personalDataFields;
     }
 
     public function getPageName(): string
@@ -141,7 +145,8 @@ class PersonalPage extends ProfilePage implements ContainerAwareInterface
         $col = $table->addColumn('Contacts', __('Contacts'));
 
         for ($i = 1; $i < 5; ++$i) {
-            if (empty($staff['phone' . $i])) continue;
+            if (empty($staff['phone' . $i]) || !$this->personalDataFields->isVisible('phone'.$i, 'Staff')) continue;
+
             if ($staff['phone' . $i] != '') {
                 $col->addColumn('phone' . $i, __('Phone') . " $i")
                     ->format(Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']));
@@ -149,9 +154,11 @@ class PersonalPage extends ProfilePage implements ContainerAwareInterface
         }
 
         $col->addColumn('email', __('Email'))
+            ->onlyIf($this->personalDataFields->isVisible('email', 'Staff'))
             ->format(Format::using('link', 'email'));
 
         $col->addColumn('emailAlternate', __('Alternate Email'))
+            ->onlyIf($this->personalDataFields->isVisible('emailAlternate', 'Staff'))
             ->format(function($row) {
                 if ($row['emailAlternate'] != '') {
                     return Format::link($row['emailAlternate']);
@@ -190,7 +197,8 @@ class PersonalPage extends ProfilePage implements ContainerAwareInterface
         $col = $table->addColumn('Miscellaneous', __('Miscellaneous'));
 
         $col->addColumn('transport', __('Transport'));
-        $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
+        $col->addColumn('vehicleRegistration', __('Vehicle Registration'))
+            ->onlyIf($this->personalDataFields->isVisible('vehicleRegistration', 'Staff'));
         $col->addColumn('lockerNumber', __('Locker Number'));
 
         // Custom Fields for Staff context

@@ -1094,7 +1094,7 @@ class InstallController
         $baseDir = realpath('./../') . '/';
 
         // Construct the full URL to the base URL path.
-        $urlBasePath = substr($baseDir, $prefixLength);
+        $urlBasePath = str_replace('\\', '/', substr($baseDir, $prefixLength));
         $host = $_SERVER['HTTP_HOST'];
         $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
         return rtrim("{$protocol}://{$host}{$urlBasePath}", '/');
