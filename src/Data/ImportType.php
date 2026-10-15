@@ -23,6 +23,7 @@ namespace Gibbon\Data;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -59,6 +60,11 @@ class ImportType
      * Has the structure been checked against the database?
      */
     protected $validated = false;
+
+    /**
+     * @var PersonalDataFieldSettings|null
+     */
+    protected $personalDataFields;
 
     /**
      * Relational data: System-wide (for filters)
@@ -102,10 +108,12 @@ class ImportType
         array $data,
         PasswordPolicy $passwordPolicy,
         Connection $pdo = null,
-        $validateStructure = true
+        $validateStructure = true,
+        ?PersonalDataFieldSettings $personalDataFields = null
     )
     {
         $this->passwordPolicy = $passwordPolicy;
+        $this->personalDataFields = $personalDataFields;
 
         if (isset($data['details'])) {
             $this->details = $data['details'];
@@ -241,15 +249,17 @@ class ImportType
      * @version v25
      * @since   v17
      *
-     * @param   Connection       Database connection
-     * @param   SettingGateway   Database access
-     * @param   PasswordPolicy   Site's password policy to generate password with
+     * @param   Connection                 Database connection
+     * @param   SettingGateway             Database access
+     * @param   PasswordPolicy             Site's password policy to generate password with
+     * @param   PersonalDataFieldSettings  Personal data field settings applied to import/export columns
      *
      * @return  array   2D array of importType objects
      */
     public static function loadImportTypeList(
         SettingGateway $settingGateway,
         PasswordPolicy $passwordPolicy,
+        PersonalDataFieldSettings $personalDataFields,
         Connection $pdo = null,
         $validateStructure = false
     )
@@ -266,7 +276,7 @@ class ImportType
 
             if (isset($fileData['details']) && isset($fileData['details']['type'])) {
                 $fileData['details']['grouping'] = (isset($fileData['access']['module']))? $fileData['access']['module'] : 'General';
-                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $passwordPolicy, $pdo, $validateStructure);
+                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $passwordPolicy, $pdo, $validateStructure, $personalDataFields);
             }
         }
 
@@ -287,7 +297,8 @@ class ImportType
                     $fileData,
                     $passwordPolicy,
                     $pdo,
-                    $validateStructure
+                    $validateStructure,
+                    $personalDataFields
                 );
             }
         }
@@ -315,10 +326,11 @@ class ImportType
     /**
      * Loads a YAML file and creates an importType object
      *
-     * @param   string          Filename of the Import Type
-     * @param   SettingGateway  SettingGateway instance
-     * @param   PasswordPolicy  Password policy to generate password with.
-     * @param   Connection      Database conenction
+     * @param   string                   Filename of the Import Type
+     * @param   SettingGateway           SettingGateway instance
+     * @param   PasswordPolicy           Password policy to generate password with.
+     * @param   PersonalDataFieldSettings  Personal data field settings applied to import/export columns
+     * @param   Connection               Database conenction
      *
      * @return  ImportType
      */
@@ -326,6 +338,7 @@ class ImportType
         $importTypeName,
         SettingGateway $settingGateway,
         PasswordPolicy $passwordPolicy,
+        PersonalDataFieldSettings $personalDataFields,
         Connection $pdo = null
     )
     {
@@ -344,7 +357,7 @@ class ImportType
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
 
-        return new ImportType($fileData, $passwordPolicy, $pdo);
+        return new ImportType($fileData, $passwordPolicy, $pdo, true, $personalDataFields);
     }
 
     /**
@@ -1152,7 +1165,13 @@ class ImportType
         }
 
         $hidden = $this->fields[$fieldName]['args']['hidden'] ?? false;
-        return is_array($hidden) ? in_array($this->getCurrentTable(), $hidden): $hidden;
+        if (is_array($hidden) ? in_array($this->getCurrentTable(), $hidden) : $hidden) {
+            return true;
+        }
+
+        // Honour User Admin personal-data Hidden settings for import/export columns
+        return $this->personalDataFields
+            && $this->personalDataFields->isHiddenFromExport($fieldName);
     }
 
     /**

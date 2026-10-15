@@ -27,14 +27,14 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-//Module includes from User Admin (for custom fields)
-include './modules/User Admin/moduleFunctions.php';
+$personalDataFields = $container->get(PersonalDataFieldSettings::class);
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
     // Access denied
@@ -367,19 +367,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
         $row->addSelectLanguage('languageHomeSecondary')->placeholder('');
 
-    $row = $form->addRow();
+    $isVisible = fn ($name) => $personalDataFields->isVisible($name, 'Student');
+
+    $row = $form->addRow()->onlyIf($isVisible('languageFirst'));
         $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
         $row->addSelectLanguage('languageFirst')->required();
 
-    $row = $form->addRow();
+    $row = $form->addRow()->onlyIf($isVisible('languageSecond'));
         $row->addLabel('languageSecond', __('Second Language'));
         $row->addSelectLanguage('languageSecond')->placeholder('');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->onlyIf($isVisible('languageThird'));
         $row->addLabel('languageThird', __('Third Language'));
         $row->addSelectLanguage('languageThird')->placeholder('');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->onlyIf($isVisible('countryOfBirth'));
         $row->addLabel('countryOfBirth', __('Country of Birth'));
         $row->addSelectCountry('countryOfBirth')->required();
 

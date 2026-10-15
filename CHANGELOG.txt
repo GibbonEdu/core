@@ -45,6 +45,7 @@ v31.0.00
         System: added gibbon log when a password reset email fails to send
         System: added a new attribute and helper method to the Date class to add a "Today" button to a date object
         System: added a new offset attribute and helper method to add defined no. of days to selected date
+        System: added a disabled field setting and applied Personal Data Field settings across Manage Users, profiles, and import/export
         Activities: display overlapping calendar events next to student names on Activity Attendance page
         Admissions: added a progress bar for admissions milestones to Manage Applications
         Admissions: added a warning to Accept Application when milestones have not been completed
