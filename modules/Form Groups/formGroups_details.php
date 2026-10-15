@@ -33,30 +33,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        // Fail
-       $URL .= '&return=error0';
-       header("Location: {$URL}");
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs
             ->add(__('View Form Groups'), 'formGroups.php');
 
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
+        $formGroupGateway = $container->get(FormGroupGateway::class);
 
         if ($gibbonFormGroupID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
-
-            if ($highestAction == "View Form Groups_all") {
-                $result = $container->get(FormGroupGateway::class)->getFormGroupDetailsByID($gibbonFormGroupID);
+            if ($highestAction == 'View Form Groups_all') {
+                $result = $formGroupGateway->getFormGroupDetailsByID($gibbonFormGroupID, null, $gibbonSchoolYearID);
+            } elseif ($highestAction == 'View Form Groups_myChildren') {
+                $result = $formGroupGateway->getFormGroupDetailsByFamilyAdult($gibbonFormGroupID, $gibbonPersonID);
+            } elseif ($highestAction == 'View Form Groups_my') {
+                $result = $formGroupGateway->getFormGroupDetailsByID($gibbonFormGroupID, $gibbonPersonID, $gibbonSchoolYearID);
+            } else {
+                $page->addError(__('You do not have access to this action.'));
+                return;
             }
-            else {
-                $result = $container->get(FormGroupGateway::class)->getFormGroupDetailsByFamilyAdult($gibbonFormGroupID, $session->get('gibbonPersonID'));
-            }
 
-            if (empty($result)) {
+            $row = ($result && $result->isNotEmpty()) ? $result->fetch() : [];
+
+            if (empty($row) || $row['gibbonSchoolYearID'] != $gibbonSchoolYearID) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                $row = $result->fetch();
+                $gibbonFormGroupID = $row['gibbonFormGroupID'];
 
                 $page->breadcrumbs->add($row['name']);
 
@@ -146,4 +152,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
         }
     }
 }
-?>

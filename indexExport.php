@@ -20,42 +20,63 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Students\StudentGateway;
 
 require_once __DIR__ . '/gibbon.php';
 
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $URL = Url::fromRoute();
 
-try {
-    $data = array('gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
-    $sql = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-} catch (PDOException $e) {
+if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     header("Location: {$URL->withReturn('error0')}");
+    exit;
 }
 
-if ($result) {
-    if ($gibbonFormGroupID == '') {
-        header("Location: {$URL->withReturn('error1')}");
-    } else {
-        if ($result->rowCount() < 1) {
-            header("Location: {$URL->withReturn('error3')}");
-        } else {
-            //Proceed!
-            $data = ['gibbonFormGroupID' => $gibbonFormGroupID, 'today' => date('Y-m-d')];
-            $sql = "SELECT surname, preferredName, email
-                    FROM gibbonStudentEnrolment
-                    JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
-                    WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full'
-                    AND (dateStart IS NULL OR dateStart<=:today)
-                    AND (dateEnd IS NULL  OR dateEnd>=:today)
-                    ORDER BY surname, preferredName";
+if ($gibbonFormGroupID == '') {
+    header("Location: {$URL->withReturn('error1')}");
+    exit;
+}
 
-            $result = $pdo->select($sql, $data);
+$formGroupGateway = $container->get(FormGroupGateway::class);
+$formGroup = $formGroupGateway->getByID($gibbonFormGroupID);
 
-            $exp = new Gibbon\Excel();
-            $exp->exportWithQuery($result, 'classList.xls');
-        }
+// Form group must exist in the current school year
+if (empty($formGroup) || $formGroup['gibbonSchoolYearID'] != $session->get('gibbonSchoolYearID')) {
+    header("Location: {$URL->withReturn('error3')}");
+    exit;
+}
+
+$gibbonFormGroupID = $formGroup['gibbonFormGroupID'];
+
+// View Form Groups_all can export any form group
+$highestAction = getHighestGroupedAction($guid, '/modules/Form Groups/formGroups.php', $connection2);
+$canViewAll = $highestAction == 'View Form Groups_all';
+
+if (!$canViewAll) {
+    // Only allow export for form groups this staff member is related to (tutor, EA, or enrolled)
+    $related = $formGroupGateway->getFormGroupDetailsByID(
+        $gibbonFormGroupID,
+        $session->get('gibbonPersonID'),
+        $session->get('gibbonSchoolYearID')
+    );
+    if ($related->isEmpty()) {
+        header("Location: {$URL->withReturn('error0')}");
+        exit;
     }
 }
+
+// Proceed!
+$result = $container->get(StudentGateway::class)->selectStudentDetailsByFormGroup($gibbonFormGroupID);
+
+$container->get(LogGateway::class)->addLog(
+    $session->get('gibbonSchoolYearID'),
+    'Form Groups',
+    $session->get('gibbonPersonID'),
+    'Form Group Export',
+    ['gibbonFormGroupID' => $gibbonFormGroupID]
+);
+
+$exp = new Gibbon\Excel();
+$exp->exportWithQuery($result, 'classList.xls');

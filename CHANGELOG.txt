@@ -60,6 +60,7 @@ v31.0.00
         Calendar: remove future absence when deleting participant or editing the date
         Data Updater: added a new notification event to notify if any flagged personal field has been updated
         Formal Assessment: added the feature for teachers to view unpublished internal assessments
+        Form Groups: added View Form Groups_my permission for tutors, educational assistants, and enrolled students
         Library: updated automatic shelf lists so that lists are queried dynamically in Browse Library
         Library: added the option to edit the category and sub-category for an automatic shelf
         Library: added a new Library API Key in Library settings to call the Google Books API
@@ -98,7 +99,8 @@ v31.0.00
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         System: renamed ca_CA locale to ca_ES and updated locale files
         System: fixed the Docker development environment and test scripts failing on Windows hosts
-        System: added missing form CSRF protection in *_ajax_alarm*Process.php files
+        System: refactored the forms and code in *_ajax_alarm*Process.php files
+        Form Groups: fixed access checks and current-year scoping on form group details
         Calendar: fixed missing photos and student names on mobile view of participant list
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway

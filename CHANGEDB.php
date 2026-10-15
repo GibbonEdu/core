@@ -459,5 +459,7 @@ ALTER TABLE `gibbonNotificationListener` ADD `scopeContext` VARCHAR(255) NULL AF
 ALTER TABLE `gibbonNotificationEvent` ADD `contextName` VARCHAR(255) NULL AFTER `scopes`;end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Role Category', `scopes`='All,context' WHERE `event`='Flagged Field Data Updates' AND `moduleName`='Data Updater' AND `actionName`='Personal Data Updates';end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,context,gibbonPersonIDStudent,gibbonYearGroupID' WHERE `event` LIKE '% Record' AND `moduleName`='Behaviour';end
-
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`, `menuShow`, `entrySidebar`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Form Groups'), 'View Form Groups_my', 0, 'Form Groups', 'View form groups the user is related to.', 'formGroups.php,formGroups_details.php', 'formGroups.php', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction WHERE name='View Form Groups_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Form Groups')));end
+INSERT INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES (002, (SELECT gibbonActionID FROM gibbonAction WHERE name='View Form Groups_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Form Groups')));end
 ";
