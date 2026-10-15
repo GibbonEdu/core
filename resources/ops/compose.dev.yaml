@@ -1,7 +1,8 @@
 services:
     app:
         ports:
-            - "8080:80"
+            # Localhost only
+            - "127.0.0.1:${APP_PORT:-8080}:80"
         volumes:
             - .:/var/www/html
             - ./resources/ops/configuration/php/gibbon.ini:/usr/local/etc/php/conf.d/gibbon.ini:ro

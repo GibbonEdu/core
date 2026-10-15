@@ -12,6 +12,13 @@ services:
             db:
                 condition: service_healthy
         restart: unless-stopped
+        # Mark the app healthy once Apache answers on port 80.
+        healthcheck:
+            test: ["CMD", "php", "-r", "exit(fsockopen('127.0.0.1', 80) ? 0 : 1);"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
         networks:
             web-tier:
                 aliases:
@@ -28,15 +35,15 @@ services:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Copy resources/ops/configuration/gibbon/.env-example to .env and set a password.}
             TZ: ${TIMEZONE:-UTC}
         ports:
-            - target: 3306
-              published: 3306
-              protocol: tcp
-              mode: host
+            # Localhost only: the dev database must not be reachable from the network.
+            - "127.0.0.1:${DB_PORT:-3306}:3306"
         volumes:
             - gibbon_db_data:/var/lib/mysql
-        command: --default-authentication-plugin=mysql_native_password
+        command: --default-authentication-plugin=mysql_native_password --max-allowed-packet=256M
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+            # A real query: mysqladmin ping succeeds even when credentials are wrong.
+            # $$ reads the password from container env, not from the compose config.
+            test: ["CMD-SHELL", "mysql -h127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" -e 'SELECT 1'"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -45,12 +52,19 @@ services:
         networks:
             - db-tier
 
-    config:
-        image: rija/docker-alpine-shell-tools:1.0.1
-        platform: linux/amd64
-        volumes:
-            - .:/var/www/html
-        command: /var/www/html/resources/ops/scripts/generate_config.sh
+    # Optional mail catcher. Enable with COMPOSE_PROFILES=mail in .env, then
+    # open http://localhost:8025. SMTP host: mail, port: 1025.
+    mail:
+        image: axllent/mailpit:v1
+        profiles:
+            - mail
+        environment:
+            MP_SMTP_AUTH_ACCEPT_ANY: "true"
+            MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+        ports:
+            - "127.0.0.1:8025:8025"
+        networks:
+            - web-tier
 
     test:
         build:
@@ -73,7 +87,7 @@ services:
             - db-tier
         depends_on:
             app:
-                condition: service_started
+                condition: service_healthy
             db:
                 condition: service_healthy
 

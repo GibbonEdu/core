@@ -12,7 +12,8 @@ require_docker
 : "${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set. Copy .env-example to .env.}"
 : "${MYSQL_DATABASE:?MYSQL_DATABASE is not set. Copy .env-example to .env.}"
 
-wait_for_mysql || { err "MySQL did not become ready. Run ./up.sh first."; exit 3; }
+wait_for_mysql || { err "MySQL did not become ready. Run ./up.sh first; if it persists, reset old data with ./up.sh down."; exit 3; }
+wait_for_app || { err "App did not become ready. Run ./up.sh first."; exit 3; }
 
 if [[ -f "${PROJECT_DIR}/config.php" ]]; then
     rm -f "${PROJECT_DIR}/config.php"
