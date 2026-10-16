@@ -154,4 +154,14 @@ class Resource
     {
         return '/modules/' . $this->getModule() . '/' . $this->getLegacyRoutePath();
     }
+
+    /**
+     * Return the resource as a string identifier.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return $this->getModule().'::'.$this->getRoutePath().($this->getActionName() !== '' ? '::'.$this->getActionName() : '');
+    }
 }

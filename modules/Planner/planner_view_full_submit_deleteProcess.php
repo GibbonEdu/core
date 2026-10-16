@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
 //Gibbon system-wide includes
 require_once __DIR__ . '/../../gibbon.php';
@@ -41,42 +43,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     header("Location: {$URL}");
 } else {
     //Proceed!
+    $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner_view_full.php', $connection2); 
+
     //Check if planner specified
-    if ($gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
+    if ($gibbonPlannerEntryID == '' || $gibbonPlannerEntryHomeworkID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        try {
-            $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-            $sql = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //INSERT
-            try {
-                $data = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID);
-                $sql = 'DELETE FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPlannerEntryHomework', $gibbonPlannerEntryHomeworkID, 'location');
-
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-        }
+        exit;
     }
+
+    $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
+    $plannerEntryHomeworkGateway = $container->get(PlannerEntryHomeworkGateway::class);
+
+    $values = $plannerEntryGateway->getByID($gibbonPlannerEntryID);
+    if (empty($values)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses") {
+        $plannerEntryHomeworkGateway->delete($gibbonPlannerEntryHomeworkID);
+    } else {
+        $plannerEntryHomeworkGateway->deleteWhere(['gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID, 'gibbonPersonID' => $session->get('gibbonPersonID')]);
+    }
+
+    $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonPlannerEntryHomework', $gibbonPlannerEntryHomeworkID, 'location');
+
+    $URL .= '&return=success0';
+    header("Location: {$URL}");    
 }

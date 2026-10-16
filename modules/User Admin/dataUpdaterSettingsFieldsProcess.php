@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Forms\PersonalDataFieldSettings;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -32,6 +33,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
 } else {
     //Proceed!
     $settings = $_POST['settings'] ?? [];
+
+    foreach (['Staff', 'Student', 'Parent', 'Other'] as $roleCategory) {
+        foreach (PersonalDataFieldSettings::CANNOT_DISABLE as $field) {
+            if (($settings[$roleCategory][$field] ?? '') === 'disabled') {
+                $settings[$roleCategory][$field] = '';
+            }
+        }
+    }
 
     //Write to database
     $data = array('value' => serialize($settings));

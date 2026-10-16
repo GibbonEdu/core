@@ -20,17 +20,21 @@ If the script runs successfully, you should see the following output in the term
 $ ./setup_devdb.sh 
 Cleaning up environment
 OK: config.php deleted
-OK: Recreated gibbon database
 Generating config.php
 OK: config.php created
 Waiting for MySQL to accept connections...
 OK: MySQL is ready
+OK: Recreated gibbon database
 Executing gibbon.sql (this may take a few minutes)
 OK: Imported schema
 Executing gibbon_demo.sql
 OK: Imported demo data
+Applying gibbonSetting overrides
+Checking whether a database update is required
 Creating admin user
 OK: Created admin user
+Creating gibbonStaff entry for admin user
+OK: Created gibbonStaff table entry
 ```
 
 2. Go to http://localhost:8080 on your browser and log into Gibbon with the following credentials:
@@ -38,3 +42,23 @@ OK: Created admin user
 * Password: **Foobar888**
 
 You will then see Staff Dashboard with example data.
+
+## Loading your own data
+
+`setup_devdb.sh` imports `gibbon.sql` (schema) and then `gibbon_demo.sql` (demo data) from the repository root. Override either path to load your own SQL dump:
+
+```bash
+SCHEMA_FILE=/path/to/schema.sql DEMO_DATA_FILE=/path/to/data.sql ./setup_devdb.sh
+```
+
+To set up the schema only, without demo data (e.g. to test migrations):
+
+```bash
+./setup_devdb.sh --schema-only
+```
+
+The script drops and recreates the database first. Back up anything you want to keep (enter the `MYSQL_ROOT_PASSWORD` from `.env` when prompted):
+
+```bash
+docker exec gibbon_db mysqldump -uroot -p gibbon > backup.sql
+```

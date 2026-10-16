@@ -22,8 +22,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Tables\Renderer;
 
 use Gibbon\Domain\DataSet;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Layout\Element;
+use Gibbon\Support\Facades\Facade;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\ExpandableColumn;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -49,7 +51,15 @@ class SpreadsheetRenderer implements RendererInterface
 
     protected $headersAdded = false;
 
-    public function __construct()
+    /**
+     * @var PersonalDataFieldSettings|null
+     */
+    protected $personalDataFields;
+
+    /**
+     * @param mixed $path Legacy absolutePath argument from older call sites (ignored)
+     */
+    public function __construct($path = null)
     {
         // Create new PHPSpreadsheet object
         $this->excel = new Spreadsheet();
@@ -118,6 +128,7 @@ class SpreadsheetRenderer implements RendererInterface
                     $cellCount = 0;
                     foreach ($table->getColumns($i) as $columnName => $column) {
                         if ($column instanceof ActionColumn || $column instanceof ExpandableColumn) continue;
+                        if ($this->isPersonalDataColumnHidden($column)) continue;
                         
                         if ($column->getDepth() < $i) {
                             $cellCount++;
@@ -179,6 +190,7 @@ class SpreadsheetRenderer implements RendererInterface
                 $cellCount = 0;
                 foreach ($table->getColumns() as $columnName => $column) {
                     if ($column instanceof ActionColumn || $column instanceof ExpandableColumn) continue;
+                    if ($this->isPersonalDataColumnHidden($column)) continue;
 
                     $alpha = $this->num2alpha($cellCount);
 
@@ -316,5 +328,19 @@ class SpreadsheetRenderer implements RendererInterface
         header ('Pragma: public'); // HTTP/1.0
 
         $objWriter->save('php://output');
+    }
+
+    /**
+     * Skip columns for personal-data fields marked Hidden in User Admin settings.
+     */
+    protected function isPersonalDataColumnHidden($column): bool
+    {
+        if ($this->personalDataFields === null) {
+            $container = Facade::getFacadeContainer();
+            $this->personalDataFields = $container ? $container->get(PersonalDataFieldSettings::class) : null;
+        }
+
+        return $this->personalDataFields
+            && $this->personalDataFields->isHiddenFromExport($column->getID());
     }
 }

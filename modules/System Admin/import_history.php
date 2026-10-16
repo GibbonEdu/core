@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\ImportType;
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\System\LogGateway;
@@ -39,6 +40,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $importTypeList = ImportType::loadImportTypeList(
         $container->get(SettingGateway::class),
         $container->get(PasswordPolicy::class),
+        $container->get(PersonalDataFieldSettings::class),
         $pdo,
         false
     );

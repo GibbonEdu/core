@@ -4,6 +4,11 @@ on:
   pull_request:
   push:
 
+# Cancel superseded runs on the same branch/PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: ${{ matrix.name }} (PHP ${{ matrix.php-version }})
@@ -171,3 +176,30 @@ jobs:
             tests/_output
             uploads/cache/templates
           retention-days: 5
+
+  docker:
+    name: Docker dev environment
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Check container-consumed scripts use LF line endings
+        run: |
+          if git ls-files --eol -- '*.sh' '.env*' | grep crlf; then
+            echo "Container-consumed files must keep LF line endings (see .gitattributes)." >&2
+            exit 1
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # PR runs only read the layer cache
+      - name: Build the dev image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: resources/ops/Dockerfile
+          cache-from: type=gha
+          cache-to: ${{ github.event_name == 'push' && 'type=gha,mode=max' || '' }}

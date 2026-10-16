@@ -3,4 +3,5 @@ modules:
     enabled:
         - PhpBrowser:
             url: "%ABSOLUTE_URL%"
+            timeout: 300
         - \Helper\Install

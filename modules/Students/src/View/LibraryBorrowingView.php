@@ -21,15 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Students\View;
 
-use Gibbon\View\Page;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Library\LibraryReportGateway;
-use Gibbon\Forms\Form;
+use Gibbon\View\View;
 
 /**
  *
@@ -65,7 +65,7 @@ class LibraryBorrowingView
         return $this; 
     }
 
-    public function compose(Page $page)
+    public function compose(View $view)
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
@@ -167,7 +167,7 @@ class LibraryBorrowingView
 
         $selectedTab = !empty($this->lendingAction)? array_search($this->lendingAction, array_column($tabs, 'action')) + 1 : 1;
 
-        echo $page->fetchFromTemplate('ui/tabs.twig.html', [
+        echo $view->fetchFromTemplate('ui/tabs.twig.html', [
             'selected' => $selectedTab,
             'tabs'     => $tabs,
             'outset'   => false,
