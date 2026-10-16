@@ -93,6 +93,7 @@ v31.0.00
         User Admin: added an option to flag changes for personal fields
 
     Bug Fixes
+        Admissions: fixed family fields when an account has a family but no person
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         School Admin: fixed the issue of Form Group Location not being displayed in edit page
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
