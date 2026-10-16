@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
         return;
     }
 
-    $importData = isset($importLog['serialisedArray'])? unserialize($importLog['serialisedArray']) : [];
+    $importData = $logGateway->getLogData($importLog['serialisedArray'] ?? '');
     $importData['log'] = $importLog;
     $importResults = $importData['results'] ?? [];
 
