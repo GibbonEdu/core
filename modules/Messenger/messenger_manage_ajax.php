@@ -31,8 +31,9 @@ if (empty($gibbonLogID)) return;
 if (!$session->has('username')) return;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php')) {
-    $log = $container->get(LogGateway::class)->getByID($gibbonLogID);
-    $data = unserialize($log['serialisedArray'] ?? '') ?? [];
+    $logGateway = $container->get(LogGateway::class);
+    $log = $logGateway->getByID($gibbonLogID);
+    $data = $logGateway->getLogData($log['serialisedArray'] ?? '');
 
     if (empty($log) || empty($data)) return;
     $status = $data['status'] ?? '';

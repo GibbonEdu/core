@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\PersonalDataFieldSettings;
@@ -212,7 +213,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                         ORDER BY gibbonLog.timestamp DESC LIMIT 1" ;
 
                 $importLog = $pdo->selectOne($sql, $data);
-                $importLog = isset($importLog['serialisedArray'])? unserialize($importLog['serialisedArray']) : [];
+                $importLog = $container->get(LogGateway::class)->getLogData(is_array($importLog) ? ($importLog['serialisedArray'] ?? '') : '');
                 $columnOrderLast = $importLog['columnOrder'] ?? [];
             }
 

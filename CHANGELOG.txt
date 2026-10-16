@@ -99,6 +99,7 @@ v31.0.00
         System: renamed ca_CA locale to ca_ES and updated locale files
         System: fixed the Docker development environment and test scripts failing on Windows hosts
         System: added missing form CSRF protection in *_ajax_alarm*Process.php files
+        System: fixed handling of log filters and stored log details
         Calendar: fixed missing photos and student names on mobile view of participant list
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway
