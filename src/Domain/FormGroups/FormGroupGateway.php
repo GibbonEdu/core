@@ -67,21 +67,37 @@ class FormGroupGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectFormGroupsBySchoolYear($gibbonSchoolYearID)
+    public function selectFormGroupsBySchoolYear($gibbonSchoolYearID, $gibbonPersonID = null)
     {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'));
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
         $sql = "SELECT gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonFormGroup.gibbonSpaceID, gibbonSpace.name AS space, gibbonFormGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) as sequenceNumber
-                FROM gibbonFormGroup
-                LEFT JOIN (
-                    SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID FROM gibbonStudentEnrolment
-                    JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
-                    ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
-                ) AS students ON (students.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
-                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
-                GROUP BY gibbonFormGroup.gibbonFormGroupID
-                ORDER BY LENGTH(gibbonFormGroup.name), gibbonFormGroup.name";
+        FROM gibbonFormGroup
+        LEFT JOIN (
+            SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID FROM gibbonStudentEnrolment
+            JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+            WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
+            ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
+        ) AS students ON (students.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+        LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)";
+
+        if (!empty($gibbonPersonID)) {
+            $data['gibbonPersonID'] = $gibbonPersonID;
+            $sql .= " LEFT JOIN gibbonStudentEnrolment AS relatedEnrolment ON (relatedEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND relatedEnrolment.gibbonPersonID=:gibbonPersonID AND relatedEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonPerson AS relatedPerson ON (relatedPerson.gibbonPersonID=relatedEnrolment.gibbonPersonID AND relatedPerson.status='Full' AND (relatedPerson.dateStart IS NULL OR relatedPerson.dateStart<=:today) AND (relatedPerson.dateEnd IS NULL OR relatedPerson.dateEnd>=:today))";
+        }
+
+        $sql .= " WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
+
+        if (!empty($gibbonPersonID)) {
+            $sql .= " AND (gibbonFormGroup.gibbonPersonIDTutor=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDTutor2=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDTutor3=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDEA=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDEA2=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDEA3=:gibbonPersonID
+                        OR relatedPerson.gibbonPersonID IS NOT NULL)";
+        }
+
+        $sql .= " GROUP BY gibbonFormGroup.gibbonFormGroupID ORDER BY LENGTH(gibbonFormGroup.name), gibbonFormGroup.name";
 
         return $this->db()->select($sql, $data);
     }
@@ -181,21 +197,52 @@ class FormGroupGateway extends QueryableGateway
         return $this->db()->selectOne($sql, [
             'gibbonFormGroupID' => $gibbonFormGroupID,
         ]);
-    }          
-  
-    public function getFormGroupDetailsByID($gibbonFormGroupID)
+    }
+
+    public function getFormGroupDetailsByID($gibbonFormGroupID, $gibbonPersonID = null, $gibbonSchoolYearID = null)
     {
         $data = ['gibbonFormGroupID' => $gibbonFormGroupID];
-        $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonFormGroupID=:gibbonFormGroupID';
+        $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroup.gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, gibbonFormGroup.website
+        FROM gibbonFormGroup
+        JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+        LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)';
+
+        if (!empty($gibbonPersonID) && !empty($gibbonSchoolYearID)) {
+            $data['gibbonPersonID'] = $gibbonPersonID;
+            $data['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+            $data['today'] = date('Y-m-d');
+            $sql .= " LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonPerson AS enrolledPerson ON (enrolledPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND enrolledPerson.status='Full' AND (enrolledPerson.dateStart IS NULL OR enrolledPerson.dateStart<=:today) AND (enrolledPerson.dateEnd IS NULL OR enrolledPerson.dateEnd>=:today))";
+        }
+
+        $sql .= ' WHERE gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID';
+
+        if (!empty($gibbonSchoolYearID)) {
+            $data['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+            $sql .= ' AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
+        }
         
+        if (!empty($gibbonPersonID)) {
+            $data['gibbonPersonID'] = $gibbonPersonID;
+            $sql .= ' AND (gibbonFormGroup.gibbonPersonIDTutor=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDTutor2=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDTutor3=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDEA=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDEA2=:gibbonPersonID
+                        OR gibbonFormGroup.gibbonPersonIDEA3=:gibbonPersonID';
+            if (!empty($gibbonSchoolYearID)) {
+                $sql .= ' OR enrolledPerson.gibbonPersonID IS NOT NULL';
+            }
+            $sql .= ')';
+        }
+
         return $this->db()->select($sql, $data);
     }
-  
+
     public function selectFormGroupListBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
         $sql = 'SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-        
+
         return $this->db()->select($sql, $data);
     }
 
@@ -203,15 +250,15 @@ class FormGroupGateway extends QueryableGateway
     {
         $data = ["gibbonSchoolYearID" => $gibbonSchoolYearID, "gibbonPersonID" => $gibbonPersonID];
         $sql = "SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
-        
+
         return $this->db()->select($sql, $data);
     }
-  
+
     public function getFormGroupDetailsByFamilyAdult($gibbonFormGroupID, $gibbonPersonID)
     {
         $data = ['gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
         $sql = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroup.gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
-        FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+        FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
         JOIN (SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID FROM gibbonStudentEnrolment JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) ORDER BY gibbonStudentEnrolment.gibbonYearGroupID) AS students ON (students.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
         JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=students.gibbonPersonID)
         JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
@@ -226,7 +273,7 @@ class FormGroupGateway extends QueryableGateway
     public function selectFormGroupsByStudent($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = ["gibbonSchoolYearID" => $gibbonSchoolYearID, "gibbonPersonID" => $gibbonPersonID];
-        $sql = "SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+        $sql = "SELECT gibbonFormGroup.gibbonFormGroupID AS value, gibbonFormGroup.name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonFormGroup.name";
 
         return $this->db()->select($sql, $data);
     }

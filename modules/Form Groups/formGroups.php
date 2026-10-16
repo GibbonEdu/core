@@ -37,14 +37,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         $page->breadcrumbs->add(__('View Form Groups'));
 
         $formGroupGateway = $container->get(FormGroupGateway::class);
-        if ($highestAction == "View Form Groups_all") {
-            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYear($session->get('gibbonSchoolYearID'));
-        }
-        else {
-            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYearMyChildren($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
+
+        if ($highestAction == 'View Form Groups_all') {
+            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYear($gibbonSchoolYearID);
+        } elseif ($highestAction == 'View Form Groups_myChildren') {
+            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYearMyChildren($gibbonSchoolYearID, $gibbonPersonID);
+        } elseif ($highestAction == 'View Form Groups_my') {
+            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYear($gibbonSchoolYearID, $gibbonPersonID);
+        } else {
+            $page->addError(__('You do not have access to this action.'));
+            return;
         }
 
-        $formatTutorsList = function($row) use ($formGroupGateway) {
+        $formatTutorsList = function ($row) use ($formGroupGateway) {
             $tutors = $formGroupGateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
@@ -57,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         $table->addColumn('name', __('Name'));
         $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
         $table->addColumn('space', __('Room'));
-        if ($session->get('gibbonRoleIDCurrentCategory') == "Staff") {
+        if ($session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
             $table->addColumn('students', __('Students'));
         }
 
@@ -67,9 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
 
         echo $table->render($formGroups->toDataSet());
 
-        //Display year group table for staff
+        // Display year group table for staff
         $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
-        if ($roleCategory == 'Staff') {
+        if ($highestAction == 'View Form Groups_all' && $roleCategory == 'Staff') {
             $yearGroupGateway = $container->get(YearGroupGateway::class);
 
             $criteria = $yearGroupGateway->newQueryCriteria(true)
