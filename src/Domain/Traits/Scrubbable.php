@@ -78,16 +78,26 @@ trait Scrubbable
         }, $columns);
 
         // Handle files that need deleted along with the scrub
-        $absolutePath = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='System' AND name='absolutePath'");
+        $absolutePath = null;
         foreach ($columns as $name => $property) {
             if ($property != 'deleteFile') continue;
 
             foreach ($scrubbable as $primaryKey => $values) {
-                $values = $this->getByID($primaryKey, [$name]);
                 $columns[$name] = 'Deleted File';
 
-                if (is_file($absolutePath.'/'.$values[$name])) {
-                    unlink($absolutePath.'/'.$values[$name]);
+                if (isset($this->fileHandler)) {
+                    // Use FileHandler to clean up gibbonFilePointer, gibbonFile, and the physical file
+                    $this->fileHandler->deleteFile($this->getTableName(), $primaryKey, $name);
+                } else {
+                    // Fallback: unlink the physical file directly
+                    if ($absolutePath === null) {
+                        $absolutePath = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='System' AND name='absolutePath'");
+                    }
+                    $values = $this->getByID($primaryKey, [$name]);
+                    
+                    if (is_file($absolutePath.'/'.$values[$name])) {
+                        unlink($absolutePath.'/'.$values[$name]);
+                    }
                 }
             }
         }

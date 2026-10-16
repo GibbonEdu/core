@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Staff\StaffApplicationFormFileGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
@@ -63,6 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 exit();
             }
 
+            // Delete file attachments for all staff application form files
+            $staffAppFiles = $container->get(StaffApplicationFormFileGateway::class)->selectBy(['gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID], ['gibbonStaffApplicationFormFileID'])->fetchAll();
+            $fileHandler = $container->get(FileHandler::class);
+            $fileHandler->deleteFilesForRecord('gibbonStaffApplicationFormFile', array_column($staffAppFiles, 'gibbonStaffApplicationFormFileID'));
+
             //Delete files, but don't return error if it fails
             $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
             $sql = 'DELETE FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
@@ -71,6 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             // Personal Documents
             $container->get(PersonalDocumentGateway::class)->deletePersonalDocuments('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID);
+            $fileHandler->deleteFilesForRecord('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

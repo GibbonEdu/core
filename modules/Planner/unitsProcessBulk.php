@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
@@ -81,6 +83,11 @@ if ($gibbonCourseID == '' or $gibbonCourseIDCopyTo == '' or $gibbonSchoolYearID 
 
                         //Last insert ID
                         $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
+                        if (!empty($row['attachment'])) {
+                            $fileHandler = $container->get(FileHandler::class);
+                            $fileHandler->linkExistingFile('gibbonUnit', $gibbonUnitID, 'attachment', $row['attachment']);
+                            $fileHandler->linkExistingFile('gibbonUnit', $AI, 'attachment', $row['attachment']);
+                        }
 
                         //Copy Outcomes
                         try {

@@ -41,6 +41,7 @@ v31.0.00
         System: added Peruvian Sol as a currency option
         System: ensured Twig cache is turned off for Development installs
         System: added a new fileHandler class to track and monitor file uploads
+        System: uploading, replacing, copying, or deleting a file now keeps it until the last record using it is removed
         System: added next year and previous year buttons to the Year Switcher
         System: added gibbon log when a password reset email fails to send
         System: added a new attribute and helper method to the Date class to add a "Today" button to a date object

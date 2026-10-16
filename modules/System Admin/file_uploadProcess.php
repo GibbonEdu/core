@@ -48,7 +48,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
     $gibbonPersonalDocumentTypeID = $_POST['gibbonPersonalDocumentTypeID'] ?? '';
     $gibbonCustomFieldID = $_POST['gibbonCustomFieldID'] ?? '';
     $overwrite = $_POST['overwrite'] ?? 'N';
-    $deleteFiles = $_POST['deleteFiles'] ?? 'N';
     $zoom = $_POST['zoom'] ?? '100';
     $focalX = $_POST['focalX'] ?? '50';
     $focalY = $_POST['focalY'] ?? '50';
@@ -126,11 +125,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $updateBackupPhoto = true;
         }
 
-        // Optionally overwrite and delete exiting files
-        if (!empty($existingFile) && $overwrite == 'Y' && $deleteFiles == 'Y') {
-            unlink($absolutePath.'/'.$existingFile);
-        }
-        
         // Skip uploading files if the file exists and overwrite is not on
         if (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
             unlink($file['absolutePath']);
@@ -183,14 +177,30 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         if ($updated) {
             $count++;
 
-            // Record file in the central file tracking system
+            $fileMetaData = null;
             if (!empty($fileTrackingTable) && !empty($fileTrackingID)) {
                 $fileMetaData = $fileUploader->getFileMetaData($file['relativePath']);
-                if (!empty($fileMetaData)) {
-                    $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, $fileTrackingTable, $fileTrackingID, $fileTrackingColumn);
-                    if (empty($gibbonFileID)) {
-                        $partialFail = true;
+                if (!empty($fileMetaData) && !empty($existingFile)) {
+                    $fileMetaData['previousFilePath'] = $existingFile;
+                }
+            }
+
+            // Keep earlier yearly photos before the current portrait is replaced.
+            if ($updateBackupPhoto && !empty($fileMetaData)) {
+                $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+                $existingPhotos = $personPhotoGateway->selectBy(['gibbonPersonID' => $userData['gibbonPersonID']], ['gibbonPersonPhotoID', 'personImage'])->fetchAll();
+                foreach ($existingPhotos as $existingPhoto) {
+                    if (!empty($existingPhoto['personImage'])) {
+                        $fileHandler->linkExistingFile('gibbonPersonPhoto', $existingPhoto['gibbonPersonPhotoID'], 'personImage', $existingPhoto['personImage']);
                     }
+                }
+            }
+
+            // Record file in the central file tracking system
+            if (!empty($fileMetaData)) {
+                $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, $fileTrackingTable, $fileTrackingID, $fileTrackingColumn);
+                if (empty($gibbonFileID)) {
+                    $partialFail = true;
                 }
             }
 
@@ -208,6 +218,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
                 ]);
                 
                 $partialFail = $partialFail || !$photoUpdated;
+
+                $currentPhoto = $personPhotoGateway->selectBy([
+                    'gibbonPersonID' => $userData['gibbonPersonID'],
+                    'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                ], ['gibbonPersonPhotoID'])->fetch();
+                if (!empty($currentPhoto['gibbonPersonPhotoID']) && !empty($fileMetaData)) {
+                    $fileHandler->recordFileUpload($fileMetaData, 'gibbonPersonPhoto', $currentPhoto['gibbonPersonPhotoID'], 'personImage');
+                }
             }
         }
     }

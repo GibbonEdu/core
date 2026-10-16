@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
@@ -77,6 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     // Delete proofs
     $values = $reportingValueGateway->selectBy(['gibbonReportingCycleID' => $gibbonReportingCycleID])->fetchAll();
+    $container->get(FileHandler::class)->deleteFilesForRecord('gibbonReportingValue', array_column($values, 'gibbonReportingValueID'));
     foreach ($values as $valueData) {
         $partialFail &= !$container->get(ReportingProofGateway::class)->deleteWhere(['gibbonReportingValueID' => $valueData['gibbonReportingValueID']]);
     }
