@@ -57,7 +57,7 @@ class FileHandler implements FileHandlerInterface
     {
         $absolutePath = $metaData['absolutePath'] ?? '';
         $filePath = $metaData['filePath'] ?? '';
-        $storedPath = $this->resolveStoredPath($filePath);
+        $storedPath = self::resolveStoredPath((string) $this->session->get('absolutePath'), $filePath);
         if ($storedPath === null || realpath((string) $absolutePath) !== $storedPath) {
             return false;
         }
@@ -235,7 +235,7 @@ class FileHandler implements FileHandlerInterface
             return true;
         }
 
-        $absolutePath = $this->resolveStoredPath($filePath);
+        $absolutePath = self::resolveStoredPath((string) $this->session->get('absolutePath'), $filePath);
         if ($absolutePath === null) {
             return false;
         }
@@ -367,7 +367,7 @@ class FileHandler implements FileHandlerInterface
     
     protected function unlinkIfUnused(string $filePath): void
     {
-        $absolutePath = $this->resolveStoredPath($filePath);
+        $absolutePath = self::resolveStoredPath((string) $this->session->get('absolutePath'), $filePath);
         if ($absolutePath === null) {
             return;
         }
@@ -384,16 +384,16 @@ class FileHandler implements FileHandlerInterface
     }
 
     /**
-     * Real path of a stored relative path. Refuses traversal, links outside this install, and script files.
+     * Real path of a stored relative path inside $root.
      */
-    protected function resolveStoredPath(string $filePath): ?string
+    public static function resolveStoredPath(string $root, string $filePath): ?string
     {
         $filePath = str_replace('\\', '/', $filePath);
         if ($filePath === '' || str_contains($filePath, "\0") || str_contains($filePath, '..')) {
             return null;
         }
 
-        $root = realpath((string) $this->session->get('absolutePath'));
+        $root = realpath($root);
         if ($root === false) {
             return null;
         }

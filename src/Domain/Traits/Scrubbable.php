@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Traits;
 
+use Gibbon\Filesystem\FileHandler;
+
 /**
  * Implements the ScrubbableGateway interface.
  */
@@ -93,10 +95,10 @@ trait Scrubbable
                     if ($absolutePath === null) {
                         $absolutePath = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='System' AND name='absolutePath'");
                     }
-                    $values = $this->getByID($primaryKey, [$name]);
-                    
-                    if (is_file($absolutePath.'/'.$values[$name])) {
-                        unlink($absolutePath.'/'.$values[$name]);
+                    $record = $this->getByID($primaryKey, [$name]);
+                    $real = FileHandler::resolveStoredPath((string) $absolutePath, (string) ($record[$name] ?? ''));
+                    if ($real !== null) {
+                        unlink($real);
                     }
                 }
             }
