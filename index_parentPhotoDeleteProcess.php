@@ -49,11 +49,15 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID'))
         header("Location: {$URL->withReturn('error2')}");
     } else {
         //UPDATE
+        $person = $result->fetch();
         $fileHandler = $container->get(FileHandler::class);
-        $existingPhotos = $container->get(PersonPhotoGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonPersonPhotoID', 'personImage'])->fetchAll();
-        foreach ($existingPhotos as $existingPhoto) {
-            if (!empty($existingPhoto['personImage'])) {
-                $fileHandler->linkExistingFile('gibbonPersonPhoto', $existingPhoto['gibbonPersonPhotoID'], 'personImage', $existingPhoto['personImage']);
+        if (!empty($person['image_240'])) {
+            $sharedPhotos = $container->get(PersonPhotoGateway::class)->selectBy([
+                'gibbonPersonID' => $gibbonPersonID,
+                'personImage' => $person['image_240'],
+            ], ['gibbonPersonPhotoID'])->fetchAll();
+            foreach ($sharedPhotos as $sharedPhoto) {
+                $fileHandler->linkExistingFile('gibbonPersonPhoto', $sharedPhoto['gibbonPersonPhotoID'], 'personImage', $person['image_240']);
             }
         }
         $fileHandler->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');

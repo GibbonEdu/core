@@ -362,11 +362,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         // Handle file deletion when user removes attachment
                         if (empty($attachment1) && !empty($row['image_240'])) {
                             $fileHandler = $container->get(FileHandler::class);
-                            $existingPhotos = $container->get(PersonPhotoGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonPersonPhotoID', 'personImage'])->fetchAll();
-                            foreach ($existingPhotos as $existingPhoto) {
-                                if (!empty($existingPhoto['personImage'])) {
-                                    $fileHandler->linkExistingFile('gibbonPersonPhoto', $existingPhoto['gibbonPersonPhotoID'], 'personImage', $existingPhoto['personImage']);
-                                }
+                            $sharedPhotos = $container->get(PersonPhotoGateway::class)->selectBy([
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'personImage' => $row['image_240'],
+                            ], ['gibbonPersonPhotoID'])->fetchAll();
+                            foreach ($sharedPhotos as $sharedPhoto) {
+                                $fileHandler->linkExistingFile('gibbonPersonPhoto', $sharedPhoto['gibbonPersonPhotoID'], 'personImage', $row['image_240']);
                             }
                             $fileHandler->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
                         }
