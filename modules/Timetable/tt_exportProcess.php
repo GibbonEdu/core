@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     if ($result0->rowCount() < 1) {
     } else {
         while ($values0 = $result0->fetch()) {
-            $data1 = array( 'gibbonTTDayID' => $values0['gibbonTTDayID'], 'gibbonPersonID' => $_POST['superSecretHiddenValue']);
+            $data1 = array( 'gibbonTTDayID' => $values0['gibbonTTDayID'], 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql1 = 'SELECT timeStart, timeEnd, gibbonCourse.name FROM gibbonTTDayRowClass
                       JOIN gibbonTTColumnRow on gibbonTTDayRowClass.gibbonTTColumnRowID = gibbonTTColumnRow.gibbonTTColumnRowID
                       JOIN gibbonCourseClassPerson on gibbonTTDayRowClass.gibbonCourseClassID = gibbonCourseClassPerson.gibbonCourseClassID
