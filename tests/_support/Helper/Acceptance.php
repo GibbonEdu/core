@@ -48,8 +48,7 @@ class Acceptance extends \Codeception\Module
 
                 case 'select':      $optionTags = $element->getElementsByTagName('option');
                                     for ($i = 0; $i < $optionTags->length; $i++ ) {
-                                        if ($optionTags->item($i)->hasAttribute('selected') 
-                                        && $optionTags->item($i)->getAttribute('selected') === "selected") {
+                                        if ($optionTags->item($i)->hasAttribute('selected')) {
                                             $value = $optionTags->item($i)->getAttribute('value');
                                         }
                                     }

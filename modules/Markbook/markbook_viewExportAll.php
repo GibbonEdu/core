@@ -41,5 +41,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     }
 
     //Proceed!
-	include './markbook_viewExportAllContents.php';
+	include __DIR__ . '/markbook_viewExportAllContents.php';
 }

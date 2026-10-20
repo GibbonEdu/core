@@ -73,4 +73,37 @@ class MarkbookColumnGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function getMarkbookColumnByTeacher($gibbonMarkbookColumnID, $gibbonPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonMarkbookColumn.*'])
+            ->from('gibbonMarkbookColumn')
+            ->innerJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonMarkbookColumn.gibbonCourseClassID')
+            ->where('gibbonMarkbookColumn.gibbonMarkbookColumnID = :gibbonMarkbookColumnID')
+            ->bindValue('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
+            ->where('gibbonCourseClassPerson.gibbonPersonID = :gibbonPersonID')
+            ->where('gibbonCourseClassPerson.role = "Teacher"')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+
+        return $this->runSelect($query)->fetch();
+    }
+
+    public function getMarkbookColumnByDepartmentPerson($gibbonMarkbookColumnID, $gibbonPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonMarkbookColumn.*'])
+            ->from('gibbonMarkbookColumn')
+            ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonMarkbookColumn.gibbonCourseClassID')
+            ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
+            ->innerJoin('gibbonDepartmentStaff', 'gibbonDepartmentStaff.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID')
+            ->where('gibbonMarkbookColumn.gibbonMarkbookColumnID = :gibbonMarkbookColumnID')
+            ->where('gibbonDepartmentStaff.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+
+        return $this->runSelect($query)->fetch();
+    }
 }

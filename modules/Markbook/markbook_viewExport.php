@@ -46,6 +46,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         header("Location: {$URL}");
     } else {
         //Proceed!
-		include './markbook_viewExportContents.php';
+		include __DIR__ . '/markbook_viewExportContents.php';
     }
 }

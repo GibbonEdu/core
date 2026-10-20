@@ -129,7 +129,7 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
         // Find out the base installation URL path.
         $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
         $baseDir = realpath(__DIR__) . '/';
-        $urlBasePath = substr($baseDir, $prefixLength);
+        $urlBasePath = str_replace('\\', '/', substr($baseDir, $prefixLength));
 
         // Construct the full URL to the base URL path.
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
@@ -152,6 +152,13 @@ $tokenHandler = $container->get(TokenHandler::class);
 // Check for CSRF token and nonce when posting any form
 if (!empty($_POST) && count($_POST) > 1 && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
     
+    // Ensure the request originates within the system
+    if (!str_starts_with($_SERVER['HTTP_REFERER'], $session->get('absoluteURL'))) {
+        $URL = Url::fromRoute()->withQueryParam('return', 'error0');
+        header("Location: {$URL}");
+        exit;
+    }
+
     // Validate CSRF token
     if (!$tokenHandler->validateCsrfToken()) {
         $URL = $_SERVER['HTTP_REFERER'].'&return=error9';

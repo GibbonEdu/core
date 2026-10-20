@@ -29,29 +29,37 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/alarm.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
+$gibbonAlarmID = $_POST['gibbonAlarmID'] ?? '';
+
+if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCategory') != 'Staff' || isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
+} elseif (empty($gibbonAlarmID)) {
+    $URL .= '&return=error3';
+    header("Location: {$URL}");
+    exit;
 } else {
-    //Proceed!
-    $gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
+    // Proceed!
+    $alarmGateway = $container->get(AlarmGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
 
-    //Validate Inputs
-    if (empty($gibbonAlarmID)) {
-        $URL .= '&return=error3';
+    // Require a current alarm sounded by this user
+    $alarm = $alarmGateway->selectBy(['gibbonAlarmID' => $gibbonAlarmID, 'status' => 'Current'])->fetch();
+    if (empty($alarm) || $alarm['gibbonPersonID'] != $session->get('gibbonPersonID')) {
+        $URL .= '&return=error0';
         header("Location: {$URL}");
-    } else {
-        $alarmGateway = $container->get(AlarmGateway::class);
-        $settingGateway = $container->get(SettingGateway::class);
-        //DEAL WITH ALARM SETTING
-        //Write setting to database
-        $dataWhere = ['scope' => 'System', 'name' => 'alarm'];
-        $settingGateway->updateWhere($dataWhere, ['value' => 'None']);
-        //Write alarm to database
-        $alarmGateway->update($gibbonAlarmID, ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
-
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
+        exit;
     }
+
+    // DEAL WITH ALARM SETTING
+    $dataWhere = ['scope' => 'System', 'name' => 'alarm'];
+    $settingGateway->updateWhere($dataWhere, ['value' => 'None']);
+
+    // Write alarm to database
+    $alarmGateway->update($alarm['gibbonAlarmID'], ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
+
+    getSystemSettings($guid, $connection2);
+    $URL .= '&return=success0';
+    header("Location: {$URL}");
 }

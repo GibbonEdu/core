@@ -157,6 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                 $form->addHiddenValue('search', '');
                                 $form->addHiddenValue('params', $paramsVar);
                                 $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
+                                $form->addHiddenValue('gibbonPersonID', $rowSubmission['gibbonPersonID']);
                                 $form->addHiddenValue('submission', 'true');
                                 $form->addHiddenValue('gibbonPlannerEntryHomeworkID', $gibbonPlannerEntryHomeworkID);
                                 $form->addHiddenValue('address', $session->get('address'));

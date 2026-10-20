@@ -103,10 +103,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         header("Location: {$URL}");
     }
 
-    $organiser = $calendarEventPersonGateway->selectBy(['gibbonCalendarEventID' => $gibbonCalendarEventID, 'role' => 'Organiser', 'gibbonPersonID' => $gibbonPersonIDOrganiser])->fetch();
+    $gibbonPersonIDOrganiser = $_POST['gibbonPersonIDOrganiser'] ?? '';
+    if (empty($gibbonPersonIDOrganiser)) {
+        $gibbonPersonIDOrganiser = $event['gibbonPersonIDOrganiser'] ?? '';
+    }
+    if (empty($gibbonPersonIDOrganiser)) {
+        $gibbonPersonIDOrganiser = $event['gibbonPersonIDCreated'] ?? '';
+    }
 
-     if (empty($organiser)) {
-         $organiserData = [
+    $organiser = $calendarEventPersonGateway->selectBy([
+        'gibbonCalendarEventID' => $gibbonCalendarEventID,
+        'role' => 'Organiser',
+    ])->fetch();
+
+    if (empty($organiser) && !empty($gibbonPersonIDOrganiser)) {
+        $organiserData = [
             'gibbonCalendarEventID'     => $gibbonCalendarEventID,
             'gibbonPersonID'            => $gibbonPersonIDOrganiser,
             'role'                      => 'Organiser',
@@ -116,8 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
             'gibbonPersonIDCreated'     => $session->get('gibbonPersonID') ?? '',
         ];
 
-        $inserted = $calendarEventPersonGateway->insertAndUpdate($organiserData, $organiserData);
-     }
+        $calendarEventPersonGateway->insertAndUpdate($organiserData, $organiserData);
+    }
 
     $staff = $_POST['staff'] ?? [];
     $role = $_POST['role'] ?? 'Other';

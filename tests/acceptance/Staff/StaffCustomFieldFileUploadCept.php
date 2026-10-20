@@ -33,8 +33,8 @@ $gibbonCustomFieldID = $I->haveInDatabase('gibbonCustomField', [
 $fieldID = str_pad($gibbonCustomFieldID, 4, '0', STR_PAD_LEFT);
 $fieldName = 'custom'.$fieldID.'File';
 
-// Grab an existing staff record to edit
-$gibbonStaffID = $I->grabFromDatabase('gibbonStaff', 'gibbonStaffID', ['type' => 'Teaching']);
+$gibbonPersonID = $I->grabFromDatabase('gibbonPerson', 'gibbonPersonID', ['username' => 'testingadmin']);
+$gibbonStaffID = $I->grabFromDatabase('gibbonStaff', 'gibbonStaffID', ['gibbonPersonID' => $gibbonPersonID]);
 
 $I->amOnModulePage('Staff', 'staff_manage_edit.php', ['gibbonStaffID' => $gibbonStaffID]);
 $I->seeBreadcrumb('Edit Staff');

@@ -3,9 +3,6 @@ paths:
     # where the tests stored
     tests: ''
 
-    # directory for output
-    log: log
-
     # directory for fixture data
     data: _data
 
@@ -15,7 +12,7 @@ paths:
     # directory for environment configuration
     envs: _envs
 
-    # output directory
+    # output directory (Codeception 5+)
     output: _output
 
 settings:

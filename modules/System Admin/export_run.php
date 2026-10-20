@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\ImportType;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Services\Format;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
     // Get the importType information
     $type = (isset($_GET['type']))? $_GET['type'] : '';
     $passwordPolicy = $container->get(PasswordPolicy::class);
-    $importType = ImportType::loadImportType($type, $settingGateway, $passwordPolicy, $pdo);
+    $importType = ImportType::loadImportType($type, $settingGateway, $passwordPolicy, $container->get(PersonalDataFieldSettings::class), $pdo);
 
     if ($importType->isImportAccessible($guid, $connection2) == false) {
         $URL .= '&return=error0';

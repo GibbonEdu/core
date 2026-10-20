@@ -26,7 +26,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
-require getcwd().'/../gibbon.php';
+require __DIR__.'/../gibbon.php';
 
 $settingGateway = $container->get(SettingGateway::class);
 

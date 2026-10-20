@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\ImportType;
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\System\LogGateway;
@@ -39,6 +40,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $importTypeList = ImportType::loadImportTypeList(
         $container->get(SettingGateway::class),
         $container->get(PasswordPolicy::class),
+        $container->get(PersonalDataFieldSettings::class),
         $pdo,
         false
     );
@@ -47,7 +49,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $logsByType = $logGateway->selectLogsByModuleAndTitle('System Admin', 'Import - %')->fetchAll();
 
     $logsByType = array_map(function ($log) use (&$importTypeList) {
-        $log['data'] = isset($log['serialisedArray'])? unserialize($log['serialisedArray']) : [];
+        $log['data'] = $logGateway->getLogData($log['serialisedArray'] ?? '');
         $log['importType'] = @$importTypeList[$log['data']['type']];
         return $log['importType'] ? $log : null;
     }, $logsByType);

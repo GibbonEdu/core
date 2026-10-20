@@ -37,9 +37,9 @@ trait BasicAttributesTrait
      * @param  string  $id
      * @return self
      */
-    public function setID($id = '')
+    public function setID(?string $id = '')
     {
-        $id = str_replace(['[',']'], '', $id);
+        $id = str_replace(['[',']'], '', $id ?? '');
         $this->setAttribute('id', $id);
         return $this;
     }

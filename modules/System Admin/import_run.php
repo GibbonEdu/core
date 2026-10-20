@@ -19,8 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Data\Importer;
 use Gibbon\Data\ImportType;
 use Gibbon\Tables\DataTable;
@@ -38,7 +40,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
     $step = isset($_GET['step'])? min(max(1, $_GET['step']), 4) : 1;
 
     $passwordPolicy = $container->get(PasswordPolicy::class);
-    $importType = ImportType::loadImportType($type, $container->get(SettingGateway::class), $passwordPolicy, $pdo);
+    $importType = ImportType::loadImportType($type, $container->get(SettingGateway::class), $passwordPolicy, $container->get(PersonalDataFieldSettings::class), $pdo);
 
     $nameParts = array_map('trim', explode('-', $importType->getDetail('name')));
     $name = implode(' - ', array_map('__', $nameParts));
@@ -211,7 +213,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                         ORDER BY gibbonLog.timestamp DESC LIMIT 1" ;
 
                 $importLog = $pdo->selectOne($sql, $data);
-                $importLog = isset($importLog['serialisedArray'])? unserialize($importLog['serialisedArray']) : [];
+                $importLog = $container->get(LogGateway::class)->getLogData(is_array($importLog) ? ($importLog['serialisedArray'] ?? '') : '');
                 $columnOrderLast = $importLog['columnOrder'] ?? [];
             }
 

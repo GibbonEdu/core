@@ -104,6 +104,13 @@ class ModuleGateway extends QueryableGateway
         return $this->db()->select($sql)->fetchAll(\PDO::FETCH_COLUMN);
     }
 
+    public function selectAllActiveModules()
+    {
+        $sql = "SELECT gibbonModuleID, category, name FROM gibbonModule WHERE active='Y' ORDER BY category, name";
+
+        return $this->db()->select($sql)->fetchAll();
+    }
+
    /**
      * The modules by role.
      *

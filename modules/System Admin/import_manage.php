@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Data\ImportType;
 use Gibbon\Data\PasswordPolicy;
+use Gibbon\Forms\PersonalDataFieldSettings;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\LogGateway;
@@ -62,7 +63,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
     // Get a list of available import options
     /** @var PasswordPolicy */
     $passwordPolicy = $container->get(PasswordPolicy::class);
-    $importTypeList = ImportType::loadImportTypeList($settingGateway, $passwordPolicy, $pdo, false);
+    $importTypeList = ImportType::loadImportTypeList($settingGateway, $passwordPolicy, $container->get(PersonalDataFieldSettings::class), $pdo, false);
 
     // Build an array of combined import type info and log data
     $importTypeGroups = array_reduce($importTypeList, function ($group, $importType) use ($guid, $connection2, $logsByType) {

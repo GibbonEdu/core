@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
+use Gibbon\Services\Format;
 use Gibbon\Domain\School\GradeScaleGateway;
 use Gibbon\Contracts\Filesystem\FileHandler;
-use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -42,6 +43,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         header("Location: {$URL}");
     } else {
         //Proceed!
+
+        // Check that the user has access to the class, or has access to all classes
+        $highestAction = getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_write_data.php', $connection2); 
+        $class = $container->get(CourseEnrolmentGateway::class)->getCourseClassAccessByTeacher($gibbonCourseClassID, $session->get('gibbonPersonID'));
+        if (!($highestAction == 'Write Internal Assessments_all' || ($highestAction == 'Write Internal Assessments_myClasses' && !empty($class)) )) {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
+            exit;
+        }
+
         //Check if gibbonInternalAssessmentColumnID and gibbonCourseClassID specified
         if ($gibbonInternalAssessmentColumnID == '' or $gibbonCourseClassID == '') {
             $URL .= '&return=error1';

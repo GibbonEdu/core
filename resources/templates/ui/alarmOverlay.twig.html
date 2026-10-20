@@ -26,10 +26,8 @@ html, body {
     <div class="pt-3 font-bold font-sans text-center">
 
         <div class="h-8 pr-4 mb-24 w-full text-right text-base">
-        {% if alarm.gibbonPersonID == gibbonPersonID %}
-            <a class="text-white" target='_parent' href='{{ absoluteURL }}/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}'>
-            {{ __('Turn Alarm Off') }}
-            </a>
+            {% if cancelAlarmForm %}
+                {{ cancelAlarmForm|raw }}
             {% endif %}
         </div>
 
@@ -61,10 +59,8 @@ html, body {
             <p>
                 {% if confirmed %}
                     <i>{{ __('You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator cancels the alarm.') }}</i>
-                {% else %}
-                    <a target="_parent" class="block text-white text-4xl sm:text-5xl font-bold p-6" href="{{ absoluteURL }}/index_notification_ajax_alarmProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}">
-                        {{ __('Click here to confirm that you have received this alarm.') }}
-                    </a>
+                {% elseif confirmReceiptForm %}
+                    {{ confirmReceiptForm|raw }}
                     <i>{{ __('After confirming receipt, the alarm will continue to be displayed until an administrator cancels the alarm.') }}</i>
                 {% endif %}
             </p>
@@ -131,10 +127,8 @@ html, body {
                             <td class="text-white text-center sm:text-left h-8">
                                 {% if person.gibbonPersonID in staffAbsences %}
                                     <span class="text-xs italic">{{ __('Absent') }}</span>
-                                {% elseif person.gibbonPersonID != alarm.gibbonPersonID and person.gibbonAlarmConfirmID is empty %}
-                                    <a target="_parent" class="alarm-action" href="{{ absoluteURL }}/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID={{ person.gibbonPersonID }}&gibbonAlarmID={{ alarm.gibbonAlarmID }}">
-                                        <img title="{{ __('Confirm') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/iconTick_light.png"/>
-                                    </a>
+                                {% elseif person.confirmForm %}
+                                    {{ person.confirmForm|raw }}
                                 {% endif %}
                             </td>
                         </tr>
