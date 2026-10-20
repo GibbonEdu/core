@@ -79,8 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $description = $_POST['description'] ?? '';
                     $columnColor = preg_replace('/[^a-zA-Z0-9\#]/', '', $_POST['columnColor'] ?? '');
                     $type = $_POST['type'] ?? '';
-                    $date = (!empty($_POST['date']))? Format::dateConvert($_POST['date']) : date('Y-m-d');
                     $gibbonSchoolYearTermID = (!empty($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : null;
+                    // Date is optional when an explicit term is set; otherwise fall back to today
+                    $date = (!empty($_POST['date']))? Format::dateConvert($_POST['date']) : (empty($gibbonSchoolYearTermID)? date('Y-m-d') : null);
                     //Sort out attainment
                     $attainment = $_POST['attainment'] ?? '';
                     $attainmentWeighting = 1;
@@ -180,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                     }
 
-                    if ($name == '' or $description == '' or $type == '' or $date == '' or $viewableStudents == '' or $viewableParents == '') {
+                    if ($name == '' or $description == '' or $type == '' or ($date == '' && empty($gibbonSchoolYearTermID)) or $viewableStudents == '' or $viewableParents == '') {
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
                     } else {
