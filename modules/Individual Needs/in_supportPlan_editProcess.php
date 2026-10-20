@@ -80,11 +80,6 @@ if ($newType == 'File') {
     $hasNewFile = !empty($_FILES['file']['tmp_name']);
 
     if ($hasNewFile) {
-        // Delete old file if it was a File type
-        if ($oldType == 'File' && !empty($plan['filePath'])) {
-            $fileHandler->deleteFile('gibbonStudentSupportPlan', $gibbonStudentSupportPlanID, 'filePath');
-        }
-
         $fileUploader = new Gibbon\FileUploader($pdo, $session);
         $newFilePath = $fileUploader->uploadFromPost($_FILES['file'], 'in_supportPlan_');
 
@@ -95,6 +90,9 @@ if ($newType == 'File') {
         }
 
         $fileMetaData = $fileUploader->getFileMetaData($newFilePath);
+        if (!empty($fileMetaData) && !empty($plan['filePath'])) {
+            $fileMetaData['previousFilePath'] = $plan['filePath'];
+        }
     } else {
         // No new file — if switching from Link to File with no upload, error
         if ($oldType == 'Link') {

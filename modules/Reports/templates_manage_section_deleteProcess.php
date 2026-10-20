@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 
@@ -53,6 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
         exit;
     }
 
+    $container->get(FileHandler::class)->deleteFilesForRecord('gibbonReportTemplateSection', $gibbonReportTemplateSectionID);
+    
     $deleted = $templateSectionGateway->delete($gibbonReportTemplateSectionID);
 
     $URL .= !$deleted

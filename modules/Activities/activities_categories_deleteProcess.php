@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
@@ -50,6 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
     }
 
     $deleted = $categoryGateway->delete($gibbonActivityCategoryID);
+
+    if ($deleted) {
+        $fileDeleted = $container->get(FileHandler::class)->deleteFile('gibbonActivityCategory', $gibbonActivityCategoryID, 'backgroundImage');
+    }
 
     $URL .= !$deleted
         ? '&return=error2'

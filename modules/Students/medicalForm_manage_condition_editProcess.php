@@ -86,6 +86,9 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                     }
                     
                     $fileMetaData = $fileUploader->getFileMetaData($attachment);
+                    if (!empty($fileMetaData) && !empty($values['attachment'])) {
+                        $fileMetaData['previousFilePath'] = $values['attachment'];
+                    }
                 } else {
                     // Remove the attachment if it has been deleted, otherwise retain the original value
                     $attachment = empty($_POST['attachment']) ? '' : $values['attachment'];

@@ -97,14 +97,23 @@ class PersonalDocumentHandler
                     $attachment = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
                     
                     if (!empty($file['tmp_name'])) {
+                        $documentID = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
+                        $existingFilePath = '';
+                        if (!empty($documentID)) {
+                            $existingDocument = $this->personalDocumentGateway->getByID($documentID, ['filePath']);
+                            $existingFilePath = $existingDocument['filePath'] ?? '';
+                        }
+
                         $this->fileUploader->setFileSuffixType(FileUploader::FILE_SUFFIX_ALPHANUMERIC);
                         $data[$field] = $this->fileUploader->uploadFromPost($file, $foreignTable.$foreignTableID);
 
                         if (empty($data[$field])) {
                             $personalDocumentFail = true;
                         } else {
-                            // Capture file metadata for tracking
                             $fileMetaData = $this->fileUploader->getFileMetaData($data[$field]);
+                            if (!empty($fileMetaData) && $existingFilePath !== '') {
+                                $fileMetaData['previousFilePath'] = $existingFilePath;
+                            }
                         }
                     } else {
                         $documentID = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
@@ -253,6 +262,19 @@ class PersonalDocumentHandler
             $data['timestamp'] = date('Y-m-d H:i:s');
 
             if ($this->personalDocumentGateway->insertAndUpdate($data, $data)) {
+                if (array_key_exists('filePath', $data)) {
+                    $personDocument = $this->personalDocumentGateway->getPersonalDocumentDataByID($document['gibbonPersonalDocumentTypeID'], 'gibbonPerson', $gibbonPersonID);
+                    if (!empty($personDocument['gibbonPersonalDocumentID'])) {
+                        if (!empty($data['filePath'])) {
+                            $this->fileHandler->linkExistingFile('gibbonPersonalDocument', $personDocument['gibbonPersonalDocumentID'], 'filePath', $data['filePath']);
+                        } else {
+                            $this->fileHandler->deleteFile('gibbonPersonalDocument', $personDocument['gibbonPersonalDocumentID'], 'filePath');
+                        }
+                    }
+                    if (!empty($document['gibbonPersonalDocumentID'])) {
+                        $this->fileHandler->deleteFile('gibbonPersonalDocument', $document['gibbonPersonalDocumentID'], 'filePath');
+                    }
+                }
                 $this->personalDocumentGateway->deleteWhere(['gibbonPersonalDocumentTypeID' => $document['gibbonPersonalDocumentTypeID'], 'foreignTable' => 'gibbonPersonUpdate', 'foreignTableID' => $gibbonPersonUpdateID]);
             }
         }

@@ -101,6 +101,9 @@ if ($gibbonStaffID == '') {
                         $partialFail = true;
                     } else {
                         $fileMetaData = $fileUploader->getFileMetaData($contractUpload);
+                        if (!empty($fileMetaData) && !empty($row['contractUpload'])) {
+                            $fileMetaData['previousFilePath'] = $row['contractUpload'];
+                        }
                     }
                 } else {
                     // Remove the attachment if it has been deleted, otherwise retain the original value

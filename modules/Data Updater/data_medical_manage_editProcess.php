@@ -26,6 +26,7 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\UI\Components\Alert;
 
 require_once __DIR__ . '/../../gibbon.php';
@@ -186,6 +187,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         $sqlCond = "UPDATE gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID";
                         $resultCond = $connection2->prepare($sqlCond);
                         $resultCond->execute($dataCond);
+                        if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on' && !empty($dataCond['gibbonPersonMedicalConditionID'])) {
+                            $fileHandler = $container->get(FileHandler::class);
+                            if (!empty($dataCond['attachment'])) {
+                                $fileHandler->linkExistingFile('gibbonPersonMedicalCondition', $dataCond['gibbonPersonMedicalConditionID'], 'attachment', $dataCond['attachment']);
+                            } else {
+                                $fileHandler->deleteFile('gibbonPersonMedicalCondition', $dataCond['gibbonPersonMedicalConditionID'], 'attachment');
+                            }
+                        }
                     } catch (PDOException $e) {
                         $partialFail = true;
                     }
@@ -276,12 +285,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             $sqlCond = "INSERT INTO gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID";
                             $resultCond = $connection2->prepare($sqlCond);
                             $resultCond->execute($dataCond);
+                            $newConditionID = $connection2->lastInsertID();
+                            if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on' && !empty($newConditionID) && !empty($dataCond['attachment'])) {
+                                $container->get(FileHandler::class)->linkExistingFile('gibbonPersonMedicalCondition', $newConditionID, 'attachment', $dataCond['attachment']);
+                            }
                         } catch (PDOException $e) {
                             $partialFail = true;
                         }
 
                         try {
-                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
+                            $dataCond = array('gibbonPersonMedicalConditionID' => $newConditionID ?? $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
                             $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
                             $resultCond = $connection2->prepare($sqlCond);
                             $resultCond->execute($dataCond);
@@ -297,6 +310,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $sql = "UPDATE gibbonPersonMedical SET $sqlSet gibbonPersonMedicalID=:gibbonPersonMedicalID WHERE gibbonPersonID=:gibbonPersonID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
+                    if (!empty($gibbonPersonMedicalID)) {
+                        $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Medical Form', [], $data['fields'] ?? '', 'gibbonPersonMedical', $gibbonPersonMedicalID, $row2['fields'] ?? null);
+                    }
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
@@ -427,12 +443,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             $sqlCond = "INSERT INTO gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID";
                             $resultCond = $connection2->prepare($sqlCond);
                             $resultCond->execute($dataCond);
+                            $newConditionID = $connection2->lastInsertID();
+                            if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on' && !empty($newConditionID) && !empty($dataCond['attachment'])) {
+                                $container->get(FileHandler::class)->linkExistingFile('gibbonPersonMedicalCondition', $newConditionID, 'attachment', $dataCond['attachment']);
+                            }
                         } catch (PDOException $e) {
                             $partialFail = true;
                         }
 
                         try {
-                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
+                            $dataCond = array('gibbonPersonMedicalConditionID' => $newConditionID ?? $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
                             $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
                             $resultCond = $connection2->prepare($sqlCond);
                             $resultCond->execute($dataCond);

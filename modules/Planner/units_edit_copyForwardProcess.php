@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
 
@@ -96,6 +97,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 
                     //Get new unit ID
                     $gibbinUnitIDNew = $connection2->lastInsertID();
+                    if (!empty($row['attachment'])) {
+                        $fileHandler = $container->get(FileHandler::class);
+                        $fileHandler->linkExistingFile('gibbonUnit', $gibbonUnitID, 'attachment', $row['attachment']);
+                        $fileHandler->linkExistingFile('gibbonUnit', $gibbinUnitIDNew, 'attachment', $row['attachment']);
+                    }
 
                     if ($gibbinUnitIDNew == '') {
                         $partialFail = true;

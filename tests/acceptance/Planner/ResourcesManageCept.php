@@ -83,9 +83,11 @@ $I->seeSuccessMessage();
 $file2 = $I->grabFromDatabase('gibbonResource', 'content', ['gibbonResourceID' => $gibbonResourceID2]);
 $I->assertNotEmpty($file2);
 
-// Cleanup ------------------------------------------------
-$I->deleteFile('../'.$file);
+// The replaced file is removed once nothing else uses it. The current file stays until this row is removed here.
 if ($file2 !== $file) {
+    $I->dontSeeFileFound('../'.$file);
     $I->deleteFile('../'.$file2);
+} else {
+    $I->deleteFile('../'.$file);
 }
 $I->deleteFromDatabase('gibbonResource', ['gibbonResourceID' => $gibbonResourceID2]);

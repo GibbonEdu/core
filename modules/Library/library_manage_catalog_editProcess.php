@@ -184,6 +184,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $partialFail = true;
         } else {
             $fileMetaData = $fileUploader->getFileMetaData($data['imageLocation']);
+            if (!empty($fileMetaData) && !empty($row['imageLocation'])) {
+                $fileMetaData['previousFilePath'] = $row['imageLocation'];
+            }
         }
     }
 
@@ -205,11 +208,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         exit; 
     }
 
+    $fileHandler = $container->get(FileHandler::class);
+
+    if (!$isChildRecord && $imageType != 'File' && ($row['imageType'] ?? '') == 'File') {
+        $fileHandler->deleteFile('gibbonLibraryItem', $gibbonLibraryItemID, 'imageLocation');
+    }
+
     // Update child records
     if ($isParentRecord) {
         $libraryGateway->updateChildRecords($gibbonLibraryItemID);
+        $children = $libraryGateway->selectBy(['gibbonLibraryItemIDParent' => $gibbonLibraryItemID], ['gibbonLibraryItemID'])->fetchAll();
+        if ($imageType == 'File' && !empty($data['imageLocation'])) {
+            $childFile = (new Gibbon\FileUploader($pdo, $session))->getFileMetaData($data['imageLocation']);
+            foreach ($children as $child) {
+                if (!empty($childFile)) {
+                    $fileHandler->recordFileUpload($childFile, 'gibbonLibraryItem', $child['gibbonLibraryItemID'], 'imageLocation');
+                }
+            }
+        } else {
+            foreach ($children as $child) {
+                $fileHandler->deleteFile('gibbonLibraryItem', $child['gibbonLibraryItemID'], 'imageLocation');
+            }
+        }
     } else if ($isChildRecord) {
         $libraryGateway->updateFromParentRecord($gibbonLibraryItemID);
+        $childItem = $libraryGateway->getByID($gibbonLibraryItemID);
+        if (($childItem['imageType'] ?? '') == 'File' && !empty($childItem['imageLocation'])) {
+            $childFile = (new Gibbon\FileUploader($pdo, $session))->getFileMetaData($childItem['imageLocation']);
+            if (!empty($childFile)) {
+                $fileHandler->recordFileUpload($childFile, 'gibbonLibraryItem', $gibbonLibraryItemID, 'imageLocation');
+            }
+        } else {
+            $fileHandler->deleteFile('gibbonLibraryItem', $gibbonLibraryItemID, 'imageLocation');
+        }
     }
 
     $URL .= $partialFail

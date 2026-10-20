@@ -290,9 +290,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                     $partialFail = true;
                                 } else {
                                     $fileMetaData = $fileUploader->getFileMetaData($attachment);
-
-                                    if (!empty($entry['response'])) {
-                                        @unlink($session->get('absolutePath').'/'.$entry['response']);
+                                    if (!empty($fileMetaData) && !empty($entry['response'])) {
+                                        $fileMetaData['previousFilePath'] = $entry['response'];
                                     }
                                 }
 

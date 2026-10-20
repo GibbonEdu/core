@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Domain\Markbook\MarkbookEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
@@ -65,6 +67,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
         header("Location: {$URL}");
         exit();
     }
+  
+    $entryGateway = $container->get(MarkbookEntryGateway::class);
+    $fileHandler = $container->get(FileHandler::class);
+    $fileHandler->deleteFilesForRecord('gibbonMarkbookEntry', array_column($entryGateway->selectBy(['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID], ['gibbonMarkbookEntryID'])->fetchAll(), 'gibbonMarkbookEntryID'));
+    $entryGateway->deleteWhere(['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
+    $fileHandler->deleteFilesForRecord('gibbonMarkbookColumn', $gibbonMarkbookColumnID);
 
     $URLDelete = $URLDelete.'&return=success0';
     header("Location: {$URLDelete}");

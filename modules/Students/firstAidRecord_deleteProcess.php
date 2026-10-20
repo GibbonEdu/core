@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Contracts\Filesystem\FileHandler;
-use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\Students\FirstAidGateway;
 use Gibbon\Domain\Students\FirstAidFollowupGateway;
 
@@ -56,7 +55,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_de
 
     $firstAidGateway = $container->get(FirstAidGateway::class);
     $firstAidFollowupGateway = $container->get(FirstAidFollowupGateway::class);
-    $customFieldGateway = $container->get(CustomFieldGateway::class);
     $fileHandler = $container->get(FileHandler::class);
     $values = $firstAidGateway->getByID($gibbonFirstAidID);
 
@@ -66,20 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_de
         exit;
     }
 
-    $existingFields = !empty($values['fields']) ? json_decode($values['fields'], true) : [];
-    $customFields = $customFieldGateway->selectCustomFields('First Aid')->fetchAll();
-
-    foreach ($customFields as $field) {
-        if (($field['type'] !== 'file' && $field['type'] !== 'image') || empty($field['gibbonCustomFieldID'])) {
-            continue;
-        }
-
-        if (empty($existingFields[$field['gibbonCustomFieldID']])) {
-            continue;
-        }
-
-        $fileHandler->deleteFile('gibbonFirstAid', $gibbonFirstAidID, "fields[{$field['gibbonCustomFieldID']}]" );
-    }
+    $fileHandler->deleteFilesForRecord('gibbonFirstAid', $gibbonFirstAidID);
 
     $firstAidFollowupGateway->deleteWhere(['gibbonFirstAidID' => $gibbonFirstAidID]);
 

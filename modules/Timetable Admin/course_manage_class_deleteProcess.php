@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
@@ -95,6 +97,8 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                     header("Location: {$URL}");
                     exit();
                 }
+
+                $container->get(FileHandler::class)->deleteFilesForRecord('gibbonCourseClass', $gibbonCourseClassID);
 
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");
