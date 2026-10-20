@@ -58,7 +58,7 @@ class MarkbookColumnGateway extends QueryableGateway
 
                 return $query
                     ->innerJoin('gibbonSchoolYearTerm', 'gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonMarkbookColumn.gibbonSchoolYearTermID 
-                        OR gibbonMarkbookColumn.date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay')
+                        OR (gibbonMarkbookColumn.gibbonSchoolYearTermID IS NULL AND gibbonMarkbookColumn.date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay)')
                     ->where('gibbonSchoolYearTerm.gibbonSchoolYearTermID = :gibbonSchoolYearTermID')
                     ->bindValue('gibbonSchoolYearTermID', $gibbonSchoolYearTermID);
             },

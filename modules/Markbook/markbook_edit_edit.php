@@ -208,8 +208,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                 $row->addSelectSchoolYearTerm('gibbonSchoolYearTermID', $session->get('gibbonSchoolYearID'));
 
                             $row = $form->addRow();
-                                $row->addLabel('date', __('Date'));
-                                $row->addDate('date')->setValue(Format::date($values['date']))->required();
+                                $row->addLabel('date', __('Date'))->description(__('Optional when a Term is selected. Only used to place the column in a term when no Term is set.'));
+                                $row->addDate('date')->setValue(Format::date($values['date']));
                         } else {
                             $form->addHiddenValue('gibbonSchoolYearTermID',$values['gibbonSchoolYearTermID']);
                             $form->addHiddenValue('date', Format::date($values['date']));
