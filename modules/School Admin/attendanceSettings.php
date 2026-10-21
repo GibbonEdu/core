@@ -115,6 +115,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
+    $setting = $settingGateway->getSettingByScope('Attendance', 'formGroupAttendanceSessions', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(100);
+
     $sql = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
     $setting = $settingGateway->getSettingByScope('Attendance', 'defaultFormGroupAttendanceType', true);
     $row = $form->addRow();

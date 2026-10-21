@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
-			$sqlPerson = "SELECT p.preferredName, p.surname, type, reason, comment, date, context, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, t.preferredName as teacherPreferredName, t.surname as teacherSurname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson p ON (gibbonAttendanceLogPerson.gibbonPersonID=p.gibbonPersonID) JOIN gibbonPerson t ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=t.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
+			$sqlPerson = "SELECT p.preferredName, p.surname, type, reason, comment, date, context, gibbonAttendanceLogPerson.session, gibbonAttendanceLogPerson.minutesLate, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, t.preferredName as teacherPreferredName, t.surname as teacherSurname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson p ON (gibbonAttendanceLogPerson.gibbonPersonID=p.gibbonPersonID) JOIN gibbonPerson t ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=t.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
 			$resultPerson = $connection2->prepare($sqlPerson);
 			$resultPerson->execute($dataPerson);
 
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 			$row = $form->addRow();
 				$row->addLabel('where', __('Where'));
-				$row->addTextField('where')->readonly()->setValue(__($values['context']));
+				$row->addTextField('where')->readonly()->setValue(__($values['context']).(!empty($values['session']) ? ' ('.$values['session'].')' : ''));
 
             $restricted = $attendance->isTypeRestricted($values['type']);
 			$row = $form->addRow();
@@ -98,6 +98,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 				$row->addSelect('type')
                     ->fromArray($attendance->getAttendanceTypes($restricted))
                     ->readOnly($restricted);
+
+			$lateTypes = array_values(array_filter(array_keys($attendance->getAttendanceTypes(true)), [$attendance, 'isTypeLate']));
+			$form->setAttribute('data-late-types', json_encode($lateTypes));
+
+			$row = $form->addRow()->addClass('minutesLate')->addClass(in_array($values['type'], $lateTypes) ? '' : 'hidden');
+				$row->addLabel('minutesLate', __('Minutes Late'));
+				$row->addNumber('minutesLate')->onlyInteger(true)->minimum(0)->maximum(999);
 
 			$row = $form->addRow();
 				$row->addLabel('reason', __('Reason'));
