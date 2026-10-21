@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -57,26 +58,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         exit;
     }
     
-    $absolutePath = $session->get('absolutePath');
-    $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
+    $absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
+    $customAssetPath = rtrim(str_replace('\\', '/', $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath')), '/');
+    $templateFile = str_replace('\\', '/', $data['templateFile'] ?? '');
 
-    $sourcePath = $data['type'] == 'Core'
-        ? $absolutePath.'/modules/Reports/templates/'.$data['templateFile']
-        : $absolutePath.$customAssetPath.'/templates/'.$data['templateFile'];
+    $sourceBase = $data['type'] == 'Core'
+        ? $absolutePath.'/modules/Reports/templates'
+        : $absolutePath.$customAssetPath.'/templates';
+    $sourcePath = FileHandler::realPathInside($sourceBase.'/'.$templateFile, $sourceBase);
 
-    $sourceDir = str_replace('reports/', '', dirname($data['templateFile']));
-
-    $destinationPath = $absolutePath.$customAssetPath.'/templates/'.$sourceDir.'/'.$templateFileDestination;
-
-    if (!is_dir(dirname($destinationPath))) {
-        mkdir(dirname($destinationPath), 0755, true);
+    // Confirm the source file is inside its template folder
+    if (empty($sourcePath) || !is_file($sourcePath)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
     }
+
+    $sourceDir = trim(str_replace('reports/', '', dirname($templateFile)), '/');
+    if ($sourceDir == '.') {
+        $sourceDir = '';
+    }
+    if (str_contains($sourceDir, '..')) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $templatesPath = $absolutePath.$customAssetPath.'/templates';
+    $destinationDir = $templatesPath.(!empty($sourceDir) ? '/'.$sourceDir : '');
+    if (!is_dir($destinationDir)) {
+        mkdir($destinationDir, 0755, true);
+    }
+
+    $destinationDir = FileHandler::realPathInside($destinationDir, $templatesPath);
+    if (empty($destinationDir)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $destinationPath = $destinationDir.'/'.$templateFileDestination;
 
     if (copy($sourcePath, $destinationPath)) {
         chmod($destinationPath, 0755);
         $data['type'] = 'Additional';
         $data['gibbonPersonIDLastEdit'] = $session->get('gibbonPersonID') ?? '';
-        $data['templateFile'] = $sourceDir.'/'.$templateFileDestination;
+        $data['templateFile'] = (!empty($sourceDir) ? $sourceDir.'/' : '').$templateFileDestination;
         $duplicated = $prototypeGateway->insert($data);
     } else {
         $duplicated = false;

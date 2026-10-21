@@ -25,8 +25,7 @@ use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\FileUploader;
-use Gibbon\Contracts\Filesystem\FileHandler;
-
+use Gibbon\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -71,8 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         exit;
     }
 
-    $absolutePath = $session->get('absolutePath');
-    if (!is_file($absolutePath.'/'.$zipFile)) {
+    $fileUploader = $container->get(FileUploader::class);
+    $zipRealPath = FileHandler::resolveStoredPath($session->get('absolutePath'), $zipFile);
+    if ($zipRealPath === null) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -83,8 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
     $personalDocumentGateway = $container->get(PersonalDocumentGateway::class);
     
     $fileHandler = $container->get(FileHandler::class);
-    $fileUploader = $container->get(FileUploader::class);
-    $files = $fileUploader->uploadFromZIP($absolutePath.'/'.$zipFile);
+    $files = $fileUploader->uploadFromZIP($zipRealPath);
 
     $partialFail = false;
     $count = 0;
@@ -127,12 +126,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         }
 
         // Optionally overwrite and delete exiting files
-        if (!empty($existingFile) && $overwrite == 'Y' && $deleteFiles == 'Y') {
-            unlink($absolutePath.'/'.$existingFile);
+        $existingRealPath = FileHandler::resolveStoredPath($session->get('absolutePath'), $existingFile ?? '');
+        if ($existingRealPath !== null && $overwrite == 'Y' && $deleteFiles == 'Y') {
+            unlink($existingRealPath);
         }
         
         // Skip uploading files if the file exists and overwrite is not on
-        if (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
+        if ($existingRealPath !== null && $overwrite == 'N') {
             unlink($file['absolutePath']);
             $updateBackupPhoto = false;
             continue;
@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         }
     }
 
-    unlink($absolutePath.'/'.$zipFile);
+    unlink($zipRealPath);
 
     $URL .= $partialFail
         ? "&return=warning1"

@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 
 /**
@@ -204,21 +205,28 @@ class FileUpload extends Input
 
                     $output .= '<div class="input-box rounded-md w-full">';
 
+                    global $session;
+                    $realPath = FileHandler::resolveStoredPath((string) $session->get('absolutePath'), (string) $attachmentPath);
+
                     $output .= '<div class="inline-label text-xs">';
                     $output .= __('Current attachment:').'<br/>';
-                    $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
+                    if ($realPath !== null) {
+                        $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
+                    } else {
+                        $output .= basename((string) $attachmentPath);
+                    }
 
-                    global $session;
-                    $absolutePath = $session->get('absolutePath');
-                    if (!empty($this->absoluteURL) && (!is_file($absolutePath.'/'.$attachmentPath) || filesize($absolutePath.'/'.$attachmentPath) == 0)) {
+                    if (!empty($this->absoluteURL) && ($realPath === null || filesize($realPath) == 0)) {
                         $output .= Format::tag(__('Error'), 'error ml-2', __('This file is missing or empty. It may have failed to upload or is no longer on the server.'));
                     }
 
                     $output .= '</div>';
 
-                    $output .=  "<a download title='".__('Download')."' class='inline-button text-gray-600' href='".$this->absoluteURL.$attachmentPath."'>";
-                    $output .= icon('solid', 'download', 'size-6 sm:size-5');
-                    $output .= '</a>';
+                    if ($realPath !== null) {
+                        $output .=  "<a download title='".__('Download')."' class='inline-button text-gray-600' href='".$this->absoluteURL.$attachmentPath."'>";
+                        $output .= icon('solid', 'download', 'size-6 sm:size-5');
+                        $output .= '</a>';
+                    }
 
                     if ($this->canDelete) {
                         $attachmentNameEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $attachmentName);

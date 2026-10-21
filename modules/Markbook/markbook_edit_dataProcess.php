@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
@@ -291,18 +291,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 } else {
                                     $fileMetaData = $fileUploader->getFileMetaData($attachment);
 
-                                    if (!empty($entry['response'])) {
-                                        @unlink($session->get('absolutePath').'/'.$entry['response']);
+                                    $existingResponse = FileHandler::resolveStoredPath($session->get('absolutePath'), $entry['response'] ?? '');
+                                    if ($existingResponse !== null) {
+                                        unlink($existingResponse);
                                     }
                                 }
 
                                 // Create a log of failed uploads
-                                $attachmentPath = $session->get('absolutePath').'/'.$attachment;
+                                $attachmentPath = FileHandler::resolveStoredPath($session->get('absolutePath'), $attachment ?: '');
                                 $errorMessage = $fileUploader->getLastError();
-                                if (empty($errorMessage) && !file_exists($attachmentPath)) {
+                                if (empty($errorMessage) && $attachmentPath === null) {
                                     $errorMessage = __('Uploaded file not found in the system.');
                                 }
-                                if (!empty($errorMessage) || filesize($attachmentPath) === 0) {
+                                if (!empty($errorMessage) || $attachmentPath === null || filesize($attachmentPath) === 0) {
                                     $logGateway->addLog($session->get('gibbonSchoolYearID'), 'Markbook', $session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                         'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
                                         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,

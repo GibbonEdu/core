@@ -25,6 +25,7 @@ use Gibbon\Module\Reports\GenerateReportProcess;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -82,9 +83,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 
             if (!empty($entry)) {
                 // Remove the file itself
-                $path = $session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
-                if (!empty($archive) && file_exists($path)) {
-                    unlink($path);
+                if (!empty($archive)) {
+                    $relativePath = trim($archive['path'], '/').'/'.ltrim($entry['filePath'] ?? '', '/');
+                    $path = FileHandler::resolveStoredPath($session->get('absolutePath'), $relativePath);
+                    if (!empty($path)) {
+                        unlink($path);
+                    }
                 }
                 
                 // Then remove the archive entry

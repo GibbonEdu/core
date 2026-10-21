@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Traits;
 
+use Gibbon\Filesystem\FileHandler;
+
 /**
  * Implements the ScrubbableGateway interface.
  */
@@ -86,8 +88,9 @@ trait Scrubbable
                 $values = $this->getByID($primaryKey, [$name]);
                 $columns[$name] = 'Deleted File';
 
-                if (is_file($absolutePath.'/'.$values[$name])) {
-                    unlink($absolutePath.'/'.$values[$name]);
+                $realPath = FileHandler::resolveStoredPath((string) $absolutePath, (string) ($values[$name] ?? ''));
+                if ($realPath !== null) {
+                    unlink($realPath);
                 }
             }
         }

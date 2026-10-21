@@ -26,6 +26,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Forms\FormUploadGateway;
+use Gibbon\Filesystem\FileHandler;
 
 /**
  * ApplicationUploadsTable
@@ -59,8 +60,8 @@ class ApplicationUploadsTable extends DataTable
             ->width('5%')
             ->addClass('h-12')
             ->format(function($values)  {
-                $filePath = $this->session->get('absolutePath').'/'.$values['path'];
-                $fileMissing = !empty($values['path']) && (!is_file($filePath) || filesize($filePath) == 0);
+                $realPath = FileHandler::resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($values['path'] ?? ''));
+                $fileMissing = !empty($values['path']) && ($realPath === null || filesize($realPath) == 0);
                 $iconClass = 'size-6 fill-current ml-2 -my-2';
 
                 if ($fileMissing || (empty($values['path']) && $values['required'] == 'Y')) {
@@ -73,12 +74,12 @@ class ApplicationUploadsTable extends DataTable
             });
         $table->addColumn('name', __('Document'))
             ->format(function($values)  {
-                $output = !empty($values['path'])
+                $realPath = FileHandler::resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($values['path'] ?? ''));
+                $output = ($realPath !== null)
                     ? Format::link($this->session->get('absoluteURL').'/'.$values['path'], __($values['name']), ['target' => '_blank'])
                     : $values['name'];
 
-                $filePath = $this->session->get('absolutePath').'/'.$values['path'];
-                if (!empty($values['path']) && (!is_file($filePath) || filesize($filePath) == 0)) {
+                if (!empty($values['path']) && ($realPath === null || filesize($realPath) == 0)) {
                     $output .= Format::tag(__('Error'), 'error ml-2', __('This file is missing or empty. It may have failed to upload or is no longer on the server.'));
                 }
                 return $output;

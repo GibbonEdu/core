@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\FileUploader;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Contracts\Filesystem\FileHandler;
+use Gibbon\Filesystem\FileHandler;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Data\Validator;
@@ -69,7 +69,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $allowedPath = $archive['path'] . '/temp/' . $file;
 
     $absolutePath = $session->get('absolutePath');
-    if (empty($file) || !is_file($absolutePath.'/'.$allowedPath)) {
+    $fileUploader = new FileUploader($pdo, $session);
+    $allowedRealPath = FileHandler::resolveStoredPath($absolutePath, trim($allowedPath, '/'));
+    if (empty($file) || $allowedRealPath === null) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -84,8 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         mkdir($absolutePath.$destinationFolder, 0755, true);
     }
 
-    $fileUploader = new FileUploader($pdo, $session);
-    $reports = $fileUploader->uploadFromZIP($absolutePath.'/'.$allowedPath, $destinationFolder, ['pdf']);
+    $reports = $fileUploader->uploadFromZIP($allowedRealPath, $destinationFolder, ['pdf']);
 
     $partialFail = false;
     $count = 0;
@@ -117,7 +118,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 
         // Optionally overwrite exiting files or skip them
         if (!empty($existingReport) && $overwrite == 'Y') {
-            unlink($absolutePath.'/'.$archive['path'].'/'.$existingReport['filePath']);
+            $existingRealPath = FileHandler::resolveStoredPath($absolutePath, trim($archive['path'], '/').'/'.ltrim($existingReport['filePath'] ?? '', '/'));
+            if ($existingRealPath !== null) {
+                unlink($existingRealPath);
+            }
         } elseif (!empty($existingReport) && $overwrite == 'N') {
             unlink($report['absolutePath']);
             continue;
@@ -155,8 +159,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         }
     }
 
-    if (file_exists($absolutePath.'/'.$allowedPath)) {
-        unlink($absolutePath.'/'.$allowedPath);
+    if (is_file($allowedRealPath)) {
+        unlink($allowedRealPath);
     }
 
     $URL .= $partialFail
