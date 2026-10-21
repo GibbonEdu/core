@@ -769,4 +769,70 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         return $output;
     }
+
+    /**
+     * Previous static page for the sidebar back link, if any.
+     *
+     * @return array{url: string, label: string}|null
+     */
+    public function getBackLink(): ?array
+    {
+        if (!$this->session->exists('username')) {
+            return null;
+        }
+
+        $address = (string) $this->session->get('address', '');
+        $action = (string) $this->session->get('action', '');
+        $isHome = SidebarHistory::isHomePage($address);
+
+        $entryURL = null;
+        $page = null;
+        if (!empty($this->container) && $this->container->has('page')) {
+            $page = $this->container->get('page');
+            $pageAction = $page ? $page->getAction() : null;
+            $entryURL = is_array($pageAction) ? ($pageAction['entryURL'] ?? null) : null;
+        }
+
+        $isForm = !$isHome && SidebarHistory::isFormPage($action, $entryURL);
+
+        $params = $_GET;
+        unset($params['return'], $params['loginReturn']);
+        $url = (string) Url::fromRoute()->withQueryParams($params);
+
+        $title = __('Home');
+        if (!$isHome && $page && $page->breadcrumbs) {
+            $items = $page->breadcrumbs->getItems();
+            if (!empty($items)) {
+                $title = (string) array_key_last($items);
+            } elseif ($this->session->has('menuItemActive')) {
+                $title = $this->session->get('menuItemActive');
+            } elseif ($this->session->has('module')) {
+                $title = __($this->session->get('module'));
+            }
+        }
+
+        $previous = (new SidebarHistory())->updateAndGetPrevious($this->session, [
+            'address' => $isHome ? '' : $address,
+            'url'     => $url,
+            'title'   => $title,
+            'isHome'  => $isHome,
+            'isForm'  => $isForm,
+        ]);
+
+        if (empty($previous) && !$isHome) {
+            $previous = [
+                'url'   => (string) Url::fromRoute(),
+                'title' => __('Home'),
+            ];
+        }
+
+        if (empty($previous['url']) || ($previous['url'] ?? '') === $url) {
+            return null;
+        }
+
+        return [
+            'url'   => $previous['url'],
+            'label' => sprintf(__('Back to %1$s'), $previous['title']),
+        ];
+    }
 }
