@@ -111,6 +111,7 @@ v31.0.00
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         Staff: fixed the issue of including staff email while submitting a job application form
         Staff: fixed the bug of applicationFormRefereeLink condition always true when URLs are empty
+        System: fixed an empty Behaviour tab and PHP warning on the Staff Dashboard when Behaviour is not accessible
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment
         Student Alerts: fixed student not pre-selected when clicking Add button on Student Alerts by Class
         System Admin: fixed incorrect required status of Emergency Contact fields in Form Builder
