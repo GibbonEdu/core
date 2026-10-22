@@ -49,9 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
             $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
         }
 
-        $page->breadcrumbs
-            ->add(__('View by Student'), 'archive_byStudent.php')
-            ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
+        $page->breadcrumbs->add(__('View by Student'), 'archive_byStudent.php');
+        if (!empty($student)) {
+            $page->breadcrumbs->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
+        }
     } else if ($highestAction == 'View Reports_myChildren') {
         $studentGateway = $container->get(StudentGateway::class);
 

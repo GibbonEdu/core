@@ -108,6 +108,7 @@ v31.0.00
         Planner: fixed viewableStudents and viewableParents options in Lesson Planner
         Reports: fixed non-reportable classes being counted when checking report progress
         Reports: fixed reporting cycle milestones saving as Array by enforcing JSON/null storage
+        Reports: fixed PHP warnings in the student report archive when no valid student is selected
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         Staff: fixed the issue of including staff email while submitting a job application form
         Staff: fixed the bug of applicationFormRefereeLink condition always true when URLs are empty
