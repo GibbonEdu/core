@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -65,7 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $sourceBase = $data['type'] == 'Core'
         ? $absolutePath.'/modules/Reports/templates'
         : $absolutePath.$customAssetPath.'/templates';
-    $sourcePath = FileHandler::realPathInside($sourceBase.'/'.$templateFile, $sourceBase);
+    $fileHandler = $container->get(FileHandler::class);
+    $sourcePath = $fileHandler->realPathInside($sourceBase.'/'.$templateFile, $sourceBase);
 
     // Confirm the source file is inside its template folder
     if (empty($sourcePath) || !is_file($sourcePath)) {
@@ -90,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         mkdir($destinationDir, 0755, true);
     }
 
-    $destinationDir = FileHandler::realPathInside($destinationDir, $templatesPath);
+    $destinationDir = $fileHandler->realPathInside($destinationDir, $templatesPath);
     if (empty($destinationDir)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");

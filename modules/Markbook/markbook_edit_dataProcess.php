@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
@@ -291,14 +291,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 } else {
                                     $fileMetaData = $fileUploader->getFileMetaData($attachment);
 
-                                    $existingResponse = FileHandler::resolveStoredPath($session->get('absolutePath'), $entry['response'] ?? '');
+                                    $existingResponse = $container->get(FileHandler::class)->resolveStoredPath($session->get('absolutePath'), $entry['response'] ?? '');
                                     if ($existingResponse !== null) {
                                         unlink($existingResponse);
                                     }
                                 }
 
                                 // Create a log of failed uploads
-                                $attachmentPath = FileHandler::resolveStoredPath($session->get('absolutePath'), $attachment ?: '');
+                                $attachmentPath = $container->get(FileHandler::class)->resolveStoredPath($session->get('absolutePath'), $attachment ?: '');
                                 $errorMessage = $fileUploader->getLastError();
                                 if (empty($errorMessage) && $attachmentPath === null) {
                                     $errorMessage = __('Uploaded file not found in the system.');

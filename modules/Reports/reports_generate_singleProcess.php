@@ -28,7 +28,7 @@ use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Renderer\MpdfRenderer;
 use Gibbon\Module\Reports\Renderer\TcpdfRenderer;
 use Gibbon\Data\Validator;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
                     // Remove the file itself
                     if (!empty($archive)) {
                         $relativePath = trim($archive['path'], '/').'/'.ltrim($entry['filePath'] ?? '', '/');
-                        $path = FileHandler::resolveStoredPath($session->get('absolutePath'), $relativePath);
+                        $path = $container->get(FileHandler::class)->resolveStoredPath($session->get('absolutePath'), $relativePath);
                         if (!empty($path)) {
                             unlink($path);
                         }

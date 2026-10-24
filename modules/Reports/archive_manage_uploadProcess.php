@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\FileUploader;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Data\Validator;
@@ -70,7 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 
     $absolutePath = $session->get('absolutePath');
     $fileUploader = new FileUploader($pdo, $session);
-    $allowedRealPath = FileHandler::resolveStoredPath($absolutePath, trim($allowedPath, '/'));
+    $fileHandler = $container->get(FileHandler::class);
+    $allowedRealPath = $fileHandler->resolveStoredPath($absolutePath, trim($allowedPath, '/'));
     if (empty($file) || $allowedRealPath === null) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -118,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 
         // Optionally overwrite exiting files or skip them
         if (!empty($existingReport) && $overwrite == 'Y') {
-            $existingRealPath = FileHandler::resolveStoredPath($absolutePath, trim($archive['path'], '/').'/'.ltrim($existingReport['filePath'] ?? '', '/'));
+            $existingRealPath = $fileHandler->resolveStoredPath($absolutePath, trim($archive['path'], '/').'/'.ltrim($existingReport['filePath'] ?? '', '/'));
             if ($existingRealPath !== null) {
                 unlink($existingRealPath);
             }

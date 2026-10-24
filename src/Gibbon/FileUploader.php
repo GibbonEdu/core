@@ -24,7 +24,7 @@ namespace Gibbon;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Data\PasswordPolicy;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use ZipArchive;
 
 /**
@@ -599,7 +599,9 @@ class FileUploader
      */
     public function resolveUploadPath(string $filePath): ?string
     {
-        return FileHandler::resolveStoredPath((string) $this->session->get('absolutePath'), $filePath);
+        global $container;
+
+        return $container->get(FileHandler::class)->resolveStoredPath((string) $this->session->get('absolutePath'), $filePath);
     }
     
     /**
@@ -610,7 +612,8 @@ class FileUploader
     public function getFileMetaData($uploadedPath)
     {
         $uploadedPath = str_replace('\\', '/', trim((string) $uploadedPath));
-        $fullPath = FileHandler::resolveStoredPath((string) $this->session->get('absolutePath'), $uploadedPath);
+        global $container;
+        $fullPath = $container->get(FileHandler::class)->resolveStoredPath((string) $this->session->get('absolutePath'), $uploadedPath);
         if ($fullPath === null) {
             return;
         }

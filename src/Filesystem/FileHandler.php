@@ -52,7 +52,7 @@ class FileHandler implements FileHandlerInterface
     /**
      * Resolve a stored upload path to a real file inside the installation uploads directory.
      */
-    public static function resolveStoredPath(string $root, string $filePath): ?string
+    public function resolveStoredPath(string $root, string $filePath): ?string
     {
         $filePath = str_replace('\\', '/', trim($filePath));
         if ($filePath === '' || str_contains($filePath, "\0") || str_contains($filePath, ':')) {
@@ -76,7 +76,7 @@ class FileHandler implements FileHandlerInterface
         }
 
         $root = rtrim(str_replace('\\', '/', $root), '/');
-        $realPath = self::realPathInside($root.'/'.implode('/', $segments), $root.'/uploads');
+        $realPath = $this->realPathInside($root.'/'.implode('/', $segments), $root.'/uploads');
 
         return !empty($realPath) && is_file($realPath) ? $realPath : null;
     }
@@ -84,7 +84,7 @@ class FileHandler implements FileHandlerInterface
     /**
      * Real path when it is the directory itself or a file inside it, otherwise null.
      */
-    public static function realPathInside(string $path, string $directory): ?string
+    public function realPathInside(string $path, string $directory): ?string
     {
         $path = realpath(str_replace('\\', '/', $path));
         $directory = realpath(str_replace('\\', '/', $directory));
@@ -112,7 +112,7 @@ class FileHandler implements FileHandlerInterface
     public function recordFileUpload(array $metaData, string $foreignTable, int|string $foreignTableID, string $foreignColumn)
     {
         $relativePath = (string) ($metaData['filePath'] ?? '');
-        $realPath = self::resolveStoredPath((string) $this->session->get('absolutePath'), $relativePath);
+        $realPath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), $relativePath);
         if ($realPath === null) {
             return false;
         }
@@ -161,7 +161,7 @@ class FileHandler implements FileHandlerInterface
             }
 
             // Store old file path for deletion after transaction commits
-            $oldFilePath = self::resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($oldFile['filePath'] ?? ''));
+            $oldFilePath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($oldFile['filePath'] ?? ''));
             if ($oldFilePath === $realPath) {
                 $oldFilePath = null;
             }
@@ -182,7 +182,7 @@ class FileHandler implements FileHandlerInterface
     protected function insertAndUpdateFile(array $metaData, $gibbonFileID = null)
     {
         $relativePath = str_replace('\\', '/', trim((string) ($metaData['filePath'] ?? '')));
-        $realPath = self::resolveStoredPath((string) $this->session->get('absolutePath'), $relativePath);
+        $realPath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), $relativePath);
         if ($realPath === null) {
             return false;
         }
@@ -265,7 +265,7 @@ class FileHandler implements FileHandlerInterface
             }
                 
             // Store file path for deletion after transaction commits
-            $absolutePath = self::resolveStoredPath((string) $this->session->get('absolutePath'), (string) $filePath);
+            $absolutePath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), (string) $filePath);
         }
 
         // All operations succeeded, commit the transaction

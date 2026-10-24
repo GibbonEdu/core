@@ -26,7 +26,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Forms\FormUploadGateway;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 /**
  * ApplicationUploadsTable
@@ -55,12 +55,15 @@ class ApplicationUploadsTable extends DataTable
         $uploads = $this->formUploadGateway->queryAllDocumentsByContext($criteria, $gibbonFormID, 'gibbonAdmissionsApplication', $gibbonAdmissionsApplicationID);
 
         // Create the table
+        global $container;
+        $fileHandler = $container->get(FileHandler::class);
+
         $table = DataTable::createPaginated('applicationDocuments', $criteria)->withData($uploads);
         $table->addColumn('status', __('Status'))
             ->width('5%')
             ->addClass('h-12')
-            ->format(function($values)  {
-                $realPath = FileHandler::resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($values['path'] ?? ''));
+            ->format(function($values) use ($fileHandler) {
+                $realPath = $fileHandler->resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($values['path'] ?? ''));
                 $fileMissing = !empty($values['path']) && ($realPath === null || filesize($realPath) == 0);
                 $iconClass = 'size-6 fill-current ml-2 -my-2';
 
@@ -73,8 +76,8 @@ class ApplicationUploadsTable extends DataTable
                 }
             });
         $table->addColumn('name', __('Document'))
-            ->format(function($values)  {
-                $realPath = FileHandler::resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($values['path'] ?? ''));
+            ->format(function($values) use ($fileHandler) {
+                $realPath = $fileHandler->resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($values['path'] ?? ''));
                 $output = ($realPath !== null)
                     ? Format::link($this->session->get('absoluteURL').'/'.$values['path'], __($values['name']), ['target' => '_blank'])
                     : $values['name'];

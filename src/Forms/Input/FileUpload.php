@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 
 /**
@@ -205,8 +205,8 @@ class FileUpload extends Input
 
                     $output .= '<div class="input-box rounded-md w-full">';
 
-                    global $session;
-                    $realPath = FileHandler::resolveStoredPath((string) $session->get('absolutePath'), (string) $attachmentPath);
+                    global $session, $container;
+                    $realPath = $container->get(FileHandler::class)->resolveStoredPath((string) $session->get('absolutePath'), (string) $attachmentPath);
 
                     $output .= '<div class="inline-label text-xs">';
                     $output .= __('Current attachment:').'<br/>';

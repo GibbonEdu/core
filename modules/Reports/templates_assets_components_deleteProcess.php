@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $customAssetPath = rtrim(str_replace('\\', '/', $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath')), '/');
     $templatesDir = $absolutePath.$customAssetPath.'/templates';
     $templateFile = str_replace('\\', '/', $values['templateFile'] ?? '');
-    $realPath = FileHandler::realPathInside($templatesDir.'/'.$templateFile, $templatesDir);
+    $realPath = $container->get(FileHandler::class)->realPathInside($templatesDir.'/'.$templateFile, $templatesDir);
 
     if (!empty($realPath) && is_file($realPath)) {
         $partialFail &= !unlink($realPath);

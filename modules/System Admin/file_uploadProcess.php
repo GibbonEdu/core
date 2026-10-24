@@ -25,7 +25,7 @@ use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonPhotoGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\FileUploader;
-use Gibbon\Filesystem\FileHandler;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -71,7 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
     }
 
     $fileUploader = $container->get(FileUploader::class);
-    $zipRealPath = FileHandler::resolveStoredPath($session->get('absolutePath'), $zipFile);
+    $fileHandler = $container->get(FileHandler::class);
+    $zipRealPath = $fileHandler->resolveStoredPath($session->get('absolutePath'), $zipFile);
     if ($zipRealPath === null) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -82,7 +83,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     $personalDocumentGateway = $container->get(PersonalDocumentGateway::class);
     
-    $fileHandler = $container->get(FileHandler::class);
     $files = $fileUploader->uploadFromZIP($zipRealPath);
 
     $partialFail = false;
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
         }
 
         // Optionally overwrite and delete exiting files
-        $existingRealPath = FileHandler::resolveStoredPath($session->get('absolutePath'), $existingFile ?? '');
+        $existingRealPath = $fileHandler->resolveStoredPath($session->get('absolutePath'), $existingFile ?? '');
         if ($existingRealPath !== null && $overwrite == 'Y' && $deleteFiles == 'Y') {
             unlink($existingRealPath);
         }
