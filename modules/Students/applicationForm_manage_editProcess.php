@@ -476,19 +476,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         foreach ($attachments as $gibbonApplicationFormFileID => $attachment) {
                             if (!empty($gibbonApplicationFormFileID) && empty($attachment)) {                                
                                 try {
-                                    $dataFile = array('gibbonApplicationFormFileID' => $gibbonApplicationFormFileID);
-                                    $sqlFile = "DELETE FROM gibbonApplicationFormFile WHERE gibbonApplicationFormFileID=:gibbonApplicationFormFileID";
+                                    $dataFile = array('gibbonApplicationFormFileID' => $gibbonApplicationFormFileID, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
+                                    $sqlFile = "DELETE FROM gibbonApplicationFormFile WHERE gibbonApplicationFormFileID=:gibbonApplicationFormFileID AND gibbonApplicationFormID=:gibbonApplicationFormID";
                                     $resultFile = $connection2->prepare($sqlFile);
                                     $resultFile->execute($dataFile);
                                 } catch (PDOException $e) {
                                     $partialFail = true;
+                                    $resultFile = null;
                                 }
 
-                                // Delete file tracking before deleting the database record
-                                $deleted = $container->get(FileHandler::class)->deleteFile('gibbonApplicationFormFile', $gibbonApplicationFormFileID, 'path');
-
-                                if (!$deleted) {
-                                    $partialFail = true;
+                                if (!empty($resultFile) && $resultFile->rowCount() > 0) {
+                                    $deleted = $container->get(FileHandler::class)->deleteFile('gibbonApplicationFormFile', $gibbonApplicationFormFileID, 'path');
+                                    if (!$deleted) {
+                                        $partialFail = true;
+                                    }
                                 }
                             }
                         }
