@@ -244,7 +244,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 //Get receipt number
 
                                     $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
-                                    $sqlPayments = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID';
+                                    $sqlPayments = 'SELECT gibbonPaymentID FROM gibbonPayment WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID';
                                     $resultPayments = $connection2->prepare($sqlPayments);
                                     $resultPayments->execute($dataPayments);
                                 $receiptCount = $resultPayments->rowCount();
