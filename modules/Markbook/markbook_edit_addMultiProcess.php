@@ -133,6 +133,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         $gibbonPersonIDCreator = $session->get('gibbonPersonID');
         $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
+        $markbookAccess = $container->get(MarkbookAccess::class);
+        if (is_array($gibbonCourseClassIDMulti)) {
+            foreach ($gibbonCourseClassIDMulti as $gibbonCourseClassIDSingle) {
+                if (!$markbookAccess->allows($gibbonCourseClassIDSingle, 'markbook_edit_addMulti')) {
+                    $URL .= '&return=error0';
+                    header("Location: {$URL}");
+                    exit;
+                }
+            }
+        }
+
         //Lock markbook column table
         try {
             $sqlLock = 'LOCK TABLES gibbonMarkbookColumn WRITE, gibbonFileExtension READ';
@@ -182,15 +193,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             header("Location: {$URL}");
         } else {
             $partialFail = false;
-            $markbookAccess = $container->get(MarkbookAccess::class);
-
-            foreach ($gibbonCourseClassIDMulti as $gibbonCourseClassIDSingle) {
-                if (!$markbookAccess->allows($gibbonCourseClassIDSingle, 'markbook_edit_addMulti')) {
-                    $URL .= '&return=error0';
-                    header("Location: {$URL}");
-                    exit;
-                }
-            }
 
             foreach ($gibbonCourseClassIDMulti as $gibbonCourseClassIDSingle) {
 
