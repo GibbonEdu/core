@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Module\Markbook\MarkbookAccess;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -43,6 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        if (empty($container->get(MarkbookAccess::class)->getColumn($gibbonMarkbookColumnID, $gibbonCourseClassID, 'markbook_edit_data'))) {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
+            exit;
+        }
+
         try {
             $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
             $sql = "UPDATE gibbonMarkbookEntry SET response='' WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonMarkbookColumnID=:gibbonMarkbookColumnID";

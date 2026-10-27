@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Markbook\MarkbookAccess;
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -181,6 +182,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             header("Location: {$URL}");
         } else {
             $partialFail = false;
+            $markbookAccess = $container->get(MarkbookAccess::class);
+
+            foreach ($gibbonCourseClassIDMulti as $gibbonCourseClassIDSingle) {
+                if (!$markbookAccess->allows($gibbonCourseClassIDSingle, 'markbook_edit_addMulti')) {
+                    $URL .= '&return=error0';
+                    header("Location: {$URL}");
+                    exit;
+                }
+            }
 
             foreach ($gibbonCourseClassIDMulti as $gibbonCourseClassIDSingle) {
 

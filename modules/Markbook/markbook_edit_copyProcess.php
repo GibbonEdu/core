@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Module\Markbook\MarkbookAccess;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -43,6 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        if (!$container->get(MarkbookAccess::class)->allows($gibbonCourseClassID, 'markbook_edit_copy')) {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
+            exit;
+        }
 
         try {
             $data2 = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);

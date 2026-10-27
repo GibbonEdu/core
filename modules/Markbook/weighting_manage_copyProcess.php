@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Module\Markbook\MarkbookAccess;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -41,7 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-
+        if (!$container->get(MarkbookAccess::class)->allows($gibbonCourseClassID, 'weighting_manage_edit')) {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
+            exit;
+        }
 
             $data2 = array('gibbonCourseClassID' => $gibbonWeightingCopyClassID);
             $sql2 = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID';
