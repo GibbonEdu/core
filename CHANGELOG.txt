@@ -36,6 +36,9 @@ v30.0.02
         Rubrics: applied byte-level and file size checks to visualisation AJAX script
         Timetable: improved direct object reference checks for timetable AJAX script
 
+    Bug Fixes
+        Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
+
 
 v30.0.01
 --------
