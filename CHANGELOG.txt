@@ -93,6 +93,8 @@ v31.0.00
         User Admin: added an option to flag changes for personal fields
 
     Bug Fixes
+        Admissions: fixed application accept and reject so they run from the confirmation form
+        Library: fixed lending, return, renew, and edit form so they run from the lending form
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         School Admin: fixed the issue of Form Group Location not being displayed in edit page
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
