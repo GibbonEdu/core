@@ -63,8 +63,10 @@ if ($data['contextDBTable'] == 'gibbonMarkbookColumn') {
     if (empty($markbookColumn) || $markbookColumn['gibbonMarkbookColumnID'] != $data['contextDBTableID']) {
         die();
     }
-} elseif ($data['contextDBTable'] == 'atlColumn' && isActionAccessible($guid, $connection2, '/modules/ATL/atl_write_data.php') == false) {
-    die();
+} elseif ($data['contextDBTable'] == 'atlColumn') {
+    if (isActionAccessible($guid, $connection2, '/modules/ATL/atl_write_data.php') == false) {
+        die();
+    }
 } else {
     die();
 }
