@@ -19,38 +19,52 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Domain\System\AlarmGateway;
 use Gibbon\Http\Url;
 
 //Gibbon system-wide includes
 include './gibbon.php';
 
-$gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
+$_POST = $container->get(Validator::class)->sanitize($_POST);
+
+$gibbonAlarmID = $_POST['gibbonAlarmID'] ?? '';
 $URL = Url::fromRoute();
 
-//Proceed!
-if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+// Proceed!
+if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } elseif (empty($gibbonAlarmID)) {
     header("Location: {$URL}");
+    exit;
 } else {
-    //Check alarm
     $alarmGateway = $container->get(AlarmGateway::class);
 
-    $alarm = $alarmGateway->getByID($gibbonAlarmID);
-
-    if (!empty($alarm)) {
-        //Check confirmation of alarm
-        $alarmConfirm =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $session->get('gibbonPersonID'));
-
-        if (empty($alarmConfirm)) {
-            //Insert confirmation
-            $dataConfirm =['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s')];
-            $alarmGateway->insertAlarmConfirm($dataConfirm);
-        }
+    // Require an existing alarm that is currently active
+    $alarm = $alarmGateway->selectBy(['gibbonAlarmID' => $gibbonAlarmID, 'status' => 'Current'])->fetch();
+    if (empty($alarm)) {
+        header("Location: {$URL}");
+        exit;
     }
 
-    //Success 0
+    $gibbonPersonID = $session->get('gibbonPersonID');
+
+    // Sounder does not self-confirm; they use Turn Alarm Off
+    if ($gibbonPersonID == $alarm['gibbonPersonID']) {
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Check confirmation of alarm
+    $alarmConfirm = $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbonPersonID);
+
+    if (empty($alarmConfirm)) {
+        // Insert confirmation for the logged-in staff member only
+        $dataConfirm = ['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbonPersonID, 'timestamp' => date('Y-m-d H:i:s')];
+        $alarmGateway->insertAlarmConfirm($dataConfirm);
+    }
+
+    // Success 0
     header("Location: {$URL}");
 }

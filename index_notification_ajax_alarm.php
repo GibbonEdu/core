@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\View\View;
+use Gibbon\Forms\Form;
 use Gibbon\Domain\System\AlarmGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -50,14 +51,54 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
         $group[] = $item['gibbonPersonID'];
         return $group;
     }, []);
-    
+
+    $cancelAlarmForm = '';
+    if ($alarm['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+        $form = Form::createBlank('alarmCancel', $session->get('absoluteURL').'/modules/System Admin/alarm_cancelProcess.php');
+        $form->setAttribute('target', '_parent');
+        $form->setClass('m-0 p-0 inline');
+        $form->addHiddenValue('gibbonAlarmID', $alarm['gibbonAlarmID']);
+        $form->addRow()->addContent('<button type="submit" class="bg-transparent border-0 p-0 cursor-pointer text-white">'.__('Turn Alarm Off').'</button>');
+        $cancelAlarmForm = $form->getOutput();
+    }
+
+    $confirmReceiptForm = '';
+    if ($alarm['gibbonPersonID'] != $session->get('gibbonPersonID') && empty($confirmed)) {
+        $form = Form::createBlank('alarmConfirmReceipt', $session->get('absoluteURL').'/index_notification_ajax_alarmProcess.php');
+        $form->setAttribute('target', '_parent');
+        $form->setClass('m-0 p-0');
+        $form->addHiddenValue('gibbonAlarmID', $alarm['gibbonAlarmID']);
+        $form->addRow()->addContent('<button type="submit" class="block w-full bg-transparent border-0 p-6 cursor-pointer text-white text-4xl sm:text-5xl font-bold">'.__('Click here to confirm that you have received this alarm.').'</button>');
+        $confirmReceiptForm = $form->getOutput();
+    }
+
+    if ($canViewReport) {
+        foreach ($confirmationReport as &$person) {
+            if ($person['gibbonPersonID'] == $alarm['gibbonPersonID'] || !empty($person['gibbonAlarmConfirmID']) || in_array($person['gibbonPersonID'], $absences)) {
+                continue;
+            }
+
+            $form = Form::createBlank('alarmConfirm'.$person['gibbonPersonID'], $session->get('absoluteURL').'/index_notification_ajax_alarmConfirmProcess.php');
+            $form->setAttribute('target', '_parent');
+            $form->setClass('alarm-action inline m-0 p-0');
+            $form->addHiddenValue('gibbonAlarmID', $alarm['gibbonAlarmID']);
+            $form->addHiddenValue('gibbonPersonID', $person['gibbonPersonID']);
+            $form->addRow()->addContent('<button type="submit" class="bg-transparent border-0 p-0 cursor-pointer" title="'.__('Confirm').'"><img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick_light.png"/></button>');
+
+            $person['confirmForm'] = $form->getOutput();
+        }
+        unset($person);
+    }
+
     echo $container->get(View::class)->fetchFromTemplate('ui/alarmOverlay.twig.html', [
-        'alarm'              => $alarm,
-        'confirmed'          => $confirmed,
-        'gibbonPersonID'     => $session->get('gibbonPersonID'),
-        'customAlarmSound'   => $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'customAlarmSound'),
-        'canViewReport'      => $canViewReport,
-        'confirmationReport' => $canViewReport ? $confirmationReport : [],
-        'staffAbsences'      => $absences,
+        'alarm'               => $alarm,
+        'confirmed'           => $confirmed,
+        'gibbonPersonID'      => $session->get('gibbonPersonID'),
+        'customAlarmSound'    => $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'customAlarmSound'),
+        'canViewReport'       => $canViewReport,
+        'confirmationReport'  => $canViewReport ? $confirmationReport : [],
+        'staffAbsences'       => $absences,
+        'confirmReceiptForm'  => $confirmReceiptForm,
+        'cancelAlarmForm'     => $cancelAlarmForm,
     ]);
 }
