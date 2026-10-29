@@ -36,12 +36,13 @@ $gibbonFinanceExpenseID = $I->haveInDatabase('gibbonFinanceExpense', [
     'timestampCreator' => date('Y-m-d H:i:s'),
 ]);
 
-// Set the session variable for export
-$I->haveHttpHeader('Cookie', 'financeExpenseExportIDs=' . serialize([$gibbonFinanceExpenseID]));
+$I->amOnModulePage('Finance', 'expenses_manage.php', [
+    'gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID,
+]);
 
-// Navigate to the export page
-$I->amOnModulePage('Finance', 'expenses_manage_processBulkExportContents.php', [
-    'gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID
+$I->submitForm('#bulkAction', [
+    'action' => 'export',
+    'gibbonFinanceExpenseID' => [$gibbonFinanceExpenseID],
 ]);
 
 $I->dontSeeErrors();
