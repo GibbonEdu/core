@@ -99,6 +99,7 @@ v31.0.00
         System: fixed the Docker development environment and test scripts failing on Windows hosts
         System: refactored the forms and code in *_ajax_alarm*Process.php files
         System: fixed handling of log filters and stored log details
+        Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         Calendar: fixed missing photos and student names on mobile view of participant list
         Form Groups: fixed access checks and current-year scoping on form group details
