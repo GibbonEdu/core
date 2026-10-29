@@ -99,7 +99,14 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this column? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=".$columns[$n]['gibbonRubricColumnID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'>".icon('solid', 'delete', 'size-6 text-gray-600')."</a>");
+            $col->addWebLink(icon('solid', 'delete', 'size-6 text-gray-600'))
+                ->setURL($session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_edit_deleteColumnProcess.php')
+                ->addParam('gibbonRubricID', $gibbonRubricID)
+                ->addParam('gibbonRubricColumnID', $columns[$n]['gibbonRubricColumnID'])
+                ->addParam('address', $_GET['q'])
+                ->addParam('search', $search)
+                ->addParam('filter2', $filter2)
+                ->addConfirmation(__('Are you sure you want to delete this column? Any unsaved changes will be lost.'));
         }
 
         // Rows
@@ -119,7 +126,14 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i]['gibbonRubricRowID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'>".icon('solid', 'delete', 'size-6 text-gray-600')."</a><br/>");
+            $col->addWebLink(icon('solid', 'delete', 'size-6 text-gray-600'))
+                ->setURL($session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_edit_deleteRowProcess.php')
+                ->addParam('gibbonRubricID', $gibbonRubricID)
+                ->addParam('gibbonRubricRowID', $rows[$i]['gibbonRubricRowID'])
+                ->addParam('address', $_GET['q'])
+                ->addParam('search', $search)
+                ->addParam('filter2', $filter2)
+                ->addConfirmation(__('Are you sure you want to delete this row? Any unsaved changes will be lost.'));
 
             for ($n = 0; $n < $columnCount; ++$n) {
                 $cell = @$cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']];

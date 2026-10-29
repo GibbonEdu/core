@@ -355,6 +355,8 @@ class Action extends WebLink
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         }
 
+        $this->usePostForProcessScript();
+
         return Component::render(Action::class, $this->getAttributeArray() + [
             'action'       => $this->name,
             'modal'        => $this->modal,
