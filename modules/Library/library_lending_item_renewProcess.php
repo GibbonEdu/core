@@ -24,6 +24,18 @@ use Gibbon\Data\Validator;
 
 require_once __DIR__ . '/../../gibbon.php';
 
+$lendingURL = $session->get('absoluteURL').'/index.php?q=/modules/Library/library_lending.php';
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    header('Location: '.$lendingURL.'&return=error0');
+    exit;
+}
+
+if (count($_POST) <= 1) {
+    header('Location: '.$lendingURL.'&return=error9');
+    exit;
+}
+
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'] ?? '';
