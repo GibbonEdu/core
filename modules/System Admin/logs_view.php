@@ -85,23 +85,25 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->displayLabel();
 
     $table->addExpandableColumn('comment')
-        ->format(function($log) {
-            $detailsArray = !empty($log['serialisedArray']) ? @unserialize($log['serialisedArray']) : [];
+        ->format(function ($log) use ($logGateway) {
+            $detailsArray = $logGateway->getLogData($log['serialisedArray'] ?? '');
 
             $details = '';
-            if (is_array($detailsArray) && count($detailsArray) > 0) {
+            if (count($detailsArray) > 0) {
                 $details = "<table class='smallIntBorder' style='width:100%;'>";
                 foreach ($detailsArray as $fieldName => $fieldValue) {
                     if ($fieldName == 'data') continue;
 
-                    $fieldValue = is_array($fieldValue)
-                        ? htmlentities(json_encode($fieldValue))
-                        : htmlentities($fieldValue ?? '');
+                    if (!is_scalar($fieldValue)) {
+                        $fieldValue = json_encode($fieldValue);
+                    }
+                    $fieldName = htmlentities((string) $fieldName);
+                    $fieldValue = htmlentities((string) ($fieldValue ?? ''));
                     $details .= sprintf('<tr><td><b>%1$s</b></td><td style="line-break: anywhere; width: 645px;">%2$s</td></tr>', $fieldName, (substr($fieldValue, 0, 2) == 'a:') ? __("Contains serialised data.") : $fieldValue);
                 }
                 $details .= "</table>";
             } else {
-                $details = $log['serialisedArray'];
+                $details = htmlentities($log['serialisedArray'] ?? '');
             }
 
             return $details;
