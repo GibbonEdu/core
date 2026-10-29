@@ -99,6 +99,7 @@ v31.0.00
         System: added missing form CSRF protection in *_ajax_alarm*Process.php files
         System: fixed handling of log filters and stored log details
         Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
+        Admissions: fixed family fields when an account has a family but no person
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         Calendar: fixed missing photos and student names on mobile view of participant list
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
