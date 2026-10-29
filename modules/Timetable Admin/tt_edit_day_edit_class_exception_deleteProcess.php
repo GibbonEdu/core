@@ -21,13 +21,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require_once __DIR__ . '/../../gibbon.php';
 
-$gibbonTTDayID = $_REQUEST['gibbonTTDayID'] ?? '';
-$gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
-$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? '';
-$gibbonTTColumnRowID = $_REQUEST['gibbonTTColumnRowID'] ?? '';
-$gibbonCourseClassID = $_REQUEST['gibbonCourseClassID'] ?? '';
-$gibbonTTDayRowClassID = $_REQUEST['gibbonTTDayRowClassID'] ?? '';
-$gibbonTTDayRowClassExceptionID = $_REQUEST['gibbonTTDayRowClassExceptionID'] ?? '';
+$gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
+$gibbonTTID = $_POST['gibbonTTID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonTTColumnRowID = $_POST['gibbonTTColumnRowID'] ?? '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonTTDayRowClassID = $_POST['gibbonTTDayRowClassID'] ?? '';
+$gibbonTTDayRowClassExceptionID = $_POST['gibbonTTDayRowClassExceptionID'] ?? '';
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '' or $gibbonTTDayRowClassID == '' or $gibbonTTDayRowClassExceptionID == '') { echo 'Fatal error loading this page!';
 } else {

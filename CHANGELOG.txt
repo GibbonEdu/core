@@ -93,6 +93,7 @@ v31.0.00
         User Admin: added an option to flag changes for personal fields
 
     Bug Fixes
+        System: fixed process scripts so a link cannot run them
         System: fixed process scripts so they cannot be opened as a page, and bulk and single-field requests use the same form check
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         System: renamed ca_CA locale to ca_ES and updated locale files

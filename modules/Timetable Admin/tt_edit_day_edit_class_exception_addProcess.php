@@ -24,12 +24,12 @@ require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
-$gibbonTTID = $_GET['gibbonTTID'] ?? '';
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$gibbonTTDayRowClassID = $_GET['gibbonTTDayRowClassID'] ?? '';
+$gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
+$gibbonTTID = $_POST['gibbonTTID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonTTColumnRowID = $_POST['gibbonTTColumnRowID'] ?? '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonTTDayRowClassID = $_POST['gibbonTTDayRowClassID'] ?? '';
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '' or $gibbonTTDayRowClassID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -64,9 +64,6 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                 //Run through each of the selected participants.
                 $update = true;
                 $choices = $_POST['Members'] ?? [];
-                if (!empty($_GET['gibbonPersonID'])) {
-                    $choices[] = $_GET['gibbonPersonID'];
-                }
 
                 if (count($choices) < 1) {
                     $URL .= '&return=error1';
