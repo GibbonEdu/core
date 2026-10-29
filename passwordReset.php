@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\User\PersonResetGateway;
 
 $page->breadcrumbs->add(__('Password Reset'));
 
 $page->return->addReturns([
     'error0'   => __('Email address not set.'),
     'error4'   => __('Your request failed due to incorrect, non-existent or non-unique email address or username.'),
-    'error3'   => __('Email failed to send to {email}', ['email' => $_GET['email'] ?? '']),
     'error5'   => __('Your request failed due to non-matching passwords.'),
     'error6'   => __('Your request failed because your password does not meet the minimum requirements for strength.'),
     'error7'   => __('Your request failed because your new password is the same as your current password.'),
@@ -78,13 +78,12 @@ else {
     $urlParams = compact('input', 'key', 'gibbonPersonResetID', 'step');
 
     //Verify authenticity of this request and check it is fresh (within 48 hours)
+    $reset = $container->get(PersonResetGateway::class)->getByID($gibbonPersonResetID);
+    $fresh = !empty($reset)
+        && hash_equals((string) ($reset['key'] ?? ''), (string) $key)
+        && strtotime((string) ($reset['timestamp'] ?? '')) >= strtotime('-2 days');
 
-        $data = array('key' => $key, 'gibbonPersonResetID' => $gibbonPersonResetID);
-        $sql = "SELECT * FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-    if ($result->rowCount() != 1) {
+    if (!$fresh) {
         $page->addError(__('Your reset request is invalid: you may not proceed.'));
     } else {
         echo "<div class='success'>";

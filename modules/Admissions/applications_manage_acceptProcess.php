@@ -28,9 +28,21 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
-$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-$gibbonAdmissionsApplicationID = $_REQUEST['gibbonAdmissionsApplicationID'] ?? '';
-$search = $_REQUEST['search'] ?? '';
+$listURL = Url::fromModuleRoute('Admissions', 'applications_manage');
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    header('Location: '.$listURL->withReturn('error0'));
+    exit;
+}
+
+if (count($_POST) <= 1) {
+    header('Location: '.$listURL->withReturn('error9'));
+    exit;
+}
+
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+$gibbonAdmissionsApplicationID = $_POST['gibbonAdmissionsApplicationID'] ?? '';
+$search = $_POST['search'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_accept')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
