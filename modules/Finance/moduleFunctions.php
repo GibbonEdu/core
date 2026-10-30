@@ -1119,7 +1119,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             } else {
                 try {
                     $dataPayment = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
-                    $sqlPayment = "SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment LEFT JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID LIMIT $receiptNumber, 1";
+                    $sqlPayment = "SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment LEFT JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID LIMIT $receiptNumber, 1";
                     $resultPayment = $connection2->prepare($sqlPayment);
                     $resultPayment->execute($dataPayment);
                 } catch (PDOException $e) {
@@ -1350,7 +1350,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     //Get amount paid until this point
                     try {
                         $dataPayment2 = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
-                        $sqlPayment2 = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment LEFT JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp LIMIT 0, '.($receiptNumber + 1);
+                        $sqlPayment2 = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment LEFT JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID LIMIT 0, '.($receiptNumber + 1);
                         $resultPayment2 = $connection2->prepare($sqlPayment2);
                         $resultPayment2->execute($dataPayment2);
                     } catch (PDOException $e) {
