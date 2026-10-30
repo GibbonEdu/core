@@ -98,7 +98,7 @@ v31.0.00
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         System: renamed ca_CA locale to ca_ES and updated locale files
         System: fixed the Docker development environment and test scripts failing on Windows hosts
-        System: added missing form CSRF protection in *_ajax_alarm*Process.php files
+        System: added missing form protection in *_ajax_alarm*Process.php files
         System: fixed handling of log filters and stored log details
         Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
         Admissions: fixed application accept and reject so they run from the confirmation form
@@ -110,6 +110,8 @@ v31.0.00
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway
         Messenger: fixed overflowing images and iframes on Message Wall
         Finance: fixed an always-true receipt condition when printing invoices, so an unknown print type shows an error
+        Finance: fixed invoice reminder printing so the reminder count stays unchanged
+        Finance: fixed expense approval so only a budget approval or school approval clears the budget step
         Planner: fixed "present in room" attendance counts in Lesson Plan to exclude Present - Offsite
         Planner: fixed viewableStudents and viewableParents options in Lesson Planner
         Reports: fixed non-reportable classes being counted when checking report progress
