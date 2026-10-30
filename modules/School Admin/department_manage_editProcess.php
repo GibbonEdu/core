@@ -94,6 +94,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                         $partialFail = true;
                     } else {
                         $fileMetaData = $fileUploader->getFileMetaData($attachment);
+                        if (!empty($fileMetaData) && !empty($row['logo'])) {
+                            $fileMetaData['previousFilePath'] = $row['logo'];
+                        }
                     }
                 } else {
                     // Remove the attachment if it has been deleted, otherwise retain the original value

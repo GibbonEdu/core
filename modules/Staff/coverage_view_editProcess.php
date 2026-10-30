@@ -86,6 +86,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
                 exit;
             } else {
                 $fileMetaData = $fileUploader->getFileMetaData($content);
+                if (!empty($fileMetaData) && !empty($coverage['attachmentContent'])) {
+                    $fileMetaData['previousFilePath'] = $coverage['attachmentContent'];
+                }
             }
         } else {
             // Remove the attachment if it has been deleted, otherwise retain the original value

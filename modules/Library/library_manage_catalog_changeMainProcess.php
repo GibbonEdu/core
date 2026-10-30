@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Library\LibraryGateway;
@@ -71,6 +72,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     // Update all child records to match this one
     $libraryGateway->updateChildRecords($gibbonLibraryItemID);
+
+    $mainItem = $libraryGateway->getByID($gibbonLibraryItemID);
+    $fileHandler = $container->get(FileHandler::class);
+    $children = $libraryGateway->selectBy(['gibbonLibraryItemIDParent' => $gibbonLibraryItemID], ['gibbonLibraryItemID'])->fetchAll();
+    if (($mainItem['imageType'] ?? '') == 'File' && !empty($mainItem['imageLocation'])) {
+        $childFile = (new Gibbon\FileUploader($pdo, $session))->getFileMetaData($mainItem['imageLocation']);
+        foreach ($children as $child) {
+            if (!empty($childFile)) {
+                $fileHandler->recordFileUpload($childFile, 'gibbonLibraryItem', $child['gibbonLibraryItemID'], 'imageLocation');
+            }
+        }
+    } else {
+        foreach ($children as $child) {
+            $fileHandler->deleteFile('gibbonLibraryItem', $child['gibbonLibraryItemID'], 'imageLocation');
+        }
+    }
 
     $URL .= '&return=success0';
     header("Location: {$URL}");

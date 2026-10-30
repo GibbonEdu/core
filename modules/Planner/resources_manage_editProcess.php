@@ -110,6 +110,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                                 $partialFail = true;
                             } else {
                                 $fileMetaData = $fileUploader->getFileMetaData($content);
+                                if (!empty($fileMetaData) && !empty($row['content'])) {
+                                    $fileMetaData['previousFilePath'] = $row['content'];
+                                }
                             }
                         }
 

@@ -60,6 +60,4 @@ $I->seeSuccessMessage();
 $I->amOnModulePage('User Admin', 'staffSettings.php');
 $I->submitForm('#content form', $originalFormValues, 'Submit');
 $I->seeSuccessMessage();
-
-// Cleanup ------------------------------------------------
-$I->deleteFile('../'.$file);
+$I->dontSeeFileFound('../'.$file);

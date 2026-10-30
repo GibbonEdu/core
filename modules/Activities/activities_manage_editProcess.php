@@ -199,6 +199,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     continue;
                 } else {
                     $fileMetaData = $fileUploader->getFileMetaData($photoData['filePath']);
+                    if (!empty($fileMetaData) && !empty($photo['filePath'])) {
+                        $fileMetaData['previousFilePath'] = $photo['filePath'];
+                    }
                 }
 
                 if ($photoData['sequenceNumber'] === false) {
@@ -230,11 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             // Remove photos that have been deleted from the filesystem
             $cleanupPhotos = $activityPhotoGateway->selectPhotosNotInList($gibbonActivityID, $photoIDs)->fetchAll();
             foreach ($cleanupPhotos as $photo) {
-                $photoPath = $session->get('absolutePath').'/'.$photo['filePath'];
-                if (!empty($photo['filePath']) && file_exists($photoPath)) {
-                    $deleted = $container->get(FileHandler::class)->deleteFile('gibbonActivityPhoto', $photo['gibbonActivityPhotoID'], 'filePath');
-                }
-
+                $container->get(FileHandler::class)->deleteFile('gibbonActivityPhoto', $photo['gibbonActivityPhotoID'], 'filePath');
                 $activityPhotoGateway->delete($photo['gibbonActivityPhotoID']);
             }
 

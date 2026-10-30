@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -74,6 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                     $sql = 'INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, date=:date, sequenceNumber=:sequenceNumber, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, attainmentWeighting=:attainmentWeighting, attainmentRaw=:attainmentRaw, attainmentRawMax=:attainmentRawMax, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
+                        if (!empty($column['attachment'])) {
+                            $fileHandler = $container->get(FileHandler::class);
+                            $fileHandler->linkExistingFile('gibbonMarkbookColumn', $column['gibbonMarkbookColumnID'], 'attachment', $column['attachment']);
+                            $fileHandler->linkExistingFile('gibbonMarkbookColumn', $connection2->lastInsertID(), 'attachment', $column['attachment']);
+                        }
                     } catch (PDOException $e) {
                         $partialFail = true;
                     }

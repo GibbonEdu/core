@@ -19,7 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
+use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -47,6 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_del
         header("Location: {$URL}");
         exit;
     }
+
+    // Delete file attachments for all entries in this archive before deleting the archive
+    $archiveEntries = $container->get(ReportArchiveEntryGateway::class)->selectBy(['gibbonReportArchiveID' => $gibbonReportArchiveID], ['gibbonReportArchiveEntryID'])->fetchAll();
+    $container->get(FileHandler::class)->deleteFilesForRecord('gibbonReportArchiveEntry', array_column($archiveEntries, 'gibbonReportArchiveEntryID'));
 
     $deleted = $reportArchiveGateway->delete($gibbonReportArchiveID);
     $partialFail &= !$deleted;

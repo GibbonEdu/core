@@ -50,6 +50,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
         header("Location: {$URL->withReturn('error2')}");
         exit();
     } else {
+        $person = $result->fetch();
         $attachment1 = null;
         $fileMetaData = null;
         if (!empty($_FILES['file1']['tmp_name'])) {
@@ -68,6 +69,9 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
 
             // Capture file metadata for tracking
             $fileMetaData = $fileUploader->getFileMetaData($attachment1);
+            if (!empty($fileMetaData) && !empty($person['image_240'])) {
+                $fileMetaData['previousFilePath'] = $person['image_240'];
+            }
         }
 
         $path = $session->get('absolutePath');
@@ -100,8 +104,24 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
             
             if (!empty($attachment1)) {
                 $personPhotoGateway = $container->get(PersonPhotoGateway::class);
-                // Update/insert the photo into the backup table
-                $photoUpdated = $personPhotoGateway->insertAndUpdate([
+                $fileHandler = $container->get(FileHandler::class);
+
+                if (!empty($fileMetaData) && !empty($gibbonPersonID)) {
+                    $existingPhotos = $personPhotoGateway->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonPersonPhotoID', 'personImage'])->fetchAll();
+                    foreach ($existingPhotos as $existingPhoto) {
+                        if (!empty($existingPhoto['personImage'])) {
+                            $fileHandler->linkExistingFile('gibbonPersonPhoto', $existingPhoto['gibbonPersonPhotoID'], 'personImage', $existingPhoto['personImage']);
+                        }
+                    }
+
+                    $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, 'gibbonPerson', $gibbonPersonID, 'image_240');
+                    if (empty($gibbonFileID)) {
+                        header("Location: {$URL->withReturn('warning1')}");
+                        exit();
+                    }
+                }
+
+                $personPhotoGateway->insertAndUpdate([
                     'gibbonPersonID' => $gibbonPersonID,
                     'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
                     'personImage' => $attachment1,
@@ -111,14 +131,12 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
                     'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
                 ]);
 
-                // Record file tracking 
-                if (!empty($fileMetaData) && !empty($gibbonPersonID)) {
-                    $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPerson', $gibbonPersonID, 'image_240');
-                    
-                    if (empty($gibbonFileID)) {
-                        header("Location: {$URL->withReturn('warning1')}");
-                        exit();
-                    }
+                $currentPhoto = $personPhotoGateway->selectBy([
+                    'gibbonPersonID' => $gibbonPersonID,
+                    'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                ], ['gibbonPersonPhotoID'])->fetch();
+                if (!empty($currentPhoto['gibbonPersonPhotoID']) && !empty($fileMetaData)) {
+                    $fileHandler->recordFileUpload($fileMetaData, 'gibbonPersonPhoto', $currentPhoto['gibbonPersonPhotoID'], 'personImage');
                 }
             }
 

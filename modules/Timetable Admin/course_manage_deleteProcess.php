@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Filesystem\FileHandler;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
@@ -82,7 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $sqlStudent = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID';
             $resultStudent = $connection2->prepare($sqlStudent);
             $resultStudent->execute($dataStudent);
+            $fileHandler = $container->get(FileHandler::class);
             while ($rowStudent = $resultStudent->fetch()) {
+                $fileHandler->deleteFilesForRecord('gibbonCourseClass', $rowStudent['gibbonCourseClassID']);
                 $dataDelete = array('gibbonCourseClassID' => $rowStudent['gibbonCourseClassID']);
                 $sqlDelete = 'DELETE FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID';
                 $resultDelete = $connection2->prepare($sqlDelete);
@@ -112,6 +116,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 header("Location: {$URL}");
                 exit();
             }
+
+            $fileHandler->deleteFilesForRecord('gibbonCourse', $gibbonCourseID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

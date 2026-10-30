@@ -303,6 +303,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 $imageFail = true;
                             } else {
                                 $fileMetaData = $fileUploader->getFileMetaData($attachment1);
+                                if (!empty($fileMetaData) && !empty($row['image_240'])) {
+                                    $fileMetaData['previousFilePath'] = $row['image_240'];
+                                }
                                 $updateBackupPhoto = true;
                             }
                         }
@@ -338,9 +341,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             exit();
                         }
 
-                        // Record file tracking
+                        // Record file tracking. History rows are linked first so a new photo does not remove a picture still on record.
                         if (!empty($fileMetaData) && !empty($gibbonPersonID)) {
-                            $gibbonFileID = $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPerson', $gibbonPersonID, 'image_240');
+                            $personPhotoGateway = $container->get(PersonPhotoGateway::class);
+                            $fileHandler = $container->get(FileHandler::class);
+                            $existingPhotos = $personPhotoGateway->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonPersonPhotoID', 'personImage'])->fetchAll();
+                            foreach ($existingPhotos as $existingPhoto) {
+                                if (!empty($existingPhoto['personImage'])) {
+                                    $fileHandler->linkExistingFile('gibbonPersonPhoto', $existingPhoto['gibbonPersonPhotoID'], 'personImage', $existingPhoto['personImage']);
+                                }
+                            }
+
+                            $gibbonFileID = $fileHandler->recordFileUpload($fileMetaData, 'gibbonPerson', $gibbonPersonID, 'image_240');
                             
                             if (empty($gibbonFileID)) {
                                 $imageFail = true;
@@ -349,7 +361,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                         // Handle file deletion when user removes attachment
                         if (empty($attachment1) && !empty($row['image_240'])) {
-                            $deleted = $container->get(FileHandler::class)->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
+                            $fileHandler = $container->get(FileHandler::class);
+                            $sharedPhotos = $container->get(PersonPhotoGateway::class)->selectBy([
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'personImage' => $row['image_240'],
+                            ], ['gibbonPersonPhotoID'])->fetchAll();
+                            foreach ($sharedPhotos as $sharedPhoto) {
+                                $fileHandler->linkExistingFile('gibbonPersonPhoto', $sharedPhoto['gibbonPersonPhotoID'], 'personImage', $row['image_240']);
+                            }
+                            $fileHandler->deleteFile('gibbonPerson', $gibbonPersonID, 'image_240');
                         }
 
                         // Manage custom field file uploads
@@ -378,6 +398,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 'personImage' => $attachment1,
                                 'gibbonPersonIDCreated' => $session->get('gibbonPersonID'),
                             ]);
+
+                            $currentPhoto = $personPhotoGateway->selectBy([
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                            ], ['gibbonPersonPhotoID'])->fetch();
+                            if (!empty($currentPhoto['gibbonPersonPhotoID']) && !empty($fileMetaData)) {
+                                $container->get(FileHandler::class)->recordFileUpload($fileMetaData, 'gibbonPersonPhoto', $currentPhoto['gibbonPersonPhotoID'], 'personImage');
+                            }
                         }
 
                         // ALERTS: possible change to Privacy alert status, recalculate alerts

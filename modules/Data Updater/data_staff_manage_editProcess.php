@@ -84,11 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
 
     // Update the staff record
     if (!empty($data)) {
+        $staffRecord = $staffGateway->getByID($gibbonStaffID);
         $updated = $staffGateway->update($gibbonStaffID, $data);
         if (!$updated) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             return;
+        }
+        if (!empty($data['fields'])) {
+            $container->get(CustomFieldHandler::class)->manageCustomFieldFileUploads('Staff', [], $data['fields'], 'gibbonStaff', $gibbonStaffID, $staffRecord['fields'] ?? null);
         }
     }
 
