@@ -158,6 +158,20 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectStudentDetailsByFormGroup($gibbonFormGroupID)
+    {
+        $data = ['gibbonFormGroupID' => $gibbonFormGroupID, 'today' => date('Y-m-d')];
+        $sql = "SELECT surname, preferredName, email
+                FROM gibbonStudentEnrolment
+                JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
+                WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full'
+                AND (dateStart IS NULL OR dateStart<=:today)
+                AND (dateEnd IS NULL OR dateEnd>=:today)
+                ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function queryStudentsAndTeachersBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonRoleIDCurrentCategory = null)
     {
         $query = $this
