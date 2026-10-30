@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -138,6 +139,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
                 //Write to database
                 $existing = $_POST['existing'] ?? '';
+
+                if ($existing != 'N') {
+                    $pending = $container->get(FinanceUpdateGateway::class)->selectBy([
+                        'gibbonFinanceInvoiceeUpdateID' => $existing,
+                        'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID,
+                        'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
+                        'status' => 'Pending',
+                    ], ['gibbonFinanceInvoiceeUpdateID']);
+                    if ($pending->rowCount() != 1) {
+                        $existing = 'N';
+                    }
+                }
 
                 if ($existing != 'N') {
                     $data['gibbonFinanceInvoiceeUpdateID'] = $existing;

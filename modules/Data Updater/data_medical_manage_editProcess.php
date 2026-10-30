@@ -65,8 +65,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             header("Location: {$URL}");
         } else {
             $row = $result->fetch();
-            $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
-            $row2 = $medicalGateway->getByID($gibbonPersonMedicalID);
+            $gibbonPersonID = $row['gibbonPersonID'];
+            $ownForm = $medicalGateway->getMedicalFormByPerson($gibbonPersonID);
+            $gibbonPersonMedicalID = is_array($ownForm) ? ($ownForm['gibbonPersonMedicalID'] ?? null) : null;
+            $row2 = is_array($ownForm) ? $ownForm : [];
             $conditions = [];
 
             //Set values
@@ -107,6 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $count = $_POST['count'] ?? '';
                 }
                 for ($i = 0; $i < $count; ++$i) {
+                    $condition = $medicalGateway->getMedicalConditionByID($_POST["gibbonPersonMedicalConditionID$i"] ?? '');
+                    if (empty($condition) || ($condition['gibbonPersonID'] ?? '') != $gibbonPersonID) {
+                        continue;
+                    }
                     $dataCond = array();
                     $sqlSetCond = '';
                     if (isset($_POST["nameOn$i"])) {
@@ -121,8 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                 $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"] ?? '';
                                 $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
-                                if (!empty($_POST["gibbonPersonMedicalConditionID$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
-                                    $condition = $medicalGateway->getMedicalConditionByID($_POST["gibbonPersonMedicalConditionID$i"]);
+                                if ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002') {
                                     $conditions[] = $condition['name'] ?? '';
                                 }
                             }
@@ -281,8 +286,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         }
 
                         try {
-                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
-                            $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
+                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"], 'gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
+                            $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID AND gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
                             $resultCond = $connection2->prepare($sqlCond);
                             $resultCond->execute($dataCond);
                         } catch (PDOException $e) {
@@ -432,8 +437,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         }
 
                         try {
-                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
-                            $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
+                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"], 'gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
+                            $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID AND gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
                             $resultCond = $connection2->prepare($sqlCond);
                             $resultCond->execute($dataCond);
                         } catch (PDOException $e) {
