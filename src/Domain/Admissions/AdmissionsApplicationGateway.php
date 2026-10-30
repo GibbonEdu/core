@@ -245,6 +245,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->where('gibbonAdmissionsApplication.status <> "Accepted"')
             ->where('gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount"')
             ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID')
+            ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.parent1surname")) IS NOT NULL')
             ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.gibbonPersonIDParent1")) IS NULL')
             ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDParent1")) IS NULL')
             ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
@@ -314,7 +315,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 '"Student" as roleCategory',
                 'applications.status',
                 '"" as image_240',
-                '"Sibling" as relationship',
+                'CASE WHEN applications.gibbonAdmissionsApplicationID = gibbonAdmissionsApplication.gibbonAdmissionsApplicationID THEN "Applicant" ELSE "Sibling" END as relationship',
                 'gibbonYearGroup.name as yearGroup',
                 'applications.gibbonAdmissionsApplicationID as applicationID',
             ])
