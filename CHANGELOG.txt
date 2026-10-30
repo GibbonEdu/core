@@ -93,18 +93,19 @@ v31.0.00
         User Admin: added an option to flag changes for personal fields
 
     Bug Fixes
-        Behaviour: fixed the issue of student not getting included in a multiple behaviour record
-        School Admin: fixed the issue of Form Group Location not being displayed in edit page
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         System: renamed ca_CA locale to ca_ES and updated locale files
         System: fixed the Docker development environment and test scripts failing on Windows hosts
         System: added missing form CSRF protection in *_ajax_alarm*Process.php files
         System: fixed handling of log filters and stored log details
-        System: fixed a missing space between the default and size classes in Format::photo
+        Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
+        Admissions: fixed the family list so an application without parents shows the applicant only
+        Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         Calendar: fixed missing photos and student names on mobile view of participant list
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway
         Messenger: fixed overflowing images and iframes on Message Wall
+        Finance: fixed an always-true receipt condition when printing invoices, so an unknown print type shows an error
         Planner: fixed "present in room" attendance counts in Lesson Plan to exclude Present - Offsite
         Planner: fixed viewableStudents and viewableParents options in Lesson Planner
         Reports: fixed non-reportable classes being counted when checking report progress
@@ -112,7 +113,9 @@ v31.0.00
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         Staff: fixed the issue of including staff email while submitting a job application form
         Staff: fixed the bug of applicationFormRefereeLink condition always true when URLs are empty
+        System: fixed an empty Behaviour tab and PHP warning on the Staff Dashboard when Behaviour is not accessible
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment
+        School Admin: fixed the issue of Form Group Location not being displayed in edit page
         Student Alerts: fixed student not pre-selected when clicking Add button on Student Alerts by Class
         System Admin: fixed incorrect required status of Emergency Contact fields in Form Builder
         Timetable: fixed incorrect Staff Cover information for activity cover on the timetable
