@@ -95,8 +95,8 @@ v31.0.00
     Bug Fixes
         System: fixed handling of array values in localeFriendlySort method in DatabaseFormFactory
         System: renamed ca_CA locale to ca_ES and updated locale files
+        System: fixed translations failing where setlocale() cannot activate the system locale by falling back to reading .mo catalogs in PHP
         System: fixed the Docker development environment and test scripts failing on Windows hosts
-        System: added missing form CSRF protection in *_ajax_alarm*Process.php files
         System: fixed handling of log filters and stored log details
         Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
         Admissions: fixed the family list so an application without parents shows the applicant only
