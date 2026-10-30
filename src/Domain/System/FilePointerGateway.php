@@ -43,7 +43,7 @@ class FilePointerGateway extends QueryableGateway
 
         $sql = "SELECT gibbonFilePointer.gibbonFilePointerID, gibbonFile.gibbonFileID, gibbonFile.filePath
                 FROM gibbonFilePointer
-                JOIN gibbonFile ON gibbonFilePointer.gibbonFileID = gibbonFile.gibbonFileID
+                JOIN gibbonFile ON (gibbonFilePointer.gibbonFileID = gibbonFile.gibbonFileID)
                 WHERE gibbonFilePointer.foreignTable = :foreignTable
                 AND gibbonFilePointer.foreignTableID = :foreignTableID
                 AND gibbonFilePointer.foreignColumn = :foreignColumn";
@@ -51,11 +51,13 @@ class FilePointerGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function countPointersByFileID(int $gibbonFileID)
+    public function countPointersByFileID(int|string $gibbonFileID)
     {
         $data = ['gibbonFileID' => $gibbonFileID];
-        $sql = "SELECT COUNT(*) as count FROM gibbonFilePointer WHERE gibbonFileID = :gibbonFileID";
-        
-       return $this->db()->select($sql, $data);
+        $sql = "SELECT COUNT(*) AS count
+                FROM gibbonFilePointer
+                WHERE gibbonFileID = :gibbonFileID";
+
+        return $this->db()->select($sql, $data);
     }
 }
