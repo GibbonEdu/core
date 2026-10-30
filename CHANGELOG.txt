@@ -101,6 +101,7 @@ v31.0.00
         Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         Calendar: fixed missing photos and student names on mobile view of participant list
+        Markbook: fixed class access checks on column, grade, target, and weighting saves by adding a new access check class
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway
         Messenger: fixed overflowing images and iframes on Message Wall

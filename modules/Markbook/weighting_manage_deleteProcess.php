@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Markbook\MarkbookWeightGateway;
+use Gibbon\Module\Markbook\MarkbookAccess;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
@@ -41,12 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
     } else {
 
 
-            $data2 = array('gibbonMarkbookWeightID' => $gibbonMarkbookWeightID);
-            $sql2 = 'SELECT type FROM gibbonMarkbookWeight WHERE gibbonMarkbookWeightID=:gibbonMarkbookWeightID';
-            $result2 = $connection2->prepare($sql2);
-            $result2->execute($data2);
-
-        if ($result2->rowCount() != 1) {
+        $weight = $container->get(MarkbookWeightGateway::class)->getByID($gibbonMarkbookWeightID);
+        if (empty($weight) || $weight['gibbonCourseClassID'] != $gibbonCourseClassID || !$container->get(MarkbookAccess::class)->allows($weight['gibbonCourseClassID'], 'weighting_manage_delete')) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {

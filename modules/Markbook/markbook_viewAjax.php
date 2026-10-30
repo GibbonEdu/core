@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Module\Markbook\MarkbookAccess;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 include './moduleFunctions.php';
@@ -34,6 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
     if ($order != '') {
 
         $columnOrder = array_slice($order, 1 );
+        $markbookAccess = $container->get(MarkbookAccess::class);
+        foreach ($columnOrder as $gibbonMarkbookColumnID) {
+            if (empty($markbookAccess->getColumn($gibbonMarkbookColumnID, '', 'markbook_edit'))) {
+                echo __('Your request failed because you do not have access to this action.');
+                return;
+            }
+        }
         $minSequence = (isset($_POST['sequence']))? $_POST['sequence'] : 0;
 
         for ($i = 0; $i < count($columnOrder); $i++) {
