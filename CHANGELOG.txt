@@ -102,12 +102,14 @@ v31.0.00
         System: fixed handling of log filters and stored log details
         Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
         Admissions: fixed application accept and reject so they run from the confirmation form
+        Admissions: fixed the family list so an application without parents shows the applicant only
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         Calendar: fixed missing photos and student names on mobile view of participant list
         Library: fixed lending, return, renew, and edit form so they run from the lending form
         Messenger: fixed the issue of incorrect name being displayed for mailing list users in Report Data
         Messenger: fixed the issue of non-parameterized input in Messenger Gateway
         Messenger: fixed overflowing images and iframes on Message Wall
+        Finance: fixed an always-true receipt condition when printing invoices, so an unknown print type shows an error
         Planner: fixed "present in room" attendance counts in Lesson Plan to exclude Present - Offsite
         Planner: fixed viewableStudents and viewableParents options in Lesson Planner
         Reports: fixed non-reportable classes being counted when checking report progress
@@ -115,13 +117,16 @@ v31.0.00
         Staff: fixed staff coverage showing on timetable when not accepted yet or declined
         Staff: fixed the issue of including staff email while submitting a job application form
         Staff: fixed the bug of applicationFormRefereeLink condition always true when URLs are empty
+        System: fixed an empty Behaviour tab and PHP warning on the Staff Dashboard when Behaviour is not accessible
         School Admin: fixed inactive grade scales not selectable in Manage External Assessment
         School Admin: fixed the issue of Form Group Location not being displayed in edit page
         Student Alerts: fixed student not pre-selected when clicking Add button on Student Alerts by Class
         System Admin: fixed incorrect required status of Emergency Contact fields in Form Builder
         Timetable: fixed incorrect Staff Cover information for activity cover on the timetable
+        Timetable: fixed calendar export so it uses the current user
         Timetable Admin: fixed error preventing the copy of courses to next year
         User Admin: fixed password reset so a request runs from the reset form and repeat requests get the same result
+        Admissions: fixed Home Address (Country) not being translated when displaying application form data
 
     Deprecations
 

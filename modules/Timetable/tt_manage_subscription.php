@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false || ($_GET['gibbonPersonID'] ?? '') != $session->get('gibbonPersonID')) {
         // Access denied
         $page->addError(__('You do not have access to this action.'));
     } else {
@@ -36,7 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $form->addHiddenValue('address', $session->get('address'));
         $options = array('No Reminder', '5 minutes before', '10 minutes before', '15 minutes before'); //TODO: Turn this into key => value pairs, and modify the select to use them, so that you can have the values be the relevant time specifier to go directly into your $vAlarm, so you require less logic when exporting
         $row->addSelect('options')->fromArray($options);
-        $form->addHiddenValue('superSecretHiddenValue',$_GET['gibbonPersonID']);
 
     $row = $form->addRow();
         $row->addLabel('prefix', __('Prefix'))->description(__('Optionally add your input as a prefix to calendar events.'));
@@ -51,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     ?>
         <script>
         const button = document.querySelector('#timetableSubManage [type=submit]');
-        button.addEventListener('click', event => {
+        if (button) button.addEventListener('click', event => {
                 setTimeout(()=>{
                   tb_remove();
                 },1000);
