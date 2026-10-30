@@ -105,7 +105,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                     $row = $table->addRow();
                     $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
                     $row->addContent(__($staff['access']));
-                    $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$staff['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>");
+                    $row->addWebLink("<img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>")
+                        ->setURL($session->get('absoluteURL').'/modules/'.$session->get('module').'/budgets_manage_edit_staff_deleteProcess.php')
+                        ->addParam('address', $_GET['q'])
+                        ->addParam('gibbonFinanceBudgetPersonID', $staff['gibbonFinanceBudgetPersonID'])
+                        ->addParam('gibbonFinanceBudgetID', $gibbonFinanceBudgetID)
+                        ->addConfirmation(__('Are you sure you wish to delete this record?'));
                 }
             }
 

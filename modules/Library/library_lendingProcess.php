@@ -27,6 +27,18 @@ use Gibbon\Domain\System\SettingGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
+$lendingURL = $session->get('absoluteURL').'/index.php?q=/modules/Library/library_lending.php';
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    header('Location: '.$lendingURL.'&return=error0');
+    exit;
+}
+
+if (count($_POST) <= 1) {
+    header('Location: '.$lendingURL.'&return=error9');
+    exit;
+}
+
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $urlParams = [
@@ -36,8 +48,8 @@ $urlParams = [
     'status'                   => $_POST['status'] ?? '',
 ];
 
-$lendingAction = $_REQUEST['lendingAction'] ?? '';
-$gibbonPersonIDStudent = $_REQUEST['gibbonPersonIDStudent'] ?? '';
+$lendingAction = $_POST['lendingAction'] ?? '';
+$gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 
 if (!empty($gibbonPersonIDStudent)) {
     $URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonIDStudent&search=&search=&allStudents=&subpage=Library Borrowing&lendingAction=".$lendingAction;
