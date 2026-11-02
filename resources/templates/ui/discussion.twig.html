@@ -34,7 +34,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <div class="absolute top-0 left-0 border-transparent" style="margin: 15px 0 0 -18px; border-width: 9px; border-right-color: #d2d0d0;"></div>
             <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
 
-            <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed flex flex-col sm:flex-row justify-between items-center">
+            <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed flex flex-wrap justify-between items-center gap-2">
                 <div>
                 <span class="inline-block font-semibold">
                     {% if item.url %}<a href="{{ item.url }}" class="text-gray-800 underline">{% endif %}
@@ -52,11 +52,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endif %}
 
                 {% if item.type %}
-                    <span class="sm:mx-2 mt-2 sm:mt-0 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
+                    <span class="sm:mx-2 mt-2 sm:mt-0 tag whitespace-nowrap {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
                 {% endif %}
                 </div>
                 {% if item.attachmentLocation %}
-                    <a class="tag block px-0 break-all mt-2 sm:mt-0" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}" target="{{ item.attachmentTarget ? item.attachmentTarget : '_blank' }}">{{ item.attachmentText ? item.attachmentText : __('View Attachment') }}</a>
+                    <a class="tag whitespace-nowrap mt-2 sm:mt-0" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}" target="{{ item.attachmentTarget ? item.attachmentTarget : '_blank' }}">{{ item.attachmentText ? item.attachmentText : __('View Attachment') }}</a>
                 {% endif %}
 
                 {% if item.extra %}

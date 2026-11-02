@@ -499,8 +499,24 @@ class Page extends View
     public function render(string $template, array $data = []) : string
     {
         $data['page'] = $this->gatherData();
-        $data['content'] = $this->content;
+        $data['content'] = array_map([$this, 'keepBareLessThanAsText'], $this->content);
 
         return parent::render($template, $data);
+    }
+
+    /**
+     * A typed emoticon such as <: or </3 is text. A real tag is left as markup.
+     */
+    private function keepBareLessThanAsText(string $html): string
+    {
+        $replaced = preg_replace_callback(
+            '/(<script\b[^>]*>.*?<\/script>|<style\b[^>]*>.*?<\/style>)|<(?!\/?[a-zA-Z!])/is',
+            function ($match) {
+                return ($match[1] ?? '') !== '' ? $match[1] : '&lt;';
+            },
+            $html
+        );
+
+        return is_string($replaced) ? $replaced : $html;
     }
 }
