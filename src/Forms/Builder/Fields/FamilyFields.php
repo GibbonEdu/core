@@ -69,6 +69,7 @@ class FamilyFields extends AbstractFieldGroup
                 'label'       => __('Home Address (Country)'),
                 'required'    => 'Y',
                 'prefill'     => 'Y',
+                'translate'   => 'Y',
             ],
             'headingFamilyDetails' => [
                 'label'       => __('Family Details'),
