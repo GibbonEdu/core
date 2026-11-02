@@ -20,7 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Module\Markbook\MarkbookAccess;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                $row = $container->get(MarkbookAccess::class)->getColumnDefinition($gibbonMarkbookColumnID, $gibbonCourseClassID, 'markbook_edit_edit');
+                $row = $container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'markbook_edit_edit'))->getAllowedColumnGroup($gibbonMarkbookColumnID, $gibbonCourseClassID);
 
                 if (empty($row)) {
                     $URL .= '&return=error0';

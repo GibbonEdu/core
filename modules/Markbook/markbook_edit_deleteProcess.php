@@ -20,7 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
-use Gibbon\Module\Markbook\MarkbookAccess;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
     } 
     
     $markbookColumnGateway = $container->get(MarkbookColumnGateway::class);
-    $markbookColumn = $container->get(MarkbookAccess::class)->getColumnDefinition($gibbonMarkbookColumnID, $gibbonCourseClassID, 'markbook_edit_delete');
+    $markbookColumn = $container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'markbook_edit_delete'))->getAllowedColumnGroup($gibbonMarkbookColumnID, $gibbonCourseClassID);
 
     if (empty($markbookColumn)) {
         $URL .= '&return=error0';

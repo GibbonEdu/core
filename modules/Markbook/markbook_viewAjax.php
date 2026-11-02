@@ -19,7 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Module\Markbook\MarkbookAccess;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -36,9 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
     if ($order != '') {
 
         $columnOrder = array_slice($order, 1 );
-        $markbookAccess = $container->get(MarkbookAccess::class);
+        $markbookGate = $container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'markbook_edit'));
         foreach ($columnOrder as $gibbonMarkbookColumnID) {
-            if (empty($markbookAccess->getColumn($gibbonMarkbookColumnID, '', 'markbook_edit'))) {
+            if (empty($markbookGate->getAllowedColumn($gibbonMarkbookColumnID, ''))) {
                 echo __('Your request failed because you do not have access to this action.');
                 return;
             }

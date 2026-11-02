@@ -21,20 +21,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Markbook;
 
+use Gibbon\Auth\Gate\Gate;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 use Gibbon\Domain\Timetable\CourseClassGateway;
-use Gibbon\Support\Facades\Access;
 
 /**
- * Markbook Access
+ * Markbook Gate
  *
  * @package Gibbon\Module\Markbook
  */
-class MarkbookAccess
+class MarkbookGate extends Gate
 {
-    private Session $session;
     private CourseClassGateway $courseClassGateway;
     private MarkbookColumnGateway $markbookColumnGateway;
     private DepartmentGateway $departmentGateway;
@@ -45,27 +44,21 @@ class MarkbookAccess
         MarkbookColumnGateway $markbookColumnGateway,
         DepartmentGateway $departmentGateway
     ) {
-        $this->session = $session;
+        parent::__construct($session);
         $this->courseClassGateway = $courseClassGateway;
         $this->markbookColumnGateway = $markbookColumnGateway;
         $this->departmentGateway = $departmentGateway;
     }
 
     /**
-     * Check whether the current user can edit this class for the given markbook route.
+     * Check whether the current user can edit this class.
      *
      * @param string $gibbonCourseClassID
-     * @param string $routePath Route name
      * @return bool
      */
-    public function allows($gibbonCourseClassID, string $routePath): bool
+    public function canEditMarkbook($gibbonCourseClassID): bool
     {
-        if ($gibbonCourseClassID == '' || $routePath == '') {
-            return false;
-        }
-
-        $action = Access::get('Markbook', $routePath);
-        if (!$action->allows()) {
+        if ($gibbonCourseClassID == '' || !$this->hasAccess()) {
             return false;
         }
 
@@ -74,17 +67,16 @@ class MarkbookAccess
             return false;
         }
 
-        if ($action->allowsAny('Edit Markbook_everything', 'Edit Markbook_multipleClassesAcrossSchool', 'Manage Weightings_everything')) {
+        if ($this->action->allowsAny('Edit Markbook_everything', 'Edit Markbook_multipleClassesAcrossSchool', 'Manage Weightings_everything')) {
             return true;
         }
 
-        $gibbonPersonID = $this->session->get('gibbonPersonID');
-        if (!empty($this->courseClassGateway->getCourseClassByPerson($gibbonCourseClassID, $gibbonPersonID))) {
+        if (!empty($this->courseClassGateway->getCourseClassByPerson($gibbonCourseClassID, $this->gibbonPersonID))) {
             return true;
         }
 
-        return $action->allows('Edit Markbook_multipleClassesInDepartment')
-            && $this->isDepartmentEditor($class['gibbonDepartmentID'] ?? '', $gibbonPersonID);
+        return $this->action->allows('Edit Markbook_multipleClassesInDepartment')
+            && $this->isDepartmentEditor($class['gibbonDepartmentID'] ?? '', $this->gibbonPersonID);
     }
 
     /**
@@ -92,14 +84,16 @@ class MarkbookAccess
      *
      * @param string $gibbonMarkbookColumnID
      * @param string $gibbonCourseClassID
-     * @param string $routePath
      * @return array Column row, or an empty array when access is denied
      */
-    public function getColumn($gibbonMarkbookColumnID, $gibbonCourseClassID, string $routePath): array
+    public function getAllowedColumn($gibbonMarkbookColumnID, $gibbonCourseClassID): array
     {
-        $column = $this->fetchColumn($gibbonMarkbookColumnID, $gibbonCourseClassID);
+        if (!$this->hasAccess()) {
+            return [];
+        }
 
-        if (empty($column) || !$this->allows($column['gibbonCourseClassID'], $routePath)) {
+        $column = $this->fetchColumn($gibbonMarkbookColumnID, $gibbonCourseClassID);
+        if (empty($column) || !$this->canEditMarkbook($column['gibbonCourseClassID'])) {
             return [];
         }
 
@@ -107,29 +101,25 @@ class MarkbookAccess
     }
 
     /**
-     * Load a column for an edit or delete, including the column creator and grouped columns.
+     * Load a column for an edit or delete, including grouped columns.
      *
      * @param string $gibbonMarkbookColumnID
      * @param string $gibbonCourseClassID
-     * @param string $routePath
      * @return array Column row, or an empty array when access is denied
      */
-    public function getColumnDefinition($gibbonMarkbookColumnID, $gibbonCourseClassID, string $routePath): array
+    public function getAllowedColumnGroup($gibbonMarkbookColumnID, $gibbonCourseClassID): array
     {
+        if (!$this->hasAccess()) {
+            return [];
+        }
+
         $column = $this->fetchColumn($gibbonMarkbookColumnID, $gibbonCourseClassID);
-        if (empty($column)) {
+        if (empty($column) || !$this->canEditMarkbook($column['gibbonCourseClassID'])) {
             return [];
         }
 
-        $action = Access::get('Markbook', $routePath);
-        $gibbonPersonID = $this->session->get('gibbonPersonID');
-        $createdByPerson = ($column['gibbonPersonIDCreator'] ?? '') == $gibbonPersonID;
-
-        if (!$this->allows($column['gibbonCourseClassID'], $routePath) && !$createdByPerson) {
-            return [];
-        }
-
-        if (($column['groupingID'] ?? '') != '' && !$createdByPerson && !$action->allowsAny('Edit Markbook_everything', 'Edit Markbook_multipleClassesAcrossSchool', 'Edit Markbook_multipleClassesInDepartment')) {
+        $createdByPerson = ($column['gibbonPersonIDCreator'] ?? '') == $this->gibbonPersonID;
+        if (($column['groupingID'] ?? '') != '' && !$createdByPerson && !$this->action->allowsAny('Edit Markbook_everything', 'Edit Markbook_multipleClassesAcrossSchool', 'Edit Markbook_multipleClassesInDepartment')) {
             return [];
         }
 

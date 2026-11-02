@@ -20,7 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Markbook\MarkbookWeightGateway;
-use Gibbon\Module\Markbook\MarkbookAccess;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
 
         $gibbonMarkbookWeightID = (isset($_GET['gibbonMarkbookWeightID']))? $_GET['gibbonMarkbookWeightID'] : null;
         $weight = $container->get(MarkbookWeightGateway::class)->getByID($gibbonMarkbookWeightID);
-        if (empty($weight) || $weight['gibbonCourseClassID'] != $gibbonCourseClassID || !$container->get(MarkbookAccess::class)->allows($weight['gibbonCourseClassID'], 'weighting_manage_edit')) {
+        if (empty($weight) || $weight['gibbonCourseClassID'] != $gibbonCourseClassID || !$container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'weighting_manage_edit'))->canEditMarkbook($weight['gibbonCourseClassID'])) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
