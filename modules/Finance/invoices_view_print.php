@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         } else {
                             echo $invoiceContents;
                         }
-                    } elseif ($type = 'receipt') {
+                    } elseif ($type == 'receipt') {
                         echo '<h2>';
                         echo __('Receipt');
                         echo '</h2>';
@@ -110,6 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         } else {
                             echo $receiptContents;
                         }
+                    } else {
+                        $page->addError(__('You have not specified one or more required parameters.'));
                     }
                 }
             }
