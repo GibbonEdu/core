@@ -113,6 +113,8 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
         ];
 
         // Setup the email
+        $this->mail->clearAllRecipients();
+        $this->mail->clearReplyTos();
         $this->mail->SetFrom($this->session->get('organisationAdmissionsEmail'), $this->session->get('organisationAdmissionsName'));
         $this->mail->AddReplyTo($this->session->get('organisationAdmissionsEmail'));
         $this->mail->setDefaultSender($template->renderSubject($templateData));
