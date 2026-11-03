@@ -28,7 +28,7 @@ $page->breadcrumbs->add(__('Password Reset'));
 $page->return->addReturns([
     'error0'   => __('Email address not set.'),
     'error4'   => __('Your request failed due to incorrect, non-existent or non-unique email address or username.'),
-    'error3'   => __('Email failed to send to {email}', ['email' => $_GET['email'] ?? '']),
+    'error3'   => __('Email failed to send to {email}', ['email' => htmlPrep(is_string($_GET['email'] ?? '') ? $_GET['email'] : '')]),
     'error5'   => __('Your request failed due to non-matching passwords.'),
     'error6'   => __('Your request failed because your password does not meet the minimum requirements for strength.'),
     'error7'   => __('Your request failed because your new password is the same as your current password.'),

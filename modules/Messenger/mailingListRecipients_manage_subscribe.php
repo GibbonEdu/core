@@ -102,7 +102,7 @@ if ($mode == 'subscribe') {
 
             echo $form->getOutput();
         } else {
-            $page->addAlert(__('Please {linkOpen}click here{linkClose} if you wish to re-subscribe to our mailing lists.', ['linkOpen' => '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingListRecipients_manage_subscribe.php&mode=manage&email='.$email.'&key='.$key.'">', 'linkClose' => '</a>']), 'message');
+            $page->addAlert(__('Please {linkOpen}click here{linkClose} if you wish to re-subscribe to our mailing lists.', ['linkOpen' => '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingListRecipients_manage_subscribe.php&mode=manage&email='.rawurlencode($email).'&key='.rawurlencode($key).'">', 'linkClose' => '</a>']), 'message');
         }
     }
 }

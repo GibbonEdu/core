@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     $page->return->setEditLink($editLink);
     $page->return->addReturns([
-        'warning3' => __('Duplication was successful, however {count} criteria did not match form groups or courses in the target school year and could not be copied.', ['count' => $_GET['failedCriteria'] ?? 0]),
+        'warning3' => __('Duplication was successful, however {count} criteria did not match form groups or courses in the target school year and could not be copied.', ['count' => (is_string($_GET['failedCriteria'] ?? '') && ctype_digit($_GET['failedCriteria'])) ? $_GET['failedCriteria'] : '0']),
     ]);
 
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
