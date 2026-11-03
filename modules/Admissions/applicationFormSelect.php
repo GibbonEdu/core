@@ -52,10 +52,11 @@ if ($proceed == false) {
     // Proceed!
     $page->breadcrumbs->add(__('Admissions Welcome'));
 
+    $email = $_GET['email'] ?? '';
     $page->return->addReturns([
         'success1' => __('Success. Please check your email for a link to access your admissions account.'),
         'error4' => __('An existing application was not found for this email address.'),
-        'error5' => __('Email failed to send to {email}', ['email' => htmlPrep(is_string($_GET['email'] ?? '') ? $_GET['email'] : '')]),
+        'error5' => __('Email failed to send to {email}', ['email' => htmlPrep(is_string($email) ? $email : '')]),
     ]);
 
     if (!$session->has('username')) {
