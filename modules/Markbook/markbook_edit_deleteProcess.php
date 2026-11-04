@@ -20,8 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_POST['gibbonMarkbookColumnID'] ?? '';
@@ -42,23 +44,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
     } 
     
     $markbookColumnGateway = $container->get(MarkbookColumnGateway::class);
-    $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit_delete.php', $connection2);
+    $markbookColumn = $container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'markbook_edit_delete'))->getAllowedColumnGroup($gibbonMarkbookColumnID, $gibbonCourseClassID);
 
-    if ($highestAction == 'Edit Markbook_everything' || $highestAction == 'Edit Markbook_multipleClassesAcrossSchool') {
-        $markbookColumn = $markbookColumnGateway->getByID($gibbonMarkbookColumnID);
-    } elseif ($highestAction == 'Edit Markbook_multipleClassesInDepartment') {
-        $markbookColumn = $markbookColumnGateway->getMarkbookColumnByDepartmentPerson($gibbonMarkbookColumnID, $session->get('gibbonPersonID'));
-    } else {
-        $markbookColumn = $markbookColumnGateway->getMarkbookColumnByTeacher($gibbonMarkbookColumnID, $session->get('gibbonPersonID'));
-    }
-
-    if (empty($markbookColumn) || $markbookColumn['gibbonMarkbookColumnID'] != $gibbonMarkbookColumnID) {
+    if (empty($markbookColumn)) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;
     }
 
-    $deleted = $markbookColumnGateway->delete($gibbonMarkbookColumnID);
+    $deleted = $markbookColumnGateway->delete($markbookColumn['gibbonMarkbookColumnID']);
     
     if (!$deleted) {
         $URL .= '&return=error2';

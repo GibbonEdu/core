@@ -19,8 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Markbook\MarkbookWeightGateway;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -41,13 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
     } else {
 
         $gibbonMarkbookWeightID = (isset($_GET['gibbonMarkbookWeightID']))? $_GET['gibbonMarkbookWeightID'] : null;
-
-            $data2 = array('gibbonMarkbookWeightID' => $gibbonMarkbookWeightID);
-            $sql2 = 'SELECT type FROM gibbonMarkbookWeight WHERE gibbonMarkbookWeightID=:gibbonMarkbookWeightID';
-            $result2 = $connection2->prepare($sql2);
-            $result2->execute($data2);
-
-        if ($result2->rowCount() != 1) {
+        $weight = $container->get(MarkbookWeightGateway::class)->getByID($gibbonMarkbookWeightID);
+        if (empty($weight) || $weight['gibbonCourseClassID'] != $gibbonCourseClassID || !$container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'weighting_manage_edit'))->canEditMarkbook($weight['gibbonCourseClassID'])) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {

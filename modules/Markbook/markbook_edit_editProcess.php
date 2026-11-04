@@ -20,10 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -40,11 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
-    if ($highestAction == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
-    } else {
         if (empty($_POST)) {
             $URL .= '&return=warning1';
             header("Location: {$URL}");
@@ -55,22 +52,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                try {
-                    $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
+                $row = $container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'markbook_edit_edit'))->getAllowedColumnGroup($gibbonMarkbookColumnID, $gibbonCourseClassID);
 
-                if ($result->rowCount() != 1) {
-                    $URL .= '&return=error2';
+                if (empty($row)) {
+                    $URL .= '&return=error0';
                     header("Location: {$URL}");
                 } else {
-                    $row = $result->fetch();
+                    $gibbonMarkbookColumnID = $row['gibbonMarkbookColumnID'];
+                    $gibbonCourseClassID = $row['gibbonCourseClassID'];
                     //Validate Inputs
                     $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
                     $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
@@ -198,5 +187,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                 }
             }
         }
-    }
 }

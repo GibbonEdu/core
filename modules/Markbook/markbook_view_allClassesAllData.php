@@ -24,6 +24,8 @@ use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Module\Markbook\MarkbookView;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -37,14 +39,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
 
     //reset ordering
-    if(isset($_GET['reset'], $_GET['gibbonCourseClassID']) && $_GET['reset']==1){
+    if (isset($_GET['reset'], $_GET['gibbonCourseClassID']) && ($_GET['reset'] == 1 || $_GET['reset'] == 2) && $container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'markbook_edit'))->canEditMarkbook($_GET['gibbonCourseClassID'])) {
         $data = array('gibbonCourseClassID' => $_GET['gibbonCourseClassID']);
-        $sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
-        $result = $pdo->executeQuery($data, $sql);
-        $_GET['return'] = 'success0';
-    } elseif(isset($_GET['reset'], $_GET['gibbonCourseClassID']) && $_GET['reset']==2){
-        $data = array('gibbonCourseClassID' => $_GET['gibbonCourseClassID']);
-        $sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by `date` ASC';
+        $sql = $_GET['reset'] == 1
+            ? 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC'
+            : 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by `date` ASC';
         $result = $pdo->executeQuery($data, $sql);
         $_GET['return'] = 'success0';
     }
