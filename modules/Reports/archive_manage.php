@@ -30,7 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage.php
     // Proceed!
     $page->breadcrumbs->add(__('Manage Archives'));
 
-    $page->return->addReturns(['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>'])]);
+    $imported = $_GET['imported'] ?? '0';
+    if (!is_string($imported) || !ctype_digit($imported)) {
+        $imported = '0';
+    }
+    $page->return->addReturns(['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.$imported.'</b>'])]);
 
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
 

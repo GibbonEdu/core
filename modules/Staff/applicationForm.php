@@ -70,10 +70,9 @@ if ($proceed == false) {
     }
 
     $returnExtra = '';
-    if (isset($_GET['id'])) {
-        if ($_GET['id'] != '') {
-            $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number(s):').' <b><u>'.$_GET['id'].'</b></u>.';
-        }
+    $id = $_GET['id'] ?? '';
+    if (is_string($id) && preg_match('/^[0-9]+(, [0-9]+)*$/', $id)) {
+        $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number(s):').' <b><u>'.$id.'</b></u>.';
     }
     if ($session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
         $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$session->get('organisationHREmail')."'>".$session->get('organisationHRName').'</a>');
