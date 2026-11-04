@@ -37,4 +37,12 @@ class CourseClassGateway extends QueryableGateway
     private static $primaryKey = 'gibbonCourseClassID';
 
     private static $searchableColumns = ['gibbonCourseClass.name', 'gibbonCourseClass.nameShort'];
+
+    public function getCourseClass($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
