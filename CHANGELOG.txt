@@ -39,6 +39,7 @@ v30.0.02
 
     Bug Fixes
         Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
+        Timetable: fixed calendar ical export so it is limited to only the current user
 
 
 v30.0.01
