@@ -92,22 +92,28 @@ class LogGateway extends QueryableGateway
                     ->bindValue('endDate', $endDate);
             },
             'array' => function ($query, $array) {
-                $array = unserialize($array);
-                if (is_array($array)) {
-                    $count = 0;
-                    foreach ($array as $key => $value) {
-                        $bindKey = 'key' . $count;
-                        $bindValue = 'value' . $count;
-
-                        $query
-                            ->where('serialisedArray LIKE CONCAT("%", :'.$bindKey.', "%;%", :'.$bindValue.', "%")')
-                            ->bindValue($bindKey, $key)
-                            ->bindValue($bindValue, $value);
-                        
-                        $count++;
-                    }
+                if (!is_array($array)) {
                     return $query;
                 }
+
+                $count = 0;
+                foreach ($array as $key => $value) {
+                    if (!is_scalar($key) || !is_scalar($value)) {
+                        continue;
+                    }
+
+                    $bindKey = 'key'.$count;
+                    $bindValue = 'value'.$count;
+
+                    $query
+                        ->where('serialisedArray LIKE CONCAT("%", :'.$bindKey.', "%;%", :'.$bindValue.', "%")')
+                        ->bindValue($bindKey, $key)
+                        ->bindValue($bindValue, $value);
+
+                    $count++;
+                }
+
+                return $query;
             }
         ]);
 
@@ -126,6 +132,17 @@ class LogGateway extends QueryableGateway
                 ORDER BY gibbonLog.timestamp DESC";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public static function getLogData($serialisedArray): array
+    {
+        if (!is_string($serialisedArray) || $serialisedArray === '') {
+            return [];
+        }
+
+        $data = @unserialize($serialisedArray, ['allowed_classes' => false]);
+
+        return is_array($data) ? $data : [];
     }
 
     public function getLogByID($gibbonLogID)

@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Messenger;
 
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Traits\TableAware;
@@ -134,7 +135,7 @@ class MessengerGateway extends QueryableGateway
         $logs = $this->runSelect($query)->fetchAll();
 
         return array_filter(array_reduce($logs, function ($group, $item) {
-            $item['data'] = unserialize($item['serialisedArray']) ?? [];
+            $item['data'] = LogGateway::getLogData($item['serialisedArray'] ?? '');
             $gibbonMessengerID =  str_pad(($item['data']['data'][0] ?? 0), 12, '0', STR_PAD_LEFT);
 
             if (!empty($gibbonMessengerID)) {

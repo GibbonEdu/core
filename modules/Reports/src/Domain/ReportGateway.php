@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Reports\Domain;
 
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -127,7 +128,7 @@ class ReportGateway extends QueryableGateway
         $logs = $this->runSelect($query)->fetchAll();
 
         return array_filter(array_reduce($logs, function ($group, $item) {
-            $item['data'] = unserialize($item['serialisedArray']) ?? [];
+            $item['data'] = LogGateway::getLogData($item['serialisedArray'] ?? '');
             $item['data']['processID'] = $item['gibbonLogID'];
             $item['gibbonReportID'] = $item['data']['data'][0];
             $item['gibbonYearGroupID'] = $item['data']['data'][1];

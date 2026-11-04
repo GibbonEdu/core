@@ -204,9 +204,7 @@ class BackgroundProcessor implements ContainerAwareInterface
     {
         $log = $this->logGateway->getByID($processID);
 
-        $processData = isset($log['serialisedArray'])
-            ? unserialize($log['serialisedArray'])
-            : [];
+        $processData = $this->logGateway->getLogData(is_array($log) ? ($log['serialisedArray'] ?? '') : '');
 
         if (empty($processData)) return false;
         if (empty($processData['class'])) return false;
