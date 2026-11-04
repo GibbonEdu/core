@@ -27,6 +27,7 @@ use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -280,17 +281,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         //Write to database
                         $existing = $_POST['existing'] ?? 'N';
 
-                        // Fetch old record for file comparison if updating
                         $oldPersonUpdateRecord = null;
                         if ($existing != 'N') {
-                            try {
-                                $dataOld = ['gibbonPersonUpdateID' => $existing];
-                                $sqlOld = 'SELECT fields FROM gibbonPersonUpdate WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
-                                $resultOld = $connection2->prepare($sqlOld);
-                                $resultOld->execute($dataOld);
-                                $oldPersonUpdateRecord = $resultOld->fetch();
-                            } catch (PDOException $e) {
-                                $oldPersonUpdateRecord = null;
+                            $pending = $container->get(PersonUpdateGateway::class)->selectBy([
+                                'gibbonPersonUpdateID' => $existing,
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
+                                'status' => 'Pending',
+                            ], ['fields']);
+                            if ($pending->rowCount() != 1) {
+                                $existing = 'N';
+                            } else {
+                                $oldPersonUpdateRecord = $pending->fetch();
                             }
                         }
 
