@@ -59,7 +59,7 @@ class TokenHandler {
 
     public function validateCsrfToken()
     {
-        return !empty($this->session->get('csrftoken')) && $this->session->get('csrftoken') === $_POST['csrftoken'];
+        return !empty($this->session->get('csrftoken')) && $this->session->get('csrftoken') === ($_POST['csrftoken'] ?? '');
     }
 
 

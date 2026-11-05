@@ -62,10 +62,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/library_lending_item_renewProcess.php?gibbonLibraryItemEventID=$gibbonLibraryItemEventID&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/library_lending_item_renewProcess.php?name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
+            $form->addHiddenValue('gibbonLibraryItemEventID', $gibbonLibraryItemEventID);
+            $form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
             $form->addHiddenValue('gibbonPersonIDStudent', $_REQUEST['gibbonPersonIDStudent'] ?? '');
             $form->addHiddenValue('lendingAction', $_REQUEST['lendingAction'] ?? '');
             

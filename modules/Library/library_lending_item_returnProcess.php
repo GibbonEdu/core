@@ -24,15 +24,15 @@ require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'] ?? '';
-$gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
+$gibbonLibraryItemEventID = $_POST['gibbonLibraryItemEventID'] ?? '';
+$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 $name = $_GET['name'] ?? '';
 $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
 $gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
 $status = $_GET['status'] ?? '';
 
-$gibbonPersonIDStudent = $_REQUEST['gibbonPersonIDStudent'] ?? '';
-$lendingAction = $_REQUEST['lendingAction'] ?? '';
+$gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
+$lendingAction = $_POST['lendingAction'] ?? '';
 
 if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 } else {

@@ -36,8 +36,8 @@ $urlParams = [
     'status'                   => $_POST['status'] ?? '',
 ];
 
-$lendingAction = $_REQUEST['lendingAction'] ?? '';
-$gibbonPersonIDStudent = $_REQUEST['gibbonPersonIDStudent'] ?? '';
+$lendingAction = $_POST['lendingAction'] ?? '';
+$gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 
 if (!empty($gibbonPersonIDStudent)) {
     $URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonIDStudent&search=&search=&allStudents=&subpage=Library Borrowing&lendingAction=".$lendingAction;
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         'gibbonPersonIDStatusResponsible' => $gibbonPersonIDStudent,
         'timestampOut'                    => date('Y-m-d H:i:s'),
         'gibbonPersonIDOut'               => $session->get('gibbonPersonID'),
-        'returnExpected'                  => $_REQUEST['returnExpected'] ?? $loanDate,
+        'returnExpected'                  => $_POST['returnExpected'] ?? $loanDate,
     ];
 
     if ($lendingAction == 'SignOut' || $lendingAction == 'SignOutOther') {
