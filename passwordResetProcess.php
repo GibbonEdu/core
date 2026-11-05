@@ -24,11 +24,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Contracts\Comms\Mailer;
-use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Domain\User\PersonResetGateway;
-use Gibbon\Domain\User\RoleGateway;
-use Gibbon\Domain\User\UserGateway;
 
 require_once __DIR__ . '/gibbon.php';
 
@@ -44,103 +40,84 @@ $validator = $container->get(Validator::class);
 $_GET = $validator->sanitize($_GET);
 $_POST = $validator->sanitize($_POST);
 
+//Check email address is not blank
+$input = $_GET['input'] ?? ($_POST['email'] ?? '');
+$input = filter_var(trim($input), FILTER_SANITIZE_EMAIL);
 $step = $_GET['step'] ?? '';
-$URL = Url::fromRoute('passwordReset');
 
-if (count($_POST) <= 1) {
-    header("Location: {$URL->withReturn('error0')}");
-    exit;
-}
-
-$input = $step == 1
-    ? filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL)
-    : trim($_GET['input'] ?? '');
-$URL = $URL->withQueryParam('email', $input);
+$URL = Url::fromRoute('passwordReset')->withQueryParam('email', $input);
+$URLSuccess1 = Url::fromRoute();
 
 if ($input == '' or ($step != 1 and $step != 2)) {
     header("Location: {$URL->withReturn('error0')}");
-    exit;
 }
-
-$userGateway = $container->get(UserGateway::class);
-$roleGateway = $container->get(RoleGateway::class);
-$resetGateway = $container->get(PersonResetGateway::class);
-$logGateway = $container->get(LogGateway::class);
-
-if ($step == 1) {
+//Otherwise proceed
+else {
     try {
-        $matches = $userGateway->selectLoginDetailsByUsername($input)->fetchAll();
+        $data = array('email' => $input, 'username' => $input);
+        $sql = "SELECT gibbonPersonID, email, username, canLogin, gibbonRoleIDPrimary, preferredName, surname FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
     } catch (PDOException $e) {
         header("Location: {$URL->withReturn('error2')}");
         exit();
     }
 
-    $person = count($matches) == 1
-        ? $userGateway->getByID($matches[0]['gibbonPersonID'], ['gibbonPersonID', 'email', 'username', 'preferredName', 'surname', 'canLogin', 'gibbonRoleIDPrimary', 'status'])
-        : [];
-    $role = !empty($person['gibbonRoleIDPrimary']) ? $roleGateway->getRoleByID($person['gibbonRoleIDPrimary']) : [];
+    if ($result->rowCount() != 1) {
+        header("Location: {$URL->withReturn('error4')}");
+        exit();
+    } else {
+        $row = $result->fetch();
 
-    $canSend = count($matches) == 1
-        && !empty($person['email'])
-        && ($person['status'] ?? '') == 'Full'
-        && ($person['canLogin'] ?? '') == 'Y'
-        && (empty($role['canLoginRole']) || $role['canLoginRole'] == 'Y');
-
-    if (!$canSend) {
-        header("Location: {$URL->withReturn('success0')}");
-        exit;
-    }
-
-    $gibbonPersonID = $person['gibbonPersonID'];
-    $email = $person['email'];
-    $username = $person['username'];
-    $preferredName = $person['preferredName'];
-    $surname = $person['surname'];
-
-    $recentReset = false;
-    foreach ($resetGateway->selectBy(['gibbonPersonID' => $gibbonPersonID]) as $reset) {
-        if (!empty($reset['timestamp']) && strtotime($reset['timestamp']) >= strtotime('-5 minutes')) {
-            $recentReset = true;
-            break;
+        // Insufficient privileges to login
+        if ($row['canLogin'] != 'Y') {
+            header("Location: {$URL->withReturn('fail2')}");
+            exit();
         }
-    }
-    if ($recentReset) {
-        header("Location: {$URL->withReturn('success0')}");
-        exit;
-    }
 
-    $ip = substr($_SERVER['REMOTE_ADDR'] ?? '', 0, 15);
-    $addressCount = 0;
+        // Get primary role info
+        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
+        $role = $pdo->selectOne($sql, $data);
 
-    if ($ip !== '') {
-        $criteria = (new QueryCriteria())
-            ->filterBy('ip', $ip)
-            ->filterBy('title', 'User - Forgot Password Request Initiated')
-            ->filterBy('startDate', date('Y-m-d H:i:s', strtotime('-60 minutes')))
-            ->pageSize(1);
-        $addressCount = $logGateway->queryLogs($criteria, $session->get('gibbonSchoolYearID'))->getResultCount();
-    }
+        // Login not allowed for this role
+        if (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y') {
+            $URL .= '&return=fail9';
+            header("Location: {$URL}");
+            exit;
+        }
 
-    if ($addressCount >= 100) {
-        header("Location: {$URL->withReturn('success0')}");
-        exit;
-    }
+        $gibbonPersonID = $row['gibbonPersonID'];
+        $email = $row['email'];
+        $username = $row['username'];
+        $preferredName = $row['preferredName'];
+        $surname = $row['surname'];
 
+        if ($step == 1) { //This is the request phase
             // Use password policy to generate random string
             $randStrGenerator = new PasswordPolicy(true, true, false, 40);
 
             //Generate key
             $key = $randStrGenerator->generate();
 
-            $resetGateway->deleteWhere(['gibbonPersonID' => $gibbonPersonID]);
+            //Try to delete other recors for this user
+
+                $data = array('gibbonPersonID' => $gibbonPersonID);
+                $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
             //Insert key record
             try {
-                $gibbonPersonResetID = str_pad($resetGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'key' => $key,]), 12, '0', STR_PAD_LEFT);
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'key' => $key);
+                $sql = "INSERT INTO gibbonPersonReset SET gibbonPersonID=:gibbonPersonID, `key`=:key";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
             } catch (PDOException $e) {
                 header("Location: {$URL->withReturn('error2')}");
                 exit();
             }
+            $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
             //Send email
             $subject = $session->get('organisationNameShort').' '.__('Gibbon Password Reset');
@@ -179,55 +156,38 @@ if ($step == 1) {
 
             if ($mail->Send()) {
                 // Log this password reset request
-                $logGateway->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Initiated', $details, $_SERVER['REMOTE_ADDR']);
+                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Initiated', $details, $_SERVER['REMOTE_ADDR']);
 
                 header("Location: {$URL->withReturn('success0')}");
-                exit;
             } else {
-                $logGateway->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Email Failed', $details, $_SERVER['REMOTE_ADDR']);
+                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Email Failed', $details, $_SERVER['REMOTE_ADDR']);
 
-                header("Location: {$URL->withReturn('success0')}");
-                exit;
+                header("Location: {$URL->withReturn('error3')}");
             }
-} else { //This is the confirmation/reset phase
+        }
+        else { //This is the confirmation/reset phase
             //Get URL parameters
+        	$input = $_GET['input'] ?? '';
         	$key = $_GET['key'] ?? '';
         	$gibbonPersonResetID = $_GET['gibbonPersonResetID'] ?? '';
 
         	//Verify authenticity of this request and check it is fresh (within 48 hours)
-            $reset = $resetGateway->getByID($gibbonPersonResetID);
-            $fresh = !empty($reset)
-                && hash_equals((string) ($reset['key'] ?? ''), (string) $key)
-                && strtotime((string) ($reset['timestamp'] ?? '')) >= strtotime('-2 days');
+        	try {
+                $data = array('key' => $key, 'gibbonPersonResetID' => $gibbonPersonResetID);
+                $sql = "SELECT * FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                header("Location: {$URL->withReturn('error2')}");
+                exit();
+            }
 
-        	if (!$fresh) {
+        	if ($result->rowCount() != 1) {
                 header("Location: {$URL->withReturn('error2')}");
                 exit();
         	} else {
-                $gibbonPersonID = $reset['gibbonPersonID'];
-
-                $person = $userGateway->getByID($gibbonPersonID, ['gibbonPersonID', 'preferredName', 'surname', 'canLogin', 'gibbonRoleIDPrimary', 'status']);
-                if (($person['status'] ?? '') != 'Full') {
-                    $person = [];
-                }
-
-                $role = !empty($person['gibbonRoleIDPrimary']) ? $roleGateway->getRoleByID($person['gibbonRoleIDPrimary']) : [];
-
-                if (empty($person)) {
-                    header("Location: {$URL->withReturn('error4')}");
-                    exit;
-                }
-                if (($person['canLogin'] ?? '') != 'Y') {
-                    header("Location: {$URL->withReturn('fail2')}");
-                    exit;
-                }
-                if (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y') {
-                    header("Location: {$URL->withReturn('fail9')}");
-                    exit;
-                }
-
-                $preferredName = $person['preferredName'];
-                $surname = $person['surname'];
+                $row = $result->fetch();
+                $gibbonPersonID = $row['gibbonPersonID'];
                 $passwordNew = $_POST['passwordNew'] ?? '';
                 $passwordConfirm = $_POST['passwordConfirm'] ?? '';
 
@@ -258,18 +218,21 @@ if ($step == 1) {
                                 $salt = getSalt();
                                 $passwordStrong = hash('sha256', $salt.$passwordNew);
                                 try {
-                                    $userGateway->update($gibbonPersonID, [
-                                        'passwordStrong' => $passwordStrong,
-                                        'passwordStrongSalt' => $salt,
-                                        'passwordForceReset' => 'N',
-                                        'failCount' => 0,
-                                    ]);
+                                    $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
+                                    $sql = "UPDATE gibbonPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:salt, passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
                                 } catch (PDOException $e) {
                                     header("Location: {$URL->withReturn('error2')}");
                                     exit();
                                 }
 
-                                $resetGateway->deleteWhere(['gibbonPersonID' => $gibbonPersonID]);
+                                //Remove requests for this person
+                                $data = array('gibbonPersonID' => $gibbonPersonID);
+                                $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+
 
                                 // Log this password change
                                 $details = [
@@ -277,14 +240,16 @@ if ($step == 1) {
                                     'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
                                     'IPAddress' => $_SERVER['REMOTE_ADDR'],
                                 ];
-                                $logGateway->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Password Changed Through Forgot Password', $details, $_SERVER['REMOTE_ADDR']);
+                                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Password Changed Through Forgot Password', $details, $_SERVER['REMOTE_ADDR']);
 
                                 //Return
-                header("Location: {$URL->withReturn('success1')}");
-                exit();
+                                header("Location: {$URL->withReturn('success1')}");
+                                exit();
                             }
                         }
                     }
                 }
             }
+        }
+    }
 }
