@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -102,6 +103,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
                 $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
                 $data['timestamp'] = date('Y-m-d H:i:s');
+
+                if ($existing != 'N') {
+                    $pending = $container->get(FamilyUpdateGateway::class)->selectBy([
+                        'gibbonFamilyUpdateID' => $existing,
+                        'gibbonFamilyID' => $gibbonFamilyID,
+                        'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
+                        'status' => 'Pending',
+                    ], ['gibbonFamilyUpdateID']);
+                    if ($pending->rowCount() != 1) {
+                        $existing = 'N';
+                    }
+                }
 
                 if ($existing != 'N') {
                     $data['gibbonFamilyUpdateID'] = $existing;
