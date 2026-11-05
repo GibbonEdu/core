@@ -294,7 +294,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         }
         $row = $table->addRow();
-        $row->addContent("<a href='#' onclick='if (confirm(\"".$messageDelete."\")) window.location = \"".$session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_deleteLinkProcess.php?gibbonApplicationFormID='.$gibbonApplicationFormID."&gibbonSchoolYearID=".$gibbonSchoolYearID."\"; else return false;'><img style='margin-left: 4px' title='".__('Remove').' '.__('Sibling Applications')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>")->addClass('right');
+        $row->addWebLink("<img style='margin-left: 4px' title='".__('Remove').' '.__('Sibling Applications')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>")
+            ->setURL($session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_deleteLinkProcess.php')
+            ->addParam('gibbonApplicationFormID', $gibbonApplicationFormID)
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addConfirmation($messageDelete);
 
     } else {
         // Or add a new link (mutually exclusive, to prevent linking multiple families)

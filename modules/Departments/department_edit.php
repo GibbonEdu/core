@@ -85,7 +85,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 						$row = $table->addRow();
 							$row->addContent($resource['name'])->wrap('<a href="'.$href.'" target="blank">', '</a>');
 							$row->addContent($resource['type']);
-							$row->addContent("<img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>")->wrap("<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID='.$resource['gibbonDepartmentResourceID'].'&gibbonDepartmentID='.$resource['gibbonDepartmentID'].'&address='.$_GET['q']."'>", '</a>');
+							$row->addWebLink("<img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>")
+								->setURL($session->get('absoluteURL').'/modules/'.$session->get('module').'/department_edit_resource_deleteProcess.php')
+								->addParam('gibbonDepartmentResourceID', $resource['gibbonDepartmentResourceID'])
+								->addParam('gibbonDepartmentID', $resource['gibbonDepartmentID'])
+								->addParam('address', $_GET['q'])
+								->addConfirmation(__('Are you sure you want to delete this record? Unsaved changes will be lost.'));
 					}
 				}
 

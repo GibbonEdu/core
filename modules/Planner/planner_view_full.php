@@ -624,7 +624,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														<?php
 														if (date('Y-m-d H:i:s') < $values['homeworkDueDateTime']) {
 															echo '<td>';
-															echo "<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$session->get('absoluteURL')."/modules/Planner/planner_view_full_submit_studentDeleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a><br/>";
+															echo (new \Gibbon\Forms\Layout\WebLink("<img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>"))
+																->setURL($session->get('absoluteURL').'/modules/Planner/planner_view_full_submit_studentDeleteProcess.php')
+																->addParam('gibbonPlannerEntryID', $gibbonPlannerEntryID)
+																->addParam('viewBy', $viewBy)
+																->addParam('subView', $subView)
+																->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+																->addParam('date', $date)
+																->addParam('search', $gibbonPersonID)
+																->addParam('gibbonPlannerEntryHomeworkID', $rowVersion['gibbonPlannerEntryHomeworkID'])
+																->addConfirmation(__('Are you sure you wish to delete this record?'))
+																->getElement().'<br/>';
 															echo '</td>';
 														}
 													?>
@@ -922,7 +932,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                 if ($teacher) {
                                                                     echo '<td>';
 																echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=".$gibbonPersonID.'&gibbonPlannerEntryHomeworkID='.$rowVersion['gibbonPlannerEntryHomeworkID']."&submission=true'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-														echo "<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$session->get('absoluteURL')."/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>";
+														echo (new \Gibbon\Forms\Layout\WebLink("<img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>"))
+															->setURL($session->get('absoluteURL').'/modules/Planner/planner_view_full_submit_deleteProcess.php')
+															->addParam('gibbonPlannerEntryID', $gibbonPlannerEntryID)
+															->addParam('viewBy', $viewBy)
+															->addParam('subView', $subView)
+															->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+															->addParam('date', $date)
+															->addParam('search', $gibbonPersonID)
+															->addParam('gibbonPlannerEntryHomeworkID', $rowVersion['gibbonPlannerEntryHomeworkID'])
+															->addConfirmation(__('Are you sure you wish to delete this record?'))
+															->getElement();
 														echo '</td>';
                                                     }
 															

@@ -254,7 +254,16 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
             if ($links == true) {
                 $output .= "<td style='text-align: right' colspan=2><a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=".$rowDiscuss['gibbonPlannerEntryDiscussID']."&search=$search'>Reply</a> ";
                 if ($role == 'Teacher') {
-                    $output .= " | <a href='".$session->get('absoluteURL')."/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=".$rowDiscuss['gibbonPlannerEntryDiscussID']."'>Delete</a>";
+                    $output .= ' | '.((new \Gibbon\Forms\Layout\WebLink(__('Delete')))
+                        ->setURL($session->get('absoluteURL').'/modules/Planner/planner_view_full_post_deleteProcess.php')
+                        ->addParam('gibbonPlannerEntryID', $gibbonPlannerEntryID)
+                        ->addParam('viewBy', $viewBy)
+                        ->addParam('subView', $subView)
+                        ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                        ->addParam('date', $date)
+                        ->addParam('search', $search)
+                        ->addParam('gibbonPlannerEntryDiscussID', $rowDiscuss['gibbonPlannerEntryDiscussID'])
+                        ->getElement());
                 }
                 $output .= "</td>";
             }

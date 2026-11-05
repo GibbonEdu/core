@@ -87,6 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         if (!empty($nextYear)) {
             $table->addHeaderAction('copy', __('Copy All To Next Year'))
                 ->setURL('/modules/Timetable Admin/course_manage_copyProcess.php')
+                ->directLink()
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonSchoolYearIDNext', $nextYear['gibbonSchoolYearID'])
                 ->addParam('search', $search)

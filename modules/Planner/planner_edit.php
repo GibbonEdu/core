@@ -435,7 +435,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         $row = $table->addRow();
                         $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
                         $row->addContent($staff['role']);
-                        $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$session->get('absoluteURL')."/modules/".$session->get('module')."/planner_edit_guest_deleteProcess.php?gibbonPlannerEntryGuestID=".$staff['gibbonPlannerEntryGuestID']."&gibbonPlannerEntryID=".$gibbonPlannerEntryID."&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&address=".$_GET['q']."'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>");
+                        $row->addWebLink("<img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>")
+                            ->setURL($session->get('absoluteURL').'/modules/'.$session->get('module').'/planner_edit_guest_deleteProcess.php')
+                            ->addParam('gibbonPlannerEntryGuestID', $staff['gibbonPlannerEntryGuestID'])
+                            ->addParam('gibbonPlannerEntryID', $gibbonPlannerEntryID)
+                            ->addParam('viewBy', $viewBy)
+                            ->addParam('subView', $subView)
+                            ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                            ->addParam('date', $date)
+                            ->addParam('address', $_GET['q'])
+                            ->addConfirmation(__('Are you sure you wish to delete this record?'));
                     }
                 }
 

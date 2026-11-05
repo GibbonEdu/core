@@ -760,7 +760,11 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $output .= '<p>';
                 $output .= Format::userPhoto($this->session->get('image_240'), 240);
                 $output .= "<div style='margin-left: 220px; margin-top: -50px'>";
-                $output .= "<a href='".Url::fromHandlerRoute('index_parentPhotoDeleteProcess.php')->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID'))."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/garbage.png'/></a><br/><br/>";
+                $output .= (new \Gibbon\Forms\Layout\WebLink("<img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/garbage.png'/>"))
+                    ->setURL((string) Url::fromHandlerRoute('index_parentPhotoDeleteProcess.php'))
+                    ->addParam('gibbonPersonID', $this->session->get('gibbonPersonID'))
+                    ->addConfirmation(__('Are you sure you want to delete this record? Unsaved changes will be lost.'))
+                    ->getElement().'<br/><br/>';
                 $output .= '</div>';
                 $output .= '</p>';
             }
