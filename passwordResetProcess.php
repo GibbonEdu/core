@@ -32,13 +32,6 @@ use Gibbon\Domain\User\UserGateway;
 
 require_once __DIR__ . '/gibbon.php';
 
-// Load site's password policy
-/** @var PasswordPolicy */
-$passwordPolicy = $container->get(PasswordPolicy::class);
-
-// Create password
-$password = $passwordPolicy->generate();
-
 // Sanitize the $_GET and $_POST arrays
 $validator = $container->get(Validator::class);
 $_GET = $validator->sanitize($_GET);
@@ -126,11 +119,8 @@ if ($step == 1) {
         exit;
     }
 
-            // Use password policy to generate random string
-            $randStrGenerator = new PasswordPolicy(true, true, false, 40);
-
             //Generate key
-            $key = $randStrGenerator->generate();
+            $key = bin2hex(random_bytes(20));
 
             $resetGateway->deleteWhere(['gibbonPersonID' => $gibbonPersonID]);
 
@@ -206,7 +196,7 @@ if ($step == 1) {
         	} else {
                 $gibbonPersonID = $reset['gibbonPersonID'];
 
-                $person = $userGateway->getByID($gibbonPersonID, ['gibbonPersonID', 'preferredName', 'surname', 'canLogin', 'gibbonRoleIDPrimary', 'status']);
+                $person = $userGateway->getByID($gibbonPersonID, ['gibbonPersonID', 'preferredName', 'surname', 'canLogin', 'gibbonRoleIDPrimary', 'status', 'passwordStrong', 'passwordStrongSalt']);
                 if (($person['status'] ?? '') != 'Full') {
                     $person = [];
                 }
@@ -237,7 +227,7 @@ if ($step == 1) {
                     exit();
                 } else {
                     //Check that new password is not same as old password
-                    if ($password == $passwordNew) {
+                    if (hash_equals((string) ($person['passwordStrong'] ?? ''), hash('sha256', ($person['passwordStrongSalt'] ?? '').$passwordNew))) {
                         header("Location: {$URL->withReturn('error7')}");
                         exit();
                     } else {
