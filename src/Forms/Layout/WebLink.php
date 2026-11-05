@@ -2,7 +2,6 @@
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Session\TokenHandler;
 
 class WebLink extends Element
 {
@@ -102,13 +101,14 @@ class WebLink extends Element
     }
 
     /**
-     * Ask before the HTMX request is sent.
+     * Add a confirmation message to display on click.
      * @param string $message
      * @return self
      */
     public function addConfirmation($message)
     {
-        return $this->setAttribute('hx-confirm', __($message));
+        $this->setAttribute('onclick', "return confirm(\"".__($message)."\")");
+        return $this;
     }
 
     /**
@@ -184,32 +184,6 @@ class WebLink extends Element
     }
 
     /**
-     * A process script is posted with the form token. The address stays on the link.
-     */
-    protected function usePostForProcessScript(): void
-    {
-        $href = (string) $this->getURL();
-        if (!preg_match('/process(bulk)?(exportcontents)?\.php$/i', basename(parse_url($href, PHP_URL_PATH) ?? ''))) {
-            return;
-        }
-
-        global $container;
-        if (empty($container)) {
-            return;
-        }
-
-        $tokenHandler = $container->get(TokenHandler::class);
-        $this->setAttribute('hx-post', $href)
-            ->setAttribute('hx-vals', json_encode([
-                'csrftoken' => $tokenHandler->getCSRF(),
-                'nonce' => $tokenHandler->getNonce(),
-            ], JSON_HEX_APOS | JSON_HEX_QUOT))
-            ->setAttribute('hx-target', '#content-wrap')
-            ->setAttribute('hx-select', '#content-wrap')
-            ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
-    }
-
-    /**
      * Gets the HTML output for this form element.
      * @return  string
      */
@@ -219,8 +193,6 @@ class WebLink extends Element
             $separator = (stripos($this->getURL(), '?') === false)? '?' : '&';
             $this->setURL($this->getURL().$separator.http_build_query($this->params));
         }
-
-        $this->usePostForProcessScript();
 
         return '<a ' . $this->getAttributeString() . '>' . $this->content . $this->getEmbeddedElements() . '</a>';
     }

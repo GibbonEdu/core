@@ -33,13 +33,12 @@ $gibbonFinanceInvoiceID = $I->haveInDatabase('gibbonFinanceInvoice', [
     'gibbonPersonIDCreator' => $gibbonPersonIDCreator,
 ]);
 
-$I->amOnModulePage('Finance', 'invoices_manage.php', [
-    'gibbonSchoolYearID' => $gibbonSchoolYearID,
-]);
+// Set the session variable for export
+$I->haveHttpHeader('Cookie', 'financeInvoiceExportIDs=' . serialize([$gibbonFinanceInvoiceID]));
 
-$I->submitForm('#bulkAction', [
-    'action' => 'export',
-    'gibbonFinanceInvoiceIDs' => [$gibbonFinanceInvoiceID],
+// Navigate to the export page
+$I->amOnModulePage('Finance', 'invoices_manage_processBulkExportContents.php', [
+    'gibbonSchoolYearID' => $gibbonSchoolYearID
 ]);
 
 $I->dontSeeErrors();
