@@ -103,10 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', ['dataUpdater' => true], $customRequireFail);
 
     // Check for data changed
-    $existingFields = json_decode($values['fields'], true);
+    $existingFields = json_decode($values['fields'] ?? '', true);
+    $existingFields = is_array($existingFields) ? $existingFields : [];
     $newFields = json_decode($fields, true);
+    $newFields = is_array($newFields) ? $newFields : [];
     foreach ($newFields as $key => $fieldValue) {
-        if ($existingFields[$key] != $fieldValue) {
+        if (($existingFields[$key] ?? null) != $fieldValue) {
             $dataChanged = true;
         }
     }
@@ -124,7 +126,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     // Fetch old record for file comparison if updating
     $oldStaffUpdateRecord = null;
     if ($gibbonStaffUpdateID != 'N') {
-        $oldStaffUpdateRecord = $staffUpdateGateway->getByID($gibbonStaffUpdateID);
+        $pending = $staffUpdateGateway->selectBy([
+            'gibbonStaffUpdateID' => $gibbonStaffUpdateID,
+            'gibbonStaffID' => $gibbonStaffID,
+            'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
+            'status' => 'Pending',
+        ]);
+        if ($pending->rowCount() != 1) {
+            $gibbonStaffUpdateID = 'N';
+        } else {
+            $oldStaffUpdateRecord = $pending->fetch();
+        }
     }
 
     if ($gibbonStaffUpdateID != 'N') {
