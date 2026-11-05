@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Markbook\MarkbookGate;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Filesystem\FileHandler;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
@@ -57,6 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
+            if (empty($container->get(MarkbookGate::class)->withAccess(Access::get('Markbook', 'markbook_edit_data'))->getAllowedColumn($gibbonMarkbookColumnID, $gibbonCourseClassID))) {
+                $URL .= '&return=error0';
+                header("Location: {$URL}");
+                exit;
+            }
+
             try {
                 $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = 'SELECT gibbonMarkbookColumn.*, gibbonScaleIDTarget FROM gibbonMarkbookColumn JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonMarkbookColumn.gibbonCourseClassID=:gibbonCourseClassID';
