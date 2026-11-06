@@ -101,6 +101,7 @@ v31.0.00
         System: fixed process scripts so the data comes from the submitted form as $_POST
         Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
         Admissions: fixed the family list so an application without parents shows the applicant only
+        Admissions: fixed Home Address (Country) not being translated when displaying application form data
         Behaviour: fixed the issue of student not getting included in a multiple behaviour record
         Calendar: fixed missing photos and student names on mobile view of participant list
         Data Updater: fixed pending update requests so they stay with the person who submitted them
@@ -124,7 +125,7 @@ v31.0.00
         Timetable: fixed incorrect Staff Cover information for activity cover on the timetable
         Timetable: fixed calendar export so it uses the current user
         Timetable Admin: fixed error preventing the copy of courses to next year
-        Admissions: fixed Home Address (Country) not being translated when displaying application form data
+        User Admin: fixed password reset so a request runs from the reset form and repeat requests get the same result
 
     Deprecations
 
