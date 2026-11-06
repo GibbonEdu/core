@@ -151,7 +151,13 @@ $tokenHandler = $container->get(TokenHandler::class);
 
 // Check for CSRF token and nonce when posting any form
 if (!empty($_POST) && count($_POST) > 1 && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
-    
+
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+        $URL = Url::fromRoute()->withQueryParam('return', 'error0');
+        header("Location: {$URL}");
+        exit;
+    }
+
     // Ensure the request originates within the system
     if (!str_starts_with($_SERVER['HTTP_REFERER'], $session->get('absoluteURL'))) {
         $URL = Url::fromRoute()->withQueryParam('return', 'error0');
