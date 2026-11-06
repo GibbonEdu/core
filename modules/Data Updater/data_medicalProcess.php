@@ -19,13 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\FileUploader;
-use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\Students\MedicalGateway;
-use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\DataUpdater\MedicalConditionUpdateGateway;
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\FileUploader;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -102,7 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 header("Location: {$URL}");
             } else {
                 // Proceed!
-                $gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'] ?? null;
+                $medicalGateway = $container->get(MedicalGateway::class);
+                $values = $medicalGateway->getMedicalFormByPerson($gibbonPersonID);
+                if (empty($values)) {
+                    $values = [];
+                }
+                $gibbonPersonMedicalID = $values['gibbonPersonMedicalID'] ?? null;
                 $data = [
                     'gibbonPersonMedicalID'     => $gibbonPersonMedicalID,
                     'gibbonPersonID'            => $gibbonPersonID,
@@ -110,10 +116,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     'longTermMedicationDetails' => $_POST['longTermMedicationDetails'] ?? '',
                     'comment'                   => $_POST['comment'] ?? '',
                 ];
-
-                // Get medical form fields
-                $medicalGateway = $container->get(MedicalGateway::class);
-                $values = $medicalGateway->getByID($gibbonPersonMedicalID);
 
                 // COMPARE VALUES: Has the data changed?
                 $dataChanged = empty($values);
@@ -151,7 +153,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $data['fields'] = $fields;
 
                 if ($existing != 'N') {
-                    $gibbonPersonMedicalUpdateID = $existing;
+                    $pending = $container->get(MedicalUpdateGateway::class)->selectBy([
+                        'gibbonPersonMedicalUpdateID' => $existing,
+                        'gibbonPersonID' => $gibbonPersonID,
+                        'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
+                        'status' => 'Pending',
+                    ]);
+                    if ($pending->rowCount() != 1) {
+                        $existing = 'N';
+                    } else {
+                        $gibbonPersonMedicalUpdateID = $existing;
+                        $oldUpdateRecord = $pending->fetch();
+                    }
+                }
+
+                if ($existing != 'N') {
                     $data['gibbonPersonMedicalUpdateID'] = $gibbonPersonMedicalUpdateID;
                     $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
                     $pdo->update($sql, $data);
@@ -168,7 +184,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     // Get the values of the current condition
                     $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"] ?? null;
                     $condition = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
-                    if (empty($condition)) {
+                    if (empty($condition) || ($condition['gibbonPersonID'] ?? '') != $gibbonPersonID) {
+                        $condition = [];
+                        $gibbonPersonMedicalConditionID = null;
                         $dataChanged = true;
                     }
 
@@ -198,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         }
                     } else {
                         // Remove the attachment if it has been deleted, otherwise retain the original value
-                        $data['attachment'] = empty($_POST["attachment$i"]) ? null : $condition['attachment'];
+                        $data['attachment'] = empty($_POST["attachment$i"]) ? null : ($condition['attachment'] ?? null);
                     }
 
                     // Check for values that have changed
@@ -213,11 +231,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     $data['timestamp'] = date('Y-m-d H:i:s');
 
+                    // Get old update record for deletion check
+                    $oldUpdateRecord = null;
+                    
+                    $updatedCondition = false;
                     if ($existing != 'N' && !empty($_POST["gibbonPersonMedicalConditionUpdateID$i"])) {
-                        $data['gibbonPersonMedicalConditionUpdateID'] = $_POST["gibbonPersonMedicalConditionUpdateID$i"] ?? '';
-                        $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
-                        $pdo->update($sql, $data);
-                    } else {
+                        $gibbonPersonMedicalConditionUpdateID = $_POST["gibbonPersonMedicalConditionUpdateID$i"];
+                        $conditionUpdate = $container->get(MedicalConditionUpdateGateway::class)->selectBy([
+                            'gibbonPersonMedicalConditionUpdateID' => $gibbonPersonMedicalConditionUpdateID,
+                            'gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID,
+                        ]);
+                        if ($conditionUpdate->rowCount() == 1) {
+                            $oldUpdateRecord = $conditionUpdate->fetch();
+                            $data['gibbonPersonMedicalConditionUpdateID'] = $gibbonPersonMedicalConditionUpdateID;
+                            $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID AND gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+                            $pdo->update($sql, $data);
+                            $updatedCondition = true;
+                        }
+                    }
+                    if (!$updatedCondition) {
                         $data['gibbonPersonMedicalConditionID'] = $gibbonPersonMedicalConditionID;
                         $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
                         $gibbonPersonMedicalConditionUpdateID = $pdo->insert($sql, $data);

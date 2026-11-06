@@ -27,6 +27,7 @@ use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 require_once '../../gibbon.php';
 
@@ -279,6 +280,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                         //Write to database
                         $existing = $_POST['existing'] ?? 'N';
+
+                        $oldPersonUpdateRecord = null;
+                        if ($existing != 'N') {
+                            $pending = $container->get(PersonUpdateGateway::class)->selectBy([
+                                'gibbonPersonUpdateID' => $existing,
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
+                                'status' => 'Pending',
+                            ], ['fields']);
+                            if ($pending->rowCount() != 1) {
+                                $existing = 'N';
+                            } else {
+                                $oldPersonUpdateRecord = $pending->fetch();
+                            }
+                        }
 
                         // Auto-accept updates where no data had changed
                         $data['status'] = $dataChanged ? 'Pending' : 'Complete';
