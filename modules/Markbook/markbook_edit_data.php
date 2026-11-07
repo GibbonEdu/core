@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
-                if ($highestAction == 'Edit Markbook_everything') {
+                if ($highestAction == 'Edit Markbook_everything' || $highestAction == 'Enter Markbook Data_everything') {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale
                             FROM gibbonCourse
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget)
                             WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                             ORDER BY course, class";
-                } elseif ($highestAction == 'Edit Markbook_multipleClassesInDepartment') {
+                } elseif ($highestAction == 'Edit Markbook_multipleClassesInDepartment' || $highestAction == 'Enter Markbook Data_multipleClassesInDepartment') {
                     $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList
                     FROM gibbonCourse
@@ -316,12 +316,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         "gibbonMarkbookColumnID" => $gibbonMarkbookColumnID,
 
                     ];
-                    $form->addHeaderAction('edit', __('Edit'))
-                        ->setURL('/modules/Markbook/markbook_edit_edit.php')
-                        ->addParams($params)
-                        ->setIcon('config')
-                        ->displayLabel()
-                        ->prepend((!empty($values['gibbonPlannerEntryID'])) ? ' | ' : '');
+                    // Only show the column Edit button to users who can edit the markbook structure
+                    if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edit.php')) {
+                        $form->addHeaderAction('edit', __('Edit'))
+                            ->setURL('/modules/Markbook/markbook_edit_edit.php')
+                            ->addParams($params)
+                            ->setIcon('config')
+                            ->displayLabel()
+                            ->prepend((!empty($values['gibbonPlannerEntryID'])) ? ' | ' : '');
+                    }
 
                     if (count($students) == 0) {
                         $form->addRow()->addHeading('Students', __('Students'));

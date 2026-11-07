@@ -64,6 +64,7 @@ v31.0.00
         Library: added the option to edit the category and sub-category for an automatic shelf
         Library: added a new Library API Key in Library settings to call the Google Books API
         Library: added a +1 and +7 options to the date selector in signout, renew and edit page.
+        Markbook: added Enter Markbook Data permissions to allow entering marks without editing the markbook structure
         Messenger: creator of targeted message can now view it in Message Wall
         Planner: improved the Deploy Unit page with a drag-drop interface and new tools
         Planner: added the option to set a location for non-timetables lessons in Lesson Planner
