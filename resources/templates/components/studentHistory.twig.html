@@ -27,6 +27,18 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     <strong>{{ __('Total number of school days to date:') }} {{ summary.total }}</strong><br/>
                     {{ __('Total number of school days attended:') }} {{ summary.present + summary.partial }}<br/>
                     {{ __('Total number of school days absent:') }} {{ summary.absent }}<br/>
+                    {% if summary.sessions %}
+                        <strong class="block mt-2">{{ __('Total number of sessions recorded:') }} {{ summary.sessionCounts.total }}</strong>
+                        {{ __('Total number of sessions attended:') }} {{ summary.sessionCounts.attended }}<br/>
+                        {{ __('Total number of sessions absent:') }} {{ summary.sessionCounts.absent }}<br/>
+                    {% endif %}
+                    {% if summary.percentage is not null %}
+                        <strong class="block mt-2">{{ __('Attendance:') }} {{ summary.percentage }}%</strong>
+                        <span class="text-xs">{{ summary.sessions ? __('Of the sessions recorded, counting late as attended.') : __('Of the days recorded, counting late as attended.') }}</span><br/>
+                    {% endif %}
+                    {% if summary.lateCount > 0 %}
+                        {{ __('Late:') }} {{ summary.lateCount }}{% if summary.minutesLate > 0 %}, {{ __('{minutes} minutes in total', {'minutes': summary.minutesLate}) }}{% endif %}<br/>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

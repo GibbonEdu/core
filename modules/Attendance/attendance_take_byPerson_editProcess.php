@@ -48,11 +48,12 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
     $type = $_POST['type'] ?? '';
     $reason = $_POST['reason'] ?? '';
     $comment = $_POST['comment'] ?? '';
+    $minutesLate = $_POST['minutesLate'] ?? '';
 
     // Get attendance codes
 
         $dataCode = array( 'name' => $type );
-        $sqlCode = "SELECT direction FROM gibbonAttendanceCode WHERE active = 'Y' AND name=:name LIMIT 1";
+        $sqlCode = "SELECT direction, scope FROM gibbonAttendanceCode WHERE active = 'Y' AND name=:name LIMIT 1";
         $resultCode = $connection2->prepare($sqlCode);
         $resultCode->execute($dataCode);
 
@@ -64,6 +65,8 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
 
     $attendanceCode = $resultCode->fetch();
     $direction = $attendanceCode['direction'];
+    $isLate = $attendanceCode['scope'] == 'Onsite - Late' || $attendanceCode['scope'] == 'Offsite - Late';
+    $minutesLate = $isLate && is_numeric($minutesLate) ? max(0, min(999, intval($minutesLate))) : null;
 
     //Check if values specified
     if ($type == '' || $direction == '') {
@@ -73,8 +76,8 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
 
         //UPDATE
         try {
-            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'direction' => $direction, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID') );
-            $sql = 'UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), type=:type, reason=:reason, comment=:comment, direction=:direction, gibbonPersonIDTaker=:gibbonPersonIDTaker, timestampTaken=NOW() WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'direction' => $direction, 'minutesLate' => $minutesLate, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'timestampTaken' => date('Y-m-d H:i:s') );
+            $sql = 'UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), type=:type, reason=:reason, comment=:comment, direction=:direction, minutesLate=:minutesLate, gibbonPersonIDTaker=:gibbonPersonIDTaker, timestampTaken=:timestampTaken WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

@@ -48,7 +48,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.direction', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.context', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.timestampTaken', 'gibbonAttendanceLogPerson.gibbonCourseClassID', 'takenBy.title', 'takenBy.preferredName', 'takenBy.surname', 'gibbonCourseClass.nameShort as className', 'gibbonCourse.nameShort as courseName', 'gibbonAttendanceCode.scope'
+                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.direction', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.context', 'gibbonAttendanceLogPerson.session', 'gibbonAttendanceLogPerson.minutesLate', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.timestampTaken', 'gibbonAttendanceLogPerson.gibbonCourseClassID', 'takenBy.title', 'takenBy.preferredName', 'takenBy.surname', 'gibbonCourseClass.nameShort as className', 'gibbonCourse.nameShort as courseName', 'gibbonAttendanceCode.scope'
             ])
             ->innerJoin('gibbonPerson as takenBy', 'gibbonAttendanceLogPerson.gibbonPersonIDTaker=takenBy.gibbonPersonID')
             ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
@@ -125,8 +125,11 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->cols([
 				'gibbonAttendanceLogPerson.date as groupBy',
 				'gibbonAttendanceLogPerson.date',
+				'gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID',
 				'gibbonAttendanceLogPerson.type',
 				'gibbonAttendanceLogPerson.reason',
+				'gibbonAttendanceLogPerson.session',
+				'gibbonAttendanceLogPerson.minutesLate',
 				'gibbonAttendanceLogPerson.timestampTaken',
 				'gibbonAttendanceCode.nameShort as code',
 				'gibbonAttendanceCode.direction',
@@ -444,7 +447,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date];
-        $sql = "SELECT gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID, gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceCode.scope, gibbonAttendanceLogPerson.gibbonTTDayRowClassID
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID, gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, gibbonAttendanceLogPerson.session, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceCode.scope, gibbonAttendanceLogPerson.gibbonTTDayRowClassID
                 FROM gibbonAttendanceLogPerson
                 JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)

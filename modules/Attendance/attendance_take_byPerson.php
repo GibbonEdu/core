@@ -138,6 +138,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         if (empty($log['direction'])) return Format::small(__('Not Taken'));
 
                         $output = '<b>'.__($log['direction']).'</b> ('.__($log['type']). (!empty($log['reason'])? ', '.__($log['reason']) : '') .')';
+                        if (!empty($log['minutesLate'])) {
+                            $output .= ' '.Format::small(__('{minutes} min late', ['minutes' => $log['minutesLate']]));
+                        }
                         if (!empty($log['comment'])) {
                             $output .= Format::tooltip(icon('solid', 'chat-bubble-text', 'size-4'), htmlPrep($log['comment']));
                         }
@@ -148,9 +151,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $table->addColumn('where', __('Where'))
                     ->width('25%')
                     ->format(function ($log) {
-                        return ($log['context'] == 'Class' && !empty($log['gibbonCourseClassID']))
-                            ? __($log['context']).' ('.Format::courseClassName($log['courseName'], $log['className']).')'
-                            : __($log['context']);
+                        if ($log['context'] == 'Class' && !empty($log['gibbonCourseClassID'])) {
+                            return __($log['context']).' ('.Format::courseClassName($log['courseName'], $log['className']).')';
+                        }
+
+                        return __($log['context']).(!empty($log['session']) ? ' ('.htmlPrep($log['session']).')' : '');
                     });
 
                 $table->addColumn('timestampTaken', __('Recorded By'))
@@ -206,6 +211,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $form = Form::create('attendanceByPerson', $session->get('absoluteURL').'/modules/'.$session->get('module'). '/attendance_take_byPersonProcess.php?gibbonPersonID='.$gibbonPersonID);
                 $form->setAutocomplete('off');
 
+                // Attendance types that record lateness, which show a Minutes Late box
+                $lateTypes = array_values(array_filter(array_keys($attendance->getAttendanceTypes(true)), [$attendance, 'isTypeLate']));
+                $form->setAttribute('data-late-types', json_encode($lateTypes));
+                $sessions = getFormGroupAttendanceSessions($settingGateway);
+
                 if ($currentDate < $today) {
                     $form->addConfirmation(__('The selected date for attendance is in the past. Are you sure you want to continue?'));
                 }
@@ -224,12 +234,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $row->addLabel('summary', __('Recent Attendance Summary'));
                     $row->addContent($attendance->renderMiniHistory($gibbonPersonID, 'Person', null, 'floatRight'));
 
+                if (!empty($sessions)) {
+                    $row = $form->addRow();
+                        $row->addLabel('session', __('Session'))->description(__('Choose a session to change just that part of the day.'));
+                        $row->addSelect('session')->fromArray(['' => __('All Day')] + array_combine($sessions, $sessions))->selected('');
+                }
+
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
                     $row->addSelect('type')
                         ->fromArray($attendance->getAttendanceTypes($restricted))
                         ->selected($lastLog['type'] ?? '')
                         ->readOnly($restricted);
+
+                $row = $form->addRow()->addClass('minutesLate')->addClass(in_array($lastLog['type'] ?? '', $lateTypes) ? '' : 'hidden');
+                    $row->addLabel('minutesLate', __('Minutes Late'));
+                    $row->addNumber('minutesLate')->onlyInteger(true)->minimum(0)->maximum(999)->setValue($lastLog['minutesLate'] ?? '');
 
                 $row = $form->addRow();
                     $row->addLabel('reason', __('Reason'));

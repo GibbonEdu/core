@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -56,12 +57,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
     //Produce array of attendance data
     $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-    $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+    $sql = 'SELECT date, session, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
     $result = $connection2->prepare($sql);
     $result->execute($data);
-    $log = array();
+    $logSessions = array();
     while ($row = $result->fetch()) {
-        $log[$row['gibbonFormGroupID']][$row['date']] = true;
+        $logSessions[$row['gibbonFormGroupID']][$row['date']][] = $row['session'];
+    }
+
+    // A day is registered once attendance has been taken for every session, such as AM and PM
+    $sessions = getFormGroupAttendanceSessions($container->get(SettingGateway::class));
+    $log = array();
+    foreach ($logSessions as $gibbonFormGroupID => $dates) {
+        foreach ($dates as $date => $sessionsTaken) {
+            if (isFormGroupAttendanceComplete($sessionsTaken, $sessions)) {
+                $log[$gibbonFormGroupID][$date] = true;
+            }
+        }
     }
 
     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));

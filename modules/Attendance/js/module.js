@@ -41,9 +41,19 @@ jQuery(function($){
 
 	// Select all tool for Attendance by Class/Form Group
 	$('#set-all').click( function() {
-		$('select[name$="-type"]').val(  $('select[name="set-all-type"]').val() );
+		$('select[name$="-type"]').val(  $('select[name="set-all-type"]').val() ).trigger('change');
 		$('select[name$="-reason"]').val(  $('select[name="set-all-reason"]').val() );
 		$('input[name$="-comment"]').val(  $('input[name="set-all-comment"]').val() );
 		$('#set-all-note').show();
+	});
+
+	// Minutes Late: only shown when a late attendance type is selected
+	$(document).on('change', 'select[name$="type"]', function() {
+		var form = $(this).closest('form');
+		var lateTypes = form.data('late-types');
+		if (!Array.isArray(lateTypes)) return;
+
+		var input = form.find('[name="' + this.name.replace(/type$/, 'minutesLate') + '"]');
+		input.parents('.minutesLate').toggleClass('hidden', lateTypes.indexOf($(this).val()) === -1);
 	});
 });

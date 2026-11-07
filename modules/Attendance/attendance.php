@@ -23,6 +23,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
 
 //Module includes
@@ -212,10 +213,11 @@ if ($session->has('username')) {
 
         if ($result->rowCount() > 0) {
             $attendanceByFormGroup = [];
+            $sessions = getFormGroupAttendanceSessions($container->get(SettingGateway::class));
             while ($row = $result->fetch()) {
                 //Produce array of attendance data
                 try {
-                    $resultAttendance = $connection2->prepare('SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID AND date>=:dateStart AND date<=:dateEnd ORDER BY date');
+                    $resultAttendance = $connection2->prepare('SELECT date, session, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID AND date>=:dateStart AND date<=:dateEnd ORDER BY date');
                     $resultAttendance->execute([
                         'gibbonFormGroupID' => $row["gibbonFormGroupID"],
                         'dateStart' => $lastNSchoolDays[count($lastNSchoolDays) - 1],
@@ -223,9 +225,17 @@ if ($session->has('username')) {
                     ]);
                 } catch (PDOException $e) {
                 }
-                $logHistory = array();
+                $logSessions = array();
                 while ($rowAttendance = $resultAttendance->fetch()) {
-                    $logHistory[$rowAttendance['date']] = true;
+                    $logSessions[$rowAttendance['date']][] = $rowAttendance['session'];
+                }
+
+                // A day is registered once attendance has been taken for every session, such as AM and PM
+                $logHistory = array();
+                foreach ($logSessions as $date => $sessionsTaken) {
+                    if (isFormGroupAttendanceComplete($sessionsTaken, $sessions)) {
+                        $logHistory[$date] = true;
+                    }
                 }
 
                 //Grab attendance log for the group & current day
