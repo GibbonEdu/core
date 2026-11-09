@@ -116,6 +116,20 @@ class Config
     }
 
     /**
+     * Unset the database related variables, unnecessary after initial connection.
+     *
+     * @return self
+     */
+    public function unsetDatabaseInfo(): Config
+    {
+        $this->databaseServer = null;
+        $this->databaseName = null;
+        $this->databaseUsername = null;
+        $this->databasePassword = null;
+        return $this;
+    }
+
+    /**
      * Set guid to the given string, or random set the
      * guid.
      *
