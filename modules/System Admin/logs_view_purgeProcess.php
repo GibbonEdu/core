@@ -32,13 +32,15 @@ $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/logs_vie
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     $title = $_POST['title'] ?? [];
     $cutoffDate = isset($_POST['cutoffDate']) ? Format::dateConvert($_POST['cutoffDate']) : '';
 
     if (empty($title) || empty($cutoffDate)) {
         $URL .= '&return=error1';
-        header("Location: {$URL}");  
+        header("Location: {$URL}");
+        exit;
     }
 
     $logGateway = $container->get(LogGateway::class);
@@ -46,4 +48,5 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     $URL .= '&return=success0';
     header("Location: {$URL}");
+    exit;
 }
