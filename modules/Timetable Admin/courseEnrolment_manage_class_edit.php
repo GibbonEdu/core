@@ -111,6 +111,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 return $name;
             });
 
+            // QUICK MATCH: paste names or usernames to select enrolable students
+            $studentMatches = [];
+            foreach ($allUsers as $user) {
+                if (($user['roleCategory'] ?? '') !== 'Student') continue;
+
+                $studentMatches[] = [
+                    'id'       => (string) $user['gibbonPersonID'],
+                    'name'     => Format::name('', $user['preferredName'], $user['surname'], 'Student', true),
+                    'username' => (string) $user['username'],
+                    'formGroup'=> (string) ($user['formGroupName'] ?? ''),
+                    'search'   => mb_strtolower(Format::name('', $user['preferredName'], $user['surname'], 'Student', true).' '.$user['username'].' '.($user['formGroupName'] ?? '')),
+                ];
+            }
+
+            $quickMatchData = [
+                'students' => $studentMatches,
+                'labels'   => [
+                    'selected'    => __('Selected'),
+                    'notFound'    => __('Not found'),
+                    'multiple'    => __('Multiple matches'),
+                    'noStudents'  => __('The enrolable students list is empty.'),
+                ],
+            ];
+            $form->addRow()->addContent('<script type="application/json" id="quickMatchData">'.json_encode($quickMatchData, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT).'</script>');
+
+            $row = $form->addRow();
+                $row->addLabel('matchTextArea', __('Paste Participants (one per line)'))->description(__('e.g. Jane Doe or jdoe — one line per participant'));
+                $row->addTextArea('matchTextArea')->setRows(6)->placeholder(__('e.g. Jane Doe or jdoe — one line per participant'));
+
+            $row = $form->addRow();
+                $row->addButton(__('Match & Select'), null, 'matchTextBtn')->setIcon('solid', 'search');
+                $row->addContent('<span id="matchTextResult" class="text-sm" aria-live="polite"></span>');
+
+            $page->scripts->add('timetableQuickMatch', '/modules/Timetable Admin/js/quickMatch.js');
+
             $col = $form->addRow()->addColumn();
                 $col->addLabel('Members', __('Participants'));
                 $col->addMultiSelect('Members')->required()->source()->fromArray($people);
