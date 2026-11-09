@@ -27,8 +27,6 @@ if (Access::denies('Students', 'student_view_details_notes_add')) {
     die(__('Your request failed because you do not have access to this action.'));
 }
 
-include './moduleFunctions.php';
-
 $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'] ?? '';
 
 if ($gibbonStudentNoteCategoryID != '') {

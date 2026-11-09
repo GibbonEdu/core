@@ -136,14 +136,21 @@ v30.0.02
         System: added url source validation to internal HTTP_REFERER redirects
         System: applied a sanitizeName method for input sanitization
         System: added additional file extensions to htaccess deny list
+        System: improved CSRF checks for alarm scripts
         Activities: added role-level authorisation checks to registration by student and parent
         Calendar: improved direct object reference checks for notification scripts
+        Data Updater: improved direct object reference checks for data updates
         Markbook: improved direct object reference checks for markbook scripts
         Messenger: resolved non-paramaterised input in MessengerGateway
         Planner: improved direct object reference checks for homework scripts
         Rubrics: improved direct object reference checks for AJAX scripts
         Rubrics: applied byte-level and file size checks to visualisation AJAX script
         Timetable: improved direct object reference checks for timetable AJAX script
+
+    Bug Fixes
+        Admissions: fixed acceptance welcome emails so each email is sent only to its own recipient
+        Timetable: fixed calendar ical export so it is limited to only the current user
+
 
 v30.0.01
 --------

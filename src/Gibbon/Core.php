@@ -116,6 +116,9 @@ class Core
             $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('module'), $this->session->get('gibbonPersonID'));
         }
 
+        $container->get('config')->unsetDatabaseInfo();
+        $this->unsetDatabaseInfo();
+
         $this->initialized = true;
     }
 
@@ -177,6 +180,18 @@ class Core
         return isset($this->config['systemRequirements'][$key])
             ? $this->config['systemRequirements'][$key]
             : null;
+    }
+
+    /**
+     * Unset database info from config array.
+     */
+    protected function unsetDatabaseInfo()
+    {
+        unset($this->config['databaseServer']);
+        unset($this->config['databaseName']);
+        unset($this->config['databaseUsername']);
+        unset($this->config['databasePassword']);
+        unset($this->config['databasePort']);
     }
 
     /**
