@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 }
             }
 
-            $form->addRow()->addHeading('Multi Add', __('Multi Add'));
+            $form->addRow()->addHeading('Add', __('Add'));
 
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = "SELECT gibbonTTDay.gibbonTTDayID as value, gibbonTTDay.name AS dayName, gibbonTTDay.nameShort AS dayShort, gibbonTT.name AS ttName, gibbonTT.nameShortDisplay
@@ -210,13 +210,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
             $row = $table->addRow();
                 $row->addLabel('ttDatesMode', __('Add Mode'))->addClass('w-1/4');
                 $row->addContent(
-                    '<div class="flex items-center justify-between gap-6 w-full">'
-                    .'<label for="ttDatesModeCustom" class="inline-flex items-center gap-2 text-sm cursor-pointer">'
+                    '<div class="flex-grow relative gap-2 inline-flex justify-between items-center w-full">'
                     .'<input type="radio" id="ttDatesModeCustom" name="ttDatesMode" value="custom" checked>'
-                    .'<span>'.__('Custom').'</span></label>'
-                    .'<label for="ttDatesModeSmart" class="inline-flex items-center gap-2 text-sm cursor-pointer">'
+                    .'<label for="ttDatesModeCustom" class="flex-1 text-left text-sm">'.__('Custom').'</label>'
                     .'<input type="radio" id="ttDatesModeSmart" name="ttDatesMode" value="smart">'
-                    .'<span>'.__('Smart filter').'</span></label>'
+                    .'<label for="ttDatesModeSmart" class="flex-1 text-left text-sm">'.__('Smart filter').'</label>'
                     .'</div>'
                 );
 
