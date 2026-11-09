@@ -1056,3 +1056,8 @@ ALTER TABLE `gibbonCalendarEventType` CHANGE `color` `color` VARCHAR(7) NULL, CH
 $sql[$count][0] = '30.0.01';
 $sql[$count][1] = "
 UPDATE `gibbonAction` SET URLList='calendar_view.php,calendar_event_view.php' WHERE name='View Calendar' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Calendar');end";
+
+//v30.0.02
+++$count;
+$sql[$count][0] = '30.0.02';
+$sql[$count][1] = "";
