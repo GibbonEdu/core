@@ -33,16 +33,19 @@ $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     if (empty($_POST)) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
+        exit;
     } else {
         //Proceed!
         //Check if gibbonInternalAssessmentColumnID and gibbonCourseClassID specified
         if ($gibbonInternalAssessmentColumnID == '' or $gibbonCourseClassID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
+            exit;
         } else {
             try {
                 $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -52,12 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
+                exit;
             } else {
                 $row = $result->fetch();
                 $partialFail = false;
@@ -71,22 +75,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 if ($attainment == 'N') {
                     $gibbonScaleIDAttainment = null;
                 } else {
-                    if ($_POST['gibbonScaleIDAttainment'] == '') {
-                        $gibbonScaleIDAttainment = null;
-                    } else {
-                        $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'] ?? '';
-                    }
+                    $gibbonScaleIDAttainment = !empty($_POST['gibbonScaleIDAttainment']) ? $_POST['gibbonScaleIDAttainment'] : null;
                 }
                 //Sort out effort
                 $effort = $_POST['effort'] ?? '';
                 if ($effort == 'N') {
                     $gibbonScaleIDEffort = null;
                 } else {
-                    if ($_POST['gibbonScaleIDEffort'] == '') {
-                        $gibbonScaleIDEffort = null;
-                    } else {
-                        $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'] ?? '';
-                    }
+                    $gibbonScaleIDEffort = !empty($_POST['gibbonScaleIDEffort']) ? $_POST['gibbonScaleIDEffort'] : null;
                 }
                 $comment = $_POST['comment'] ?? '';
                 $uploadedResponse = $_POST['uploadedResponse'] ?? '';
@@ -102,7 +98,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $viewableParents = $_POST['viewableParents'] ?? '';
                 $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
-                $time = time();
                 //Move attached file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);
@@ -123,25 +118,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 if ($name == '' or $description == '' or $type == '' or $viewableStudents == '' or $viewableParents == '') {
                     $URL .= '&return=error1';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     //Write to database
                     try {
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'name' => $name, 'description' => $description, 'type' => $type, 'attainment' => $attainment, 'gibbonScaleIDAttainment' => $gibbonScaleIDAttainment, 'effort' => $effort, 'gibbonScaleIDEffort' => $gibbonScaleIDEffort, 'comment' => $comment, 'uploadedResponse' => $uploadedResponse, 'completeDate' => $completeDate, 'complete' => $complete, 'viewableStudents' => $viewableStudents, 'viewableParents' => $viewableParents, 'attachment' => $attachment, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
-                        $sql = 'UPDATE gibbonInternalAssessmentColumn SET gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID';
+                        $sql = 'UPDATE gibbonInternalAssessmentColumn SET gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
-                        exit();
+                        exit;
                     }
 
                     if ($partialFail == true) {
                         $URL .= '&return=warning1';
                         header("Location: {$URL}");
+                        exit;
                     } else {
                         $URL .= '&return=success0';
                         header("Location: {$URL}");
+                        exit;
                     }
                 }
             }

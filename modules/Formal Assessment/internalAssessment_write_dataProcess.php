@@ -34,10 +34,12 @@ $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write_data.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     if (empty($_POST)) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
+        exit;
     } else {
         //Proceed!
 
@@ -54,6 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         if ($gibbonInternalAssessmentColumnID == '' or $gibbonCourseClassID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
+            exit;
         } else {
             try {
                 $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -63,12 +66,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
+                exit;
             } else {
                 $row = $result->fetch();
 
@@ -248,8 +252,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $complete = 'Y';
                 }
                 try {
-                    $data = array('attachment' => $attachment, 'description' => $description, 'completeDate' => $completeDate, 'complete' => $complete, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
-                    $sql = 'UPDATE gibbonInternalAssessmentColumn SET attachment=:attachment, description=:description, completeDate=:completeDate, complete=:complete WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID';
+                    $data = array('attachment' => $attachment, 'description' => $description, 'completeDate' => $completeDate, 'complete' => $complete, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $sql = 'UPDATE gibbonInternalAssessmentColumn SET attachment=:attachment, description=:description, completeDate=:completeDate, complete=:complete WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -260,9 +264,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 if ($partialFail == true) {
                     $URL .= '&return=warning1';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
+                    exit;
                 }
             }
         }

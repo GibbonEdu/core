@@ -74,12 +74,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
 
-                    $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
+                    $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql2 = "SELECT gibbonInternalAssessmentColumn.*, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort
                         FROM gibbonInternalAssessmentColumn
                         LEFT JOIN gibbonScale as attainmentScale ON (attainmentScale.gibbonScaleID=gibbonInternalAssessmentColumn.gibbonScaleIDAttainment)
                         LEFT JOIN gibbonScale as effortScale ON (effortScale.gibbonScaleID=gibbonInternalAssessmentColumn.gibbonScaleIDEffort)
-                        WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID";
+                        WHERE gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID
+                        AND gibbonInternalAssessmentColumn.gibbonCourseClassID=:gibbonCourseClassID";
                     $result2 = $connection2->prepare($sql2);
                     $result2->execute($data2);
 
