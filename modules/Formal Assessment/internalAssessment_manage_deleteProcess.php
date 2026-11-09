@@ -30,12 +30,14 @@ $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     //Proceed!
     //Check if gibbonInternalAssessmentColumnID and gibbonCourseClassID specified
     if ($gibbonInternalAssessmentColumnID == '' or $gibbonCourseClassID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
     } else {
         try {
             $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -45,27 +47,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
-            exit();
+            exit;
         }
 
         if ($result->rowCount() != 1) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
+            exit;
         } else {
             //Write to database
             try {
-                $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
-                $sql = 'DELETE FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID';
+                $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = 'DELETE FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");
+            exit;
         }
     }
 }

@@ -51,8 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
 
-                $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
-                $sql2 = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID';
+                $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql2 = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
                 $result2 = $connection2->prepare($sql2);
                 $result2->execute($data2);
 
