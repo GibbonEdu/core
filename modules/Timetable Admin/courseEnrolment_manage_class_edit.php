@@ -116,12 +116,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             foreach ($allUsers as $user) {
                 if (($user['roleCategory'] ?? '') !== 'Student') continue;
 
+                $displayName = Format::name('', $user['preferredName'], $user['surname'], 'Student', true);
+                $searchParts = [
+                    $displayName,
+                    (string) $user['username'],
+                    (string) ($user['studentID'] ?? ''),
+                    (string) $user['gibbonPersonID'],
+                    (string) ($user['formGroupName'] ?? ''),
+                ];
                 $studentMatches[] = [
-                    'id'       => (string) $user['gibbonPersonID'],
-                    'name'     => Format::name('', $user['preferredName'], $user['surname'], 'Student', true),
-                    'username' => (string) $user['username'],
-                    'formGroup'=> (string) ($user['formGroupName'] ?? ''),
-                    'search'   => mb_strtolower(Format::name('', $user['preferredName'], $user['surname'], 'Student', true).' '.$user['username'].' '.($user['formGroupName'] ?? '')),
+                    'id'        => (string) $user['gibbonPersonID'],
+                    'gibbonID'  => (string) $user['gibbonPersonID'],
+                    'studentID' => (string) ($user['studentID'] ?? ''),
+                    'name'      => $displayName,
+                    'username'  => (string) $user['username'],
+                    'formGroup' => (string) ($user['formGroupName'] ?? ''),
+                    'search'    => mb_strtolower(implode(' ', array_filter($searchParts, 'strlen'))),
                 ];
             }
 
@@ -131,14 +141,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     'selected'    => __('Selected'),
                     'notFound'    => __('Not found'),
                     'multiple'    => __('Multiple matches'),
+                    'conflict'    => __('Conflict'),
                     'noStudents'  => __('The enrolable students list is empty.'),
                 ],
             ];
             $form->addRow()->addContent('<script type="application/json" id="quickMatchData">'.json_encode($quickMatchData, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT).'</script>');
 
             $row = $form->addRow();
-                $row->addLabel('matchTextArea', __('Paste Participants (one per line)'))->description(__('e.g. Jane Doe or jdoe — one line per participant'));
-                $row->addTextArea('matchTextArea')->setRows(6)->placeholder(__('e.g. Jane Doe or jdoe — one line per participant'));
+                $row->addLabel('matchTextArea', __('Paste Participants (one per line)'))->description(__('e.g. name, student ID, username or Gibbon ID — one line per participant'));
+                $row->addTextArea('matchTextArea')->setRows(6)->placeholder(__('e.g. name, student ID, username or Gibbon ID — one line per participant'));
 
             $row = $form->addRow();
                 $row->addButton(__('Match & Select'), null, 'matchTextBtn')->setIcon('solid', 'search');

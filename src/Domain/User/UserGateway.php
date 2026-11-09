@@ -168,7 +168,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
     public function selectUserNamesByStatus($status = 'Full', $category = null, $gibbonSchoolYearID = null)
     {
         $data = array('statusList' => is_array($status) ? implode(',', $status) : $status );
-        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, status, dateStart, dateEnd, username, lastTimestamp, gibbonRole.category as roleCategory";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.studentID, surname, preferredName, status, dateStart, dateEnd, username, lastTimestamp, gibbonRole.category as roleCategory";
 
         if (!empty($gibbonSchoolYearID)) {
             $data['gibbonSchoolYearID'] = $gibbonSchoolYearID;

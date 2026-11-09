@@ -22,18 +22,36 @@
         var normalize = function (value) {
             return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
         };
+        var uniqueMatches = function (matches) {
+            var seen = {};
+            return matches.filter(function (student) {
+                if (seen[student.id]) return false;
+                seen[student.id] = true;
+                return true;
+            });
+        };
         var findMatches = function (query) {
             var value = normalize(query);
             if (value === '') return [];
 
             var exact = students.filter(function (student) {
-                return normalize(student.username) === value || normalize(student.name) === value;
+                return normalize(student.username) === value
+                    || normalize(student.studentID) === value
+                    || normalize(student.gibbonID) === value
+                    || normalize(student.name) === value;
             });
-            if (exact.length > 0) return exact;
+            if (exact.length > 0) return uniqueMatches(exact);
 
-            return students.filter(function (student) {
+            return uniqueMatches(students.filter(function (student) {
                 return normalize(student.search).indexOf(value) !== -1;
-            });
+            }));
+        };
+        var candidateLabel = function (student) {
+            var parts = [student.name];
+            var identifiers = [student.username, student.studentID, student.gibbonID]
+                .filter(function (value) { return String(value || '') !== ''; });
+            if (identifiers.length > 0) parts.push('(' + identifiers.join(', ') + ')');
+            return parts.join(' ');
         };
         var selectStudent = function (student) {
             if (destination.querySelector('option[value="' + student.id + '"]')) {
@@ -64,7 +82,7 @@
 
             var selectedIds = {};
             var notFound = [];
-            var multiple = [];
+            var conflicts = [];
 
             textarea.value.split(/\r?\n/).forEach(function (line) {
                 var query = normalize(line.replace(/^\uFEFF/, ''));
@@ -76,12 +94,13 @@
                     return;
                 }
                 if (matches.length > 1) {
-                    multiple.push(line.trim());
+                    conflicts.push(line.trim() + ' → ' + matches.map(candidateLabel).join(' / '));
+                    return;
                 }
 
-                matches.forEach(function (student) {
-                    if (selectStudent(student)) selectedIds[student.id] = true;
-                });
+                if (selectStudent(matches[0])) {
+                    selectedIds[matches[0].id] = true;
+                }
             });
 
             var selected = Object.keys(selectedIds).length;
@@ -93,10 +112,10 @@
             if (notFound.length > 0) {
                 messages.push((labels.notFound || 'Not found') + ': ' + notFound.join(', '));
             }
-            if (multiple.length > 0) {
-                messages.push((labels.multiple || 'Multiple matches') + ': ' + multiple.join(', '));
+            if (conflicts.length > 0) {
+                messages.push((labels.conflict || 'Conflict') + ': ' + conflicts.join(' | '));
             }
-            setResult(messages.join(' | '), notFound.length > 0 || multiple.length > 0);
+            setResult(messages.join(' | '), notFound.length > 0 || conflicts.length > 0);
         });
 
         textarea.addEventListener('keydown', function (event) {
