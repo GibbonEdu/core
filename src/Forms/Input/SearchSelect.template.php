@@ -124,7 +124,7 @@
             </div>
 
             <!-- Options  -->
-            <ul class="list-none flex w-fit min-w-full max-h-80 flex-col overflow-x-hidden overflow-y-auto m-0 p-1 border -mt-px rounded-b-md bg-white shadow-lg" style="max-width: max(100%, 24rem);">
+            <ul class="list-none flex w-full min-w-full max-w-full max-h-80 flex-col overflow-x-hidden overflow-y-auto m-0 p-1 border -mt-px rounded-b-md bg-white shadow-lg">
                 <li class="hidden px-4 py-2 text-sm text-on-surface dark:text-on-surface-dark" x-ref="noResultsMessage">
                     <span><?= __('No results') ?></span>
                 </li>
@@ -141,7 +141,7 @@
                             <li x-from-template class="combobox-option inline-flex justify-between rounded px-3 py-1 text-sm  hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
 
                                 <!-- Label  -->
-                                <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label" class="overflow-hidden text-ellipsis"></span>
+                                <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label" class="min-w-0 overflow-hidden text-ellipsis"></span>
 
                                 <!-- Screen reader 'selected' indicator  -->
                                 <span class="sr-only" x-text="selectedOption == item ? 'selected' : null"></span>
