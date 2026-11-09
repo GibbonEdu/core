@@ -466,4 +466,17 @@ ALTER TABLE `gibbonNotificationEvent` ADD `contextName` VARCHAR(255) NULL AFTER 
 UPDATE `gibbonNotificationEvent` SET `contextName`='Role Category', `scopes`='All,context' WHERE `event`='Flagged Field Data Updates' AND `moduleName`='Data Updater' AND `actionName`='Personal Data Updates';end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,context,gibbonPersonIDStudent,gibbonYearGroupID' WHERE `event` LIKE '% Record' AND `moduleName`='Behaviour';end
 
+CREATE TABLE `gibbonPersonPasskey` (
+  `gibbonPersonPasskeyID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `label` VARCHAR(60) NOT NULL DEFAULT '',
+  `credentialId` VARCHAR(255) NOT NULL,
+  `credentialSource` TEXT NOT NULL,
+  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUsedAt` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`gibbonPersonPasskeyID`),
+  UNIQUE KEY `credentialId` (`credentialId`),
+  KEY `gibbonPersonID` (`gibbonPersonID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
+
 ";

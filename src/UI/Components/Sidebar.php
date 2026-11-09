@@ -113,6 +113,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     break;
                 case 'fail11': $loginReturnMessage = __('Your MFA code is invalid or missing.');
                     break;
+                case 'fail12': $loginReturnMessage = __('Passkey verification failed.');
+                    break;
             }
             if ( $loginReturnMessage != ''){
                 echo Format::alert($loginReturnMessage, 'error');
@@ -327,6 +329,98 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row->addSubmit(__('Login'))->addClass('flex-1 mt-1 text-right');
 
                 echo $form->getOutput();
+
+                if ($loginMethod != 'mfa') {
+                    $absoluteURL = json_encode($this->session->get('absoluteURL'));
+                    $passkeyScript = <<<'JS'
+(function () {
+    var btn = document.getElementById('passkeyLoginBtn');
+    var msg = document.getElementById('passkeyLoginMsg');
+    if (!btn) return;
+
+    function b64urlToBuf(value) {
+        var v = String(value || '').replace(/-/g, '+').replace(/_/g, '/');
+        while (v.length % 4) v += '=';
+        var bin = atob(v);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes.buffer;
+    }
+    function b64ToBuf(value) {
+        var bin = atob(String(value || ''));
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes.buffer;
+    }
+    function bufToB64url(buf) {
+        var bytes = new Uint8Array(buf), bin = '';
+        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+    function bufToB64(buf) {
+        var bytes = new Uint8Array(buf), bin = '';
+        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin);
+    }
+
+    btn.addEventListener('click', async function () {
+        msg.textContent = '';
+        if (!window.PublicKeyCredential) {
+            msg.textContent = 'Passkeys are not supported in this browser.';
+            return;
+        }
+        try {
+            var res = await fetch(__ABSOLUTE_URL__ + '/loginPasskeyOptions.php', {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' }
+            });
+            var data = await res.json();
+            if (!data || !data.options) throw new Error((data && data.error) ? data.error : 'Unable to start passkey sign-in.');
+
+            var pk = data.options;
+            pk.challenge = b64urlToBuf(pk.challenge);
+            if (pk.allowCredentials) {
+                pk.allowCredentials = pk.allowCredentials.map(function (c) {
+                    return { type: c.type, id: b64urlToBuf(c.id), transports: c.transports };
+                });
+            }
+
+            var credential = await navigator.credentials.get({ publicKey: pk });
+            var response = credential.response;
+            var payload = {
+                id: bufToB64url(credential.rawId),
+                rawId: bufToB64(credential.rawId),
+                type: credential.type,
+                response: {
+                    clientDataJSON: bufToB64url(response.clientDataJSON),
+                    authenticatorData: bufToB64url(response.authenticatorData),
+                    signature: bufToB64url(response.signature),
+                    userHandle: response.userHandle ? bufToB64url(response.userHandle) : null
+                }
+            };
+
+            document.getElementById('passkeyAssertion').value = JSON.stringify(payload);
+            document.getElementById('passkeyNonce').value = data.nonce || '';
+            document.getElementById('passkeyLoginForm').submit();
+        } catch (e) {
+            msg.textContent = (e && e.message) ? e.message : 'Passkey sign-in failed.';
+        }
+    });
+})();
+JS;
+
+                    echo '<div class="mt-3 text-center">';
+                    echo '<button type="button" id="passkeyLoginBtn" class="text-sm font-semibold text-gray-700 hover:text-blue-600 hover:underline">'.__('Sign in with a Passkey').'</button>';
+                    echo '<div id="passkeyLoginMsg" class="mt-1 text-xs text-red-600"></div>';
+                    echo '</div>';
+                    echo '<form id="passkeyLoginForm" method="post" action="'.$this->session->get('absoluteURL').'/login.php?method=passkey" class="hidden">';
+                    echo '<input type="hidden" name="passkeyAssertion" id="passkeyAssertion">';
+                    echo '<input type="hidden" name="passkeyNonce" id="passkeyNonce">';
+                    echo '</form>';
+                    echo '<script type="text/javascript">'.str_replace('__ABSOLUTE_URL__', $absoluteURL, $passkeyScript).'</script>';
+                }
+
+
                 echo '</div>';
             }
         }

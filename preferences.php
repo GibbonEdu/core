@@ -25,6 +25,9 @@ use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Messenger\Signature;
+use Gibbon\Services\Format;
+use Gibbon\Auth\Passkey\PasskeyService;
+use Gibbon\Session\TokenHandler;
 
 if (!$session->exists("username")) {
     // Access denied
@@ -190,6 +193,198 @@ if (!$session->exists("username")) {
         $form->loadAllValuesFrom($values);
 
         echo $form->getOutput();
+
+        $passkeyService = $container->get(PasskeyService::class);
+        $gibbonPersonID = (int) $session->get('gibbonPersonID');
+        $passkeys = $passkeyService->getPasskeysForPerson($gibbonPersonID);
+        $csrfToken = $container->get(TokenHandler::class)->getCSRF();
+        $passkeyOptionsUrl = $session->get('absoluteURL').'/preferencesPasskeyOptions.php';
+        $passkeyRegisterUrl = $session->get('absoluteURL').'/preferencesPasskeyRegisterProcess.php';
+        $passkeyDeleteUrl = $session->get('absoluteURL').'/preferencesPasskeyDeleteProcess.php';
+
+        $passkeyForm = Form::create('passkeys', '');
+        $passkeyForm->setFactory(DatabaseFormFactory::create($pdo));
+
+        $passkeyForm->addRow()->addHeading('Passkeys', __('Passkeys'))->append(__('Use a passkey (Touch ID, Windows Hello, a security key or your phone) to sign in without a password. Passkeys stay on your devices and are never stored on the server.'));
+
+        $row = $passkeyForm->addRow();
+            $row->addLabel('registeredPasskeys', __('Registered Passkeys'))->description(__('Passkeys registered for your account.'));
+            if (empty($passkeys)) {
+                $row->addContent(__('No passkeys registered yet.'))->addClass('text-sm text-gray-600');
+            } else {
+                $table = $row->addTable();
+                $header = $table->addHeaderRow();
+                $header->addContent(__('Name'));
+                $header->addContent(__('Added'));
+                $header->addContent(__('Last Used'));
+                $header->addContent(__('Action'));
+
+                foreach ($passkeys as $passkey) {
+                    $label = !empty($passkey['label']) ? $passkey['label'] : __('Passkey');
+                    $tableRow = $table->addRow();
+                    $tableRow->addContent(htmlspecialchars($label, ENT_QUOTES, 'UTF-8'));
+                    $tableRow->addContent(!empty($passkey['createdAt']) ? Format::dateTime($passkey['createdAt']) : '');
+                    $tableRow->addContent(!empty($passkey['lastUsedAt']) ? Format::dateTime($passkey['lastUsedAt']) : __('Never'));
+
+                    $deleteNonce = $container->get(TokenHandler::class)->getNonce();
+                    $passkeyID = (int) $passkey['gibbonPersonPasskeyID'];
+                    $removeAction = '<a href="#" class="passkeyDelete inline-flex items-center align-middle rounded-md text-sm sm:leading-5 font-semibold px-3 py-2 bg-white shadow-sm border border-gray-400 hover:bg-gray-100 hover:text-red-700 hover:border-red-700 text-gray-600 lg:text-gray-500"'
+                        .' data-passkey-id="'.$passkeyID.'"'
+                        .' data-passkey-nonce="'.htmlspecialchars($deleteNonce, ENT_QUOTES, 'UTF-8').'"'
+                        .' title="'.__('Remove').'" aria-label="'.__('Remove').'">'
+                        .icon('solid', 'cross', 'size-6 sm:size-5 lg:-ml-0.5 lg:mr-1.5')
+                        .'<span class="hidden lg:block text-gray-800 whitespace-nowrap">'.__('Remove').'</span></a>';
+                    $tableRow->addContent($removeAction);
+                }
+            }
+
+        $row = $passkeyForm->addRow();
+            $row->addLabel('passkeyLabel', __('Passkey Name'))->description(__('Give this passkey a name, such as the device it is stored on.'));
+            $row->addTextField('passkeyLabel')->maxLength(60)->placeholder(__('e.g. MacBook Touch ID'));
+            $row->addButton(__('Add Passkey'), null, 'passkeyRegisterBtn')->setIcon('solid', 'add', 'text-green-600');
+
+        $passkeyForm->addRow()->addContent('<span id="passkeyRegisterMsg" class="text-xs text-gray-600"></span>');
+
+        echo $passkeyForm->getOutput();
+
+        $passkeyScript = <<<'JS'
+(function () {
+    var btn = document.getElementById('passkeyRegisterBtn');
+    var msg = document.getElementById('passkeyRegisterMsg');
+    if (!btn) return;
+
+    function b64urlToBuf(value) {
+        var v = String(value || '').replace(/-/g, '+').replace(/_/g, '/');
+        while (v.length % 4) v += '=';
+        var bin = atob(v);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes.buffer;
+    }
+    function b64ToBuf(value) {
+        var bin = atob(String(value || ''));
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes.buffer;
+    }
+    function bufToB64url(buf) {
+        var bytes = new Uint8Array(buf), bin = '';
+        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+    function bufToB64(buf) {
+        var bytes = new Uint8Array(buf), bin = '';
+        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin);
+    }
+
+    btn.addEventListener('click', async function () {
+        msg.textContent = '';
+        if (!window.PublicKeyCredential) {
+            msg.textContent = __NOT_SUPPORTED__;
+            msg.className = 'text-xs text-red-600';
+            return;
+        }
+        try {
+            var res = await fetch(__OPTIONS_URL__, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } });
+            var data = await res.json();
+            if (!data || !data.options) throw new Error((data && data.error) ? data.error : __START_FAILED__);
+
+            var pk = data.options;
+            pk.challenge = b64urlToBuf(pk.challenge);
+            pk.user.id = b64urlToBuf(pk.user.id);
+            if (pk.excludeCredentials) {
+                pk.excludeCredentials = pk.excludeCredentials.map(function (c) {
+                    return { type: c.type, id: b64urlToBuf(c.id), transports: c.transports };
+                });
+            }
+
+            var credential = await navigator.credentials.create({ publicKey: pk });
+            var response = credential.response;
+            var payload = {
+                attestation: {
+                    id: bufToB64url(credential.rawId),
+                    rawId: bufToB64(credential.rawId),
+                    type: credential.type,
+                    response: {
+                        clientDataJSON: bufToB64url(response.clientDataJSON),
+                        attestationObject: bufToB64url(response.attestationObject),
+                        transports: response.getTransports ? response.getTransports() : []
+                    }
+                },
+                nonce: data.nonce || '',
+                label: document.getElementById('passkeyLabel').value || '',
+                csrftoken: __CSRF_TOKEN__
+            };
+
+            var save = await fetch(__REGISTER_URL__, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            var saved = await save.json();
+            if (!save.ok || !saved.success) throw new Error(saved.error || __SAVE_FAILED__);
+
+            window.location.reload();
+        } catch (e) {
+            msg.textContent = (e && e.message) ? e.message : __REGISTER_FAILED__;
+            msg.className = 'text-xs text-red-600';
+        }
+    });
+
+    document.querySelectorAll('a.passkeyDelete').forEach(function (deleteBtn) {
+        deleteBtn.addEventListener('click', async function (event) {
+            event.preventDefault();
+            if (!window.confirm(__DELETE_CONFIRM__)) return;
+
+            deleteBtn.disabled = true;
+            try {
+                var body = new URLSearchParams();
+                body.set('csrftoken', __CSRF_TOKEN__);
+                body.set('nonce', deleteBtn.getAttribute('data-passkey-nonce') || '');
+                body.set('gibbonPersonPasskeyID', deleteBtn.getAttribute('data-passkey-id') || '');
+
+                var res = await fetch(__DELETE_URL__, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: body.toString()
+                });
+
+                if ((res.url || '').indexOf('return=success0') !== -1) {
+                    window.location.reload();
+                    return;
+                }
+
+                throw new Error(__DELETE_FAILED__);
+            } catch (e) {
+                deleteBtn.disabled = false;
+                msg.textContent = (e && e.message) ? e.message : __DELETE_FAILED__;
+                msg.className = 'text-xs text-red-600';
+            }
+        });
+    });
+})();
+JS;
+
+        $passkeyScript = str_replace(
+            ['__OPTIONS_URL__', '__REGISTER_URL__', '__DELETE_URL__', '__CSRF_TOKEN__', '__NOT_SUPPORTED__', '__START_FAILED__', '__SAVE_FAILED__', '__REGISTER_FAILED__', '__DELETE_CONFIRM__', '__DELETE_FAILED__'],
+            [
+                json_encode($passkeyOptionsUrl),
+                json_encode($passkeyRegisterUrl),
+                json_encode($passkeyDeleteUrl),
+                json_encode($csrfToken),
+                json_encode(__('Passkeys are not supported in this browser.')),
+                json_encode(__('Unable to start passkey registration.')),
+                json_encode(__('Unable to save the passkey.')),
+                json_encode(__('Passkey registration failed.')),
+                json_encode(__('Remove this passkey?')),
+                json_encode(__('Unable to remove the passkey.')),
+            ],
+            $passkeyScript
+        );
+        echo '<script type="text/javascript">'.$passkeyScript.'</script>';
     }
 }
 ?>
