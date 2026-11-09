@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Timetable\TimetableDayGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.php') == false) {
     // Access denied
@@ -32,6 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
 
     if ($gibbonSchoolYearID != '') {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+
+        if (isset($_GET['deleted'])) {
+            $deleted = is_numeric($_GET['deleted']) ? (int) $_GET['deleted'] : 0;
+            echo '<div class="success">'.sprintf(__('Deleted timetable days for %s selected date(s).'), $deleted).'</div>';
+        }
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -104,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
 
                     $script = '<script type="text/javascript">';
                     $script .= 'htmx.onLoad(function (content) {';
-                    $script .= "$(document).on('click', '#checkall".$dowShort.$values['nameShort']."', function () {";
+                    $script .= "$(document).on('click', '[name=\"checkall".$dowShort.$values['nameShort']."\"]', function () {";
                     $script .= "$('.".$dowShort.$values['nameShort']." :checkbox').attr('checked', this.checked);";
                     $script .= '});';
                     $script .= '});';
@@ -163,26 +169,81 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 }
             }
 
-            $form->addRow()->addHeading('Multi Add', __('Multi Add'));
+            $form->addRow()->addHeading('Add', __('Add'));
 
-            $data= array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = "SELECT gibbonTTDay.gibbonTTDayID as value, CONCAT(gibbonTT.name, ': ', gibbonTTDay.nameShort) as name
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = "SELECT gibbonTTDay.gibbonTTDayID as value, gibbonTTDay.name AS dayName, gibbonTTDay.nameShort AS dayShort, gibbonTT.name AS ttName, gibbonTT.nameShortDisplay
                     FROM gibbonTTDay
                     JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID)
-                    WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonTT.name, gibbonTTDay.name";
+                    WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID
+                    ORDER BY gibbonTT.name, gibbonTTDay.name";
+
+            $stmt = $connection2->prepare($sql);
+            $stmt->execute($data);
+            $ttDayOptions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $ttDayArray = [];
+            foreach ($ttDayOptions as $opt) {
+                $dayLabel = $opt['nameShortDisplay'] === 'Timetable Day Short Name'
+                    ? $opt['dayShort']
+                    : $opt['dayName'];
+                $ttDayArray[$opt['value']] = $opt['ttName'].': '.$dayLabel;
+            }
+
+            $ttDayGroups = $container->get(TimetableDayGateway::class)->selectTTDayGroupsBySchoolYear($gibbonSchoolYearID);
+            $groupLabels = [];
+            $groupPreview = [];
+            foreach ($ttDayGroups as $key => $group) {
+                $groupLabels[$key] = $group['label'].' ('.count($group['ids']).')';
+                $groupPreview[$key] = array_values(array_filter(array_map(function ($id) use ($ttDayArray) {
+                    return $ttDayArray[$id] ?? '';
+                }, $group['ids'])));
+            }
+
+            $previewData = [
+                'groups' => $groupPreview,
+            ];
+            $form->addRow()->addContent('<script type="application/json" id="ttDatesPreviewData">'.json_encode($previewData, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT).'</script>');
 
             $table = $form->addRow()->addTable()->setClass('w-full smallIntBorder');
-            $row = $table->addRow();
-                $row->addLabel('gibbonTTDayID', __('Day'));
-                $row->addSearchSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->addClass('mediumWidth');
 
             $row = $table->addRow();
-                $row->addLabel('overwrite', __('Overwrite'))->description(__('Should existing timetable days be replaced by the new ones?'));
+                $row->addLabel('ttDatesMode', __('Add Mode'))->addClass('w-1/4');
+                $row->addContent(
+                    '<div class="flex-grow relative gap-2 inline-flex justify-between items-center w-full">'
+                    .'<input type="radio" id="ttDatesModeCustom" name="ttDatesMode" value="custom" checked>'
+                    .'<label for="ttDatesModeCustom" class="flex-1 text-left text-sm">'.__('Custom').'</label>'
+                    .'<input type="radio" id="ttDatesModeSmart" name="ttDatesMode" value="smart">'
+                    .'<label for="ttDatesModeSmart" class="flex-1 text-left text-sm">'.__('Smart filter').'</label>'
+                    .'</div>'
+                );
+
+            $row = $table->addRow()->setID('customDayRow');
+                $row->addLabel('gibbonTTDayID', __('Custom'))->description(__('Select one or more specific timetable days.'))->addClass('w-1/4');
+                $row->addSelect('gibbonTTDayID[]')->fromArray($ttDayArray)->selectMultiple()->addClass('w-full');
+
+            $row = $table->addRow()->setID('smartDayRow')->addClass('hidden');
+                $row->addLabel('smartDayGroup', __('Filter day'))->description(__('Select a configured day. Every timetable day using the same configured day setting will be added.'))->addClass('w-1/4');
+                $row->addSelect('smartDayGroup')->fromArray($groupLabels)->placeholder(__('— Select a day —'))->addClass('mediumWidth');
+
+            $row = $table->addRow()->setID('smartPreviewRow')->addClass('hidden');
+                $row->addLabel('preview', __('Preview'))->description(__('These timetable days will be added to each selected date.'))->addClass('w-1/4');
+                $row->addContent('<div id="ttSmartPreviewDays" class="flex flex-wrap gap-2 text-sm"></div>');
+
+            $row = $table->addRow();
+                $row->addLabel('overwrite', __('Overwrite'))->description(__('When checked, existing timetable days for the selected dates are reset and replaced. When unchecked, new timetable days are appended.'))->addClass('w-1/4');
                 $row->addCheckbox('overwrite')->setValue('Y')->checked('N');
 
             $row = $table->addRow()->addClass('right');
-                $row->addContent();
-                $row->addSubmit();
+                $row->addButton(__('Delete'), null, 'ttDatesDeleteBtn')
+                    ->setType('submit')
+                    ->setColor('red')
+                    ->setIcon('solid', 'delete')
+                    ->setName('deleteDates')
+                    ->onClick("return confirm('".__('Are you sure you want to delete all timetable days for the selected dates? This cannot be undone.')."');");
+                $row->addSubmit(__('Apply'));
+
+            $page->scripts->add('timetableTTDates', '/modules/Timetable Admin/js/ttDates.js', ['version' => filemtime(__DIR__.'/js/ttDates.js')]);
 
             echo $form->getOutput();
         }

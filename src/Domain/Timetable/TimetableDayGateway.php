@@ -67,6 +67,46 @@ class TimetableDayGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    /**
+     * Group configured timetable days by the day display setting of their timetable.
+     *
+     * Uses the short name when the timetable displays timetable day short names,
+     * otherwise uses the configured day name. Groups allow a single selection to
+     * target every timetable day that shares the same configured day.
+     *
+     * @param int $gibbonSchoolYearID
+     * @return array
+     */
+    public function selectTTDayGroupsBySchoolYear($gibbonSchoolYearID)
+    {
+        $sql = "SELECT gibbonTTDay.gibbonTTDayID, gibbonTTDay.name, gibbonTTDay.nameShort, gibbonTT.nameShortDisplay
+                FROM gibbonTTDay
+                JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID
+                ORDER BY gibbonTT.name, gibbonTTDay.name";
+
+        $rows = $this->db()->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID])->fetchAll(\PDO::FETCH_ASSOC);
+        $groups = [];
+
+        foreach ($rows as $row) {
+            $useShortName = ($row['nameShortDisplay'] ?? '') === 'Timetable Day Short Name';
+            $label = trim((string) ($useShortName ? $row['nameShort'] : $row['name']));
+            if ($label === '') continue;
+
+            $key = ($useShortName ? 'short:' : 'name:').$label;
+            if (!isset($groups[$key])) {
+                $groups[$key] = ['key' => $key, 'label' => $label, 'ids' => []];
+            }
+            $groups[$key]['ids'][] = (string) $row['gibbonTTDayID'];
+        }
+
+        uasort($groups, function ($a, $b) {
+            return strnatcasecmp($a['label'], $b['label']);
+        });
+
+        return $groups;
+    }
+
     public function selectTTDaysByTimetable($gibbonTTID)
     {
         $data = array('gibbonTTID' => $gibbonTTID);
