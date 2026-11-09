@@ -25,7 +25,7 @@ require_once "../../gibbon.php";
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $img = $_POST['img'] ?? null;
-$gibbonPersonID = !empty($_POST['gibbonPersonID']) ? str_pad($_POST['gibbonPersonID'], 10, '0', STR_PAD_LEFT) : null;
+$gibbonPersonID = !empty($_POST['gibbonPersonID']) ? str_pad($_POST['gibbonPersonID'], 10, '0', STR_PAD_LEFT) : '';
 $gibbonPersonID = preg_replace('/[^a-zA-Z0-9]/', '', $gibbonPersonID);
 
 $absolutePath = $session->get('absolutePath');
