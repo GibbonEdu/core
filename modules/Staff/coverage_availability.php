@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
 
     $row = $form->addRow()->addClass('timeOptions');
         $row->addLabel('timeEnd', __('End Time'));
-        $row->addTime('timeEnd')->chainedTo('timeStart')->isRequired();
+        $row->addTime('timeEnd')->chainedFrom('timeStart')->isRequired();
 
     $row = $form->addRow();
         $row->addLabel('reason', __('Reason'))->description(__('Optional'));

@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->isRequired()
             ->setValue($timeStart);
         $col->addTime('timeEnd')
-            ->chainedTo('timeStart')
+            ->chainedFrom('timeStart')
             ->setClass('shortWidth')
             ->isRequired()
             ->setValue($timeEnd);

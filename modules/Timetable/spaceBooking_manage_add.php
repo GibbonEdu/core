@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
             $row = $form->addRow();
                 $row->addLabel('timeEnd', __('End Time'));
-                $row->addTime('timeEnd')->required()->chainedTo('timeStart')->setValue($timeEnd);
+                $row->addTime('timeEnd')->required()->chainedFrom('timeStart')->setValue($timeEnd);
 
             $repeatOptions = array('No' => __('No'), 'Daily' => __('Daily'), 'Weekly' => __('Weekly'));
             $row = $form->addRow();

@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             ->setClass('coverageField flex-1')
             ->required();
         $col->addTime('timeEnd')
-            ->chainedTo('timeStart')
+            ->chainedFrom('timeStart')
             ->setClass('coverageField flex-1')
             ->required();
 

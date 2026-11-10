@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         
             $row->addLabel('timeEnd', __('Slot End Time'));
             $row->addTime('timeEnd')
-                ->chainedTo('timeStart');
+                ->chainedFrom('timeStart');
 
         $row = $slotBlock->addRow();
             $row->addLabel('location', __('Location'));

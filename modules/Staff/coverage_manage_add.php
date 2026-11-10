@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
             ->setClass('flex-1')
             ->required();
         $col->addTime('timeEnd')
-            ->chainedTo('timeStart')
+            ->chainedFrom('timeStart')
             ->setClass('flex-1')
             ->required();
 

@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
         
             $row->addLabel('timeEnd', __('End Time'));
             $row->addTime('timeEnd')
-                ->chainedTo('timeStart');
+                ->chainedFrom('timeStart');
 
         $row = $blockTemplate->addRow();
             $row->addLabel('type', __('Type'));

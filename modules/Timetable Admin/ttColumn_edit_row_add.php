@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
 
             $row = $form->addRow();
                 $row->addLabel('timeEnd', __('End Time'));
-                $row->addTime('timeEnd')->required()->chainedTo('timeStart');
+                $row->addTime('timeEnd')->required()->chainedFrom('timeStart');
 
             $types = array(
                 'Lesson' => __('Lesson'),

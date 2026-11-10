@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $row->addLabel('timeEnd', __('End Time'));
             $row->addTime('timeEnd')
                 ->required()
-                ->chainedTo('timeStart')
+                ->chainedFrom('timeStart')
                 ->setValue($timeEnd);
     }
 
