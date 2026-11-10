@@ -73,7 +73,7 @@ class TimetablePage extends ProfilePage implements ContainerAwareInterface
 
         $output = '';
 
-        // Display edit link for users with Course Enrolment by Person_edit permission
+        // Display edit link for users with course enrolment edit access
         $output .= $this->renderEditLink();
 
         // Render the timetable
@@ -83,14 +83,14 @@ class TimetablePage extends ProfilePage implements ContainerAwareInterface
     }
 
     /**
-     * Render edit link for users with Course Enrolment by Person_edit permission
+     * Render edit link for users with course enrolment edit access
      * 
      * @return string HTML output
      */
     protected function renderEditLink(): string
     {
         // Guard: check if user has edit permission
-        if (!Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson_edit', 'Course Enrolment by Person_edit')) {
+        if (!Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) {
             return '';
         }
 
