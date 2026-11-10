@@ -33,7 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         ->add(__('Upload Reports'), 'archive_manage_upload.php')
         ->add(__('Step {number}', ['number' => 1]));
 
-    $page->return->addReturns(['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>'])]);
+    $imported = $_GET['imported'] ?? '0';
+    if (!is_string($imported) || !ctype_digit($imported)) {
+        $imported = '0';
+    }
+    $page->return->addReturns(['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.$imported.'</b>'])]);
 
     $form = Form::create('archiveImport', $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_uploadPreview.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

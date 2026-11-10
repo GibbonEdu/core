@@ -25,6 +25,8 @@ v30.0.03
     Security
 
     Bug Fixes
+        System: fixed values taken from the page address so a count is shown as a number and other text is shown as text
+
 
 
 v30.0.02
