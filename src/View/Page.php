@@ -454,7 +454,8 @@ class Page extends View
             || stristr($address, 'config.php')
             || in_array(strtolower($address), array('index.php', '/index.php', './index.php'))
             || strtolower(substr($address, -11)) == '// index.php'
-            || strtolower(substr($address, -11)) == './index.php');
+            || strtolower(substr($address, -11)) == './index.php'
+            || preg_match('/process(bulk)?(exportcontents)?\.php$/i', basename($address)));
     }
 
     /**
