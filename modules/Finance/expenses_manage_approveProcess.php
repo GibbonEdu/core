@@ -128,6 +128,11 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                 $row = $result->fetch();
 
                                 $approval = $_POST['approval'] ?? '';
+                                if ($approval != '' && !in_array($approval, ['Approval - Partial', 'Rejection', 'Comment'], true)) {
+                                    $URL .= '&return=error0';
+                                    header("Location: {$URL}");
+                                    exit();
+                                }
                                 if ($approval == 'Approval - Partial') {
                                     if ($row['statusApprovalBudgetCleared'] == 'N') {
                                         $approval = 'Approval - Partial - Budget';
@@ -251,7 +256,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                                 exit();
                                             }
 
-                                            if ($approval = 'Approval - Partial - Budget') { //If budget-level approval, write that budget passed to expense record
+                                            if ($approval == 'Approval - Partial - Budget') { //If budget-level approval, write that budget passed to expense record
                                                 try {
                                                     $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
                                                     $sql = "UPDATE gibbonFinanceExpense SET statusApprovalBudgetCleared='Y' WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID";

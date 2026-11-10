@@ -25,6 +25,9 @@ v30.0.03
     Security
 
     Bug Fixes
+        Finance: fixed invoice reminder printing so the reminder count stays unchanged
+        Finance: fixed expense approval so only a budget approval or school approval clears the budget step
+
 
 
 v30.0.02
