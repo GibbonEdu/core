@@ -25,6 +25,8 @@ v30.0.03
     Security
 
     Bug Fixes
+        User Admin: fixed password reset so a request runs from the reset form and repeat requests get the same result
+
 
 
 v30.0.02
