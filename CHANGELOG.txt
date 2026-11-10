@@ -25,6 +25,8 @@ v30.0.03
     Security
 
     Bug Fixes
+        Admissions: fixed family fields when an account has a family but no person
+
 
 
 v30.0.02
