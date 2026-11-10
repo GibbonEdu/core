@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Filesystem\FileHandler;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -49,11 +50,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         exit;
     }
 
-    $absolutePath = $session->get('absolutePath');
-    $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
-    
-    if (file_exists($absolutePath.$customAssetPath.'/templates/'.$values['templateFile'])) {
-        $partialFail &= !unlink($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);
+    $absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
+    $customAssetPath = rtrim(str_replace('\\', '/', $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath')), '/');
+    $templatesDir = $absolutePath.$customAssetPath.'/templates';
+    $templateFile = str_replace('\\', '/', $values['templateFile'] ?? '');
+    $realPath = $container->get(FileHandler::class)->realPathInside($templatesDir.'/'.$templateFile, $templatesDir);
+
+    if (!empty($realPath) && is_file($realPath)) {
+        $partialFail &= !unlink($realPath);
     }
 
     $deleted = $templateGateway->delete($gibbonReportPrototypeSectionID);

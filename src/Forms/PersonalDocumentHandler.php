@@ -84,6 +84,9 @@ class PersonalDocumentHandler
             $prefix = $params['prefix'] ?? '';
             $data = [];
             $fileMetaData = null;
+            $existingDocument = (!empty($foreignTable) && !empty($foreignTableID))
+                ? ($this->personalDocumentGateway->getPersonalDocumentDataByID($document['gibbonPersonalDocumentTypeID'], $foreignTable, $foreignTableID) ?: [])
+                : [];
 
             foreach ($fields as $field) {
                 $value = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
@@ -107,18 +110,11 @@ class PersonalDocumentHandler
                             $fileMetaData = $this->fileUploader->getFileMetaData($data[$field]);
                         }
                     } else {
-                        $documentID = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
-
-                        // Remove the attachment if it has been deleted, otherwise retain the original value
-                        $existingFilePath = null;
-                        if (!empty($documentID)) {
-                            $documentData = $this->personalDocumentGateway->getByID($documentID, ['filePath']);
-                            $existingFilePath = $documentData['filePath'] ?? null;
-                        }
-
+                        $existingFilePath = $existingDocument['filePath'] ?? null;
+                        $documentID = $existingDocument['gibbonPersonalDocumentID'] ?? null;
                         $data[$field] = !empty($attachment) ? $existingFilePath : null;
 
-                        if (empty($attachment) && !empty($existingFilePath)) {
+                        if (empty($attachment) && !empty($documentID) && !empty($existingFilePath)) {
                             $this->fileHandler->deleteFile('gibbonPersonalDocument', $documentID, 'filePath');
                         }
                     } 
@@ -129,7 +125,7 @@ class PersonalDocumentHandler
             }
 
             $omit = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['omit'] ?? null;
-            $exists = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
+            $exists = $existingDocument['gibbonPersonalDocumentID'] ?? null;
 
             // Skip any documents that are entirely empty
             if (count(array_filter($data)) == 0 && $omit != 'Y' && empty($exists)) continue;

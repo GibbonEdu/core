@@ -69,7 +69,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $allowedPath = $archive['path'] . '/temp/' . $file;
 
     $absolutePath = $session->get('absolutePath');
-    if (empty($file) || !is_file($absolutePath.'/'.$allowedPath)) {
+    $fileUploader = new FileUploader($pdo, $session);
+    $fileHandler = $container->get(FileHandler::class);
+    $allowedRealPath = $fileHandler->resolveStoredPath($absolutePath, trim($allowedPath, '/'));
+    if (empty($file) || $allowedRealPath === null) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -84,8 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         mkdir($absolutePath.$destinationFolder, 0755, true);
     }
 
-    $fileUploader = new FileUploader($pdo, $session);
-    $reports = $fileUploader->uploadFromZIP($absolutePath.'/'.$allowedPath, $destinationFolder, ['pdf']);
+    $reports = $fileUploader->uploadFromZIP($allowedRealPath, $destinationFolder, ['pdf']);
 
     $partialFail = false;
     $count = 0;
@@ -117,7 +119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 
         // Optionally overwrite exiting files or skip them
         if (!empty($existingReport) && $overwrite == 'Y') {
-            unlink($absolutePath.'/'.$archive['path'].'/'.$existingReport['filePath']);
+            $existingRealPath = $fileHandler->resolveStoredPath($absolutePath, trim($archive['path'], '/').'/'.ltrim($existingReport['filePath'] ?? '', '/'));
+            if ($existingRealPath !== null) {
+                unlink($existingRealPath);
+            }
         } elseif (!empty($existingReport) && $overwrite == 'N') {
             unlink($report['absolutePath']);
             continue;
@@ -155,8 +160,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         }
     }
 
-    if (file_exists($absolutePath.'/'.$allowedPath)) {
-        unlink($absolutePath.'/'.$allowedPath);
+    if (is_file($allowedRealPath)) {
+        unlink($allowedRealPath);
     }
 
     $URL .= $partialFail

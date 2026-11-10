@@ -239,8 +239,7 @@ class CustomFieldHandler
 
                 // Upload the file, return the /uploads relative path
                 $fieldValue = $this->fileUploader->uploadFromPost($file, $fieldName);
-            } else if (empty($_POST[$fieldName])) {
-                // Remove the attachment if it has been deleted, otherwise retain the original value
+            } elseif (empty($_POST[$fieldName]) || empty($this->fileUploader->resolveUploadPath($fieldValue ?? ''))) {
                 $fieldValue = null;
             }
         }
