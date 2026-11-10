@@ -25,6 +25,9 @@ v30.0.03
     Security
 
     Bug Fixes
+        Finance: fixed the issue of online invoice payment receipt showing blank status and no payment details when the payer is logged into Gibbon
+        Finance: fixed the issue of Online payment receipt for a Company invoice being sent to the family
+
 
 
 v30.0.02
