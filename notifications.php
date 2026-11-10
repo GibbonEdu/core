@@ -57,11 +57,13 @@ if (!$session->exists('username')) {
         ->format(function ($row, $actions) {
             $actions->addAction('view', __('Action & Archive'))
                     ->addParam('action', urlencode($row['actionLink']))
-                    ->setURL('/notificationsActionProcess.php');
+                    ->setURL('/notificationsActionProcess.php')
+                    ->directLink();
 
             $actions->addAction('deleteImmediate', __('Delete'))
                     ->setIcon('garbage')
-                    ->setURL('/notificationsDeleteProcess.php');
+                    ->setURL('/notificationsDeleteProcess.php')
+                    ->directLink();
         });
 
 
@@ -88,11 +90,13 @@ if (!$session->exists('username')) {
         ->format(function ($row, $actions) {
             $actions->addAction('view', __('Action'))
                     ->addParam('action', urlencode($row['actionLink']))
-                    ->setURL('/notificationsActionProcess.php');
+                    ->setURL('/notificationsActionProcess.php')
+                    ->directLink();
 
             $actions->addAction('deleteImmediate', __('Delete'))
                     ->setIcon('garbage')
-                    ->setURL('/notificationsDeleteProcess.php');
+                    ->setURL('/notificationsDeleteProcess.php')
+                    ->directLink();
         });
 
 
