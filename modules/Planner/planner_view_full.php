@@ -244,6 +244,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         echo '</div>';
 
+                        // Get TT information
+                        $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
 
                         $dataMarkbook = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                         $sqlMarkbook = 'SELECT gibbonMarkbookColumnID FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
@@ -310,7 +312,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $col->addColumn('class', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));
                         $col->addColumn('date', __('Date'))->format(Format::using('date', 'date'));
                         $col->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
-                        $col->addColumn('location', __('Location'))->format(function ($values) {return !empty($values['spaceName']) ? $values['spaceName'] : '';});
+                        
+                        $col->addColumn('location', __('Location'))->addClass('col-span-3')->format(
+                            function ($values) use ($ttPeriod) {
+                                return $values['spaceName'] ?? $ttPeriod['spaceName'] ?? '';
+                            });
 
                         $col->addColumn('summary', __('Summary'))->addClass('col-span-3');
 
@@ -441,9 +447,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                         $sqlBlocks = "SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber";
                         $blocks = $pdo->select($sqlBlocks, $dataBlocks)->fetchAll();
-
-                        // Get TT information
-                        $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
 
                         // LESSON CONTENTS
                         $form = Form::createBlank('smartBlockCompletion', $session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');

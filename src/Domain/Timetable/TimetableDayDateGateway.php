@@ -71,10 +71,11 @@ class TimetableDayDateGateway extends QueryableGateway
     public function getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd];
-        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name as period,  gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID
+        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name as period,  gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID, gibbonSpace.gibbonSpaceID, gibbonSpace.name as spaceName
                 FROM gibbonTTDayRowClass
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
                 WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
                 AND gibbonTTDayDate.date=:date
                 AND gibbonTTColumnRow.timeStart=:timeStart 
