@@ -25,6 +25,7 @@ v30.0.03
     Security
 
     Bug Fixes
+        System: fixed process scripts so they cannot be opened as a page, and bulk and single-field requests use the same form check
 
 
 v30.0.02
