@@ -150,10 +150,39 @@ $_GET = $validator->sanitizeUrlParams($_GET);
 $tokenHandler = $container->get(TokenHandler::class);
 
 // Check for CSRF token and nonce when posting any form
-if (!empty($_POST) && count($_POST) > 1 && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
-    
+$scriptName = basename($_SERVER['PHP_SELF'] ?? '');
+$isProcessScript = (bool) preg_match('/process(bulk)?(exportcontents)?\.php$/i', $scriptName);
+$isBulkExport = (bool) preg_match('/processbulk\.php$/i', $scriptName) && (($_POST['action'] ?? '') === 'export');
+
+// These stay as links: role switcher, unsubscribe, payment returns, settings tests, staff duty.
+$allowGetProcess = [
+    'roleSwitcherProcess.php',
+    'mailingListRecipients_manage_subscribeProcess.php',
+    'invoices_payOnlineProcess.php',
+    'applicationFormProcess.php',
+    'applicationForm_payFeeProcess.php',
+    'thirdPartySettings_paymentProcess.php',
+    'thirdPartySettings_emailProcess.php',
+    'thirdPartySettings_smsProcess.php',
+    'staff_duty_ajaxProcess.php',
+    'form_editor_uploadAjaxProcess.php',
+];
+$isGatewayReturn = isset($_REQUEST['paymentState']) && in_array($scriptName, [
+    'invoices_payOnlineProcess.php',
+    'applicationFormProcess.php',
+    'applicationForm_payFeeProcess.php',
+    'thirdPartySettings_paymentProcess.php',
+], true);
+
+if ($isProcessScript && !in_array($scriptName, $allowGetProcess, true) && ($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    $URL = Url::fromRoute()->withQueryParam('return', 'error0');
+    header("Location: {$URL}");
+    exit;
+}
+
+if ($isProcessScript && !$isGatewayReturn && $scriptName !== 'form_editor_uploadAjaxProcess.php' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     // Ensure the request originates within the system
-    if (!str_starts_with($_SERVER['HTTP_REFERER'], $session->get('absoluteURL'))) {
+    if (!str_starts_with($_SERVER['HTTP_REFERER'] ?? '', (string) $session->get('absoluteURL'))) {
         $URL = Url::fromRoute()->withQueryParam('return', 'error0');
         header("Location: {$URL}");
         exit;
@@ -167,11 +196,9 @@ if (!empty($_POST) && count($_POST) > 1 && stripos($_SERVER['PHP_SELF'], 'Proces
     }
 
     // Validate nonce
-    if (!$tokenHandler->validateNonce()) {
+    if (!$isBulkExport && !$tokenHandler->validateNonce()) {
         $URL = $_SERVER['HTTP_REFERER'].'&return=error10';
         header("Location: {$URL}");
         exit;
     }
 }
-
-
