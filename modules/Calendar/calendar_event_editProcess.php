@@ -57,16 +57,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     if (empty($_POST['dateStart']) || empty($_POST['dateEnd'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
     }
 
     $dateStart = new DateTime(trim($_POST['dateStart'], '"'));
     $dateEnd = new DateTime(trim($_POST['dateEnd'], '"'));
 
-    if (empty($dateStart) || empty($dateEnd)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-    }
-    
     $data = [
         'gibbonCalendarID'          => $_POST['gibbonCalendarID'] ?? '',
         'gibbonCalendarEventTypeID' => $_POST['gibbonCalendarEventTypeID'] ?? '',
@@ -78,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         'allDay'                    => !empty($_POST['allDay']) ? $_POST['allDay'] : 'N',
         'timeStart'                 => $_POST['timeStart'] ?? null,
         'timeEnd'                   => $_POST['timeEnd'] ?? null,
-        'locationType'              => $_POST['locationType'] ?? 'External',
+        'locationType'              => !empty($_POST['locationType']) ? $_POST['locationType'] : 'External',
         'locationDetail'            => $_POST['locationDetail'] ?? '',
         'locationURL'               => $_POST['locationURL'] ?? '',
         'gibbonSpaceID'             => !empty($_POST['gibbonSpaceID']) ? $_POST['gibbonSpaceID'] : null,
@@ -90,12 +86,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
     if (empty($data['name']) || empty($data['gibbonCalendarID']) || empty($data['gibbonCalendarEventTypeID']) || empty($data['locationType']) || empty($data['dateStart']) || empty($data['dateEnd'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
     }
 
     // Update the record
     if (!$calendarEventGateway->update($gibbonCalendarEventID, $data)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
+        exit;
     }
 
      $organiser = $calendarEventPersonGateway->selectBy(['gibbonCalendarEventID' => $gibbonCalendarEventID, 'role' => 'Organiser', 'gibbonPersonID' => $gibbonPersonIDOrganiser])->fetch();
@@ -133,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         ];
 
         $inserted = $calendarEventPersonGateway->insertAndUpdate($personData, $personData);
-        $partialFail &= !$inserted;
+        $partialFail = $partialFail || $inserted === false;
     }
     
     $URL .= $partialFail

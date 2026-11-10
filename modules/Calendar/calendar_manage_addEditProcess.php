@@ -97,10 +97,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_manage_a
         $gibbonCalendarEditorID = $person['gibbonCalendarEditorID'] ?? '';
 
         if (!empty($gibbonCalendarEditorID)) {
-            $partialFail &= !$editorGateway->update($gibbonCalendarEditorID, $editorData);
+            $partialFail = $partialFail || !$editorGateway->update($gibbonCalendarEditorID, $editorData);
         } else {
             $gibbonCalendarEditorID = $editorGateway->insert($editorData);
-            $partialFail &= !$gibbonCalendarEditorID;
+            $partialFail = $partialFail || !$gibbonCalendarEditorID;
         }
 
         $editorIDs[] = str_pad($gibbonCalendarEditorID, 10, '0', STR_PAD_LEFT);
