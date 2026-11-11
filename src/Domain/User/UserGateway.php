@@ -109,6 +109,37 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
     }
 
     /**
+     * Gets basic user and role fields required for login, by person ID.
+     *
+     * @param int $gibbonPersonID
+     * @return Result
+     */
+    public function selectLoginDetailsByID($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT 
+                    gibbonPerson.gibbonPersonID,
+                    gibbonPerson.username,
+                    gibbonPerson.passwordStrong,
+                    gibbonPerson.passwordStrongSalt,
+                    gibbonPerson.gibbonRoleIDPrimary,
+                    gibbonPerson.gibbonRoleIDAll,
+                    gibbonPerson.canLogin,
+                    gibbonPerson.failCount,
+                    gibbonRole.futureYearsLogin,
+                    gibbonRole.pastYearsLogin,
+                    gibbonRole.name as roleName,
+                    gibbonRole.category as roleCategory,
+                    gibbonPerson.gibboni18nIDPersonal,
+                    gibbonPerson.gibbonThemeIDPersonal
+                FROM gibbonPerson 
+                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full'";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
      * Gets a set of fields to populate the session data, excluding unsafe fields such as passwords.
      *
      * @param string $gibbonPersonID
