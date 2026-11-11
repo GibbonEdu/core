@@ -21,8 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
+use Gibbon\Services\ModuleLoader;
+use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\FinanceExpenseApproverGateway;
+use Gibbon\Module\ProfessionalDevelopment\Domain\RequestsGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -101,13 +104,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $row->addLabel('name', __('Budget Cycle'));
                         $row->addTextField('name')->setValue($cycleName)->maxLength(20)->required()->readonly();
 
-                    $budgetsProcessed = array() ;
+                    $budgetsProcessed = [];
                     foreach ($budgets as $budget) {
-                        $budgetsProcessed[$budget[0]] = $budget[1];
+                        if ($budget[2] == 'Full' || $budget[2] == 'Write') {
+                            $budgetsProcessed[$budget[0]] = $budget[1];
+                        }
                     }
+
                     $row = $form->addRow();
                         $row->addLabel('gibbonFinanceBudgetID', __('Budget'));
                         $row->addSelect('gibbonFinanceBudgetID')->fromArray($budgetsProcessed)->required()->placeholder();
+
+                    // PD classes are only autoloaded for the current module; register PD when used from Finance
+                    $pdModule = $container->get(ModuleGateway::class)->selectBy(['name' => 'Professional Development', 'active' => 'Y'])->fetch();
+                    $pdModuleLoaded = !empty($pdModule) && $container->get(ModuleLoader::class)->registerModuleNamespace('Professional Development');
+                    $pdBudgetSetting = $settingGateway->getSettingByScope('Professional Development', 'gibbonFinanceBudgetID');
+
+                    $pdBudgetID = null;
+                    if (!empty($pdBudgetSetting)) {
+                        foreach (array_keys($budgetsProcessed) as $budgetID) {
+                            if (intval($budgetID) == intval($pdBudgetSetting)) {
+                                $pdBudgetID = (string) $budgetID;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($pdModuleLoaded && $pdBudgetID !== null && class_exists(RequestsGateway::class)) {
+                        $pdRequests = $container->get(RequestsGateway::class)
+                            ->selectEligibleExpenseRequests($gibbonFinanceBudgetCycleID)
+                            ->fetchKeyPair();
+
+                        $form->toggleVisibilityByClass('pdRequestLink')->onSelect('gibbonFinanceBudgetID')->when($pdBudgetID);
+
+                        $row = $form->addRow()->addClass('pdRequestLink');
+                            $row->addLabel('professionalDevelopmentRequestID', __('PD Request'))
+                                ->description(__('Optionally link this expense to a Professional Development request for this budget cycle.'));
+                            $row->addSelect('professionalDevelopmentRequestID')
+                                ->fromArray($pdRequests)
+                                ->placeholder(__('Not linked to a PD request'));
+                    }
 
                     $row = $form->addRow();
                         $row->addLabel('title', __('Title'));

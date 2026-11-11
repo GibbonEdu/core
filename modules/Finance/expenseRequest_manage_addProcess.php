@@ -19,8 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Services\ModuleLoader;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\ProfessionalDevelopment\Domain\RequestsGateway;
+use Gibbon\Module\ProfessionalDevelopment\Domain\RequestPersonGateway;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -86,6 +89,41 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '' or $status
             }
 
             $gibbonFinanceExpenseID = str_pad($connection2->lastInsertID(), 14, '0', STR_PAD_LEFT);
+
+            $professionalDevelopmentRequestID = $_POST['professionalDevelopmentRequestID'] ?? '';
+            $pdBudgetID = $container->get(SettingGateway::class)->getSettingByScope('Professional Development', 'gibbonFinanceBudgetID');
+            $pdModuleLoaded = $container->get(ModuleLoader::class)->registerModuleNamespace('Professional Development');
+
+            if (!empty($professionalDevelopmentRequestID) && intval($gibbonFinanceBudgetID) == intval($pdBudgetID) && $pdModuleLoaded && class_exists(RequestsGateway::class)) {
+                $requestsGateway = $container->get(RequestsGateway::class);
+                $eligibleRequests = $requestsGateway->selectEligibleExpenseRequests($gibbonFinanceBudgetCycleID)->fetchKeyPair();
+
+                if (isset($eligibleRequests[$professionalDevelopmentRequestID])) {
+                    $requestPersonGateway = $container->get(RequestPersonGateway::class);
+                    $pdRequest = $requestsGateway->getByID($professionalDevelopmentRequestID, ['gibbonPersonIDCreated']);
+
+                    $linkPersonIDs = array_filter([
+                        $session->get('gibbonPersonID'),
+                        $pdRequest['gibbonPersonIDCreated'] ?? null,
+                    ]);
+
+                    $participant = [];
+                    foreach ($linkPersonIDs as $gibbonPersonID) {
+                        $participant = $requestPersonGateway->selectBy([
+                            'professionalDevelopmentRequestID' => $professionalDevelopmentRequestID,
+                            'gibbonPersonID' => $gibbonPersonID,
+                        ], ['professionalDevelopmentRequestPersonID', 'gibbonFinanceExpenseID'])->fetch();
+
+                        if (!empty($participant)) break;
+                    }
+
+                    if (!empty($participant) && empty($participant['gibbonFinanceExpenseID'])) {
+                        $requestPersonGateway->update($participant['professionalDevelopmentRequestPersonID'], [
+                            'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID,
+                        ]);
+                    }
+                }
+            }
 
             //Add log entry
             try {
