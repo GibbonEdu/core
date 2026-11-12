@@ -392,7 +392,7 @@ class PersonalPage extends ProfilePage
     protected function renderPersonalDocuments(): string
     {
         // Guard clause: check if user has access to personal documents
-        if (!Access::allows('Students', 'Student Personal Document Summary')) {
+        if (!Access::allows('Students', 'report_student_personalDocumentSummary')) {
             return '';
         }
 
