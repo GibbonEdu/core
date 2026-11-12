@@ -120,6 +120,14 @@ $session = $container->get('session');
 $gibbon->session = $session;
 $container->share(\Gibbon\Contracts\Services\Session::class, $session);
 
+// Auto-register any uploads/ paths present in this response for the current session.
+if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') !== 'file.php') {
+    ob_start(function ($buffer) {
+        registerSecureUploadsInContent($buffer);
+        return $buffer;
+    });
+}
+
 // Setup global absoluteURL for all urls.
 if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
     Url::setBaseUrl($session->get('absoluteURL'));
