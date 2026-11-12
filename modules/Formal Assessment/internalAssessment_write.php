@@ -128,13 +128,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     echo __('There are no records to display.');
                     echo '</div>';
                 } else {
-                    $x = null;
-                    if (isset($_GET['page'])) {
-                        $x = $_GET['page'] ?? '';
-                    }
-                    if ($x == '') {
-                        $x = 0;
-                    }
+                    
+                    $x = max(0, $_GET['page'] ?? 0);
+                    
                     $columnsPerPage = 3;
                     $columnsThisPage = 3;
 
@@ -161,7 +157,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
                             if (count($gibbonYearGroupIDListArray) == 1) {
                                 $primaryExternalAssessmentByYearGroup = unserialize($settingGateway->getSettingByScope('School Admin', 'primaryExternalAssessmentByYearGroup'));
-                                if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '' and $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '-') {
+
+                                if (!empty($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]]) and $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '-') {
                                     $gibbonExternalAssessmentID = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], 0, strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-'));
                                     $gibbonExternalAssessmentIDCategory = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], (strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-') + 1));
 

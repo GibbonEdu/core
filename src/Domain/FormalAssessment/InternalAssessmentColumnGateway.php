@@ -48,7 +48,7 @@ class InternalAssessmentColumnGateway extends QueryableGateway
             ->bindValue('gibbonCourseClassID', $gibbonCourseClassID)
             ->orderBy(['complete', 'completeDate DESC', 'name']);
 
-        if ($columnsPerPage !== null && $limit !== null) { 
+        if ($columnsPerPage !== null && !empty($limit) ) { 
             $query->limit($limit)->offset($columnsPerPage);
         }
 
