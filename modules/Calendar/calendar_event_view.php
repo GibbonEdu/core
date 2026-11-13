@@ -46,7 +46,8 @@ if (!isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_v
     }
 
     $canManageCalendars = Access::allows('Calendar', 'calendar_event_edit');
-    $canEditEvent = $event['editor'] == 'Y' && $canManageCalendars;
+    
+    $canEditEvent = ($event['editor'] == 'Y' && $canManageCalendars) || Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all');
 
     // DATA TABLE TO VIEW EVENT DETAILS
     $table = DataTable::createDetails('viewEvent');

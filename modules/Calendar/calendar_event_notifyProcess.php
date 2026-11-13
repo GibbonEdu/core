@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         exit;
     }
 
-    $canEditEvent = $event['editor'] == 'Y' && Access::allows('Calendar', 'calendar_event_edit');
+    $canEditEvent = ($event['editor'] == 'Y' && Access::allows('Calendar', 'calendar_event_edit')) || Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all');
     if (!$canEditEvent && !Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all')) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
