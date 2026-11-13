@@ -642,7 +642,7 @@ class Format
             $url = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $url);
         }
 
-        $isExternal = stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url;
+        $isExternal = !str_starts_with($url, '/') && !str_starts_with($url, static::$settings['absoluteURL']) && !$url instanceof Url;
         $url = str_replace(['"', "'"], ['%22', '%27'], $url);
         
         if (substr($url, 0, 2) == './') {
