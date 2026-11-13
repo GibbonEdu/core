@@ -28,8 +28,8 @@ if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDP
 } elseif ($session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     die(__('Your request failed because you do not have access to this action.'));
 } else {
-    $fieldName = htmlspecialchars($_POST['fieldName'] ?? '', ENT_QUOTES);
-    $gibbonPersonID = $_POST['gibbonPersonID'] ??  $_POST[$fieldName] ?? '';
+    $fieldName = $_POST['fieldName'] ?? '';
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? $_POST[$fieldName] ?? '';
 
     $user = $container->get(UserGateway::class)->getByID($gibbonPersonID, ['image_240']);
     $url = $session->get('absoluteURL').'/'.($user['image_240'] ?? '');
@@ -38,5 +38,5 @@ if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDP
         $url = '';
     }
 
-    echo "<img id='{$fieldName}Photo' src='".htmlspecialchars($url, ENT_QUOTES)."' class='relative w-full' x-ref='personPhoto'>";
+    echo "<img id='".htmlspecialchars($fieldName, ENT_QUOTES)."Photo' src='{$url}' class='relative w-full' x-ref='personPhoto'>";
 }
