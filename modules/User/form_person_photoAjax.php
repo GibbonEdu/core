@@ -29,7 +29,7 @@ if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDP
     die(__('Your request failed because you do not have access to this action.'));
 } else {
     $fieldName = htmlspecialchars($_POST['fieldName'] ?? '', ENT_QUOTES);
-    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+    $gibbonPersonID = $_POST['gibbonPersonID'] ??  $_POST[$fieldName] ?? '';
 
     $user = $container->get(UserGateway::class)->getByID($gibbonPersonID, ['image_240']);
     $url = $session->get('absoluteURL').'/'.($user['image_240'] ?? '');
