@@ -175,6 +175,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap items-center gap-2" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
 
         $output .= '<div class="w-full md:flex-1">';
+            $output .= '<div class="mb-2">'.$this->searchBox->getOutput().'</div>';
             $output .= $this->sourceSelect->getOutput();
         $output .= '</div>';
 
@@ -189,7 +190,6 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             if (!empty($this->sortableAttributes)) {
                 $output .= $this->sortBySelect->getOutput();
             }
-            $output .= $this->searchBox->getOutput();
         $output .= '</div>';
 
         $output .= '<div  class="w-full md:flex-1 relative">';
