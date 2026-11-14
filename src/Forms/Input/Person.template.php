@@ -6,6 +6,9 @@
         openedWithKeyboard: false,
         selectedValue: '<?= $selected ?>',
         selectedOption: null,
+        listTop: 0,
+        listLeft: 0,
+        listWidth: 0,
         getOptions() {
             Array.from(this.$refs.hiddenInput.querySelectorAll('optgroup')).forEach((optGroup) => { 
                     var group = {
@@ -26,6 +29,13 @@
             );
         
             this.options = this.allOptions;
+        },
+        positionList() {
+            if (!this.$refs.searchSelect) return;
+            const rect = this.$refs.searchSelect.getBoundingClientRect();
+            this.listTop = rect.top;
+            this.listLeft = rect.left;
+            this.listWidth = rect.width;
         },
         setSelectedOption(option) {
             if (option == null) return;
@@ -74,13 +84,14 @@
         toggleSelect(toggle) {
             this.isOpen = toggle;
             if (toggle) {
+                this.positionList();
                 $focus.focus(this.$refs.searchField);
                 this.$refs.searchField.focus()
                 this.search = '';
                 this.getFilteredOptions('');
             }
         },
-    }" class="relative <?= $outerClass ?? 'flex w-full' ?>  flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-init="getOptions()">
+    }" class="relative <?= $outerClass ?? 'flex w-full' ?>  flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-on:scroll.window.throttle.50ms="isOpen && positionList()" x-on:resize.window.throttle.100ms="isOpen && positionList()" x-init="getOptions()">
 
     <!-- Hidden Input To Grab The Selected Value  -->
     <select class="hidden invisible personSelect" <?= $attributes; ?> x-ref="hiddenInput">
@@ -100,7 +111,7 @@
     </select>
 
     <!-- trigger button  -->
-    <button type="button" class="<?= $class; ?> <?= $groupClass; ?> inner-input inline-flex w-full items-center justify-start min-w-16 bg-white border border-outline py-2 px-3 text-gray-900  placeholder:text-gray-500 focus:border-blue-500 focus-within:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5 transition  " role="combobox" aria-controls="<?= $id ?>List" aria-haspopup="<?= $id ?>List listbox" x-on:click="toggleSelect(!isOpen)" x-on:keydown.down.prevent="openedWithKeyboard = true" x-on:keydown.enter.prevent="openedWithKeyboard = true" x-on:keydown.space.prevent="openedWithKeyboard = true" x-bind:aria-expanded="isOpen || openedWithKeyboard" x-bind:aria-label="selectedOption ? selectedOption.value : '<?= __($placeholder); ?>'" x-ref="searchSelect" >
+    <button type="button" class="<?= $class; ?> <?= $groupClass; ?> inner-input inline-flex w-full items-center justify-start min-w-16 bg-white border border-outline py-2 px-3 text-gray-900  placeholder:text-gray-500 focus:border-blue-500 focus-within:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5 transition  " role="combobox" aria-controls="<?= $id ?>List" aria-haspopup="<?= $id ?>List listbox" x-on:click="toggleSelect(!isOpen)" x-on:keydown.down.prevent="openedWithKeyboard = true; positionList()" x-on:keydown.enter.prevent="openedWithKeyboard = true; positionList()" x-on:keydown.space.prevent="openedWithKeyboard = true; positionList()" x-bind:aria-expanded="isOpen || openedWithKeyboard" x-bind:aria-label="selectedOption ? selectedOption.value : '<?= __($placeholder); ?>'" x-ref="searchSelect" >
 
         <div class="flex-none relative w-12 h-12 z-10 mr-4 overflow-hidden rounded-full bg-gray-200 border border-solid border-gray-400 bg-no-repeat" style="background-size: 70% 70%; background-position: 50% 50%;">
         <div class="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"><?= icon('solid', 'user', 'size-7 mt-2 text-gray-500') ?></div>
@@ -119,7 +130,7 @@
         </svg>
     </button>
 
-    <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="absolute top-0 left-0 z-50 w-full min-w-52 rounded-md bg-white " role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.75ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
+    <div x-cloak x-show="isOpen || openedWithKeyboard" id="<?= $id ?>List" class="fixed z-50 rounded-md bg-white" x-bind:style="'top: '+listTop+'px; left: '+listLeft+'px; width: '+listWidth+'px;'" role="listbox" aria-label="list" x-on:click.outside="toggleSelect(false); openedWithKeyboard = false" x-on:keydown.down.prevent="$focus.wrap().next()" x-on:keydown.up.prevent="$focus.wrap().previous()" x-transition:enter.opacity.duration.75ms x-transition:leave.opacity.duration.0ms x-trap="openedWithKeyboard"
         style="display:none;">
 
         <!-- Search  -->
@@ -131,7 +142,7 @@
         </div>
 
         <!-- Options  -->
-        <ul class="list-none flex w-fit min-w-full max-h-80 flex-col overflow-x-hidden overflow-y-auto m-0 p-1 border -mt-px rounded-b-md bg-white shadow-lg" style="max-width: max(100%, 24rem);">
+        <ul class="list-none flex w-full min-w-full max-w-full max-h-80 flex-col overflow-x-hidden overflow-y-auto m-0 p-1 border -mt-px rounded-b-md bg-white shadow-lg">
             <li class="hidden px-4 py-2 text-sm text-on-surface dark:text-on-surface-dark" x-ref="noResultsMessage">
                 <span><?= __('No results') ?></span>
             </li>
@@ -148,7 +159,7 @@
                         <li x-from-template class="combobox-option inline-flex justify-between rounded px-3 py-1 text-sm  hover:bg-blue-500 hover:text-white focus:bg-blue-500 focus:text-white cursor-pointer whitespace-nowrap" role="option" x-on:click="setSelectedOption(item)" x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index" tabindex="0" :class="{'bg-gray-300 text-gray-900 hover:text-white' : selectedOption == item , 'hover:text-white': selectedOption != item, 'pl-8' : group.label != '' }">
 
                             <!-- Label  -->
-                            <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label" class="overflow-hidden text-ellipsis"></span>
+                            <span x-bind:class="selectedOption == item ? 'font-medium' : null" x-text="item.label" class="min-w-0 overflow-hidden text-ellipsis"></span>
 
                             <!-- Screen reader 'selected' indicator  -->
                             <span class="sr-only" x-text="selectedOption == item ? 'selected' : null"></span>
