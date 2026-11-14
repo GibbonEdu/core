@@ -54,6 +54,17 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectSpecialDaysBySchoolYear(int $gibbonSchoolYearID)
+    {
+        $sql = "SELECT gibbonSchoolYearSpecialDay.*, gibbonSchoolYearTerm.name AS termName
+                FROM gibbonSchoolYearSpecialDay
+                JOIN gibbonSchoolYearTerm ON gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID
+                WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=:gibbonSchoolYearID
+                ORDER BY gibbonSchoolYearSpecialDay.date, gibbonSchoolYearSpecialDay.name";
+
+        return $this->db()->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
+    }
+
     public function getIsStudentOffTimetableByDate($gibbonSchoolYearID, $gibbonPersonID, $date)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'date' => $date];

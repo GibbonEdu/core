@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage.php') == false) {
@@ -30,8 +31,37 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
+    if (isset($_GET['added'])) {
+        $added = is_numeric($_GET['added']) ? (int) $_GET['added'] : 0;
+        $skipped = isset($_GET['skipped']) && is_numeric($_GET['skipped']) ? (int) $_GET['skipped'] : 0;
+        echo '<div class="success">'.sprintf(__('Batch add complete: %1$s day(s) added, %2$s day(s) skipped.'), $added, $skipped).'</div>';
+    }
+
+    if (isset($_GET['deleted'])) {
+        $deleted = is_numeric($_GET['deleted']) ? (int) $_GET['deleted'] : 0;
+        echo '<div class="success">'.sprintf(__('Batch delete complete: %s special day(s) deleted.'), $deleted).'</div>';
+    }
+
     if ($gibbonSchoolYearID != '') {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+
+        $actions = Form::createBlank('specialDayActions');
+            $actions->addHeaderAction('addMulti', __('Batch Add Special Days'))
+                ->setURL('/modules/School Admin/schoolYearSpecialDay_manage_addMulti.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->setIcon('addmultiple')
+                ->displayLabel();
+            $actions->addHeaderAction('deleteMulti', __('Batch Delete'))
+                ->setURL('/modules/School Admin/schoolYearSpecialDay_manage_deleteMulti.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->setIcon('delete')
+                ->displayLabel();
+            $actions->addHeaderAction('calendar', __('Calendar View'))
+                ->setURL('/modules/School Admin/schoolYearSpecialDay_calendar.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->setIcon('calendar')
+                ->displayLabel();
+        echo $actions->getOutput();
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
