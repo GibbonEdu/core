@@ -53,15 +53,15 @@ class FileHandler implements FileHandlerInterface
      */
     public function recordFileUpload(array $metaData, string $foreignTable, int|string $foreignTableID, string $foreignColumn)
     {
-        // Begin database transaction
-        $this->db->beginTransaction();
-
-        // Validate file exists at filePath
-        if (!file_exists($metaData['absolutePath'])) {
+        if (!is_file($metaData['absolutePath'] ?? '')) {
             return false;
         }
 
+        // Begin database transaction
+        $this->db->beginTransaction();
+
         $oldFile = $this->filePointerGateway->getFileAndPointerID($foreignTable, $foreignTableID, $foreignColumn);
+        $oldFilePath = null;
 
         if (empty($oldFile)) {
             // Insert record into gibbonFile table
@@ -97,16 +97,16 @@ class FileHandler implements FileHandlerInterface
                 return false;
             }
 
-            // Store old file path for deletion after transaction commits
-            $oldFilePath = $this->session->get('absolutePath') . '/' . $oldFile['filePath'];
+            if (($oldFile['filePath'] ?? '') !== ($metaData['filePath'] ?? '')) {
+                $oldFilePath = $oldFile['filePath'];
+            }
         }
 
         // All operations succeeded, commit the transaction
         $this->db->commit();
 
-        // Delete old file only after successful commit (for updates only)
-        if (!empty($oldFilePath) && file_exists($oldFilePath)) {
-            unlink($oldFilePath);
+        if ($oldFilePath !== null) {
+            $this->unlinkIfUnused($oldFilePath);
         }
 
         // Return $gibbonFileID
@@ -128,7 +128,7 @@ class FileHandler implements FileHandlerInterface
             'fileExtension' => $metaData['fileExtension'] ?? '',
             'fileSize' => $metaData['fileSize'] ?? '',
             'mimeType' => $metaData['mimeType'] ?? '',
-            'gibbonPersonIDOwner' => $metaData['gibbonPersonIDOwner'] ?? '',
+            'gibbonPersonIDOwner' => !empty($metaData['gibbonPersonIDOwner']) ? $metaData['gibbonPersonIDOwner'] : null,
             'uploadedAt' => date('Y-m-d H:i:s'),
             'checksum' => $checksum
         ];
@@ -158,111 +158,126 @@ class FileHandler implements FileHandlerInterface
      */
     public function deleteFile(string $foreignTable, int|string $foreignTableID, string $foreignColumn)
     {
-        // Begin database transaction
         $this->db->beginTransaction();
 
-        // Find the pointer and get the gibbonFileID and filePath
         $filePointer = $this->filePointerGateway->getFileAndPointerID($foreignTable, $foreignTableID, $foreignColumn);
-            
-        if (empty($filePointer)) {
+        if (empty($filePointer) || !$this->filePointerGateway->delete($filePointer['gibbonFilePointerID'])) {
             $this->db->rollBack();
             return false;
         }
 
         $gibbonFileID = $filePointer['gibbonFileID'];
         $filePath = $filePointer['filePath'];
-            
-        // Delete the pointer
-        if (!$this->filePointerGateway->delete($filePointer['gibbonFilePointerID'])) {
+        $pointersExist = $this->filePointerGateway->countPointersByFileID($gibbonFileID)->fetch();
+        $pointerCount = (int) ($pointersExist['count'] ?? 0);
+
+        if ($pointerCount == 0 && !$this->fileGateway->delete($gibbonFileID)) {
             $this->db->rollBack();
             return false;
         }
 
-        // Check if the file has any other pointers
-        $pointersExist = $this->filePointerGateway->countPointersByFileID($gibbonFileID)->fetch();
-        $pointerCount = $pointersExist['count'];
-
-        if ($pointerCount == 0) {
-            // Delete the record from gibbonFile table
-            if (!$this->fileGateway->delete($gibbonFileID)) {
-                $this->db->rollBack();
-                return false;
-            }
-                
-            // Store file path for deletion after transaction commits
-            $absolutePath = $this->session->get('absolutePath') . '/' . $filePath;
-        }
-
-        // All operations succeeded, commit the transaction
         $this->db->commit();
 
-        // Delete physical file only after successful commit (if no other pointers existed)
-        if ($pointerCount == 0 &&!empty($absolutePath) && file_exists($absolutePath)) {
-            unlink($absolutePath);
+        if ($pointerCount == 0) {
+            $this->unlinkIfUnused($filePath);
         }
-        
+
         return true;
     }
 
-    ////-/-/--/-/-/-/-/ FOR PHASE-2 /-/-/-/--/--//
+    /**
+     * Stage an editor upload in gibbonFile without creating a pointer
+     * @param array $metaData File metadata array
+     * @return string|false gibbonFileID on success, false on failure
+     */
+    public function stageEditorUpload(array $metaData)
+    {
+        $filePath = $metaData['filePath'] ?? '';
+        $existing = $this->fileGateway->getByFilePath($filePath);
 
-    //  /**
-    //  * Verify file integrity by comparing stored checksum with recalculated checksum
-    //  *
-    //  * @param int $gibbonFileID The file record ID to verify
-    //  * @return bool True if checksums match, false if mismatch or file missing
-    //  */
+        if (!empty($existing['gibbonFileID'])) {
+            return (string) (int) $existing['gibbonFileID'];
+        }
 
-    // public function verifyFileIntegrity($gibbonFileID)
-    // {
-        
-    //     $file = $this->fileGateway->getByID($gibbonFileID);
-        
-    //     if (empty($file)) {
-    //         return false;
-    //     }
+        $storedPath = $this->getStoredFilePath($filePath);
+        if ($storedPath === null || $storedPath !== realpath($metaData['absolutePath'] ?? '')) {
+            return false;
+        }
 
-    //     $storedChecksum = $file['checksum'];
-    //     $filePath = $file['filePath'];
-        
-    //     // Construct absolute path from stored relative filePath
-    //     $absolutePath = $this->session->get('absolutePath') . '/' . $filePath;
-        
-    //     // Check if file exists at absolute path
-    //     if (!file_exists($absolutePath)) {
-    //         return false;
-    //     }
-        
-    //     // Recalculate checksum from file at absolute path
-    //     $calculatedChecksum = hash_file('sha256', $absolutePath);
-        
-    //     if (empty($calculatedChecksum)) {
-    //         return false;
-    //     }
-        
-    //     // Compare stored and calculated checksums
-    //     return $storedChecksum === $calculatedChecksum;
-    // }
+        $gibbonFileID = $this->insertAndUpdateFile($metaData);
+        if (empty($gibbonFileID)) {
+            $this->unlinkIfUnused($filePath);
+            return false;
+        }
 
-    //  /**
-    //  * Query all file records where the file no longer exists on the filesystem
-    //  *
-    //  * @return array of records
-    //  */
-    // public function selectOrphanedFileRecords()
-    // {
-    //     // Query all records from gibbonFile
-    //     $allFiles = $this->fileGateway->selectAllFileRecords();
+        return $gibbonFileID;
+    }
 
-    //     // Filter to records where file does not exist
-    //     $orphanedRecords = [];
-    //     foreach ($allFiles as $file) {
-    //         $fullPath = $this->session->get('absolutePath'). '/' . $file['filePath'];
-    //         if (!file_exists($fullPath)) {
-    //             $orphanedRecords[] = $file;
-    //         }
-    //     }
+    /**
+     * A staged editor file is still in use when another record, pointer, or HTML field stores its path.
+     */
+    public function isEditorFileUsed(string $filePath, int|string $gibbonFileID): bool
+    {
+        if (!empty($this->fileGateway->getOtherFileByPath($filePath, $gibbonFileID))) {
+            return true;
+        }
 
-    //     return $orphanedRecords;
-    // }
+        return $this->fileGateway->isFilePathInText($filePath);
+    }
+
+    /**
+     * Remove one unused editor file. The scan records HTML use. The disk file stays when another gibbonFile row still stores the path.
+     */
+    public function deleteUnusedEditorFile(int|string $gibbonFileID): bool
+    {
+        $file = $this->fileGateway->getByID($gibbonFileID);
+        if (empty($file['filePath'])) {
+            return false;
+        }
+
+        $pointersExist = $this->filePointerGateway->countPointersByFileID($gibbonFileID)->fetch();
+        $pointerCount = (int) ($pointersExist['count'] ?? 0);
+        if ($pointerCount > 0) {
+            return false;
+        }
+
+        if (!$this->fileGateway->delete($gibbonFileID)) {
+            return false;
+        }
+
+        $this->unlinkIfUnused($file['filePath']);
+
+        return true;
+    }
+
+    protected function unlinkIfUnused(string $filePath): void
+    {
+        if (!empty($this->fileGateway->getByFilePath($filePath))) {
+            return;
+        }
+
+        $absolutePath = $this->getStoredFilePath($filePath);
+        if ($absolutePath !== null) {
+            unlink($absolutePath);
+        }
+    }
+
+    protected function getStoredFilePath(string $filePath): ?string
+    {
+        if ($filePath === '' || str_contains($filePath, "\0") || str_contains($filePath, '..')) {
+            return null;
+        }
+
+        $root = realpath((string) $this->session->get('absolutePath'));
+        if ($root === false) {
+            return null;
+        }
+
+        $absolutePath = realpath($root.'/'.ltrim($filePath, '/'));
+        if ($absolutePath === false || !is_file($absolutePath) || !str_starts_with($absolutePath, $root.'/')) {
+            return null;
+        }
+
+        return $absolutePath;
+    }
 }
