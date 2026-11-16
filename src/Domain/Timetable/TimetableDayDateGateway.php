@@ -36,6 +36,8 @@ class TimetableDayDateGateway extends QueryableGateway
     private static $tableName = 'gibbonTTDayDate';
     private static $primaryKey = 'gibbonTTDayDateID';
 
+    private static $searchableColumns = [];
+
     public function deleteTTDatesInRange($firstDayOld, $firstDayNew)
     {
         $data = array('firstDayOld' => $firstDayOld, 'firstDayNew' => $firstDayNew);

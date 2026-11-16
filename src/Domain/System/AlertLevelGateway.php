@@ -37,6 +37,8 @@ class AlertLevelGateway extends QueryableGateway
     private static $tableName = 'gibbonAlertLevel';
     private static $primaryKey = 'gibbonAlertLevelID';
 
+    private static $searchableColumns = [];
+
     const LEVEL_HIGH = 1;
     const LEVEL_MEDIUM = 2;
     const LEVEL_LOW = 3;

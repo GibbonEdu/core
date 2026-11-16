@@ -343,6 +343,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
             if ($cacheLoad || !$session->exists('index_customSidebar.php')) {
                 if (is_file('./index_customSidebar.php')) {
+                    // @phpstan-ignore include.fileNotFound 
                     $session->set('index_customSidebar.php', include './index_customSidebar.php');
                 } else {
                     $session->set('index_customSidebar.php', null);

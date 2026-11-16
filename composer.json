@@ -60,7 +60,7 @@
         "omnipay/stripe": "dev-master as v3.1.1",
         "parsecsv/php-parsecsv": "^1.3",
         "league/oauth2-client": "^2.6",
-        "microsoft/microsoft-graph": "^3.10",
+        "microsoft/microsoft-graph": "^1.0",
         "aura/auth": "^4.0",
         "eluceo/ical": "^2.14",
         "robthree/twofactorauth": "^3.0",
