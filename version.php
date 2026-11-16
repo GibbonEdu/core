@@ -28,7 +28,7 @@ $version = '30.0.03';
  * System Requirements
  */
 $systemRequirements = [
-    'php'        => '8.0',
+    'php'        => '8.2',
     'mysql'      => '8.0',
     'apache'     => ['mod_rewrite'],
     'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd', 'intl'],
