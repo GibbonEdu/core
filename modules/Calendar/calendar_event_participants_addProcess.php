@@ -125,13 +125,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
         ];
 
         $inserted = $calendarEventPersonGateway->insertAndUpdate($data, $data);
-        $partialFail &= !$inserted;
+        $partialFail = $partialFail || $inserted === false;
     }
 
     if (!($target == 'Individual')) {
         $calendarEventGateway = $container->get(CalendarEventGateway::class);
         $data = ['foreignTable' => $foreignTable, 'foreignTableID' => $targetID];
-        $partialFail &= !$calendarEventGateway->update($gibbonCalendarEventID, $data);
+        $partialFail = $partialFail || !$calendarEventGateway->update($gibbonCalendarEventID, $data);
     }
 
     $URL .= $partialFail
