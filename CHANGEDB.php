@@ -1065,4 +1065,6 @@ $sql[$count][1] = "";
 //v30.0.03
 ++$count;
 $sql[$count][0] = '30.0.03';
-$sql[$count][1] = "";
+$sql[$count][1] = "
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'autoUpdater', 'Auto Updater Status', 'Tracks the current stage of the core file auto-updater.', 'idle');end
+";

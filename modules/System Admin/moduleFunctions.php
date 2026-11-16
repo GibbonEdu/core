@@ -218,7 +218,7 @@ function getCurrentVersion($guid, $connection2, $version)
     $output .= 'else {';
     $output .= '$("#status").attr("class","warning");';
     $output .= "$('#gibbonCheck').html('<span class=\"tag rounded-full warning\">".__('Update')."</span>');";
-    $output .= "$(\"#status\").html('".sprintf(__('Version check successful. Your Gibbon installation is out of date. Please visit %1$s to download the latest version.'), "<a target=\"blank\" href=\'https://gibbonedu.org/download\'>the Gibbon download page</a>")."') ;";
+    $output .= "$(\"#status\").html('".sprintf(__('Version check successful. Your Gibbon installation is out of date. Please visit %1$s to download the latest version.'), "<a href=\'".$session->get('absoluteURL')."/index.php?q=/modules/System Admin/update.php\'>".__('Updates')."</a>")."') ;";
     $output .= '}';
     $output .= '}';
     $output .= '},';
