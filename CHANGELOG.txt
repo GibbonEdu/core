@@ -27,6 +27,7 @@ v30.0.03
         Reports: limited Twig filters and functions based in sandbox security policy
 
     Bug Fixes
+        System Admin: fixed PHP error on Import History page
 
 
 v30.0.02
