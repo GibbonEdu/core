@@ -23,6 +23,8 @@ v30.0.03
 --------
 
     Security
+        System: improved Twig sandboxing for user supplied templates
+        Reports: limited Twig filters and functions based in sandbox security policy
 
     Bug Fixes
 

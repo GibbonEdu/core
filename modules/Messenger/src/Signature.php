@@ -70,7 +70,7 @@ class Signature
             $signatureData = $values + [
                 'organisationName' => $this->session->get('organisationName'),
             ];
-            $signature = '<p></p>'.$this->sandbox->render($this->signatureTemplate, $signatureData);
+            $signature = '<p></p>'.$this->sandbox->renderContent($this->signatureTemplate, $signatureData);
         }
 
         return $signature;
