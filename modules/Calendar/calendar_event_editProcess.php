@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
         ];
 
         $inserted = $calendarEventPersonGateway->insertAndUpdate($personData, $personData);
-        $partialFail = $partialFail || $inserted === false;
+        $partialFail |= $inserted === false;
     }
     
     $URL .= $partialFail

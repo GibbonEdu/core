@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         ];
 
         $gibbonCalendarEventPersonID = $calendarEventPersonGateway->insert($personData);
-        $partialFail = $partialFail || !$gibbonCalendarEventPersonID;
+        $partialFail |= !$gibbonCalendarEventPersonID;
     }
 
     // Add the organiser to the particapants list
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         ];
 
     $gibbonCalendarEventPersonID = $calendarEventPersonGateway->insert($organiserData);
-    $partialFail = $partialFail || !$gibbonCalendarEventPersonID;
+    $partialFail |= !$gibbonCalendarEventPersonID;
 
     $URLSuccess .= $partialFail
         ? "&return=warning1"
