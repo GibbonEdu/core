@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     }
 
     // Check existence of and access to this lesson.
-    $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+    $and = " AND gibbonPlannerEntryID=".intval($gibbonPlannerEntryID);
     $sql = getLessons($guid, $connection2, $and);
     $lesson = $pdo->select($sql[1], $sql[0])->fetch();
 
