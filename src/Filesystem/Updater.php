@@ -24,7 +24,7 @@ namespace Gibbon\Filesystem;
 use Gibbon\Contracts\Services\Session;
 
 /**
- * Backs up, replaces, and rolls back live files from an extracted patch staging tree.
+ * Backs up, replaces, and rolls back live files from backup directory.
  *
  * @version v30
  * @since   v30
@@ -35,6 +35,9 @@ class Updater
     public const ERROR_BACKUP = 'backup';
     public const ERROR_REPLACE = 'replace';
     public const ERROR_ROLLBACK = 'rollback';
+
+    /** Folder under backups/autoUpdate for backup copies of changed files. */
+    private const BACKUP_DIR = 'previousVersionBackup';
 
     /**
      * @var string
@@ -60,13 +63,14 @@ class Updater
      */
     public function run(array $relativeFiles) : void
     {
-        $this->backup($relativeFiles);
+        $files = $this->normalizeFileList($relativeFiles);
+        $this->backup($files);
 
         try {
-            $this->replace($relativeFiles);
+            $this->replace($files);
         } catch (\Throwable $e) {
             try {
-                $this->rollback($relativeFiles);
+                $this->rollback($files);
             } catch (\Throwable $rollbackError) {
                 $this->fail(self::ERROR_ROLLBACK, $rollbackError);
             }
@@ -76,17 +80,16 @@ class Updater
     }
 
     /**
-     * Copy existing live files into previous/; track paths with no live file as added.
+     * Copy existing changed files into previousVersionBackup/;
      *
-     * @param string[] $relativeFiles
+     * @param string[] $files Already normalized relative paths
      */
-    public function backup(array $relativeFiles) : void
+    public function backup(array $files) : void
     {
-        $files = $this->normalizeFileList($relativeFiles);
-        $previous = $this->getPreviousPath();
-        $this->wipeDirectory($previous);
+        $backupDir = $this->absolutePath.'/'.Downloader::BASE_DIR.'/'.self::BACKUP_DIR;
+        $this->wipeDirectory($backupDir);
 
-        if (!$this->ensureDirectory($previous) || !is_writable($previous)) {
+        if (!$this->ensureDirectory($backupDir) || !is_writable($backupDir)) {
             $this->fail(self::ERROR_BACKUP);
         }
 
@@ -100,47 +103,47 @@ class Updater
                 continue;
             }
 
-            if (!is_readable($livePath) || !$this->copyFile($livePath, $previous.'/'.$relative)) {
+            if (!is_readable($livePath) || !$this->copyFile($livePath, $backupDir.'/'.$relative)) {
                 $this->fail(self::ERROR_BACKUP);
             }
         }
     }
 
     /**
-     * Copy staging files onto the live install after a writability preflight.
+     * Copy staging files onto the live server.
      *
-     * @param string[] $relativeFiles
+     * @param string[] $files Already normalized relative paths
      */
-    public function replace(array $relativeFiles) : void
+    public function replace(array $files) : void
     {
-        $files = $this->normalizeFileList($relativeFiles);
-        $stagingReal = realpath($this->getStagingPath());
+        $stagingReal = realpath($this->absolutePath.'/'.Downloader::BASE_DIR.'/staging');
         $absoluteReal = realpath($this->absolutePath);
 
         if ($stagingReal === false || $absoluteReal === false) {
             $this->fail($stagingReal === false ? self::ERROR_REPLACE : self::ERROR_INVALID);
         }
 
+        $stagingRoot = str_replace('\\', '/', $stagingReal);
+
         foreach ($files as $relative) {
-            $this->assertCanReplace($stagingReal, $absoluteReal, $relative);
+            $this->assertCanReplace($stagingRoot, $absoluteReal, $relative);
         }
 
         foreach ($files as $relative) {
-            if (!$this->installFile($stagingReal.'/'.$relative, $this->absolutePath.'/'.$relative)) {
+            if (!$this->installFile($stagingRoot.'/'.$relative, $this->absolutePath.'/'.$relative)) {
                 $this->fail(self::ERROR_REPLACE);
             }
         }
     }
 
     /**
-     * Restore backed-up files and remove files that were newly added by replace.
+     * Restore from previousVersionBackup/; remove files that were newly added.
      *
-     * @param string[] $relativeFiles
+     * @param string[] $files Already normalized relative paths
      */
-    public function rollback(array $relativeFiles) : void
+    public function rollback(array $files) : void
     {
-        $files = $this->normalizeFileList($relativeFiles);
-        $previous = $this->getPreviousPath();
+        $backupDir = $this->absolutePath.'/'.Downloader::BASE_DIR.'/'.self::BACKUP_DIR;
         $added = array_fill_keys($this->added, true);
 
         foreach ($files as $relative) {
@@ -151,27 +154,11 @@ class Updater
                 continue;
             }
 
-            $backupPath = $previous.'/'.$relative;
+            $backupPath = $backupDir.'/'.$relative;
             if (!is_file($backupPath) || !$this->installFile($backupPath, $livePath)) {
                 $this->fail(self::ERROR_ROLLBACK);
             }
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getPreviousPath() : string
-    {
-        return $this->absolutePath.'/'.Downloader::BASE_DIR.'/previous';
-    }
-
-    /**
-     * @return string
-     */
-    public function getStagingPath() : string
-    {
-        return $this->absolutePath.'/'.Downloader::BASE_DIR.'/staging';
     }
 
     /**
@@ -196,15 +183,16 @@ class Updater
     }
 
     /**
-     * @param string $stagingReal
+     * Confirm the staging file exists and the live target path is writable and inside the install.
+     *
+     * @param string $stagingRoot Slash-normalized realpath of staging
      * @param string $absoluteReal
      * @param string $relative
      */
-    protected function assertCanReplace(string $stagingReal, string $absoluteReal, string $relative)
+    protected function assertCanReplace(string $stagingRoot, string $absoluteReal, string $relative)
     {
-        $sourcePath = $stagingReal.'/'.$relative;
-        $sourceReal = is_file($sourcePath) ? realpath($sourcePath) : false;
-        if ($sourceReal === false || !$this->isInside($sourceReal, $stagingReal)) {
+        $sourceReal = is_file($stagingRoot.'/'.$relative) ? realpath($stagingRoot.'/'.$relative) : false;
+        if ($sourceReal === false || !$this->isInside($sourceReal, $stagingRoot)) {
             $this->fail(self::ERROR_INVALID);
         }
 
@@ -266,6 +254,8 @@ class Updater
     }
 
     /**
+     * Whether $path is inside $root (slash-normalized for Windows/macOS/Linux).
+     *
      * @param string $path
      * @param string $root
      * @param bool $allowEqual
@@ -273,7 +263,10 @@ class Updater
      */
     protected function isInside(string $path, string $root, bool $allowEqual = false) : bool
     {
-        return ($allowEqual && $path === $root) || strpos($path, $root.DIRECTORY_SEPARATOR) === 0;
+        $path = str_replace('\\', '/', $path);
+        $root = rtrim(str_replace('\\', '/', $root), '/');
+
+        return ($allowEqual && $path === $root) || strpos($path, $root.'/') === 0;
     }
 
     /**
