@@ -38,6 +38,8 @@ class SessionGateway extends QueryableGateway
     private static $tableName = 'gibbonSession';
     private static $primaryKey = 'gibbonSessionID';
 
+    private static $searchableColumns = [];
+
     /**
      * Queries the list of sessions.
      *

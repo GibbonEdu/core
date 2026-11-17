@@ -126,7 +126,16 @@ v31.0.00
         Timetable Admin: fixed error preventing the copy of courses to next year
         Admissions: fixed Home Address (Country) not being translated when displaying application form data
 
-    Deprecations
+v30.0.03
+--------
+
+    Security
+        System: improved Twig sandboxing for user supplied templates
+        Reports: limited Twig filters and functions based in sandbox security policy
+
+    Bug Fixes
+        System Admin: fixed PHP error on Import History page
+        Calendar: fixed existing future attendance not visible in participants list, fix permission check for Manage Events_all
 
 v30.0.02
 --------

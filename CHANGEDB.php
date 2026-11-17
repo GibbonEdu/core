@@ -412,9 +412,9 @@ UPDATE `gibbonAction` SET URLList='calendar_view.php,calendar_event_view.php' WH
 $sql[$count][0] = '30.0.02';
 $sql[$count][1] = "";
 
-//v30.0.02
+//v30.0.03
 ++$count;
-$sql[$count][0] = '30.0.02';
+$sql[$count][0] = '30.0.03';
 $sql[$count][1] = "";
 
 //v31.0.00
