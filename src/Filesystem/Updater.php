@@ -282,14 +282,19 @@ class Updater
      */
     protected function assertSafeRelativePath(string $relative) : string
     {
-        $relative = (string) preg_replace('#/+#', '/', ltrim(str_replace('\\', '/', $relative), '/'));
+        $relative = ltrim(str_replace('\\', '/', $relative), '/');
         $lower = strtolower($relative);
 
+        // Same idea as Page::isAddressValid: block traversal and sensitive roots.
         if ($relative == ''
             || strpos($relative, "\0") !== false
-            || preg_match('#(^|/)\.\.(/|$)|^([a-zA-Z]:)#', $relative)
+            || strpos($relative, '..') !== false
+            || (strlen($relative) > 1 && $relative[1] == ':' && ctype_alpha($relative[0]))
             || $lower == 'config.php'
-            || preg_match('#^(uploads|backups|\.git|vendor)/#', $lower)
+            || strpos($lower, 'uploads/') === 0
+            || strpos($lower, 'backups/') === 0
+            || strpos($lower, '.git/') === 0
+            || strpos($lower, 'vendor/') === 0
         ) {
             $this->fail(self::ERROR_INVALID);
         }

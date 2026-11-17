@@ -111,9 +111,6 @@ class VersionCatalog
     /**
      * Return the next sequential downloadable release after $currentVersion.
      *
-     * Stable installs: Legacy/Current only (up to Current).
-     * Cutting Edge: Legacy/Current/Development (Development hops allowed).
-     *
      * @param string $currentVersion
      * @param bool $cuttingEdge
      * @return array|null Release entry, or null when up to date / unavailable.
@@ -152,7 +149,7 @@ class VersionCatalog
             $checksum = trim((string) ($entry['checksum'] ?? ''));
             $filePath = trim((string) ($entry['filePath'] ?? ''));
             if ($checksum == '' || $filePath == '' || !$this->isHostAllowed($filePath)) {
-                // Unpackaged or unsafe URL — do not skip to a later version.
+                // Unpackaged or unsafe URL
                 return null;
             }
 

@@ -44,11 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 $settingGateway = $container->get(SettingGateway::class);
 $databaseUpdater = $container->get(DatabaseUpdater::class);
 
-// Cutting Edge may take Development hops; stable is capped in VersionCatalog.
-if (!$databaseUpdater->isVersionValid()
-    || $databaseUpdater->isUpdateRequired()
-    || ($_POST['confirm'] ?? '') != 'Y'
-) {
+// Stable: Legacy/Current only. Cutting Edge include Development version
+if (!$databaseUpdater->isVersionValid() || $databaseUpdater->isUpdateRequired() || ($_POST['confirm'] ?? '') != 'Y') {
     $URL .= '&return=error3';
     header("Location: {$URL}");
     exit;
@@ -57,19 +54,11 @@ if (!$databaseUpdater->isVersionValid()
 $absolutePath = rtrim(str_replace('\\', '/', (string) $session->get('absolutePath')), '/');
 $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
 $lockPath = $baseDir.'/autoUpdate.lock';
-$packagePath = $baseDir.'/package.zip';
 
 if ($absolutePath == '' || !is_dir($absolutePath) || (!is_dir($baseDir) && !@mkdir($baseDir, 0755, true)) || !is_writable($baseDir)) {
-    $URL .= '&return=error2';
+    $URL .= '&return=errorFiles';
     header("Location: {$URL}");
     exit;
-}
-
-if (!is_file($baseDir.'/.htaccess')) {
-    @file_put_contents($baseDir.'/.htaccess', "Deny from all\n");
-}
-if (!is_file($baseDir.'/index.html')) {
-    @file_put_contents($baseDir.'/index.html', '');
 }
 
 $lock = @fopen($lockPath, 'c');
@@ -85,22 +74,13 @@ if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
 ignore_user_abort(true);
 @set_time_limit(300);
 
-// Clear a stale stage left by a killed prior run, then mark this hop.
-$settingGateway->updateSettingByScope('System Admin', 'autoUpdater', 'idle');
 $settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');
 $settingGateway->updateSettingByScope('System Admin', 'autoUpdater', 'running');
 
-$return = 'error2';
+$return = 'errorFiles';
 
 try {
-    if (!class_exists('ZipArchive')) {
-        throw new \RuntimeException(Downloader::ERROR_WRITE);
-    }
-
-    $release = $container->get(VersionCatalog::class)->getNextRelease(
-        $databaseUpdater->versionCode,
-        $databaseUpdater->isCuttingEdge()
-    );
+    $release = $container->get(VersionCatalog::class)->getNextRelease($databaseUpdater->versionCode, $databaseUpdater->isCuttingEdge());
     if ($release === null || empty($release['filePath'])) {
         throw new \RuntimeException(Downloader::ERROR_INVALID);
     }
@@ -111,7 +91,10 @@ try {
         throw new \RuntimeException(Downloader::ERROR_INVALID);
     }
 
+    // Download the new files
     $files = $container->get(Downloader::class)->run($release);
+
+    // Replace the old files in the server with the new ones
     $container->get(FilesystemUpdater::class)->run($files);
 
     if (function_exists('opcache_reset')) {
@@ -121,7 +104,7 @@ try {
     removeDirectoryContents($absolutePath.'/uploads/cache');
     $session->forget('pageLoads');
 
-    // Keep the admin session attached after file replace (same as updateProcess.php)
+    // Keep the admin session attached after file replacement
     $data = [
         'gibbonSessionID' => session_id(),
         'gibbonPersonID' => $session->get('gibbonPersonID'),
@@ -135,9 +118,6 @@ try {
 } catch (\Throwable $e) {
     error_log('autoUpdateProcess: '.$e->getMessage());
     $settingGateway->updateSettingByScope('System Admin', 'autoUpdater', 'failed');
-    if (is_file($packagePath)) {
-        @unlink($packagePath);
-    }
 } finally {
     $settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'N');
     flock($lock, LOCK_UN);

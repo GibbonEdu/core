@@ -26,7 +26,7 @@ use GuzzleHttp\Client;
 use Gibbon\Contracts\Services\Session;
 
 /**
- * Downloads, verifies, and extracts a sequential core update patch zip.
+ * Downloads, verifies, and extracts a sequential update zip.
  *
  * @version v30
  * @since   v30
@@ -35,9 +35,6 @@ class Downloader
 {
     public const BASE_DIR = 'backups/autoUpdate';
     public const MAX_PACKAGE_BYTES = 104857600; // 100 MB
-
-    /** Catalog checksum algorithm (gibbonedu.org publishes 32-hex MD5 of the zip). */
-    public const CHECKSUM_ALGO = 'md5';
 
     public const ERROR_INVALID = 'invalid';
     public const ERROR_DOWNLOAD = 'download';
@@ -68,10 +65,10 @@ class Downloader
     }
 
     /**
-     * Download → verify → extract.
+     * Download, verify, and extract a release; return relative file paths.
      *
      * @param array $release
-     * @return string[] Relative file paths from the patch.
+     * @return string[]
      */
     public function run(array $release) : array
     {
@@ -84,6 +81,8 @@ class Downloader
     }
 
     /**
+     * Download the release zip to backups/autoUpdate/package.zip.
+     *
      * @param array $release
      * @return string Absolute path to package.zip
      */
@@ -141,20 +140,21 @@ class Downloader
     }
 
     /**
+     * Check the zip SHA-256 against the catalog checksum.
+     *
      * @param string $zipPath
      * @param string $checksum
      */
     public function verify(string $zipPath, string $checksum)
     {
-        $checksum = strtolower(trim($checksum));
-        $actual = (is_file($zipPath) && $checksum != '') ? hash_file(self::CHECKSUM_ALGO, $zipPath) : false;
-
-        if ($actual === false || !hash_equals($checksum, strtolower($actual))) {
+        if (!is_file($zipPath) || trim($checksum) == '' || !hash_equals(strtolower(trim($checksum)), (string) hash_file('sha256', $zipPath))) {
             $this->fail(self::ERROR_VERIFY, $zipPath);
         }
     }
 
     /**
+     * Extract safe zip entries into staging and return relative paths.
+     *
      * @param string $zipPath
      * @return string[]
      */
@@ -211,6 +211,8 @@ class Downloader
     }
 
     /**
+     * Return the absolute staging path under backups/autoUpdate.
+     *
      * @return string
      */
     public function getStagingPath() : string
@@ -219,19 +221,26 @@ class Downloader
     }
 
     /**
+     * Normalize a zip path and reject unsafe or blocked targets.
+     *
      * @param string $relative
      * @return string
      */
     protected function assertSafeRelativePath(string $relative) : string
     {
-        $relative = (string) preg_replace('#/+#', '/', ltrim(str_replace('\\', '/', $relative), '/'));
+        $relative = ltrim(str_replace('\\', '/', $relative), '/');
         $lower = strtolower($relative);
 
+        // Same idea as Page::isAddressValid: block traversal and sensitive roots.
         if ($relative == ''
             || strpos($relative, "\0") !== false
-            || preg_match('#(^|/)\.\.(/|$)|^([a-zA-Z]:)#', $relative)
+            || strpos($relative, '..') !== false
+            || (strlen($relative) > 1 && $relative[1] == ':' && ctype_alpha($relative[0]))
             || $lower == 'config.php'
-            || preg_match('#^(uploads|backups|\.git|vendor)/#', $lower)
+            || strpos($lower, 'uploads/') === 0
+            || strpos($lower, 'backups/') === 0
+            || strpos($lower, '.git/') === 0
+            || strpos($lower, 'vendor/') === 0
         ) {
             $this->fail(self::ERROR_INVALID);
         }
@@ -240,6 +249,8 @@ class Downloader
     }
 
     /**
+     * Ensure backups/autoUpdate exists, is writable, and is not web-accessible.
+     *
      * @return string
      */
     protected function ensureBaseDirectory() : string
@@ -261,6 +272,8 @@ class Downloader
     }
 
     /**
+     * Clean up a partial zip, log the error code, and throw exception.
+     *
      * @param string $code
      * @param string $zipPath
      * @param \Throwable|null $previous
@@ -273,6 +286,8 @@ class Downloader
     }
 
     /**
+     * Delete a file if the path exists.
+     *
      * @param string $path
      */
     protected function deleteIfExists(string $path)
@@ -283,6 +298,8 @@ class Downloader
     }
 
     /**
+     * Delete all contents under a directory; leave the directory itself.
+     *
      * @param string $dir
      */
     protected function wipeDirectory(string $dir)
