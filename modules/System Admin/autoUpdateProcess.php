@@ -117,6 +117,7 @@ try {
     $return = 'success0';
 } catch (\Throwable $e) {
     error_log('autoUpdateProcess: '.$e->getMessage());
+    $session->set('autoUpdateStage', $e->getMessage());
     $settingGateway->updateSettingByScope('System Admin', 'autoUpdater', 'failed');
 } finally {
     $settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'N');

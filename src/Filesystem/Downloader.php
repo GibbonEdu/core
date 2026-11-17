@@ -76,7 +76,7 @@ class Downloader
         $this->verify($zipPath, (string) ($release['checksum'] ?? ''));
         $files = $this->extract($zipPath);
         $this->deleteIfExists($zipPath);
-
+        
         return $files;
     }
 
@@ -135,6 +135,10 @@ class Downloader
         if ($size > self::MAX_PACKAGE_BYTES) {
             $this->fail(self::ERROR_INVALID, $zipPath);
         }
+        // Reject non-zip payloads
+        if (@file_get_contents($zipPath, false, null, 0, 2) !== 'PK') {
+            $this->fail(self::ERROR_DOWNLOAD, $zipPath);
+        }
 
         return $zipPath;
     }
@@ -164,15 +168,13 @@ class Downloader
         $this->wipeDirectory($staging);
 
         if ((!is_dir($staging) && !mkdir($staging, 0755, true)) || ($stagingReal = realpath($staging)) === false) {
-            $this->fail(self::ERROR_WRITE);
+            $this->fail(self::ERROR_WRITE, $zipPath);
         }
 
         $zip = new ZipArchive();
         if (!is_file($zipPath) || $zip->open($zipPath) !== true) {
-            $this->fail(self::ERROR_EXTRACT);
+            $this->fail(self::ERROR_EXTRACT, $zipPath);
         }
-
-        $files = [];
 
         try {
             for ($i = 0; $i < $zip->numFiles; ++$i) {
@@ -185,29 +187,77 @@ class Downloader
 
                 $relative = $this->assertSafeRelativePath($name);
                 if ($zip->extractTo($stagingReal, $entryName) !== true) {
-                    $this->fail(self::ERROR_EXTRACT);
+                    $this->fail(self::ERROR_EXTRACT, $zipPath);
                 }
 
                 $extracted = realpath($stagingReal.'/'.$relative);
-                if ($extracted === false || strpos($extracted, $stagingReal.DIRECTORY_SEPARATOR) !== 0) {
-                    $this->fail(self::ERROR_INVALID);
+                if ($extracted === false || !$this->isUnder($extracted, $stagingReal)) {
+                    $this->fail(self::ERROR_INVALID, $zipPath);
                 }
-
-                $files[] = $relative;
             }
         } catch (\Throwable $e) {
             $this->wipeDirectory($staging);
+            $this->deleteIfExists($zipPath);
             throw $e;
         } finally {
             $zip->close();
         }
 
+        try {
+            // Flat zip, or one wrapper folder
+            $entries = array_values(array_filter(scandir($stagingReal) ?: [], function ($name) {
+                return $name != '.' && $name != '..' && $name != '__MACOSX';
+            }));
+            if (count($entries) == 1 && is_dir($stagingReal.'/'.$entries[0])) {
+                $wrap = $stagingReal.'/'.$entries[0];
+                foreach (scandir($wrap) ?: [] as $item) {
+                    if ($item == '.' || $item == '..') {
+                        continue;
+                    }
+                    if (!@rename($wrap.'/'.$item, $stagingReal.'/'.$item)) {
+                        $this->fail(self::ERROR_EXTRACT, $zipPath);
+                    }
+                }
+                @rmdir($wrap);
+            }
+
+            $files = [];
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($stagingReal, \FilesystemIterator::SKIP_DOTS));
+            foreach ($iterator as $fileInfo) {
+                if (!$fileInfo->isFile()) {
+                    continue;
+                }
+                $full = str_replace('\\', '/', $fileInfo->getPathname());
+                $root = rtrim(str_replace('\\', '/', $stagingReal), '/');
+                $files[] = $this->assertSafeRelativePath(ltrim(substr($full, strlen($root)), '/'));
+            }
+        } catch (\Throwable $e) {
+            $this->wipeDirectory($staging);
+            $this->deleteIfExists($zipPath);
+            throw $e;
+        }
+
         if (empty($files) || !in_array('version.php', $files, true)) {
             $this->wipeDirectory($staging);
-            $this->fail(self::ERROR_EXTRACT);
+            $this->fail(self::ERROR_EXTRACT, $zipPath);
         }
 
         return $files;
+    }
+
+    /**
+     * Whether $path is inside $root
+     *
+     * @param string $path
+     * @param string $root
+     * @return bool
+     */
+    protected function isUnder(string $path, string $root) : bool
+    {
+        $path = str_replace('\\', '/', $path);
+        $root = rtrim(str_replace('\\', '/', $root), '/');
+
+        return strpos($path, $root.'/') === 0;
     }
 
     /**

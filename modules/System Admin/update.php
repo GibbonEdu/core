@@ -38,10 +38,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     $page->breadcrumbs->add(__('Update'));
 
     $return = $_GET['return'] ?? '';
+    $errorFiles = __('Your request failed because the file update could not be completed. Check the version catalog, package checksum, disk space, file permissions, and that the PHP Zip extension is enabled.');
+    if ($session->has('autoUpdateStage')) {
+        $errorFiles .= ' ('.$session->get('autoUpdateStage').')';
+        $session->forget('autoUpdateStage');
+    }
     $page->return->addReturns([
         'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
-        'errorFiles' => __('Your request failed because the file update could not be completed. Check the version catalog, package checksum, disk space, file permissions, and that the PHP Zip extension is enabled.'),
+        'errorFiles' => $errorFiles,
     ]);
 
     // Get and display SQL errors
