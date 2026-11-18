@@ -1118,6 +1118,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $paymentFail = true;
             } else {
                 try {
+                    $receiptNumber = intval($receiptNumber);
                     $dataPayment = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
                     $sqlPayment = "SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment LEFT JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID LIMIT $receiptNumber, 1";
                     $resultPayment = $connection2->prepare($sqlPayment);
@@ -1349,6 +1350,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $amountPaid = 0;
                     //Get amount paid until this point
                     try {
+                        $receiptNumber = intval($receiptNumber);
                         $dataPayment2 = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
                         $sqlPayment2 = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment LEFT JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID LIMIT 0, '.($receiptNumber + 1);
                         $resultPayment2 = $connection2->prepare($sqlPayment2);
