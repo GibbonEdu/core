@@ -105,7 +105,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $paidAmount = $_POST['paidAmount'] ?? '';
                     //If some paid already, work out amount, and add it to total
                     $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
-                    $paidAmount += $alreadyPaid;
+                    $paidAmount = floatval($paidAmount) + floatval($alreadyPaid);
                 } else if ($_POST['status'] == 'Refunded') {
                     $paidAmount = $row['paidAmount'];
                 } else {
