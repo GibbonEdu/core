@@ -32,9 +32,9 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
-$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonPlannerEntryID = intval($_GET['gibbonPlannerEntryID'] ?? '');
+$gibbonPlannerEntryHomeworkID = intval($_GET['gibbonPlannerEntryHomeworkID'] ?? '');
+$gibbonPersonID = intval($_GET['gibbonPersonID'] ?? '');
 
 $URL = Url::fromModuleRoute('Crowd Assessment', 'crowdAssess_view_discuss')
     ->withQueryParams([

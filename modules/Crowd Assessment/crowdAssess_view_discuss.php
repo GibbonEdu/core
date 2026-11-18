@@ -33,9 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get class variable
-    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
-    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
+    $gibbonPersonID = intval($_GET['gibbonPersonID'] ?? '');
+    $gibbonPlannerEntryID = intval($_GET['gibbonPlannerEntryID'] ?? '');
+    $gibbonPlannerEntryHomeworkID = intval($_GET['gibbonPlannerEntryHomeworkID'] ?? '');
 
     $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID];
     $page->breadcrumbs

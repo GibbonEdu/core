@@ -417,6 +417,16 @@ $sql[$count][1] = "";
 $sql[$count][0] = '30.0.03';
 $sql[$count][1] = "";
 
+//v30.0.04
+++$count;
+$sql[$count][0] = '30.0.04';
+$sql[$count][1] = "";
+
+//v30.0.05
+++$count;
+$sql[$count][0] = '30.0.05';
+$sql[$count][1] = "";
+
 //v31.0.00
 ++$count;
 $sql[$count][0] = '31.0.00';
