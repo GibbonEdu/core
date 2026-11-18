@@ -22,8 +22,10 @@ CHANGELOG
 v30.0.03
 --------
 
-    Security
 
+    Security
+        Crowd Assessment: improved sanitisation of planner variables
+        
     Bug Fixes
 
 
