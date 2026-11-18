@@ -22,13 +22,18 @@ CHANGELOG
 v30.0.03
 --------
 
+    Changes With Important Notices
+        System: raised the minimum PHP version requirement to 8.2
+
     Security
         System: improved Twig sandboxing for user supplied templates
+        Crowd Assessment: improved sanitisation of planner variables
         Reports: limited Twig filters and functions based in sandbox security policy
 
     Bug Fixes
+        System: fixed internal links opening in a new tab rather than same tab
         System Admin: fixed PHP error on Import History page
-
+        Calendar: fixed existing future attendance not visible in participants list, fix permission check for Manage Events_all
 
 v30.0.02
 --------
