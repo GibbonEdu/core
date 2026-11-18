@@ -22,6 +22,10 @@ CHANGELOG
 v30.0.03
 --------
 
+    Changes With Important Notices
+        Please note, this version still supports PHO 8.0, but future versions 
+        from v30.0.04 onward will require PHP 8.2+
+
     Security
         System: improved POST referrer check to handle empty HTTP_REFERER
         System: removed outdated Softaculous update endpoint
