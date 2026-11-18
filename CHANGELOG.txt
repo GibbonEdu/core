@@ -28,6 +28,8 @@ v30.0.03
 
     Bug Fixes
         System: fixed internal links opening in a new tab rather than same tab
+        Calendar: fixed existing future attendance not visible in participants list
+        Calendar: fixed permission check for Manage Events_all
 
 
 v30.0.02
