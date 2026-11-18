@@ -25,6 +25,7 @@ v30.0.03
 
     Security
         Crowd Assessment: improved sanitisation of planner variables
+        Formal Assessment: improved cross-checking of class IDs
 
     Bug Fixes
         System: fixed internal links opening in a new tab rather than same tab
