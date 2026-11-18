@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             ->add(__('View Activities'), 'activities_view.php')
             ->add(__('Activity Registration'));
 
-        if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register') == false) {
-            //Acess denied
+        if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
+            // Access denied
             $page->addError(__('You do not have access to this action.'));
         } else {
 

@@ -35,6 +35,8 @@ v30.0.03
         Calendar: fixed permission check for Manage Events_all
         Finance: fixed the issue of online invoice payment receipt showing blank status when the payer is logged into Gibbon
         Finance: fixed the issue of Online payment receipt for a Company invoice being sent to the family
+        Finance: fixed invoice reminder printing so the reminder count stays unchanged
+        Finance: fixed expense approval so only a budget approval or school approval clears the budget step
         Markbook: fixed permission check for teacher markbook edit access
         System Admin: fixed PHP error on Import History page
 
