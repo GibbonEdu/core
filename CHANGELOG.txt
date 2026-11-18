@@ -23,11 +23,22 @@ v30.0.03
 --------
 
     Security
+        System: improved POST referrer check to handle empty HTTP_REFERER
+        System: removed outdated Softaculous update endpoint
+        Crowd Assessment: improved sanitisation of planner variables
+        Formal Assessment: improved cross-checking of class IDs
 
     Bug Fixes
+        System: fixed internal links opening in a new tab rather than same tab
+        Activities: fixed registration page logic when unregistering
+        Calendar: fixed existing future attendance not visible in participants list
+        Calendar: fixed permission check for Manage Events_all
+        Finance: fixed the issue of online invoice payment receipt showing blank status when the payer is logged into Gibbon
+        Finance: fixed the issue of Online payment receipt for a Company invoice being sent to the family
         Finance: fixed invoice reminder printing so the reminder count stays unchanged
         Finance: fixed expense approval so only a budget approval or school approval clears the budget step
-
+        Markbook: fixed permission check for teacher markbook edit access
+        System Admin: fixed PHP error on Import History page
 
 
 v30.0.02

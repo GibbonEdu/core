@@ -161,12 +161,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             } else {
                                 $values = $result->fetch();
 
-                                //Check for existing registration
-
-                                    $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                                    $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
-                                    $resultReg = $connection2->prepare($sqlReg);
-                                    $resultReg->execute($dataReg);
+                                // Check for existing registration
+                                $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
+                                $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
+                                $resultReg = $connection2->prepare($sqlReg);
+                                $resultReg->execute($dataReg);
 
                                 if (!empty($values['access']) && $values['access'] != 'Register') {
                                     echo "<div class='error'>";

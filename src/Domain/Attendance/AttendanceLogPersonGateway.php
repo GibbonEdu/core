@@ -390,7 +390,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     public function selectFutureAttendanceLogsByDate($dateStart, $dateEnd)
     {
         $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
-        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID as groupBy, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason, gibbonAttendanceLogPerson.context, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.direction, gibbonAttendanceLogPerson.comment
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID as groupBy, gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID, gibbonAttendanceLogPerson.gibbonPersonID, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason, gibbonAttendanceLogPerson.context, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.direction, gibbonAttendanceLogPerson.comment
             FROM gibbonAttendanceLogPerson 
             WHERE gibbonAttendanceLogPerson.date >= :dateStart
             AND gibbonAttendanceLogPerson.date <= :dateEnd
@@ -403,7 +403,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     public function selectFutureAttendanceLogsByDateAndTime($dateStart, $dateEnd, $timeStart, $timeEnd)
     {
         $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd];
-        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID as groupBy, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason, gibbonAttendanceLogPerson.context, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.direction, gibbonAttendanceLogPerson.comment, gibbonTTColumnRow.name
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID as groupBy, gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID, gibbonAttendanceLogPerson.gibbonPersonID, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason, gibbonAttendanceLogPerson.context, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.direction, gibbonAttendanceLogPerson.comment, gibbonTTColumnRow.name
             FROM gibbonAttendanceLogPerson 
             JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
             JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonAttendanceLogPerson.gibbonTTDayRowClassID)
