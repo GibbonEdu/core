@@ -19,6 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v30.0.03
+--------
+
+    Security
+
+    Bug Fixes
+
+
 v30.0.02
 --------
 
