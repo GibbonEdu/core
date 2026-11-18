@@ -32,9 +32,9 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
-$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonPlannerEntryID = intval($_GET['gibbonPlannerEntryID'] ?? '');
+$gibbonPlannerEntryHomeworkID = intval($_GET['gibbonPlannerEntryHomeworkID'] ?? '');
+$gibbonPersonID = intval($_GET['gibbonPersonID'] ?? '');
 
 $URL = Url::fromModuleRoute('Crowd Assessment', 'crowdAssess_view_discuss')
     ->withQueryParams([
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     if ($gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '' or $gibbonPersonID == '') {
         header('Location: ' . $URL->withReturn('error1'));
     } else {
-        $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+        $and = " AND gibbonPlannerEntryID=".intval($gibbonPlannerEntryID);
         $sql = getLessons($guid, $connection2, $and);
         try {
             $result = $connection2->prepare($sql[1]);

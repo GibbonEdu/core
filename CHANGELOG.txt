@@ -23,10 +23,19 @@ v30.0.03
 --------
 
     Security
+        System: improved POST referrer check to handle empty HTTP_REFERER
+        System: removed outdated Softaculous update endpoint
+        System: improved sanitisation of variables used in breadcrumb links
+        Crowd Assessment: improved sanitisation of planner variables
+        Formal Assessment: improved cross-checking of class IDs
 
     Bug Fixes
-        System: fixed values taken from the page address so a count is shown as a number and other text is shown as text
-
+        System: fixed internal links opening in a new tab rather than same tab
+        Activities: fixed registration page logic when unregistering
+        Markbook: fixed permission check for teacher markbook edit access
+        Calendar: fixed existing future attendance not visible in participants list
+        Calendar: fixed permission check for Manage Events_all
+        System Admin: fixed PHP error on Import History page
 
 
 v30.0.02
