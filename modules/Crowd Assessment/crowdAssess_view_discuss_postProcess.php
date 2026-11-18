@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     if ($gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '' or $gibbonPersonID == '') {
         header('Location: ' . $URL->withReturn('error1'));
     } else {
-        $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+        $and = " AND gibbonPlannerEntryID=".intval($gibbonPlannerEntryID);
         $sql = getLessons($guid, $connection2, $and);
         try {
             $result = $connection2->prepare($sql[1]);
