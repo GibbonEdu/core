@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
-v30.0.03
+v30.0.04
 --------
 
     Changes With Important Notices
@@ -34,6 +34,9 @@ v30.0.03
         System: fixed internal links opening in a new tab rather than same tab
         System Admin: fixed PHP error on Import History page
         Calendar: fixed existing future attendance not visible in participants list, fix permission check for Manage Events_all
+
+v30.0.03
+--------
 
 v30.0.02
 --------
