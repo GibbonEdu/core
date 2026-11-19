@@ -23,24 +23,30 @@ namespace Gibbon\Auth\Passkey;
 
 use Gibbon\Contracts\Database\Connection;
 use ParagonIE\ConstantTime\Base64UrlSafe;
-use Webauthn\PublicKeyCredentialSource;
-use Webauthn\PublicKeyCredentialSourceRepository;
+use Symfony\Component\Serializer\SerializerInterface;
+use Webauthn\AttestationStatement\AttestationStatementSupportManager;
+use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
+use Webauthn\CredentialRecord;
+use Webauthn\Denormalizer\WebauthnSerializerFactory;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
  * Database-backed WebAuthn credential repository.
  */
-class PasskeyRepository implements PublicKeyCredentialSourceRepository
+class PasskeyRepository
 {
     /** @var \PDO */
     protected $db;
+
+    /** @var SerializerInterface|null */
+    protected $serializer;
 
     public function __construct(Connection $connection)
     {
         $this->db = $connection->getConnection();
     }
 
-    public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource
+    public function findOneByCredentialId(string $publicKeyCredentialId): ?CredentialRecord
     {
         $credentialId = Base64UrlSafe::encodeUnpadded($publicKeyCredentialId);
 
@@ -56,15 +62,15 @@ class PasskeyRepository implements PublicKeyCredentialSourceRepository
     }
 
     /**
-     * @return PublicKeyCredentialSource[]
+     * @return CredentialRecord[]
      */
     public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array
     {
-        return $this->findAllForPerson((int) $publicKeyCredentialUserEntity->getId());
+        return $this->findAllForPerson((int) $publicKeyCredentialUserEntity->id);
     }
 
     /**
-     * @return PublicKeyCredentialSource[]
+     * @return CredentialRecord[]
      */
     public function findAllForPerson(int $gibbonPersonID): array
     {
@@ -87,20 +93,20 @@ class PasskeyRepository implements PublicKeyCredentialSourceRepository
         return $sources;
     }
 
-    public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void
+    public function saveCredentialSource(CredentialRecord $credentialRecord): void
     {
-        $credentialId = Base64UrlSafe::encodeUnpadded($publicKeyCredentialSource->getPublicKeyCredentialId());
+        $credentialId = Base64UrlSafe::encodeUnpadded($credentialRecord->publicKeyCredentialId);
 
         $stmt = $this->db->prepare('UPDATE gibbonPersonPasskey SET credentialSource=:credentialSource WHERE credentialId=:credentialId');
         $stmt->execute([
-            'credentialSource' => json_encode($publicKeyCredentialSource),
+            'credentialSource' => $this->getSerializer()->serialize($credentialRecord, 'json'),
             'credentialId'     => $credentialId,
         ]);
     }
 
-    public function saveForPerson(int $gibbonPersonID, string $label, PublicKeyCredentialSource $source): bool
+    public function saveForPerson(int $gibbonPersonID, string $label, CredentialRecord $source): bool
     {
-        $credentialId = Base64UrlSafe::encodeUnpadded($source->getPublicKeyCredentialId());
+        $credentialId = Base64UrlSafe::encodeUnpadded($source->publicKeyCredentialId);
         $label = trim($label) !== '' ? mb_substr(trim($label), 0, 60) : __('Passkey');
 
         try {
@@ -122,7 +128,7 @@ class PasskeyRepository implements PublicKeyCredentialSourceRepository
                 'gibbonPersonID'  => $gibbonPersonID,
                 'label'           => $label,
                 'credentialId'    => $credentialId,
-                'credentialSource'=> json_encode($source),
+                'credentialSource'=> $this->getSerializer()->serialize($source, 'json'),
             ]);
         } catch (\PDOException $e) {
             return false;
@@ -154,9 +160,9 @@ class PasskeyRepository implements PublicKeyCredentialSourceRepository
         }
     }
 
-    public function rotateForPerson(int $gibbonPersonID, string $label, PublicKeyCredentialSource $source, string $oldEncodedCredentialId): bool
+    public function rotateForPerson(int $gibbonPersonID, string $label, CredentialRecord $source, string $oldEncodedCredentialId): bool
     {
-        $newCredentialId = Base64UrlSafe::encodeUnpadded($source->getPublicKeyCredentialId());
+        $newCredentialId = Base64UrlSafe::encodeUnpadded($source->publicKeyCredentialId);
 
         try {
             $this->db->beginTransaction();
@@ -235,21 +241,28 @@ class PasskeyRepository implements PublicKeyCredentialSourceRepository
         $stmt->execute(['credentialId' => $credentialId]);
     }
 
-    protected function decodeSource($json): ?PublicKeyCredentialSource
+    protected function decodeSource($json): ?CredentialRecord
     {
         if (empty($json)) {
             return null;
         }
 
-        $data = json_decode($json, true);
-        if (!is_array($data)) {
-            return null;
-        }
-
         try {
-            return PublicKeyCredentialSource::createFromArray($data);
+            return $this->getSerializer()->deserialize((string) $json, CredentialRecord::class, 'json');
         } catch (\Throwable $e) {
             return null;
         }
+    }
+
+    protected function getSerializer(): SerializerInterface
+    {
+        if (!$this->serializer) {
+            $manager = AttestationStatementSupportManager::create([
+                new NoneAttestationStatementSupport(),
+            ]);
+            $this->serializer = (new WebauthnSerializerFactory($manager))->create();
+        }
+
+        return $this->serializer;
     }
 }

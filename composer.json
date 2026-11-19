@@ -65,7 +65,7 @@
         "eluceo/ical": "^2.14",
         "robthree/twofactorauth": "^3.0",
         "php-http/guzzle7-adapter": "^1.1",
-        "web-auth/webauthn-lib": "^4.9"
+        "web-auth/webauthn-lib": "^5.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6",

@@ -25,7 +25,7 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use ParagonIE\ConstantTime\Base64UrlSafe;
-use Webauthn\AttestationStatement\AttestationObjectLoader;
+use Symfony\Component\Serializer\SerializerInterface;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\AuthenticatorAssertionResponse;
@@ -33,13 +33,15 @@ use Webauthn\AuthenticatorAssertionResponseValidator;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
 use Webauthn\AuthenticatorSelectionCriteria;
+use Webauthn\CeremonyStep\CeremonyStepManagerFactory;
+use Webauthn\CredentialRecord;
+use Webauthn\Denormalizer\WebauthnSerializerFactory;
+use Webauthn\PublicKeyCredential;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialDescriptor;
-use Webauthn\PublicKeyCredentialLoader;
 use Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialRpEntity;
-use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
@@ -66,6 +68,18 @@ class PasskeyService
     /** @var SettingGateway */
     protected $settingGateway;
 
+    /** @var AttestationStatementSupportManager|null */
+    protected $attestationManager;
+
+    /** @var SerializerInterface|null */
+    protected $serializer;
+
+    /** @var AuthenticatorAttestationResponseValidator|null */
+    protected $attestationValidator;
+
+    /** @var AuthenticatorAssertionResponseValidator|null */
+    protected $assertionValidator;
+
     public function __construct(PasskeyRepository $repository, Session $session, UserGateway $userGateway, SettingGateway $settingGateway)
     {
         $this->repository = $repository;
@@ -87,13 +101,12 @@ class PasskeyService
         $selection = AuthenticatorSelectionCriteria::create(
             null,
             AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED,
-            AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED,
-            true
+            AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED
         );
 
         $excludeCredentials = [];
         foreach ($this->repository->findAllForUserEntity($user) as $source) {
-            $excludeCredentials[] = PublicKeyCredentialDescriptor::create('public-key', $source->getPublicKeyCredentialId());
+            $excludeCredentials[] = PublicKeyCredentialDescriptor::create('public-key', $source->publicKeyCredentialId);
         }
 
         $options = PublicKeyCredentialCreationOptions::create(
@@ -107,10 +120,10 @@ class PasskeyService
             60000
         );
 
-        $optionsJson = $options->jsonSerialize();
+        $optionsJson = json_decode($this->getSerializer()->serialize($options, 'json'), true);
         $nonce = bin2hex(random_bytes(16));
         $this->session->set(self::SESSION_CREATION, [
-            'options' => json_decode(json_encode($optionsJson), true),
+            'options' => $optionsJson,
             'nonce'   => $nonce,
             'expires' => time() + self::CHALLENGE_TTL,
             'personID'=> $gibbonPersonID,
@@ -119,7 +132,7 @@ class PasskeyService
         return ['options' => $optionsJson, 'nonce' => $nonce];
     }
 
-    public function verifyAttestation(array $response, string $nonce, int $gibbonPersonID): PublicKeyCredentialSource
+    public function verifyAttestation(array $response, string $nonce, int $gibbonPersonID): CredentialRecord
     {
         $stored = $this->session->get(self::SESSION_CREATION);
         $this->session->forget(self::SESSION_CREATION);
@@ -137,17 +150,19 @@ class PasskeyService
             throw new \RuntimeException(__('Passkey registration session expired.'));
         }
 
-        $options = PublicKeyCredentialCreationOptions::createFromArray($stored['options']);
+        $options = $this->getSerializer()->deserialize(
+            json_encode($stored['options']),
+            PublicKeyCredentialCreationOptions::class,
+            'json'
+        );
         $credential = $this->loadCredential($response);
-        $attestationResponse = $credential->getResponse();
+        $attestationResponse = $credential->response;
 
         if (!($attestationResponse instanceof AuthenticatorAttestationResponse)) {
             throw new \RuntimeException(__('Invalid passkey registration response.'));
         }
 
-        $validator = AuthenticatorAttestationResponseValidator::create();
-
-        return $validator->check($attestationResponse, $options, $this->getHost(), ['localhost', '127.0.0.1']);
+        return $this->getAttestationValidator()->check($attestationResponse, $options, $this->getHost());
     }
 
     public function createRequestOptions(?int $gibbonPersonID = null): array
@@ -157,7 +172,7 @@ class PasskeyService
         if (!empty($gibbonPersonID)) {
             $user = $this->getUserEntity($gibbonPersonID);
             foreach ($this->repository->findAllForUserEntity($user) as $source) {
-                $allowCredentials[] = PublicKeyCredentialDescriptor::create('public-key', $source->getPublicKeyCredentialId());
+                $allowCredentials[] = PublicKeyCredentialDescriptor::create('public-key', $source->publicKeyCredentialId);
             }
         }
 
@@ -169,10 +184,10 @@ class PasskeyService
             60000
         );
 
-        $optionsJson = $options->jsonSerialize();
+        $optionsJson = json_decode($this->getSerializer()->serialize($options, 'json'), true);
         $nonce = bin2hex(random_bytes(16));
         $this->session->set(self::SESSION_REQUEST, [
-            'options' => json_decode(json_encode($optionsJson), true),
+            'options' => $optionsJson,
             'nonce'   => $nonce,
             'expires' => time() + self::CHALLENGE_TTL,
         ]);
@@ -195,39 +210,41 @@ class PasskeyService
             throw new \RuntimeException(__('Passkey sign-in session expired.'));
         }
 
-        $options = PublicKeyCredentialRequestOptions::createFromArray($stored['options']);
+        $options = $this->getSerializer()->deserialize(
+            json_encode($stored['options']),
+            PublicKeyCredentialRequestOptions::class,
+            'json'
+        );
         $credential = $this->loadCredential($response);
-        $assertionResponse = $credential->getResponse();
+        $assertionResponse = $credential->response;
 
         if (!($assertionResponse instanceof AuthenticatorAssertionResponse)) {
             throw new \RuntimeException(__('Invalid passkey sign-in response.'));
         }
 
-        $source = $this->repository->findOneByCredentialId($credential->getRawId());
+        $source = $this->repository->findOneByCredentialId($credential->rawId);
         if (empty($source)) {
             throw new \RuntimeException(__('Unknown passkey.'));
         }
 
-        $validator = AuthenticatorAssertionResponseValidator::create();
-        $source = $validator->check(
+        $source = $this->getAssertionValidator()->check(
             $source,
             $assertionResponse,
             $options,
             $this->getHost(),
-            $source->getUserHandle(),
-            ['localhost', '127.0.0.1']
+            $source->userHandle
         );
 
         $this->repository->saveCredentialSource($source);
-        $this->repository->markUsed($credential->getRawId());
+        $this->repository->markUsed($credential->rawId);
 
         try {
-            $this->scheduleRotation((int) $source->getUserHandle(), $credential->getRawId());
+            $this->scheduleRotation((int) $source->userHandle, $credential->rawId);
         } catch (\Throwable $e) {
             // Rotation must never block a valid passkey login.
         }
 
-        return (int) $source->getUserHandle();
+        return (int) $source->userHandle;
     }
 
     public function getPendingRotation(int $gibbonPersonID): ?array
@@ -250,16 +267,18 @@ class PasskeyService
 
         $user = $this->getUserEntity($gibbonPersonID);
         $rp = PublicKeyCredentialRpEntity::create($this->getRpName(), $this->getRpId());
+
         $parameters = [
             PublicKeyCredentialParameters::createPk(-7),
             PublicKeyCredentialParameters::createPk(-257),
         ];
+
         $selection = AuthenticatorSelectionCriteria::create(
             null,
             AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED,
-            AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED,
-            true
+            AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED
         );
+
         $options = PublicKeyCredentialCreationOptions::create(
             $rp,
             $user,
@@ -270,21 +289,22 @@ class PasskeyService
             [],
             60000
         );
-        $optionsJson = $options->jsonSerialize();
+
+        $optionsJson = json_decode($this->getSerializer()->serialize($options, 'json'), true);
         $nonce = bin2hex(random_bytes(16));
         $this->session->set(self::SESSION_ROTATION_OPTIONS, [
-            'options'      => json_decode(json_encode($optionsJson), true),
-            'nonce'        => $nonce,
-            'expires'      => time() + self::CHALLENGE_TTL,
-            'personID'     => $gibbonPersonID,
+            'options'   => $optionsJson,
+            'nonce'     => $nonce,
+            'expires'   => time() + self::CHALLENGE_TTL,
+            'personID'  => $gibbonPersonID,
             'credentialId' => $rotation['credentialId'],
-            'label'        => $rotation['label'] ?? '',
+            'label'     => $rotation['label'] ?? '',
         ]);
 
         return ['options' => $optionsJson, 'nonce' => $nonce];
     }
 
-    public function verifyRotationAttestation(array $response, string $nonce, int $gibbonPersonID): PublicKeyCredentialSource
+    public function verifyRotationAttestation(array $response, string $nonce, int $gibbonPersonID): CredentialRecord
     {
         $stored = $this->session->get(self::SESSION_ROTATION_OPTIONS);
         $this->session->forget(self::SESSION_ROTATION_OPTIONS);
@@ -299,23 +319,22 @@ class PasskeyService
             throw new \RuntimeException(__('Invalid passkey rotation request.'));
         }
 
-        $options = PublicKeyCredentialCreationOptions::createFromArray($stored['options']);
+        $options = $this->getSerializer()->deserialize(
+            json_encode($stored['options']),
+            PublicKeyCredentialCreationOptions::class,
+            'json'
+        );
         $credential = $this->loadCredential($response);
-        $attestationResponse = $credential->getResponse();
+        $attestationResponse = $credential->response;
 
         if (!($attestationResponse instanceof AuthenticatorAttestationResponse)) {
             throw new \RuntimeException(__('Invalid passkey rotation response.'));
         }
 
-        return AuthenticatorAttestationResponseValidator::create()->check(
-            $attestationResponse,
-            $options,
-            $this->getHost(),
-            ['localhost', '127.0.0.1']
-        );
+        return $this->getAttestationValidator()->check($attestationResponse, $options, $this->getHost());
     }
 
-    public function completeRotation(int $gibbonPersonID, PublicKeyCredentialSource $source): bool
+    public function completeRotation(int $gibbonPersonID, CredentialRecord $source): bool
     {
         $rotation = $this->getPendingRotation($gibbonPersonID);
         if (empty($rotation) || empty($rotation['credentialId'])) {
@@ -354,7 +373,7 @@ class PasskeyService
 
     protected function scheduleRotation(int $gibbonPersonID, string $rawCredentialId): void
     {
-        $days = (int) $this->settingGateway->getSettingByScope('System', 'passkeyRotationDays');
+        $days = $this->getRotationDays();
         if ($days <= 0) {
             return;
         }
@@ -368,7 +387,7 @@ class PasskeyService
         if (!empty($metadata['rotationDeferredUntil']) && strtotime($metadata['rotationDeferredUntil']) > $now) {
             return;
         }
-        if (strtotime($metadata['createdAt']) + (min(3650, $days) * 86400) > $now) {
+        if (strtotime($metadata['createdAt']) + ($days * 86400) > $now) {
             return;
         }
 
@@ -380,12 +399,19 @@ class PasskeyService
         ]);
     }
 
+    protected function getRotationDays(): int
+    {
+        $days = (int) $this->settingGateway->getSettingByScope('System', 'passkeyRotationDays');
+
+        return max(0, min(3650, $days));
+    }
+
     public function getPasskeysForPerson(int $gibbonPersonID): array
     {
         return $this->repository->selectByPerson($gibbonPersonID);
     }
 
-    public function savePasskey(int $gibbonPersonID, string $label, PublicKeyCredentialSource $source): bool
+    public function savePasskey(int $gibbonPersonID, string $label, CredentialRecord $source): bool
     {
         return $this->repository->saveForPerson($gibbonPersonID, $label, $source);
     }
@@ -418,17 +444,57 @@ class PasskeyService
         );
     }
 
-    protected function loadCredential(array $response): \Webauthn\PublicKeyCredential
+    protected function loadCredential(array $response): PublicKeyCredential
     {
-        $attestationManager = AttestationStatementSupportManager::create([
-            new NoneAttestationStatementSupport(),
-        ]);
-
-        $loader = PublicKeyCredentialLoader::create(
-            AttestationObjectLoader::create($attestationManager)
+        return $this->getSerializer()->deserialize(
+            json_encode($response),
+            PublicKeyCredential::class,
+            'json'
         );
+    }
 
-        return $loader->loadArray($response);
+    protected function getAttestationManager(): AttestationStatementSupportManager
+    {
+        if (!$this->attestationManager) {
+            $this->attestationManager = AttestationStatementSupportManager::create([
+                new NoneAttestationStatementSupport(),
+            ]);
+        }
+
+        return $this->attestationManager;
+    }
+
+    protected function getSerializer(): SerializerInterface
+    {
+        if (!$this->serializer) {
+            $this->serializer = (new WebauthnSerializerFactory($this->getAttestationManager()))->create();
+        }
+
+        return $this->serializer;
+    }
+
+    protected function getAttestationValidator(): AuthenticatorAttestationResponseValidator
+    {
+        if (!$this->attestationValidator) {
+            $factory = new CeremonyStepManagerFactory();
+            $factory->setSecuredRelyingPartyId(['localhost', '127.0.0.1']);
+            $factory->setAttestationStatementSupportManager($this->getAttestationManager());
+            $this->attestationValidator = AuthenticatorAttestationResponseValidator::create($factory->creationCeremony());
+        }
+
+        return $this->attestationValidator;
+    }
+
+    protected function getAssertionValidator(): AuthenticatorAssertionResponseValidator
+    {
+        if (!$this->assertionValidator) {
+            $factory = new CeremonyStepManagerFactory();
+            $factory->setSecuredRelyingPartyId(['localhost', '127.0.0.1']);
+            $factory->setAttestationStatementSupportManager($this->getAttestationManager());
+            $this->assertionValidator = AuthenticatorAssertionResponseValidator::create($factory->requestCeremony());
+        }
+
+        return $this->assertionValidator;
     }
 
     protected function getRpName(): string
@@ -448,7 +514,10 @@ class PasskeyService
 
     protected function getHost(): string
     {
-        $host = $_SERVER['HTTP_HOST'] ?? $this->getRpId();
+        $host = parse_url((string) $this->session->get('absoluteURL'), PHP_URL_HOST);
+        if (empty($host)) {
+            $host = $_SERVER['HTTP_HOST'] ?? $this->getRpId();
+        }
 
         return preg_replace('/:\d+$/', '', $host);
     }
