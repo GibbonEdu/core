@@ -38,6 +38,8 @@ class DaysOfWeekGateway extends QueryableGateway
     private static $tableName = 'gibbonDaysOfWeek';
     private static $primaryKey = 'gibbonDaysOfWeekID';
 
+    private static $searchableColumns = [];
+
     public function selectSchoolWeekdays()
     {
         $sql = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";

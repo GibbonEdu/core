@@ -329,6 +329,19 @@ class Url extends Uri implements UriInterface
     }
 
     /**
+     * Check if two URLs are of the same origin.
+     *
+     * @param UriInterface $uri
+     * @param UriInterface $base
+     *
+     * @return bool
+     */
+    public static function isSameOrigin(UriInterface $uri, UriInterface $base): bool
+    {
+        return str_starts_with($uri->__toString(), $base->__toString());
+    }
+
+    /**
      * Setting the internal module property. Should only be
      * used internally by fromRoute and fromModuleRoute
      * method (or other similar public method) to keep the

@@ -43,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             ->add(__('View Activities'), 'activities_view.php')
             ->add(__('Activity Registration'));
 
-        if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register') == false) {
-            //Acess denied
+        if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
+            // Access denied
             $page->addError(__('You do not have access to this action.'));
         } else {
 
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 } else {
                     $mode = $_GET['mode'] ?? '';
 
-                    if ($_GET['search'] != '' or $gibbonPersonID != '') {
+                    if ($search != '' or $gibbonPersonID != '') {
                         $params = [
                             "gibbonPersonID" => $gibbonPersonID,
                             "search" => $_GET['search'] ?? ''
@@ -151,12 +151,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             } else {
                                 $values = $result->fetch();
 
-                                //Check for existing registration
-
-                                    $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                                    $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
-                                    $resultReg = $connection2->prepare($sqlReg);
-                                    $resultReg->execute($dataReg);
+                                // Check for existing registration
+                                $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
+                                $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
+                                $resultReg = $connection2->prepare($sqlReg);
+                                $resultReg->execute($dataReg);
 
                                 if (!empty($values['access']) && $values['access'] != 'Register') {
                                     echo "<div class='error'>";
@@ -286,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 }
                             }
                         }
-                    } elseif ($mode = 'unregister') {
+                    } elseif ($mode == 'unregister') {
                         if ($continue == false) {
                             $page->addError(__('Your request failed due to a database error.'));
                         } else {

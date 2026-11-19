@@ -21,20 +21,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
-use Twig\Environment;
 use Faker\Factory as FakerFactory;
 use Gibbon\Comms\EmailTemplateLoader;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\View\Sandbox;
 
 /**
- * Handles creating a Twig environment to render Email Templates
+ * Handles creating a Twig environment to render Email Templates.
+ * Templates are user supplied and sandboxed for security. 
  *
- * @version  v21
+ * @version  v30
  * @since    v21
  */
 class EmailTemplate
 {
     protected $loader;
+    protected $sandbox;
     protected $templateName;
 
     protected $defaultData;
@@ -44,9 +46,10 @@ class EmailTemplate
      *
      * @param $loader
      */
-    public function __construct(EmailTemplateLoader $loader, Session $session)
+    public function __construct(EmailTemplateLoader $loader, Session $session, Sandbox $sandbox)
     {
         $this->loader = $loader;
+        $this->sandbox = $sandbox;
         $this->defaultData = [
             'absolutePath'                   => $session->get('absolutePath'),
             'absoluteURL'                    => $session->get('absoluteURL'),
@@ -59,6 +62,12 @@ class EmailTemplate
         ];
     }
 
+    /**
+     * Set the template name to render.
+     *
+     * @param string $templateName
+     * @return $this
+     */
     public function setTemplate($templateName)
     {
         $this->templateName = $templateName;
@@ -66,6 +75,12 @@ class EmailTemplate
         return $this;
     }
 
+    /**
+     * Set the template name to render by ID.
+     *
+     * @param int $templateID
+     * @return $this
+     */
     public function setTemplateByID($templateID)
     {
         $this->templateName = $this->loader->getNameFromID($templateID);
@@ -73,20 +88,38 @@ class EmailTemplate
         return $this;
     }
 
+    /**
+     * Render the subject of the email template with the given data.
+     *
+     * @param array $data
+     * @return string
+     */
     public function renderSubject($data)
     {
-        $twig = new Environment($this->loader->setSource('templateSubject'));
+        $this->sandbox->setLoader($this->loader->setSource('templateSubject'));
 
-        return $twig->render($this->templateName, array_merge($this->defaultData, $data));
+        return $this->sandbox->render($this->templateName, array_merge($this->defaultData, $data));
     }
 
+    /**
+     * Render the body of the email template with the given data.
+     *
+     * @param array $data
+     * @return string
+     */
     public function renderBody($data)
     {
-        $twig = new Environment($this->loader->setSource('templateBody'));
+        $this->sandbox->setLoader($this->loader->setSource('templateBody'));
 
-        return $twig->render($this->templateName, array_merge($this->defaultData, $data));
+        return $this->sandbox->render($this->templateName, array_merge($this->defaultData, $data));
     }
     
+    /**
+     * Generate fake data for the given variables using Faker.
+     *
+     * @param array $variables
+     * @return array
+     */
     public function generateFakeData($variables)
     {
         $faker = FakerFactory::create();
@@ -98,6 +131,11 @@ class EmailTemplate
         }, $variables);
     }
 
+    /**
+     * Get the default variables available in all templates.
+     *
+     * @return array
+     */
     public function getDefaultVariables()
     {
         return array_keys($this->defaultData);

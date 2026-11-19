@@ -21,14 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Reports\Renderer;
 
-use Gibbon\Module\Reports\ReportData;
-use Gibbon\Module\Reports\ReportTemplate;
-use Gibbon\Module\Reports\ReportSection;
 use Gibbon\Module\Reports\Renderer\ReportRendererInterface;
-use Mpdf\Mpdf as Mpdf;
+use Gibbon\Module\Reports\ReportData;
+use Gibbon\Module\Reports\ReportSandbox;
+use Gibbon\Module\Reports\ReportSection;
+use Gibbon\Module\Reports\ReportTemplate;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
-use Twig\Environment;
+use Mpdf\Mpdf as Mpdf;
 
 class MpdfRenderer implements ReportRendererInterface
 {
@@ -46,7 +46,7 @@ class MpdfRenderer implements ReportRendererInterface
     protected $preProcess = array();
     protected $postProcess = array();
 
-    public function __construct(Environment $templateEngine)
+    public function __construct(ReportSandbox $templateEngine)
     {
         $this->twig = $templateEngine;
     }
