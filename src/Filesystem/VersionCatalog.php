@@ -25,7 +25,7 @@ use GuzzleHttp\Client;
 use Gibbon\Contracts\Services\Session;
 
 /**
- * Fetches the remote version list and picks the next zip to install.
+ * Fetches the remote version list and picks the next version zip to install.
  *
  * @version v30
  * @since   v30
@@ -119,7 +119,7 @@ class VersionCatalog
             ? ['legacy', 'current', 'development']
             : ['legacy', 'current'];
 
-        // Walk versions in order so hops stay sequential
+        // Walk versions in order so version numbers stay sequential
         $versions = array_keys($catalog);
         usort($versions, 'version_compare');
 

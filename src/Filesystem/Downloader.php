@@ -281,6 +281,7 @@ class Downloader
             $this->fail(self::ERROR_WRITE);
         }
 
+        // Block web access: .htaccess for Apache, empty index.html if listing is enabled
         if (!is_file($baseDir.'/.htaccess')) {
             file_put_contents($baseDir.'/.htaccess', "Deny from all\n");
         }

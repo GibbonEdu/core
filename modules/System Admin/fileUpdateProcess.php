@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         exit;
     }
 
-    // Stop two admins running this at the same time
+    // Stop two admins running update at the same time
     $lock = @fopen($lockPath, 'c');
     if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
         if ($lock !== false) {
@@ -74,27 +74,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         exit;
     }
 
-    // Keep going even if the browser disconnects
+    // Keep going even if the browser disconnects and allow enough time for download + replace
     ignore_user_abort(true);
     @set_time_limit(300);
 
-    // Maintenance mode while files are changing
+    // Put the site into maintenance mode while files are replaced
     $settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');
     $settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'running');
 
     $return = 'errorFiles';
 
     try {
-        // Find the next package from the version catalog
+        // Find the next version from the version catalog
         $release = $container->get(VersionCatalog::class)->getNextRelease($updater->versionCode, $updater->isCuttingEdge());
         if (empty($release) || empty($release['filePath'])) {
             throw new \RuntimeException(Downloader::ERROR_INVALID);
         }
 
-        // Download, check the hash, and unzip into staging
+        // Download, check the hash, and unzip into staging directory
         $files = $container->get(Downloader::class)->run($release);
 
-        // Backup the old files, then copy staging over the live install
+        // Backup the old files, then copy staging files over the live install
         $container->get(FileUpdater::class)->run($files);
 
         // Clear caches so the new code loads
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         removeDirectoryContents($absolutePath.'/uploads/cache');
         $session->forget('pageLoads');
 
-        // Keep the admin logged in after the file swap
+        // Re-attach the admin session so the user stays logged in after files change
         $data = [
             'gibbonSessionID' => session_id(),
             'gibbonPersonID' => $session->get('gibbonPersonID'),

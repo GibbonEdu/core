@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         }
     }
 
-    // 1) DB update  2) else file update if a newer version exists  3) else files & DB up to date
+    // 1) DB update  2) else file update if a newer version exists  3) else no update needed, files & DB up to date
     if ($updateRequired > 0) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
         $form->addHiddenValue('address', $session->get('address'));
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     } else {
         $nextRelease = $container->get(VersionCatalog::class)->getNextRelease($updater->versionCode, $cuttingEdge);
 
-        // Next version available — offer the file update
+        // Next version available — offer the file update form
         if (!empty($nextRelease)) {
             $form = Form::create('fileUpdate', $session->get('absoluteURL').'/modules/System Admin/fileUpdateProcess.php');
             $form->addHiddenValue('address', $session->get('address'));
