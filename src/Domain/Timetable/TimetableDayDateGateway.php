@@ -36,6 +36,8 @@ class TimetableDayDateGateway extends QueryableGateway
     private static $tableName = 'gibbonTTDayDate';
     private static $primaryKey = 'gibbonTTDayDateID';
 
+    private static $searchableColumns = [];
+
     public function deleteTTDatesInRange($firstDayOld, $firstDayNew)
     {
         $data = array('firstDayOld' => $firstDayOld, 'firstDayNew' => $firstDayNew);
@@ -71,10 +73,11 @@ class TimetableDayDateGateway extends QueryableGateway
     public function getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd];
-        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name as period,  gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID
+        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name as period,  gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID, gibbonSpace.gibbonSpaceID, gibbonSpace.name as spaceName
                 FROM gibbonTTDayRowClass
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
                 WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
                 AND gibbonTTDayDate.date=:date
                 AND gibbonTTColumnRow.timeStart=:timeStart 
@@ -108,7 +111,7 @@ class TimetableDayDateGateway extends QueryableGateway
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
 
-        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTDay.gibbonTTID, gibbonTTDayDate.date, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonSpace.phoneInternal as phone, gibbonSpace.name AS roomName, gibbonTTSpaceChange.gibbonTTSpaceChangeID as spaceChanged, spaceChange.name as roomNameChange, spaceChange.phoneInternal as phoneChange, coverage.status as coverageStatus, coverage.gibbonStaffCoverageID as coverageID, coverage.gibbonPersonIDCoverage as coveragePerson, CONCAT(gibbonCourseClass.gibbonCourseClassID, gibbonTTDayDate.date, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd) as lessonID
+        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.attendance, gibbonTTDay.gibbonTTID, gibbonTTDayDate.date, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonSpace.phoneInternal as phone, gibbonSpace.name AS roomName, gibbonTTSpaceChange.gibbonTTSpaceChangeID as spaceChanged, spaceChange.name as roomNameChange, spaceChange.phoneInternal as phoneChange, coverage.status as coverageStatus, coverage.gibbonStaffCoverageID as coverageID, coverage.gibbonPersonIDCoverage as coveragePerson, CONCAT(gibbonCourseClass.gibbonCourseClassID, gibbonTTDayDate.date, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd) as lessonID
         FROM gibbonCourse 
         JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
         JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 

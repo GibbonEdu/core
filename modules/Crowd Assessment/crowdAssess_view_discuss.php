@@ -33,9 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get class variable
-    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
-    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
+    $gibbonPersonID = intval($_GET['gibbonPersonID'] ?? '');
+    $gibbonPlannerEntryID = intval($_GET['gibbonPlannerEntryID'] ?? '');
+    $gibbonPlannerEntryHomeworkID = intval($_GET['gibbonPlannerEntryHomeworkID'] ?? '');
 
     $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID];
     $page->breadcrumbs
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     }
 
     // Check existence of and access to this lesson.
-    $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+    $and = " AND gibbonPlannerEntryID=".intval($gibbonPlannerEntryID);
     $sql = getLessons($guid, $connection2, $and);
     $lesson = $pdo->select($sql[1], $sql[0])->fetch();
 

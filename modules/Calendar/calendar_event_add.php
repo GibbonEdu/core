@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ad
         $row->addTime('timeStart')
             ->required();
         $row->addTime('timeEnd')
-            ->chainedTo('timeStart')
+            ->chainedFrom('timeStart')
             ->required();
 
     // Description
