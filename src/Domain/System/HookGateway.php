@@ -38,6 +38,8 @@ class HookGateway extends QueryableGateway
     private static $tableName = 'gibbonHook';
     private static $primaryKey = 'gibbonHookID';
 
+    private static $searchableColumns = [];
+
     public function selectHooksByType($type)
     {
         $data = ['type' => $type];

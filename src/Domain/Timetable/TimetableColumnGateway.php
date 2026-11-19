@@ -36,6 +36,8 @@ class TimetableColumnGateway extends QueryableGateway
     private static $tableName = 'gibbonTTColumn';
     private static $primaryKey = 'gibbonTTColumnID';
 
+    private static $searchableColumns = [];
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet

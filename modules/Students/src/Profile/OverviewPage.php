@@ -508,7 +508,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
             // Timetable Links
             $table = DataTable::createDetails('timetable');
 
-            if (Access::allows('Timetable Admin', 'Course Enrolment by Person_view')) {
+            if (Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) {
                 $role = $this->roleGateway->getRoleCategory($student['gibbonRoleIDPrimary']);
                 if ($role == 'Student' or $role == 'Staff') {
                     $table->addHeaderAction('edit', __('Edit'))

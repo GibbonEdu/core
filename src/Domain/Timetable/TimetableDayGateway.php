@@ -36,6 +36,8 @@ class TimetableDayGateway extends QueryableGateway
     private static $tableName = 'gibbonTTDay';
     private static $primaryKey = 'gibbonTTDayID';
 
+    private static $searchableColumns = [];
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet

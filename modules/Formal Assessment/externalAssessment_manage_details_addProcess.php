@@ -28,8 +28,8 @@ require_once __DIR__ . '/../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $count = 0;
-if (is_numeric($_POST['count'])) {
-    $count = $_POST['count'] ?? '';
+if (is_numeric($_POST['count'] ?? '')) {
+    $count = $_POST['count'];
 }
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'] ?? '';
@@ -42,13 +42,16 @@ $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POS
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     //Proceed!
     //Validate Inputs
     if ($gibbonPersonID == '' or $gibbonExternalAssessmentID == '' or $date == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
     } else {
+        $partialFail = false;
         $attachment = '';
         $fileMetaData = null;
         //Move attached image  file, if there is one
@@ -91,7 +94,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         }
 
         //Scan through fields
-        $partialFail = false;
         for ($i = 0; $i < $count; ++$i) {
             $gibbonExternalAssessmentFieldID = @$_POST[$i.'-gibbonExternalAssessmentFieldID'];
             if (isset($_POST[$i.'-gibbonScaleGradeID']) == false) {
@@ -119,9 +121,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         if ($partialFail == true) {
             $URL .= "&return=error1&editID=$AI";
             header("Location: {$URL}");
+            exit;
         } else {
             $URL .= "&return=success0&editID=$AI";
             header("Location: {$URL}");
+            exit;
         }
     }
 }

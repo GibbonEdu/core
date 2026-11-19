@@ -36,6 +36,8 @@ class FileGateway extends QueryableGateway
 
     private static $tableName = 'gibbonFile';
     private static $primaryKey = 'gibbonFileID';
+
+    private static $searchableColumns = [];
     
     public function selectFilesByForeignRecord($foreignTable, $foreignTableID)
     {
