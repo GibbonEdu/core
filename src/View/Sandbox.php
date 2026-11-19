@@ -22,12 +22,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\View;
 
 use Twig\Environment;
-use Twig\Loader\ChainLoader;
 use Twig\Loader\ArrayLoader;
-use Twig\Extension\SandboxExtension;
-use Twig\Extension\ExtensionInterface;
-use Twig\Sandbox\SecurityPolicy;
+use Twig\Loader\LoaderInterface;
+use Twig\Sandbox\Sandbox as TwigSandbox;
 use Twig\Sandbox\SecurityNotAllowedFilterError;
+use Twig\Sandbox\SecurityPolicy;
 
 /**
  * A sandboxed Twig environment for rendering user-provided Twig template strings.
@@ -35,52 +34,77 @@ use Twig\Sandbox\SecurityNotAllowedFilterError;
  * The sandbox does not have access to global variables or functions, and has a 
  * limited set of filters and tags allowed.
  * 
- * Warning: should not be used repeatedly in loops, as the render methods needs 
- * to create new objects for each method call, based on Twig limitations.
- * 
  * In particular, filters that work with arrays or use anonymous functions are
  * not allowed. Functions that include other files are not allowed.
  *
- * @version  v27
+ * @version  v30.0.03
  * @since    v27
  */
 class Sandbox 
 {
     /**
-     * Render the view with the given template and return the result as a string.
+     * @var \Twig\Sandbox\Sandbox
+     */
+    protected $sandbox;
+
+    /**
+     * Create a new sandboxed Twig environment.
+     */
+    public function __construct()
+    {
+        $loader = new ArrayLoader([
+            'sandbox.html.twig' => '',
+        ]);
+
+        $env = new Environment($loader, ['cache' => false]);
+
+        $this->sandbox = new TwigSandbox($env, $this->getSecurityPolicy());
+    }
+
+    /**
+     * Set the loader for the sandbox environment.
      *
-     * @param string $template
+     * @param LoaderInterface $loader
+     */
+    public function setLoader(LoaderInterface $loader): void
+    {
+        $env = new Environment($loader, ['cache' => false]);
+
+        $this->sandbox = new TwigSandbox($env, $this->getSecurityPolicy());
+    }
+
+    /**
+     * Render a template by name with the given data and return the result as a string.
+     *
+     * @param string $templateName
      * @param array $data
      * @return string
      */
-    public function render(string $templateContent, array $data = []) : string
+    public function render(string $templateName, array $data = []) : string
     {
         try {
-            $contentLoader = new ArrayLoader([
-                'content.html.twig' => $templateContent,
-            ]);
-            $sandboxLoader = new ArrayLoader([
-                'sandbox.html.twig' => '{% sandbox %}{% include "content.html.twig" %}{% endsandbox %}',
-            ]);
-            
-            $loader = new ChainLoader([$contentLoader, $sandboxLoader]);
-            $twig = new Environment($loader, ['cache' => false]);
-            $twig->addExtension($this->getSandboxExtension());
+            return $this->sandbox->render($templateName, $data);
 
-            return $twig->render('sandbox.html.twig', $data);
         } catch (SecurityNotAllowedFilterError $e) {
             return $e->getMessage();
         }
     }
 
     /**
-     * Sets up the SandboxExtension for inclusion in the Twig Environment.
+     * Render raw template code and return the result as a string.
      *
-     * @return ExtensionInterface
+     * @param string $template
+     * @param array $data
+     * @return string
      */
-    protected function getSandboxExtension() : ExtensionInterface
+    public function renderContent(string $templateContent, array $data = []) : string
     {
-        return new SandboxExtension($this->getSecurityPolicy());
+        try {
+            return $this->sandbox->createTemplate($templateContent)->render($data);
+
+        } catch (SecurityNotAllowedFilterError $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
@@ -90,13 +114,13 @@ class Sandbox
      */
     protected function getSecurityPolicy() : SecurityPolicy
     {
-        // Define a sandbox security policy
-        $tags = ['if', 'for', 'set', 'with'];
-        $filters = ['abs','capitalize','country_name','currency_name','currency_symbol','date','date_modify','default','escape','first','format','format_currency','format_date','format_datetime','format_number','format_time','join','keys','language_name','last','length','locale_name','lower','merge','nl2br','number_format','replace','round','slug','spaceless','split','title','trim','upper','url_encode'];
-        $methods = [];
-        $properties = [];
-        $functions = ['range','date','random','min','max','cycle'];
+        $policy = new SecurityPolicy(
+            allowedTags: ['if', 'for', 'set', 'with'],
+            allowedFilters: ['abs','capitalize','country_name','currency_name','currency_symbol','date','date_modify','default','escape','first','format','format_currency','format_date','format_datetime','format_number','format_time','join','keys','language_name','last','length','locale_name','lower','merge','nl2br','number_format','replace','round','slug','spaceless','split','title','trim','upper','url_encode'],
+            allowedFunctions: ['range','date','random','min','max','cycle'],
+        );
+        $policy->setStrict(true);
 
-        return new SecurityPolicy($tags, $filters, $methods, $properties, $functions);
+        return $policy;
     }
 }

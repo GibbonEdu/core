@@ -37,14 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         ->add(__('View Assessment'));
 
     // Get lesson variable
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+    $gibbonPlannerEntryID = intval($_GET['gibbonPlannerEntryID'] ?? '');
     if (empty($gibbonPlannerEntryID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
     // Check existence of and access to this lesson.
-    $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+    $and = " AND gibbonPlannerEntryID=".intval($gibbonPlannerEntryID);
     $sql = getLessons($guid, $connection2, $and);
 
     if (empty($sql[0]) || empty($sql[1])) return;

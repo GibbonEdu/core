@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                             // Check for school prefill if attendance not taken in this class
                             if ($result->rowCount() == 0) {                                
-                                $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($session->get('gibbonPersonID'), $currentDate, $crossFillClasses);
+                                $result = $container->get(AttendanceLogPersonGateway::class)->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $currentDate, $crossFillClasses);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
                                 $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';

@@ -133,7 +133,7 @@ class TimetablePage extends ProfilePage implements ContainerAwareInterface
         $table = DataTable::createDetails('timetable');
 
         // Add edit action if user has permission
-        if (Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson', 'Course Enrolment by Person_view')) {
+        if (Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) {
             // Get student data to determine role
             $data = ['gibbonPersonID' => $this->gibbonPersonID];
             $sql = "SELECT gibbonRoleIDPrimary FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";

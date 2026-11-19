@@ -38,5 +38,5 @@ if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDP
         $url = '';
     }
 
-    echo "<img id='{$fieldName}Photo' src='{$url}' class='relative w-full' x-ref='personPhoto'>";
+    echo "<img id='".htmlspecialchars($fieldName, ENT_QUOTES)."Photo' src='{$url}' class='relative w-full' x-ref='personPhoto'>";
 }

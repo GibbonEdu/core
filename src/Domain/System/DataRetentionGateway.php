@@ -65,6 +65,8 @@ class DataRetentionGateway extends QueryableGateway
     private static $tableName = 'gibbonDataRetention';
     private static $primaryKey = 'gibbonDataRetentionID';
 
+    private static $searchableColumns = [];
+
     public function getDomains()
     {
         return [
