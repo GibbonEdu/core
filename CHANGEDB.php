@@ -1071,5 +1071,5 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '30.0.04';
 $sql[$count][1] = "
-INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'autoUpdater', 'Auto Updater Status', 'Tracks the current stage of the core file auto-updater.', 'idle');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdater', 'File Updater Status', 'Tracks the current stage of the file updater.', 'idle');end
 ";

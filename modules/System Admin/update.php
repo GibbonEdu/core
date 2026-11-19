@@ -36,26 +36,26 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     //Proceed!
     $page->breadcrumbs->add(__('Update'));
 
-    // Register return messages, including the file-update failure detail when present
-    $return = $_GET['return'] ?? '';
+    // Include the file-update stage in the error message when present
     $errorFiles = __('Your request failed because the file update could not be completed. Check the version catalog, package checksum, disk space, file permissions, and that the PHP Zip extension is enabled.');
-    if ($session->has('autoUpdateStage')) {
-        $errorFiles .= ' ('.$session->get('autoUpdateStage').')';
-        $session->forget('autoUpdateStage');
+    if ($session->has('fileUpdateStage')) {
+        $errorFiles .= ' ('.$session->get('fileUpdateStage').')';
+        $session->forget('fileUpdateStage');
     }
     $page->return->addReturns([
         'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
         'errorFiles' => $errorFiles,
+        'errorFileBusy' => __('Your request failed because a file update is already in progress. Please wait a few minutes and try again.'),
     ]);
 
-    // Show SQL statements that failed during a previous DB update
+    // Get and display SQL errors
     if ($session->has('systemUpdateError')) {
         echo Format::alert(__('The following SQL statements caused errors:').'<br/>'.implode('<br/>', $session->get('systemUpdateError')));
         $session->forget('systemUpdateError');
     }
 
-    // Compare codebase version against database version
+    // Compare codebase version (version.php) with database version
     $updater = $container->get(Updater::class);
     $updateRequired = $updater->isUpdateRequired();
     $cuttingEdge = $updater->isCuttingEdge();
@@ -76,10 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'cuttingEdgeCode' => __('Line').': '.$updater->cuttingEdgeCodeLine,
     ]]);
 
-    // Stable: check for a newer public release; cutting edge: warn and check composer
-    if (!$cuttingEdge) {
-        echo getCurrentVersion($guid, $connection2, $version);
-    } else {
+    // Cutting edge warning and composer check
+    if ($cuttingEdge) {
         echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.'), 'warning');
 
         if ($updater->isComposerUpdateRequired()) {
@@ -91,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         }
     }
 
-    // Priority 1: files are ahead of DB — run the database update first
+    // 1) DB update  2) else file update if a newer version exists  3) else files & DB up to date
     if ($updateRequired > 0) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
         $form->addHiddenValue('address', $session->get('address'));
@@ -121,12 +119,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $form->addRow()->addSubmit();
         echo $form->getOutput();
     } else {
-        // DB is current — check the version catalog for the next downloadable package
         $nextRelease = $container->get(VersionCatalog::class)->getNextRelease($updater->versionCode, $cuttingEdge);
 
-        // Priority 2: next package available — offer the automatic file update
+        // Next version available — offer the file update
         if (!empty($nextRelease)) {
-            $form = Form::create('autoUpdate', $session->get('absoluteURL').'/modules/System Admin/autoUpdateProcess.php');
+            $form = Form::create('fileUpdate', $session->get('absoluteURL').'/modules/System Admin/fileUpdateProcess.php');
             $form->addHiddenValue('address', $session->get('address'));
             $form->setTitle(__('File Update'));
             $form->setDescription(Format::alert(
@@ -145,41 +142,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             $form->addRow()->addSubmit();
             echo $form->getOutput();
         } else {
-            // Priority 3: no catalog package — up to date, version error, or manual FTP/GitHub instructions
+            // Nothing to update
             $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('type', $cuttingEdge ? 'cuttingEdge' : 'regularRelease');
 
-            if ($return == 'success0') {
-                $form->addRow()->addContent(__('Your Gibbon core is up to date.'))->addClass('py-16 text-center text-gray-600 text-lg');
-            } elseif (!$cuttingEdge && $updateRequired === -1) {
+            if (!$cuttingEdge && $updateRequired === -1) {
                 $form->setDescription(Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error'));
             } else {
-                $form->setTitle(__('Update Instructions'));
-                if ($cuttingEdge) {
-                    $form->setDescription(Format::list([
-                        sprintf(__('You are currently using Cutting Edge Gibbon v%1$s'), $updater->versionCode),
-                        sprintf(__('Check %1$s to get the latest commits.'), "<a target='_blank' href='https://github.com/GibbonEdu/core'>our GitHub repo</a>"),
-                        __('Download the latest commits, and unzip it on your computer.'),
-                        __('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.'),
-                        __('Reload this page and follow the instructions to update your database to the latest version.'),
-                    ], 'ol'));
-                } else {
-                    $form->setDescription(Format::list([
-                        sprintf(__('You are currently using Gibbon v%1$s.'), $updater->versionCode),
-                        sprintf(__('Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='https://gibbonedu.org/download'>the Gibbon download page</a>"),
-                        __('Download the latest version, and unzip it on your computer.'),
-                        __('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.'),
-                        __('Reload this page and follow the instructions to update your database to the latest version.'),
-                    ], 'ol'));
-                }
+                $form->addRow()->addContent(__('Your Gibbon core is up to date.'))->addClass('py-16 text-center text-gray-600 text-lg');
             }
 
             echo $form->getOutput();
         }
     }
 
-    // Optional InnoDB engine migration (only when tables still need converting)
+    // INNODB UPGRADE - only displays if an update is required
     if (version_compare($updater->versionCode, '16.0.00', '>=')) {
         $engineUpdate = $container->get(EngineUpdate::class);
 

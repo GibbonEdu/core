@@ -22,11 +22,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Filesystem;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Gibbon\Contracts\Services\Session;
 
 /**
- * Fetches the remote Gibbon version catalog and selects the next sequential release.
+ * Fetches the remote version list and picks the next zip to install.
  *
  * @version v30
  * @since   v30
@@ -35,17 +34,12 @@ class VersionCatalog
 {
     public const CATALOG_URL = 'https://gibbonedu.org/services/version/versionCheck.php';
 
-    /**
-     * @var string[]
-     */
+    // Only these hosts may appear in package URLs
     protected $allowedHosts = [
         'gibbonedu.org',
         'www.gibbonedu.org',
     ];
 
-    /**
-     * @var Session
-     */
     protected $session;
 
     public function __construct(Session $session)
@@ -54,10 +48,10 @@ class VersionCatalog
     }
 
     /**
-     * Fetch the version catalog for the given installed version.
+     * Load the catalog JSON for the given version. Returns [] on failure.
      *
      * @param string $currentVersion
-     * @return array Empty array on failure or when the server returns no versions.
+     * @return array
      */
     public function fetch(string $currentVersion) : array
     {
@@ -88,20 +82,17 @@ class VersionCatalog
             }
 
             $decoded = json_decode((string) $response->getBody(), true);
-            if (!is_array($decoded) || $decoded === []) {
+            if (!is_array($decoded) || empty($decoded)) {
                 return [];
             }
 
-            // Server returns [] when version is missing; a usable catalog is an object map.
+            // Expect a version map, not a plain list
             $firstKey = array_key_first($decoded);
             if (is_null($firstKey) || is_int($firstKey)) {
                 return [];
             }
 
             return $decoded;
-        } catch (GuzzleException $e) {
-            error_log('VersionCatalog: '.$e->getMessage());
-            return [];
         } catch (\Throwable $e) {
             error_log('VersionCatalog: '.$e->getMessage());
             return [];
@@ -109,13 +100,13 @@ class VersionCatalog
     }
 
     /**
-     * Return the next sequential downloadable release after $currentVersion.
+     * Next downloadable release after $currentVersion, or null if none.
      *
      * @param string $currentVersion
-     * @param bool $cuttingEdge
-     * @return array|null Release entry, or null when up to date / unavailable.
+     * @param bool   $cuttingEdge
+     * @return array|null
      */
-    public function getNextRelease(string $currentVersion, bool $cuttingEdge = false) : ?array
+    public function getNextRelease(string $currentVersion, bool $cuttingEdge = false)
     {
         $currentVersion = trim($currentVersion);
         $catalog = $this->fetch($currentVersion);
@@ -123,10 +114,12 @@ class VersionCatalog
             return null;
         }
 
+        // Cutting edge can take Development; stable cannot
         $allowedStatuses = $cuttingEdge
             ? ['legacy', 'current', 'development']
             : ['legacy', 'current'];
 
+        // Walk versions in order so hops stay sequential
         $versions = array_keys($catalog);
         usort($versions, 'version_compare');
 
@@ -141,15 +134,15 @@ class VersionCatalog
                 continue;
             }
 
-            $status = strtolower(trim((string) ($entry['status'] ?? '')));
-            if (!in_array($status, $allowedStatuses, true)) {
+            $status = strtolower(trim($entry['status'] ?? ''));
+            if (!in_array($status, $allowedStatuses)) {
                 continue;
             }
 
-            $checksum = trim((string) ($entry['checksum'] ?? ''));
-            $filePath = trim((string) ($entry['filePath'] ?? ''));
+            $checksum = trim($entry['checksum'] ?? '');
+            $filePath = trim($entry['filePath'] ?? '');
             if ($checksum == '' || $filePath == '' || !$this->isHostAllowed($filePath)) {
-                // Unpackaged or unsafe URL
+                // Next version has no package yet — stop here
                 return null;
             }
 
@@ -165,7 +158,7 @@ class VersionCatalog
     }
 
     /**
-     * Whether a package URL points at an allowlisted gibbonedu.org host.
+     * Check the package URL is on an allowed gibbonedu.org host.
      *
      * @param string $url
      * @return bool
@@ -182,6 +175,6 @@ class VersionCatalog
             return false;
         }
 
-        return in_array(strtolower($parts['host']), $this->allowedHosts, true);
+        return in_array(strtolower($parts['host']), $this->allowedHosts);
     }
 }

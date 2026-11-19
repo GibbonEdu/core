@@ -26,69 +26,59 @@ use GuzzleHttp\Client;
 use Gibbon\Contracts\Services\Session;
 
 /**
- * Downloads, verifies, and extracts a sequential update zip.
+ * Downloads, verifies, and extracts an update zip into staging.
  *
  * @version v30
  * @since   v30
  */
 class Downloader
 {
-    public const BASE_DIR = 'backups/autoUpdate';
+    public const BASE_DIR = 'backups/fileUpdate';
     public const MAX_PACKAGE_BYTES = 104857600; // 100 MB
 
+    // Short stage codes shown on the update page when something fails
     public const ERROR_INVALID = 'invalid';
     public const ERROR_DOWNLOAD = 'download';
     public const ERROR_VERIFY = 'verify';
     public const ERROR_EXTRACT = 'extract';
     public const ERROR_WRITE = 'write';
 
-    /**
-     * @var Session
-     */
     protected $session;
-
-    /**
-     * @var VersionCatalog
-     */
     protected $versionCatalog;
-
-    /**
-     * @var string
-     */
     protected $absolutePath;
 
     public function __construct(Session $session, VersionCatalog $versionCatalog)
     {
         $this->session = $session;
         $this->versionCatalog = $versionCatalog;
-        $this->absolutePath = rtrim(str_replace('\\', '/', (string) $session->get('absolutePath')), '/');
+        $this->absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
     }
 
     /**
-     * Download, verify, and extract a release; return relative file paths.
+     * Download, verify, and extract. Returns relative file paths.
      *
      * @param array $release
-     * @return string[]
+     * @return array
      */
     public function run(array $release) : array
     {
         $zipPath = $this->download($release);
-        $this->verify($zipPath, (string) ($release['checksum'] ?? ''));
+        $this->verify($zipPath, $release['checksum'] ?? '');
         $files = $this->extract($zipPath);
         $this->deleteIfExists($zipPath);
-        
+
         return $files;
     }
 
     /**
-     * Download the release zip to backups/autoUpdate/package.zip.
+     * Download the zip into backups/fileUpdate/package.zip.
      *
      * @param array $release
-     * @return string Absolute path to package.zip
+     * @return string
      */
     public function download(array $release) : string
     {
-        $filePath = trim((string) ($release['filePath'] ?? ''));
+        $filePath = trim($release['filePath'] ?? '');
         if ($filePath == '' || !$this->versionCatalog->isHostAllowed($filePath)) {
             $this->fail(self::ERROR_INVALID);
         }
@@ -105,11 +95,12 @@ class Downloader
                 'timeout'         => 300,
             ]))->request('GET', $filePath, [
                 'headers'     => ['Referer' => $this->session->get('absoluteURL').'/index.php'],
-                'sink'        => $zipPath,
+                'sink'        => $zipPath, // write straight to disk
                 'http_errors' => false,
                 'allow_redirects' => [
                     'max'       => 5,
                     'protocols' => ['http', 'https'],
+                    // Redirects must stay on gibbonedu.org
                     'on_redirect' => function ($request, $response, $uri) {
                         if (!$this->versionCatalog->isHostAllowed((string) $uri)) {
                             $this->fail(self::ERROR_INVALID);
@@ -125,7 +116,7 @@ class Downloader
             $this->deleteIfExists($zipPath);
             throw $e;
         } catch (\Throwable $e) {
-            $this->fail(self::ERROR_DOWNLOAD, $zipPath, $e);
+            $this->fail(self::ERROR_DOWNLOAD, $zipPath);
         }
 
         $size = is_file($zipPath) ? filesize($zipPath) : false;
@@ -151,20 +142,21 @@ class Downloader
      */
     public function verify(string $zipPath, string $checksum)
     {
-        if (!is_file($zipPath) || trim($checksum) == '' || !hash_equals(strtolower(trim($checksum)), (string) hash_file('sha256', $zipPath))) {
+        $checksum = strtolower(trim($checksum));
+        if (!is_file($zipPath) || $checksum == '' || !hash_equals($checksum, hash_file('sha256', $zipPath))) {
             $this->fail(self::ERROR_VERIFY, $zipPath);
         }
     }
 
     /**
-     * Extract safe zip entries into staging and return relative paths.
+     * Unzip into staging and return the relative file list.
      *
      * @param string $zipPath
-     * @return string[]
+     * @return array
      */
     public function extract(string $zipPath) : array
     {
-        $staging = $this->getStagingPath();
+        $staging = $this->absolutePath.'/'.self::BASE_DIR.'/staging';
         $this->wipeDirectory($staging);
 
         if ((!is_dir($staging) && !mkdir($staging, 0755, true)) || ($stagingReal = realpath($staging)) === false) {
@@ -178,9 +170,10 @@ class Downloader
 
         try {
             for ($i = 0; $i < $zip->numFiles; ++$i) {
-                $entryName = (string) $zip->getNameIndex($i);
+                $entryName = $zip->getNameIndex($i);
                 $name = str_replace('\\', '/', $entryName);
 
+                // Skip folders and macOS junk
                 if ($name == '' || substr($name, -1) == '/' || strpos($name, '__MACOSX/') === 0 || substr($name, -9) == '.DS_Store') {
                     continue;
                 }
@@ -190,8 +183,9 @@ class Downloader
                     $this->fail(self::ERROR_EXTRACT, $zipPath);
                 }
 
+                // Make sure the file stayed inside staging
                 $extracted = realpath($stagingReal.'/'.$relative);
-                if ($extracted === false || !$this->isUnder($extracted, $stagingReal)) {
+                if ($extracted === false || !$this->isInside($extracted, $stagingReal)) {
                     $this->fail(self::ERROR_INVALID, $zipPath);
                 }
             }
@@ -204,7 +198,7 @@ class Downloader
         }
 
         try {
-            // Flat zip, or one wrapper folder
+            // Flat zip, or one wrapper folder (e.g. gibbon/)
             $entries = array_values(array_filter(scandir($stagingReal) ?: [], function ($name) {
                 return $name != '.' && $name != '..' && $name != '__MACOSX';
             }));
@@ -221,6 +215,7 @@ class Downloader
                 @rmdir($wrap);
             }
 
+            // Build the relative path list for FileUpdater
             $files = [];
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($stagingReal, \FilesystemIterator::SKIP_DOTS));
             foreach ($iterator as $fileInfo) {
@@ -237,7 +232,8 @@ class Downloader
             throw $e;
         }
 
-        if (empty($files) || !in_array('version.php', $files, true)) {
+        // Need version.php to count as a real package
+        if (empty($files) || !in_array('version.php', $files)) {
             $this->wipeDirectory($staging);
             $this->fail(self::ERROR_EXTRACT, $zipPath);
         }
@@ -245,14 +241,8 @@ class Downloader
         return $files;
     }
 
-    /**
-     * Whether $path is inside $root
-     *
-     * @param string $path
-     * @param string $root
-     * @return bool
-     */
-    protected function isUnder(string $path, string $root) : bool
+    // Whether $path is inside $root
+    protected function isInside(string $path, string $root) : bool
     {
         $path = str_replace('\\', '/', $path);
         $root = rtrim(str_replace('\\', '/', $root), '/');
@@ -260,28 +250,12 @@ class Downloader
         return strpos($path, $root.'/') === 0;
     }
 
-    /**
-     * Return the absolute staging path under backups/autoUpdate.
-     *
-     * @return string
-     */
-    public function getStagingPath() : string
-    {
-        return $this->absolutePath.'/'.self::BASE_DIR.'/staging';
-    }
-
-    /**
-     * Normalize a zip path and reject unsafe or blocked targets.
-     *
-     * @param string $relative
-     * @return string
-     */
+    // Block path traversal and sensitive folders
     protected function assertSafeRelativePath(string $relative) : string
     {
         $relative = ltrim(str_replace('\\', '/', $relative), '/');
         $lower = strtolower($relative);
 
-        // Same idea as Page::isAddressValid: block traversal and sensitive roots.
         if ($relative == ''
             || strpos($relative, "\0") !== false
             || strpos($relative, '..') !== false
@@ -298,16 +272,12 @@ class Downloader
         return $relative;
     }
 
-    /**
-     * Ensure backups/autoUpdate exists, is writable, and is not web-accessible.
-     *
-     * @return string
-     */
+    // Make sure backups/fileUpdate exists and is not web-accessible
     protected function ensureBaseDirectory() : string
     {
         $baseDir = $this->absolutePath.'/'.self::BASE_DIR;
 
-        if ($this->absolutePath == '' || !is_dir($this->absolutePath) || (!is_dir($baseDir) && !mkdir($baseDir, 0755, true)) || !is_writable($baseDir)) {
+        if (empty($this->absolutePath) || !is_dir($this->absolutePath) || (!is_dir($baseDir) && !mkdir($baseDir, 0755, true)) || !is_writable($baseDir)) {
             $this->fail(self::ERROR_WRITE);
         }
 
@@ -321,25 +291,14 @@ class Downloader
         return $baseDir;
     }
 
-    /**
-     * Clean up a partial zip, log the error code, and throw exception.
-     *
-     * @param string $code
-     * @param string $zipPath
-     * @param \Throwable|null $previous
-     */
-    protected function fail(string $code, string $zipPath = '', ?\Throwable $previous = null)
+    // Remove a partial zip, log the error, and throw
+    protected function fail(string $code, string $zipPath = '')
     {
         $this->deleteIfExists($zipPath);
-        error_log('Downloader: '.$code.($previous ? ' '.$previous->getMessage() : ''));
-        throw new \RuntimeException($code, 0, $previous);
+        error_log('Downloader: '.$code);
+        throw new \RuntimeException($code);
     }
 
-    /**
-     * Delete a file if the path exists.
-     *
-     * @param string $path
-     */
     protected function deleteIfExists(string $path)
     {
         if ($path != '' && is_file($path)) {
@@ -347,11 +306,7 @@ class Downloader
         }
     }
 
-    /**
-     * Delete all contents under a directory; leave the directory itself.
-     *
-     * @param string $dir
-     */
+    // Empty a directory but leave the folder itself
     protected function wipeDirectory(string $dir)
     {
         if (!is_dir($dir)) {
