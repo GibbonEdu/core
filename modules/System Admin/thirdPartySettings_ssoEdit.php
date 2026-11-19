@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'success0' => __('SSO settings saved.'),
         'error0' => __('You do not have access to this action.'),
         'error1' => __('Your request failed because your inputs were invalid.'),
-        'error12' => __('The OIDC discovery document could not be retrieved. Please check the issuer or discovery URL, or disable auto-configuration.'),
+        'error12' => __('The OIDC discovery document could not be retrieved. Please check the issuer URL, or disable auto-configuration.'),
     ]);
     //Proceed!
     $page->breadcrumbs
@@ -126,12 +126,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addTextField('clientName')->required();
 
         $row = $form->addRow()->addClass('settingActive');
-            $row->addLabel('issuer', __('OIDC Issuer / Discovery Base URL'))->description(__('The issuer identifier, used to keep bindings unique. It is also the base URL for the standard discovery document.'));
-            $row->addURL('issuer');
-
-        $row = $form->addRow()->addClass('settingActive');
-            $row->addLabel('discoveryUrl', __('Discovery URL (optional)'))->description(__('Leave blank to use <issuer>/.well-known/openid-configuration. A base URL is also accepted; the well-known path is appended automatically.'));
-            $row->addURL('discoveryUrl');
+            $row->addLabel('issuer', __('OIDC Issuer / Discovery URL'))->description(__('Enter the issuer URL or the full discovery URL. If you enter a base URL, Gibbon appends /.well-known/openid-configuration automatically.'));
+            $row->addURL('issuer')->placeholder('https://idp.example.com/.well-known/openid-configuration');
 
         $row = $form->addRow()->addClass('settingActive');
             $row->addLabel('autoDiscovery', __('Auto-configure from Discovery'))->description(__('When saving, fetch the discovery document and populate the authorization, token, user info and JWKS endpoints. Disable this if you need to set the endpoints manually.'));
@@ -237,11 +233,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         echo 'async function fetchOidcDiscovery() {';
         echo '  const status = document.getElementById("oidcDiscoveryStatus");';
         echo '  const issuer = document.getElementsByName("issuer")[0];';
-        echo '  const discoveryUrl = document.getElementsByName("discoveryUrl")[0];';
-        echo '  if (!issuer || !discoveryUrl) return;';
+        echo '  if (!issuer) return;';
         echo '  status.textContent = '.json_encode(__('Checking discovery...')).';';
         echo '  status.className = "text-sm text-gray-600 ml-2";';
-        echo '  const params = new URLSearchParams({issuer: issuer.value, discoveryUrl: discoveryUrl.value});';
+        echo '  const params = new URLSearchParams({issuer: issuer.value});';
         echo '  try {';
         echo '    const response = await fetch('.json_encode($discoveryEndpoint).' + "?" + params.toString(), {credentials: "same-origin", headers: {"Accept": "application/json"}});';
         echo '    const result = await response.json();';

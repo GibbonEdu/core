@@ -25,7 +25,7 @@ use Gibbon\Data\Validator;
 
 require_once __DIR__ . '/../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['authorizeEndpoint' => 'URL', 'tokenEndpoint' => 'URL', 'userEndpoint' => 'URL', 'issuer' => 'URL', 'discoveryUrl' => 'URL', 'jwksUri' => 'URL']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['authorizeEndpoint' => 'URL', 'tokenEndpoint' => 'URL', 'userEndpoint' => 'URL', 'issuer' => 'URL', 'jwksUri' => 'URL']);
 
 $sso = $_POST['sso'] ?? '';
 
@@ -81,14 +81,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 ? 'username='.$data['matchAttribute']
                 : 'email=email';
         }
-        $data['discoveryUrl'] = is_scalar($_POST['discoveryUrl'] ?? null) ? trim((string) $_POST['discoveryUrl']) : '';
         $data['jwksUri'] = is_scalar($_POST['jwksUri'] ?? null) ? trim((string) $_POST['jwksUri']) : '';
         $data['autoDiscovery'] = ($_POST['autoDiscovery'] ?? 'Y') === 'Y' ? 'Y' : 'N';
     }
 
-    if ($sso == 'OIDC' && $data['autoDiscovery'] === 'Y' && ($data['issuer'] !== '' || $data['discoveryUrl'] !== '')) {
+    if ($sso == 'OIDC' && $data['autoDiscovery'] === 'Y' && $data['issuer'] !== '') {
         try {
-            $metadata = $container->get(OIDCDiscoveryClient::class)->discover($data['issuer'], $data['discoveryUrl']);
+            $metadata = $container->get(OIDCDiscoveryClient::class)->discover($data['issuer']);
             $data['issuer'] = $metadata['issuer'] ?? $data['issuer'];
             $data['authorizeEndpoint'] = $metadata['authorization_endpoint'];
             $data['tokenEndpoint'] = $metadata['token_endpoint'];

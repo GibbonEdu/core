@@ -487,6 +487,6 @@ CREATE TABLE IF NOT EXISTS `gibbonPersonOIDC` (
   UNIQUE KEY `issuerSubject` (`issuer`, `subject`),
   KEY `gibbonPersonID` (`gibbonPersonID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
-INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) SELECT 'System Admin', 'ssoOIDC', 'OpenID Connect Provider', '', '{\"enabled\":\"N\",\"accountMatching\":\"manual\",\"requireVerifiedEmail\":\"Y\",\"matchAttribute\":\"preferred_username\",\"fallbackToManual\":\"N\",\"jwksUri\":\"\",\"discoveryUrl\":\"\",\"autoDiscovery\":\"Y\",\"matchClaims\":\"email=email\"}' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `gibbonSetting` WHERE `scope`='System Admin' AND `name`='ssoOIDC');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) SELECT 'System Admin', 'ssoOIDC', 'OpenID Connect Provider', '', '{\"enabled\":\"N\",\"accountMatching\":\"manual\",\"requireVerifiedEmail\":\"Y\",\"matchAttribute\":\"preferred_username\",\"fallbackToManual\":\"N\",\"jwksUri\":\"\",\"autoDiscovery\":\"Y\",\"matchClaims\":\"email=email\"}' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `gibbonSetting` WHERE `scope`='System Admin' AND `name`='ssoOIDC');end
 
 ";

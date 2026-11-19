@@ -37,10 +37,8 @@ if (!isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySe
 }
 
 $issuer = is_scalar($_GET['issuer'] ?? null) ? trim((string) $_GET['issuer']) : '';
-$discoveryUrl = is_scalar($_GET['discoveryUrl'] ?? null) ? trim((string) $_GET['discoveryUrl']) : '';
-
 try {
-    $metadata = $container->get(OIDCDiscoveryClient::class)->discover($issuer, $discoveryUrl);
+    $metadata = $container->get(OIDCDiscoveryClient::class)->discover($issuer);
     $respond(['ok' => true, 'data' => $metadata]);
 } catch (\Throwable $e) {
     $respond(['ok' => false, 'error' => $e->getMessage()], 422);

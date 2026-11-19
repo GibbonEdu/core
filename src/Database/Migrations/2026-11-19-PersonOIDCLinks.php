@@ -52,7 +52,7 @@ class PersonOIDCLinks extends Migration
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
         $pdo->exec("INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`)
-            SELECT 'System Admin', 'ssoOIDC', 'OpenID Connect Provider', '', '{\"enabled\":\"N\",\"accountMatching\":\"manual\",\"requireVerifiedEmail\":\"Y\",\"matchAttribute\":\"preferred_username\",\"fallbackToManual\":\"N\",\"jwksUri\":\"\",\"discoveryUrl\":\"\",\"autoDiscovery\":\"Y\",\"matchClaims\":\"email=email\"}'
+            SELECT 'System Admin', 'ssoOIDC', 'OpenID Connect Provider', '', '{\"enabled\":\"N\",\"accountMatching\":\"manual\",\"requireVerifiedEmail\":\"Y\",\"matchAttribute\":\"preferred_username\",\"fallbackToManual\":\"N\",\"jwksUri\":\"\",\"autoDiscovery\":\"Y\",\"matchClaims\":\"email=email\"}'
             FROM DUAL
             WHERE NOT EXISTS (
                 SELECT 1 FROM `gibbonSetting` WHERE `scope`='System Admin' AND `name`='ssoOIDC'
