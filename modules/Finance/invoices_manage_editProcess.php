@@ -105,7 +105,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $paidAmount = $_POST['paidAmount'] ?? '';
                     //If some paid already, work out amount, and add it to total
                     $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
-                    $paidAmount += $alreadyPaid;
+                    $paidAmount = floatval($paidAmount) + floatval($alreadyPaid);
                 } else if ($_POST['status'] == 'Refunded') {
                     $paidAmount = $row['paidAmount'];
                 } else {
@@ -244,7 +244,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 //Get receipt number
 
                                     $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
-                                    $sqlPayments = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID';
+                                    $sqlPayments = 'SELECT gibbonPaymentID FROM gibbonPayment WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID';
                                     $resultPayments = $connection2->prepare($sqlPayments);
                                     $resultPayments->execute($dataPayments);
                                 $receiptCount = $resultPayments->rowCount();
