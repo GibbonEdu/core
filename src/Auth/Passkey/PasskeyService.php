@@ -22,7 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Auth\Passkey;
 
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
+use ParagonIE\ConstantTime\Base64UrlSafe;
 use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
@@ -47,7 +49,10 @@ class PasskeyService
 {
     protected const SESSION_CREATION = 'gibbonPasskeyCreation';
     protected const SESSION_REQUEST = 'gibbonPasskeyRequest';
+    protected const SESSION_ROTATION = 'gibbonPasskeyRotation';
+    protected const SESSION_ROTATION_OPTIONS = 'gibbonPasskeyRotationOptions';
     protected const CHALLENGE_TTL = 300;
+    protected const ROTATION_DEFER_DAYS = 7;
 
     /** @var PasskeyRepository */
     protected $repository;
@@ -58,11 +63,15 @@ class PasskeyService
     /** @var UserGateway */
     protected $userGateway;
 
-    public function __construct(PasskeyRepository $repository, Session $session, UserGateway $userGateway)
+    /** @var SettingGateway */
+    protected $settingGateway;
+
+    public function __construct(PasskeyRepository $repository, Session $session, UserGateway $userGateway, SettingGateway $settingGateway)
     {
         $this->repository = $repository;
         $this->session = $session;
         $this->userGateway = $userGateway;
+        $this->settingGateway = $settingGateway;
     }
 
     public function createCreationOptions(int $gibbonPersonID): array
@@ -212,7 +221,163 @@ class PasskeyService
         $this->repository->saveCredentialSource($source);
         $this->repository->markUsed($credential->getRawId());
 
+        try {
+            $this->scheduleRotation((int) $source->getUserHandle(), $credential->getRawId());
+        } catch (\Throwable $e) {
+            // Rotation must never block a valid passkey login.
+        }
+
         return (int) $source->getUserHandle();
+    }
+
+    public function getPendingRotation(int $gibbonPersonID): ?array
+    {
+        $rotation = $this->session->get(self::SESSION_ROTATION);
+
+        if (empty($rotation) || !is_array($rotation) || (int) ($rotation['personID'] ?? 0) !== $gibbonPersonID) {
+            return null;
+        }
+
+        return $rotation;
+    }
+
+    public function createRotationOptions(int $gibbonPersonID): array
+    {
+        $rotation = $this->getPendingRotation($gibbonPersonID);
+        if (empty($rotation)) {
+            throw new \RuntimeException(__('No passkey rotation is pending.'));
+        }
+
+        $user = $this->getUserEntity($gibbonPersonID);
+        $rp = PublicKeyCredentialRpEntity::create($this->getRpName(), $this->getRpId());
+        $parameters = [
+            PublicKeyCredentialParameters::createPk(-7),
+            PublicKeyCredentialParameters::createPk(-257),
+        ];
+        $selection = AuthenticatorSelectionCriteria::create(
+            null,
+            AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED,
+            AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED,
+            true
+        );
+        $options = PublicKeyCredentialCreationOptions::create(
+            $rp,
+            $user,
+            random_bytes(32),
+            $parameters,
+            $selection,
+            'none',
+            [],
+            60000
+        );
+        $optionsJson = $options->jsonSerialize();
+        $nonce = bin2hex(random_bytes(16));
+        $this->session->set(self::SESSION_ROTATION_OPTIONS, [
+            'options'      => json_decode(json_encode($optionsJson), true),
+            'nonce'        => $nonce,
+            'expires'      => time() + self::CHALLENGE_TTL,
+            'personID'     => $gibbonPersonID,
+            'credentialId' => $rotation['credentialId'],
+            'label'        => $rotation['label'] ?? '',
+        ]);
+
+        return ['options' => $optionsJson, 'nonce' => $nonce];
+    }
+
+    public function verifyRotationAttestation(array $response, string $nonce, int $gibbonPersonID): PublicKeyCredentialSource
+    {
+        $stored = $this->session->get(self::SESSION_ROTATION_OPTIONS);
+        $this->session->forget(self::SESSION_ROTATION_OPTIONS);
+
+        if (empty($stored) || !is_array($stored)) {
+            throw new \RuntimeException(__('Passkey rotation session expired.'));
+        }
+        if (!hash_equals((string) ($stored['nonce'] ?? ''), $nonce)
+            || (int) ($stored['personID'] ?? 0) !== $gibbonPersonID
+            || ($stored['expires'] ?? 0) < time()
+            || empty($stored['credentialId'])) {
+            throw new \RuntimeException(__('Invalid passkey rotation request.'));
+        }
+
+        $options = PublicKeyCredentialCreationOptions::createFromArray($stored['options']);
+        $credential = $this->loadCredential($response);
+        $attestationResponse = $credential->getResponse();
+
+        if (!($attestationResponse instanceof AuthenticatorAttestationResponse)) {
+            throw new \RuntimeException(__('Invalid passkey rotation response.'));
+        }
+
+        return AuthenticatorAttestationResponseValidator::create()->check(
+            $attestationResponse,
+            $options,
+            $this->getHost(),
+            ['localhost', '127.0.0.1']
+        );
+    }
+
+    public function completeRotation(int $gibbonPersonID, PublicKeyCredentialSource $source): bool
+    {
+        $rotation = $this->getPendingRotation($gibbonPersonID);
+        if (empty($rotation) || empty($rotation['credentialId'])) {
+            return false;
+        }
+
+        $rotated = $this->repository->rotateForPerson(
+            $gibbonPersonID,
+            (string) ($rotation['label'] ?? ''),
+            $source,
+            (string) $rotation['credentialId']
+        );
+
+        if ($rotated) {
+            $this->session->forget([self::SESSION_ROTATION, self::SESSION_ROTATION_OPTIONS]);
+        }
+
+        return $rotated;
+    }
+
+    public function deferRotation(int $gibbonPersonID): bool
+    {
+        $rotation = $this->getPendingRotation($gibbonPersonID);
+        if (empty($rotation) || empty($rotation['credentialId'])) {
+            return false;
+        }
+
+        $deferred = $this->repository->deferRotationByCredentialId(
+            (string) $rotation['credentialId'],
+            self::ROTATION_DEFER_DAYS
+        );
+        $this->session->forget([self::SESSION_ROTATION, self::SESSION_ROTATION_OPTIONS]);
+
+        return $deferred;
+    }
+
+    protected function scheduleRotation(int $gibbonPersonID, string $rawCredentialId): void
+    {
+        $days = (int) $this->settingGateway->getSettingByScope('System', 'passkeyRotationDays');
+        if ($days <= 0) {
+            return;
+        }
+
+        $metadata = $this->repository->findMetadataByEncodedCredentialId(Base64UrlSafe::encodeUnpadded($rawCredentialId));
+        if (empty($metadata) || empty($metadata['createdAt'])) {
+            return;
+        }
+
+        $now = time();
+        if (!empty($metadata['rotationDeferredUntil']) && strtotime($metadata['rotationDeferredUntil']) > $now) {
+            return;
+        }
+        if (strtotime($metadata['createdAt']) + (min(3650, $days) * 86400) > $now) {
+            return;
+        }
+
+        $this->session->set(self::SESSION_ROTATION, [
+            'personID'     => $gibbonPersonID,
+            'credentialId' => Base64UrlSafe::encodeUnpadded($rawCredentialId),
+            'label'        => (string) ($metadata['label'] ?? ''),
+            'createdAt'    => (string) $metadata['createdAt'],
+        ]);
     }
 
     public function getPasskeysForPerson(int $gibbonPersonID): array

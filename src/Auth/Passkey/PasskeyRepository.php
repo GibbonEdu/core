@@ -103,14 +103,20 @@ class PasskeyRepository implements PublicKeyCredentialSourceRepository
         $credentialId = Base64UrlSafe::encodeUnpadded($source->getPublicKeyCredentialId());
         $label = trim($label) !== '' ? mb_substr(trim($label), 0, 60) : __('Passkey');
 
-        $sql = 'INSERT INTO gibbonPersonPasskey
-                    (gibbonPersonID, label, credentialId, credentialSource)
-                VALUES
-                    (:gibbonPersonID, :label, :credentialId, :credentialSource)
-                ON DUPLICATE KEY UPDATE
-                    label=VALUES(label), credentialSource=VALUES(credentialSource)';
-
         try {
+            $existing = $this->db->prepare('SELECT gibbonPersonID FROM gibbonPersonPasskey WHERE credentialId=:credentialId');
+            $existing->execute(['credentialId' => $credentialId]);
+            $existingPersonID = $existing->fetchColumn();
+            if ($existingPersonID !== false && (int) $existingPersonID !== $gibbonPersonID) {
+                return false;
+            }
+
+            $sql = 'INSERT INTO gibbonPersonPasskey
+                        (gibbonPersonID, label, credentialId, credentialSource)
+                    VALUES
+                        (:gibbonPersonID, :label, :credentialId, :credentialSource)
+                    ON DUPLICATE KEY UPDATE
+                        label=VALUES(label), credentialSource=VALUES(credentialSource)';
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([
                 'gibbonPersonID'  => $gibbonPersonID,
@@ -119,6 +125,67 @@ class PasskeyRepository implements PublicKeyCredentialSourceRepository
                 'credentialSource'=> json_encode($source),
             ]);
         } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
+    public function findMetadataByEncodedCredentialId(string $credentialId): ?array
+    {
+        try {
+            $stmt = $this->db->prepare('SELECT gibbonPersonPasskeyID, gibbonPersonID, label, credentialId, createdAt, lastUsedAt, rotationDeferredUntil FROM gibbonPersonPasskey WHERE credentialId=:credentialId');
+            $stmt->execute(['credentialId' => $credentialId]);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return null;
+        }
+
+        return $row ?: null;
+    }
+
+    public function deferRotationByCredentialId(string $credentialId, int $days = 7): bool
+    {
+        $days = max(1, min(3650, $days));
+
+        try {
+            $stmt = $this->db->prepare('UPDATE gibbonPersonPasskey SET rotationDeferredUntil=DATE_ADD(NOW(), INTERVAL '.$days.' DAY) WHERE credentialId=:credentialId');
+            return $stmt->execute(['credentialId' => $credentialId]);
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
+    public function rotateForPerson(int $gibbonPersonID, string $label, PublicKeyCredentialSource $source, string $oldEncodedCredentialId): bool
+    {
+        $newCredentialId = Base64UrlSafe::encodeUnpadded($source->getPublicKeyCredentialId());
+
+        try {
+            $this->db->beginTransaction();
+
+            if (!$this->saveForPerson($gibbonPersonID, $label, $source)) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            if ($newCredentialId !== $oldEncodedCredentialId) {
+                $delete = $this->db->prepare('DELETE FROM gibbonPersonPasskey WHERE gibbonPersonID=:gibbonPersonID AND credentialId=:credentialId');
+                $delete->execute([
+                    'gibbonPersonID' => $gibbonPersonID,
+                    'credentialId'   => $oldEncodedCredentialId,
+                ]);
+            }
+
+            $reset = $this->db->prepare('UPDATE gibbonPersonPasskey SET rotationDeferredUntil=NULL WHERE gibbonPersonID=:gibbonPersonID AND credentialId=:credentialId');
+            $reset->execute([
+                'gibbonPersonID' => $gibbonPersonID,
+                'credentialId'   => $newCredentialId,
+            ]);
+
+            $this->db->commit();
+            return true;
+        } catch (\Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
             return false;
         }
     }

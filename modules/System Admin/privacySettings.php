@@ -53,6 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
+    $setting = $settingGateway->getSettingByScope('System', 'passkeyRotationDays', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(0)->maximum(3650)->required();
+
     $form->addRow()->addHeading('Password Policy', __('Password Policy'));
 
     $setting = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength', true);
