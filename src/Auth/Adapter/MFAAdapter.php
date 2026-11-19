@@ -154,6 +154,8 @@ class MFAAdapter extends AuthenticationAdapter
                 $password = $this->session->get('microsoftAPIAccessToken', [])['access_token'] ?? ''; break;
             case 'Gibbon\Auth\Adapter\OAuthGenericAdapter':
                 $password = $this->session->get('genericAPIAccessToken', [])['access_token'] ?? ''; break;
+            case 'Gibbon\Auth\Adapter\OIDCAdapter':
+                $password = (string) $this->session->get('oidcAPIAccessToken', ''); break;
             default:
                 $password = $userData['passwordStrong'];
         }

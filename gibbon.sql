@@ -4443,6 +4443,19 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
 -- Table structure for table `gibbonPersonPhoto`
 --
 
+CREATE TABLE `gibbonPersonOIDC` (
+  `gibbonPersonOIDCID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `issuer` varchar(255) NOT NULL DEFAULT '',
+  `subject` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL DEFAULT '',
+  `displayName` varchar(255) NOT NULL DEFAULT '',
+  `timestampLinked` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gibbonPersonOIDCID`),
+  UNIQUE KEY `issuerSubject` (`issuer`,`subject`),
+  KEY `gibbonPersonID` (`gibbonPersonID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `gibbonPersonPhoto` (
   `gibbonPersonPhotoID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
@@ -5938,6 +5951,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00335, 'System Admin', 'ssoGoogle', 'Google Integration', '', '{\"enabled\":\"N\"}'),
 (00336, 'System Admin', 'ssoMicrosoft', 'Microsoft Integration', '', '{\"enabled\":\"N\"}'),
 (00337, 'System Admin', 'ssoOther', 'Generic OAuth2 Provider', '', '{\"enabled\":\"N\"}'),
+(00363, 'System Admin', 'ssoOIDC', 'OpenID Connect Provider', '', '{\"enabled\":\"N\",\"accountMatching\":\"manual\",\"requireVerifiedEmail\":\"Y\",\"matchAttribute\":\"preferred_username\",\"fallbackToManual\":\"N\",\"jwksUri\":\"\",\"discoveryUrl\":\"\",\"autoDiscovery\":\"Y\",\"matchClaims\":\"email=email\"}'),
 (00338, 'Behaviour', 'enablePositiveBehaviourLetters', 'Enable Positive Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N'),
 (00339, 'Behaviour', 'behaviourLettersPositiveLetter1Count', 'Positive Letter 1 Count', 'After how many positive records should letter 1 be sent?', '3'),
 (00340, 'Behaviour', 'behaviourLettersPositiveLetter2Count', 'Positive Letter 2 Count', 'After how many positive records should letter 2 be sent?', '6'),

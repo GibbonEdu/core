@@ -475,5 +475,18 @@ ALTER TABLE `gibbonNotificationListener` ADD `scopeContext` VARCHAR(255) NULL AF
 ALTER TABLE `gibbonNotificationEvent` ADD `contextName` VARCHAR(255) NULL AFTER `scopes`;end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Role Category', `scopes`='All,context' WHERE `event`='Flagged Field Data Updates' AND `moduleName`='Data Updater' AND `actionName`='Personal Data Updates';end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,context,gibbonPersonIDStudent,gibbonYearGroupID' WHERE `event` LIKE '% Record' AND `moduleName`='Behaviour';end
+CREATE TABLE IF NOT EXISTS `gibbonPersonOIDC` (
+  `gibbonPersonOIDCID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `issuer` VARCHAR(255) NOT NULL DEFAULT '',
+  `subject` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL DEFAULT '',
+  `displayName` VARCHAR(255) NOT NULL DEFAULT '',
+  `timestampLinked` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gibbonPersonOIDCID`),
+  UNIQUE KEY `issuerSubject` (`issuer`, `subject`),
+  KEY `gibbonPersonID` (`gibbonPersonID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) SELECT 'System Admin', 'ssoOIDC', 'OpenID Connect Provider', '', '{\"enabled\":\"N\",\"accountMatching\":\"manual\",\"requireVerifiedEmail\":\"Y\",\"matchAttribute\":\"preferred_username\",\"fallbackToManual\":\"N\",\"jwksUri\":\"\",\"discoveryUrl\":\"\",\"autoDiscovery\":\"Y\",\"matchClaims\":\"email=email\"}' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `gibbonSetting` WHERE `scope`='System Admin' AND `name`='ssoOIDC');end
 
 ";

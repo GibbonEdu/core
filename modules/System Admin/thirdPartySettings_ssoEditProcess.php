@@ -20,11 +20,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\OIDC\OIDCDiscoveryClient;
 use Gibbon\Data\Validator;
 
 require_once __DIR__ . '/../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['authorizeEndpoint' => 'URL', 'tokenEndpoint' => 'URL', 'userEndpoint' => 'URL']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['authorizeEndpoint' => 'URL', 'tokenEndpoint' => 'URL', 'userEndpoint' => 'URL', 'issuer' => 'URL', 'discoveryUrl' => 'URL', 'jwksUri' => 'URL']);
 
 $sso = $_POST['sso'] ?? '';
 
@@ -59,9 +60,59 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'usernameAttribute'  => $_POST['usernameAttribute'] ?? '',
     ];
 
-    $calendarFeed = $_POST['calendarFeed'] ?? '';
+    if ($sso == 'OIDC') {
+        $data['issuer'] = is_scalar($_POST['issuer'] ?? null) ? trim((string) $_POST['issuer']) : '';
+        $data['subjectAttribute'] = is_scalar($_POST['subjectAttribute'] ?? null) ? trim((string) $_POST['subjectAttribute']) : '';
+        if ($data['subjectAttribute'] === '') {
+            $data['subjectAttribute'] = 'sub';
+        }
+
+        $accountMatching = is_scalar($_POST['accountMatching'] ?? null) ? (string) $_POST['accountMatching'] : 'manual';
+        $data['accountMatching'] = in_array($accountMatching, ['manual', 'auto', 'email', 'username'], true) ? $accountMatching : 'manual';
+        $data['requireVerifiedEmail'] = ($_POST['requireVerifiedEmail'] ?? 'Y') === 'Y' ? 'Y' : 'N';
+        $data['matchAttribute'] = is_scalar($_POST['matchAttribute'] ?? null) ? trim((string) $_POST['matchAttribute']) : '';
+        if ($data['matchAttribute'] === '') {
+            $data['matchAttribute'] = 'preferred_username';
+        }
+        $data['fallbackToManual'] = ($_POST['fallbackToManual'] ?? 'N') === 'Y' ? 'Y' : 'N';
+        $data['matchClaims'] = is_scalar($_POST['matchClaims'] ?? null) ? trim((string) $_POST['matchClaims']) : '';
+        if ($data['matchClaims'] === '') {
+            $data['matchClaims'] = $data['accountMatching'] === 'username'
+                ? 'username='.$data['matchAttribute']
+                : 'email=email';
+        }
+        $data['discoveryUrl'] = is_scalar($_POST['discoveryUrl'] ?? null) ? trim((string) $_POST['discoveryUrl']) : '';
+        $data['jwksUri'] = is_scalar($_POST['jwksUri'] ?? null) ? trim((string) $_POST['jwksUri']) : '';
+        $data['autoDiscovery'] = ($_POST['autoDiscovery'] ?? 'Y') === 'Y' ? 'Y' : 'N';
+    }
+
+    if ($sso == 'OIDC' && $data['autoDiscovery'] === 'Y' && ($data['issuer'] !== '' || $data['discoveryUrl'] !== '')) {
+        try {
+            $metadata = $container->get(OIDCDiscoveryClient::class)->discover($data['issuer'], $data['discoveryUrl']);
+            $data['issuer'] = $metadata['issuer'] ?? $data['issuer'];
+            $data['authorizeEndpoint'] = $metadata['authorization_endpoint'];
+            $data['tokenEndpoint'] = $metadata['token_endpoint'];
+            $data['userEndpoint'] = $metadata['userinfo_endpoint'];
+            $data['jwksUri'] = $metadata['jwks_uri'] ?? '';
+            if ($data['scopes'] === '') {
+                $data['scopes'] = 'openid profile email';
+            }
+        } catch (\Throwable $e) {
+            $URL .= '&return=error12';
+            header("Location: {$URL}");
+            exit;
+        }
+    }
+
+    $calendarFeed = $_POST['calendarFeed'] ?? null;
 
     if ($data['enabled'] == 'Y' && (empty($data['clientID']) || empty($data['clientSecret']))) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if ($sso == 'OIDC' && $data['enabled'] == 'Y' && (empty($data['clientName']) || empty($data['authorizeEndpoint']) || empty($data['tokenEndpoint']) || empty($data['userEndpoint']))) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -72,7 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     }
 
     $settingGateway->updateSettingByScope('System Admin', 'sso'.$sso, json_encode(array_merge($values, $data)));
-    $settingGateway->updateSettingByScope('System', 'calendarFeed', $calendarFeed);
+    if ($calendarFeed !== null) {
+        $settingGateway->updateSettingByScope('System', 'calendarFeed', $calendarFeed);
+    }
 
     // Update all the system settings that are stored in the session
     getSystemSettings($guid, $connection2);

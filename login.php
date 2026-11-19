@@ -30,6 +30,8 @@ use Gibbon\Auth\Adapter\OAuthAdapterInterface;
 use Gibbon\Auth\Adapter\OAuthGoogleAdapter;
 use Gibbon\Auth\Adapter\OAuthMicrosoftAdapter;
 use Gibbon\Auth\Adapter\OAuthGenericAdapter;
+use Gibbon\Auth\Adapter\OIDCAdapter;
+use Gibbon\Auth\OIDC\OIDCLinkRepository;
 use Gibbon\Domain\System\LogGateway;
 use League\Container\Exception\NotFoundException;
 
@@ -44,6 +46,18 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 // Determine the login method to use (use session data for OAuth2 redirects)
 $method = $_GET['method'] ?? $_POST['method'] ?? $session->get('oAuthMethod') ?? '';
+
+// Cancel a pending OIDC binding request and return to the login options.
+if (strtolower($method) === 'canceloidc') {
+    $session->forget('oidcPending');
+    header("Location: {$session->get('absoluteURL')}/index.php");
+    exit;
+}
+
+// Do not carry a pending OIDC binding into a different OAuth provider.
+if (in_array(strtolower($method), ['oidc', 'google', 'microsoft', 'oauth'], true) && $session->has('oidcPending')) {
+    $session->forget('oidcPending');
+}
 
 // Setup system log gateway
 $logGateway = $container->get(LogGateway::class);
@@ -71,6 +85,12 @@ try {
             break;
         case 'oauth':
             $authAdapter = $container->get(OAuthGenericAdapter::class);
+            break;
+        case 'oidc':
+            $authAdapter = $container->get(OIDCAdapter::class);
+            break;
+        case 'oidclink':
+            $authAdapter = $container->get(DefaultAdapter::class);
             break;
         case 'mfa':
             $authAdapter = $container->get(MFAAdapter::class);
@@ -125,6 +145,26 @@ try {
     }
 
     $authAdapter->updateSession($auth);
+
+    // Complete a pending OIDC link only after the existing Gibbon account has
+    // authenticated successfully, including any MFA challenge.
+    $oidcPending = $session->get('oidcPending');
+    if (!empty($oidcPending) && in_array(strtolower($method), ['oidclink', 'mfa'], true)) {
+        try {
+            $authUser = (array) $auth->getUserData();
+            $container->get(OIDCLinkRepository::class)->link(
+                (string) ($authUser['gibbonPersonID'] ?? ''),
+                (string) ($oidcPending['issuer'] ?? ''),
+                (string) ($oidcPending['subject'] ?? ''),
+                (string) ($oidcPending['email'] ?? ''),
+                (string) ($oidcPending['displayName'] ?? '')
+            );
+        } catch (\Throwable $e) {
+            $logLoginAttempt('OIDC Link - Failed', $e->getMessage());
+        }
+        $session->forget('oidcPending');
+    }
+
     $logLoginAttempt('Login - Success');
 
     header("Location: {$URL}");
@@ -183,6 +223,9 @@ try {
     exit;
 } catch (Exception\MFATokenRequired $e) {
     header("Location: {$URL->withQueryParam('method', 'mfa')}");
+    exit;
+} catch (Exception\OIDCLinkRequired $e) {
+    header("Location: {$URL->withQueryParam('method', 'oidclink')}");
     exit;
 } catch (NotFoundException $e) {
     $logLoginAttempt('Login - Failed', 'Container error: '.$e->getMessage());
