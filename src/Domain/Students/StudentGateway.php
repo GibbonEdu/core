@@ -261,12 +261,11 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID, $onlyFull = true)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, officialName, nameInCharacters, email, username, dob, image_240, gender, status, dateStart, dateEnd, studentID, transport, lockerNumber, studentAgreements, gibbonPerson.gibbonHouseID, gibbonPerson.status, gibbonPerson.fields, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.fields as enrolmentFields, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
-                FROM gibbonPerson
-                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.gibbonRoleIDPrimary, title, surname, firstName, preferredName, officialName, nameInCharacters, email, emailAlternate, gibbonPerson.website, username, canLogin, lastIPAddress, dob, image_240, gender, gibbonPerson.status, dateStart, dateEnd, studentID, transport, transportNotes, vehicleRegistration, lockerNumber, studentAgreements, gibbonPerson.gibbonHouseID, gibbonPerson.fields, phone1, phone1Type, phone1CountryCode, phone2, phone2Type, phone2CountryCode, phone3, phone3Type, phone3CountryCode, phone4, phone4Type, phone4CountryCode, countryOfBirth, ethnicity, religion, languageFirst, languageSecond, languageThird, lastSchool, nextSchool, departureReason, gibbonSchoolYearIDClassOf, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.fields as enrolmentFields, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
+        FROM gibbonPerson
+        LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+        LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+        LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
 
         if ($onlyFull) {
             $data['today'] = date('Y-m-d');

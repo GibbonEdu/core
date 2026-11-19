@@ -222,7 +222,7 @@ class OverviewPage extends ProfilePage implements ContainerAwareInterface
         $table = DataTable::createDetails('timetable');
 
         // Add edit action if user has permission
-        if (Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson_edit', 'Course Enrolment by Person_edit')) {
+        if (Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) {
             $table->addHeaderAction('edit', __('Edit'))
                 ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
                 ->addParam('gibbonPersonID', $this->gibbonPersonID)

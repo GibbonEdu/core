@@ -38,8 +38,9 @@ $logGateway = $container->get(LogGateway::class);
 $mode = $_POST['mode'] ?? '';
 $gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view_register.php&gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&mode=$mode&search=".$_GET['search'];
-$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
+$search = $_GET['search'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view_register.php&gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&mode=$mode&search=".$search;
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
     $URL .= '&return=error0';
@@ -61,8 +62,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         //Check access controls
         $access = $settingGateway->getSettingByScope('Activities', 'access');
 
-        if ($access != 'Register') {
-            //Fail0
+        if ($access != 'Register' || ($mode != 'register' && $mode != 'unregister')) {
+            // Fail0
             $URL .= '&return=error0';
             header("Location: {$URL}");
             exit;

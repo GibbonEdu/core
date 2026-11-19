@@ -32,6 +32,21 @@ $I->amOnModulePage('Students', 'student_view_details.php', [
     'gibbonSchoolYearID' => $gibbonSchoolYearID
 ]);
 $I->seeBreadcrumb('View Student Profiles');
+$I->dontSeeErrors();
+$I->dontSee('Undefined array key');
+$I->seeElement('a[href*="courseEnrolment_manage_byPerson_edit.php"]');
+$I->dontSeeElement('a[href*="tt_manage_subscription.php"]');
+
+$I->amOnModulePage('Students', 'student_view_details.php', [
+    'gibbonPersonID' => $gibbonPersonID,
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'subpage' => 'Timetable',
+    'allStudents' => 'on',
+]);
+$I->dontSeeErrors();
+$I->dontSee('Undefined array key');
+$I->seeElement('a[href*="courseEnrolment_manage_byPerson_edit.php"][href*="allUsers=on"]');
+$I->dontSeeElement('a[href*="tt_manage_subscription.php"]');
 
 // Database Cleanup  ------------------------------
 
