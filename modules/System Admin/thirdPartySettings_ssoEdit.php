@@ -124,6 +124,23 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row = $form->addRow()->addClass('settingActive');
             $row->addLabel('clientName', __('Service Name'))->description(__('The name of the OpenID Connect service, which will be displayed on the login page button.'));
             $row->addTextField('clientName')->required();
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('issuer', __('OIDC Issuer / Discovery Base URL'))->description(__('The issuer identifier, used to keep bindings unique. It is also the base URL for the standard discovery document.'));
+            $row->addURL('issuer');
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('discoveryUrl', __('Discovery URL (optional)'))->description(__('Leave blank to use <issuer>/.well-known/openid-configuration. Set this only when the provider uses a custom discovery location.'));
+            $row->addURL('discoveryUrl');
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('autoDiscovery', __('Auto-configure from Discovery'))->description(__('When saving, fetch the discovery document and populate the authorization, token, user info and JWKS endpoints. Disable this if you need to set the endpoints manually.'));
+            $row->addYesNo('autoDiscovery')->selected('Y');
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('oidcDiscoveryAction', __('Discovery Check'));
+            $row->addButton(__('Fetch Info'))->setID('oidcDiscoveryButton')->onClick('fetchOidcDiscovery()');
+            $row->addContent('<span id="oidcDiscoveryStatus" class="text-sm text-gray-600 ml-2"></span>');
     }
 
     if ($sso == 'Microsoft' || $sso == 'Other' || $sso == 'OIDC') {
@@ -161,18 +178,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addURL('jwksUri');
 
         if ($sso == 'OIDC') {
-            $row = $form->addRow()->addClass('settingActive');
-                $row->addLabel('issuer', __('OIDC Issuer / Discovery Base URL'))->description(__('The issuer identifier, used to keep bindings unique. It is also the base URL for the standard discovery document.'));
-                $row->addURL('issuer');
-
-            $row = $form->addRow()->addClass('settingActive');
-                $row->addLabel('discoveryUrl', __('Discovery URL (optional)'))->description(__('Leave blank to use <issuer>/.well-known/openid-configuration. Set this only when the provider uses a custom discovery location.'));
-                $row->addURL('discoveryUrl');
-
-            $row = $form->addRow()->addClass('settingActive');
-                $row->addLabel('autoDiscovery', __('Auto-configure from Discovery'))->description(__('When saving, fetch the discovery document and populate the authorization, token, user info and JWKS endpoints. Disable this if you need to set the endpoints manually.'));
-                $row->addYesNo('autoDiscovery')->selected('Y');
-
             $row = $form->addRow()->addClass('settingActive');
                 $row->addLabel('subjectAttribute', __('Subject Attribute'))->description(__('The claim containing the stable subject identifier. The standard OpenID Connect claim is: sub.'));
                 $row->addTextField('subjectAttribute')->setValue('sub');
@@ -225,4 +230,38 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();
+
+    if ($sso == 'OIDC') {
+        $discoveryEndpoint = $session->get('absoluteURL').'/modules/System Admin/thirdPartySettings_ssoDiscoverProcess.php';
+        echo '<script type="text/javascript">';
+        echo 'async function fetchOidcDiscovery() {';
+        echo '  const status = document.getElementById("oidcDiscoveryStatus");';
+        echo '  const issuer = document.getElementsByName("issuer")[0];';
+        echo '  const discoveryUrl = document.getElementsByName("discoveryUrl")[0];';
+        echo '  if (!issuer || !discoveryUrl) return;';
+        echo '  status.textContent = '.json_encode(__('Checking discovery...')).';';
+        echo '  status.className = "text-sm text-gray-600 ml-2";';
+        echo '  const params = new URLSearchParams({issuer: issuer.value, discoveryUrl: discoveryUrl.value});';
+        echo '  try {';
+        echo '    const response = await fetch('.json_encode($discoveryEndpoint).' + "?" + params.toString(), {credentials: "same-origin", headers: {"Accept": "application/json"}});';
+        echo '    const result = await response.json();';
+        echo '    if (!response.ok || !result.ok) throw new Error(result.error || "Discovery failed");';
+        echo '    const data = result.data;';
+        echo '    const setValue = (name, value) => { const field = document.getElementsByName(name)[0]; if (field && value) field.value = value; };';
+        echo '    setValue("issuer", data.issuer);';
+        echo '    setValue("authorizeEndpoint", data.authorization_endpoint);';
+        echo '    setValue("tokenEndpoint", data.token_endpoint);';
+        echo '    setValue("userEndpoint", data.userinfo_endpoint);';
+        echo '    setValue("jwksUri", data.jwks_uri);';
+        echo '    const scopes = document.getElementsByName("scopes")[0];';
+        echo '    if (scopes && !scopes.value) scopes.value = "openid profile email";';
+        echo '    status.textContent = '.json_encode(__('Discovery fetched. Review the values and save.')).';';
+        echo '    status.className = "text-sm text-green-700 ml-2";';
+        echo '  } catch (error) {';
+        echo '    status.textContent = '.json_encode(__('Discovery failed:')).' + " " + error.message;';
+        echo '    status.className = "text-sm text-red-700 ml-2";';
+        echo '  }';
+        echo '}';
+        echo '</script>';
+    }
 }
