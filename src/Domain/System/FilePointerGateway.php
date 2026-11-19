@@ -37,6 +37,8 @@ class FilePointerGateway extends QueryableGateway
     private static $tableName = 'gibbonFilePointer';
     private static $primaryKey = 'gibbonFilePointerID';
 
+    private static $searchableColumns = [];
+
     public function getFileAndPointerID(string $foreignTable, int|string $foreignTableID, string $foreignColumn)
     {
         $data = ['foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID, 'foreignColumn' => $foreignColumn];

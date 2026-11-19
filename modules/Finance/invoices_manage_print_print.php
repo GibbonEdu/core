@@ -80,15 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                     echo $invoiceContents;
                 }
             } elseif ($type == 'reminder1' or $type == 'reminder2' or $type == 'reminder3') {
-                //Update reminder count
-                if ($row['reminderCount'] < 3) {
-
-                        $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'reminderCount' => $row['reminderCount'] + 1);
-                        $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount=:reminderCount WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                }
-
                 $settingGateway = $container->get(SettingGateway::class);
 
                 //Reminder Text

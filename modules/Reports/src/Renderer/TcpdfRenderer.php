@@ -23,10 +23,10 @@ namespace Gibbon\Module\Reports\Renderer;
 
 use Gibbon\Module\Reports\Renderer\ReportRendererInterface;
 use Gibbon\Module\Reports\ReportData;
-use Gibbon\Module\Reports\ReportTemplate;
+use Gibbon\Module\Reports\ReportSandbox;
 use Gibbon\Module\Reports\ReportSection;
 use Gibbon\Module\Reports\ReportTCPDF;
-use Twig\Environment;
+use Gibbon\Module\Reports\ReportTemplate;
 
 class TcpdfRenderer implements ReportRendererInterface
 {
@@ -45,7 +45,7 @@ class TcpdfRenderer implements ReportRendererInterface
     protected $profile;
     protected $microtime;
 
-    public function __construct(Environment $templateEngine)
+    public function __construct(ReportSandbox $templateEngine)
     {
         $this->twig = $templateEngine;
     }

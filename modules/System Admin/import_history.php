@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $logGateway = $container->get(LogGateway::class);
     $logsByType = $logGateway->selectLogsByModuleAndTitle('System Admin', 'Import - %')->fetchAll();
 
-    $logsByType = array_map(function ($log) use (&$importTypeList) {
+    $logsByType = array_map(function ($log) use (&$importTypeList, $logGateway) {
         $log['data'] = $logGateway->getLogData($log['serialisedArray'] ?? '');
         $log['importType'] = @$importTypeList[$log['data']['type']];
         return $log['importType'] ? $log : null;
