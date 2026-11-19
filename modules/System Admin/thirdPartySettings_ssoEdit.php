@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addURL('issuer');
 
         $row = $form->addRow()->addClass('settingActive');
-            $row->addLabel('discoveryUrl', __('Discovery URL (optional)'))->description(__('Leave blank to use <issuer>/.well-known/openid-configuration. Set this only when the provider uses a custom discovery location.'));
+            $row->addLabel('discoveryUrl', __('Discovery URL (optional)'))->description(__('Leave blank to use <issuer>/.well-known/openid-configuration. A base URL is also accepted; the well-known path is appended automatically.'));
             $row->addURL('discoveryUrl');
 
         $row = $form->addRow()->addClass('settingActive');

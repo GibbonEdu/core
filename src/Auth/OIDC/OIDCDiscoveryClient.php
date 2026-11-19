@@ -42,9 +42,17 @@ class OIDCDiscoveryClient
                 throw new RuntimeException('OIDC issuer or discovery URL is required');
             }
 
-            $discoveryUrl = preg_match('#/\.well-known/openid-configuration$#i', $issuer)
-                ? $issuer
-                : $issuer.'/.well-known/openid-configuration';
+            $discoveryUrl = $issuer;
+        }
+
+        $discoveryUrl = rtrim($discoveryUrl, '/');
+        if (!preg_match('#/\.well-known/openid-configuration$#i', $discoveryUrl)) {
+            $path = (string) parse_url($discoveryUrl, PHP_URL_PATH);
+            // Treat a URL without a file-like path as a base URL and append the
+            // standard well-known path. Full/custom discovery URLs are kept as-is.
+            if (!preg_match('/\.[a-z0-9]+$/i', $path)) {
+                $discoveryUrl .= '/.well-known/openid-configuration';
+            }
         }
 
         if (!filter_var($discoveryUrl, FILTER_VALIDATE_URL) || !preg_match('#^https?://#i', $discoveryUrl)) {
@@ -94,7 +102,7 @@ class OIDCDiscoveryClient
         curl_close($curl);
 
         if ($body === false || $status < 200 || $status >= 300) {
-            throw new RuntimeException('Unable to fetch OIDC discovery document'.($error !== '' ? ': '.$error : ''));
+            throw new RuntimeException('Unable to fetch OIDC discovery document (HTTP '.$status.')'.($error !== '' ? ': '.$error : ''));
         }
 
         $metadata = json_decode($body, true);
