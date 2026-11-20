@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Services\Format;
 
@@ -27,37 +28,56 @@ require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonSchoolYearID = is_scalar($_POST['gibbonSchoolYearID'] ?? null)
+    ? trim((string) $_POST['gibbonSchoolYearID'])
+    : '';
 
-$URL = $session->get('absoluteURL') . "/index.php?q=/modules/School Admin/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.rawurlencode($gibbonSchoolYearID);
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
 }
 
-$dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : '';
-$dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : '';
-$type = $_POST['type'] ?? '';
+$dateStart = !empty($_POST['dateStart']) && is_scalar($_POST['dateStart']) ? Format::dateConvert((string) $_POST['dateStart']) : '';
+$dateEnd = !empty($_POST['dateEnd']) && is_scalar($_POST['dateEnd']) ? Format::dateConvert((string) $_POST['dateEnd']) : '';
+$type = is_scalar($_POST['type'] ?? null) ? (string) $_POST['type'] : '';
 
 $allowedTypes = array('School Closure', 'Timing Change', 'Off Timetable');
 
-if (empty($gibbonSchoolYearID) || empty($dateStart) || empty($dateEnd) || ($type !== '' && !in_array($type, $allowedTypes, true))) {
+$startDate = DateTimeImmutable::createFromFormat('!Y-m-d', $dateStart);
+$endDate = DateTimeImmutable::createFromFormat('!Y-m-d', $dateEnd);
+
+if (
+    empty($gibbonSchoolYearID)
+    || !$startDate
+    || !$endDate
+    || $startDate->format('Y-m-d') !== $dateStart
+    || $endDate->format('Y-m-d') !== $dateEnd
+    || ($type !== '' && !in_array($type, $allowedTypes, true))
+) {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit;
 }
 
 // Normalise an inverted range.
-if ($dateStart > $dateEnd) {
-    list($dateStart, $dateEnd) = array($dateEnd, $dateStart);
+if ($startDate > $endDate) {
+    list($startDate, $endDate) = [$endDate, $startDate];
 }
 
 // Guard against runaway ranges (roughly one year).
-$daysInRange = (int) floor((strtotime($dateEnd) - strtotime($dateStart)) / 86400) + 1;
+$daysInRange = (int) $startDate->diff($endDate)->days + 1;
 if ($daysInRange > 366) {
     $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit;
+}
+
+$schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
+if (empty($schoolYear)) {
+    $URL .= '&return=error2';
     header("Location: {$URL}");
     exit;
 }
@@ -69,7 +89,11 @@ $sql = "SELECT gibbonSchoolYearSpecialDay.gibbonSchoolYearSpecialDayID
         WHERE gibbonSchoolYearTerm.gibbonSchoolYearID = :gibbonSchoolYearID
           AND gibbonSchoolYearSpecialDay.date >= :dateStart
           AND gibbonSchoolYearSpecialDay.date <= :dateEnd";
-$params = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
+$params = array(
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    'dateStart' => $startDate->format('Y-m-d'),
+    'dateEnd' => $endDate->format('Y-m-d'),
+);
 
 if ($type !== '') {
     $sql .= " AND gibbonSchoolYearSpecialDay.type = :type";
@@ -83,10 +107,23 @@ $ids = $result->fetchAll(PDO::FETCH_COLUMN);
 $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
 $deletedCount = 0;
-foreach ($ids as $id) {
-    if ($specialDayGateway->delete($id)) {
+$connection2->beginTransaction();
+try {
+    foreach ($ids as $id) {
+        if (!$specialDayGateway->delete($id)) {
+            throw new RuntimeException('Unable to delete special day');
+        }
         $deletedCount++;
     }
+
+    $connection2->commit();
+} catch (Throwable $e) {
+    if ($connection2->inTransaction()) {
+        $connection2->rollBack();
+    }
+    $URL .= '&return=error2';
+    header("Location: {$URL}");
+    exit;
 }
 
 $URL .= '&return=success0&deleted=' . $deletedCount;

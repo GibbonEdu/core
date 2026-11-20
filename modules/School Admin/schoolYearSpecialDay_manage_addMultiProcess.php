@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Services\Format;
@@ -29,67 +30,110 @@ require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonSchoolYearID = is_scalar($_POST['gibbonSchoolYearID'] ?? null)
+    ? trim((string) $_POST['gibbonSchoolYearID'])
+    : '';
 
-$URL = $session->get('absoluteURL') . "/index.php?q=/modules/School Admin/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.rawurlencode($gibbonSchoolYearID);
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
 }
 
-$dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : '';
-$dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : '';
+$dateStart = !empty($_POST['dateStart']) && is_scalar($_POST['dateStart']) ? Format::dateConvert((string) $_POST['dateStart']) : '';
+$dateEnd = !empty($_POST['dateEnd']) && is_scalar($_POST['dateEnd']) ? Format::dateConvert((string) $_POST['dateEnd']) : '';
+
+$normalizeIDList = function ($value): ?string {
+    $values = is_array($value) ? $value : [$value];
+    $normalized = [];
+    foreach ($values as $item) {
+        if (empty($item)) {
+            continue;
+        }
+        if (!is_scalar($item) || !ctype_digit((string) $item)) {
+            return null;
+        }
+        $normalized[] = (string) $item;
+    }
+
+    return implode(',', array_unique($normalized));
+};
 
 // The bulk form mirrors the single-add fields for the chosen type.
 $data = array(
-    'type'                   => $_POST['type'] ?? '',
-    'name'                   => trim($_POST['name'] ?? ''),
-    'description'            => trim($_POST['description'] ?? ''),
+    'type'                   => is_scalar($_POST['type'] ?? null) ? (string) $_POST['type'] : '',
+    'name'                   => is_scalar($_POST['name'] ?? null) ? trim((string) $_POST['name']) : '',
+    'description'            => is_scalar($_POST['description'] ?? null) ? trim((string) $_POST['description']) : '',
     'schoolOpen'             => null,
     'schoolStart'            => null,
     'schoolEnd'              => null,
     'schoolClose'            => null,
-    'gibbonYearGroupIDList'  => $_POST['gibbonYearGroupIDList'] ?? '',
-    'gibbonFormGroupIDList'  => $_POST['gibbonFormGroupIDList'] ?? '',
-    'cancelActivities'       => $_POST['cancelActivities'] ?? 'N',
-    'cancelBookings'         => $_POST['cancelBookings'] ?? 'N',
-    'cancelClasses'          => $_POST['cancelClasses'] ?? 'N',
-    'cancelDuty'             => $_POST['cancelDuty'] ?? 'N',
+    'gibbonYearGroupIDList'  => $normalizeIDList($_POST['gibbonYearGroupIDList'] ?? ''),
+    'gibbonFormGroupIDList'  => $normalizeIDList($_POST['gibbonFormGroupIDList'] ?? ''),
+    'cancelActivities'       => ($_POST['cancelActivities'] ?? 'N') === 'Y' ? 'Y' : 'N',
+    'cancelBookings'         => ($_POST['cancelBookings'] ?? 'N') === 'Y' ? 'Y' : 'N',
+    'cancelClasses'          => ($_POST['cancelClasses'] ?? 'N') === 'Y' ? 'Y' : 'N',
+    'cancelDuty'             => ($_POST['cancelDuty'] ?? 'N') === 'Y' ? 'Y' : 'N',
 );
 
 foreach (array('schoolOpen', 'schoolStart', 'schoolEnd', 'schoolClose') as $time) {
-    if (!empty($_POST[$time . 'H']) && is_numeric($_POST[$time . 'H']) && is_numeric($_POST[$time . 'M'] ?? '')) {
-        $data[$time] = $_POST[$time . 'H'] . ':' . $_POST[$time . 'M'] . ':00';
+    $hour = $_POST[$time.'H'] ?? '';
+    $minute = $_POST[$time.'M'] ?? '';
+    if ($hour === '' && $minute === '') {
+        continue;
     }
-}
-
-if (!empty($data['gibbonYearGroupIDList']) && is_array($data['gibbonYearGroupIDList'])) {
-    $data['gibbonYearGroupIDList'] = implode(',', $data['gibbonYearGroupIDList']);
-}
-
-if (!empty($data['gibbonFormGroupIDList']) && is_array($data['gibbonFormGroupIDList'])) {
-    $data['gibbonFormGroupIDList'] = implode(',', $data['gibbonFormGroupIDList']);
+    if (!is_scalar($hour) || !is_scalar($minute) || !ctype_digit((string) $hour) || !ctype_digit((string) $minute)) {
+        $data[$time] = null;
+        continue;
+    }
+    $hour = (int) $hour;
+    $minute = (int) $minute;
+    if ($hour >= 0 && $hour <= 23 && $minute >= 0 && $minute <= 59) {
+        $data[$time] = sprintf('%02d:%02d:00', $hour, $minute);
+    }
 }
 
 $allowedTypes = array('School Closure', 'Timing Change', 'Off Timetable');
 
-if (empty($gibbonSchoolYearID) || empty($dateStart) || empty($dateEnd) || empty($data['name']) || !in_array($data['type'], $allowedTypes, true)) {
+$startDate = DateTimeImmutable::createFromFormat('!Y-m-d', $dateStart);
+$endDate = DateTimeImmutable::createFromFormat('!Y-m-d', $dateEnd);
+
+if (
+    empty($gibbonSchoolYearID)
+    || !$startDate
+    || !$endDate
+    || $startDate->format('Y-m-d') !== $dateStart
+    || $endDate->format('Y-m-d') !== $dateEnd
+    || empty($data['name'])
+    || mb_strlen($data['name']) > 20
+    || mb_strlen($data['description']) > 255
+    || !in_array($data['type'], $allowedTypes, true)
+    || $data['gibbonYearGroupIDList'] === null
+    || $data['gibbonFormGroupIDList'] === null
+) {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit;
 }
 
 // Normalise an inverted range.
-if ($dateStart > $dateEnd) {
-    list($dateStart, $dateEnd) = array($dateEnd, $dateStart);
+if ($startDate > $endDate) {
+    list($startDate, $endDate) = [$endDate, $startDate];
 }
 
 // Guard against runaway ranges (roughly one year) to protect system stability.
-$daysInRange = (int) floor((strtotime($dateEnd) - strtotime($dateStart)) / 86400) + 1;
+$daysInRange = (int) $startDate->diff($endDate)->days + 1;
 if ($daysInRange > 366) {
     $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit;
+}
+
+$schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
+if (empty($schoolYear)) {
+    $URL .= '&return=error2';
     header("Location: {$URL}");
     exit;
 }
@@ -107,9 +151,36 @@ $schoolWeekdays = array_column(
 
 $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
+$validateReferenceList = function (string $list, string $sql, array $params) use ($connection2): bool {
+    if ($list === '') {
+        return true;
+    }
+
+    $ids = array_values(array_filter(explode(',', $list)));
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $statement = $connection2->prepare(str_replace(':ids', $placeholders, $sql));
+    $statement->execute(array_merge($params, $ids));
+
+    return count($statement->fetchAll(PDO::FETCH_COLUMN)) === count($ids);
+};
+
+if (!$validateReferenceList(
+    $data['gibbonYearGroupIDList'],
+    'SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE gibbonYearGroupID IN (:ids)',
+    []
+) || !$validateReferenceList(
+    $data['gibbonFormGroupIDList'],
+    'SELECT gibbonFormGroupID FROM gibbonFormGroup WHERE gibbonSchoolYearID = ? AND gibbonFormGroupID IN (:ids)',
+    [$gibbonSchoolYearID]
+)) {
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit;
+}
+
 // Dates that already have a special day: a date may only have one, so these are skipped.
 $existing = array();
-$existingDays = $specialDayGateway->selectSpecialDaysByDateRange($dateStart, $dateEnd);
+$existingDays = $specialDayGateway->selectSpecialDaysByDateRange($startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
 while ($row = $existingDays->fetch()) {
     $existing[$row['date']] = true;
 }
@@ -120,43 +191,46 @@ $skippedCount = 0;
 $connection2->beginTransaction();
 
 try {
-for ($timestamp = strtotime($dateStart); $timestamp <= strtotime($dateEnd); $timestamp = strtotime('+1 day', $timestamp)) {
-    $date = date('Y-m-d', $timestamp);
+    $dateEndExclusive = $endDate->modify('+1 day');
+    foreach (new DatePeriod($startDate, new DateInterval('P1D'), $dateEndExclusive) as $day) {
+        $date = $day->format('Y-m-d');
 
-    // Find the term this date falls in, if any.
-    $gibbonSchoolYearTermID = null;
-    foreach ($terms as $term) {
-        if ($date >= $term['firstDay'] && $date <= $term['lastDay']) {
-            $gibbonSchoolYearTermID = $term['gibbonSchoolYearTermID'];
-            break;
+        // Find the term this date falls in, if any.
+        $gibbonSchoolYearTermID = null;
+        foreach ($terms as $term) {
+            if ($date >= $term['firstDay'] && $date <= $term['lastDay']) {
+                $gibbonSchoolYearTermID = $term['gibbonSchoolYearTermID'];
+                break;
+            }
         }
+
+        // Only add for actual school days; skip everything else.
+        $isSchoolDay = !empty($gibbonSchoolYearTermID)
+            && in_array($day->format('D'), $schoolWeekdays, true)
+            && !isset($existing[$date]);
+
+        if (!$isSchoolDay) {
+            $skippedCount++;
+            continue;
+        }
+
+        $inserted = $specialDayGateway->insert(array_merge($data, array(
+            'gibbonSchoolYearTermID' => $gibbonSchoolYearTermID,
+            'date'                   => $date,
+        )));
+
+        if (empty($inserted)) {
+            throw new RuntimeException('Unable to insert special day');
+        }
+
+        $existing[$date] = true;
+        $addedCount++;
     }
-
-    // Only add for actual school days; skip everything else.
-    $isSchoolDay = !empty($gibbonSchoolYearTermID)
-        && in_array(date('D', $timestamp), $schoolWeekdays, true)
-        && !isset($existing[$date]);
-
-    if (!$isSchoolDay) {
-        $skippedCount++;
-        continue;
-    }
-
-    $inserted = $specialDayGateway->insert(array_merge($data, array(
-        'gibbonSchoolYearTermID' => $gibbonSchoolYearTermID,
-        'date'                   => $date,
-    )));
-
-    if (empty($inserted)) {
-        throw new RuntimeException('Unable to insert special day');
-    }
-
-    $existing[$date] = true;
-    $addedCount++;
-}
     $connection2->commit();
 } catch (Throwable $e) {
-    if ($connection2->inTransaction()) $connection2->rollBack();
+    if ($connection2->inTransaction()) {
+        $connection2->rollBack();
+    }
     $URL .= '&return=error2';
     header("Location: {$URL}");
     exit;

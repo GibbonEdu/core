@@ -46,21 +46,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
         $actions = Form::createBlank('specialDayActions');
+        if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php')) {
             $actions->addHeaderAction('addMulti', __('Batch Add Special Days'))
                 ->setURL('/modules/School Admin/schoolYearSpecialDay_manage_addMulti.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->setIcon('addmultiple')
                 ->displayLabel();
+        }
+        if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_delete.php')) {
             $actions->addHeaderAction('deleteMulti', __('Batch Delete'))
                 ->setURL('/modules/School Admin/schoolYearSpecialDay_manage_deleteMulti.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->setIcon('delete')
                 ->displayLabel();
+        }
+        if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_calendar.php')) {
             $actions->addHeaderAction('calendar', __('Calendar View'))
                 ->setURL('/modules/School Admin/schoolYearSpecialDay_calendar.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->setIcon('calendar')
                 ->displayLabel();
+        }
         echo $actions->getOutput();
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
