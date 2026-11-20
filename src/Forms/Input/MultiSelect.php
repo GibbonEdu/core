@@ -175,21 +175,19 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap items-center gap-2" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
 
         $output .= '<div class="w-full md:flex-1">';
-            $output .= '<div class="mb-2">'.$this->searchBox->getOutput().'</div>';
-            $output .= $this->sourceSelect->getOutput();
+        $output .= '<div class="mb-2">'.$this->searchBox->getOutput().'</div>';
+        $output .= $this->sourceSelect->getOutput();
         $output .= '</div>';
 
         $output .= '<div class="w-full md:flex-1 flex flex-col items-center gap-2 md:py-0 ">';
+        $output .= '<div class="flex w-full items-center justify-center gap-2 sm:flex-col md:flex-row md:flex-wrap sm:gap-2">';
+        $output .= $this->addButton->getOutput();
+        $output .= $this->removeButton->getOutput();
+        $output .= '</div>';
 
-            $output .= '<div class="flex w-full items-center justify-center gap-2 sm:flex-col md:flex-row md:flex-wrap sm:gap-2">';
-                $output .= $this->addButton->getOutput();
-                $output .= $this->removeButton->getOutput();
-            $output .= '</div>';
-
-
-            if (!empty($this->sortableAttributes)) {
-                $output .= $this->sortBySelect->getOutput();
-            }
+        if (!empty($this->sortableAttributes)) {
+            $output .= $this->sortBySelect->getOutput();
+        }
         $output .= '</div>';
 
         $output .= '<div  class="w-full md:flex-1 relative">';
