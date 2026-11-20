@@ -27,6 +27,7 @@ use Aura\Auth\AuthFactory;
 use Aura\Auth\Verifier\PasswordVerifier;
 use Aura\Auth\Verifier\VerifierInterface;
 use Gibbon\Auth\AuthSession;
+use Gibbon\Auth\OIDC\OIDCDiscoveryClient;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -230,6 +231,17 @@ class AuthServiceProvider extends AbstractServiceProvider
             $settingGateway = $this->getContainer()->get(SettingGateway::class);
 
             $ssoSettings = json_decode((string) $settingGateway->getSettingByScope('System Admin', 'ssoOIDC'), true) ?: [];
+            $endpoints = [
+                $ssoSettings['authorizeEndpoint'] ?? '',
+                $ssoSettings['tokenEndpoint'] ?? '',
+                $ssoSettings['userEndpoint'] ?? '',
+                $ssoSettings['jwksUri'] ?? '',
+            ];
+            foreach ($endpoints as $endpoint) {
+                if (!empty($endpoint) && !OIDCDiscoveryClient::isSecureUrl((string) $endpoint)) {
+                    throw new OAuthLoginError('OIDC endpoints must use HTTPS');
+                }
+            }
 
             try {
                 return new GenericProvider([

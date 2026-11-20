@@ -117,6 +117,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         exit;
     }
 
+    if ($sso == 'OIDC' && $data['enabled'] == 'Y') {
+        foreach (['issuer', 'authorizeEndpoint', 'tokenEndpoint', 'userEndpoint', 'jwksUri'] as $endpoint) {
+            if (!empty($data[$endpoint]) && !OIDCDiscoveryClient::isSecureUrl((string) $data[$endpoint])) {
+                $URL .= '&return=error13';
+                header("Location: {$URL}");
+                exit;
+            }
+        }
+    }
+
     if ($data['enabled'] == 'N') {
         $data = array_filter($data);
     }

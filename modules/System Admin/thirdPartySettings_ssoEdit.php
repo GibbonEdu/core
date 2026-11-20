@@ -31,6 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'error0' => __('You do not have access to this action.'),
         'error1' => __('Your request failed because your inputs were invalid.'),
         'error12' => __('The OIDC discovery document could not be retrieved. Please check the issuer URL, or disable auto-configuration.'),
+        'error13' => __('OIDC endpoints must use HTTPS. HTTP is only allowed for localhost during development.'),
     ]);
     //Proceed!
     $page->breadcrumbs

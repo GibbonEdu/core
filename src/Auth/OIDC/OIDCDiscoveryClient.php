@@ -58,22 +58,44 @@ class OIDCDiscoveryClient
         if (!filter_var($discoveryUrl, FILTER_VALIDATE_URL) || !preg_match('#^https?://#i', $discoveryUrl)) {
             throw new RuntimeException('Invalid OIDC discovery URL');
         }
+        if (!self::isSecureUrl($discoveryUrl)) {
+            throw new RuntimeException('OIDC endpoints must use HTTPS');
+        }
 
         $metadata = $this->fetchJson($discoveryUrl);
 
         foreach (['authorization_endpoint', 'token_endpoint', 'userinfo_endpoint'] as $endpoint) {
-            if (empty($metadata[$endpoint]) || !filter_var($metadata[$endpoint], FILTER_VALIDATE_URL)) {
+            if (empty($metadata[$endpoint]) || !self::isSecureUrl((string) $metadata[$endpoint])) {
                 throw new RuntimeException('OIDC discovery document is missing '.$endpoint);
             }
         }
 
         $metadata['issuer'] = !empty($metadata['issuer']) ? rtrim((string) $metadata['issuer'], '/') : $issuer;
         $metadata['jwks_uri'] = !empty($metadata['jwks_uri']) ? (string) $metadata['jwks_uri'] : '';
+        if ($metadata['jwks_uri'] !== '' && !self::isSecureUrl($metadata['jwks_uri'])) {
+            throw new RuntimeException('OIDC JWKS URI must use HTTPS');
+        }
         $metadata['scopes_supported'] = !empty($metadata['scopes_supported']) && is_array($metadata['scopes_supported'])
             ? array_values(array_filter($metadata['scopes_supported'], 'is_string'))
             : [];
 
         return $metadata;
+    }
+
+    public static function isSecureUrl(string $url): bool
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return false;
+        }
+
+        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        if ($scheme === 'https') {
+            return true;
+        }
+
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+
+        return $scheme === 'http' && in_array($host, ['localhost', '127.0.0.1', '::1'], true);
     }
 
     private function fetchJson(string $url): array
