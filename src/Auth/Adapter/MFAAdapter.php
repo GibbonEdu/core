@@ -63,6 +63,7 @@ class MFAAdapter extends AuthenticationAdapter
         $tfa = new \RobThree\Auth\TwoFactorAuth('Gibbon');
         if ($tfa->verifyCode($mfaCheck['mfaSecret'], $this->getToken()) !== true) {
             $this->session->forget(['mfaToken', 'mfaTokenPass', 'mfaNonce']);
+            $this->updateFailCount($userData, $userData['failCount'] + 1);
             throw new MFATokenInvalid;
         }
 
@@ -129,9 +130,6 @@ class MFAAdapter extends AuthenticationAdapter
             throw new Exception\DatabaseLoginError;
         }
 
-        //Unset the MFA Token Pass to prevent POST replay attacks
-        $this->userGateway->update($userDataCheck['gibbonPersonID'], ['mfaToken' => NULL]);
-
         // Get the user login details and verify they exist and match only one user
         $userResult = $this->userGateway->selectLoginDetailsByUsername($userDataCheck['username'] ?? '');
 
@@ -145,6 +143,11 @@ class MFAAdapter extends AuthenticationAdapter
 
         $userData = $userResult->fetch();
         $_POST['gibbonPersonIDLoginAttempt'] = $userData['gibbonPersonID'] ?? null;
+
+        $this->checkFailedLogins($userData);
+
+        //Unset the MFA Token Pass
+        $this->userGateway->update($userDataCheck['gibbonPersonID'], ['mfaToken' => NULL]);
 
         $method = $this->session->get('mfaMethod');
         switch ($method) {

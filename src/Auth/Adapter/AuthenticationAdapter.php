@@ -128,6 +128,7 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
      * @throws Aura\Auth\Exception\UsernameNotFound
      * @throws Aura\Auth\Exception\MultipleMatches
      * @throws Gibbon\Auth\Exception\DatabaseLoginError
+     * @throws Gibbon\Auth\Exception\TooManyFailedLogins
      */
     protected function getUserData(array $input)
     {
@@ -148,7 +149,31 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         $userData = $userResult->fetch();
         $_POST['gibbonPersonIDLoginAttempt'] = $userData['gibbonPersonID'] ?? null;
 
+        $this->checkFailedLogins($userData);
+
         return $userData;
+    }
+
+    protected function checkFailedLogins($userData)
+    {
+        $failCount = (int) $userData['failCount'];
+
+        if ($failCount >= 10) {
+            throw new Exception\TooManyFailedLogins('', $failCount);
+        }
+
+        if ($failCount >= 3) {
+            $lastFailTimestamp = !empty($userData['lastFailTimestamp']) ? strtotime($userData['lastFailTimestamp']) : false;
+            if ($lastFailTimestamp === false) {
+                throw new Exception\DatabaseLoginError;
+            }
+
+            $waitSeconds = $failCount == 3 ? 60 : 300;
+            if (time() < $lastFailTimestamp + $waitSeconds) {
+                $this->getContainer()->get(Session::class)->set('loginWaitUntil', $lastFailTimestamp + $waitSeconds);
+                throw new Exception\TooManyFailedLogins('', $failCount);
+            }
+        }
     }
 
     /**
@@ -187,7 +212,6 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
      * @throws Gibbon\Auth\Exception\InsufficientPrivileges
      * @throws Gibbon\Auth\Exception\InsufficientRoleAccess
      * @throws Gibbon\Auth\Exception\MaintenanceMode
-     * @throws Gibbon\Auth\Exception\TooManyFailedLogins
      *
      */
     protected function verifyUserAccess($userData)
@@ -213,11 +237,6 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         // Check for maintenance mode
         if ($maintenanceMode == 'Y' && $userData['roleName'] != 'Administrator') {
             throw new Exception\MaintenanceMode;
-        }
-
-        // Check fail count, reject & alert if 3rd time
-        if ($userData['failCount'] >= 3) {
-            $this->updateFailCount($userData, $userData['failCount'] + 1);
         }
     }
 
@@ -365,17 +384,22 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
     protected function updateFailCount($userData, $failCount = 0)
     {
         $userData['failCount'] = $failCount;
+        $lastFailTimestamp = date('Y-m-d H:i:s');
 
         $this->userGateway->update($userData['gibbonPersonID'], [
             'lastFailIPAddress' => $_SERVER['REMOTE_ADDR'],
-            'lastFailTimestamp' => date('Y-m-d H:i:s'),
+            'lastFailTimestamp' => $lastFailTimestamp,
             'failCount' => $userData['failCount'],
             'username' => $userData['username'],
         ]);
 
         if ($failCount >= 3) {
             $this->notifySystemAdmin($userData);
-            throw new Exception\TooManyFailedLogins;
+            if ($failCount < 10) {
+                $waitSeconds = $failCount == 3 ? 60 : 300;
+                $this->getContainer()->get(Session::class)->set('loginWaitUntil', strtotime($lastFailTimestamp) + $waitSeconds);
+            }
+            throw new Exception\TooManyFailedLogins('', $failCount);
         }
     }
 

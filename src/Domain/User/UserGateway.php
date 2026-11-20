@@ -92,6 +92,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                     gibbonPerson.gibbonRoleIDAll,
                     gibbonPerson.canLogin,
                     gibbonPerson.failCount,
+                    gibbonPerson.lastFailTimestamp,
                     gibbonRole.futureYearsLogin,
                     gibbonRole.pastYearsLogin,
                     gibbonRole.name as roleName,
