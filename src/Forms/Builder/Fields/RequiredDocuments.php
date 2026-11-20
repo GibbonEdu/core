@@ -130,16 +130,20 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         foreach ($documents as $index => $document) {
             $documentFieldName = $fieldName.$index.'filePath';
 
-            $filePath = $_POST[$documentFieldName.'File'] ?? '';
-
-            // Upload attached file, if there is one
-            if (!empty($_FILES[$documentFieldName]['tmp_name'])) {
-                $file = $_FILES[$documentFieldName] ?? null;
-                $filePath = $this->fileUploader->uploadFromPost($file, $documentFieldName);
-            }
-
             // Update the database record in gibbonFormUpload
             $existing = $this->formUploadGateway->getUploadByContext($formBuilder->getFormID(), $foreignTable, $foreignTableID, $document);
+
+            $filePath = '';
+            if (!empty($_FILES[$documentFieldName]['tmp_name'])) {
+                $uploadedPath = $this->fileUploader->uploadFromPost($_FILES[$documentFieldName] ?? null, $documentFieldName);
+                if (empty($uploadedPath)) {
+                    $requiredDocumentFail = true;
+                    continue;
+                }
+                $filePath = $uploadedPath;
+            } elseif (!empty($_POST[$documentFieldName.'File'])) {
+                $filePath = $existing['path'] ?? '';
+            }
             
             if (!empty($existing) && $existing['path'] != $filePath) {
                 

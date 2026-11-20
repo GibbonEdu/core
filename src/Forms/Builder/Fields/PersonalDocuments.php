@@ -103,7 +103,11 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
             if (empty($document['activePerson'.ucfirst($roleCategory)])) continue;
             if (empty($_POST[$prefix.'document'][$id])) continue;
 
-            $data[$fieldName][$id] = $_POST[$prefix.'document'][$id];
+            $posted = $_POST[$prefix.'document'][$id];
+            if (is_array($posted)) {
+                unset($posted['filePath']);
+            }
+            $data[$fieldName][$id] = $posted;
         }
 
         return $data;
