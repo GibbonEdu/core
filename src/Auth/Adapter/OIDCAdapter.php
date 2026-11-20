@@ -54,17 +54,29 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
         }
 
         if (isset($_GET['error'])) {
-            throw new Exception\OAuthLoginError($_GET['error_description'] ?? $_GET['error']);
+            $errorDescription = is_scalar($_GET['error_description'] ?? null)
+                ? trim((string) $_GET['error_description'])
+                : '';
+            $error = is_scalar($_GET['error']) ? trim((string) $_GET['error']) : 'OIDC authentication failed';
+            throw new Exception\OAuthLoginError($errorDescription !== '' ? $errorDescription : $error);
         }
 
         if (!$this->hasOAuthCode()) {
             throw new Exception\OAuthLoginError('Missing code');
         }
 
+        $expectedState = (string) $session->get('oAuthStateOIDC', '');
+        $receivedState = is_scalar($_GET['state'] ?? null) ? (string) $_GET['state'] : '';
+        if ($expectedState === '' || $receivedState === '' || !hash_equals($expectedState, $receivedState)) {
+            throw new Exception\OAuthLoginError('Invalid OIDC redirect state');
+        }
+        $session->forget('oAuthStateOIDC');
+
         $provider = $this->getProvider();
+        $code = trim((string) $_GET['code']);
 
         try {
-            $accessToken = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
+            $accessToken = $provider->getAccessToken('authorization_code', ['code' => $code]);
             $accessTokenString = is_object($accessToken) && method_exists($accessToken, 'getToken')
                 ? (string) $accessToken->getToken()
                 : (string) $accessToken;
@@ -75,14 +87,6 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
         if (empty($accessTokenString)) {
             throw new Exception\OAuthLoginError('Missing access token');
         }
-
-        $expectedState = (string) $session->get('oAuthStateOIDC', '');
-        $receivedState = is_scalar($_GET['state'] ?? null) ? (string) $_GET['state'] : '';
-        if ($expectedState === '' || $receivedState === '' || !hash_equals($expectedState, $receivedState)) {
-            throw new Exception\OAuthLoginError('Invalid OIDC redirect state');
-        }
-
-        $session->forget('oAuthStateOIDC');
 
         try {
             $resourceOwner = $provider->getResourceOwner($accessToken);
@@ -152,7 +156,7 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
 
     public function hasOAuthCode(): bool
     {
-        return isset($_GET['code']);
+        return isset($_GET['code']) && is_scalar($_GET['code']) && trim((string) $_GET['code']) !== '';
     }
 
     public function getAuthorizationUrl(): string
@@ -290,15 +294,19 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
     private function getSettings(): array
     {
         $settingGateway = $this->getContainer()->get(SettingGateway::class);
+        $settings = json_decode((string) $settingGateway->getSettingByScope('System Admin', 'ssoOIDC'), true);
 
-        return json_decode((string) $settingGateway->getSettingByScope('System Admin', 'ssoOIDC'), true) ?: [];
+        return is_array($settings) ? $settings : [];
     }
 
     private function firstScalarClaim(array $claims, array $keys): string
     {
         foreach ($keys as $key) {
-            if ($key !== '' && !empty($claims[$key]) && is_scalar($claims[$key])) {
-                return trim((string) $claims[$key]);
+            if ($key !== '' && isset($claims[$key]) && is_scalar($claims[$key])) {
+                $value = trim((string) $claims[$key]);
+                if ($value !== '') {
+                    return $value;
+                }
             }
         }
 
