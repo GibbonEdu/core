@@ -506,7 +506,7 @@ class PasskeyService
     {
         $host = parse_url((string) $this->session->get('absoluteURL'), PHP_URL_HOST);
         if (empty($host)) {
-            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            throw new \RuntimeException(__('Passkey relying party host is not configured.'));
         }
 
         return preg_replace('/:\d+$/', '', $host);
@@ -516,7 +516,7 @@ class PasskeyService
     {
         $host = parse_url((string) $this->session->get('absoluteURL'), PHP_URL_HOST);
         if (empty($host)) {
-            $host = $_SERVER['HTTP_HOST'] ?? $this->getRpId();
+            throw new \RuntimeException(__('Passkey relying party host is not configured.'));
         }
 
         return preg_replace('/:\d+$/', '', $host);
