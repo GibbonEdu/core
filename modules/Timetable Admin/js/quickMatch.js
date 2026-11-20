@@ -8,7 +8,7 @@
         var destination = document.getElementById('Members');
         var addButton = document.getElementById('MembersAdd');
 
-        if (!dataElement || !textarea || !button || !source || !destination) return;
+        if (!dataElement || !textarea || !button || !source || !destination || !addButton) return;
 
         var data;
         try {
@@ -55,14 +55,14 @@
         };
         var selectStudent = function (student) {
             if (destination.querySelector('option[value="' + student.id + '"]')) {
-                return true;
+                return 'already-added';
             }
 
             var option = source.querySelector('option[value="' + student.id + '"]');
-            if (!option) return false;
+            if (!option) return 'unavailable';
 
             option.selected = true;
-            return true;
+            return 'selected';
         };
         var setResult = function (message, hasIssues) {
             if (!resultElement) return;
@@ -82,6 +82,7 @@
 
             var selectedIds = {};
             var notFound = [];
+            var alreadyAdded = [];
             var conflicts = [];
 
             textarea.value.split(/\r?\n/).forEach(function (line) {
@@ -98,8 +99,13 @@
                     return;
                 }
 
-                if (selectStudent(matches[0])) {
+                var matchStatus = selectStudent(matches[0]);
+                if (matchStatus === 'selected') {
                     selectedIds[matches[0].id] = true;
+                } else if (matchStatus === 'already-added') {
+                    alreadyAdded.push(candidateLabel(matches[0]));
+                } else {
+                    notFound.push(line.trim());
                 }
             });
 
@@ -112,10 +118,13 @@
             if (notFound.length > 0) {
                 messages.push((labels.notFound || 'Not found') + ': ' + notFound.join(', '));
             }
-            if (conflicts.length > 0) {
-                messages.push((labels.conflict || 'Conflict') + ': ' + conflicts.join(' | '));
+            if (alreadyAdded.length > 0) {
+                messages.push((labels.alreadyAdded || 'Already enrolled') + ': ' + alreadyAdded.join(', '));
             }
-            setResult(messages.join(' | '), notFound.length > 0 || conflicts.length > 0);
+            if (conflicts.length > 0) {
+                messages.push((labels.multiple || 'Multiple matches') + ': ' + conflicts.join(' | '));
+            }
+            setResult(messages.join(' | '), notFound.length > 0 || conflicts.length > 0 || alreadyAdded.length > 0);
         });
 
         textarea.addEventListener('keydown', function (event) {

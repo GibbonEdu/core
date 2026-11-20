@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     'selected'    => __('Selected'),
                     'notFound'    => __('Not found'),
                     'multiple'    => __('Multiple matches'),
-                    'conflict'    => __('Conflict'),
+                    'alreadyAdded' => __('Already enrolled'),
                     'noStudents'  => __('The enrolable students list is empty.'),
                 ],
             ];
