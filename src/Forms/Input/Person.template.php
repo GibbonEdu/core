@@ -91,7 +91,7 @@
                 this.getFilteredOptions('');
             }
         },
-    }" class="relative <?= $outerClass ?? 'flex w-full' ?>  flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-on:scroll.window.throttle.50ms="isOpen && positionList()" x-on:resize.window.throttle.100ms="isOpen && positionList()" x-init="getOptions()">
+    }" class="relative <?= $outerClass ?? 'flex w-full' ?>  flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-on:scroll.window.capture.throttle.50ms="isOpen && positionList()" x-on:resize.window.throttle.100ms="isOpen && positionList()" x-init="getOptions()">
 
     <!-- Hidden Input To Grab The Selected Value  -->
     <select class="hidden invisible personSelect" <?= $attributes; ?> x-ref="hiddenInput">

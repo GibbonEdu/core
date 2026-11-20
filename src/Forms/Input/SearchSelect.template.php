@@ -88,7 +88,7 @@
                 this.getFilteredOptions('');
             }
         },
-    }" class="relative flex flex-col gap-1 <?= $outerClass ?? 'flex-1'; ?>" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-on:scroll.window.throttle.50ms="isOpen && positionList()" x-on:resize.window.throttle.100ms="isOpen && positionList()" x-init="getOptions()" >
+    }" class="relative flex flex-col gap-1 <?= $outerClass ?? 'flex-1'; ?>" x-on:keydown="handleKeydownOnOptions($event)" x-on:keydown.esc.window="toggleSelect(false), openedWithKeyboard = false" x-on:scroll.window.capture.throttle.50ms="isOpen && positionList()" x-on:resize.window.throttle.100ms="isOpen && positionList()" x-init="getOptions()" >
 
         <!-- trigger button  -->
         <button type="button" class="<?= $class; ?> <?= $groupClass; ?> inner-input inline-flex w-full overflow-hidden items-center justify-between min-w-16 h-[2.375rem] bg-white border border-outline py-2 px-3 text-gray-900  placeholder:text-gray-500 focus:border-blue-500 focus-within:border-blue-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-5 transition  " role="combobox" aria-controls="<?= $id ?>List" aria-haspopup="<?= $id ?>List listbox" x-on:click="toggleSelect(!isOpen)" x-on:keydown.down.prevent="openedWithKeyboard = true; positionList()" x-on:keydown.enter.prevent="openedWithKeyboard = true; positionList()" x-on:keydown.space.prevent="openedWithKeyboard = true; positionList()" x-bind:aria-expanded="isOpen || openedWithKeyboard" x-bind:aria-label="selectedOption ? selectedOption.label : '<?= __($placeholder); ?>'" x-ref="searchSelect" >
