@@ -333,6 +333,9 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 if ($loginMethod != 'mfa') {
                     $absoluteURL = json_encode($this->session->get('absoluteURL'));
+                    $passkeyUnsupported = json_encode(__('Passkeys are not supported in this browser.'));
+                    $passkeyStartError = json_encode(__('Unable to start passkey sign-in.'));
+                    $passkeySignInError = json_encode(__('Passkey sign-in failed.'));
                     $passkeyScript = <<<'JS'
 (function () {
     var btn = document.getElementById('passkeyLoginBtn');
@@ -366,8 +369,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
     btn.addEventListener('click', async function () {
         msg.textContent = '';
-        if (!window.PublicKeyCredential) {
-            msg.textContent = 'Passkeys are not supported in this browser.';
+        if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.get) {
+            msg.textContent = __PASSKEY_UNSUPPORTED__;
             return;
         }
         try {
@@ -376,7 +379,9 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 headers: { 'Accept': 'application/json' }
             });
             var data = await res.json();
-            if (!data || !data.options) throw new Error((data && data.error) ? data.error : 'Unable to start passkey sign-in.');
+            if (!res.ok || !data || !data.options) {
+                throw new Error((data && data.error) ? data.error : __PASSKEY_START_ERROR__);
+            }
 
             var pk = data.options;
             pk.challenge = b64urlToBuf(pk.challenge);
@@ -404,11 +409,17 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             document.getElementById('passkeyNonce').value = data.nonce || '';
             document.getElementById('passkeyLoginForm').submit();
         } catch (e) {
-            msg.textContent = (e && e.message) ? e.message : 'Passkey sign-in failed.';
+            msg.textContent = (e && e.message) ? e.message : __PASSKEY_SIGN_IN_ERROR__;
         }
     });
 })();
 JS;
+
+                    $passkeyScript = str_replace(
+                        ['__ABSOLUTE_URL__', '__PASSKEY_UNSUPPORTED__', '__PASSKEY_START_ERROR__', '__PASSKEY_SIGN_IN_ERROR__'],
+                        [$absoluteURL, $passkeyUnsupported, $passkeyStartError, $passkeySignInError],
+                        $passkeyScript
+                    );
 
                     echo '<div class="mt-3 text-center">';
                     echo '<button type="button" id="passkeyLoginBtn" class="text-sm font-semibold text-gray-700 hover:text-blue-600 hover:underline">'.__('Sign in with a Passkey').'</button>';
@@ -418,7 +429,7 @@ JS;
                     echo '<input type="hidden" name="passkeyAssertion" id="passkeyAssertion">';
                     echo '<input type="hidden" name="passkeyNonce" id="passkeyNonce">';
                     echo '</form>';
-                    echo '<script type="text/javascript">'.str_replace('__ABSOLUTE_URL__', $absoluteURL, $passkeyScript).'</script>';
+                    echo '<script type="text/javascript">'.$passkeyScript.'</script>';
                 }
 
 

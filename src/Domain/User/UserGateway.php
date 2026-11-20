@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\User;
 
+use Gibbon\Contracts\Database\Result;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
@@ -114,10 +115,10 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
      * @param int $gibbonPersonID
      * @return Result
      */
-    public function selectLoginDetailsByID($gibbonPersonID)
+    public function selectLoginDetailsByID(int $gibbonPersonID): Result
     {
         $data = ['gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT 
+        $sql = "SELECT
                     gibbonPerson.gibbonPersonID,
                     gibbonPerson.username,
                     gibbonPerson.passwordStrong,
@@ -132,8 +133,8 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                     gibbonRole.category as roleCategory,
                     gibbonPerson.gibboni18nIDPersonal,
                     gibbonPerson.gibbonThemeIDPersonal
-                FROM gibbonPerson 
-                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                FROM gibbonPerson
+                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full'";
 
         return $this->db()->select($sql, $data);
