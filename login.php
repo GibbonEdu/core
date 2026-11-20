@@ -49,7 +49,7 @@ $method = $_GET['method'] ?? $_POST['method'] ?? $session->get('oAuthMethod') ??
 
 // Cancel a pending OIDC binding request and return to the login options.
 if (strtolower($method) === 'canceloidc') {
-    $session->forget('oidcPending');
+    $session->forget(['oidcPending', 'oidcMFABinding']);
     header("Location: {$session->get('absoluteURL')}/index.php");
     exit;
 }
@@ -165,6 +165,7 @@ try {
         $session->forget('oidcPending');
     }
 
+    $session->forget('oidcMFABinding');
     $logLoginAttempt('Login - Success');
 
     header("Location: {$URL}");

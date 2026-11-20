@@ -140,8 +140,11 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
         $userData = $result->fetch();
         $_POST['gibbonPersonIDLoginAttempt'] = $userData['gibbonPersonID'] ?? null;
 
-        // Keep the token available if this account also has TOTP enabled.
-        $session->set('oidcAPIAccessToken', $accessTokenString);
+        // Keep only a non-reversible binding value if this account also has TOTP enabled.
+        $mfaCheck = $this->userGateway->getByID($personID, ['mfaSecret']);
+        if (!empty($mfaCheck['mfaSecret'])) {
+            $session->set('oidcMFABinding', hash('sha256', $accessTokenString));
+        }
         $session->forget('oidcPending');
 
         if ($session->has('oAuthOptions')) {
@@ -151,7 +154,14 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
             $session->forget('oAuthOptions');
         }
 
-        return parent::verifyLogin($userData);
+        try {
+            return parent::verifyLogin($userData);
+        } catch (\Throwable $e) {
+            if (!($e instanceof Exception\MFATokenRequired)) {
+                $session->forget('oidcMFABinding');
+            }
+            throw $e;
+        }
     }
 
     public function hasOAuthCode(): bool
