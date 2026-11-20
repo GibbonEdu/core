@@ -126,8 +126,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             $row->addSubmit();
 
     } else if ($step == 3) {
-        if (!empty($_GET['imported'])) {
-            $form->addRow()->addContent(Format::alert(__('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>']), 'success'));
+        $imported = $_GET['imported'] ?? '';
+        if (is_string($imported) && ctype_digit($imported) && $imported !== '0') {
+            $form->addRow()->addContent(Format::alert(__('Import successful. {count} records were imported.', ['count' => '<b>'.$imported.'</b>']), 'success'));
         }
     }
 

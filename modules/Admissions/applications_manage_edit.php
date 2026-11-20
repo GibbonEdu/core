@@ -49,8 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->add(__('Manage Applications'), 'applications_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search])
         ->add(__('Edit Application'));
 
-    if (!empty($_GET['invalid'])) {
-        $page->return->addReturns(['warning4' => __('Your request was completed successfully, however, the following required fields are missing values: {invalid}', ['invalid' => '<b>'.$_GET['invalid'].'</b>' ])]);
+    $invalid = $_GET['invalid'] ?? '';
+    if (is_string($invalid) && $invalid !== '') {
+        $page->return->addReturns(['warning4' => __('Your request was completed successfully, however, the following required fields are missing values: {invalid}', ['invalid' => '<b>'.htmlPrep($invalid).'</b>' ])]);
     }
 
     $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
