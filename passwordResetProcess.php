@@ -219,6 +219,7 @@ else {
                                     $sql = "UPDATE gibbonPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:salt, passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
+                                    $session->forget('loginWaitUntil');
                                 } catch (PDOException $e) {
                                     header("Location: {$URL->withReturn('error2')}");
                                     exit();

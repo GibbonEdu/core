@@ -125,6 +125,7 @@ try {
     }
 
     $authAdapter->updateSession($auth);
+    $session->forget('loginWaitUntil');
     $logLoginAttempt('Login - Success');
 
     header("Location: {$URL}");
@@ -165,7 +166,12 @@ try {
     exit;
 } catch (Exception\TooManyFailedLogins $e) {
     $logLoginAttempt('Login - Failed', 'Too many failed logins');
-    header("Location: {$URL->withQueryParam('loginReturn', 'fail6')}");
+    if ($e->getCode() >= 10) {
+        $session->forget('loginWaitUntil');
+        header("Location: {$URL->withQueryParam('loginReturn', 'fail6')}");
+    } else {
+        header("Location: {$URL->withQueryParam('loginReturn', 'fail12')}");
+    }
     exit;
 } catch (Exception\OAuthLoginError $e) {
     $logLoginAttempt('OAuth Login - Failed', $e->getMessage());
