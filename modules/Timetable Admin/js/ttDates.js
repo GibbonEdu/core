@@ -31,7 +31,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             return;
         }
 
-        var groups = data.groups || {};
+        var groups = data && typeof data.groups === 'object' ? data.groups : {};
         var modeInputs = form.querySelectorAll('input[name="ttDatesMode"]');
         var rows = {
             custom: document.getElementById('customDayRow'),
@@ -54,6 +54,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             if (smartSelect) smartSelect.value = '';
         };
         var renderPreview = function () {
+            if (!rows.preview) return;
             previewDays.innerHTML = '';
 
             var days = getMode() === 'smart' && smartSelect ? groups[smartSelect.value] || [] : [];
