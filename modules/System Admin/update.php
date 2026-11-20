@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
         'errorFiles' => $errorFiles,
+        'errorFileDirectory' => __('Your request failed because the file update directory is missing or not writeable. Check the file permissions on your server.'),
         'errorFileBusy' => __('Your request failed because a file update is already in progress. Please wait a few minutes and try again.'),
     ]);
 

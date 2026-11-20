@@ -57,8 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
     $lockPath = $baseDir.'/fileUpdate.lock';
 
-    if (empty($absolutePath) || !is_dir($absolutePath) || (!is_dir($baseDir) && !@mkdir($baseDir, 0755, true)) || !is_writable($baseDir)) {
-        $URL .= '&return=errorFiles';
+    $directoryReady = !empty($absolutePath) && is_dir($absolutePath);
+    if ($directoryReady && !is_dir($baseDir)) {
+        $directoryReady = mkdir($baseDir, 0755, true) || is_dir($baseDir);
+    }
+
+    if (!$directoryReady || !is_writable($baseDir)) {
+        $URL .= '&return=errorFileDirectory';
         header("Location: {$URL}");
         exit;
     }
@@ -97,10 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         // Backup the old files, then copy staging files over the live install
         $container->get(FileUpdater::class)->run($files);
 
-        // Clear caches so the new code loads
-        if (function_exists('opcache_reset')) {
-            opcache_reset();
-        }
+        // Clear caches so any new files are loaded
         removeDirectoryContents($absolutePath.'/uploads/cache');
         $session->forget('pageLoads');
 
