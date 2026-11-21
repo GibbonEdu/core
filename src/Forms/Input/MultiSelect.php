@@ -55,7 +55,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $this->destinationSelect = $factory->createSelect($name)
             ->selectMultiple(true)
             ->setSize(8)
-            ->setClass('w-full');
+            ->setClass('w-full h-full');
 
         $this->sortBySelect = $factory->createSelect($name . "Sort")
             ->placeholder(__("Sort by Name"))
@@ -172,7 +172,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
     public function getOutput() {
         $output = '';
 
-        $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap items-start gap-2" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
+        $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap gap-2" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
 
         $output .= '<div class="w-full md:flex-1 min-w-0 self-start">';
         $output .= '<div class="overflow-hidden rounded-md border border-outline bg-white shadow-sm">';
@@ -181,7 +181,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $output .= '</div>';
         $output .= '</div>';
 
-        $output .= '<div class="w-full md:w-auto md:self-center flex flex-col items-center gap-2">';
+        $output .= '<div class="w-full md:w-auto self-center flex flex-col items-center gap-2">';
         $output .= '<div class="flex w-full items-center justify-center gap-2 sm:flex-col md:flex-row md:flex-wrap sm:gap-2">';
         $output .= $this->addButton->getOutput();
         $output .= $this->removeButton->getOutput();
@@ -192,7 +192,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         }
         $output .= '</div>';
 
-        $output .= '<div class="w-full md:flex-1 min-w-0 relative">';
+        $output .= '<div class="w-full md:flex-1 min-w-0 relative flex">';
             $output .= $this->destinationSelect->getOutput();
         $output .= '</div>';
 
