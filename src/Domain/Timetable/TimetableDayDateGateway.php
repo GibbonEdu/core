@@ -38,6 +38,13 @@ class TimetableDayDateGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
+    public function existsForDateAndDay($date, $gibbonTTDayID)
+    {
+        $sql = 'SELECT gibbonTTDayDateID FROM gibbonTTDayDate WHERE date=:date AND gibbonTTDayID=:gibbonTTDayID LIMIT 1';
+
+        return !empty($this->db()->selectOne($sql, ['date' => $date, 'gibbonTTDayID' => $gibbonTTDayID]));
+    }
+
     public function deleteTTDatesInRange($firstDayOld, $firstDayNew)
     {
         $data = array('firstDayOld' => $firstDayOld, 'firstDayNew' => $firstDayNew);

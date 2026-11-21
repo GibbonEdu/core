@@ -28,61 +28,194 @@ require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonSchoolYearID = is_scalar($_GET['gibbonSchoolYearID'] ?? null)
+    ? trim((string) $_GET['gibbonSchoolYearID'])
+    : '';
 $dates = $_POST['dates'] ?? [];
-$gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
-$overwrite = $_POST['overwrite'] ?? 'N';
+$dates = is_array($dates) ? $dates : [$dates];
+$dates = array_values(array_unique(array_filter(array_map(function ($value) {
+    return is_scalar($value) ? trim((string) $value) : '';
+}, $dates), 'strlen')));
+$overwrite = ($_POST['overwrite'] ?? 'N') === 'Y' ? 'Y' : 'N';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+// Accept gibbonTTDayID as an array and resolve the selected mode server-side.
+$gibbonTTDayIDs = $_POST['gibbonTTDayID'] ?? [];
+$gibbonTTDayIDs = is_array($gibbonTTDayIDs) ? $gibbonTTDayIDs : [$gibbonTTDayIDs];
+$gibbonTTDayIDs = array_filter(array_map(function ($value) {
+    return is_scalar($value) ? trim((string) $value) : '';
+}, $gibbonTTDayIDs), 'strlen');
+$smartDayGroup = is_scalar($_POST['smartDayGroup'] ?? null) ? trim((string) $_POST['smartDayGroup']) : '';
+$ttDatesMode = is_scalar($_POST['ttDatesMode'] ?? null) ? (string) $_POST['ttDatesMode'] : '';
+$deleteDates = ($_POST['deleteDates'] ?? '') === 'Y';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
+$moduleName = is_scalar($_POST['q'] ?? null) ? getModuleName((string) $_POST['q']) : '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.$moduleName.'/ttDates.php&gibbonSchoolYearID='.rawurlencode($gibbonSchoolYearID);
+
+$canAddDates = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php');
+$canDeleteDates = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_delete.php');
+
+if (($deleteDates && !$canDeleteDates) || (!$deleteDates && !$canAddDates)) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     // Proceed!
     $partialFail = false;
 
-    // Validate Inputs
-    if (empty($gibbonSchoolYearID) or empty($dates) or empty($gibbonTTDayID)) {
+    $timetableDayGateway = $container->get(TimetableDayGateway::class);
+    $timetableDayDateGateway = $container->get(TimetableDayDateGateway::class);
+
+    if (empty($gibbonSchoolYearID) or empty($dates)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
-    $timetableDayGateway = $container->get(TimetableDayGateway::class);
-    $timetableDayDateGateway = $container->get(TimetableDayDateGateway::class);
+    // Restrict all operations to terms in the selected school year.
+    $termStatement = $connection2->prepare('SELECT firstDay, lastDay FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID');
+    $termStatement->execute(['gibbonSchoolYearID' => $gibbonSchoolYearID]);
+    $termRanges = $termStatement->fetchAll(\PDO::FETCH_ASSOC);
+    $isInSchoolYear = function ($date) use ($termRanges) {
+        foreach ($termRanges as $term) {
+            if ($date >= $term['firstDay'] && $date <= $term['lastDay']) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    if ($deleteDates) {
+        $deletedCount = 0;
+        $connection2->beginTransaction();
+        try {
+            foreach ($dates as $timestamp) {
+                if (!is_numeric($timestamp)) {
+                    continue;
+                }
+
+                $date = date('Y-m-d', (int) $timestamp);
+                if (!$isInSchoolYear($date)) {
+                    continue;
+                }
+
+                if (!$timetableDayDateGateway->deleteWhere(['date' => $date])) {
+                    throw new RuntimeException('Unable to delete timetable dates');
+                }
+
+                $deletedCount++;
+            }
+
+            $connection2->commit();
+        } catch (Throwable $e) {
+            if ($connection2->inTransaction()) {
+                $connection2->rollBack();
+            }
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit;
+        }
+
+        $URL .= '&return=success0&deleted='.$deletedCount;
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Resolve the selected mode on the server. Exactly one mode is accepted.
+    $groups = $timetableDayGateway->selectTTDayGroupsBySchoolYear($gibbonSchoolYearID);
+    $validTTDayIDs = [];
+    foreach ($groups as $group) {
+        foreach ($group['ids'] as $ttDayID) {
+            $validTTDayIDs[(string) $ttDayID] = true;
+        }
+    }
+
+    if (!in_array($ttDatesMode, ['custom', 'smart'], true)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if ($ttDatesMode === 'custom') {
+        $gibbonTTDayIDs = array_values(array_unique(array_filter($gibbonTTDayIDs)));
+        if (empty($gibbonTTDayIDs)) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        }
+    } else {
+        if (!isset($groups[$smartDayGroup])) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        }
+        $gibbonTTDayIDs = array_map('strval', $groups[$smartDayGroup]['ids']);
+    }
+
+    foreach ($gibbonTTDayIDs as $ttDayID) {
+        if (!isset($validTTDayIDs[(string) $ttDayID])) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        }
+    }
 
     // Validate records exist
     $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
-    $gibbonTTDay = $timetableDayGateway->getTTDayByID($gibbonTTDayID);
-    if (empty($schoolYear) || empty($gibbonTTDay)) {
+    if (empty($schoolYear)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit();
     }
-    
-    foreach ($dates as $date) {
-        if (!isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true)) {
+
+    // Validate each TT Day record and cache them for the insert loop
+    $ttDayRecords = [];
+    foreach ($gibbonTTDayIDs as $ttDayID) {
+        $gibbonTTDay = $timetableDayGateway->getTTDayByID($ttDayID);
+        if (empty($gibbonTTDay)) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+        $ttDayRecords[$ttDayID] = $gibbonTTDay;
+    }
+
+    foreach ($dates as $timestamp) {
+        if (!is_numeric($timestamp)) {
             $partialFail = true;
             continue;
-        } 
-
-        // Remove existing TT Day Dates if overwriting
-        if ($overwrite == 'Y') {
-            $timetableDayDateGateway->deleteWhere(['date' => date('Y-m-d', $date)]);
         }
 
-        // Check if a day from the TT is already set
-        $days = $timetableDayGateway->selectDaysByDate(date('Y-m-d', $date), $gibbonTTDay['gibbonTTID']);
-
-        if ($days->rowCount() > 0) {
+        $date = date('Y-m-d', (int) $timestamp);
+        if (!$isInSchoolYear($date) || !isSchoolOpen($guid, $date, $connection2, true)) {
             $partialFail = true;
-        } else {
-            $data = ['gibbonTTDayID' => $gibbonTTDayID, 'date' => date('Y-m-d', $date)];
-            $inserted = $timetableDayDateGateway->insert($data);
-            $partialFail &= !$inserted;
+            continue;
         }
-        
+
+        $connection2->beginTransaction();
+        try {
+            // Keep each date atomic so an overwrite cannot delete data and then fail to replace it.
+            if ($overwrite === 'Y' && !$timetableDayDateGateway->deleteWhere(['date' => $date])) {
+                throw new RuntimeException('Unable to replace timetable dates');
+            }
+
+            foreach (array_keys($ttDayRecords) as $ttDayID) {
+                if ($overwrite !== 'Y' && $timetableDayDateGateway->existsForDateAndDay($date, $ttDayID)) {
+                    continue;
+                }
+
+                $data = ['gibbonTTDayID' => $ttDayID, 'date' => $date];
+                if (!$timetableDayDateGateway->insert($data)) {
+                    throw new RuntimeException('Unable to add timetable dates');
+                }
+            }
+
+            $connection2->commit();
+        } catch (Throwable $e) {
+            if ($connection2->inTransaction()) {
+                $connection2->rollBack();
+            }
+            $partialFail = true;
+        }
     }
 
     $URL .= $partialFail
