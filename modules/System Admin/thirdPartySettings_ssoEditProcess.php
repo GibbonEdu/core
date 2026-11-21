@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         exit;
     }
 
-    if ($sso == 'OIDC' && $data['enabled'] == 'Y' && (empty($data['clientName']) || empty($data['issuer']) || empty($data['authorizeEndpoint']) || empty($data['tokenEndpoint']) || empty($data['userEndpoint']))) {
+    if ($sso == 'OIDC' && $data['enabled'] == 'Y' && (empty($data['clientName']) || empty($data['issuer']) || empty($data['authorizeEndpoint']) || empty($data['tokenEndpoint']) || empty($data['userEndpoint']) || empty($data['jwksUri']))) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;

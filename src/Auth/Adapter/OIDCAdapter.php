@@ -24,6 +24,7 @@ namespace Gibbon\Auth\Adapter;
 use Gibbon\Http\Url;
 use Gibbon\Auth\Exception;
 use Gibbon\Auth\OIDC\OIDCLinkRepository;
+use Gibbon\Auth\OIDC\OIDCIDTokenVerifier;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
@@ -71,6 +72,11 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
             throw new Exception\OAuthLoginError('Invalid OIDC redirect state');
         }
         $session->forget('oAuthStateOIDC');
+        $expectedNonce = (string) $session->get('oAuthNonceOIDC', '');
+        $session->forget('oAuthNonceOIDC');
+        if ($expectedNonce === '') {
+            throw new Exception\OAuthLoginError('Missing OIDC nonce');
+        }
 
         $provider = $this->getProvider();
         $code = trim((string) $_GET['code']);
@@ -88,6 +94,22 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
             throw new Exception\OAuthLoginError('Missing access token');
         }
 
+        $tokenValues = is_object($accessToken) && method_exists($accessToken, 'getValues')
+            ? (array) $accessToken->getValues()
+            : [];
+        $idToken = is_scalar($tokenValues['id_token'] ?? null) ? (string) $tokenValues['id_token'] : '';
+        if ($idToken === '') {
+            throw new Exception\OAuthLoginError('Missing OIDC ID token');
+        }
+
+        try {
+            $identityClaims = $this->getContainer()
+                ->get(OIDCIDTokenVerifier::class)
+                ->verify($idToken, $settings, $expectedNonce);
+        } catch (\Throwable $e) {
+            throw new Exception\OAuthLoginError('OIDC ID token validation failed');
+        }
+
         try {
             $resourceOwner = $provider->getResourceOwner($accessToken);
             $user = $resourceOwner->toArray();
@@ -95,17 +117,15 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
             throw new Exception\OAuthLoginError('Unable to read OIDC user profile');
         }
 
+        $user = array_merge($user, $identityClaims);
         $subjectAttribute = trim((string) ($settings['subjectAttribute'] ?? '')) ?: 'sub';
-        $subject = $user[$subjectAttribute] ?? '';
+        $subject = $identityClaims[$subjectAttribute] ?? '';
         if (!is_scalar($subject) || (string) $subject === '') {
             throw new Exception\OAuthLoginError('OIDC subject claim is missing');
         }
         $subject = (string) $subject;
 
-        $issuer = trim((string) ($settings['issuer'] ?? ''));
-        if ($issuer === '') {
-            throw new Exception\OAuthLoginError('OIDC issuer is not configured');
-        }
+        $issuer = (string) $identityClaims['iss'];
 
         $email = $this->firstScalarClaim($user, ['email', 'emailAddress', 'email_address']);
         $matchAttribute = trim((string) ($settings['matchAttribute'] ?? '')) ?: 'preferred_username';
@@ -177,8 +197,11 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
         }
 
         $provider = $this->getProvider();
-        $authUrl = $provider->getAuthorizationUrl();
-        $this->getContainer()->get(Session::class)->set('oAuthStateOIDC', $provider->getState());
+        $nonce = bin2hex(random_bytes(32));
+        $authUrl = $provider->getAuthorizationUrl(['nonce' => $nonce]);
+        $session = $this->getContainer()->get(Session::class);
+        $session->set('oAuthStateOIDC', $provider->getState());
+        $session->set('oAuthNonceOIDC', $nonce);
 
         return $authUrl;
     }

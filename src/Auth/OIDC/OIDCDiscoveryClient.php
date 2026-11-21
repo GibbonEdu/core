@@ -70,10 +70,13 @@ class OIDCDiscoveryClient
             }
         }
 
-        $metadata['issuer'] = !empty($metadata['issuer']) ? rtrim((string) $metadata['issuer'], '/') : $issuer;
+        $metadata['issuer'] = trim((string) ($metadata['issuer'] ?? ''));
+        if ($metadata['issuer'] === '' || !self::isSecureUrl($metadata['issuer'])) {
+            throw new RuntimeException('OIDC discovery document is missing a secure issuer');
+        }
         $metadata['jwks_uri'] = !empty($metadata['jwks_uri']) ? (string) $metadata['jwks_uri'] : '';
-        if ($metadata['jwks_uri'] !== '' && !self::isSecureUrl($metadata['jwks_uri'])) {
-            throw new RuntimeException('OIDC JWKS URI must use HTTPS');
+        if ($metadata['jwks_uri'] === '' || !self::isSecureUrl($metadata['jwks_uri'])) {
+            throw new RuntimeException('OIDC discovery document is missing a secure jwks_uri');
         }
         $metadata['scopes_supported'] = !empty($metadata['scopes_supported']) && is_array($metadata['scopes_supported'])
             ? array_values(array_filter($metadata['scopes_supported'], 'is_string'))
@@ -98,7 +101,7 @@ class OIDCDiscoveryClient
         return $scheme === 'http' && in_array($host, ['localhost', '127.0.0.1', '::1'], true);
     }
 
-    private function fetchJson(string $url): array
+    public function fetchJson(string $url): array
     {
         if (!function_exists('curl_init')) {
             throw new RuntimeException('The PHP cURL extension is required for OIDC discovery');
