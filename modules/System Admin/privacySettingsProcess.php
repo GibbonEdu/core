@@ -48,7 +48,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
             'passwordPolicyNonAlphaNumeric' => 'required',
             'sessionDuration' => 'required',
             'allowableIframeSources' => 'required',
-            'passkeyRotationDays' => '',
         ],
         'System Admin' => [
             'cookieConsentEnabled' => 'required',
@@ -57,13 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
             'remoteCLIKey' => '',
         ],
     ];
-
-    $rotationDays = (int) ($_POST['passkeyRotationDays'] ?? 0);
-    if ($rotationDays < 0 || $rotationDays > 3650) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
 
     // Validate required fields
     foreach ($settingsToUpdate as $scope => $settings) {

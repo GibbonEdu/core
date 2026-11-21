@@ -488,7 +488,5 @@ CREATE TABLE `gibbonPersonPasskey` (
   UNIQUE KEY `credentialId` (`credentialId`),
   KEY `gibbonPersonID` (`gibbonPersonID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
-ALTER TABLE `gibbonPersonPasskey` ADD `rotationDeferredUntil` TIMESTAMP NULL DEFAULT NULL AFTER `lastUsedAt`;end
-INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) SELECT 'System', 'passkeyRotationDays', 'Passkey Rotation (days)', 'Days before a passkey is rotated at the next passkey login. Set to 0 to disable.', '180' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `gibbonSetting` WHERE `scope`='System' AND `name`='passkeyRotationDays');end
 
 ";

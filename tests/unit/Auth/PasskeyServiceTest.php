@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Auth\Passkey;
 
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use PHPUnit\Framework\TestCase;
 
@@ -68,8 +67,7 @@ class PasskeyServiceTest extends TestCase
         $service = new PasskeyService(
             $this->createMock(PasskeyRepository::class),
             $session,
-            $this->createMock(UserGateway::class),
-            $this->createMock(SettingGateway::class)
+            $this->createMock(UserGateway::class)
         );
 
         $method = new \ReflectionMethod($service, 'getAllowedOrigin');

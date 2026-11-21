@@ -30,7 +30,6 @@ use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Session\TokenHandler;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
@@ -435,49 +434,6 @@ JS;
 
                 echo '</div>';
             }
-        }
-
-        $passkeyRotation = $this->session->get('gibbonPasskeyRotation');
-        if (!empty($passkeyRotation) && $this->session->exists('username')) {
-            $rotationOptionsUrl = $this->session->get('absoluteURL').'/passkeyRotationOptions.php';
-            $rotationProcessUrl = $this->session->get('absoluteURL').'/passkeyRotationProcess.php';
-            $rotationDeferUrl = $this->session->get('absoluteURL').'/passkeyRotationDefer.php';
-            $rotationCsrf = $this->getContainer()->get(TokenHandler::class)->getCSRF();
-
-            echo '<script type="text/javascript">';
-            echo 'function autoRotatePasskey() {';
-            echo '  if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.create) { deferPasskeyRotation(); return; }';
-            echo '  function b64urlToBuf(value) { var v=String(value||"").replace(/-/g,"+").replace(/_/g,"/"); while(v.length%4)v+="="; var bin=atob(v),bytes=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i); return bytes.buffer; }';
-            echo '  function bufToB64url(buf) { var bytes=new Uint8Array(buf),bin=""; for(var i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]); return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }';
-            echo '  function bufToB64(buf) { var bytes=new Uint8Array(buf),bin=""; for(var i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]); return btoa(bin); }';
-            echo '  function deferPasskeyRotation() { fetch('.json_encode($rotationDeferUrl).', {method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({csrftoken:'.json_encode($rotationCsrf).'})}).catch(function(){}); }';
-            echo '  var done=false, waiting=false;';
-            echo '  async function rotate(retryOnGesture) {';
-            echo '    if (done || waiting) return;';
-            echo '    try {';
-            echo '      var res=await fetch('.json_encode($rotationOptionsUrl).',{credentials:"same-origin",headers:{"Accept":"application/json"}});';
-            echo '      var data=await res.json();';
-            echo '      if (!res.ok || !data || !data.options) throw new Error("rotation options unavailable");';
-            echo '      var pk=data.options; pk.challenge=b64urlToBuf(pk.challenge); pk.user.id=b64urlToBuf(pk.user.id);';
-            echo '      if (pk.excludeCredentials) pk.excludeCredentials=pk.excludeCredentials.map(function(c){return {type:c.type,id:b64urlToBuf(c.id),transports:c.transports};});';
-            echo '      var credential=await navigator.credentials.create({publicKey:pk});';
-            echo '      var response=credential.response;';
-            echo '      var payload={attestation:{id:bufToB64url(credential.rawId),rawId:bufToB64(credential.rawId),type:credential.type,response:{clientDataJSON:bufToB64url(response.clientDataJSON),attestationObject:bufToB64url(response.attestationObject),transports:response.getTransports?response.getTransports():[]}},nonce:data.nonce||"",csrftoken:'.json_encode($rotationCsrf).'};';
-            echo '      var save=await fetch('.json_encode($rotationProcessUrl).',{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});';
-            echo '      var saved=await save.json();';
-            echo '      if (!save.ok || !saved.success) throw new Error(saved.error||"rotation failed");';
-            echo '      done=true;';
-            echo '    } catch(e) {';
-            echo '      var gestureError = e && (e.name === "NotAllowedError" || e.name === "SecurityError");';
-            echo '      if (retryOnGesture && gestureError && !waiting) { waiting=true; document.addEventListener("pointerdown", function(){ waiting=false; rotate(false); }, {once:true}); return; }';
-            echo '      if (!retryOnGesture || !gestureError) deferPasskeyRotation();';
-            echo '      done=true;';
-            echo '    }';
-            echo '  }';
-            echo '  setTimeout(function(){ rotate(true); }, 800);';
-            echo '}';
-            echo 'autoRotatePasskey();';
-            echo '</script>';
         }
 
         $session = $this->session;
