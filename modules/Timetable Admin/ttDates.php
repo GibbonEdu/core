@@ -235,13 +235,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 $row->addCheckbox('overwrite')->setValue('Y')->checked('N');
 
             $row = $table->addRow()->addClass('right');
-                $row->addButton(__('Delete'), null, 'ttDatesDeleteBtn')
-                    ->setType('submit')
-                    ->setColor('red')
-                    ->setIcon('solid', 'delete')
-                    ->setName('deleteDates')
-                    ->onClick("return confirm('".__('Are you sure you want to delete all timetable days for the selected dates? This cannot be undone.')."');");
-                $row->addSubmit(__('Apply'));
+                if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_delete.php')) {
+                    $row->addButton(__('Delete'), null, 'ttDatesDeleteBtn')
+                        ->setType('submit')
+                        ->setColor('red')
+                        ->setIcon('solid', 'delete')
+                        ->setName('deleteDates')
+                        ->setValue('Y')
+                        ->onClick('return confirm('.json_encode(__('Are you sure you want to delete all timetable days for the selected dates? This cannot be undone.'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT).');');
+                }
+                if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php')) {
+                    $row->addSubmit(__('Apply'));
+                }
 
             $page->scripts->add('timetableTTDates', '/modules/Timetable Admin/js/ttDates.js', ['version' => filemtime(__DIR__.'/js/ttDates.js')]);
 

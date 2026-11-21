@@ -46,12 +46,15 @@ $gibbonTTDayIDs = array_filter(array_map(function ($value) {
 }, $gibbonTTDayIDs), 'strlen');
 $smartDayGroup = is_scalar($_POST['smartDayGroup'] ?? null) ? trim((string) $_POST['smartDayGroup']) : '';
 $ttDatesMode = is_scalar($_POST['ttDatesMode'] ?? null) ? (string) $_POST['ttDatesMode'] : '';
-$deleteDates = !empty($_POST['deleteDates']);
+$deleteDates = ($_POST['deleteDates'] ?? '') === 'Y';
 
 $moduleName = is_scalar($_POST['q'] ?? null) ? getModuleName((string) $_POST['q']) : '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.$moduleName.'/ttDates.php&gibbonSchoolYearID='.rawurlencode($gibbonSchoolYearID);
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
+$canAddDates = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php');
+$canDeleteDates = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_delete.php');
+
+if (($deleteDates && !$canDeleteDates) || (!$deleteDates && !$canAddDates)) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
