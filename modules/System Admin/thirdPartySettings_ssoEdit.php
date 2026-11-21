@@ -26,6 +26,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+    $page->return->addReturns([
+        'success0' => __('SSO settings saved.'),
+        'error0' => __('You do not have access to this action.'),
+        'error1' => __('Your request failed because your inputs were invalid.'),
+        'error12' => __('The OIDC discovery document could not be retrieved. Please check the issuer URL, or disable auto-configuration.'),
+        'error13' => __('OIDC endpoints must use HTTPS. HTTP is only allowed for localhost during development.'),
+    ]);
     //Proceed!
     $page->breadcrumbs
         ->add(__('Third Party Settings'), 'thirdPartySettings.php')
@@ -108,9 +115,32 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row = $form->addRow()->addClass('settingActive');
             $row->addLabel('clientName', __('Service Name'))->description(__('The name of the OAuth2 service, which will be displayed on the login page button.'));
             $row->addTextField('clientName')->required();
+    } else if ($sso == 'OIDC') {
+        $form->addRow()->addHeading('OpenID Connect Provider', __('OpenID Connect Provider'))->append(__('Configure an OpenID Connect provider. Manual binding is the default: an unknown OIDC identity must sign in with its existing Gibbon account before it is linked. Automatic unique matching by email or username can be enabled below.'));
+
+        $row = $form->addRow();
+            $row->addLabel('enabled', __('API Enabled'));
+            $row->addYesNo('enabled')->required();
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('clientName', __('Service Name'))->description(__('The name of the OpenID Connect service, which will be displayed on the login page button.'));
+            $row->addTextField('clientName')->required();
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('issuer', __('OIDC Issuer / Discovery URL'))->description(__('Enter the issuer URL or the full discovery URL. If you enter a base URL, Gibbon appends /.well-known/openid-configuration automatically.'));
+            $row->addURL('issuer')->placeholder('https://idp.example.com/.well-known/openid-configuration');
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('autoDiscovery', __('Auto-configure from Discovery'))->description(__('When saving, fetch the discovery document and populate the authorization, token, user info and JWKS endpoints. Disable this if you need to set the endpoints manually.'));
+            $row->addYesNo('autoDiscovery')->selected('Y');
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('oidcDiscoveryAction', __('Discovery Check'));
+            $row->addButton(__('Fetch Info'))->setID('oidcDiscoveryButton')->onClick('fetchOidcDiscovery()');
+            $row->addContent('<span id="oidcDiscoveryStatus" class="text-sm text-gray-600 ml-2"></span>');
     }
 
-    if ($sso == 'Microsoft' || $sso == 'Other') {
+    if ($sso == 'Microsoft' || $sso == 'Other' || $sso == 'OIDC') {
         $form->toggleVisibilityByClass('settingActive')->onSelect('enabled')->when('Y');
 
         $row = $form->addRow()->addClass('settingActive');
@@ -127,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addTextArea('redirectUri')->setRows(2)->readonly()->setValue($redirectUri);
     }
 
-    if ($sso == 'Other') {
+    if ($sso == 'Other' || $sso == 'OIDC') {
         $row = $form->addRow()->addClass('settingActive');
             $row->addLabel('authorizeEndpoint', __('API Authorization Endpoint'));
             $row->addURL('authorizeEndpoint')->required();
@@ -139,20 +169,51 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row = $form->addRow()->addClass('settingActive');
             $row->addLabel('userEndpoint', __('API User Endpoint'));
             $row->addURL('userEndpoint')->required();
-    
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('jwksUri', __('JWKS URI'))->description(__('Public key set published by the provider. It is filled automatically when auto-discovery is enabled.'));
+            $row->addURL('jwksUri');
+
+        if ($sso == 'OIDC') {
+            $row = $form->addRow()->addClass('settingActive');
+                $row->addLabel('subjectAttribute', __('Subject Attribute'))->description(__('The claim containing the stable subject identifier. The standard OpenID Connect claim is: sub.'));
+                $row->addTextField('subjectAttribute')->setValue('sub');
+
+            $row = $form->addRow()->addClass('settingActive');
+                $row->addLabel('accountMatching', __('Account Matching'))->description(__('Choose whether OIDC identities are matched to existing accounts. Manual binding never matches by email or username. Automatic matching uses the mappings below and only proceeds when exactly one existing account matches.'));
+                $row->addSelect('accountMatching')->fromArray([
+                    'manual' => __('Manual binding (recommended)'),
+                    'auto'   => __('Automatic matching'),
+                ])->required()->selected('manual');
+
+            $row = $form->addRow()->addClass('settingActive');
+                $row->addLabel('matchClaims', __('Match Claims'))->description(__('Comma-separated mappings of Gibbon account fields to OIDC claims. Supported fields: email, username. Examples: email=email or email=email, username=preferred_username.'));
+                $row->addTextArea('matchClaims')->setRows(2)->setValue('email=email');
+
+            $row = $form->addRow()->addClass('settingActive');
+                $row->addLabel('requireVerifiedEmail', __('Require Verified Email'))->description(__('For automatic email matching, require the OIDC email_verified claim before linking. If the claim is missing or false, automatic matching is skipped; manual binding is only offered when fallback is enabled.'));
+                $row->addYesNo('requireVerifiedEmail')->selected('Y');
+
+            $row = $form->addRow()->addClass('settingActive');
+                $row->addLabel('fallbackToManual', __('Fall Back to Manual Binding'))->description(__('Only applies when automatic matching is enabled. If enabled, an unmatched OIDC identity is shown the manual binding form; if disabled, the login is rejected. Default: No.'));
+                $row->addYesNo('fallbackToManual')->selected('N');
+        }
+
         $row = $form->addRow()->addHeading('Additional Parameters', __('Additional Parameters'))
                     ->addClass('settingActive')
                     ->append(__('Some systems require additional parameters for a login request in order to read the user\'s basic profile.'));
-            
+
         $row = $form->addRow()->addClass('settingActive');
             $row->addLabel('scopes', __('Scopes'))
                 ->description(__('Scope is a mechanism in OAuth 2.0 to limit an application\'s access to a user\'s account. An application can request one or more scopes. The standard scopes for an OpenID Connect compliant system are: openid profile email.'));
             $row->addTextField('scopes');
 
-        $row = $form->addRow()->addClass('settingActive');
-            $row->addLabel('usernameAttribute', __('Username attribute'))
-                ->description(__('Name of the attribute containing usernames in the OAuth service.'));
-            $row->addTextField('usernameAttribute')->required();                       
+        if ($sso == 'Other') {
+            $row = $form->addRow()->addClass('settingActive');
+                $row->addLabel('usernameAttribute', __('Username attribute'))
+                    ->description(__('Name of the attribute containing usernames in the OAuth service.'));
+                $row->addTextField('usernameAttribute')->required();
+        }
     } else {
         $row = $form->addRow()->addClass('settingActive');
         $row->addLabel('scopes', __('Custom API Scopes'))->description(__('Leave this blank unless you have specific API scopes you need to set.'));
@@ -166,4 +227,37 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();
+
+    if ($sso == 'OIDC') {
+        $discoveryEndpoint = $session->get('absoluteURL').'/modules/System Admin/thirdPartySettings_ssoDiscoverProcess.php';
+        echo '<script type="text/javascript">';
+        echo 'async function fetchOidcDiscovery() {';
+        echo '  const status = document.getElementById("oidcDiscoveryStatus");';
+        echo '  const issuer = document.getElementsByName("issuer")[0];';
+        echo '  if (!issuer) return;';
+        echo '  status.textContent = '.json_encode(__('Checking discovery...')).';';
+        echo '  status.className = "text-sm text-gray-600 ml-2";';
+        echo '  const params = new URLSearchParams({issuer: issuer.value});';
+        echo '  try {';
+        echo '    const response = await fetch('.json_encode($discoveryEndpoint).' + "?" + params.toString(), {credentials: "same-origin", headers: {"Accept": "application/json"}});';
+        echo '    const result = await response.json();';
+        echo '    if (!response.ok || !result.ok) throw new Error(result.error || "Discovery failed");';
+        echo '    const data = result.data;';
+        echo '    const setValue = (name, value) => { const field = document.getElementsByName(name)[0]; if (field && value) field.value = value; };';
+        echo '    setValue("issuer", data.issuer);';
+        echo '    setValue("authorizeEndpoint", data.authorization_endpoint);';
+        echo '    setValue("tokenEndpoint", data.token_endpoint);';
+        echo '    setValue("userEndpoint", data.userinfo_endpoint);';
+        echo '    setValue("jwksUri", data.jwks_uri);';
+        echo '    const scopes = document.getElementsByName("scopes")[0];';
+        echo '    if (scopes && !scopes.value) scopes.value = "openid profile email";';
+        echo '    status.textContent = '.json_encode(__('Discovery fetched. Review the values and save.')).';';
+        echo '    status.className = "text-sm text-green-700 ml-2";';
+        echo '  } catch (error) {';
+        echo '    status.textContent = '.json_encode(__('Discovery failed:')).' + " " + error.message;';
+        echo '    status.className = "text-sm text-red-700 ml-2";';
+        echo '  }';
+        echo '}';
+        echo '</script>';
+    }
 }

@@ -27,6 +27,7 @@ use Aura\Auth\AuthFactory;
 use Aura\Auth\Verifier\PasswordVerifier;
 use Aura\Auth\Verifier\VerifierInterface;
 use Gibbon\Auth\AuthSession;
+use Gibbon\Auth\OIDC\OIDCDiscoveryClient;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -58,6 +59,7 @@ class AuthServiceProvider extends AbstractServiceProvider
         'Google_Service_Calendar',
         'Microsoft_Auth',
         'Generic_Auth',
+        'OIDC_Auth',
     ];
 
     /**
@@ -214,6 +216,44 @@ class AuthServiceProvider extends AbstractServiceProvider
                     'scopes'                    => !empty($ssoSettings['scopes']) 
                         ? $ssoSettings['scopes'] 
                         : 'openid profile offline_access email groups'
+                ]);
+            } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+                throw new OAuthLoginError($e->getMessage());
+            } catch (\InvalidArgumentException $e) {
+                throw new OAuthLoginError($e->getMessage());
+            } catch (\RuntimeException $e) {
+                throw new OAuthLoginError($e->getMessage());
+            }
+        });
+
+        $container->share('OIDC_Auth', function () {
+            $session = $this->getContainer()->get('session');
+            $settingGateway = $this->getContainer()->get(SettingGateway::class);
+
+            $ssoSettings = json_decode((string) $settingGateway->getSettingByScope('System Admin', 'ssoOIDC'), true) ?: [];
+            $endpoints = [
+                $ssoSettings['authorizeEndpoint'] ?? '',
+                $ssoSettings['tokenEndpoint'] ?? '',
+                $ssoSettings['userEndpoint'] ?? '',
+                $ssoSettings['jwksUri'] ?? '',
+            ];
+            foreach ($endpoints as $endpoint) {
+                if (!empty($endpoint) && !OIDCDiscoveryClient::isSecureUrl((string) $endpoint)) {
+                    throw new OAuthLoginError('OIDC endpoints must use HTTPS');
+                }
+            }
+
+            try {
+                return new GenericProvider([
+                    'clientId'                  => $ssoSettings['clientID'] ?? '',
+                    'clientSecret'              => $ssoSettings['clientSecret'] ?? '',
+                    'redirectUri'               => $session->get('absoluteURL').'/login.php',
+                    'urlAuthorize'              => $ssoSettings['authorizeEndpoint'] ?? '',
+                    'urlAccessToken'            => $ssoSettings['tokenEndpoint'] ?? '',
+                    'urlResourceOwnerDetails'   => $ssoSettings['userEndpoint'] ?? '',
+                    'scopes'                    => !empty($ssoSettings['scopes'])
+                        ? $ssoSettings['scopes']
+                        : 'openid profile email',
                 ]);
             } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
                 throw new OAuthLoginError($e->getMessage());
