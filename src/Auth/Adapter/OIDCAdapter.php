@@ -104,7 +104,7 @@ class OIDCAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
 
         $issuer = trim((string) ($settings['issuer'] ?? ''));
         if ($issuer === '') {
-            $issuer = trim((string) ($settings['clientID'] ?? ''));
+            throw new Exception\OAuthLoginError('OIDC issuer is not configured');
         }
 
         $email = $this->firstScalarClaim($user, ['email', 'emailAddress', 'email_address']);

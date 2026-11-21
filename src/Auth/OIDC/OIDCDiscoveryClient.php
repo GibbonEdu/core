@@ -104,11 +104,13 @@ class OIDCDiscoveryClient
             throw new RuntimeException('The PHP cURL extension is required for OIDC discovery');
         }
 
+        $isLocalHttp = strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'http';
         $curl = curl_init($url);
         curl_setopt_array($curl, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS      => 3,
+            CURLOPT_MAXFILESIZE    => 1048576,
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_TIMEOUT        => 10,
             CURLOPT_USERAGENT      => 'Gibbon OIDC Discovery',
@@ -116,15 +118,23 @@ class OIDCDiscoveryClient
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_PROTOCOLS      => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS => $isLocalHttp ? CURLPROTO_HTTP | CURLPROTO_HTTPS : CURLPROTO_HTTPS,
         ]);
 
         $body = curl_exec($curl);
         $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+        $effectiveUrl = (string) curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
         $error = curl_error($curl);
-        curl_close($curl);
+        unset($curl);
 
         if ($body === false || $status < 200 || $status >= 300) {
             throw new RuntimeException('Unable to fetch OIDC discovery document (HTTP '.$status.')'.($error !== '' ? ': '.$error : ''));
+        }
+        if (!self::isSecureUrl($effectiveUrl)) {
+            throw new RuntimeException('OIDC discovery redirected to an insecure endpoint');
+        }
+        if (strlen((string) $body) > 1048576) {
+            throw new RuntimeException('OIDC discovery document is too large');
         }
 
         $metadata = json_decode($body, true);
