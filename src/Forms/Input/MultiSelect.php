@@ -50,7 +50,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $this->sourceSelect = $factory->createSelect($name . "Source")
             ->selectMultiple(true)
             ->setSize(8)
-            ->setClass('w-full')
+            ->setClass('w-full border-0 rounded-none focus:border-0')
             ->addClass("floatNone");
         $this->destinationSelect = $factory->createSelect($name)
             ->selectMultiple(true)
@@ -70,7 +70,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
 
         $this->searchBox = $factory->createTextField($name . "Search")
             ->placeholder(__("Search"))
-            ->setClass("flex-1")
+            ->setClass("flex-1 border-0 px-1 focus:ring-0")
             ->addClass("floatNone")
             ->wrap('<div class="w-full">', '</div>');
     }
@@ -172,14 +172,16 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
     public function getOutput() {
         $output = '';
 
-        $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap items-center gap-2" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
+        $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap items-start gap-2" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
 
-        $output .= '<div class="w-full md:flex-1">';
-        $output .= '<div class="mb-2">'.$this->searchBox->getOutput().'</div>';
+        $output .= '<div class="w-full md:flex-1 min-w-0 self-start">';
+        $output .= '<div class="overflow-hidden rounded-md border border-outline bg-white shadow-sm">';
+        $output .= '<div class="border-b border-outline bg-gray-50 p-1.5">'.$this->searchBox->getOutput().'</div>';
         $output .= $this->sourceSelect->getOutput();
         $output .= '</div>';
+        $output .= '</div>';
 
-        $output .= '<div class="w-full md:flex-1 flex flex-col items-center gap-2 md:py-0 ">';
+        $output .= '<div class="w-full md:w-auto md:self-center flex flex-col items-center gap-2">';
         $output .= '<div class="flex w-full items-center justify-center gap-2 sm:flex-col md:flex-row md:flex-wrap sm:gap-2">';
         $output .= $this->addButton->getOutput();
         $output .= $this->removeButton->getOutput();
@@ -190,7 +192,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         }
         $output .= '</div>';
 
-        $output .= '<div  class="w-full md:flex-1 relative">';
+        $output .= '<div class="w-full md:flex-1 min-w-0 relative">';
             $output .= $this->destinationSelect->getOutput();
         $output .= '</div>';
 
