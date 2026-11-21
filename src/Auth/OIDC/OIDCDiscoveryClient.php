@@ -98,7 +98,7 @@ class OIDCDiscoveryClient
 
         $host = strtolower((string) parse_url($url, PHP_URL_HOST));
 
-        return $scheme === 'http' && in_array($host, ['localhost', '127.0.0.1', '::1'], true);
+        return $scheme === 'http' && in_array($host, ['localhost', '127.0.0.1', '::1', '[::1]'], true);
     }
 
     public function fetchJson(string $url): array
