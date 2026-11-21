@@ -3,6 +3,7 @@
 use Gibbon\Auth\Passkey\PasskeyRepository;
 use Gibbon\Auth\Passkey\PasskeyService;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use Webauthn\PublicKeyCredentialUserEntity;
 
@@ -110,6 +111,18 @@ class PasskeyBrowserUserGateway extends UserGateway
     }
 }
 
+class PasskeyBrowserSettingGateway extends SettingGateway
+{
+    public function __construct()
+    {
+    }
+
+    public function getSettingByScope($scope, $name, $returnRow = false)
+    {
+        return 180;
+    }
+}
+
 $mode = $argv[1] ?? '';
 $sessionPath = $argv[2] ?? '';
 $origin = $argv[3] ?? '';
@@ -121,11 +134,15 @@ if (!in_array($mode, ['options', 'verify'], true) || $sessionPath === '' || $ori
 $session = new PasskeyBrowserSession($sessionPath);
 $session->set('absoluteURL', $origin);
 $session->set('systemName', 'Gibbon Passkey Test');
-$service = new PasskeyService(
+$arguments = [
     new PasskeyBrowserRepository(),
     $session,
-    new PasskeyBrowserUserGateway()
-);
+    new PasskeyBrowserUserGateway(),
+];
+if (count((new ReflectionClass(PasskeyService::class))->getConstructor()->getParameters()) === 4) {
+    $arguments[] = new PasskeyBrowserSettingGateway();
+}
+$service = new PasskeyService(...$arguments);
 
 try {
     if ($mode === 'options') {
