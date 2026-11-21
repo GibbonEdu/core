@@ -226,11 +226,9 @@ if (!$session->exists("username")) {
                     $tableRow->addContent(!empty($passkey['createdAt']) ? Format::dateTime($passkey['createdAt']) : '');
                     $tableRow->addContent(!empty($passkey['lastUsedAt']) ? Format::dateTime($passkey['lastUsedAt']) : __('Never'));
 
-                    $deleteNonce = $container->get(TokenHandler::class)->getNonce();
                     $passkeyID = (int) $passkey['gibbonPersonPasskeyID'];
                     $removeAction = '<a href="#" class="passkeyDelete inline-flex items-center align-middle rounded-md text-sm sm:leading-5 font-semibold px-3 py-2 bg-white shadow-sm border border-gray-400 hover:bg-gray-100 hover:text-red-700 hover:border-red-700 text-gray-600 lg:text-gray-500"'
                         .' data-passkey-id="'.$passkeyID.'"'
-                        .' data-passkey-nonce="'.htmlspecialchars($deleteNonce, ENT_QUOTES, 'UTF-8').'"'
                         .' title="'.__('Remove').'" aria-label="'.__('Remove').'">'
                         .icon('solid', 'cross', 'size-6 sm:size-5 lg:-ml-0.5 lg:mr-1.5')
                         .'<span class="hidden lg:block text-gray-800 whitespace-nowrap">'.__('Remove').'</span></a>';
@@ -280,7 +278,7 @@ if (!$session->exists("username")) {
 
     btn.addEventListener('click', async function () {
         msg.textContent = '';
-        if (!window.PublicKeyCredential) {
+        if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.create) {
             msg.textContent = __NOT_SUPPORTED__;
             msg.className = 'text-xs text-red-600';
             return;
@@ -342,7 +340,6 @@ if (!$session->exists("username")) {
             try {
                 var body = new URLSearchParams();
                 body.set('csrftoken', __CSRF_TOKEN__);
-                body.set('nonce', deleteBtn.getAttribute('data-passkey-nonce') || '');
                 body.set('gibbonPersonPasskeyID', deleteBtn.getAttribute('data-passkey-id') || '');
 
                 var res = await fetch(__DELETE_URL__, {

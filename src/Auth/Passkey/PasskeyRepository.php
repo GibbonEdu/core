@@ -120,9 +120,7 @@ class PasskeyRepository
             $sql = 'INSERT INTO gibbonPersonPasskey
                         (gibbonPersonID, label, credentialId, credentialSource)
                     VALUES
-                        (:gibbonPersonID, :label, :credentialId, :credentialSource)
-                    ON DUPLICATE KEY UPDATE
-                        label=VALUES(label), credentialSource=VALUES(credentialSource)';
+                        (:gibbonPersonID, :label, :credentialId, :credentialSource)';
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([
                 'gibbonPersonID'  => $gibbonPersonID,
@@ -221,10 +219,12 @@ class PasskeyRepository
     public function deleteForPerson(int $gibbonPersonPasskeyID, int $gibbonPersonID): bool
     {
         $stmt = $this->db->prepare('DELETE FROM gibbonPersonPasskey WHERE gibbonPersonPasskeyID=:id AND gibbonPersonID=:gibbonPersonID');
-        return $stmt->execute([
+        $stmt->execute([
             'id' => $gibbonPersonPasskeyID,
             'gibbonPersonID' => $gibbonPersonID,
         ]);
+
+        return $stmt->rowCount() === 1;
     }
 
     public function deleteAllForPerson(int $gibbonPersonID): bool

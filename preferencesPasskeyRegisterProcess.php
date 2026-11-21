@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Auth\Passkey\PasskeyService;
-use Gibbon\Session\TokenHandler;
 
 require_once __DIR__ . '/gibbon.php';
 
@@ -69,5 +68,5 @@ try {
     echo json_encode(['success' => true]);
 } catch (\Throwable $e) {
     http_response_code(400);
-    echo json_encode(['error' => $e->getMessage() ?: __('Unable to register the passkey.')]);
+    echo json_encode(['error' => __('Unable to register the passkey.')]);
 }

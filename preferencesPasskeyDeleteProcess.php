@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Auth\Passkey\PasskeyService;
 use Gibbon\Http\Url;
-use Gibbon\Session\TokenHandler;
 
 require_once __DIR__ . '/gibbon.php';
 

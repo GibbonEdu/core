@@ -477,7 +477,7 @@ class PasskeyService
     {
         if (!$this->attestationValidator) {
             $factory = new CeremonyStepManagerFactory();
-            $factory->setSecuredRelyingPartyId(['localhost', '127.0.0.1']);
+            $factory->setAllowedOrigins([$this->getAllowedOrigin()]);
             $factory->setAttestationStatementSupportManager($this->getAttestationManager());
             $this->attestationValidator = AuthenticatorAttestationResponseValidator::create($factory->creationCeremony());
         }
@@ -489,7 +489,7 @@ class PasskeyService
     {
         if (!$this->assertionValidator) {
             $factory = new CeremonyStepManagerFactory();
-            $factory->setSecuredRelyingPartyId(['localhost', '127.0.0.1']);
+            $factory->setAllowedOrigins([$this->getAllowedOrigin()]);
             $factory->setAttestationStatementSupportManager($this->getAttestationManager());
             $this->assertionValidator = AuthenticatorAssertionResponseValidator::create($factory->requestCeremony());
         }
@@ -514,11 +514,28 @@ class PasskeyService
 
     protected function getHost(): string
     {
-        $host = parse_url((string) $this->session->get('absoluteURL'), PHP_URL_HOST);
-        if (empty($host)) {
-            throw new \RuntimeException(__('Passkey relying party host is not configured.'));
+        return $this->getRpId();
+    }
+
+    protected function getAllowedOrigin(): string
+    {
+        $url = (string) $this->session->get('absoluteURL');
+        $parts = parse_url($url);
+        $scheme = strtolower((string) ($parts['scheme'] ?? ''));
+        $host = (string) ($parts['host'] ?? '');
+
+        if (!in_array($scheme, ['https', 'http'], true) || $host === '') {
+            throw new \RuntimeException(__('Passkey relying party origin is not configured.'));
+        }
+        if ($scheme === 'http' && !in_array($host, ['localhost', '127.0.0.1', '[::1]', '::1'], true)) {
+            throw new \RuntimeException(__('Passkeys require HTTPS outside local development.'));
         }
 
-        return preg_replace('/:\d+$/', '', $host);
+        $origin = $scheme.'://'.$host;
+        if (isset($parts['port'])) {
+            $origin .= ':'.(int) $parts['port'];
+        }
+
+        return $origin;
     }
 }

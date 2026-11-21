@@ -69,5 +69,5 @@ try {
 } catch (\Throwable $e) {
     $service->deferRotation($gibbonPersonID);
     http_response_code(400);
-    echo json_encode(['error' => $e->getMessage() ?: __('Unable to rotate the passkey.')]);
+    echo json_encode(['error' => __('Unable to rotate the passkey.')]);
 }
