@@ -26,6 +26,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\DefaultAdapter;
 use Gibbon\Auth\Adapter\MFAAdapter;
+use Gibbon\Auth\Adapter\PasskeyAdapter;
 use Gibbon\Auth\Adapter\OAuthAdapterInterface;
 use Gibbon\Auth\Adapter\OAuthGoogleAdapter;
 use Gibbon\Auth\Adapter\OAuthMicrosoftAdapter;
@@ -74,6 +75,9 @@ try {
             break;
         case 'mfa':
             $authAdapter = $container->get(MFAAdapter::class);
+            break;
+        case 'passkey':
+            $authAdapter = $container->get(PasskeyAdapter::class);
             break;
         default:
             $authAdapter = $container->get(DefaultAdapter::class);
@@ -183,6 +187,10 @@ try {
     exit;
 } catch (Exception\MFATokenRequired $e) {
     header("Location: {$URL->withQueryParam('method', 'mfa')}");
+    exit;
+} catch (Exception\PasskeyInvalid $e) {
+    $logLoginAttempt('Login - Failed', 'Passkey verification failed');
+    header("Location: {$URL->withQueryParam('loginReturn', 'fail12')}");
     exit;
 } catch (NotFoundException $e) {
     $logLoginAttempt('Login - Failed', 'Container error: '.$e->getMessage());
