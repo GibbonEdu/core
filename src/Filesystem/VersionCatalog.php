@@ -38,17 +38,28 @@ class VersionCatalog
     protected $allowedHosts = [
         'gibbonedu.org',
         'www.gibbonedu.org',
+        'github.com',
     ];
 
     protected $session;
+
+    protected $catalogVersion = '';
+    protected $catalog = [];
 
     public function __construct(Session $session)
     {
         $this->session = $session;
     }
 
+    public function getCatalog() : array
+    {
+        return $this->catalog;
+    }
+
     /**
-     * Load the catalog JSON for the given version. Returns [] on failure.
+     * Load the catalog JSON for the given version. Returns [] on failure. 
+     * Caches the result so multiple calls for the same version do not 
+     * go to the remote server.
      *
      * @param string $currentVersion
      * @return array
@@ -58,6 +69,10 @@ class VersionCatalog
         $currentVersion = trim($currentVersion);
         if ($currentVersion == '') {
             return [];
+        }
+
+        if ($currentVersion == $this->catalogVersion && !empty($this->catalog)) {
+            return $this->catalog;
         }
 
         try {
@@ -91,6 +106,13 @@ class VersionCatalog
             if (is_null($firstKey) || is_int($firstKey)) {
                 return [];
             }
+
+            foreach ($decoded as $version => $entry) {
+                $parsedChangelog = $this->getChangeLogFromString((string) ($entry['changelog'] ?? ''));
+                $decoded[$version]['changelog'] = $parsedChangelog[$version]['changelog'] ?? [];
+            }
+
+            $this->catalog = $decoded;
 
             return $decoded;
         } catch (\Throwable $e) {
@@ -176,5 +198,102 @@ class VersionCatalog
         }
 
         return in_array(strtolower($parts['host']), $this->allowedHosts);
+    }
+
+    public function mergeCatalog(array $catalog) : void
+    {
+        foreach ($catalog as $version => $entry) {
+            if (!is_string($version) || !is_array($entry)) {
+                continue;
+            }
+
+            $this->catalog[$version] = !empty($this->catalog[$version])
+                ? array_merge($this->catalog[$version], $entry)
+                : $entry;
+        }
+
+        uksort($this->catalog, 'version_compare');
+        $this->catalog = array_reverse($this->catalog, true);
+    }
+
+    /**
+     * Parse the root CHANGELOG.txt file into version and category entries.
+     *
+     * @param string|null $filePath
+     * @return array<string, array<string, string[]>>
+     */
+    public function getChangeLogFromFile($filePath = null, int $limit = 10) : array
+    {
+        if ($filePath === null) {
+            $filePath = $this->session->get('absolutePath').'/CHANGELOG.txt';
+        }
+
+        if (!is_string($filePath) || !is_readable($filePath)) {
+            return [];
+        }
+
+        $lines = file($filePath, FILE_IGNORE_NEW_LINES);
+        if ($lines === false) {
+            return [];
+        }
+
+        return array_slice($this->parseChangeLog($lines), 0, $limit, true);
+    }
+
+    public function getChangeLogFromString(string $content) : array
+    {
+        if (empty($content)) {
+            return [];
+        }
+
+        $lines = preg_split('/\R/', $content);
+
+        return $this->parseChangeLog($lines);
+    }
+
+    protected function parseChangeLog(array $lines): array
+    {
+        $changelog = [];
+        $version = null;
+        $category = null;
+
+        foreach ($lines as $line) {
+            $trimmedLine = trim($line);
+
+            if (preg_match('/^(v\d+\.\d+\.\d+(?: and earlier)?)$/', $trimmedLine, $matches)) {
+                $version = trim($matches[1], 'v');
+                $category = null;
+                $changelog[$version] = ['version' => $version, 'changelog' => []];
+                continue;
+            }
+
+            if ($version === null || $trimmedLine === '' || preg_match('/^-+$/', $trimmedLine)) {
+                continue;
+            }
+
+            if (preg_match('/^ {4}(\S.*)$/', $line, $matches)) {
+                $category = $matches[1];
+                $changelog[$version]['changelog'][$category] = [];
+                continue;
+            }
+
+            if ($category === null || !preg_match('/^ {8,}(\S.*)$/', $line, $matches)) {
+                continue;
+            }
+
+            $entries = &$changelog[$version]['changelog'][$category];
+            $entry = $matches[1];
+            $lastEntry = array_key_last($entries);
+
+            if ($lastEntry !== null && preg_match('/\s$/', $entries[$lastEntry])) {
+                $entries[$lastEntry] = rtrim($entries[$lastEntry]).' '.$entry;
+            } else {
+                $entries[] = $entry;
+            }
+
+            unset($entries);
+        }
+
+        return $changelog;
     }
 }

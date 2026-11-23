@@ -43,11 +43,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $session->forget('fileUpdateStage');
     }
     $page->return->addReturns([
-        'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
-        'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
-        'errorFiles' => $errorFiles,
+        'warning1'           => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
+        'error3'             => __('Your request failed because your inputs were invalid, or no update was required.'),
+        'errorFiles'         => $errorFiles,
         'errorFileDirectory' => __('Your request failed because the file update directory is missing or not writeable. Check the file permissions on your server.'),
-        'errorFileBusy' => __('Your request failed because a file update is already in progress. Please wait a few minutes and try again.'),
+        'errorFileBusy'      => __('Your request failed because a file update is already in progress. Please wait a few minutes and try again.'),
     ]);
 
     // Get and display SQL errors
@@ -58,24 +58,71 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Compare codebase version (version.php) with database version
     $updater = $container->get(Updater::class);
+    $versionCatalog = $container->get(VersionCatalog::class);
+
     $updateRequired = $updater->isUpdateRequired();
     $cuttingEdge = $updater->isCuttingEdge();
+    $updatePath = '';
+    $nextRelease = false;
 
-    // Show current code and database versions
-    $table = DataTable::createDetails('version');
-    $table->setDescription(__('This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'));
+    // $table->setDescription(__('This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'));
 
-    $table->addColumn('versionCode', __('Codebase Version'));
-    $table->addColumn('versionDB', __('Database Version'));
-    if ($cuttingEdge) {
-        $table->addColumn('cuttingEdgeCode', __('Cutting Edge Code'));
+    // 1) DB update  2) else file update if a newer version exists  3) else no update needed, files & DB up to date
+    if ($updateRequired > 0) {
+        $updatePath = $session->get('absoluteURL').'/modules/System Admin/updateProcess.php';
+
+        // $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
+        // $form->addHiddenValue('address', $session->get('address'));
+        // $form->addHiddenValue('type', $cuttingEdge ? 'cuttingEdge' : 'regularRelease');
+        // $form->setTitle(__('Database Update'));
+
+        // if ($cuttingEdge) {
+        //     $form->setDescription(sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $updater->versionDB, $updater->cuttingEdgeCodeLine, $updater->cuttingEdgeVersion, $updater->cuttingEdgeMaxLine).'</b>');
+
+        //     $row = $form->addRow();
+        //         $row->addContent('v'.$updater->versionDB)
+        //             ->addClass('text-xl text-right')
+        //             ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeCodeLine.'</span>');
+        //         $row->addContent('<img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
+        //         $row->addContent('v'.$updater->versionCode)
+        //             ->addClass('text-xl text-left flex-1')
+        //             ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeMaxLine.'</span>');
+        // } else {
+        //     $form->setDescription(sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $updater->versionDB, $updater->versionCode).'</b>');
+
+        //     $row = $form->addRow();
+        //         $row->addContent('v'.$updater->versionDB)->addClass('text-xl text-right');
+        //         $row->addContent('<img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
+        //         $row->addContent('v'.$updater->versionCode)->addClass('text-xl text-left flex-1');
+        // }
+
+        // $form->addRow()->addSubmit();
+        // echo $form->getOutput();
+    } else {
+        $nextRelease = $versionCatalog->getNextRelease($updater->versionCode, $cuttingEdge);
+        $updatePath = $session->get('absoluteURL').'/modules/System Admin/fileUpdateProcess.php';
     }
 
-    echo $table->render([[
-        'versionCode'     => 'v'.$updater->versionCode,
-        'versionDB'       => 'v'.$updater->versionDB,
-        'cuttingEdgeCode' => __('Line').': '.$updater->cuttingEdgeCodeLine,
-    ]]);
+    // Updater version number and status overview
+    echo $page->fetchFromTemplate('updateOverview.twig.html', [
+        'versionCode'     => $updater->versionCode,
+        'versionUpdate'   => !empty($nextRelease),
+        'versionDB'       => $updater->versionDB,
+        'databaseUpdate'  => !empty($nextRelease) || $updateRequired > 0,
+        'cuttingEdge'     => $cuttingEdge,
+        'cuttingEdgeCode' => __('Line').' '.$updater->cuttingEdgeCodeLine,
+        'cuttingEdgeUpdate' => $updater->cuttingEdgeMaxLine - $updater->cuttingEdgeCodeLine,
+    ]);
+
+    // Update status message
+    if (empty($nextRelease) && !$cuttingEdge && $updateRequired === -1) {
+        echo Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error');
+    } elseif (empty($nextRelease)) {
+        echo Format::alert(__('Your Gibbon core is up to date.'), 'success');
+    } else {
+        echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.'), 'message');
+        echo Format::alert('<b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
+    }
 
     // Cutting edge warning and composer check
     if ($cuttingEdge) {
@@ -90,72 +137,75 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         }
     }
 
-    // 1) DB update  2) else file update if a newer version exists  3) else no update needed, files & DB up to date
-    if ($updateRequired > 0) {
-        $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
+    // Fetch the remote version catalog and merge it with the changelog from the local file
+    $versions = $versionCatalog->fetch($updater->versionCode);
+    $changelog = $versionCatalog->getChangeLogFromFile();
+    $versionCatalog->mergeCatalog($changelog);
+
+    if (!empty($changelog)) {
+        $form = Form::createBlank('fileUpdate', $updatePath);
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('type', $cuttingEdge ? 'cuttingEdge' : 'regularRelease');
-        $form->setTitle(__('Database Update'));
+        $form->addHiddenValue('confirm', 'Y');
 
-        if ($cuttingEdge) {
-            $form->setDescription(sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $updater->versionDB, $updater->cuttingEdgeCodeLine, $updater->cuttingEdgeVersion, $updater->cuttingEdgeMaxLine).'</b>');
+        // $form->setTitle(__('Changelog'));
 
-            $row = $form->addRow();
-                $row->addContent('v'.$updater->versionDB)
-                    ->addClass('text-xl text-right')
-                    ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeCodeLine.'</span>');
-                $row->addContent('<img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
-                $row->addContent('v'.$updater->versionCode)
-                    ->addClass('text-xl text-left flex-1')
-                    ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeMaxLine.'</span>');
-        } else {
-            $form->setDescription(sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $updater->versionDB, $updater->versionCode).'</b>');
+        foreach ($versionCatalog->getCatalog() as $version => $data) {
+            $categories = $data['changelog'] ?? [];
 
-            $row = $form->addRow();
-                $row->addContent('v'.$updater->versionDB)->addClass('text-xl text-right');
-                $row->addContent('<img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
-                $row->addContent('v'.$updater->versionCode)->addClass('text-xl text-left flex-1');
-        }
+            $col = $form->addRow()->setClass('border bg-gray-50 rounded-lg shadow-sm p-6 mb-4')->addColumn();
 
-        $form->addRow()->addSubmit();
-        echo $form->getOutput();
-    } else {
-        $nextRelease = $container->get(VersionCatalog::class)->getNextRelease($updater->versionCode, $cuttingEdge);
+            $versionNumber = trim($version, 'v');
+            $versionTag = $releaseDate = '';
 
-        // Next version available — offer the file update form
-        if (!empty($nextRelease)) {
-            $form = Form::create('fileUpdate', $session->get('absoluteURL').'/modules/System Admin/fileUpdateProcess.php');
-            $form->addHiddenValue('address', $session->get('address'));
-            $form->setTitle(__('File Update'));
-            $form->setDescription(Format::alert(
-                sprintf(__('You are currently using Gibbon v%1$s.'), $updater->versionCode).' '.
-                __('Click "Submit" below to continue to update the files.'), 'warning'));
+            if (!empty($versions[$versionNumber])) {
+                if (version_compare($versionNumber, $updater->versionCode, '>')) {
+                    $versionTag = Format::tag(__('Update Available'), 'message ml-4 align-middle');
+                }
 
-            $row = $form->addRow();
-                $row->addContent('v'.$updater->versionCode)->addClass('text-xl text-right');
-                $row->addContent('<img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
-                $row->addContent('v'.$nextRelease['version'])->addClass('text-xl text-left flex-1');
+                if (version_compare($versionNumber, $updater->versionCode, '=')) {
+                    $versionTag = !empty($nextRelease) 
+                        ? Format::tag(__('Update Required'), 'warning ml-4 align-middle')
+                        : Format::tag(__('Current'), 'success ml-4 align-middle');
+                }
 
-            $row = $form->addRow();
-                $row->addLabel('confirm', __('Confirm'));
-                $row->addCheckbox('confirm')->description(__('Yes'))->setValue('Y')->required();
+                if ($versions[$versionNumber]['status'] == 'Development' && $cuttingEdge) {
+                    $versionTag .= Format::tag('Cutting Edge', 'warning ml-4 align-middle');
+                }
 
-            $form->addRow()->addSubmit();
-            echo $form->getOutput();
-        } else {
-            // Nothing to update
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
-            $form->addHiddenValue('address', $session->get('address'));
-            $form->addHiddenValue('type', $cuttingEdge ? 'cuttingEdge' : 'regularRelease');
-
-            if (!$cuttingEdge && $updateRequired === -1) {
-                $form->setDescription(Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error'));
-            } else {
-                $form->addRow()->addContent(__('Your Gibbon core is up to date.'))->addClass('py-16 text-center text-gray-600 text-lg');
+                $releaseDate = !empty($versions[$versionNumber]['releaseDate'])
+                    ? __('Released On {date}', ['date' => $versions[$versionNumber]['releaseDate']]) 
+                    : '';
             }
 
-            echo $form->getOutput();
+            $row = $col->addColumn()->setClass('flex justify-between items-center');
+            $row->addContent($version.$versionTag)->addClass('text-2xl font-mono');
+
+            if ($updateRequired > 0 && $updater->versionCode == $versionNumber) {
+                $row->addSubmit(__('Run Database Update'))->addClass('text-sm text-gray-600');
+            } 
+            elseif (!empty($nextRelease) && $nextRelease['version'] == $versionNumber) {
+                $row->addSubmit(__('Update to {version}', ['version' => $version]))->addClass('text-sm text-gray-600');
+            }
+            else if (version_compare($versionNumber, $updater->versionCode, '>'))
+            {
+               $row->addButton(__('Update Available', ['version' => $version]))->addClass('text-sm text-gray-600')->setAttribute('disabled', 'disabled')->setAttribute('title', __('Update earlier versions first')); 
+            }
+            else if ($versionNumber == $updater->versionCode) {
+                $row->addButton(__('Installed', ['version' => $version]))->addClass('text-sm text-gray-600')->setAttribute('disabled', 'disabled'); 
+            }
+
+            $col->onlyIf($releaseDate)->addContent($releaseDate)->addClass('mt-1 text-sm text-gray-600');
+
+            foreach ($categories as $category => $changes) {
+                $col->addContent($category)->addClass('text-base font-bold mt-6');
+
+                $col->addContent(Format::list($changes, 'ul', 'text-base'));
+
+            }
         }
+
+        echo $form->getOutput();
     }
 
     // INNODB UPGRADE - only displays if an update is required

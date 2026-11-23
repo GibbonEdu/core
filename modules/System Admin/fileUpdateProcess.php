@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     $updater = $container->get(Updater::class);
 
     // Need a valid install, DB already up to date, and confirm checked
-    if (!$updater->isVersionValid() || $updater->isUpdateRequired() > 0 || ($_POST['confirm'] ?? '') != 'Y') {
+    if ($updater->isUpdateRequired() > 0 || ($_POST['confirm'] ?? '') != 'Y') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
         exit;
