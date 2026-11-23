@@ -10,7 +10,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 <div class="flex flex-col sm:flex-row w-full mb-6 bg-white shadow rounded-lg border  font-sans">
 
-    <div class="w-full sm:w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-b sm:border-b-0 sm:border-r ">
+    <div class="w-full sm:flex-1 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-b sm:border-b-0 sm:border-r ">
         <div class="w-full text-sm font-light text-gray-600">
             {{ __('Codebase Version') }}
         </div>
@@ -19,12 +19,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
         <div id="versionUpdate" class="mt-1">
             <span class="tag rounded-full {{ versionUpdate ? 'warning' : 'success' }}">
-                {{ versionUpdate ? __('Update Required') : __('OK') }}
+                {{ versionUpdate ? __('Update Available') : __('OK') }}
             </span>
         </div>
     </div>
 
-    <div class="w-full sm:w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-b sm:border-b-0 sm:border-r ">
+    <div class="w-full sm:flex-1 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-b sm:border-b-0 {{ cuttingEdge ? 'sm:border-r' }} ">
         <div class="w-full text-sm font-light text-gray-600">
             {{ __('Database Version') }}
         </div>
@@ -33,14 +33,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
         <div id="databaseUpdate" class="mt-1">
             <span class="tag rounded-full {{ databaseUpdate ? 'warning' : 'success' }}">
-                {{ databaseUpdate ? __('Update Required') : __('OK') }}
+                {{ databaseUpdate ? __('Update Available') : __('OK') }}
             </span>
         </div>
     </div>
 
     {% if cuttingEdge %}
 
-    <div class="w-full sm:w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 ">
+    <div class="w-full sm:flex-1 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 ">
         <div class="w-full text-sm font-light text-gray-600">
             {{ __('Cutting Edge Code') }}
         </div>
@@ -55,6 +55,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
         {% endif %}
     </div>
+    {% else %}
+
+
+
     {% endif %}
 </div>
 

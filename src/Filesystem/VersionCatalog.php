@@ -113,6 +113,7 @@ class VersionCatalog
                 $decoded[$version]['changelog'] = $parsedChangelog[$version]['changelog'] ?? [];
             }
 
+            $this->catalogVersion = $currentVersion;
             $this->catalog = $decoded;
 
             return $decoded;
@@ -311,7 +312,7 @@ class VersionCatalog
             if (preg_match('/^(v\d+\.\d+\.\d+(?: and earlier)?)$/', $trimmedLine, $matches)) {
                 $version = trim($matches[1], 'v');
                 $category = null;
-                $changelog[$version] = ['version' => $version, 'changelog' => []];
+                $changelog[$version] = ['version' => $version, 'changelog' => [], 'status' => 'Legacy'];
                 continue;
             }
 
