@@ -21,7 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\SystemAdmin\Forms;
 
-use Gibbon\Contracts\Services\Session;
+use Gibbon\Module\SystemAdmin\Forms\UpdateForm;
+use Gibbon\Contracts\Services\Session as SessionInterface;
 use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Filesystem\VersionCatalog;
@@ -44,22 +45,22 @@ class UpdateFormTest extends TestCase
         $updater->method('isUpdateRequired')->willReturn(0);
 
         $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('fetch')->willReturn([
+            '30.0.00' => ['status' => 'Current', 'releaseDate' => '2026-01-01'],
+            '31.0.00' => ['status' => 'Current'],
+            '32.0.00' => ['status' => 'Current'],
+        ]);
+        $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
+        $versionCatalog->method('getNextRelease')->willReturn(['version' => '31.0.00']);
         $versionCatalog->method('getCatalog')->willReturn([
             '29.0.00' => ['changelog' => ['Bug Fixes' => ['A previous fix.']]],
             '30.0.00' => ['status' => 'Current', 'changelog' => []],
             '31.0.00' => ['status' => 'Current', 'changelog' => []],
             '32.0.00' => ['status' => 'Current', 'changelog' => []],
+            '33.0.00' => ['status' => 'Development', 'changelog' => []],
         ]);
 
-        $form = $this->createUpdateForm($updater, $versionCatalog, '29.0.00')->createForm(
-            '/modules/System Admin/updateFilesProcess.php',
-            [
-                '30.0.00' => ['status' => 'Current', 'releaseDate' => '2026-01-01'],
-                '31.0.00' => ['status' => 'Current'],
-                '32.0.00' => ['status' => 'Current'],
-            ],
-            ['version' => '31.0.00']
-        );
+        $form = $this->createUpdateForm($updater, $versionCatalog, '29.0.00')->createForm($updater, $versionCatalog);
 
         $output = $form->getOutput();
 
@@ -67,7 +68,9 @@ class UpdateFormTest extends TestCase
         $this->assertStringContainsString('Downgrade to 29.0.00', $output);
         $this->assertStringContainsString('Installed', $output);
         $this->assertStringContainsString('Update to 31.0.00', $output);
+        $this->assertStringContainsString('Update earlier versions first', $output);
         $this->assertStringContainsString('Released On 2026-01-01', $output);
+        $this->assertStringNotContainsString('v33.0.00', $output);
     }
 
     public function testDisplaysCuttingEdgeDatabaseUpdate(): void
@@ -80,25 +83,25 @@ class UpdateFormTest extends TestCase
         $updater->method('isUpdateRequired')->willReturn(1);
 
         $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('fetch')->willReturn([
+            '30.0.00' => ['status' => 'Development'],
+        ]);
+        $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
         $versionCatalog->method('getCatalog')->willReturn([
             '30.0.00' => ['status' => 'Development', 'changelog' => []],
         ]);
 
-        $form = $this->createUpdateForm($updater, $versionCatalog)->createForm(
-            '/modules/System Admin/updateProcess.php',
-            ['30.0.00' => ['status' => 'Development']],
-            null
-        );
+        $form = $this->createUpdateForm($updater, $versionCatalog)->createForm($updater, $versionCatalog);
 
         $output = $form->getOutput();
 
         $this->assertStringContainsString('Cutting Edge', $output);
-        $this->assertStringContainsString('Update Line 2 to Line 4', $output);
+        $this->assertStringContainsString('Update Database Line 2 to Line 4', $output);
     }
 
     private function createUpdateForm(Updater $updater, VersionCatalog $versionCatalog, string $backupVersion = ''): UpdateForm
     {
-        $session = $this->createMock(Session::class);
+        $session = $this->createMock(SessionInterface::class);
         $session->method('get')->willReturnCallback(function (string $key) {
             return [
                 'address' => '/modules/System Admin/update.php',
@@ -109,6 +112,6 @@ class UpdateFormTest extends TestCase
         $settingGateway = $this->createMock(SettingGateway::class);
         $settingGateway->method('getSettingByScope')->willReturn($backupVersion);
 
-        return new UpdateForm($session, $updater, $versionCatalog, $settingGateway);
+        return new UpdateForm($session, $settingGateway);
     }
 }
