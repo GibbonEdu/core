@@ -156,6 +156,33 @@ class FileUpdater
         }
     }
 
+    /**
+     * Restore from previousVersionBackup/; remove files that were newly added.
+     */
+    public function restore()
+    {
+        $backupDir = $this->absolutePath.'/'.Downloader::BASE_DIR.'/'.$this->backupDir;
+        if (!is_dir($backupDir)) {
+            $this->fail(self::ERROR_ROLLBACK, 'Backup directory does not exist: '.$backupDir);
+        }
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($backupDir, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($iterator as $fileInfo) {
+            $relative = substr(str_replace('\\', '/', $fileInfo->getPathname()), strlen($backupDir) + 1);
+            $livePath = $this->absolutePath.'/'.$relative;
+
+            if ($fileInfo->isFile()) {
+                if (!$this->installFile($fileInfo->getPathname(), $livePath)) {
+                    $this->fail(self::ERROR_ROLLBACK, 'Failed to restore: '.$livePath);
+                }
+            }
+        }
+    }
+
     // Re-check every path before touching disk
     protected function normalizeFileList(array $relativeFiles) : array
     {

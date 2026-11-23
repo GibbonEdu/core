@@ -116,6 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
 
         $settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
+        $settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', $updater->versionCode);
         $return = 'success0';
     } catch (\Throwable $e) {
         // Save the failure stage for the update page message

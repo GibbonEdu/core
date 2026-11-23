@@ -123,6 +123,53 @@ class VersionCatalog
     }
 
     /**
+     * Get the release entry for a specific version, or null if not found.
+     *
+     * @param string $version
+     * @return array|null
+     */
+    public function getRelease(string $version) : ?array
+    {
+        $version = trim($version);
+        if ($version == '') {
+            return null;
+        }
+
+        $catalog = $this->fetch($version);
+        if (empty($catalog)) {
+            return null;
+        }
+
+        $entry = $catalog[$version] ?? null;
+        if (!is_array($entry)) {
+            return null;
+        }
+
+        $entryVersion = trim((string) ($entry['version'] ?? $version));
+        if ($entryVersion == '') {
+            return null;
+        }
+
+        $status = strtolower(trim($entry['status'] ?? ''));
+        if (!in_array($status, ['legacy', 'current', 'development'])) {
+            return null;
+        }
+
+        $checksum = trim($entry['checksum'] ?? '');
+        $filePath = trim($entry['filePath'] ?? '');
+        if ($checksum == '' || $filePath == '' || !$this->isHostAllowed($filePath)) {
+            return null;
+        }
+
+        $entry['version'] = $entryVersion;
+        $entry['checksum'] = $checksum;
+        $entry['filePath'] = $filePath;
+        $entry['status'] = $status;
+
+        return $entry;
+    }
+
+    /**
      * Next downloadable release after $currentVersion, or null if none.
      *
      * @param string $currentVersion

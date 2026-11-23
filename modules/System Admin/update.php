@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Database\Updater;
 use Gibbon\Tables\DataTable;
 use Gibbon\Database\Migrations\EngineUpdate;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Filesystem\VersionCatalog;
 
 //Module includes
@@ -64,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     $cuttingEdge = $updater->isCuttingEdge();
     $updatePath = '';
     $nextRelease = false;
+    $backupVersion = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'fileUpdaterBackup');
 
     // $table->setDescription(__('This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'));
 
@@ -100,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         // echo $form->getOutput();
     } else {
         $nextRelease = $versionCatalog->getNextRelease($updater->versionCode, $cuttingEdge);
-        $updatePath = $session->get('absoluteURL').'/modules/System Admin/fileUpdateProcess.php';
+        $updatePath = $session->get('absoluteURL').'/modules/System Admin/updateFilesProcess.php';
     }
 
     // Updater version number and status overview
@@ -155,33 +157,32 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
             $col = $form->addRow()->setClass('border bg-gray-50 rounded-lg shadow-sm p-6 mb-4')->addColumn();
 
-            $versionNumber = trim($version, 'v');
             $versionTag = $releaseDate = '';
 
-            if (!empty($versions[$versionNumber])) {
-                if (version_compare($versionNumber, $updater->versionCode, '>')) {
+            if (!empty($versions[$version])) {
+                if (version_compare($version, $updater->versionCode, '>')) {
                     $versionTag = Format::tag(__('Update Available'), 'message ml-4 align-middle');
                 }
 
-                if (version_compare($versionNumber, $updater->versionCode, '=')) {
+                if (version_compare($version, $updater->versionCode, '=')) {
                     $versionTag = !empty($nextRelease) 
                         ? Format::tag(__('Update Required'), 'warning ml-4 align-middle')
                         : Format::tag(__('Current'), 'success ml-4 align-middle');
                 }
 
-                if ($versions[$versionNumber]['status'] == 'Development' && $cuttingEdge) {
+                if ($versions[$version]['status'] == 'Development' && $cuttingEdge) {
                     $versionTag .= Format::tag('Cutting Edge', 'warning ml-4 align-middle');
                 }
 
-                $releaseDate = !empty($versions[$versionNumber]['releaseDate'])
-                    ? __('Released On {date}', ['date' => $versions[$versionNumber]['releaseDate']]) 
+                $releaseDate = !empty($versions[$version]['releaseDate'])
+                    ? __('Released On {date}', ['date' => $versions[$version]['releaseDate']]) 
                     : '';
             }
 
             $row = $col->addColumn()->setClass('flex justify-between items-center');
-            $row->addContent($version.$versionTag)->addClass('text-2xl font-mono');
+            $row->addContent('v'.$version.$versionTag)->addClass('text-2xl font-mono');
 
-            if ($updateRequired > 0 && $updater->versionCode == $versionNumber) {
+            if ($updateRequired > 0 && $updater->versionCode == $version) {
                 if ($cuttingEdge && $updater->cuttingEdgeMaxLine > $updater->cuttingEdgeCodeLine) {
                     $row->addSubmit(__('Update Line {code} to Line {max}', [
                         'code' => $updater->cuttingEdgeCodeLine,
@@ -191,20 +192,25 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                     $row->addSubmit(__('Run Database Update'))->addClass('text-sm text-gray-600');
                 }
             } 
-            elseif (!empty($nextRelease) && $nextRelease['version'] == $versionNumber) {
+            elseif (!empty($nextRelease) && $nextRelease['version'] == $version) {
                 $row->addSubmit(__('Update to {version}', ['version' => $version]))->addClass('text-sm text-gray-600');
             }
-            else if (version_compare($versionNumber, $updater->versionCode, '>'))
+            else if (version_compare($version, $updater->versionCode, '>'))
             {
                $row->addButton(__('Update Available', ['version' => $version]))->addClass('text-sm text-gray-600')->setAttribute('disabled', 'disabled')->setAttribute('title', __('Update earlier versions first')); 
             }
-            else if ($versionNumber == $updater->versionCode) {
+            else if ($version == $updater->versionCode) {
                 $row->addButton(__('Installed', ['version' => $version]))->addClass('text-sm text-gray-600')->setAttribute('disabled', 'disabled'); 
+            }
+            else if ($backupVersion == $version)
+            {
+                $restorePath = $session->get('absoluteURL').'/modules/System Admin/updateRestoreProcess.php';
+                $row->addSubmit(__('Downgrade to {version}', ['version' => $version]))->addClass(' rounded-md')->setAttribute('onclick', 'document.getElementById("fileUpdate").action="'.$restorePath.'";' )->setColor('gray');
             }
 
             $col->onlyIf($releaseDate)->addContent($releaseDate)->addClass('mt-1 text-sm text-gray-600');
 
-            if (version_compare($versionNumber, $updater->versionCode, '>')) {
+            if (version_compare($version, $updater->versionCode, '>') && $nextRelease['version'] != $version) {
                 $col = $col->addDetails()->summary(__('View Changelog'), 'text-gray-600 text-sm')->setClass('mt-2 -mb-2')->addColumn()->setClass('flex justify-between items-start');
             }
 
