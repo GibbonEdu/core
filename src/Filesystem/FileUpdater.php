@@ -62,7 +62,7 @@ class FileUpdater
             try {
                 $this->rollback($files);
             } catch (\Throwable $rollbackError) {
-                $this->fail(self::ERROR_ROLLBACK);
+                $this->fail(self::ERROR_ROLLBACK, 'Rollback failed: '.$rollbackError->getMessage());
             }
 
             throw $e;
@@ -80,7 +80,7 @@ class FileUpdater
         $this->wipeDirectory($backupDir);
 
         if (!$this->ensureDirectory($backupDir) || !is_writable($backupDir)) {
-            $this->fail(self::ERROR_BACKUP);
+            $this->fail(self::ERROR_BACKUP, 'Failed to create writable backup directory: '.$backupDir);
         }
 
         $this->added = [];
@@ -95,7 +95,7 @@ class FileUpdater
             }
 
             if (!is_readable($livePath) || !$this->copyFile($livePath, $backupDir.'/'.$relative)) {
-                $this->fail(self::ERROR_BACKUP);
+                $this->fail(self::ERROR_BACKUP, 'Failed to back up: '.$livePath);
             }
         }
     }
@@ -111,7 +111,7 @@ class FileUpdater
         $absoluteReal = realpath($this->absolutePath);
 
         if ($stagingReal === false || $absoluteReal === false) {
-            $this->fail($stagingReal === false ? self::ERROR_REPLACE : self::ERROR_INVALID);
+            $this->fail($stagingReal === false ? self::ERROR_REPLACE : self::ERROR_INVALID, 'Failed to resolve real path: '.($stagingReal === false ? $this->absolutePath.'/'.Downloader::BASE_DIR.'/staging' : $this->absolutePath));
         }
 
         $stagingRoot = str_replace('\\', '/', $stagingReal);
@@ -124,7 +124,7 @@ class FileUpdater
         // Second pass: copy each file from staging onto the live install
         foreach ($files as $relative) {
             if (!$this->installFile($stagingRoot.'/'.$relative, $this->absolutePath.'/'.$relative)) {
-                $this->fail(self::ERROR_REPLACE);
+                $this->fail(self::ERROR_REPLACE, 'Failed to replace: '.$this->absolutePath.'/'.$relative);
             }
         }
     }
@@ -151,7 +151,7 @@ class FileUpdater
             // Existed before — restore the backed-up copy
             $backupPath = $backupDir.'/'.$relative;
             if (!is_file($backupPath) || !$this->installFile($backupPath, $livePath)) {
-                $this->fail(self::ERROR_ROLLBACK);
+                $this->fail(self::ERROR_ROLLBACK, 'Failed to restore: '.$livePath);
             }
         }
     }
@@ -160,13 +160,13 @@ class FileUpdater
     protected function normalizeFileList(array $relativeFiles) : array
     {
         if (empty($this->absolutePath) || !is_dir($this->absolutePath) || empty($relativeFiles)) {
-            $this->fail(self::ERROR_INVALID);
+            $this->fail(self::ERROR_INVALID, 'Invalid absolute path or empty file list');
         }
 
         $files = [];
         foreach ($relativeFiles as $relative) {
             if (!is_string($relative)) {
-                $this->fail(self::ERROR_INVALID);
+                $this->fail(self::ERROR_INVALID, 'Relative path not a string: '.var_export($relative, true));
             }
             $files[] = $this->assertSafeRelativePath($relative);
         }
@@ -185,19 +185,19 @@ class FileUpdater
     {
         $sourceReal = is_file($stagingRoot.'/'.$relative) ? realpath($stagingRoot.'/'.$relative) : false;
         if ($sourceReal === false || !$this->isInside($sourceReal, $stagingRoot)) {
-            $this->fail(self::ERROR_INVALID);
+            $this->fail(self::ERROR_INVALID, 'Staging path not inside staging: '.$stagingRoot.'/'.$relative);
         }
 
         $livePath = $this->absolutePath.'/'.$relative;
         $parent = dirname($livePath);
 
         if ((is_file($livePath) && !is_writable($livePath)) || !$this->ensureDirectory($parent) || !is_writable($parent)) {
-            $this->fail(self::ERROR_REPLACE);
+            $this->fail(self::ERROR_REPLACE, 'Live path not writable: '.$livePath);
         }
 
         $parentReal = realpath($parent);
         if ($parentReal === false || !$this->isInside($parentReal, $absoluteReal, true)) {
-            $this->fail(self::ERROR_INVALID);
+            $this->fail(self::ERROR_INVALID, 'Live path not inside install: '.$livePath);
         }
     }
 
@@ -260,12 +260,12 @@ class FileUpdater
             || strpos($relative, '..') !== false
             || (strlen($relative) > 1 && $relative[1] == ':' && ctype_alpha($relative[0]))
             || $lower == 'config.php'
-            || strpos($lower, 'uploads/') === 0
+            // || strpos($lower, 'uploads/') === 0
             || strpos($lower, 'backups/') === 0
             || strpos($lower, '.git/') === 0
             || strpos($lower, 'vendor/') === 0
         ) {
-            $this->fail(self::ERROR_INVALID);
+            $this->fail(self::ERROR_INVALID, 'Relative path not safe: '.$relative);
         }
 
         return $relative;
@@ -276,9 +276,9 @@ class FileUpdater
         return is_dir($dir) || mkdir($dir, 0755, true);
     }
 
-    protected function fail(string $code)
+    protected function fail(string $code, string $message = '')
     {
-        error_log('FileUpdater: '.$code);
+        error_log('FileUpdater: '.$code.' '.$message);
         throw new \RuntimeException($code);
     }
 

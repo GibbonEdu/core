@@ -39,6 +39,7 @@ class VersionCatalog
         'gibbonedu.org',
         'www.gibbonedu.org',
         'github.com',
+        'codeload.github.com',
     ];
 
     protected $session;

@@ -182,7 +182,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             $row->addContent($version.$versionTag)->addClass('text-2xl font-mono');
 
             if ($updateRequired > 0 && $updater->versionCode == $versionNumber) {
-                $row->addSubmit(__('Run Database Update'))->addClass('text-sm text-gray-600');
+                if ($cuttingEdge && $updater->cuttingEdgeMaxLine > $updater->cuttingEdgeCodeLine) {
+                    $row->addSubmit(__('Update Line {code} to Line {max}', [
+                        'code' => $updater->cuttingEdgeCodeLine,
+                        'max' => $updater->cuttingEdgeMaxLine]
+                    ))->addClass('text-sm text-gray-600');
+                } else {
+                    $row->addSubmit(__('Run Database Update'))->addClass('text-sm text-gray-600');
+                }
             } 
             elseif (!empty($nextRelease) && $nextRelease['version'] == $versionNumber) {
                 $row->addSubmit(__('Update to {version}', ['version' => $version]))->addClass('text-sm text-gray-600');
@@ -196,6 +203,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             }
 
             $col->onlyIf($releaseDate)->addContent($releaseDate)->addClass('mt-1 text-sm text-gray-600');
+
+            if (version_compare($versionNumber, $updater->versionCode, '>')) {
+                $col = $col->addDetails()->summary(__('View Changelog'), 'text-gray-600 text-sm')->setClass('mt-2 -mb-2')->addColumn()->setClass('flex justify-between items-start');
+            }
 
             foreach ($categories as $category => $changes) {
                 $col->addContent($category)->addClass('text-base font-bold mt-6');

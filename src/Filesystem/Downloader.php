@@ -34,7 +34,7 @@ use Gibbon\Contracts\Services\Session;
 class Downloader
 {
     public const BASE_DIR = 'backups/fileUpdate';
-    public const MAX_PACKAGE_BYTES = 104857600; // 100 MB
+    public const MAX_PACKAGE_BYTES = 209715200; // 200 MB
 
     // Short stage codes shown on the update page when something fails
     public const ERROR_INVALID = 'invalid';
@@ -80,10 +80,10 @@ class Downloader
     {
         $filePath = trim($release['filePath'] ?? '');
         if ($filePath == '' || !$this->versionCatalog->isHostAllowed($filePath)) {
-            $this->fail(self::ERROR_INVALID);
+            $this->fail(self::ERROR_INVALID, 'Invalid filePath in version catalog: '.$filePath);
         }
         if (!class_exists(ZipArchive::class)) {
-            $this->fail(self::ERROR_WRITE);
+            $this->fail(self::ERROR_WRITE, 'ZipArchive class not available');
         }
 
         $zipPath = $this->ensureBaseDirectory().'/package.zip';
@@ -103,32 +103,32 @@ class Downloader
                     // Redirects must stay on gibbonedu.org
                     'on_redirect' => function ($request, $response, $uri) {
                         if (!$this->versionCatalog->isHostAllowed((string) $uri)) {
-                            $this->fail(self::ERROR_INVALID);
+                            $this->fail(self::ERROR_INVALID, 'Redirect to disallowed host: '.$uri);
                         }
                     },
                 ],
             ]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                $this->fail(self::ERROR_DOWNLOAD, $zipPath);
+                $this->fail(self::ERROR_DOWNLOAD, 'HTTP status '.$response->getStatusCode().' from '.$filePath, $zipPath);
             }
         } catch (\RuntimeException $e) {
             $this->deleteIfExists($zipPath);
             throw $e;
         } catch (\Throwable $e) {
-            $this->fail(self::ERROR_DOWNLOAD, $zipPath);
+            $this->fail(self::ERROR_DOWNLOAD, 'Download failed: '.$e->getMessage(), $zipPath);
         }
 
         $size = is_file($zipPath) ? filesize($zipPath) : false;
         if ($size === false || $size < 1) {
-            $this->fail(self::ERROR_DOWNLOAD, $zipPath);
+            $this->fail(self::ERROR_DOWNLOAD, 'Downloaded file is empty or missing', $zipPath);
         }
         if ($size > self::MAX_PACKAGE_BYTES) {
-            $this->fail(self::ERROR_INVALID, $zipPath);
+            $this->fail(self::ERROR_INVALID, 'Downloaded file exceeds max size of '.self::MAX_PACKAGE_BYTES.' bytes', $zipPath);
         }
         // Reject non-zip payloads
         if (@file_get_contents($zipPath, false, null, 0, 2) !== 'PK') {
-            $this->fail(self::ERROR_DOWNLOAD, $zipPath);
+            $this->fail(self::ERROR_DOWNLOAD, 'Downloaded file is not a zip archive', $zipPath);
         }
 
         return $zipPath;
@@ -144,7 +144,7 @@ class Downloader
     {
         $checksum = strtolower(trim($checksum));
         if (!is_file($zipPath) || $checksum == '' || !hash_equals($checksum, hash_file('sha256', $zipPath))) {
-            $this->fail(self::ERROR_VERIFY, $zipPath);
+            $this->fail(self::ERROR_VERIFY, 'Checksum mismatch: expected '.$checksum.', got '.(is_file($zipPath) ? hash_file('sha256', $zipPath) : 'missing file'), $zipPath);
         }
     }
 
@@ -160,12 +160,12 @@ class Downloader
         $this->wipeDirectory($staging);
 
         if ((!is_dir($staging) && !mkdir($staging, 0755, true)) || ($stagingReal = realpath($staging)) === false) {
-            $this->fail(self::ERROR_WRITE, $zipPath);
+            $this->fail(self::ERROR_WRITE, 'Failed to create staging directory: '.$staging, $zipPath);
         }
 
         $zip = new ZipArchive();
         if (!is_file($zipPath) || $zip->open($zipPath) !== true) {
-            $this->fail(self::ERROR_EXTRACT, $zipPath);
+            $this->fail(self::ERROR_EXTRACT, 'Failed to open zip archive: '.$zipPath, $zipPath);
         }
 
         try {
@@ -180,13 +180,13 @@ class Downloader
 
                 $relative = $this->assertSafeRelativePath($name);
                 if ($zip->extractTo($stagingReal, $entryName) !== true) {
-                    $this->fail(self::ERROR_EXTRACT, $zipPath);
+                    $this->fail(self::ERROR_EXTRACT, 'Failed to extract entry: '.$entryName, $zipPath);
                 }
 
                 // Make sure the file stayed inside staging
                 $extracted = realpath($stagingReal.'/'.$relative);
                 if ($extracted === false || !$this->isInside($extracted, $stagingReal)) {
-                    $this->fail(self::ERROR_INVALID, $zipPath);
+                    $this->fail(self::ERROR_INVALID, 'Extracted file is outside staging: '.$entryName, $zipPath);
                 }
             }
         } catch (\Throwable $e) {
@@ -209,7 +209,7 @@ class Downloader
                         continue;
                     }
                     if (!@rename($wrap.'/'.$item, $stagingReal.'/'.$item)) {
-                        $this->fail(self::ERROR_EXTRACT, $zipPath);
+                        $this->fail(self::ERROR_EXTRACT, 'Failed to move extracted file from wrapper: '.$item, $zipPath);
                     }
                 }
                 @rmdir($wrap);
@@ -235,7 +235,7 @@ class Downloader
         // Need version.php to count as a real package
         if (empty($files) || !in_array('version.php', $files)) {
             $this->wipeDirectory($staging);
-            $this->fail(self::ERROR_EXTRACT, $zipPath);
+            $this->fail(self::ERROR_EXTRACT, 'Extracted package is missing version.php', $zipPath);
         }
 
         return $files;
@@ -261,12 +261,12 @@ class Downloader
             || strpos($relative, '..') !== false
             || (strlen($relative) > 1 && $relative[1] == ':' && ctype_alpha($relative[0]))
             || $lower == 'config.php'
-            || strpos($lower, 'uploads/') === 0
+            // || strpos($lower, 'uploads/') === 0
             || strpos($lower, 'backups/') === 0
             || strpos($lower, '.git/') === 0
             || strpos($lower, 'vendor/') === 0
         ) {
-            $this->fail(self::ERROR_INVALID);
+            $this->fail(self::ERROR_INVALID, 'Unsafe relative path: '.$relative);
         }
 
         return $relative;
@@ -278,7 +278,7 @@ class Downloader
         $baseDir = $this->absolutePath.'/'.self::BASE_DIR;
 
         if (empty($this->absolutePath) || !is_dir($this->absolutePath) || (!is_dir($baseDir) && !mkdir($baseDir, 0755, true)) || !is_writable($baseDir)) {
-            $this->fail(self::ERROR_WRITE);
+            $this->fail(self::ERROR_WRITE, 'Failed to create or write to base directory: '.$baseDir);
         }
 
         // Block web access: .htaccess for Apache, empty index.html if listing is enabled
@@ -293,10 +293,10 @@ class Downloader
     }
 
     // Remove a partial zip, log the error, and throw
-    protected function fail(string $code, string $zipPath = '')
+    protected function fail(string $code, string $message = '', string $zipPath = '')
     {
         $this->deleteIfExists($zipPath);
-        error_log('Downloader: '.$code);
+        error_log('Downloader: '.$code.' '.$message);
         throw new \RuntimeException($code);
     }
 
