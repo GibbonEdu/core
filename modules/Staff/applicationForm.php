@@ -72,7 +72,8 @@ if ($proceed == false) {
 
     $returnExtra = '';
     $id = $_GET['id'] ?? '';
-    if (is_string($id) && preg_match('/^[0-9]+(, [0-9]+)*$/', $id)) {
+    if (is_string($id) && !empty($id)) {
+        $id = preg_replace('/[^0-9,\s]/', '', $id);
         $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number(s):').' <b><u>'.$id.'</b></u>.';
     }
     if ($session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
