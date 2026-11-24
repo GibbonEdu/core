@@ -42,6 +42,7 @@ class UpdateForm
     private Updater $updater;
     private VersionCatalog $versionCatalog;
     private string $backupVersion;
+    private bool $isUpdateActive = false;
 
     public function __construct(Session $session, SettingGateway $settingGateway)
     {
@@ -52,12 +53,14 @@ class UpdateForm
     /**
      * @param Updater $updater
      * @param VersionCatalog $versionCatalog
+     * @param bool $isUpdateActive Whether a background file or database update is active.
      * @return Form
      */
-    public function createForm(Updater $updater, VersionCatalog $versionCatalog): Form
+    public function createForm(Updater $updater, VersionCatalog $versionCatalog, bool $isUpdateActive = false): Form
     {
         $this->updater = $updater;
         $this->versionCatalog = $versionCatalog;
+        $this->isUpdateActive = $isUpdateActive;
 
         $versions = $versionCatalog->fetch($updater->versionCode);
         $changelog = $versionCatalog->getChangeLogFromFile();
@@ -166,6 +169,16 @@ class UpdateForm
      */
     private function addReleaseAction(Row $row, string $version, ?array $nextRelease, bool $updateRequired, bool $cuttingEdge): void
     {
+        $isBackgroundEligible = $this->isDatabaseUpdateRelease($version, $updateRequired)
+            || $this->isNextRelease($version, $nextRelease);
+
+        if ($this->isUpdateActive && $isBackgroundEligible) {
+            $row->addButton(__('Update in Progress'))
+                ->addClass('text-sm text-gray-600')
+                ->setAttribute('disabled', 'disabled');
+            return;
+        }
+
         if ($this->isDatabaseUpdateRelease($version, $updateRequired)) {
             $this->addDatabaseUpdateSubmit($row, $cuttingEdge);
             return;

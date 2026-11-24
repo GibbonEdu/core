@@ -73,6 +73,66 @@ class UpdateFormTest extends TestCase
         $this->assertStringNotContainsString('v33.0.00', $output);
     }
 
+    public function testSuppressesFileUpdateSubmissionWhileBackgroundUpdateIsActive(): void
+    {
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '30.0.00';
+        $updater->cuttingEdgeCodeLine = 0;
+        $updater->cuttingEdgeMaxLine = 0;
+        $updater->method('isCuttingEdge')->willReturn(false);
+        $updater->method('isUpdateRequired')->willReturn(0);
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('fetch')->willReturn([
+            '30.0.00' => ['status' => 'Current'],
+            '31.0.00' => ['status' => 'Current'],
+        ]);
+        $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
+        $versionCatalog->method('getNextRelease')->willReturn(['version' => '31.0.00']);
+        $versionCatalog->method('getCatalog')->willReturn([
+            '29.0.00' => ['changelog' => []],
+            '30.0.00' => ['status' => 'Current', 'changelog' => []],
+            '31.0.00' => ['status' => 'Current', 'changelog' => []],
+        ]);
+
+        $form = $this->createUpdateForm($updater, $versionCatalog, '29.0.00')
+            ->createForm($updater, $versionCatalog, true);
+
+        $output = $form->getOutput();
+
+        $this->assertStringNotContainsString('Update to 31.0.00', $output);
+        $this->assertStringContainsString('Update in Progress', $output);
+        $this->assertStringContainsString('Downgrade to 29.0.00', $output);
+        $this->assertStringContainsString('updateRestoreProcess.php', $output);
+    }
+
+    public function testSuppressesDatabaseUpdateSubmissionWhileBackgroundUpdateIsActive(): void
+    {
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '30.0.00';
+        $updater->cuttingEdgeCodeLine = 0;
+        $updater->cuttingEdgeMaxLine = 0;
+        $updater->method('isCuttingEdge')->willReturn(false);
+        $updater->method('isUpdateRequired')->willReturn(1);
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('fetch')->willReturn([
+            '30.0.00' => ['status' => 'Current'],
+        ]);
+        $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
+        $versionCatalog->method('getCatalog')->willReturn([
+            '30.0.00' => ['status' => 'Current', 'changelog' => []],
+        ]);
+
+        $form = $this->createUpdateForm($updater, $versionCatalog)
+            ->createForm($updater, $versionCatalog, true);
+
+        $output = $form->getOutput();
+
+        $this->assertStringNotContainsString('Run Database Update', $output);
+        $this->assertStringContainsString('Update in Progress', $output);
+    }
+
     public function testDisplaysCuttingEdgeDatabaseUpdate(): void
     {
         $updater = $this->createMock(Updater::class);

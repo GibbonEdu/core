@@ -1,0 +1,40 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div id="updateProgress" class="w-full mb-2 border rounded-lg shadow-sm {{ isFailure ? 'border-red-300 bg-red-100' : ' bg-gray-50' }} px-6 py-5 font-sans shadow"{% if isPolling %} hx-get="{{ pollUrl }}" hx-trigger="every 1s" hx-target="this" hx-swap="outerHTML"{% endif %}>
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <h2 class="text-base font-semibold {{ isFailure ? 'text-red-800' : 'text-gray-800' }}">
+                {{ heading }}
+            </h2>
+            <p class="mt-1 text-sm {{ isFailure ? 'text-red-700' : 'text-gray-700' }}" role="status" aria-live="polite">
+                {{ message }}
+                {% if lifecycleLabel %}
+                    {{ lifecycleLabel }}
+                {% endif %}
+                {% if typeLabel %}
+                    {% if lifecycleLabel %} · {% endif %}{{ typeLabel }}
+                {% endif %}
+                {% if stageLabel %}
+                    {% if lifecycleLabel or typeLabel %} · {% endif %}{{ stageLabel }}
+                {% endif %}
+            </p>
+        </div>
+        
+        <span class="text-sm font-semibold {{ isFailure ? 'text-red-800' : 'text-gray-800' }}">{{ progress|default(0) }}%</span>
+       
+    </div>
+
+
+    <div class="mt-4 h-4 w-full overflow-hidden rounded-full bg-gray-200" role="progressbar" aria-label="{{ progressLabel }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress }}">
+        <div class="h-full rounded-full {{ isFailure ? 'bg-red-600' : 'bg-blue-500' }}" style="width: {{ progress|default(0) }}%"></div>
+    </div>
+
+</div>

@@ -66,14 +66,20 @@ class BackgroundProcessor implements ContainerAwareInterface
 
     /**
      * Starts a new background process with a given class name. If the exec command
-     * fails, it falls back to running the process immediately in the current runtime.
+     * fails, it can fall back to running the process immediately in the current runtime.
      *
      * @param   string  $processClassName
      * @param   string  $processMethodName
      * @param   array   $arguments
-     * @return  bool    Process was successfully started.
+     * @param   bool    $allowSynchronousFallback
+     * @return  int     The process ID.
      */
-    public function startProcess($processClassName, $processMethodName, array $arguments = []) : int
+    public function startProcess(
+        $processClassName,
+        $processMethodName,
+        array $arguments = [],
+        bool $allowSynchronousFallback = true
+    ) : int
     {
         $phpFile = $this->session->get('absolutePath').'/cli/system_backgroundProcessor.php';
         $phpOutput = '/dev/null';
@@ -84,6 +90,10 @@ class BackgroundProcessor implements ContainerAwareInterface
 
         if (empty($processClassName) || !is_array($arguments)) {
             throw new \InvalidArgumentException();
+        }
+
+        if ($this->session->get('backgroundProcessing') == 'N' && !$allowSynchronousFallback) {
+            throw new \RuntimeException('Background processing is disabled.');
         }
 
         // Create the data to be serialized and passed to the process
@@ -136,6 +146,11 @@ class BackgroundProcessor implements ContainerAwareInterface
                 'pID' => $pID ?? 0,
             ] + $processData);
         } catch (\Exception $e) {
+            if (!$allowSynchronousFallback) {
+                $this->handleException($processID, $processData, $e);
+                throw $e;
+            }
+
             // If we can't run the process in the background, still try to run it in this thread.
             $this->runProcess($processID, $processData['key']);
         }
@@ -206,8 +221,25 @@ class BackgroundProcessor implements ContainerAwareInterface
 
         $processData = $this->logGateway->getLogData(is_array($log) ? ($log['serialisedArray'] ?? '') : '');
 
-        if (empty($processData)) return false;
-        if (empty($processData['class'])) return false;
+        if (empty($processData)) return [];
+        if (empty($processData['class'])) return [];
+
+        return $processData;
+    }
+
+    public function getProcessByName(string $processName) : array
+    {
+        $log = $this->logGateway
+            ->selectLogsByModuleAndTitle(null, 'Background Process - '.$processName)
+            ->fetch();
+
+        if (empty($log)) return [];
+
+        $processData = $this->logGateway->getLogData($log['serialisedArray'] ?? '');
+        $processData['gibbonLogID'] = $log['gibbonLogID'] ?? null;
+
+        if (empty($processData)) return [];
+        if (empty($processData['class'])) return [];
 
         return $processData;
     }

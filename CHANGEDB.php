@@ -1073,4 +1073,6 @@ $sql[$count][0] = '30.0.04';
 $sql[$count][1] = "
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdater', 'File Updater Status', 'Tracks the current stage of the file updater.', 'idle');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdaterBackup', 'File Updater Backup', 'Version number of the previous installed version.', '30.0.03');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'backgroundUpdateProgress', 'Background Update Progress', '', '');end
+
 ";
