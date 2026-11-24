@@ -93,7 +93,7 @@ fclose($lock);
 
 try {
     $container->get(SystemUpdateProgress::class)->begin('file');
-    $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', ['file'], false);
+    $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', ['file'], false);
 } catch (\Throwable $error) {
     error_log('updateFilesProcess background start failed: '.$error->getMessage());
 
@@ -119,6 +119,14 @@ try {
     $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
 } catch (\Throwable $error) {
     error_log('updateFilesProcess session refresh failed: '.$error->getMessage());
+}
+
+if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {
+    header('HX-Trigger: '.json_encode([
+        'backgroundUpdateStarted' => ['gibbonLogID' => $gibbonLogID],
+    ]));
+    http_response_code(204);
+    exit;
 }
 
 header("Location: {$URL}");

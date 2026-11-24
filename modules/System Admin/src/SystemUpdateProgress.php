@@ -47,8 +47,46 @@ final class SystemUpdateProgress
         'progress' => null,
     ];
 
+    /** @var array<string, string> */
+    private array $statusLabels;
+
+    /** @var array<string, string> */
+    private array $typeLabels;
+
+    /** @var array<string, string> */
+    private array $stageLabels;
+
     public function __construct(private SettingGateway $settingGateway)
     {
+        $this->statusLabels = [
+            'working' => __('Running'),
+            'failed'  => __('Failed'),
+        ];
+        $this->typeLabels = [
+            'file'     => __('System update in progress.'),
+            'database' => __('Database update in progress.'),
+        ];
+        $this->stageLabels = [
+            'preparing'   => __('Preparing update…'),
+            'downloading' => __('Downloading update…'),
+            'installing'  => __('Installing update…'),
+            'finalizing'  => __('Finalizing update…'),
+        ];
+    }
+
+    public function getStatusLabel(?string $status): ?string
+    {
+        return $status === null ? null : ($this->statusLabels[$status] ?? null);
+    }
+
+    public function getTypeLabel(?string $type): ?string
+    {
+        return $type === null ? null : ($this->typeLabels[$type] ?? null);
+    }
+
+    public function getStageLabel(?string $stage): ?string
+    {
+        return $stage === null ? null : ($this->stageLabels[$stage] ?? null);
     }
 
     /**

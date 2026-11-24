@@ -78,7 +78,7 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
 
     try {
         $container->get(SystemUpdateProgress::class)->begin('database');
-        $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', [$type], false);
+        $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', [$type], false);
     } catch (\Throwable $error) {
         error_log('updateProcess background start failed: '.$error->getMessage());
 
@@ -104,6 +104,14 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
         $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
     } catch (\Throwable $error) {
         error_log('updateProcess session refresh failed: '.$error->getMessage());
+    }
+
+    if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {
+        header('HX-Trigger: '.json_encode([
+            'backgroundUpdateStarted' => ['gibbonLogID' => $gibbonLogID],
+        ]));
+        http_response_code(204);
+        exit;
     }
 
     header("Location: {$URL}");

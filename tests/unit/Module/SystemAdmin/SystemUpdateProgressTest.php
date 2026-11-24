@@ -57,6 +57,18 @@ class SystemUpdateProgressTest extends TestCase
         (new SystemUpdateProgress($settingGateway))->begin('file');
     }
 
+    public function testLabelAccessorsReturnTranslatedLabelsAndNullForUnknownCodes(): void
+    {
+        $progress = new SystemUpdateProgress($this->createMock(SettingGateway::class));
+
+        $this->assertSame(__('Running'), $progress->getStatusLabel('working'));
+        $this->assertSame(__('Database update in progress.'), $progress->getTypeLabel('database'));
+        $this->assertSame(__('Installing update…'), $progress->getStageLabel('installing'));
+        $this->assertNull($progress->getStatusLabel('unknown'));
+        $this->assertNull($progress->getTypeLabel(null));
+        $this->assertNull($progress->getStageLabel('unknown'));
+    }
+
     public function testUpdateWritesTheCurrentTypeAndValidStageSnapshot(): void
     {
         $settingGateway = $this->createMock(SettingGateway::class);

@@ -185,8 +185,12 @@ class UpdateForm
         }
 
         if ($this->isNextRelease($version, $nextRelease)) {
-            $row->addSubmit(__('Update to {version}', ['version' => $version]))
+            $submit = $row->addSubmit(__('Update to {version}', ['version' => $version]))
                 ->addClass('text-sm text-gray-600');
+            $this->enableBackgroundSubmission(
+                $submit,
+                $this->session->get('absoluteURL').'/modules/System Admin/updateFilesProcess.php'
+            );
             return;
         }
 
@@ -227,14 +231,37 @@ class UpdateForm
             && $this->updater->cuttingEdgeMaxLine > $this->updater->cuttingEdgeCodeLine;
 
         if ($hasPendingCuttingEdgeLines) {
-            $row->addSubmit(__('Update Database Line {code} to Line {max}', [
+            $submit = $row->addSubmit(__('Update Database Line {code} to Line {max}', [
                 'code' => $this->updater->cuttingEdgeCodeLine,
                 'max' => $this->updater->cuttingEdgeMaxLine,
             ]))->addClass('text-sm text-gray-600');
+            $this->enableBackgroundSubmission(
+                $submit,
+                $this->session->get('absoluteURL').'/modules/System Admin/updateProcess.php'
+            );
             return;
         }
 
-        $row->addSubmit(__('Run Database Update'))->addClass('text-sm text-gray-600');
+        $submit = $row->addSubmit(__('Run Database Update'))->addClass('text-sm text-gray-600');
+        $this->enableBackgroundSubmission(
+            $submit,
+            $this->session->get('absoluteURL').'/modules/System Admin/updateProcess.php'
+        );
+    }
+
+    /**
+     * Configure only background-eligible update buttons for an HTMX submission.
+     *
+     * Restore and InnoDB controls keep their synchronous native form behavior.
+     *
+     * @param object $submit
+     */
+    private function enableBackgroundSubmission(object $submit, string $action): void
+    {
+        $submit
+            ->setAttribute('hx-post', $action)
+            ->setAttribute('hx-include', 'closest form')
+            ->setAttribute('hx-swap', 'none');
     }
 
     /**

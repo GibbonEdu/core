@@ -19,8 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-declare(strict_types=1);
-
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\View\View;
@@ -37,15 +35,14 @@ $unavailableMessage = __('Background updates are unavailable on this system.');
 
 $renderUnavailable = static function () use ($view, $unavailableMessage): void {
     echo $view->fetchFromTemplate('updateProgress.twig.html', [
+        'isDormant'      => false,
         'isPolling'      => false,
         'isFailure'      => true,
-        'heading'        => __('System update'),
         'lifecycleLabel' => '',
         'typeLabel'      => '',
         'stageLabel'     => '',
         'message'        => $unavailableMessage,
         'progress'       => null,
-        'progressLabel'  => __('Update progress'),
     ]);
 };
 
@@ -58,25 +55,19 @@ if (!is_string($gibbonLogID) || preg_match('/^[0-9]+$/D', $gibbonLogID) !== 1) {
 // gibbonLogID is an UNSIGNED INT with a ZEROFILL display width. Normalize
 // the page-emitted value before its direct, exact gibbonLog lookup.
 $gibbonLogID = ltrim($gibbonLogID, '0');
-if (
-    $gibbonLogID === ''
-    || strlen($gibbonLogID) > 10
-    || (strlen($gibbonLogID) === 10 && strcmp($gibbonLogID, '4294967295') > 0)
-) {
+if (empty($gibbonLogID) || !ctype_digit($gibbonLogID)) {
     $renderUnavailable();
     exit;
 }
 
 $gibbonLog = $container->get(LogGateway::class)->getByID($gibbonLogID, ['gibbonLogID', 'title']);
-if (
-    ($gibbonLog['gibbonLogID'] ?? null) != $gibbonLogID
-    || ($gibbonLog['title'] ?? null) !== 'Background Process - SystemUpdateProcess'
-) {
+if (empty($gibbonLog) || $gibbonLog['gibbonLogID'] != $gibbonLogID || $gibbonLog['title'] !== 'Background Process - SystemUpdateProcess') {
     $renderUnavailable();
     exit;
 }
 
-$progressSnapshot = $container->get(SystemUpdateProgress::class)->get();
+$progressService = $container->get(SystemUpdateProgress::class);
+$progressSnapshot = $progressService->get();
 $snapshotStatus = $progressSnapshot['status'];
 
 if ($snapshotStatus === 'complete') {
@@ -89,22 +80,6 @@ if (!in_array($snapshotStatus, ['working', 'failed'], true)) {
     exit;
 }
 
-$statusLabels = [
-    'working' => __('Running'),
-    'failed'  => __('Failed'),
-];
-
-$typeLabels = [
-    'file'     => __('File update'),
-    'database' => __('Database update'),
-];
-$stageLabels = [
-    'preparing'   => __('Preparing update…'),
-    'downloading' => __('Downloading update…'),
-    'installing'  => __('Installing update…'),
-    'finalizing'  => __('Finalizing update…'),
-];
-
 $isPolling = $snapshotStatus === 'working';
 $isFailure = $snapshotStatus === 'failed';
 $progress = $progressSnapshot['progress'];
@@ -114,16 +89,15 @@ if (!is_int($progress) || $progress < 0 || $progress > 100) {
 }
 
 echo $view->fetchFromTemplate('updateProgress.twig.html', [
+    'isDormant'      => false,
     'isPolling'      => $isPolling,
     'pollUrl'        => $session->get('absoluteURL').'/modules/System Admin/updateProgressAjax.php?gibbonLogID=' . rawurlencode($gibbonLogID),
     'isFailure'      => $isFailure,
-    'heading'        => __('System update'),
-    'lifecycleLabel' => $statusLabels[$snapshotStatus],
-    'typeLabel'      => $typeLabels[$progressSnapshot['type']] ?? '',
-    'stageLabel'     => $stageLabels[$progressSnapshot['stage']] ?? '',
+    'lifecycleLabel' => $progressService->getStatusLabel($snapshotStatus) ?? '',
+    'typeLabel'      => $progressService->getTypeLabel($progressSnapshot['type']) ?? '',
+    'stageLabel'     => $progressService->getStageLabel($progressSnapshot['stage']) ?? '',
     'message'        => $isFailure
         ? __('Update failed. Check the server logs and try again.')
-        : __('System update in progress.'),
+        : '',
     'progress'      => $progress,
-    'progressLabel' => __('Update progress'),
 ]);

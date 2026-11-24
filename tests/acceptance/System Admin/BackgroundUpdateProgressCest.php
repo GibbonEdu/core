@@ -28,20 +28,27 @@ class BackgroundUpdateProgressCest
         $I->loginAsAdmin();
         $I->amOnModulePage('System Admin', 'update.php');
         $I->seeElement(sprintf(
-            '#updateProgress[hx-get*="updateProgressAjax.php?gibbonLogID=%s"]',
+            '#updateProgressRegion[hx-get*="updateProgressAjax.php?gibbonLogID=%s"]',
             $displayGibbonLogID
         ));
-        $I->seeElement('#updateProgress', [
-            'hx-target' => 'this',
+        $I->seeElement('#updateProgressRegion', [
+            'hx-target' => '#updateProgressRegion',
             'hx-swap' => 'outerHTML',
+            'hx-trigger' => 'every 1s',
         ]);
-        $I->see('System update in progress.', '#updateProgress');
         $I->see('Running', '#updateProgress');
         $I->see('Database update', '#updateProgress');
         $I->see('Installing update…', '#updateProgress');
         $I->see('70%', '#updateProgress');
+        $I->seeElement('#updateProgress', [
+            'x-show' => 'updateProgressOpen',
+            'role' => 'dialog',
+            'aria-modal' => 'true',
+        ]);
 
         $source = $I->grabPageSource();
+        $I->assertStringContainsString('x-trap.inert.noscroll.noreturn="updateProgressOpen"', $source);
+        $I->assertStringContainsString('@click="updateProgressOpen = false"', $source);
         $progressPosition = strpos($source, 'id="updateProgress"');
         $overviewPosition = strpos($source, 'id="versionUpdate"');
         $I->assertNotFalse($progressPosition, 'The update progress component was rendered.');
@@ -54,11 +61,11 @@ class BackgroundUpdateProgressCest
         $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$gibbonLogID);
         $I->see('Finalizing update…', '#updateProgress');
         $I->see('90%', '#updateProgress');
-        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 1s']);
+        $I->seeElement('#updateProgressRegion', ['hx-trigger' => 'every 1s']);
 
         // A normal full-page reload uses the same current snapshot.
         $I->amOnModulePage('System Admin', 'update.php');
-        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 1s']);
+        $I->seeElement('#updateProgressRegion', ['hx-trigger' => 'every 1s']);
         $I->see('Finalizing update…', '#updateProgress');
         $I->see('90%', '#updateProgress');
     }
@@ -75,10 +82,10 @@ class BackgroundUpdateProgressCest
         $I->see('Running', '#updateProgress');
         $I->see('Installing update…', '#updateProgress');
         $I->seeElement(sprintf(
-            '#updateProgress[hx-get*="updateProgressAjax.php?gibbonLogID=%s"]',
+            '#updateProgressRegion[hx-get*="updateProgressAjax.php?gibbonLogID=%s"]',
             (string) ((int) $gibbonLogID)
         ));
-        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 1s']);
+        $I->seeElement('#updateProgressRegion', ['hx-trigger' => 'every 1s']);
     }
 
     public function completionRefreshesAndTheReloadedPageUsesCurrentVersionData(AcceptanceTester $I): void
@@ -95,7 +102,8 @@ class BackgroundUpdateProgressCest
         // PhpBrowser does not execute HTMX. Request the contractually refreshed
         // document and assert that it recalculates normal overview data.
         $I->amOnModulePage('System Admin', 'update.php');
-        $I->dontSeeElement('#updateProgress');
+        $I->seeElement('#updateProgress[x-cloak][style="display: none;"]');
+        $I->dontSeeElement('#updateProgressRegion[hx-trigger="every 1s"]');
         $I->see('Codebase Version');
         $I->see('v30.0.04');
     }
@@ -169,6 +177,29 @@ class BackgroundUpdateProgressCest
         $I->assertTrue(
             str_contains($source, 'updateFilesProcess.php') || str_contains($source, 'updateProcess.php'),
             'The update form retains its existing file or database process target.'
+        );
+        $I->assertMatchesRegularExpression(
+            '/hx-post="[^"]+\/modules\/System Admin\/(?:updateFilesProcess|updateProcess)\.php"/',
+            $source,
+            'Background-eligible update submissions use their real HTMX process action.'
+        );
+        $I->assertStringContainsString('hx-swap="none"', $source);
+        $I->seeElement('#updateProgressRegion', [
+            'hx-trigger' => 'backgroundUpdateStarted from:body',
+            'hx-target' => '#updateProgressRegion',
+            'hx-swap' => 'outerHTML',
+        ]);
+        $I->assertStringContainsString(
+            'x-on:backgroundUpdateStarted.window="updateProgressOpen = true"',
+            $source
+        );
+        $I->seeElement('#updateProgress', [
+            'x-show' => 'updateProgressOpen',
+            'style' => 'display: none;',
+        ]);
+        $I->assertStringContainsString(
+            "hx-vals='js:{gibbonLogID: event.detail.gibbonLogID}'",
+            $source
         );
 
         // These controls depend on the current updater state and catalog. When

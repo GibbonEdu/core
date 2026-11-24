@@ -89,48 +89,41 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     // progress snapshot is the sole source for displayed state and polling.
     $processID = $container->get(BackgroundProcessor::class)->getProcessIDByName('SystemUpdateProcess');
 
-    $updateProgress = $container->get(SystemUpdateProgress::class)->get();
+    $updateProgressService = $container->get(SystemUpdateProgress::class);
+    $updateProgress = $updateProgressService->get();
     $snapshotStatus = $updateProgress['status'];
 
     $isUpdateActive = !empty($processID) && $snapshotStatus === 'working';
     $hasUpdateFailure = !empty($processID) && $snapshotStatus === 'failed';
 
-    if ($isUpdateActive || $hasUpdateFailure) {
-        $progress = $updateProgress['progress'];
-        if (!is_int($progress) || $progress < 0 || $progress > 100) {
-            $progress = null;
-        }
+    $isProgressDormant = !$isUpdateActive && !$hasUpdateFailure;
+    $progress = $updateProgress['progress'];
+    if (!is_int($progress) || $progress < 0 || $progress > 100) {
+        $progress = null;
+    }
 
-        $statusLabels = [
-            'working' => __('Running'),
-            'failed'  => __('Failed'),
-        ];
-        $typeLabels = [
-            'file'     => __('File update'),
-            'database' => __('Database update'),
-        ];
-        $stageLabels = [
-            'preparing'   => __('Preparing update…'),
-            'downloading' => __('Downloading update…'),
-            'installing'  => __('Installing update…'),
-            'finalizing'  => __('Finalizing update…'),
-        ];
+    $progress = 72;
 
-        echo $page->fetchFromTemplate('updateProgress.twig.html', [
-            'isPolling'      => $isUpdateActive,
-            'pollUrl'        => $session->get('absoluteURL').'/modules/System Admin/updateProgressAjax.php?gibbonLogID='.rawurlencode((string) $processID),
-            'isFailure'      => $hasUpdateFailure,
-            'heading'        => __('System update'),
-            'lifecycleLabel' => $statusLabels[$snapshotStatus] ?? '',
-            'typeLabel'      => $typeLabels[$updateProgress['type']] ?? '',
-            'stageLabel'     => $stageLabels[$updateProgress['stage']] ?? '',
-            'message'        => $hasUpdateFailure
-                ? __('Update failed. Check the server logs and try again.')
-                : __('System update in progress.'),
-            'progress'      => $progress,
-            'progressLabel' => __('Update progress'),
-        ]);
-    } else {
+    $progressEndpoint = $session->get('absoluteURL').'/modules/System Admin/updateProgressAjax.php';
+    $pollUrl = $isUpdateActive
+        ? $progressEndpoint.'?gibbonLogID='.rawurlencode((string) $processID)
+        : $progressEndpoint;
+
+    echo $page->fetchFromTemplate('updateProgress.twig.html', [
+        'isDormant'      => $isProgressDormant,
+        'isPolling'      => $isUpdateActive,
+        'pollUrl'        => $pollUrl,
+        'isFailure'      => $hasUpdateFailure,
+        'lifecycleLabel' => $updateProgressService->getStatusLabel($snapshotStatus) ?? '',
+        'typeLabel'      => $updateProgressService->getTypeLabel($updateProgress['type']) ?? '',
+        'stageLabel'     => $updateProgressService->getStageLabel($updateProgress['stage']) ?? '',
+        'message'        => $hasUpdateFailure
+            ? __('Update failed. Check the server logs and try again.')
+            : '',
+        'progress'      => $progress,
+    ]);
+
+    if (!$isUpdateActive && !$hasUpdateFailure) {
 
         // Update status message
         if ($updateRequired > 0) {
