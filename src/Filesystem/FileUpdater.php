@@ -41,10 +41,23 @@ class FileUpdater
     protected $absolutePath;
     protected $added = []; // files that did not exist on live before replace
     protected $backupDir = 'previousVersionBackup';
+    protected $progressCallback;
+    protected $lastProgress;
+    protected $progressCompleted = 0;
+    protected $progressTotal = 1;
+    protected $progressStart = 0;
+    protected $progressEnd = 100;
+    protected $trackCopyProgress = false;
 
     public function __construct(Session $session)
     {
         $this->absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
+    }
+
+    public function setProgressCallback(?callable $progressCallback): void
+    {
+        $this->progressCallback = $progressCallback;
+        $this->lastProgress = null;
     }
 
     /**
@@ -54,12 +67,16 @@ class FileUpdater
      */
     public function run(array $relativeFiles)
     {
+        $this->lastProgress = null;
+        $this->reportProgress(0);
         $files = $this->normalizeFileList($relativeFiles);
         $this->backup($files);
 
         try {
             $this->replace($files);
+            $this->reportProgress(100);
         } catch (\Throwable $e) {
+            $this->trackCopyProgress = false;
             // Restore live files from backup, then re-throw the original error
             try {
                 $this->rollback($files);
@@ -86,32 +103,43 @@ class FileUpdater
         }
 
         $this->added = [];
+        $this->beginProgressPhase(0, 45, $this->calculateWork($files, $this->absolutePath));
+        $this->trackCopyProgress = true;
 
-        foreach ($files as $relative) {
-            $livePath = $this->absolutePath.'/'.$relative;
+        try {
+            foreach ($files as $relative) {
+                $livePath = $this->absolutePath.'/'.$relative;
 
-            if ($relative === self::VENDOR_DIRECTORY) {
-                if (!is_dir($livePath)) {
-                    $this->added[] = $relative;
+                if ($relative === self::VENDOR_DIRECTORY) {
+                    if (!is_dir($livePath)) {
+                        $this->added[] = $relative;
+                        $this->advanceProgress(1);
+                        continue;
+                    }
+
+                    if (is_link($livePath) || !is_readable($livePath) || !$this->copyDirectory($livePath, $backupDir.'/'.$relative)) {
+                        $this->fail(self::ERROR_BACKUP, 'Failed to back up: '.$livePath);
+                    }
                     continue;
                 }
 
-                if (is_link($livePath) || !is_readable($livePath) || !$this->copyDirectory($livePath, $backupDir.'/'.$relative)) {
+                // New file — nothing to back up
+                if (!is_file($livePath)) {
+                    $this->added[] = $relative;
+                    $this->advanceProgress(1);
+                    continue;
+                }
+
+                if (!is_readable($livePath) || !$this->copyFile($livePath, $backupDir.'/'.$relative)) {
                     $this->fail(self::ERROR_BACKUP, 'Failed to back up: '.$livePath);
                 }
-                continue;
+                $this->advanceProgress($this->fileWork($livePath));
             }
-
-            // New file — nothing to back up
-            if (!is_file($livePath)) {
-                $this->added[] = $relative;
-                continue;
-            }
-
-            if (!is_readable($livePath) || !$this->copyFile($livePath, $backupDir.'/'.$relative)) {
-                $this->fail(self::ERROR_BACKUP, 'Failed to back up: '.$livePath);
-            }
+        } finally {
+            $this->trackCopyProgress = false;
         }
+
+        $this->reportProgress(45);
     }
 
     /**
@@ -131,25 +159,43 @@ class FileUpdater
         $stagingRoot = str_replace('\\', '/', $stagingReal);
 
         // First pass: staging source exists, live path is writable, stays inside the install
+        $validated = 0;
+        $totalFiles = count($files);
         foreach ($files as $relative) {
             if ($relative === self::VENDOR_DIRECTORY) {
                 $this->assertCanReplaceDirectory($stagingRoot, $absoluteReal, $relative);
-                continue;
+            } else {
+                $this->assertCanReplace($stagingRoot, $absoluteReal, $relative);
             }
 
-            $this->assertCanReplace($stagingRoot, $absoluteReal, $relative);
+            ++$validated;
+            $this->reportProgressRange($validated, $totalFiles, 45, 50);
         }
 
         // Second pass: replace vendor as one directory; install all other paths one file at a time
-        foreach ($files as $relative) {
-            $installed = $relative === self::VENDOR_DIRECTORY
-                ? $this->installDirectory($stagingRoot.'/'.$relative, $this->absolutePath.'/'.$relative)
-                : $this->installFile($stagingRoot.'/'.$relative, $this->absolutePath.'/'.$relative);
+        $this->beginProgressPhase(50, 100, $this->calculateWork($files, $stagingRoot));
+        $this->trackCopyProgress = true;
 
-            if (!$installed) {
-                $this->fail(self::ERROR_REPLACE, 'Failed to replace: '.$this->absolutePath.'/'.$relative);
+        try {
+            foreach ($files as $relative) {
+                $source = $stagingRoot.'/'.$relative;
+                $installed = $relative === self::VENDOR_DIRECTORY
+                    ? $this->installDirectory($source, $this->absolutePath.'/'.$relative)
+                    : $this->installFile($source, $this->absolutePath.'/'.$relative);
+
+                if (!$installed) {
+                    $this->fail(self::ERROR_REPLACE, 'Failed to replace: '.$this->absolutePath.'/'.$relative);
+                }
+
+                if ($relative !== self::VENDOR_DIRECTORY) {
+                    $this->advanceProgress($this->fileWork($source));
+                }
             }
+        } finally {
+            $this->trackCopyProgress = false;
         }
+
+        $this->reportProgress(100);
     }
 
     /**
@@ -407,6 +453,10 @@ class FileUpdater
                     $this->deleteDirectory($destination);
                     return false;
                 }
+
+                if ($this->trackCopyProgress) {
+                    $this->advanceProgress($this->fileWork($fileInfo->getPathname()));
+                }
             }
         } catch (\Throwable $e) {
             $this->deleteDirectory($destination);
@@ -414,6 +464,97 @@ class FileUpdater
         }
 
         return true;
+    }
+
+    protected function beginProgressPhase(int $start, int $end, int $total) : void
+    {
+        $this->progressStart = $start;
+        $this->progressEnd = $end;
+        $this->progressCompleted = 0;
+        $this->progressTotal = max(1, $total);
+        $this->reportProgress($start);
+    }
+
+    protected function advanceProgress(int $work) : void
+    {
+        if ($this->progressCallback === null) {
+            return;
+        }
+
+        $this->progressCompleted = min($this->progressCompleted + max(1, $work), $this->progressTotal);
+        $this->reportProgressRange(
+            $this->progressCompleted,
+            $this->progressTotal,
+            $this->progressStart,
+            $this->progressEnd
+        );
+    }
+
+    protected function calculateWork(array $files, string $root) : int
+    {
+        if ($this->progressCallback === null) {
+            return 1;
+        }
+
+        $work = 0;
+        foreach ($files as $relative) {
+            $work += $this->pathWork($root.'/'.$relative);
+        }
+
+        return max(1, $work);
+    }
+
+    protected function pathWork(string $path) : int
+    {
+        if (!is_dir($path) || is_link($path)) {
+            return $this->fileWork($path);
+        }
+
+        $work = 0;
+        try {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)
+            );
+            foreach ($iterator as $fileInfo) {
+                if ($fileInfo->isFile() && !$fileInfo->isLink()) {
+                    $work += $this->fileWork($fileInfo->getPathname());
+                }
+            }
+        } catch (\Throwable $e) {
+            return 1;
+        }
+
+        return max(1, $work);
+    }
+
+    protected function fileWork(string $path) : int
+    {
+        $size = is_file($path) ? filesize($path) : false;
+
+        return max(1, $size === false ? 0 : $size);
+    }
+
+    protected function reportProgressRange(int $completed, int $total, int $start, int $end) : void
+    {
+        if ($total <= 0) {
+            $this->reportProgress($end);
+            return;
+        }
+
+        $completed = min(max($completed, 0), $total);
+        $progress = $start + (int) floor(($end - $start) * ($completed / $total));
+        $this->reportProgress($progress);
+    }
+
+    protected function reportProgress(int $progress) : void
+    {
+        $progress = min(max($progress, 0), 100);
+        if ($this->progressCallback === null || ($this->lastProgress !== null && $progress <= $this->lastProgress)) {
+            return;
+        }
+
+        $this->lastProgress = $progress;
+        ($this->progressCallback)($progress);
     }
 
     protected function copyFile(string $source, string $destination) : bool

@@ -46,12 +46,20 @@ class Downloader
     protected $session;
     protected $versionCatalog;
     protected $absolutePath;
+    protected $progressCallback;
+    protected $lastProgress;
 
     public function __construct(Session $session, VersionCatalog $versionCatalog)
     {
         $this->session = $session;
         $this->versionCatalog = $versionCatalog;
         $this->absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
+    }
+
+    public function setProgressCallback(?callable $progressCallback): void
+    {
+        $this->progressCallback = $progressCallback;
+        $this->lastProgress = null;
     }
 
     /**
@@ -62,10 +70,13 @@ class Downloader
      */
     public function run(array $release) : array
     {
+        $this->lastProgress = null;
+        $this->reportProgress(0);
         $zipPath = $this->download($release);
         $this->verify($zipPath, $release['checksum'] ?? '');
         $files = $this->extract($zipPath);
         $this->deleteIfExists($zipPath);
+        $this->reportProgress(100);
 
         return $files;
     }
@@ -96,6 +107,11 @@ class Downloader
             ]))->request('GET', $filePath, [
                 'headers'     => ['Referer' => $this->session->get('absoluteURL').'/index.php'],
                 'sink'        => $zipPath, // write straight to disk
+                'progress'    => function ($downloadTotal, $downloadedBytes) {
+                    if ($downloadTotal > 0) {
+                        $this->reportProgressRange((int) $downloadedBytes, (int) $downloadTotal, 0, 55);
+                    }
+                },
                 'http_errors' => false,
                 'allow_redirects' => [
                     'max'       => 5,
@@ -131,6 +147,8 @@ class Downloader
             $this->fail(self::ERROR_DOWNLOAD, 'Downloaded file is not a zip archive', $zipPath);
         }
 
+        $this->reportProgress(55);
+
         return $zipPath;
     }
 
@@ -146,6 +164,8 @@ class Downloader
         if (!is_file($zipPath) || $checksum == '' || !hash_equals($checksum, hash_file('sha256', $zipPath))) {
             $this->fail(self::ERROR_VERIFY, 'Checksum mismatch: expected '.$checksum.', got '.(is_file($zipPath) ? hash_file('sha256', $zipPath) : 'missing file'), $zipPath);
         }
+
+        $this->reportProgress(60);
     }
 
     /**
@@ -168,13 +188,28 @@ class Downloader
             $this->fail(self::ERROR_EXTRACT, 'Failed to open zip archive: '.$zipPath, $zipPath);
         }
 
+        $entryWork = [];
+        $totalWork = 0;
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            $entryName = (string) $zip->getNameIndex($i);
+            if ($this->shouldSkipEntry($entryName)) {
+                continue;
+            }
+
+            $stat = $zip->statIndex($i);
+            $entryWork[$i] = max(1, (int) ($stat === false ? 0 : ($stat['size'] ?? 0)));
+            $totalWork += $entryWork[$i];
+        }
+
+        $completedWork = 0;
+
         try {
             for ($i = 0; $i < $zip->numFiles; ++$i) {
                 $entryName = $zip->getNameIndex($i);
                 $name = str_replace('\\', '/', $entryName);
 
                 // Skip folders and macOS junk
-                if ($name == '' || substr($name, -1) == '/' || strpos($name, '__MACOSX/') === 0 || substr($name, -9) == '.DS_Store') {
+                if ($this->shouldSkipEntry($name)) {
                     continue;
                 }
 
@@ -188,7 +223,12 @@ class Downloader
                 if ($extracted === false || !$this->isInside($extracted, $stagingReal)) {
                     $this->fail(self::ERROR_INVALID, 'Extracted file is outside staging: '.$entryName, $zipPath);
                 }
+
+                $completedWork += $entryWork[$i] ?? 1;
+                $this->reportProgressRange($completedWork, $totalWork, 60, 95);
             }
+
+            $this->reportProgress(95);
         } catch (\Throwable $e) {
             $this->wipeDirectory($staging);
             $this->deleteIfExists($zipPath);
@@ -217,6 +257,8 @@ class Downloader
 
             // Build the relative path list for FileUpdater
             $files = [];
+            $indexedFiles = 0;
+            $totalFiles = count($entryWork);
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($stagingReal, \FilesystemIterator::SKIP_DOTS));
             foreach ($iterator as $fileInfo) {
                 if (!$fileInfo->isFile()) {
@@ -225,6 +267,8 @@ class Downloader
                 $full = str_replace('\\', '/', $fileInfo->getPathname());
                 $root = rtrim(str_replace('\\', '/', $stagingReal), '/');
                 $files[] = $this->assertSafeRelativePath(ltrim(substr($full, strlen($root)), '/'));
+                ++$indexedFiles;
+                $this->reportProgressRange($indexedFiles, $totalFiles, 95, 99);
             }
         } catch (\Throwable $e) {
             $this->wipeDirectory($staging);
@@ -238,7 +282,40 @@ class Downloader
             $this->fail(self::ERROR_EXTRACT, 'Extracted package is missing version.php', $zipPath);
         }
 
+        $this->reportProgress(100);
+
         return $files;
+    }
+
+    protected function shouldSkipEntry(string $name) : bool
+    {
+        return $name == ''
+            || substr($name, -1) == '/'
+            || strpos($name, '__MACOSX/') === 0
+            || substr($name, -9) == '.DS_Store';
+    }
+
+    protected function reportProgressRange(int $completed, int $total, int $start, int $end) : void
+    {
+        if ($total <= 0) {
+            $this->reportProgress($end);
+            return;
+        }
+
+        $completed = min(max($completed, 0), $total);
+        $progress = $start + (int) floor(($end - $start) * ($completed / $total));
+        $this->reportProgress($progress);
+    }
+
+    protected function reportProgress(int $progress) : void
+    {
+        $progress = min(max($progress, 0), 100);
+        if ($this->progressCallback === null || ($this->lastProgress !== null && $progress <= $this->lastProgress)) {
+            return;
+        }
+
+        $this->lastProgress = $progress;
+        ($this->progressCallback)($progress);
     }
 
     // Whether $path is inside $root

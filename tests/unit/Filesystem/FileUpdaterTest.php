@@ -62,6 +62,10 @@ class FileUpdaterTest extends TestCase
         $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
 
         $updater = $this->createFileUpdater();
+        $progress = [];
+        $updater->setProgressCallback(function (int $percent) use (&$progress): void {
+            $progress[] = $percent;
+        });
         $updater->run([
             'vendor/package/new.php',
             'modules/Example/update.php',
@@ -89,6 +93,13 @@ class FileUpdaterTest extends TestCase
             'old module file',
             file_get_contents($this->fixturePath.'/backups/fileUpdate/previousVersionBackup/modules/Example/update.php')
         );
+        $this->assertSame(0, $progress[0]);
+        $this->assertSame(100, $progress[array_key_last($progress)]);
+        $this->assertGreaterThan(5, count($progress));
+
+        $sortedProgress = $progress;
+        sort($sortedProgress);
+        $this->assertSame($sortedProgress, $progress);
     }
 
     public function testRestoreAlsoReplacesVendorAsOneDirectory(): void

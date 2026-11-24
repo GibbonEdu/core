@@ -69,6 +69,8 @@ class SystemUpdateProcessTest extends TestCase
     public function testFileUpdateUsesExistingCollaboratorsInOrderAndRecordsCompletion(): void
     {
         $events = [];
+        $downloadProgress = null;
+        $installProgress = null;
         [$settings, $state] = $this->createSettingGateway($events);
         file_put_contents($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt', 'temporary');
         file_put_contents($this->fixturePath.'/backups/fileUpdate/package.zip', 'package');
@@ -90,20 +92,34 @@ class SystemUpdateProcessTest extends TestCase
 
         $downloader = $this->createMock(Downloader::class);
         $downloader->expects($this->once())
+            ->method('setProgressCallback')
+            ->willReturnCallback(function (callable $callback) use (&$downloadProgress): void {
+                $downloadProgress = $callback;
+            });
+        $downloader->expects($this->once())
             ->method('run')
             ->with(['filePath' => 'gibbon-30.0.01.zip'])
-            ->willReturnCallback(function () use (&$events): array {
+            ->willReturnCallback(function () use (&$events, &$downloadProgress): array {
                 $events[] = 'downloader';
+                $this->assertIsCallable($downloadProgress);
+                $downloadProgress(50);
 
                 return ['index.php'];
             });
 
         $fileUpdater = $this->createMock(FileUpdater::class);
         $fileUpdater->expects($this->once())
+            ->method('setProgressCallback')
+            ->willReturnCallback(function (callable $callback) use (&$installProgress): void {
+                $installProgress = $callback;
+            });
+        $fileUpdater->expects($this->once())
             ->method('run')
             ->with(['index.php'])
-            ->willReturnCallback(function () use (&$events): void {
+            ->willReturnCallback(function () use (&$events, &$installProgress): void {
                 $events[] = 'file-updater';
+                $this->assertIsCallable($installProgress);
+                $installProgress(50);
             });
 
         $process = $this->createProcess($settings, $updater, $versionCatalog, $downloader, $fileUpdater, $events);
@@ -117,8 +133,10 @@ class SystemUpdateProcessTest extends TestCase
             'progress:downloading:working',
             'catalog',
             'downloader',
+            'progress:downloading:working',
             'progress:installing:working',
             'file-updater',
+            'progress:installing:working',
             'progress:finalizing:working',
             'session:forget:pageLoads',
             'setting:fileUpdater:idle',
@@ -128,10 +146,12 @@ class SystemUpdateProcessTest extends TestCase
         ], $events);
         $this->assertSame([
             [null, 'working', null],
-            ['preparing', 'working', 10],
-            ['downloading', 'working', 30],
+            ['preparing', 'working', 5],
+            ['downloading', 'working', 10],
+            ['downloading', 'working', 40],
             ['installing', 'working', 70],
-            ['finalizing', 'working', 90],
+            ['installing', 'working', 82],
+            ['finalizing', 'working', 95],
             ['finalizing', 'complete', 100],
         ], $state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
@@ -239,9 +259,9 @@ class SystemUpdateProcessTest extends TestCase
 
         $this->assertSame([
             [null, 'working', null],
-            ['preparing', 'working', 10],
-            ['downloading', 'working', 30],
-            ['downloading', 'failed', 30],
+            ['preparing', 'working', 5],
+            ['downloading', 'working', 10],
+            ['downloading', 'failed', 10],
         ], $state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
         $this->assertSame('failed', $state->values['System Admin/fileUpdater']);

@@ -83,7 +83,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     private function runFileUpdate(): void
     {
         $stage = 'preparing';
-        $this->progress->update($stage, 'working', 10);
+        $this->progress->update($stage, 'working', 5);
 
         $absolutePath = (string) $this->session->get('absolutePath');
         $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
@@ -119,7 +119,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'running');
 
                 $stage = 'downloading';
-                $this->progress->update($stage, 'working', 30);
+                $this->progress->update($stage, 'working', 10);
                 $release = $this->versionCatalog->getNextRelease(
                     $this->updater->versionCode,
                     $this->updater->isCuttingEdge()
@@ -128,14 +128,16 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                     throw new \RuntimeException(Downloader::ERROR_INVALID);
                 }
 
+                $this->downloader->setProgressCallback($this->createProgressCallback('downloading', 10, 70));
                 $files = $this->downloader->run($release);
 
                 $stage = 'installing';
                 $this->progress->update($stage, 'working', 70);
+                $this->fileUpdater->setProgressCallback($this->createProgressCallback('installing', 70, 95));
                 $this->fileUpdater->run($files);
 
                 $stage = 'finalizing';
-                $this->progress->update($stage, 'working', 90);
+                $this->progress->update($stage, 'working', 95);
                 removeDirectoryContents($absolutePath.'/uploads/cache');
                 $this->session->forget('pageLoads');
 
@@ -202,6 +204,25 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             $this->fail($stage, $error);
             throw $error;
         }
+    }
+
+    /**
+     * Map an operation's local percentage into its overall update range.
+     */
+    private function createProgressCallback(string $stage, int $start, int $end): callable
+    {
+        $lastProgress = $start;
+
+        return function (int $progress) use ($stage, $start, $end, &$lastProgress): void {
+            $progress = min(max($progress, 0), 100);
+            $mappedProgress = $start + (int) floor(($end - $start) * ($progress / 100));
+            if ($mappedProgress <= $lastProgress) {
+                return;
+            }
+
+            $lastProgress = $mappedProgress;
+            $this->progress->update($stage, 'working', $mappedProgress);
+        };
     }
 
     /**

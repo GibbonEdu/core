@@ -87,8 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // The latest SystemUpdateProcess log identifies the poll target. The shared
     // progress snapshot is the sole source for displayed state and polling.
-    $process = $container->get(BackgroundProcessor::class)->getProcessByName('SystemUpdateProcess');
-    $processID = $process['gibbonLogID'] ?? null;
+    $processID = $container->get(BackgroundProcessor::class)->getProcessIDByName('SystemUpdateProcess');
 
     $updateProgress = $container->get(SystemUpdateProgress::class)->get();
     $snapshotStatus = $updateProgress['status'];

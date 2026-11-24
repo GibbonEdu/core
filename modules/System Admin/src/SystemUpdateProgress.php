@@ -26,7 +26,7 @@ namespace Gibbon\Module\SystemAdmin;
 use Gibbon\Domain\System\SettingGateway;
 
 /**
- * Stores the current coarse background update progress snapshot.
+ * Stores the current background update progress snapshot.
  *
  * @version v30
  * @since   v30
@@ -67,7 +67,7 @@ final class SystemUpdateProgress
     }
 
     /**
-     * Store the current update stage and coarse progress milestone.
+     * Store the current update stage and progress percentage.
      */
     public function update(string $stage, string $status, ?int $progress): void
     {

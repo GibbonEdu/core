@@ -19,7 +19,7 @@ class BackgroundUpdateProgressCest
         $I->deleteFromDatabase('gibbonLog', ['title' => self::OTHER_PROCESS_TITLE]);
     }
 
-    public function activeProgressAppearsBeforeOverviewAndSnapshotChangesPollResponse(AcceptanceTester $I): void
+    public function activeProgressAppearsAfterOverviewAndSnapshotChangesPollResponse(AcceptanceTester $I): void
     {
         $this->setProgress($I, 'database', 'installing', 'working', 70);
         $gibbonLogID = $this->createGibbonLog($I);
@@ -46,7 +46,7 @@ class BackgroundUpdateProgressCest
         $overviewPosition = strpos($source, 'id="versionUpdate"');
         $I->assertNotFalse($progressPosition, 'The update progress component was rendered.');
         $I->assertNotFalse($overviewPosition, 'The update overview was rendered.');
-        $I->assertLessThan($overviewPosition, $progressPosition, 'Progress is rendered before the update overview.');
+        $I->assertLessThan($progressPosition, $overviewPosition, 'Overview is rendered before the update progress component.');
 
         // The worker only changes the shared snapshot. The same existing log
         // record then produces an updated HTMX fragment without payload data.
@@ -54,11 +54,11 @@ class BackgroundUpdateProgressCest
         $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$gibbonLogID);
         $I->see('Finalizing update…', '#updateProgress');
         $I->see('90%', '#updateProgress');
-        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 2s']);
+        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 1s']);
 
         // A normal full-page reload uses the same current snapshot.
         $I->amOnModulePage('System Admin', 'update.php');
-        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 2s']);
+        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 1s']);
         $I->see('Finalizing update…', '#updateProgress');
         $I->see('90%', '#updateProgress');
     }
@@ -78,7 +78,7 @@ class BackgroundUpdateProgressCest
             '#updateProgress[hx-get*="updateProgressAjax.php?gibbonLogID=%s"]',
             (string) ((int) $gibbonLogID)
         ));
-        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 2s']);
+        $I->seeElement('#updateProgress', ['hx-trigger' => 'every 1s']);
     }
 
     public function completionRefreshesAndTheReloadedPageUsesCurrentVersionData(AcceptanceTester $I): void
@@ -111,7 +111,7 @@ class BackgroundUpdateProgressCest
         $I->see('Update failed. Check the server logs and try again.', '#updateProgress');
         $I->see('Failed', '#updateProgress');
         $I->see('Installing update…', '#updateProgress');
-        $I->dontSeeInSource('hx-trigger="every 2s"');
+        $I->dontSeeInSource('hx-trigger="every 1s"');
 
         $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID=0');
         $I->see('Background updates are unavailable on this system.', '#updateProgress');
