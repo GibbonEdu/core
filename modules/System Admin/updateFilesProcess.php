@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Keep going even if the browser disconnects and allow enough time for download + replace
     ignore_user_abort(true);
-    @set_time_limit(300);
+    @set_time_limit(3000);
 
     // Put the site into maintenance mode while files are replaced
     $settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');

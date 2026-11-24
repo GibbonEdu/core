@@ -264,7 +264,7 @@ class Downloader
             // || strpos($lower, 'uploads/') === 0
             || strpos($lower, 'backups/') === 0
             || strpos($lower, '.git/') === 0
-            || strpos($lower, 'vendor/') === 0
+            // || strpos($lower, 'vendor/') === 0
         ) {
             $this->fail(self::ERROR_INVALID, 'Unsafe relative path: '.$relative);
         }

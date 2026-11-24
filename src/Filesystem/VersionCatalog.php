@@ -40,6 +40,7 @@ class VersionCatalog
         'www.gibbonedu.org',
         'github.com',
         'codeload.github.com',
+        'release-assets.githubusercontent.com',
     ];
 
     protected $session;
