@@ -32,13 +32,13 @@ if ($size == 'sm') {
 
     </button>
 <?php } elseif ($type == 'submit') { ?>
-    <button type="submit" <?= $attributes; ?> x-data="{ submitDisabled: false }" x-bind:disabled="submitDisabled" x-on:submit="submitDisabled = true" @click="submitting = true" :class="{'submitted bg-gray-100': submitting, '<?= $bgClass; ?>' : !submitting}" class="<?= $class; ?> <?= $groupClass; ?> <?= $sizeClass; ?> inline-block align-middle items-center px-8 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border <?= $bgClass; ?>" />
+    <button type="submit" <?= $attributes; ?> x-data="{ submitDisabled: false }" x-bind:disabled="submitDisabled" x-on:submit="submitDisabled = true" @click="submitting = true" :class="{'submitted bg-gray-100': submitting, '<?= $bgClass; ?>' : !submitting}" class="<?= $class; ?> <?= $groupClass; ?> <?= $sizeClass; ?> inline-block whitespace-nowrap align-middle items-center px-8 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border <?= $bgClass; ?>" />
         <span :class="{'opacity-0': submitting}">
             <?= $value; ?>
         </span>
     </button>
 <?php } elseif ($type == 'quickSubmit') { ?>
-    <button type="submit" <?= $attributes; ?>  @click="submitting = true" :class="{'submitted': submitting}" class="<?= $class; ?> <?= $groupClass; ?> <?= $sizeClass; ?> <?= $bgClass; ?> inline-flex align-middle items-center font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border border-gray-400" >
+    <button type="submit" <?= $attributes; ?>  @click="submitting = true" :class="{'submitted': submitting}" class="<?= $class; ?> <?= $groupClass; ?> <?= $sizeClass; ?> <?= $bgClass; ?> inline-flex whitespace-nowrap align-middle items-center font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border border-gray-400" >
         <?php $svgClass = 'inline text-gray-600 size-5 '.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5 ' : '').($iconClass ?? ''); ?>
         <?= !empty($icon) ? icon($iconLibrary ?? 'solid', $icon, $svgClass ) : ''; ?>
 
