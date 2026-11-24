@@ -45,14 +45,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         ->add(__('Add Fees & Invoices'));
 
     $error3 = __('Some aspects of your update failed, effecting the following areas:').'<ul>';
-    if (!empty($_GET['studentFailCount'])) {
-        $error3 .= '<li>'.$_GET['studentFailCount'].' '.__('students encountered problems.').'</li>';
+    $studentFailCount = $_GET['studentFailCount'] ?? '';
+    $invoiceFailCount = $_GET['invoiceFailCount'] ?? '';
+    $invoiceFeeFailCount = $_GET['invoiceFeeFailCount'] ?? '';
+    if (is_string($studentFailCount) && ctype_digit($studentFailCount) && $studentFailCount !== '0') {
+        $error3 .= '<li>'.$studentFailCount.' '.__('students encountered problems.').'</li>';
     }
-    if (!empty($_GET['invoiceFailCount'])) {
-        $error3 .= '<li>'.$_GET['invoiceFailCount'].' '.__('invoices encountered problems.').'</li>';
+    if (is_string($invoiceFailCount) && ctype_digit($invoiceFailCount) && $invoiceFailCount !== '0') {
+        $error3 .= '<li>'.$invoiceFailCount.' '.__('invoices encountered problems.').'</li>';
     }
-    if (!empty($_GET['invoiceFeeFailCount'])) {
-        $error3 .= '<li>'.$_GET['invoiceFeeFailCount'].' '.__('fee entries encountered problems.').'</li>';
+    if (is_string($invoiceFeeFailCount) && ctype_digit($invoiceFeeFailCount) && $invoiceFeeFailCount !== '0') {
+        $error3 .= '<li>'.$invoiceFeeFailCount.' '.__('fee entries encountered problems.').'</li>';
     }
     $error3 .= '</ul>'.__('It is recommended that you remove all pending invoices and try to recreate them.');
 

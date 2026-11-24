@@ -46,6 +46,7 @@ v30.0.03
     Security
         System: improved POST referrer check to handle empty HTTP_REFERER
         System: removed outdated Softaculous update endpoint
+        System: improved sanitisation of variables used in alert messages
         Crowd Assessment: improved sanitisation of planner variables
         Formal Assessment: improved cross-checking of class IDs
 

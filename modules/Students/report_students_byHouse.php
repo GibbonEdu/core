@@ -92,8 +92,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         return $row;
     });
 
-    if (isset($_GET['count'])) {
-        $table->setDescription(sprintf(__('%1$s students have been assigned to houses. These results include all student counts by house, updated year groups are highlighted in green. Hover over a number to see the balance by gender.'), $_GET['count']));
+    $count = $_GET['count'] ?? '';
+    if (is_string($count) && ctype_digit($count)) {
+        $table->setDescription(sprintf(__('%1$s students have been assigned to houses. These results include all student counts by house, updated year groups are highlighted in green. Hover over a number to see the balance by gender.'), $count));
     }
 
     $table->addColumn('yearGroupName', __('Year Group'))
