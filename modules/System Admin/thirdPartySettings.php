@@ -57,12 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->addHiddenValue('address', $session->get('address'));
 
     // SINGLE SIGN-ON
-    $form->addRow()->addHeading('Single Sign-On Integration', __('Single Sign-On Integration'))->append(__('If your school uses a service that offers OAuth2 authorization, you can enable single sign on integration with Gibbon. This process makes use of industry-standard OAuth2 protocols, and allows a user to access Gibbon without a username and password, provided that their listed email address is part of the chosen service and is unique in Gibbon.'));
+    $form->addRow()->addHeading('Single Sign-On Integration', __('Single Sign-On Integration'))->append(__('If your school uses a service that offers OAuth2 authorization, you can enable single sign on integration with Gibbon. This process makes use of industry-standard OAuth2 protocols, and allows a user to access Gibbon without a username and password, provided that their listed email address is part of the chosen service and is unique in Gibbon. OpenID Connect providers use explicit account binding by default, with opt-in unique email or username matching configured per provider.'));
 
     $settingGateway = $container->get(SettingGateway::class);
     $ssoGoogle = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
     $ssoMicrosoft = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft'), true);
     $ssoOther = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoOther'), true);
+    $ssoOIDC = json_decode((string) $settingGateway->getSettingByScope('System Admin', 'ssoOIDC'), true) ?: [];
 
     $ssoList = [
         [
@@ -86,6 +87,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             'url' => '',
             'enabled' => $ssoOther['enabled'] ?? 'N',
         ],
+        [
+            'sso' => 'OIDC',
+            'name' => !empty($ssoOIDC['clientName']) ? $ssoOIDC['clientName'] : __('OpenID Connect'),
+            'service' => __('OpenID Connect Provider'),
+            'url' => '',
+            'enabled' => $ssoOIDC['enabled'] ?? 'N',
+        ],
     ];
 
     $table = DataTable::create('ssoList');
@@ -99,6 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         ->format(function ($values) use ($session) {
             $output = $values['name'];
             $imagePath = '/themes/'.$session->get('gibbonThemeName').'/img/'.strtolower($values['sso']).'-login.svg';
+            if (!file_exists($session->get('absolutePath').$imagePath)) {
+                $imagePath = '/themes/'.$session->get('gibbonThemeName').'/img/other-login.svg';
+            }
             if (file_exists($session->get('absolutePath').$imagePath)) {
                 $output = '<img src="'.$session->get('absoluteURL').$imagePath.'" class="w-6 h-6 -mt-1 mr-2 inline-block align-middle">' . $values['name'];
             }

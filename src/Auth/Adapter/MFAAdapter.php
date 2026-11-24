@@ -62,7 +62,7 @@ class MFAAdapter extends AuthenticationAdapter
         // Check that the MFA token is valid
         $tfa = new \RobThree\Auth\TwoFactorAuth('Gibbon');
         if ($tfa->verifyCode($mfaCheck['mfaSecret'], $this->getToken()) !== true) {
-            $this->session->forget(['mfaToken', 'mfaTokenPass', 'mfaNonce']);
+            $this->session->forget(['mfaToken', 'mfaTokenPass', 'mfaNonce', 'oidcMFABinding']);
             throw new MFATokenInvalid;
         }
 
@@ -154,6 +154,8 @@ class MFAAdapter extends AuthenticationAdapter
                 $password = $this->session->get('microsoftAPIAccessToken', [])['access_token'] ?? ''; break;
             case 'Gibbon\Auth\Adapter\OAuthGenericAdapter':
                 $password = $this->session->get('genericAPIAccessToken', [])['access_token'] ?? ''; break;
+            case 'Gibbon\Auth\Adapter\OIDCAdapter':
+                $password = (string) $this->session->get('oidcMFABinding', ''); break;
             default:
                 $password = $userData['passwordStrong'];
         }

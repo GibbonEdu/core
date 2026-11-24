@@ -107,7 +107,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     break;
                 case 'fail7': $loginReturnMessage = sprintf(__('Error with SSO Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
                     break;
-                case 'fail8': $loginReturnMessage = sprintf(__('Email account does not match the email stored in %1$s. If you have logged in with your school email account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
+                case 'fail8': $loginReturnMessage = sprintf(__('The sign-in provider account could not be matched to a unique active %1$s account. Please contact %2$s if you believe this is an error.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
                     break;
                 case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
                     break;
@@ -129,9 +129,10 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         // Add Google Login Button
         if (!$this->session->exists('username') && !$this->session->exists('email')) {
-            $googleSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
-            $microsoftSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft'), true);
-            $genericSSOSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoOther'), true);
+            $googleSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true) ?: [];
+            $microsoftSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft'), true) ?: [];
+            $genericSSOSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoOther'), true) ?: [];
+            $oidcSettings = json_decode((string) $this->settingGateway->getSettingByScope('System Admin', 'ssoOIDC'), true) ?: [];
 
             if ($googleSettings['enabled'] == 'Y' || $microsoftSettings['enabled'] == 'Y' || $genericSSOSettings['enabled'] == 'Y') {
                 echo '<div class="column-no-break">';
@@ -228,7 +229,14 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $form->addHiddenValue('address', $this->session->get('address'));
                 $form->addHiddenValue('method', 'default');
 
-                $loginMethod = $_GET['method'] ?? '';
+                $loginMethod = is_scalar($_GET['method'] ?? null) ? (string) $_GET['method'] : '';
+                $oidcPending = $this->session->get('oidcPending');
+                if (!empty($oidcPending) && $loginMethod != 'mfa') {
+                    $loginMethod = 'oidclink';
+                }
+                if ($loginMethod == 'oidclink' && empty($oidcPending)) {
+                    $loginMethod = '';
+                }
 
                 if ($loginMethod == 'mfa') {
                     $nonce = hash('sha256', $guid.time());
@@ -243,6 +251,58 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $col = $form->addRow()->addColumn();
                         $col->addLabel('mfaCode', __('Multi Factor Authentication Code'));
                         $col->addNumber('mfaCode');
+                } elseif ($loginMethod == 'oidclink' && !empty($oidcPending)) {
+                    $form = Form::createBlank('oidcLink', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
+                    $form->setAutocomplete(false);
+                    $form->addHiddenValue('address', $this->session->get('address'));
+                    $form->addHiddenValue('method', 'oidclink');
+
+                    $oidcDisplayName = trim((string) ($oidcPending['displayName'] ?? ''));
+                    $oidcEmail = trim((string) ($oidcPending['email'] ?? ''));
+                    $oidcIdentity = $oidcDisplayName !== '' ? $oidcDisplayName : $oidcEmail;
+                    if ($oidcDisplayName !== '' && $oidcEmail !== '' && $oidcDisplayName !== $oidcEmail) {
+                        $oidcIdentity .= ' ('.$oidcEmail.')';
+                    }
+
+                    $form->addRow()->addHeading('oidcLink', __('Bind OIDC Account'));
+                    $form->addRow()->addContent(
+                        '<p class="text-sm text-gray-700 mb-2">'.__('This OIDC account has not been matched to a unique Gibbon account. Please sign in with your existing Gibbon username and password to complete the binding.').'</p>'
+                        . ($oidcIdentity !== '' ? '<p class="text-sm text-gray-600"><strong>'.__('OIDC Identity').':</strong> '.htmlPrep($oidcIdentity).'</p>' : '')
+                    );
+
+                    $row = $form->addRow()->addClass('flex items-center justify-between');
+                        $row->addButton('')
+                            ->setID('usernameLabel')
+                            ->setIcon('solid', 'user')
+                            ->groupAlign('left')
+                            ->setAria('label', __('Username or email'))
+                            ->setTitle(__('Username or email'))
+                            ->setClass('text-sm py-2')
+                            ->setAttribute('tabindex', -1);
+                        $row->addTextField('username')
+                            ->groupAlign('right')
+                            ->required()
+                            ->maxLength(50)
+                            ->setClass('w-full flex-grow py-2')
+                            ->setAria('label', __('Username or email'))
+                            ->placeholder(__('Username or email'));
+
+                    $row = $form->addRow()->addClass('flex items-center justify-between');
+                        $row->addButton('')
+                            ->setID('passwordLabel')
+                            ->setIcon('solid', 'password')
+                            ->groupAlign('left')
+                            ->setAria('label', __('Password'))
+                            ->setTitle(__('Password'))
+                            ->setClass('text-sm py-2')
+                            ->setAttribute('tabindex', -1);
+                        $row->addPassword('password')
+                            ->groupAlign('right')
+                            ->required()
+                            ->maxLength(30)
+                            ->setClass('w-full flex-grow py-2')
+                            ->setAria('label', __('Password'))
+                            ->placeholder(__('Password'));
                 } else {
                     $row = $form->addRow()->addClass('flex items-center justify-between');
                         $row->addButton('')
@@ -322,11 +382,27 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             ->setAttribute('@click', 'options = !options');
                 }
 
-                $row = $form->addRow()->setClass('flex justify-end items-center');
-                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('flex-1 mt-1')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
-                    $row->addSubmit(__('Login'))->addClass('flex-1 mt-1 text-right');
+                $row = $form->addRow()->setClass('flex justify-between items-center');
+                    if ($loginMethod == 'oidclink') {
+                        $cancelURL = json_encode((string) Url::fromRoute('login')->withQueryParam('method', 'canceloidc'));
+                        $row->addButton(__('Return to login options'), null, 'cancelOidc')
+                            ->addClass('flex-1 mt-1')
+                            ->onClick('window.location='.$cancelURL);
+                    } else {
+                        $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('flex-1 mt-1')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
+                    }
+                    $row->addSubmit($loginMethod == 'oidclink' ? __('Bind and Sign In') : __('Login'))->addClass('flex-1 mt-1 text-right');
 
                 echo $form->getOutput();
+
+                if ($loginMethod != 'mfa' && $loginMethod != 'oidclink' && (($oidcSettings['enabled'] ?? 'N') == 'Y')) {
+                    $oidcLoginUrl = (string) Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'oidc', 'options' => '']);
+                    $oidcName = !empty($oidcSettings['clientName']) ? $oidcSettings['clientName'] : __('OpenID Connect');
+                    echo '<div class="mt-2 text-center">';
+                    echo '<a href="'.htmlPrep($oidcLoginUrl).'" onclick="return window.addOAuth2LoginParams ? addOAuth2LoginParams(this, event) : true;" class="text-sm font-semibold text-gray-700 hover:text-blue-600 hover:underline">'.__('Sign in with {service}', ['service' => htmlPrep($oidcName)]).'</a>';
+                    echo '</div>';
+                }
+
                 echo '</div>';
             }
         }
