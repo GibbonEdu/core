@@ -209,7 +209,7 @@ class UpdateForm
             $restorePath = $this->session->get('absoluteURL').'/modules/System Admin/updateRestoreProcess.php';
             $row->addSubmit(__('Downgrade to {version}', ['version' => $version]))
                 ->addClass('rounded-md')
-                ->setAttribute('onclick', 'document.getElementById("fileUpdate").action="'.$restorePath.'";')
+                ->setAttribute('formaction', $restorePath)
                 ->setColor('gray');
         }
     }

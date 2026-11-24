@@ -45,13 +45,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     $settingGateway = $container->get(SettingGateway::class);
     $updater = $container->get(Updater::class);
 
-    // Need a valid install, DB already up to date, and confirm checked
-    if ($updater->isUpdateRequired() > 0 || ($_POST['confirm'] ?? '') != 'Y') {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
-        exit;
-    }
-
     // Working folder for zip, staging, backup, and lock
     $absolutePath = $session->get('absolutePath');
     $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
@@ -81,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Keep going even if the browser disconnects and allow enough time for download + replace
     ignore_user_abort(true);
-    @set_time_limit(300);
+    @set_time_limit(3000);
 
     // Put the site into maintenance mode while files are replaced
     $settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');

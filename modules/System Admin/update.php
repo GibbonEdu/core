@@ -74,11 +74,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $nextRelease = $versionCatalog->getNextRelease($updater->versionCode, $cuttingEdge);
     }
 
-    // Fetch the remote version catalog and merge it with the changelog from the local file
-    // $versions = $versionCatalog->fetch($updater->versionCode);
-    // $changelog = $versionCatalog->getChangeLogFromFile();
-    // $versionCatalog->mergeCatalog($changelog);
-
     // Updater version number and status overview
     echo $page->fetchFromTemplate('updateOverview.twig.html', [
         'versionCode'       => $updater->versionCode,
@@ -147,8 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         } elseif (empty($nextRelease)) {
             echo Format::alert(__('Your Gibbon core is up to date.'), 'success');
         } else {
-            echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.'), 'message');
-            echo Format::alert('<b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
+            echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.').'<br><br><b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
         }
 
         // Cutting edge warning and composer check

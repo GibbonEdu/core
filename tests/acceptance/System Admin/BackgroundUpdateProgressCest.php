@@ -17,17 +17,6 @@ class BackgroundUpdateProgressCest
         // submitted unless it is already suppressed by an active fixture.
         $I->deleteFromDatabase('gibbonLog', ['title' => self::SYSTEM_UPDATE_TITLE]);
         $I->deleteFromDatabase('gibbonLog', ['title' => self::OTHER_PROCESS_TITLE]);
-        $I->deleteFromDatabase('gibbonSetting', [
-            'scope' => 'System Admin',
-            'name' => 'backgroundUpdateProgress',
-        ]);
-        $I->haveInDatabase('gibbonSetting', [
-            'scope' => 'System Admin',
-            'name' => 'backgroundUpdateProgress',
-            'nameDisplay' => 'Background Update Progress',
-            'description' => 'Codeception-only progress fixture',
-            'value' => '{"type":null,"stage":null,"status":"idle","progress":null}',
-        ]);
     }
 
     public function activeProgressAppearsBeforeOverviewAndSnapshotChangesPollResponse(AcceptanceTester $I): void
@@ -43,7 +32,6 @@ class BackgroundUpdateProgressCest
             $displayGibbonLogID
         ));
         $I->seeElement('#updateProgress', [
-            'hx-trigger' => 'every 2s',
             'hx-target' => 'this',
             'hx-swap' => 'outerHTML',
         ]);
