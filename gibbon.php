@@ -151,25 +151,24 @@ $tokenHandler = $container->get(TokenHandler::class);
 
 // Check for CSRF token and nonce when posting any form
 if (!empty($_POST) && count($_POST) > 1 && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
-    
-    // Ensure the request originates within the system
-    if (!str_starts_with($_SERVER['HTTP_REFERER'], $session->get('absoluteURL'))) {
-        $URL = Url::fromRoute()->withQueryParam('return', 'error0');
-        header("Location: {$URL}");
-        exit;
-    }
+
+    $referrer = (new Url($_SERVER['HTTP_REFERER']));
+    $origin = Url::fromHandlerRoute('index.php')->withAbsoluteUrl();
+
+    // Ensure the referrer originates within the system, otherwise default to the base index page
+    $URL = Url::isSameOrigin($referrer, $origin)
+        ? $referrer
+        : $origin;
 
     // Validate CSRF token
     if (!$tokenHandler->validateCsrfToken()) {
-        $URL = $_SERVER['HTTP_REFERER'].'&return=error9';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error9')}");
         exit;
     }
 
     // Validate nonce
     if (!$tokenHandler->validateNonce()) {
-        $URL = $_SERVER['HTTP_REFERER'].'&return=error10';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error10')}");
         exit;
     }
 }

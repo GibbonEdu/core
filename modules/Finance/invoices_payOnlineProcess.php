@@ -153,7 +153,7 @@ if (!$payment->incomingPayment()) {
     }
 
     //Check return values to see if we can proceed
-    if ($gibbonFinanceInvoiceID == '' or $key == '' or $gibbonFinanceInvoiceeID == '' or $invoiceTo = '' or $gibbonSchoolYearID == '') {
+    if ($gibbonFinanceInvoiceID == '' or $key == '' or $gibbonFinanceInvoiceeID == '' or $invoiceTo == '' or $gibbonSchoolYearID == '') {
         $URL .= '&return=warning3';
         header("Location: {$URL}");
         exit();
@@ -251,13 +251,13 @@ if (!$payment->incomingPayment()) {
                 //Get receipt number
 
                 $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
-                $sqlPayments = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID';
+                $sqlPayments = 'SELECT gibbonPaymentID FROM gibbonPayment WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID';
                 $resultPayments = $connection2->prepare($sqlPayments);
                 $resultPayments->execute($dataPayments);
                 $receiptCount = $resultPayments->rowCount();
 
                 //Prep message
-                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
+                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true, $receiptCount-1)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
 
                 $mail = $container->get(Mailer::class);
                 $mail->SetFrom($settingGateway->getSettingByScope('Finance', 'email'), sprintf(__('%1$s Finance'), $session->get('organisationName')));

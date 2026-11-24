@@ -1,7 +1,7 @@
 actor_suffix: Tester
 paths:
     # where the tests stored
-    tests: ''
+    tests: '/'
 
     # directory for output
     log: log

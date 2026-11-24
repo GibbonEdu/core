@@ -1,0 +1,64 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex flex-col sm:flex-row w-full mb-6 bg-white shadow rounded-lg border  font-sans">
+
+    <div class="w-full sm:flex-1 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-b sm:border-b-0 sm:border-r ">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('Codebase Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            v{{ versionCode }}
+        </div>
+        <div id="versionUpdate" class="mt-1">
+            <span class="tag rounded-full {{ versionUpdate ? 'warning' : 'success' }}">
+                {{ versionUpdate ? __('Update Available') : __('OK') }}
+            </span>
+        </div>
+    </div>
+
+    <div class="w-full sm:flex-1 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-b sm:border-b-0 {{ cuttingEdge ? 'sm:border-r' }} ">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('Database Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            v{{ versionDB }}
+        </div>
+        <div id="databaseUpdate" class="mt-1">
+            <span class="tag rounded-full {{ databaseUpdate ? 'warning' : 'success' }}">
+                {{ databaseUpdate ? __('Update Available') : __('OK') }}
+            </span>
+        </div>
+    </div>
+
+    {% if cuttingEdge %}
+
+    <div class="w-full sm:flex-1 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 ">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('Cutting Edge Code') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ cuttingEdgeCode }}
+        </div>
+        {% if cuttingEdgeUpdate > 0 %}
+        <div class="mt-1">
+            <span class="tag rounded-full {{ cuttingEdgeUpdate > 0 ? 'warning' : 'dull' }}">
+                +{{ cuttingEdgeUpdate }}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+
+
+
+    {% endif %}
+</div>
+

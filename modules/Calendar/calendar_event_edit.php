@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_ed
 
     $row = $form->addRow();
         $row->addLabel('locationType', __('Location Type'));
-        $row->addSelect('locationType')->fromArray(['Internal' => __('Internal'), 'External' => __('External')])->placeholder();
+        $row->addSelect('locationType')->fromArray(['Internal' => __('Internal'), 'External' => __('External')])->placeholder()->required();
 
     $form->toggleVisibilityByClass('internal')->onSelect('locationType')->when('Internal');
 

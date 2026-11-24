@@ -40,6 +40,8 @@ class SchoolYearGateway extends QueryableGateway
     private static $tableName = 'gibbonSchoolYear';
     private static $primaryKey = 'gibbonSchoolYearID';
 
+    private static $searchableColumns = [];
+
     /**
      * Query for school years.
      *
