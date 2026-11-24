@@ -32,8 +32,9 @@ v30.0.04
 
     Bug Fixes
         System: fixed internal links opening in a new tab rather than same tab
-        System Admin: fixed PHP error on Import History page
+        Admissions: fixed family fields when an account has a family but no person
         Calendar: fixed existing future attendance not visible in participants list, fix permission check for Manage Events_all
+        System Admin: fixed PHP error on Import History page
 
 v30.0.03
 --------
