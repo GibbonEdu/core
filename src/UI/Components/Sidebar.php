@@ -103,7 +103,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     break;
                 case 'fail5': $loginReturnMessage = __('Your request failed due to a database error.');
                     break;
-                case 'fail6': $loginReturnMessage = sprintf(__('You have 10 failed logins: please %1$sreset password%2$s.'), "<a href='".Url::fromRoute('passwordReset') . "'>", '</a>');
+                case 'fail6': $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".Url::fromRoute('passwordReset') . "'>", '</a>');
                     break;
                 case 'fail7': $loginReturnMessage = sprintf(__('Error with SSO Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
                     break;
