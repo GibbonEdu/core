@@ -27,10 +27,13 @@ v30.0.04
 
     Security
         System: improved Twig sandboxing for user supplied templates
+        Crowd Assessment: improved sanitisation of planner variables
         Reports: limited Twig filters and functions based in sandbox security policy
 
     Bug Fixes
+        System: fixed internal links opening in a new tab rather than same tab
         Admissions: fixed family fields when an account has a family but no person
+        Calendar: fixed existing future attendance not visible in participants list, fix permission check for Manage Events_all
         User Admin: fixed password reset so a request runs from the reset form and repeat requests get the same result
 
 v30.0.03
