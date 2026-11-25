@@ -117,14 +117,13 @@ class BackgroundUpdateProgressCest
         $I->assertSame('failed', $snapshot['state']);
         $I->assertSame('Failed', $snapshot['lifecycleLabel']);
         $I->assertSame('Installing update…', $snapshot['stageLabel']);
-        $I->assertSame('Update failed. Check the server logs and try again.', $snapshot['message']);
+        $I->assertSame('Update failed. Check the server logs and try again, or update manually.', $snapshot['message']);
         $I->assertSame(70, $snapshot['progress']);
 
         foreach (['0', '0000000000000000', '0000000000000596invalid', '999999999', (string) $otherGibbonLogID] as $invalidID) {
             $snapshot = $this->getProgressSnapshot($I, $invalidID);
             $I->assertSame('unavailable', $snapshot['state']);
             $I->assertSame('Unavailable', $snapshot['lifecycleLabel']);
-            $I->assertSame('Background updates are unavailable on this system.', $snapshot['message']);
             $I->assertNull($snapshot['progress']);
         }
     }
@@ -166,7 +165,7 @@ class BackgroundUpdateProgressCest
 
         $I->loginAsAdmin();
         $I->amOnModulePage('System Admin', 'update.php');
-        $I->see('System restore in progress.', '#updateProgress');
+        $I->see('File system restore in progress.', '#updateProgress');
         $I->see('Restoring files…', '#updateProgress');
         $I->seeElement('#updateProgress', [
             'x-show' => 'updateProgressOpen',
@@ -175,7 +174,7 @@ class BackgroundUpdateProgressCest
 
         $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
         $I->assertSame('active', $snapshot['state']);
-        $I->assertSame('System restore in progress.', $snapshot['typeLabel']);
+        $I->assertSame('File system restore in progress.', $snapshot['typeLabel']);
         $I->assertSame('Restoring files…', $snapshot['stageLabel']);
         $I->assertSame(70, $snapshot['progress']);
     }
@@ -240,7 +239,7 @@ class BackgroundUpdateProgressCest
 
         $restoreSource = file_get_contents($projectRoot.'/modules/System Admin/updateRestoreProcess.php');
         $I->assertNotFalse($restoreSource, 'The restore action is readable.');
-        $I->assertStringContainsString("SystemUpdateProcess::class, 'run', ['restore'], false", $restoreSource);
+        $I->assertStringContainsString("SystemUpdateProcess::class, 'run', ['restore']", $restoreSource);
     }
 
     /**

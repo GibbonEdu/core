@@ -58,13 +58,8 @@ $filesystem = $container->get(Filesystem::class);
 $baseDir = $filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
 $lockPath = $baseDir.'/fileUpdate.lock';
 
-$directoryReady = !empty($absolutePath) && is_dir($absolutePath);
-if ($directoryReady && !is_dir($baseDir)) {
-    $directoryReady = mkdir($baseDir, 0755, true) || is_dir($baseDir);
-}
-
-if (!$directoryReady || !is_writable($baseDir)) {
-    $URL .= '&return=errorFileDirectory';
+if (!$filesystem->ensureDirectory($baseDir)) {
+    $URL .= '&return=errorFilePermissions';
     header("Location: {$URL}");
     exit;
 }
@@ -89,24 +84,10 @@ if (in_array($process['status'] ?? '', ['Ready', 'Running'], true)) {
     exit;
 }
 
-// Retain the existing busy precondition without holding the lock needed by the worker.
-$lock = @fopen($lockPath, 'c');
-if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
-    if ($lock !== false) {
-        fclose($lock);
-    }
-
-    $URL .= '&return=errorFileBusy';
-    header("Location: {$URL}");
-    exit;
-}
-
-flock($lock, LOCK_UN);
-fclose($lock);
-
+// Start the background process
 try {
     $container->get(SystemUpdateProgress::class)->begin('file');
-    $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', ['file'], false);
+    $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', ['file']);
 } catch (\Throwable $error) {
     error_log('updateFilesProcess background start failed: '.$error->getMessage());
 
@@ -116,22 +97,9 @@ try {
         error_log('updateFilesProcess progress failure-state error: '.$progressError->getMessage());
     }
 
-    $URL .= '&return=errorBackgroundUpdateUnavailable';
+    $URL .= '&return=errorUpdateFailed';
     header("Location: {$URL}");
     exit;
-}
-
-// Re-attach the initiating browser session so the user stays logged in after files change.
-try {
-    $data = [
-        'gibbonSessionID' => session_id(),
-        'gibbonPersonID' => $session->get('gibbonPersonID'),
-        'sessionStatus' => 'Logged In',
-        'timestampModified' => date('Y-m-d H:i:s'),
-    ];
-    $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
-} catch (\Throwable $error) {
-    error_log('updateFilesProcess session refresh failed: '.$error->getMessage());
 }
 
 if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {

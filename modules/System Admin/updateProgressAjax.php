@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
-$unavailableMessage = __('Background updates are unavailable on this system.');
+$unavailableMessage = __('Update failed. Check the server logs and try again, or update manually.');
 
 /**
  * @param array{state: string, lifecycleLabel: string, typeLabel: string, stageLabel: string, message: string, progress: ?int} $response
@@ -112,7 +112,7 @@ switch ($progressSnapshot['status']) {
             'lifecycleLabel' => $progressService->getStatusLabel('failed') ?? '',
             'typeLabel'      => $typeLabel,
             'stageLabel'     => $stageLabel,
-            'message'        => __('Update failed. Check the server logs and try again.'),
+            'message'        => $unavailableMessage,
             'progress'       => $progress,
         ]);
         break;

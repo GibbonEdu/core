@@ -69,7 +69,7 @@ final class SystemUpdateProgress
         $this->typeLabels = [
             'file'     => __('File system update in progress.'),
             'database' => __('Database update in progress.'),
-            'restore'  => __('System restore in progress.'),
+            'restore'  => __('File system restore in progress.'),
         ];
         $this->stageLabels = [
             'preparing'   => __('Preparing update…'),

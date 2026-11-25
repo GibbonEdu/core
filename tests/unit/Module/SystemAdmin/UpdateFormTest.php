@@ -28,6 +28,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Filesystem\VersionCatalog;
 use PHPUnit\Framework\TestCase;
 
+require_once dirname(__DIR__, 4).'/functions.php';
 require_once dirname(__DIR__, 4).'/modules/System Admin/src/Forms/UpdateForm.php';
 
 /**
@@ -51,7 +52,10 @@ class UpdateFormTest extends TestCase
             '32.0.00' => ['status' => 'Current'],
         ]);
         $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
-        $versionCatalog->method('getNextRelease')->willReturn(['version' => '31.0.00']);
+        $versionCatalog->method('getNextRelease')->willReturn([
+            'version' => '31.0.00',
+            'phpVersion' => '8.2',
+        ]);
         $versionCatalog->method('getCatalog')->willReturn([
             '29.0.00' => ['changelog' => ['Bug Fixes' => ['A previous fix.']]],
             '30.0.00' => ['status' => 'Current', 'changelog' => []],
@@ -59,6 +63,7 @@ class UpdateFormTest extends TestCase
             '32.0.00' => ['status' => 'Current', 'changelog' => []],
             '33.0.00' => ['status' => 'Development', 'changelog' => []],
         ]);
+        $versionCatalog->method('getCatalogVersion')->willReturn('30.0.00');
 
         $form = $this->createUpdateForm($updater, $versionCatalog, '29.0.00')->createForm($updater, $versionCatalog);
 
@@ -93,7 +98,10 @@ class UpdateFormTest extends TestCase
             '31.0.00' => ['status' => 'Current'],
         ]);
         $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
-        $versionCatalog->method('getNextRelease')->willReturn(['version' => '31.0.00']);
+        $versionCatalog->method('getNextRelease')->willReturn([
+            'version' => '31.0.00',
+            'phpVersion' => '8.2',
+        ]);
         $versionCatalog->method('getCatalog')->willReturn([
             '29.0.00' => ['changelog' => []],
             '30.0.00' => ['status' => 'Current', 'changelog' => []],

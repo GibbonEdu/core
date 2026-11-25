@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\SystemAdmin\Forms;
 
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Filesystem\VersionCatalog;
-use Gibbon\Forms\Form;
+use Gibbon\Database\Updater;
 use Gibbon\Forms\Layout\Column;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Services\Format;
+use Gibbon\Forms\Form;
 
 /**
  * Builds the available system update actions and their changelogs.
@@ -207,21 +207,35 @@ class UpdateForm
         }
 
         if (!$this->canRunAutomaticFileUpdate && ($isHigherVersion || $isRestoreRelease)) {
-            $row->addButton(__('Automatic Update Unavailable'))
+            $row->addButton(__('Unavailable'))
                 ->addClass('text-sm text-gray-600')
-                ->setAttribute('disabled', 'disabled')
-                ->setAttribute('title', __('Correct the file permissions or update manually.'));
+                ->setAttribute('disabled', 'disabled');
+            return;
+        }
+
+        if (empty($this->versionCatalog->getCatalogVersion()) && ($isHigherVersion || $isRestoreRelease)) {
+            $row->addButton(__('Unavailable'))
+                ->addClass('text-sm text-gray-600')
+                ->setAttribute('disabled', 'disabled');
             return;
         }
 
         if ($this->isNextRelease($version, $nextRelease)) {
-            $submit = $row->addSubmit(__('Update to {version}', ['version' => $version]))
-                ->addClass('text-sm text-gray-600');
-            $this->enableBackgroundSubmission(
-                $submit,
-                $this->session->get('absoluteURL').'/modules/System Admin/updateFilesProcess.php'
-            );
-            return;
+            $phpVersion = phpversion();
+            if (version_compare($phpVersion, $nextRelease['phpVersion'], '<')) {
+                $row->addButton(__('Requires {version} or higher', ['version' => 'PHP '.$nextRelease['phpVersion']]))
+                    ->addClass('text-sm text-gray-600')
+                    ->setAttribute('disabled', 'disabled');
+                return;
+            } else {
+                $submit = $row->addSubmit(__('Update to {version}', ['version' => $version]))
+                    ->addClass('text-sm text-gray-600');
+                $this->enableBackgroundSubmission(
+                    $submit,
+                    $this->session->get('absoluteURL').'/modules/System Admin/updateFilesProcess.php'
+                );
+                return;
+            }
         }
 
         if ($isHigherVersion) {

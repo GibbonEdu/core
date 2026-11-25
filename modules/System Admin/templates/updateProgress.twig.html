@@ -152,7 +152,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     </div>
 
                     <div class="mt-4 h-6 w-full overflow-hidden rounded-full bg-gray-200" role="progressbar" aria-label="{{ __('Progress') }}" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
-                        <div class="h-full rounded-full transition-transform duration-300 ease-in-out bg-stripe-overlay animate-bg-slide" :class="state === 'failed' || state === 'unavailable' ? 'bg-red-600' : 'bg-purple-500'" :style="'width: ' + progress + '%'"></div>
+                        <div class="h-full rounded-full transition-transform duration-300 ease-in-out bg-stripe-overlay " :class="state === 'failed' || state === 'unavailable' ? 'bg-red-600' : 'bg-purple-500 animate-bg-slide'" :style="'width: ' + progress + '%'"></div>
                     </div>
                 </div>
             </div>

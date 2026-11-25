@@ -44,14 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $session->forget('fileUpdateStage');
     }
     $page->return->addReturns([
-        'warning1'           => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
-        'error3'             => __('Your request failed because your inputs were invalid, or no update was required.'),
-        'errorFiles'                       => $errorFiles,
-        'errorFileDirectory'               => __('Your request failed because the file update directory is missing or not writeable. Check the file permissions on your server.'),
-        'errorFilePermissions'             => __('Automatic updates are unavailable because the application does not have the required file permissions. Correct the permissions or update manually.'),
-        'errorFileBusy'                    => __('Your request failed because a file update is already in progress. Please wait a few minutes and try again.'),
-        'errorUpdateBusy'                  => __('A system update is already in progress. Please wait a few minutes and try again.'),
-        'errorBackgroundUpdateUnavailable' => __('Background updates are unavailable on this system.'),
+        'warning1'             => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
+        'error3'               => __('Your request failed because your inputs were invalid, or no update was required.'),
+        'errorFiles'           => $errorFiles,
+        'errorFilePermissions' => __('Automatic updates are unavailable because the application does not have the required file permissions. Check the file permissions on your server or update manually.'),
+        'errorUpdateBusy'      => __('A system update is already in progress. Please wait a few minutes and try again.'),
+        'errorUpdateFailed'    => __('Update failed. Check the server logs and try again, or update manually.'),
     ]);
 
     // Get and display SQL errors
@@ -79,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Updater version number and status overview
     echo $page->fetchFromTemplate('updateOverview.twig.html', [
+        'versionError'      => empty($versionCatalog->getCatalog()),
         'versionCode'       => $updater->versionCode,
         'versionUpdate'     => !empty($nextRelease),
         'versionDB'         => $updater->versionDB,
@@ -109,28 +108,29 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         : $progressEndpoint;
 
     echo $page->fetchFromTemplate('updateProgress.twig.html', [
-        'isDormant'          => !$isUpdateActive && !$hasUpdateFailure,
+        'isDormant'          => !$isUpdateActive ,
         'isPolling'          => $isUpdateActive,
         'pollUrl'            => $pollUrl,
         'isFailure'          => $hasUpdateFailure,
         'lifecycleLabel'     => $updateProgressService->getStatusLabel($updateProgress['status']) ?? '',
         'typeLabel'          => $updateProgressService->getTypeLabel($updateProgress['type']) ?? '',
         'stageLabel'         => $updateProgressService->getStageLabel($updateProgress['stage']) ?? '',
-        'message'            => $hasUpdateFailure ? __('Update failed. Check the server logs and try again.') : '',
+        'message'            => $hasUpdateFailure ? __('Update failed. Check the server logs and try again, or update manually.') : '',
         'progress'           => $progress,
-        'unavailableMessage' => __('Background updates are unavailable on this system.'),
+        'unavailableMessage' => __('Could not connect to the GibbonEdu repository. Please wait a few minutes and try again, or update manually.'),
     ]);
-
 
     // Update status message
     if ($updateRequired > 0) {
         echo Format::alert(__('You have updated your Gibbon code to a new version, and are ready to update your database from {versionDB} to {versionCode}. This operation cannot be undone: backup your entire database prior to running the update!', ['versionDB' => $updater->versionDB, 'versionCode' => $updater->versionCode]), 'warning');
     } elseif (!$canRunAutomaticFileUpdate) {
-        echo Format::alert(__('Automatic updates are unavailable because the application does not have the required file permissions. Correct the permissions or update manually.'), 'error');
+        echo Format::alert(__('Automatic updates are unavailable because the application does not have the required file permissions. Check the file permissions on your server or update manually.'), 'error');
     } elseif (empty($nextRelease) && !$cuttingEdge && $updateRequired === -1) {
         echo Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error');
-    } elseif (empty($nextRelease)) {
+    } elseif (empty($nextRelease) && !empty($versionCatalog->getCatalog())) {
         echo Format::alert(__('Your Gibbon core is up to date.'), 'success');
+    } elseif (empty($nextRelease)) {
+        echo Format::alert(__('Version check failed').'. '.__('Could not connect to the GibbonEdu repository. Please wait a few minutes and try again, or update manually.'), 'error');
     } else {
         echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.').'<br><br><b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
     }

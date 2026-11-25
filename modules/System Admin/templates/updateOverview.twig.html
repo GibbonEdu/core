@@ -18,8 +18,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             v{{ versionCode }}
         </div>
         <div id="versionUpdate" class="mt-1">
-            <span class="tag rounded-full {{ versionUpdate ? 'warning' : 'success' }}">
-                {{ versionUpdate ? __('Update Available') : __('OK') }}
+            <span class="tag rounded-full {{ versionUpdate or versionError ? 'warning' : 'success' }}">
+                {{ versionError ? __('Error') : versionUpdate ? __('Update Available') : __('OK') }}
             </span>
         </div>
     </div>
@@ -32,8 +32,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             v{{ versionDB }}
         </div>
         <div id="databaseUpdate" class="mt-1">
-            <span class="tag rounded-full {{ databaseUpdate ? 'warning' : 'success' }}">
-                {{ databaseUpdate ? __('Update Available') : __('OK') }}
+            <span class="tag rounded-full {{ databaseUpdate or versionError ? 'warning' : 'success' }}">
+                {{ versionError ? __('Error') : databaseUpdate ? __('Update Available') : __('OK') }}
             </span>
         </div>
     </div>

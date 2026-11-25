@@ -53,9 +53,24 @@ class VersionCatalog
         $this->session = $session;
     }
 
+    /**
+     * Get all versions stored in the catalog.
+     *
+     * @return array
+     */
     public function getCatalog() : array
     {
         return $this->catalog;
+    }
+
+    /**
+     * Get the version string of the currently loaded catalog.
+     *
+     * @return string
+     */
+    public function getCatalogVersion() : string
+    {
+        return $this->catalogVersion;
     }
 
     /**

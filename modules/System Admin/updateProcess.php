@@ -78,7 +78,7 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
 
     try {
         $container->get(SystemUpdateProgress::class)->begin('database');
-        $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', [$type], false);
+        $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', [$type]);
     } catch (\Throwable $error) {
         error_log('updateProcess background start failed: '.$error->getMessage());
 
@@ -91,19 +91,6 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
         $URL .= '&return=errorBackgroundUpdateUnavailable';
         header("Location: {$URL}");
         exit;
-    }
-
-    // Re-attach the initiating browser session so the user stays logged in after the update.
-    try {
-        $data = [
-            'gibbonSessionID' => session_id(),
-            'gibbonPersonID' => $session->get('gibbonPersonID'),
-            'sessionStatus' => 'Logged In',
-            'timestampModified' => date('Y-m-d H:i:s'),
-        ];
-        $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
-    } catch (\Throwable $error) {
-        error_log('updateProcess session refresh failed: '.$error->getMessage());
     }
 
     if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {
