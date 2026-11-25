@@ -24,6 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -106,14 +107,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
         //Produce array of attendance data
         $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-        $sql = 'SELECT date, nameShort, gibbonAttendanceLogFormGroup.gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) as timestamp, timestampTaken, gibbonPersonIDTaker FROM gibbonAttendanceLogFormGroup JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonAttendanceLogFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+        $sql = 'SELECT date, session, nameShort, gibbonAttendanceLogFormGroup.gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) as timestamp, timestampTaken, gibbonPersonIDTaker FROM gibbonAttendanceLogFormGroup JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonAttendanceLogFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
         $result = $connection2->prepare($sql);
         $result->execute($data);
         $log = [];
         $logAll = [];
+        $logSessions = [];
         while ($row = $result->fetch()) {
-            $log[$row['gibbonFormGroupID']][$row['date']] = true;
+            $logSessions[$row['gibbonFormGroupID']][$row['date']][] = $row['session'];
             $logAll[$row['gibbonFormGroupID']][] = $row;
+        }
+
+        // A day is registered once attendance has been taken for every session, such as AM and PM
+        $sessions = getFormGroupAttendanceSessions($container->get(SettingGateway::class));
+        foreach ($logSessions as $gibbonFormGroupID => $dates) {
+            foreach ($dates as $date => $sessionsTaken) {
+                if (isFormGroupAttendanceComplete($sessionsTaken, $sessions)) {
+                    $log[$gibbonFormGroupID][$date] = true;
+                }
+            }
         }
 
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -209,6 +221,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                                 } elseif (isset($log[$row['gibbonFormGroupID']][$date]) == false) {
                                     //$class = 'highlightNoData';
                                     $class = 'highlightAbsent';
+                                    if (!empty($sessions) && !empty($logSessions[$row['gibbonFormGroupID']][$date])) {
+                                        $link = './index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID='.$row['gibbonFormGroupID'].'&currentDate='.$date;
+                                        $title = __('Not taken').': '.implode(', ', array_diff($sessions, $logSessions[$row['gibbonFormGroupID']][$date]));
+                                    }
                                 } else {
                                     $link = './index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID='.$row['gibbonFormGroupID'].'&currentDate='.$date;
                                     $class = 'highlightPresent';
