@@ -64,8 +64,8 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
 
                 //Validate Inputs
                 $count = 0;
-                if (is_numeric($_POST['count'])) {
-                    $count = $_POST['count'] ?? '';
+                if (is_numeric($_POST['count'] ?? '')) {
+                    $count = $_POST['count'];
                 }
                 $date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 

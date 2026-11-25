@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Calendar/calendar_event_pa
         }
 
         // Check for access to edit this event
-        $canEditEvent = $event['editor'] == 'Y' && Access::allows('Calendar', 'calendar_event_edit');
+        $canEditEvent = ($event['editor'] == 'Y' && Access::allows('Calendar', 'calendar_event_edit')) || Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all');
         if (!$canEditEvent && !Access::allows('Calendar', 'calendar_event_edit', 'Manage Events_all')) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             return;

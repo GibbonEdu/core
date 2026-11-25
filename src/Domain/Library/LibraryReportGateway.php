@@ -39,6 +39,8 @@ class LibraryReportGateway extends QueryableGateway
     private static $tableName = 'gibbonLibraryItem';
     private static $primaryKey = 'gibbonLibraryItemID';
 
+    private static $searchableColumns = [];
+
     public function queryStudentReportData(QueryCriteria $criteria)
     {
         $query = $this

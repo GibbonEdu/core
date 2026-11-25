@@ -36,6 +36,8 @@ class TimetableGateway extends QueryableGateway
     private static $tableName = 'gibbonTT';
     private static $primaryKey = 'gibbonTTID';
 
+    private static $searchableColumns = [];
+
     public function selectTimetablesBySchoolYear($gibbonSchoolYearID) 
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);

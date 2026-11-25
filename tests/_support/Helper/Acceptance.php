@@ -48,8 +48,7 @@ class Acceptance extends \Codeception\Module
 
                 case 'select':      $optionTags = $element->getElementsByTagName('option');
                                     for ($i = 0; $i < $optionTags->length; $i++ ) {
-                                        if ($optionTags->item($i)->hasAttribute('selected') 
-                                        && $optionTags->item($i)->getAttribute('selected') === "selected") {
+                                        if ($optionTags->item($i)->hasAttribute('selected')) {
                                             $value = $optionTags->item($i)->getAttribute('value');
                                         }
                                     }
@@ -68,5 +67,28 @@ class Acceptance extends \Codeception\Module
     {
         $value = $this->getModule('PhpBrowser')->grabValueFrom($selector);
         $this->assertFalse(empty($value));
+    }
+
+    /**
+     * Assert the last PhpBrowser response contains an expected header value.
+     */
+    public function seeResponseHeader(string $name, string $value): void
+    {
+        $response = $this->getModule('PhpBrowser')->client?->getResponse();
+
+        $this->assertNotNull($response, 'No HTTP response is available.');
+        $this->assertSame($value, $response->getHeader($name));
+    }
+
+    /**
+     * Assert the last PhpBrowser response header contains a safe expected fragment.
+     */
+    public function seeResponseHeaderContains(string $name, string $value): void
+    {
+        $response = $this->getModule('PhpBrowser')->client?->getResponse();
+        $header = $response?->getHeader($name);
+
+        $this->assertNotNull($header, sprintf('Response header "%s" is missing.', $name));
+        $this->assertStringContainsString($value, (string) $header);
     }
 }

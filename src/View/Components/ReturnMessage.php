@@ -125,7 +125,7 @@ class ReturnMessage
             }
 
             if ($class == 'success' && !empty($this->editLink)) {
-                $returnMessage .= ' '.sprintf(__('You can edit your newly created record %1$shere%2$s.'), "<a href='$this->editLink'>", '</a>');
+                $returnMessage .= ' '.sprintf(__('You can edit your newly created record %1$shere%2$s.'), "<a href='".htmlPrep($this->editLink)."'>", '</a>');
             }
 
             return ['context' => $returnClass, 'text' => $returnMessage];

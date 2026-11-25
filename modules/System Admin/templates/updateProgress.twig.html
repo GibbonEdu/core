@@ -1,0 +1,100 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div id="updateProgressRegion"
+    x-data="{ updateProgressOpen: {{ isDormant ? 'false' : 'true' }} }"
+    {% if isDormant %}
+        x-on:backgroundUpdateStarted.window="updateProgressOpen = true"
+        hx-get="{{ pollUrl }}"
+        hx-trigger="backgroundUpdateStarted from:body"
+        hx-vals='js:{gibbonLogID: event.detail.gibbonLogID}'
+        hx-target="#updateProgressRegion"
+        hx-swap="outerHTML"
+    {% elseif isPolling %}
+        hx-get="{{ pollUrl }}"
+        hx-trigger="every 1s"
+        hx-target="#updateProgressRegion"
+        hx-swap="outerHTML"
+    {% endif %}
+>
+    <div id="updateProgress"
+        x-cloak
+        x-show="updateProgressOpen"
+        x-trap.inert.noscroll.noreturn="updateProgressOpen"
+        @keydown.escape.window="updateProgressOpen = false"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        {% if isDormant %}style="display: none;"{% endif %}
+        aria-labelledby="update-progress-title"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div class="flex items-center content-center justify-center min-h-screen px-4 text-center sm:block sm:p-0 overflow-hidden">
+            <div x-cloak
+                @click="updateProgressOpen = false"
+                x-show="updateProgressOpen"
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 transition bg-black bg-opacity-40 backdrop-blur-sm"
+                aria-hidden="true"
+            ></div>
+
+            <div x-cloak
+                x-show="updateProgressOpen"
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative inline-block w-full max-w-2xl overflow-y-auto p-6 my-20 overflow-x-hidden text-left transition-all transform bg-white rounded-lg shadow-xl"
+                style="min-height: 20vh; max-height: 80vh"
+            >
+                <div class="flex w-full -mt-4 ml-4 justify-end">
+                    <button @click="updateProgressOpen = false" class="bg-white text-gray-600 focus:outline-none hover:text-gray-700" aria-label="{{ __('Close') }}">
+                        {{ icon('basic', 'x-mark', 'size-6') }}
+                    </button>
+                </div>
+
+                <div class="px-3 pb-3 font-sans ">
+                    <div class="flex items-end justify-between gap-4">
+                        <div>
+                            <h2 id="update-progress-title" class="text-base font-semibold {{ isFailure ? 'text-red-800' : 'text-gray-800' }}">
+                                {{ __('System Update') }}
+                            </h2>
+                            <p class="mt-4 mb-0 text-sm {{ isFailure ? 'text-red-700' : 'text-gray-700' }}" role="status" aria-live="polite">
+                                {% if message %}
+                                    {{ message }}
+                                {% else %}
+                                    {{ typeLabel }}
+                                {% endif %}
+
+                                {% if stageLabel %}
+                                    {{ stageLabel }}
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <span class="text-sm font-semibold {{ isFailure ? 'text-red-800' : 'text-gray-800' }}">{{ progress|default(0) }}%</span>
+                    </div>
+
+                   
+                    <div class="mt-4 h-6 w-full overflow-hidden rounded-full bg-gray-200" role="progressbar" aria-label="{{ progress|default(0) }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress|default(0) }}">
+                        <div class="h-full rounded-full transition-transform duration-300 ease-in-out {{ isFailure ? 'bg-red-600' : 'bg-purple-500' }} bg-stripe-overlay animate-bg-slide" style="width: {{ progress|default(0) }}%"></div>
+                    </div>
+             
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

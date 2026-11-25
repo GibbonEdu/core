@@ -36,6 +36,7 @@ class StudentReportGateway extends QueryableGateway
     use SharedUserLogic;
 
     private static $tableName = 'gibbonStudentEnrolment';
+    private static $primaryKey = 'gibbonStudentEnrolmentID';
     private static $searchableColumns = ['gibbonPerson.transport', 'gibbonPerson.surname', 'gibbonPerson.preferredName'];
 
 

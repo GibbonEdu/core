@@ -118,13 +118,22 @@ class FamilyFields extends AbstractFieldGroup
 
         $row = $form->addRow();
 
+        $families = [];
+
         // FAMILY: Already logged in, record gibbonFamilyID choice
         if ($formBuilder->hasConfig('gibbonPersonID')) {
             $gibbonPersonIDParent = str_pad($formBuilder->getConfig('gibbonPersonID'), 10, '0', STR_PAD_LEFT);
             $families = $this->familyGateway->selectFamiliesByAdult($gibbonPersonIDParent)->fetchAll();
         }
 
-        if (!empty($families) || $formBuilder->hasConfig('gibbonFamilyID')) {
+        if (empty($families) && $formBuilder->hasConfig('gibbonFamilyID')) {
+            $family = $this->familyGateway->getByID($formBuilder->getConfig('gibbonFamilyID'));
+            if (!empty($family)) {
+                $families = [$family];
+            }
+        }
+
+        if (!empty($families)) {
         
             if ($field['fieldName'] == 'homeAddress') {
                 $row->addHeading('Family Details', __('Family Details'))->append(__('Choose the family you wish to associate this application with.'));
@@ -230,7 +239,7 @@ class FamilyFields extends AbstractFieldGroup
 
     public function shouldValidate(FormBuilderInterface $formBuilder, array &$data, string $fieldName)
     {
-        if ($formBuilder->hasConfig('gibbonPersonID')) return false;
+        if ($formBuilder->hasConfig('gibbonPersonID') || $formBuilder->hasConfig('gibbonFamilyID')) return false;
 
         return true;
     }

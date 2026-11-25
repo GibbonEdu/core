@@ -38,6 +38,8 @@ class DiscussionGateway extends QueryableGateway
     private static $tableName = 'gibbonDiscussion';
     private static $primaryKey = 'gibbonDiscussionID';
 
+    private static $searchableColumns = [];
+
     public function selectDiscussionByContext($foreignTable, $foreignTableID, $type = null, $order = "ASC")
     {
         $order = ($order == 'ASC' || $order == 'DESC') ? $order : 'ASC';

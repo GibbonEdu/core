@@ -32,7 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     //Proceed!
     $page->breadcrumbs->add(__('Data Retention'));
 
-    $page->return->addReturns(['success0' => __('{count} records were successfully scrubbed. These records still exist in the database, but their personal data has now been removed.', ['count' => $_GET['count'] ?? 0])]);
+    $count = $_GET['count'] ?? '';
+    if (is_string($count) && ctype_digit($count)) {
+        $page->return->addReturns(['success0' => __('{count} records were successfully scrubbed. These records still exist in the database, but their personal data has now been removed.', ['count' => $count])]);
+    }
 
     $form = Form::create('dataRetention', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataRetentionProcess.php');
     
