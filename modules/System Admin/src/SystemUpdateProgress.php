@@ -56,6 +56,10 @@ final class SystemUpdateProgress
     /** @var array<string, string> */
     private array $stageLabels;
 
+    /**
+     * @param SettingGateway $settingGateway
+     * @return void
+     */
     public function __construct(private SettingGateway $settingGateway)
     {
         $this->statusLabels = [
@@ -76,16 +80,34 @@ final class SystemUpdateProgress
         ];
     }
 
+    /**
+     * Get the translated label for a status code.
+     *
+     * @param string|null $status
+     * @return string|null
+     */
     public function getStatusLabel(?string $status): ?string
     {
         return $status === null ? null : ($this->statusLabels[$status] ?? null);
     }
 
+    /**
+     * Get the translated label for an update type.
+     *
+     * @param string|null $type
+     * @return string|null
+     */
     public function getTypeLabel(?string $type): ?string
     {
         return $type === null ? null : ($this->typeLabels[$type] ?? null);
     }
 
+    /**
+     * Get the translated label for an update stage.
+     *
+     * @param string|null $stage
+     * @return string|null
+     */
     public function getStageLabel(?string $stage): ?string
     {
         return $stage === null ? null : ($this->stageLabels[$stage] ?? null);
@@ -93,6 +115,9 @@ final class SystemUpdateProgress
 
     /**
      * Replace the current snapshot when an accepted update starts.
+     *
+     * @param string $type
+     * @return void
      */
     public function begin(string $type): void
     {
@@ -108,6 +133,11 @@ final class SystemUpdateProgress
 
     /**
      * Store the current update stage and progress percentage.
+     *
+     * @param string $stage
+     * @param string $status
+     * @param int|null $progress
+     * @return void
      */
     public function update(string $stage, string $status, ?int $progress): void
     {
@@ -126,6 +156,9 @@ final class SystemUpdateProgress
 
     /**
      * Record a failure without storing technical error details.
+     *
+     * @param string $stage
+     * @return void
      */
     public function fail(string $stage): void
     {
@@ -184,7 +217,10 @@ final class SystemUpdateProgress
     }
 
     /**
+     * Write the snapshot to the database.
+     *
      * @param array{type: ?string, stage: ?string, status: string, progress: ?int} $snapshot
+     * @return void
      */
     private function write(array $snapshot): void
     {
@@ -196,7 +232,11 @@ final class SystemUpdateProgress
     }
 
     /**
+     * Assert that a value is in the allowed list.
+     *
+     * @param string $value
      * @param string[] $allowed
+     * @return void
      */
     private function assertAllowed(string $value, array $allowed): void
     {
@@ -205,6 +245,12 @@ final class SystemUpdateProgress
         }
     }
 
+    /**
+     * Assert that progress is a valid percentage or null.
+     *
+     * @param int|null $progress
+     * @return void
+     */
     private function assertProgress(?int $progress): void
     {
         if ($progress !== null && ($progress < 0 || $progress > 100)) {
@@ -213,14 +259,23 @@ final class SystemUpdateProgress
     }
 
     /**
+     * Check if value is null or in the allowed list.
+     *
      * @param mixed $value
      * @param string[] $allowed
+     * @return bool
      */
     private function isAllowedOrNull(mixed $value, array $allowed): bool
     {
         return $value === null || (is_string($value) && in_array($value, $allowed, true));
     }
 
+    /**
+     * Normalize progress to an integer between 0 and 100.
+     *
+     * @param mixed $progress
+     * @return int|null
+     */
     private function normalizeProgress(mixed $progress): ?int
     {
         return is_int($progress) && $progress >= 0 && $progress <= 100 ? $progress : null;

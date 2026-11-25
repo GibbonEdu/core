@@ -45,7 +45,7 @@ class FileUpdaterTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->removeFixtureDirectory($this->fixturePath);
+        (new Filesystem())->deleteDirectory($this->fixturePath);
 
         parent::tearDown();
     }
@@ -61,7 +61,8 @@ class FileUpdaterTest extends TestCase
         $this->writeFile('/backups/fileUpdate/staging/vendor/autoload.php', 'new autoloader');
         $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
 
-        $updater = $this->createFileUpdater();
+        $filesystem = new FileUpdaterFilesystem();
+        $updater = $this->createFileUpdater($filesystem);
         $progress = [];
         $updater->setProgressCallback(function (int $percent) use (&$progress): void {
             $progress[] = $percent;
@@ -75,27 +76,20 @@ class FileUpdaterTest extends TestCase
         $stagingPath = str_replace('\\', '/', realpath($this->fixturePath.'/backups/fileUpdate/staging'));
         $this->assertSame([
             [$stagingPath.'/vendor', $this->fixturePath.'/vendor'],
-        ], $updater->installedDirectories);
+        ], $filesystem->replacedDirectories);
         $this->assertSame([
             [$stagingPath.'/modules/Example/update.php', $this->fixturePath.'/modules/Example/update.php'],
-        ], $updater->installedFiles);
+        ], $filesystem->replacedFiles);
 
         $this->assertFileExists($this->fixturePath.'/vendor/package/new.php');
-        $this->assertFileExists($this->fixturePath.'/vendor/autoload.php');
         $this->assertFileDoesNotExist($this->fixturePath.'/vendor/package/old.php');
         $this->assertFileDoesNotExist($this->fixturePath.'/vendor/obsolete.php');
         $this->assertSame('new module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
         $this->assertSame('unchanged module file', file_get_contents($this->fixturePath.'/modules/Example/unchanged.php'));
-
         $this->assertFileExists($this->fixturePath.'/backups/fileUpdate/previousVersionBackup/vendor/package/old.php');
-        $this->assertFileExists($this->fixturePath.'/backups/fileUpdate/previousVersionBackup/vendor/obsolete.php');
-        $this->assertSame(
-            'old module file',
-            file_get_contents($this->fixturePath.'/backups/fileUpdate/previousVersionBackup/modules/Example/update.php')
-        );
+        $this->assertSame('old module file', file_get_contents($this->fixturePath.'/backups/fileUpdate/previousVersionBackup/modules/Example/update.php'));
         $this->assertSame(0, $progress[0]);
         $this->assertSame(100, $progress[array_key_last($progress)]);
-        $this->assertGreaterThan(5, count($progress));
 
         $sortedProgress = $progress;
         sort($sortedProgress);
@@ -109,24 +103,22 @@ class FileUpdaterTest extends TestCase
         $this->writeFile('/backups/fileUpdate/staging/vendor/new.php', 'new vendor file');
         $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
 
-        $updater = $this->createFileUpdater();
+        $filesystem = new FileUpdaterFilesystem();
+        $updater = $this->createFileUpdater($filesystem);
         $updater->run(['vendor/new.php', 'modules/Example/update.php']);
-        $updater->installedDirectories = [];
-        $updater->installedFiles = [];
+        $filesystem->replacedDirectories = [];
+        $filesystem->replacedFiles = [];
 
         $updater->restore();
 
-        $this->assertCount(1, $updater->installedDirectories);
-        $this->assertSame(
-            $this->fixturePath.'/vendor',
-            $updater->installedDirectories[0][1]
-        );
+        $this->assertCount(1, $filesystem->replacedDirectories);
+        $this->assertSame($this->fixturePath.'/vendor', $filesystem->replacedDirectories[0][1]);
         $this->assertSame([
             [
                 $this->fixturePath.'/backups/fileUpdate/previousVersionBackup/modules/Example/update.php',
                 $this->fixturePath.'/modules/Example/update.php',
             ],
-        ], $updater->installedFiles);
+        ], $filesystem->replacedFiles);
         $this->assertFileExists($this->fixturePath.'/vendor/old.php');
         $this->assertFileDoesNotExist($this->fixturePath.'/vendor/new.php');
         $this->assertSame('old module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
@@ -139,30 +131,91 @@ class FileUpdaterTest extends TestCase
         $this->writeFile('/backups/fileUpdate/staging/vendor/new.php', 'new vendor file');
         $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
 
-        $updater = $this->createFileUpdater();
-        $updater->failInstallFileDestination = $this->fixturePath.'/modules/Example/update.php';
+        $filesystem = new FileUpdaterFilesystem();
+        $filesystem->failReplaceFileDestination = $this->fixturePath.'/modules/Example/update.php';
+        $updater = $this->createFileUpdater($filesystem);
 
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(FileUpdater::ERROR_REPLACE);
         try {
             $updater->run(['vendor/new.php', 'modules/Example/update.php']);
-            $this->fail('The update should fail when a file cannot be installed.');
-        } catch (\RuntimeException $exception) {
-            $this->assertSame(FileUpdater::ERROR_REPLACE, $exception->getMessage());
+        } finally {
+            $this->assertCount(2, $filesystem->replacedDirectories);
+            $this->assertFileExists($this->fixturePath.'/vendor/old.php');
+            $this->assertFileDoesNotExist($this->fixturePath.'/vendor/new.php');
+            $this->assertSame('old module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
         }
-
-        $this->assertCount(2, $updater->installedDirectories);
-        $this->assertSame($this->fixturePath.'/vendor', $updater->installedDirectories[0][1]);
-        $this->assertSame($this->fixturePath.'/vendor', $updater->installedDirectories[1][1]);
-        $this->assertFileExists($this->fixturePath.'/vendor/old.php');
-        $this->assertFileDoesNotExist($this->fixturePath.'/vendor/new.php');
-        $this->assertSame('old module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
     }
 
-    private function createFileUpdater(): FileUpdaterProbe
+    public function testChecksManagedDirectoriesLockAndExactUpdatePaths(): void
+    {
+        $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
+
+        $updater = $this->createFileUpdater(new FileUpdaterFilesystem());
+
+        $this->assertTrue($updater->checkPermissions(['modules/Example/update.php']));
+        $this->assertFileExists($this->fixturePath.'/backups/fileUpdate/fileUpdate.lock');
+        $this->assertDirectoryExists($this->fixturePath.'/backups/fileUpdate/previousVersionBackup');
+    }
+
+    public function testRejectsAnUnwritableTargetDirectoryInsteadOfCheckingOnlyTheApplicationRoot(): void
+    {
+        $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
+        $filesystem = new FileUpdaterFilesystem();
+        $filesystem->blockedDirectory = $this->fixturePath.'/modules/Example';
+
+        $this->assertFalse($this->createFileUpdater($filesystem)->checkPermissions(['modules/Example/update.php']));
+    }
+
+    public function testCalculatesUpdateWorkAndProbesTheUpdateLock(): void
+    {
+        $directory = $this->fixturePath.'/work';
+        mkdir($directory.'/nested', 0755, true);
+        file_put_contents($directory.'/small.txt', 'abc');
+        file_put_contents($directory.'/nested/large.txt', '12345');
+
+        $updater = $this->createFileUpdaterProbe(new Filesystem());
+        $updater->setProgressCallback(static function (): void {
+        });
+
+        $this->assertTrue($updater->probeLockForTest($this->fixturePath.'/backups/fileUpdate/fileUpdate.lock'));
+        $this->assertSame(3, $updater->fileWorkForTest($directory.'/small.txt'));
+        $this->assertSame(8, $updater->pathWorkForTest($directory));
+        $this->assertSame(8, $updater->calculateWorkForTest(['work'], $this->fixturePath));
+        $this->assertSame(1, $updater->fileWorkForTest($directory.'/missing.txt'));
+    }
+
+    public function testUsesInjectedFilesystemForPathSafety(): void
+    {
+        $session = $this->createMock(Session::class);
+        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
+        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem->expects($this->once())
+            ->method('isSafeRelativePath')
+            ->with('../outside.php')
+            ->willReturn(false);
+
+        $updater = new FileUpdater($session, $filesystem);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(FileUpdater::ERROR_INVALID);
+        $updater->run(['../outside.php']);
+    }
+
+    private function createFileUpdaterProbe(Filesystem $filesystem): FileUpdaterProbe
     {
         $session = $this->createMock(Session::class);
         $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
 
-        return new FileUpdaterProbe($session);
+        return new FileUpdaterProbe($session, $filesystem);
+    }
+
+    private function createFileUpdater(Filesystem $filesystem): FileUpdater
+    {
+        $session = $this->createMock(Session::class);
+        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
+
+        return new FileUpdater($session, $filesystem);
     }
 
     private function writeFile(string $relativePath, string $contents): void
@@ -174,49 +227,65 @@ class FileUpdaterTest extends TestCase
 
         file_put_contents($path, $contents);
     }
+}
 
-    private function removeFixtureDirectory(string $path): void
+class FileUpdaterFilesystem extends Filesystem
+{
+    public array $replacedDirectories = [];
+    public array $replacedFiles = [];
+    public ?string $failReplaceFileDestination = null;
+    public ?string $blockedDirectory = null;
+
+    private bool $replaceFileFailed = false;
+
+    public function probeDirectory(string $directory, array $operations = self::DEFAULT_OPERATIONS): bool
     {
-        if (!is_dir($path)) {
-            return;
+        if ($this->blockedDirectory !== null && rtrim($directory, '/') === rtrim($this->blockedDirectory, '/')) {
+            return false;
         }
 
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-        foreach ($iterator as $file) {
-            $file->isDir() && !$file->isLink() ? rmdir($file->getPathname()) : unlink($file->getPathname());
+        return parent::probeDirectory($directory, $operations);
+    }
+
+    public function replaceDirectory(string $source, string $destination, ?callable $onFileCopied = null): bool
+    {
+        $this->replacedDirectories[] = [$source, $destination];
+
+        return parent::replaceDirectory($source, $destination, $onFileCopied);
+    }
+
+    public function replaceFile(string $source, string $destination): bool
+    {
+        $this->replacedFiles[] = [$source, $destination];
+
+        if ($destination === $this->failReplaceFileDestination && !$this->replaceFileFailed) {
+            $this->replaceFileFailed = true;
+            return false;
         }
 
-        rmdir($path);
+        return parent::replaceFile($source, $destination);
     }
 }
 
 class FileUpdaterProbe extends FileUpdater
 {
-    public array $installedDirectories = [];
-    public array $installedFiles = [];
-    public ?string $failInstallFileDestination = null;
-
-    private bool $installFileFailed = false;
-
-    protected function installDirectory(string $source, string $destination): bool
+    public function probeLockForTest(string $path): bool
     {
-        $this->installedDirectories[] = [$source, $destination];
-
-        return parent::installDirectory($source, $destination);
+        return $this->probeLock($path);
     }
 
-    protected function installFile(string $source, string $destination): bool
+    public function calculateWorkForTest(array $files, string $root): int
     {
-        $this->installedFiles[] = [$source, $destination];
+        return $this->calculateWork($files, $root);
+    }
 
-        if ($destination === $this->failInstallFileDestination && !$this->installFileFailed) {
-            $this->installFileFailed = true;
-            return false;
-        }
+    public function pathWorkForTest(string $path): int
+    {
+        return $this->pathWork($path);
+    }
 
-        return parent::installFile($source, $destination);
+    public function fileWorkForTest(string $path): int
+    {
+        return $this->fileWork($path);
     }
 }

@@ -28,6 +28,8 @@ use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Contracts\Services\Session;
 
 /**
+ * Builds the form to migrate database engine from MyISAM to InnoDB.
+ *
  * @version v30
  * @since   v30
  */
@@ -35,14 +37,23 @@ class EngineUpdateForm
 {
     private Session $session;
 
+    /**
+     * @param Session $session
+     * @return void
+     */
     public function __construct(Session $session)
     {
         $this->session = $session;
     }
 
     /**
+     * Create the database engine migration form.
+     *
+     * @param EngineUpdate $engineUpdate
+     * @param Updater $updater
      * @param array<string, array<string, mixed>> $remoteVersions
      * @param array<string, mixed>|null $nextRelease
+     * @return Form
      */
     public function createForm(EngineUpdate $engineUpdate, Updater $updater): Form
     {

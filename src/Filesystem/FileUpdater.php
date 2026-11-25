@@ -48,16 +48,128 @@ class FileUpdater
     protected $progressStart = 0;
     protected $progressEnd = 100;
     protected $trackCopyProgress = false;
+    private Filesystem $filesystem;
 
-    public function __construct(Session $session)
+    /**
+     * @param Session $session
+     * @param Filesystem $filesystem
+     * @return void
+     */
+    public function __construct(Session $session, Filesystem $filesystem)
     {
         $this->absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
+        $this->filesystem = $filesystem;
     }
 
+    /**
+     * @param callable|null $progressCallback
+     * @return void
+     */
     public function setProgressCallback(?callable $progressCallback): void
     {
         $this->progressCallback = $progressCallback;
         $this->lastProgress = null;
+    }
+
+    /**
+     * Check the filesystem operations required by a file update.
+     *
+     * The probe creates, renames, and removes temporary entries in every
+     * updater-managed directory. When the extracted file list is available,
+     * it also checks the exact live paths and staging entries that will be
+     * read, replaced, renamed, or removed.
+     *
+     * @param array<int, string> $relativeFiles
+     * @return bool
+     */
+    public function checkPermissions(array $relativeFiles = []): bool
+    {
+        if ($this->absolutePath === '' || !is_dir($this->absolutePath) || !$this->filesystem->probeDirectory($this->absolutePath)) {
+            return false;
+        }
+
+        $baseDir = $this->absolutePath.'/'.Downloader::BASE_DIR;
+        if (!is_dir($baseDir) && !$this->filesystem->probeDirectory($this->absolutePath)) {
+            return false;
+        }
+        if (!$this->filesystem->ensureDirectory($baseDir) || !$this->filesystem->probeDirectory($baseDir)) {
+            return false;
+        }
+
+        foreach (['staging', $this->backupDir] as $directory) {
+            $path = $baseDir.'/'.$directory;
+            if (!$this->filesystem->ensureDirectory($path) || !$this->filesystem->probeDirectory($path)) {
+                return false;
+            }
+        }
+
+        // A held lock means another update is running, not that the
+        // application lacks permission. The action performs the authoritative
+        // non-blocking busy check before dispatch.
+        if (!$this->probeLock($baseDir.'/fileUpdate.lock')) {
+            return false;
+        }
+
+        foreach ($relativeFiles as $relative) {
+            if (!is_string($relative)) {
+                return false;
+            }
+
+            if (!$this->filesystem->isSafeRelativePath($relative)) {
+                return false;
+            }
+            $relative = str_replace('\\', '/', $relative);
+
+            $livePath = $this->absolutePath.'/'.$relative;
+            $parent = dirname($livePath);
+            if (!$this->filesystem->ensureDirectory($parent) || !$this->filesystem->probeDirectory($parent)) {
+                return false;
+            }
+
+            $stagingPath = $baseDir.'/staging/'.$relative;
+            if (is_dir($stagingPath)) {
+                if (is_link($stagingPath) || !$this->filesystem->probeDirectory($stagingPath)) {
+                    return false;
+                }
+            } elseif (!is_file($stagingPath) || !is_readable($stagingPath)) {
+                return false;
+            }
+
+            if (is_file($livePath) && (!is_readable($livePath) || !is_writable($livePath))) {
+                return false;
+            }
+
+            if (is_link($livePath) || (file_exists($livePath) && !is_dir($livePath) && !is_file($livePath))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Probe whether the update lock can be opened and exclusively locked.
+     *
+     * A held lock confirms that the filesystem supports locking. It represents
+     * an active update rather than a permission failure, so this probe does
+     * not retain the lock.
+     */
+    protected function probeLock(string $path): bool
+    {
+        $lock = @fopen($path, 'c');
+        if ($lock === false) {
+            return false;
+        }
+
+        try {
+            if (@flock($lock, LOCK_EX | LOCK_NB)) {
+                @flock($lock, LOCK_UN);
+            }
+        } finally {
+            fclose($lock);
+        }
+
+        return true;
     }
 
     /**
@@ -96,9 +208,9 @@ class FileUpdater
     public function backup(array $files)
     {
         $backupDir = $this->absolutePath.'/'.Downloader::BASE_DIR.'/'.$this->backupDir;
-        $this->wipeDirectory($backupDir);
+        $this->filesystem->wipeDirectory($backupDir);
 
-        if (!$this->ensureDirectory($backupDir) || !is_writable($backupDir)) {
+        if (!$this->filesystem->ensureDirectory($backupDir) || !is_writable($backupDir)) {
             $this->fail(self::ERROR_BACKUP, 'Failed to create writable backup directory: '.$backupDir);
         }
 
@@ -117,7 +229,7 @@ class FileUpdater
                         continue;
                     }
 
-                    if (is_link($livePath) || !is_readable($livePath) || !$this->copyDirectory($livePath, $backupDir.'/'.$relative)) {
+                    if (is_link($livePath) || !is_readable($livePath) || !$this->filesystem->copyDirectory($livePath, $backupDir.'/'.$relative, $this->getCopyProgressCallback())) {
                         $this->fail(self::ERROR_BACKUP, 'Failed to back up: '.$livePath);
                     }
                     continue;
@@ -130,7 +242,7 @@ class FileUpdater
                     continue;
                 }
 
-                if (!is_readable($livePath) || !$this->copyFile($livePath, $backupDir.'/'.$relative)) {
+                if (!is_readable($livePath) || !$this->filesystem->copyFile($livePath, $backupDir.'/'.$relative)) {
                     $this->fail(self::ERROR_BACKUP, 'Failed to back up: '.$livePath);
                 }
                 $this->advanceProgress($this->fileWork($livePath));
@@ -180,8 +292,8 @@ class FileUpdater
             foreach ($files as $relative) {
                 $source = $stagingRoot.'/'.$relative;
                 $installed = $relative === self::VENDOR_DIRECTORY
-                    ? $this->installDirectory($source, $this->absolutePath.'/'.$relative)
-                    : $this->installFile($source, $this->absolutePath.'/'.$relative);
+                    ? $this->filesystem->replaceDirectory($source, $this->absolutePath.'/'.$relative, $this->getCopyProgressCallback())
+                    : $this->filesystem->replaceFile($source, $this->absolutePath.'/'.$relative);
 
                 if (!$installed) {
                     $this->fail(self::ERROR_REPLACE, 'Failed to replace: '.$this->absolutePath.'/'.$relative);
@@ -214,11 +326,11 @@ class FileUpdater
             // Was new in this package — just delete it
             if (isset($added[$relative])) {
                 if ($relative === self::VENDOR_DIRECTORY) {
-                    if (!$this->deleteDirectory($livePath)) {
+                    if (!$this->filesystem->deleteDirectory($livePath)) {
                         $this->fail(self::ERROR_ROLLBACK, 'Failed to remove: '.$livePath);
                     }
                 } else {
-                    $this->deleteIfExists($livePath);
+                    $this->filesystem->deleteIfExists($livePath);
                 }
                 continue;
             }
@@ -226,8 +338,8 @@ class FileUpdater
             // Existed before — restore the backed-up copy
             $backupPath = $backupDir.'/'.$relative;
             $restored = $relative === self::VENDOR_DIRECTORY
-                ? is_dir($backupPath) && $this->installDirectory($backupPath, $livePath)
-                : is_file($backupPath) && $this->installFile($backupPath, $livePath);
+                ? is_dir($backupPath) && $this->filesystem->replaceDirectory($backupPath, $livePath)
+                : is_file($backupPath) && $this->filesystem->replaceFile($backupPath, $livePath);
 
             if (!$restored) {
                 $this->fail(self::ERROR_ROLLBACK, 'Failed to restore: '.$livePath);
@@ -246,7 +358,7 @@ class FileUpdater
         }
 
         $vendorBackup = $backupDir.'/'.self::VENDOR_DIRECTORY;
-        if (is_dir($vendorBackup) && !$this->installDirectory($vendorBackup, $this->absolutePath.'/'.self::VENDOR_DIRECTORY)) {
+        if (is_dir($vendorBackup) && !$this->filesystem->replaceDirectory($vendorBackup, $this->absolutePath.'/'.self::VENDOR_DIRECTORY)) {
             $this->fail(self::ERROR_ROLLBACK, 'Failed to restore: '.$this->absolutePath.'/'.self::VENDOR_DIRECTORY);
         }
 
@@ -264,14 +376,19 @@ class FileUpdater
             }
 
             if ($fileInfo->isFile()) {
-                if (!$this->installFile($fileInfo->getPathname(), $livePath)) {
+                if (!$this->filesystem->replaceFile($fileInfo->getPathname(), $livePath)) {
                     $this->fail(self::ERROR_ROLLBACK, 'Failed to restore: '.$livePath);
                 }
             }
         }
     }
 
-    // Re-check every path before touching disk
+    /**
+     * Normalize the file list, ensuring all entries are safe relative paths.
+     *
+     * @param array<int, string> $relativeFiles
+     * @return array<int, string>
+     */
     protected function normalizeFileList(array $relativeFiles) : array
     {
         if (empty($this->absolutePath) || !is_dir($this->absolutePath) || empty($relativeFiles)) {
@@ -286,7 +403,10 @@ class FileUpdater
                 $this->fail(self::ERROR_INVALID, 'Relative path not a string: '.var_export($relative, true));
             }
 
-            $relative = $this->assertSafeRelativePath($relative);
+            if (!$this->filesystem->isSafeRelativePath($relative)) {
+                $this->fail(self::ERROR_INVALID, 'Unsafe relative path: '.$relative);
+            }
+            $relative = str_replace('\\', '/', $relative);
             if ($this->isVendorPath($relative)) {
                 if (!$vendorAdded) {
                     $files[] = self::VENDOR_DIRECTORY;
@@ -311,31 +431,35 @@ class FileUpdater
     protected function assertCanReplace(string $stagingRoot, string $absoluteReal, string $relative)
     {
         $sourceReal = is_file($stagingRoot.'/'.$relative) ? realpath($stagingRoot.'/'.$relative) : false;
-        if ($sourceReal === false || !$this->isInside($sourceReal, $stagingRoot)) {
+        if ($sourceReal === false || !$this->filesystem->isInside($sourceReal, $stagingRoot)) {
             $this->fail(self::ERROR_INVALID, 'Staging path not inside staging: '.$stagingRoot.'/'.$relative);
         }
 
         $livePath = $this->absolutePath.'/'.$relative;
         $parent = dirname($livePath);
 
-        if ((is_file($livePath) && !is_writable($livePath)) || !$this->ensureDirectory($parent) || !is_writable($parent)) {
+        if ((is_file($livePath) && !is_writable($livePath)) || !$this->filesystem->ensureDirectory($parent) || !is_writable($parent)) {
             $this->fail(self::ERROR_REPLACE, 'Live path not writable: '.$livePath);
         }
 
         $parentReal = realpath($parent);
-        if ($parentReal === false || !$this->isInside($parentReal, $absoluteReal, true)) {
+        if ($parentReal === false || !$this->filesystem->isInside($parentReal, $absoluteReal, true)) {
             $this->fail(self::ERROR_INVALID, 'Live path not inside install: '.$livePath);
         }
     }
 
     /**
      * Confirm a staging directory can replace its live counterpart.
+     * 
+     * @param string $stagingRoot
+     * @param string $absoluteReal
+     * @param string $relative
      */
     protected function assertCanReplaceDirectory(string $stagingRoot, string $absoluteReal, string $relative)
     {
         $sourcePath = $stagingRoot.'/'.$relative;
         $sourceReal = is_dir($sourcePath) && !is_link($sourcePath) ? realpath($sourcePath) : false;
-        if ($sourceReal === false || !$this->isInside($sourceReal, $stagingRoot)) {
+        if ($sourceReal === false || !$this->filesystem->isInside($sourceReal, $stagingRoot)) {
             $this->fail(self::ERROR_INVALID, 'Staging directory not inside staging: '.$sourcePath);
         }
 
@@ -348,124 +472,34 @@ class FileUpdater
         }
 
         $parentReal = realpath($parent);
-        if ($parentReal === false || !$this->isInside($parentReal, $absoluteReal, true)) {
+        if ($parentReal === false || !$this->filesystem->isInside($parentReal, $absoluteReal, true)) {
             $this->fail(self::ERROR_INVALID, 'Live directory not inside install: '.$livePath);
         }
     }
 
     /**
-     * Copy a file directly onto the live install.
+     * Return a copy progress callback that advances the updater's progress.
      *
-     * @param string $source
-     * @param string $destination
-     * @return bool
+     * @return callable|null
      */
-    protected function installFile(string $source, string $destination) : bool
+    private function getCopyProgressCallback(): ?callable
     {
-        if (!is_file($source) || !$this->ensureDirectory(dirname($destination))) {
-            return false;
+        if (!$this->trackCopyProgress) {
+            return null;
         }
 
-        if (is_link($destination) && !@unlink($destination)) {
-            return false;
-        }
-
-        return @copy($source, $destination) && is_file($destination);
+        return function (string $source): void {
+            $this->advanceProgress($this->fileWork($source));
+        };
     }
 
     /**
-     * Copy a directory beside its destination, then swap it into place.
+     * Begin a new progress phase, reporting the start and end percentages.
+     *
+     * @param int $start
+     * @param int $end
+     * @param int $total
      */
-    protected function installDirectory(string $source, string $destination) : bool
-    {
-        if (!is_dir($source) || is_link($source) || !$this->ensureDirectory(dirname($destination))) {
-            return false;
-        }
-
-        try {
-            $suffix = bin2hex(random_bytes(8));
-        } catch (\Throwable $e) {
-            return false;
-        }
-
-        $tempPath = $destination.'.fileupdate.'.$suffix.'.tmp';
-        $previousPath = $destination.'.fileupdate.'.$suffix.'.previous';
-
-        if (!$this->copyDirectory($source, $tempPath)) {
-            return false;
-        }
-
-        $hadDestination = file_exists($destination) || is_link($destination);
-        if ($hadDestination && (!is_dir($destination) || is_link($destination) || !@rename($destination, $previousPath))) {
-            $this->deleteDirectory($tempPath);
-            return false;
-        }
-
-        if (!@rename($tempPath, $destination) || !is_dir($destination)) {
-            $this->deleteDirectory($tempPath);
-            if ($hadDestination) {
-                @rename($previousPath, $destination);
-            }
-            return false;
-        }
-
-        if ($hadDestination && !$this->deleteDirectory($previousPath)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    protected function copyDirectory(string $source, string $destination) : bool
-    {
-        if (!is_dir($source) || is_link($source) || file_exists($destination) || is_link($destination)) {
-            return false;
-        }
-
-        if (!@mkdir($destination, 0755, true)) {
-            return false;
-        }
-
-        try {
-            $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($source, \FilesystemIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::SELF_FIRST
-            );
-
-            foreach ($iterator as $fileInfo) {
-                if ($fileInfo->isLink()) {
-                    $this->deleteDirectory($destination);
-                    return false;
-                }
-
-                $relative = substr(str_replace('\\', '/', $fileInfo->getPathname()), strlen(rtrim(str_replace('\\', '/', $source), '/')) + 1);
-                $target = $destination.'/'.$relative;
-
-                if ($fileInfo->isDir()) {
-                    if (!$this->ensureDirectory($target)) {
-                        $this->deleteDirectory($destination);
-                        return false;
-                    }
-                    continue;
-                }
-
-                if (!$fileInfo->isFile() || !@copy($fileInfo->getPathname(), $target) || !is_file($target)) {
-                    $this->deleteDirectory($destination);
-                    return false;
-                }
-
-                if ($this->trackCopyProgress) {
-                    $this->advanceProgress($this->fileWork($fileInfo->getPathname()));
-                }
-            }
-        } catch (\Throwable $e) {
-            $this->deleteDirectory($destination);
-            return false;
-        }
-
-        return true;
-    }
-
     protected function beginProgressPhase(int $start, int $end, int $total) : void
     {
         $this->progressStart = $start;
@@ -475,6 +509,11 @@ class FileUpdater
         $this->reportProgress($start);
     }
 
+    /**
+     * Advance progress by a given amount of work, reporting to the callback.
+     *
+     * @param int $work
+     */
     protected function advanceProgress(int $work) : void
     {
         if ($this->progressCallback === null) {
@@ -490,7 +529,12 @@ class FileUpdater
         );
     }
 
-    protected function calculateWork(array $files, string $root) : int
+    /**
+     * Calculate update work from the staged or live file list.
+     *
+     * @param array<int, string> $files
+     */
+    protected function calculateWork(array $files, string $root): int
     {
         if ($this->progressCallback === null) {
             return 1;
@@ -504,7 +548,13 @@ class FileUpdater
         return max(1, $work);
     }
 
-    protected function pathWork(string $path) : int
+    /**
+     * Calculate work for an update path, recursively including regular files.
+     * 
+     * @param string $path
+     * @return int
+     */
+    protected function pathWork(string $path): int
     {
         if (!is_dir($path) || is_link($path)) {
             return $this->fileWork($path);
@@ -520,20 +570,34 @@ class FileUpdater
                     $work += $this->fileWork($fileInfo->getPathname());
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable $error) {
             return 1;
         }
 
         return max(1, $work);
     }
 
-    protected function fileWork(string $path) : int
+    /**
+     * Calculate work for a single file.
+     * 
+     * @param string $path
+     * @return int
+     */
+    protected function fileWork(string $path): int
     {
         $size = is_file($path) ? filesize($path) : false;
 
         return max(1, $size === false ? 0 : $size);
     }
 
+    /**
+     * Report progress as a percentage of the current phase.
+     *
+     * @param int $completed
+     * @param int $total
+     * @param int $start
+     * @param int $end
+     */
     protected function reportProgressRange(int $completed, int $total, int $start, int $end) : void
     {
         if ($total <= 0) {
@@ -546,6 +610,11 @@ class FileUpdater
         $this->reportProgress($progress);
     }
 
+    /**
+     * Report progress to the callback, if set, and only if it has increased.
+     *
+     * @param int $progress
+     */
     protected function reportProgress(int $progress) : void
     {
         $progress = min(max($progress, 0), 100);
@@ -557,20 +626,12 @@ class FileUpdater
         ($this->progressCallback)($progress);
     }
 
-    protected function copyFile(string $source, string $destination) : bool
-    {
-        return $this->ensureDirectory(dirname($destination)) && @copy($source, $destination) && is_file($destination);
-    }
-
-    // Whether $path is inside $root
-    protected function isInside(string $path, string $root, bool $allowEqual = false) : bool
-    {
-        $path = str_replace('\\', '/', $path);
-        $root = rtrim(str_replace('\\', '/', $root), '/');
-
-        return ($allowEqual && $path === $root) || strpos($path, $root.'/') === 0;
-    }
-
+    /**
+     * Determine whether a relative path is the vendor directory or inside it.
+     * 
+     * @param string $relative
+     * @return bool
+     */
     protected function isVendorPath(string $relative) : bool
     {
         $relative = strtolower($relative);
@@ -578,92 +639,16 @@ class FileUpdater
         return $relative === self::VENDOR_DIRECTORY || strpos($relative, self::VENDOR_DIRECTORY.'/') === 0;
     }
 
-    // Block path traversal and sensitive folders
-    protected function assertSafeRelativePath(string $relative) : string
-    {
-        $relative = ltrim(str_replace('\\', '/', $relative), '/');
-        $lower = strtolower($relative);
-
-        if ($relative == ''
-            || strpos($relative, "\0") !== false
-            || strpos($relative, '..') !== false
-            || (strlen($relative) > 1 && $relative[1] == ':' && ctype_alpha($relative[0]))
-            || $lower == 'config.php'
-            // || strpos($lower, 'uploads/') === 0
-            || strpos($lower, 'backups/') === 0
-            || strpos($lower, '.git/') === 0
-            // || strpos($lower, 'vendor/') === 0
-        ) {
-            $this->fail(self::ERROR_INVALID, 'Relative path not safe: '.$relative);
-        }
-
-        return $relative;
-    }
-
-    protected function ensureDirectory(string $dir) : bool
-    {
-        return is_dir($dir) || mkdir($dir, 0755, true);
-    }
-
+    /**
+     * Log an error and throw a RuntimeException with the given code.
+     *
+     * @param string $code
+     * @param string $message
+     * @throws \RuntimeException
+     */
     protected function fail(string $code, string $message = '')
     {
         error_log('FileUpdater: '.$code.' '.$message);
         throw new \RuntimeException($code);
-    }
-
-    protected function deleteIfExists(string $path)
-    {
-        if ($path != '' && is_file($path)) {
-            unlink($path);
-        }
-    }
-
-    protected function deleteDirectory(string $dir) : bool
-    {
-        if (is_link($dir) || is_file($dir)) {
-            return @unlink($dir);
-        }
-
-        if (!is_dir($dir)) {
-            return true;
-        }
-
-        try {
-            $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::CHILD_FIRST
-            );
-
-            foreach ($iterator as $fileInfo) {
-                $deleted = $fileInfo->isLink() || $fileInfo->isFile()
-                    ? @unlink($fileInfo->getPathname())
-                    : @rmdir($fileInfo->getPathname());
-
-                if (!$deleted) {
-                    return false;
-                }
-            }
-        } catch (\Throwable $e) {
-            return false;
-        }
-
-        return @rmdir($dir);
-    }
-
-    // Empty a directory but leave the folder itself
-    protected function wipeDirectory(string $dir)
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($iterator as $fileInfo) {
-            $fileInfo->isDir() ? rmdir($fileInfo->getPathname()) : unlink($fileInfo->getPathname());
-        }
     }
 }

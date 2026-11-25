@@ -25,13 +25,14 @@ namespace Gibbon\Module\SystemAdmin;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Database\Updater;
-use Gibbon\Domain\System\I18nGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Filesystem\Downloader;
 use Gibbon\Filesystem\FileUpdater;
+use Gibbon\Filesystem\Filesystem;
 use Gibbon\Filesystem\VersionCatalog;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
+
+require_once dirname(__DIR__, 4).'/functions.php';
 
 require_once dirname(__DIR__, 4).'/modules/System Admin/src/SystemUpdateProgress.php';
 require_once dirname(__DIR__, 4).'/modules/System Admin/src/SystemUpdateProcess.php';
@@ -48,15 +49,8 @@ class SystemUpdateProcessTest extends TestCase
         parent::setUp();
 
         $this->fixturePath = sys_get_temp_dir().'/SystemUpdateProcessTest-'.bin2hex(random_bytes(8));
-        mkdir($this->fixturePath.'/modules/System Admin', 0755, true);
         mkdir($this->fixturePath.'/uploads/cache', 0755, true);
-        mkdir($this->fixturePath.'/var', 0755, true);
         mkdir($this->fixturePath.'/backups/fileUpdate/staging', 0755, true);
-
-        file_put_contents(
-            $this->fixturePath.'/modules/System Admin/moduleFunctions.php',
-            '<?php require_once '.var_export(dirname(__DIR__, 4).'/modules/System Admin/moduleFunctions.php', true).';'
-        );
     }
 
     protected function tearDown(): void
@@ -108,6 +102,10 @@ class SystemUpdateProcessTest extends TestCase
             });
 
         $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->expects($this->once())
+            ->method('checkPermissions')
+            ->with(['index.php'])
+            ->willReturn(true);
         $fileUpdater->expects($this->once())
             ->method('setProgressCallback')
             ->willReturnCallback(function (callable $callback) use (&$installProgress): void {
@@ -232,12 +230,11 @@ class SystemUpdateProcessTest extends TestCase
     /**
      * @dataProvider databaseModeProvider
      */
-    public function testDatabaseModesUseUpdaterThenLanguageAndCacheCleanup(string $mode): void
+    public function testDatabaseModesUseUpdaterAndCacheCleanup(string $mode): void
     {
         $events = [];
         [$settings, $state] = $this->createSettingGateway($events);
         file_put_contents($this->fixturePath.'/uploads/cache/cached.txt', 'cache');
-        file_put_contents($this->fixturePath.'/var/cached.txt', 'cache');
 
         $updater = $this->createMock(Updater::class);
         $updater->versionDB = '30.0.01';
@@ -261,7 +258,6 @@ class SystemUpdateProcessTest extends TestCase
         $fileUpdater->expects($this->never())->method('run');
 
         $process = $this->createProcess($settings, $updater, $versionCatalog, $downloader, $fileUpdater, $events);
-        $process->setContainer($this->createLanguageContainer($events));
         $process->run($mode);
 
         $this->assertSame([
@@ -272,7 +268,6 @@ class SystemUpdateProcessTest extends TestCase
             'progress:installing:working',
             'updater:update',
             'progress:finalizing:working',
-            'language:refresh',
             'session:forget:pageLoads',
             'progress:finalizing:complete',
         ], $events);
@@ -284,7 +279,6 @@ class SystemUpdateProcessTest extends TestCase
             ['finalizing', 'complete', 100],
         ], $state->snapshots);
         $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
-        $this->assertDirectoryDoesNotExist($this->fixturePath.'/var');
     }
 
     public static function databaseModeProvider(): array
@@ -452,39 +446,9 @@ class SystemUpdateProcessTest extends TestCase
             $versionCatalog,
             $downloader,
             $fileUpdater,
-            new SystemUpdateProgress($settings)
+            new SystemUpdateProgress($settings),
+            new Filesystem()
         );
-    }
-
-    private function createLanguageContainer(array &$events): ContainerInterface
-    {
-        $i18nGateway = $this->createMock(I18nGateway::class);
-        $i18nGateway->expects($this->once())
-            ->method('selectBy')
-            ->with(['active' => 'Y'])
-            ->willReturnCallback(function () use (&$events): object {
-                $events[] = 'language:refresh';
-
-                return new class {
-                    public function fetchAll(): array
-                    {
-                        return [];
-                    }
-                };
-            });
-
-        $session = $this->createMock(Session::class);
-        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
-
-        $container = $this->createMock(ContainerInterface::class);
-        $container->method('get')->willReturnCallback(function (string $id) use ($session, $i18nGateway): object {
-            return match ($id) {
-                'session' => $session,
-                I18nGateway::class => $i18nGateway,
-            };
-        });
-
-        return $container;
     }
 
     private function assertFileLockWasReleased(): void

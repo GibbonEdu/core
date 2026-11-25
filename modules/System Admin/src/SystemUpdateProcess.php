@@ -28,6 +28,7 @@ use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Filesystem\Downloader;
 use Gibbon\Filesystem\FileUpdater;
+use Gibbon\Filesystem\Filesystem;
 use Gibbon\Filesystem\VersionCatalog;
 use Gibbon\Services\BackgroundProcess;
 use League\Container\ContainerAwareInterface;
@@ -43,6 +44,17 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 {
     use ContainerAwareTrait;
 
+    /**
+     * @param Session $session
+     * @param SettingGateway $settingGateway
+     * @param Updater $updater
+     * @param VersionCatalog $versionCatalog
+     * @param Downloader $downloader
+     * @param FileUpdater $fileUpdater
+     * @param SystemUpdateProgress $progress
+     * @param Filesystem $filesystem
+     * @return void
+     */
     public function __construct(
         private Session $session,
         private SettingGateway $settingGateway,
@@ -51,20 +63,24 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         private Downloader $downloader,
         private FileUpdater $fileUpdater,
         private SystemUpdateProgress $progress,
+        private Filesystem $filesystem,
     ) {
+
     }
 
     /**
+     * Run a file update, restore, or database update in a background process.
+     *
+     * @param string $mode The update mode: 'file', 'regularRelease', 'cuttingEdge', or 'restore'
      * @throws \InvalidArgumentException When the requested update mode is unsupported.
      * @throws \RuntimeException When an update cannot complete.
+     * @return void
      */
     public function run(string $mode): void
     {
         if (!in_array($mode, ['file', 'regularRelease', 'cuttingEdge', 'restore'], true)) {
             throw new \InvalidArgumentException('Unsupported system update mode.');
         }
-
-        $this->loadModuleFunctions();
 
         if ($mode === 'file') {
             $this->progress->begin('file');
@@ -85,7 +101,11 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     }
 
     /**
-     * Preserve the current file updater workflow, including its lock and cleanup.
+     * Run the file update process.
+     *
+     * @param string $stage
+     * @return void
+     * @throws \RuntimeException
      */
     private function runFileUpdate(): void
     {
@@ -96,12 +116,8 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
         $lockPath = $baseDir.'/fileUpdate.lock';
 
-        $directoryReady = $absolutePath !== '' && is_dir($absolutePath);
-        if ($directoryReady && !is_dir($baseDir)) {
-            $directoryReady = mkdir($baseDir, 0755, true) || is_dir($baseDir);
-        }
-
-        if (!$directoryReady || !is_writable($baseDir)) {
+        if ($absolutePath === ''
+            || !$this->filesystem->checkPermissions([$absolutePath, $baseDir])) {
             $this->fail($stage, new \RuntimeException('File update directory is unavailable.'));
             throw new \RuntimeException('File update directory is unavailable.');
         }
@@ -137,6 +153,9 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
                 $this->downloader->setProgressCallback($this->createProgressCallback('downloading', 10, 70));
                 $files = $this->downloader->run($release);
+                if (!$this->fileUpdater->checkPermissions($files)) {
+                    throw new \RuntimeException('File update permissions are unavailable.');
+                }
 
                 $stage = 'installing';
                 $this->progress->update($stage, 'working', 70);
@@ -145,7 +164,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
                 $stage = 'finalizing';
                 $this->progress->update($stage, 'working', 95);
-                removeDirectoryContents($absolutePath.'/uploads/cache');
+                $this->filesystem->wipeDirectory($absolutePath.'/uploads/cache');
                 $this->session->forget('pageLoads');
 
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
@@ -153,7 +172,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             } finally {
                 try {
                     // Keep the backup folder, but remove staging and any downloaded package.
-                    removeDirectoryContents($baseDir.'/staging');
+                    $this->filesystem->wipeDirectory($baseDir.'/staging');
                     if (is_file($baseDir.'/package.zip')) {
                         unlink($baseDir.'/package.zip');
                     }
@@ -180,8 +199,14 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     }
 
     /**
-     * Preserve the previous-version restore workflow, including its lock and cleanup.
+     * Run the restore process.
+     *
+     * @return void
+     * @throws \RuntimeException
+     *
+     * @return void
      */
+
     private function runRestore(): void
     {
         $stage = 'preparing';
@@ -191,12 +216,8 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
         $lockPath = $baseDir.'/fileUpdate.lock';
 
-        $directoryReady = $absolutePath !== '' && is_dir($absolutePath);
-        if ($directoryReady && !is_dir($baseDir)) {
-            $directoryReady = mkdir($baseDir, 0755, true) || is_dir($baseDir);
-        }
-
-        if (!$directoryReady || !is_writable($baseDir)) {
+        if ($absolutePath === ''
+            || !$this->filesystem->checkPermissions([$absolutePath, $baseDir])) {
             $this->fail($stage, new \RuntimeException('File restore directory is unavailable.'));
             throw new \RuntimeException('File restore directory is unavailable.');
         }
@@ -231,13 +252,13 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
                 $stage = 'finalizing';
                 $this->progress->update($stage, 'working', 90);
-                removeDirectoryContents($absolutePath.'/uploads/cache');
+                $this->filesystem->wipeDirectory($absolutePath.'/uploads/cache');
                 $this->session->forget('pageLoads');
 
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', '');
             } finally {
-                removeDirectoryContents($baseDir.'/staging');
+                $this->filesystem->wipeDirectory($baseDir.'/staging');
                 if (is_file($baseDir.'/package.zip')) {
                     unlink($baseDir.'/package.zip');
                 }
@@ -262,7 +283,12 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     }
 
     /**
-     * Preserve the regular and cutting-edge database updater workflow.
+     * Run the database update process.
+     *
+     * @return void
+     * @throws \RuntimeException
+     *
+     * @return void
      */
     private function runDatabaseUpdate(): void
     {
@@ -284,9 +310,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
             $stage = 'finalizing';
             $this->progress->update($stage, 'working', 90);
-            i18nCheckAndUpdateVersion($this->getContainer(), $this->updater->versionDB);
-            removeDirectoryContents((string) $this->session->get('absolutePath').'/uploads/cache');
-            removeDirectoryContents((string) $this->session->get('absolutePath').'/var', true);
+            $this->filesystem->wipeDirectory((string) $this->session->get('absolutePath').'/uploads/cache');
             $this->session->forget('pageLoads');
             $this->progress->update($stage, 'complete', 100);
         } catch (\Throwable $error) {
@@ -296,7 +320,12 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     }
 
     /**
-     * Map an operation's local percentage into its overall update range.
+     * Create a progress callback that maps local percentage to overall update range.
+     *
+     * @param string $stage The update stage name
+     * @param int $start The start percentage for this operation
+     * @param int $end The end percentage for this operation
+     * @return callable
      */
     private function createProgressCallback(string $stage, int $start, int $end): callable
     {
@@ -316,7 +345,14 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
     /**
      * Record a safe failure snapshot and write technical details only to server logs.
+     *
+     * @param string $stage
+     * @param \Throwable $error
+     * @return void
+     *
+     * @return void
      */
+
     private function fail(string $stage, \Throwable $error): void
     {
         error_log(sprintf('SystemUpdateProcess %s update failed: %s', $stage, $error->getMessage()));
@@ -326,17 +362,5 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         } catch (\Throwable $progressError) {
             error_log('SystemUpdateProcess progress failure-state error: '.$progressError->getMessage());
         }
-    }
-
-    /**
-     * The CLI background bootstrap does not load System Admin action helpers.
-     */
-    private function loadModuleFunctions(): void
-    {
-        if (function_exists('i18nCheckAndUpdateVersion') && function_exists('removeDirectoryContents')) {
-            return;
-        }
-
-        require_once rtrim((string) $this->session->get('absolutePath'), '/').'/modules/System Admin/moduleFunctions.php';
     }
 }

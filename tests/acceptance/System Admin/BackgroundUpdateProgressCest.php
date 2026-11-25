@@ -38,7 +38,7 @@ class BackgroundUpdateProgressCest
         $I->assertStringContainsString('@click="updateProgressOpen = false"', $source);
         $I->assertStringContainsString('fetch(this.pollUrl', $source);
         $I->assertStringContainsString('applySnapshot(snapshot)', $source);
-        $I->assertStringContainsString('window.setTimeout(() => this.poll(), 2000)', $source);
+        $I->assertStringContainsString('window.setTimeout(() => this.poll(), 1000)', $source);
         $I->assertStringContainsString('progress: 70', $source);
         $I->assertStringContainsString(":style=\"'width: ' + progress + '%'\"", $source);
         $I->assertStringContainsString("x-on:background-update-started.window=\"start(\$event.detail.gibbonLogID)\"", $source);

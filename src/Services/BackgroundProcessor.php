@@ -55,8 +55,9 @@ class BackgroundProcessor implements ContainerAwareInterface
     /**
      * Create a background processor, tracking processes using the gibbonLog table (for now?)
      *
-     * @param  Session     $session
-     * @param  LogGateway  $logGateway
+     * @param Session $session
+     * @param LogGateway $logGateway
+     * @return void
      */
     public function __construct(Session $session, LogGateway $logGateway)
     {
@@ -210,7 +211,7 @@ class BackgroundProcessor implements ContainerAwareInterface
     }
 
     /**
-     * Gets the stored process data from the database using it's id.
+     * Gets the stored process data from the database using its ID.
      *
      * @param string $processID
      * @return array
@@ -227,6 +228,12 @@ class BackgroundProcessor implements ContainerAwareInterface
         return $processData;
     }
 
+    /**
+     * Gets the stored process data from the database using its name.
+     *
+     * @param string $processName
+     * @return array
+     */
     public function getProcessByName(string $processName) : array
     {
         $log = $this->logGateway
@@ -348,6 +355,13 @@ class BackgroundProcessor implements ContainerAwareInterface
         return false;
     }
 
+    /**
+     * Handle a fatal error during background process execution.
+     *
+     * @param string $processID
+     * @param array $processData
+     * @return void
+     */
     protected function handleShutdown($processID, $processData)
     {
         $lastError = error_get_last();
@@ -359,6 +373,14 @@ class BackgroundProcessor implements ContainerAwareInterface
         }
     }
 
+    /**
+     * Handle an exception during background process execution.
+     *
+     * @param string $processID
+     * @param array $processData
+     * @param \Exception $e
+     * @return array
+     */
     protected function handleException($processID, $processData, $e)
     {
         return $this->endProcess($processID, [
@@ -370,7 +392,7 @@ class BackgroundProcessor implements ContainerAwareInterface
     /**
      * Determine the current OS. Used to call the correct system command to start a process.
      *
-     * @return string
+     * @return int
      */
     protected function getOS()
     {

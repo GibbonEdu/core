@@ -23,6 +23,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
+use Gibbon\Filesystem\Filesystem;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\Services\BackgroundProcessor;
@@ -63,6 +64,18 @@ if ($directoryReady && !is_dir($baseDir)) {
 
 if (!$directoryReady || !is_writable($baseDir)) {
     $URL .= '&return=errorFileDirectory';
+    header("Location: {$URL}");
+    exit;
+}
+
+$filesystem = $container->get(Filesystem::class);
+if (!$filesystem->checkPermissions([
+    $absolutePath,
+    $baseDir,
+    $baseDir.'/staging',
+    $baseDir.'/previousVersionBackup',
+])) {
+    $URL .= '&return=errorFilePermissions';
     header("Location: {$URL}");
     exit;
 }

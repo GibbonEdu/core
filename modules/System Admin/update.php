@@ -21,16 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Database\Updater;
+use Gibbon\Filesystem\Downloader;
+use Gibbon\Filesystem\Filesystem;
 use Gibbon\Filesystem\VersionCatalog;
-use Gibbon\Forms\Form;
 use Gibbon\Module\SystemAdmin\Forms\EngineUpdateForm;
 use Gibbon\Module\SystemAdmin\Forms\UpdateForm;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\Services\BackgroundProcessor;
 use Gibbon\Services\Format;
-
-//Module includes
-require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
     // Access denied
@@ -50,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'error3'             => __('Your request failed because your inputs were invalid, or no update was required.'),
         'errorFiles'                       => $errorFiles,
         'errorFileDirectory'               => __('Your request failed because the file update directory is missing or not writeable. Check the file permissions on your server.'),
+        'errorFilePermissions'             => __('Automatic updates are unavailable because the application does not have the required file permissions. Correct the permissions or update manually.'),
         'errorFileBusy'                    => __('Your request failed because a file update is already in progress. Please wait a few minutes and try again.'),
         'errorUpdateBusy'                  => __('A system update is already in progress. Please wait a few minutes and try again.'),
         'errorBackgroundUpdateUnavailable' => __('Background updates are unavailable on this system.'),
@@ -63,16 +62,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Compare codebase version (version.php) with database version
     $updater = $container->get(Updater::class);
+    $downloader = $container->get(Downloader::class);
     $versionCatalog = $container->get(VersionCatalog::class);
 
     $updateRequired = $updater->isUpdateRequired();
     $cuttingEdge = $updater->isCuttingEdge();
     $nextRelease = null;
 
-    // 1) DB update  2) else file update if a newer version exists  3) else no update needed, files & DB up to date
+    // Only check for a new release if the codebase is up to date with the database.
     if ($updateRequired <= 0) {
         $nextRelease = $versionCatalog->getNextRelease($updater->versionCode, $cuttingEdge);
     }
+
+    $filesystem = $container->get(Filesystem::class);
+    $canRunAutomaticFileUpdate = empty($nextRelease) || $filesystem->checkPermissions($downloader->getPermissionPaths());
 
     // Updater version number and status overview
     echo $page->fetchFromTemplate('updateOverview.twig.html', [
@@ -91,12 +94,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     $updateProgressService = $container->get(SystemUpdateProgress::class);
     $updateProgress = $updateProgressService->get();
-    $snapshotStatus = $updateProgress['status'];
 
-    $isUpdateActive = !empty($processID) && $snapshotStatus === 'working';
-    $hasUpdateFailure = !empty($processID) && $snapshotStatus === 'failed';
+    $isUpdateActive = !empty($processID) && $updateProgress['status'] === 'working';
+    $hasUpdateFailure = !empty($processID) && $updateProgress['status'] === 'failed';
 
-    $isProgressDormant = !$isUpdateActive && !$hasUpdateFailure;
     $progress = $updateProgress['progress'];
     if (!is_int($progress) || $progress < 0 || $progress > 100) {
         $progress = null;
@@ -108,51 +109,52 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         : $progressEndpoint;
 
     echo $page->fetchFromTemplate('updateProgress.twig.html', [
-        'isDormant'      => $isProgressDormant,
-        'isPolling'      => $isUpdateActive,
-        'pollUrl'        => $pollUrl,
-        'isFailure'      => $hasUpdateFailure,
-        'lifecycleLabel' => $updateProgressService->getStatusLabel($snapshotStatus) ?? '',
-        'typeLabel'      => $updateProgressService->getTypeLabel($updateProgress['type']) ?? '',
-        'stageLabel'     => $updateProgressService->getStageLabel($updateProgress['stage']) ?? '',
-        'message'        => $hasUpdateFailure
-            ? __('Update failed. Check the server logs and try again.')
-            : '',
+        'isDormant'          => !$isUpdateActive && !$hasUpdateFailure,
+        'isPolling'          => $isUpdateActive,
+        'pollUrl'            => $pollUrl,
+        'isFailure'          => $hasUpdateFailure,
+        'lifecycleLabel'     => $updateProgressService->getStatusLabel($updateProgress['status']) ?? '',
+        'typeLabel'          => $updateProgressService->getTypeLabel($updateProgress['type']) ?? '',
+        'stageLabel'         => $updateProgressService->getStageLabel($updateProgress['stage']) ?? '',
+        'message'            => $hasUpdateFailure ? __('Update failed. Check the server logs and try again.') : '',
         'progress'           => $progress,
         'unavailableMessage' => __('Background updates are unavailable on this system.'),
     ]);
 
-    if (!$isUpdateActive && !$hasUpdateFailure) {
 
-        // Update status message
-        if ($updateRequired > 0) {
-            echo Format::alert(__('You have updated your Gibbon code to a new version, and are ready to update your database from {versionDB} to {versionCode}. This operation cannot be undone: backup your entire database prior to running the update!', ['versionDB' => $updater->versionDB, 'versionCode' => $updater->versionCode]), 'warning');
-        } 
-        elseif (empty($nextRelease) && !$cuttingEdge && $updateRequired === -1) {
-            echo Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error');
-        } elseif (empty($nextRelease)) {
-            echo Format::alert(__('Your Gibbon core is up to date.'), 'success');
-        } else {
-            echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.').'<br><br><b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
-        }
-
-        // Cutting edge warning and composer check
-        if ($cuttingEdge) {
-            echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.'), 'exception');
-
-            if ($updater->isComposerUpdateRequired()) {
-                echo Format::alert('<b>'.__('Composer Update Required').'</b>: '.__('The updater has detected a change in the composer.lock file. In the command line, navigate to your Gibbon base path and run the {composer} command. Visit the {docsLink} page in the docs for more information about using composer.<br/><br/>Once you have updated composer, click {updateLink} to dismiss this message. ', [
-                    'composer' => '<code class="bg-gray-800 text-white rounded px-1 py-px">composer install --no-dev</code>',
-                    'docsLink' => Format::link('https://docs.gibbonedu.org/development/getting-started/developer-workflow', __('Developer Workflow')),
-                    'updateLink' => Format::link('./modules/System Admin/updateComposerProcess.php', __('Update')),
-                ]), 'error');
-            }
-        }
-
+    // Update status message
+    if ($updateRequired > 0) {
+        echo Format::alert(__('You have updated your Gibbon code to a new version, and are ready to update your database from {versionDB} to {versionCode}. This operation cannot be undone: backup your entire database prior to running the update!', ['versionDB' => $updater->versionDB, 'versionCode' => $updater->versionCode]), 'warning');
+    } elseif (!$canRunAutomaticFileUpdate) {
+        echo Format::alert(__('Automatic updates are unavailable because the application does not have the required file permissions. Correct the permissions or update manually.'), 'error');
+    } elseif (empty($nextRelease) && !$cuttingEdge && $updateRequired === -1) {
+        echo Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error');
+    } elseif (empty($nextRelease)) {
+        echo Format::alert(__('Your Gibbon core is up to date.'), 'success');
+    } else {
+        echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.').'<br><br><b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
     }
 
+    // Cutting edge warning and composer check
+    if ($cuttingEdge) {
+        echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.'), 'exception');
+
+        if ($updater->isComposerUpdateRequired()) {
+            echo Format::alert('<b>'.__('Composer Update Required').'</b>: '.__('The updater has detected a change in the composer.lock file. In the command line, navigate to your Gibbon base path and run the {composer} command. Visit the {docsLink} page in the docs for more information about using composer.<br/><br/>Once you have updated composer, click {updateLink} to dismiss this message. ', [
+                'composer' => '<code class="bg-gray-800 text-white rounded px-1 py-px">composer install --no-dev</code>',
+                'docsLink' => Format::link('https://docs.gibbonedu.org/development/getting-started/developer-workflow', __('Developer Workflow')),
+                'updateLink' => Format::link('./modules/System Admin/updateComposerProcess.php', __('Update')),
+            ]), 'error');
+        }
+    }
+    
     // UPDATE FORM - displays versions and changelog, and an update button if possible
-    $form = $container->get(UpdateForm::class)->createForm($updater, $versionCatalog, $isUpdateActive);
+    $form = $container->get(UpdateForm::class)->createForm(
+        $updater,
+        $versionCatalog,
+        $isUpdateActive,
+        $canRunAutomaticFileUpdate
+    );
     echo $form->getOutput();
 
     // INNODB UPGRADE - only displays if an update is required

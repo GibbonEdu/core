@@ -43,7 +43,13 @@ class UpdateForm
     private VersionCatalog $versionCatalog;
     private string $backupVersion;
     private bool $isUpdateActive = false;
+    private bool $canRunAutomaticFileUpdate = true;
 
+    /**
+     * @param Session $session
+     * @param SettingGateway $settingGateway
+     * @return void
+     */
     public function __construct(Session $session, SettingGateway $settingGateway)
     {
         $this->session = $session;
@@ -54,13 +60,20 @@ class UpdateForm
      * @param Updater $updater
      * @param VersionCatalog $versionCatalog
      * @param bool $isUpdateActive Whether a background file or database update is active.
+     * @param bool $canRunAutomaticFileUpdate Whether the automatic core-file update can write its required paths.
      * @return Form
      */
-    public function createForm(Updater $updater, VersionCatalog $versionCatalog, bool $isUpdateActive = false): Form
+    public function createForm(
+        Updater $updater,
+        VersionCatalog $versionCatalog,
+        bool $isUpdateActive = false,
+        bool $canRunAutomaticFileUpdate = true
+    ): Form
     {
         $this->updater = $updater;
         $this->versionCatalog = $versionCatalog;
         $this->isUpdateActive = $isUpdateActive;
+        $this->canRunAutomaticFileUpdate = $canRunAutomaticFileUpdate;
 
         $versions = $versionCatalog->fetch($updater->versionCode);
         $changelog = $versionCatalog->getChangeLogFromFile();
@@ -172,6 +185,7 @@ class UpdateForm
         $isBackgroundEligible = $this->isDatabaseUpdateRelease($version, $updateRequired)
             || $this->isNextRelease($version, $nextRelease);
         $isRestoreRelease = $version === $this->backupVersion;
+        $isHigherVersion = version_compare($version, $this->updater->versionCode, '>');
 
         if ($this->isUpdateActive && ($isBackgroundEligible || $isRestoreRelease)) {
             $row->addButton(__('Update in Progress'))
@@ -185,6 +199,21 @@ class UpdateForm
             return;
         }
 
+        if ($version === $this->updater->versionCode) {
+            $row->addButton(__('Installed', ['version' => $version]))
+                ->addClass('text-sm text-gray-600')
+                ->setAttribute('disabled', 'disabled');
+            return;
+        }
+
+        if (!$this->canRunAutomaticFileUpdate && ($isHigherVersion || $isRestoreRelease)) {
+            $row->addButton(__('Automatic Update Unavailable'))
+                ->addClass('text-sm text-gray-600')
+                ->setAttribute('disabled', 'disabled')
+                ->setAttribute('title', __('Correct the file permissions or update manually.'));
+            return;
+        }
+
         if ($this->isNextRelease($version, $nextRelease)) {
             $submit = $row->addSubmit(__('Update to {version}', ['version' => $version]))
                 ->addClass('text-sm text-gray-600');
@@ -195,18 +224,11 @@ class UpdateForm
             return;
         }
 
-        if (version_compare($version, $this->updater->versionCode, '>')) {
+        if ($isHigherVersion) {
             $row->addButton(__('Update Available', ['version' => $version]))
                 ->addClass('text-sm text-gray-600')
                 ->setAttribute('disabled', 'disabled')
                 ->setAttribute('title', __('Update earlier versions first'));
-            return;
-        }
-
-        if ($version === $this->updater->versionCode) {
-            $row->addButton(__('Installed', ['version' => $version]))
-                ->addClass('text-sm text-gray-600')
-                ->setAttribute('disabled', 'disabled');
             return;
         }
 
@@ -257,6 +279,8 @@ class UpdateForm
      * InnoDB controls keep their synchronous native form behavior.
      *
      * @param object $submit
+     * @param string $action
+     * @return void
      */
     private function enableBackgroundSubmission(object $submit, string $action): void
     {
@@ -305,7 +329,12 @@ class UpdateForm
     }
 
     /**
+     * Get the changelog column, adding details if earlier versions have changelog data.
+     *
+     * @param Column $column
+     * @param string $version
      * @param array<string, mixed>|null $nextRelease
+     * @return Column
      */
     private function getChangelogColumn(Column $column, string $version, ?array $nextRelease): Column
     {

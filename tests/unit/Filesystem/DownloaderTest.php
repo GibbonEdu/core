@@ -63,7 +63,8 @@ class DownloaderTest extends TestCase
         $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
 
         $progress = [];
-        $downloader = new Downloader($session, $this->createMock(VersionCatalog::class));
+        $filesystem = new DownloaderFilesystem();
+        $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), $filesystem);
         $downloader->setProgressCallback(function (int $percent) use (&$progress): void {
             $progress[] = $percent;
         });
@@ -71,6 +72,12 @@ class DownloaderTest extends TestCase
         $files = $downloader->extract($zipPath);
 
         $this->assertEqualsCanonicalizing(['version.php', 'src/Large.php', 'src/Empty.php'], $files);
+        $this->assertCount(6, $filesystem->validatedPaths);
+        $this->assertEqualsCanonicalizing(
+            ['version.php', 'src/Large.php', 'src/Empty.php', 'version.php', 'src/Large.php', 'src/Empty.php'],
+            $filesystem->validatedPaths
+        );
+        $this->assertCount(3, $filesystem->containedPaths);
         $this->assertContains(95, $progress);
         $this->assertContains(99, $progress);
         $this->assertSame(100, $progress[array_key_last($progress)]);
@@ -79,6 +86,23 @@ class DownloaderTest extends TestCase
         $sortedProgress = $progress;
         sort($sortedProgress);
         $this->assertSame($sortedProgress, $progress);
+    }
+
+    public function testExtractMapsUnsafeArchivePathsToInvalidError(): void
+    {
+        $zipPath = $this->fixturePath.'/backups/fileUpdate/package.zip';
+        $zip = new ZipArchive();
+        $this->assertTrue($zip->open($zipPath, ZipArchive::CREATE) === true);
+        $zip->addFromString('../outside.php', 'unsafe');
+        $zip->close();
+
+        $session = $this->createMock(Session::class);
+        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
+        $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new DownloaderFilesystem());
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(Downloader::ERROR_INVALID);
+        $downloader->extract($zipPath);
     }
 
     private function removeFixtureDirectory(string $path): void
@@ -96,5 +120,32 @@ class DownloaderTest extends TestCase
         }
 
         rmdir($path);
+    }
+}
+
+class DownloaderFilesystem extends Filesystem
+{
+    /**
+     * @var array<int, string>
+     */
+    public array $validatedPaths = [];
+
+    /**
+     * @var array<int, array{path: string, root: string}>
+     */
+    public array $containedPaths = [];
+
+    public function isSafeRelativePath(string $relative): bool
+    {
+        $this->validatedPaths[] = $relative;
+
+        return parent::isSafeRelativePath($relative);
+    }
+
+    public function isInside(string $path, string $root, bool $allowEqual = false): bool
+    {
+        $this->containedPaths[] = ['path' => $path, 'root' => $root];
+
+        return parent::isInside($path, $root, $allowEqual);
     }
 }

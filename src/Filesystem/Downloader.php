@@ -48,18 +48,46 @@ class Downloader
     protected $absolutePath;
     protected $progressCallback;
     protected $lastProgress;
+    private Filesystem $filesystem;
 
-    public function __construct(Session $session, VersionCatalog $versionCatalog)
+    /**
+     * @param Session $session
+     * @param VersionCatalog $versionCatalog
+     * @param Filesystem $filesystem
+     * @return void
+     */
+    public function __construct(Session $session, VersionCatalog $versionCatalog, Filesystem $filesystem)
     {
         $this->session = $session;
         $this->versionCatalog = $versionCatalog;
         $this->absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
+        $this->filesystem = $filesystem;
     }
 
+    /**
+     * Set a callback to receive progress notifications.
+     *
+     * @param callable|null $progressCallback
+     * @return void
+     */
     public function setProgressCallback(?callable $progressCallback): void
     {
         $this->progressCallback = $progressCallback;
         $this->lastProgress = null;
+    }
+
+    /**
+     * Get the filesystem paths that require write permissions.
+     *
+     * @return string[]
+     */
+    public function getPermissionPaths()
+    {
+        return [
+            $this->absolutePath.'/'.self::BASE_DIR,
+            $this->absolutePath.'/'.self::BASE_DIR.'/staging',
+            $this->absolutePath.'/'.self::BASE_DIR.'/previousVersionBackup',
+        ];
     }
 
     /**
@@ -75,7 +103,7 @@ class Downloader
         $zipPath = $this->download($release);
         $this->verify($zipPath, $release['checksum'] ?? '');
         $files = $this->extract($zipPath);
-        $this->deleteIfExists($zipPath);
+        $this->filesystem->deleteIfExists($zipPath);
         $this->reportProgress(100);
 
         return $files;
@@ -98,7 +126,7 @@ class Downloader
         }
 
         $zipPath = $this->ensureBaseDirectory().'/package.zip';
-        $this->deleteIfExists($zipPath);
+        $this->filesystem->deleteIfExists($zipPath);
 
         try {
             $response = (new Client([
@@ -129,7 +157,7 @@ class Downloader
                 $this->fail(self::ERROR_DOWNLOAD, 'HTTP status '.$response->getStatusCode().' from '.$filePath, $zipPath);
             }
         } catch (\RuntimeException $e) {
-            $this->deleteIfExists($zipPath);
+            $this->filesystem->deleteIfExists($zipPath);
             throw $e;
         } catch (\Throwable $e) {
             $this->fail(self::ERROR_DOWNLOAD, 'Download failed: '.$e->getMessage(), $zipPath);
@@ -157,6 +185,7 @@ class Downloader
      *
      * @param string $zipPath
      * @param string $checksum
+     * @return void
      */
     public function verify(string $zipPath, string $checksum)
     {
@@ -177,9 +206,9 @@ class Downloader
     public function extract(string $zipPath) : array
     {
         $staging = $this->absolutePath.'/'.self::BASE_DIR.'/staging';
-        $this->wipeDirectory($staging);
+        $this->filesystem->wipeDirectory($staging);
 
-        if ((!is_dir($staging) && !mkdir($staging, 0755, true)) || ($stagingReal = realpath($staging)) === false) {
+        if (!$this->filesystem->ensureDirectory($staging) || ($stagingReal = realpath($staging)) === false) {
             $this->fail(self::ERROR_WRITE, 'Failed to create staging directory: '.$staging, $zipPath);
         }
 
@@ -213,14 +242,17 @@ class Downloader
                     continue;
                 }
 
-                $relative = $this->assertSafeRelativePath($name);
+                if (!$this->filesystem->isSafeRelativePath($name)) {
+                    $this->fail(self::ERROR_INVALID, 'Unsafe relative path: '.$name, $zipPath);
+                }
+                $relative = $name;
                 if ($zip->extractTo($stagingReal, $entryName) !== true) {
                     $this->fail(self::ERROR_EXTRACT, 'Failed to extract entry: '.$entryName, $zipPath);
                 }
 
                 // Make sure the file stayed inside staging
                 $extracted = realpath($stagingReal.'/'.$relative);
-                if ($extracted === false || !$this->isInside($extracted, $stagingReal)) {
+                if ($extracted === false || !$this->filesystem->isInside($extracted, $stagingReal)) {
                     $this->fail(self::ERROR_INVALID, 'Extracted file is outside staging: '.$entryName, $zipPath);
                 }
 
@@ -230,8 +262,8 @@ class Downloader
 
             $this->reportProgress(95);
         } catch (\Throwable $e) {
-            $this->wipeDirectory($staging);
-            $this->deleteIfExists($zipPath);
+            $this->filesystem->wipeDirectory($staging);
+            $this->filesystem->deleteIfExists($zipPath);
             throw $e;
         } finally {
             $zip->close();
@@ -266,19 +298,23 @@ class Downloader
                 }
                 $full = str_replace('\\', '/', $fileInfo->getPathname());
                 $root = rtrim(str_replace('\\', '/', $stagingReal), '/');
-                $files[] = $this->assertSafeRelativePath(ltrim(substr($full, strlen($root)), '/'));
+                $relative = ltrim(substr($full, strlen($root)), '/');
+                if (!$this->filesystem->isSafeRelativePath($relative)) {
+                    $this->fail(self::ERROR_INVALID, 'Unsafe relative path: '.$relative, $zipPath);
+                }
+                $files[] = $relative;
                 ++$indexedFiles;
                 $this->reportProgressRange($indexedFiles, $totalFiles, 95, 99);
             }
         } catch (\Throwable $e) {
-            $this->wipeDirectory($staging);
-            $this->deleteIfExists($zipPath);
+            $this->filesystem->wipeDirectory($staging);
+            $this->filesystem->deleteIfExists($zipPath);
             throw $e;
         }
 
         // Need version.php to count as a real package
         if (empty($files) || !in_array('version.php', $files)) {
-            $this->wipeDirectory($staging);
+            $this->filesystem->wipeDirectory($staging);
             $this->fail(self::ERROR_EXTRACT, 'Extracted package is missing version.php', $zipPath);
         }
 
@@ -287,6 +323,12 @@ class Downloader
         return $files;
     }
 
+    /**
+     * Skip empty entries, folders, and macOS junk.
+     *
+     * @param string $name
+     * @return bool
+     */
     protected function shouldSkipEntry(string $name) : bool
     {
         return $name == ''
@@ -295,6 +337,15 @@ class Downloader
             || substr($name, -9) == '.DS_Store';
     }
 
+    /**
+     * Report progress as a percentage within a range.
+     *
+     * @param int $completed
+     * @param int $total
+     * @param int $start
+     * @param int $end
+     * @return void
+     */
     protected function reportProgressRange(int $completed, int $total, int $start, int $end) : void
     {
         if ($total <= 0) {
@@ -307,6 +358,12 @@ class Downloader
         $this->reportProgress($progress);
     }
 
+    /**
+     * Report progress as a percentage.
+     *
+     * @param int $progress
+     * @return void
+     */
     protected function reportProgress(int $progress) : void
     {
         $progress = min(max($progress, 0), 100);
@@ -318,43 +375,19 @@ class Downloader
         ($this->progressCallback)($progress);
     }
 
-    // Whether $path is inside $root
-    protected function isInside(string $path, string $root) : bool
-    {
-        $path = str_replace('\\', '/', $path);
-        $root = rtrim(str_replace('\\', '/', $root), '/');
-
-        return strpos($path, $root.'/') === 0;
-    }
-
-    // Block path traversal and sensitive folders
-    protected function assertSafeRelativePath(string $relative) : string
-    {
-        $relative = ltrim(str_replace('\\', '/', $relative), '/');
-        $lower = strtolower($relative);
-
-        if ($relative == ''
-            || strpos($relative, "\0") !== false
-            || strpos($relative, '..') !== false
-            || (strlen($relative) > 1 && $relative[1] == ':' && ctype_alpha($relative[0]))
-            || $lower == 'config.php'
-            // || strpos($lower, 'uploads/') === 0
-            || strpos($lower, 'backups/') === 0
-            || strpos($lower, '.git/') === 0
-            // || strpos($lower, 'vendor/') === 0
-        ) {
-            $this->fail(self::ERROR_INVALID, 'Unsafe relative path: '.$relative);
-        }
-
-        return $relative;
-    }
-
-    // Make sure backups/fileUpdate exists and is not web-accessible
+    /**
+     * Ensure the base directory exists and is not web-accessible.
+     *
+     * @return string
+     */
     protected function ensureBaseDirectory() : string
     {
         $baseDir = $this->absolutePath.'/'.self::BASE_DIR;
 
-        if (empty($this->absolutePath) || !is_dir($this->absolutePath) || (!is_dir($baseDir) && !mkdir($baseDir, 0755, true)) || !is_writable($baseDir)) {
+        if (empty($this->absolutePath)
+            || !is_dir($this->absolutePath)
+            || !$this->filesystem->ensureDirectory($baseDir)
+            || !is_writable($baseDir)) {
             $this->fail(self::ERROR_WRITE, 'Failed to create or write to base directory: '.$baseDir);
         }
 
@@ -369,35 +402,18 @@ class Downloader
         return $baseDir;
     }
 
-    // Remove a partial zip, log the error, and throw
+    /**
+     * Remove a partial zip, log the error, and throw.
+     *
+     * @param string $code
+     * @param string $message
+     * @param string $zipPath
+     * @return void
+     */
     protected function fail(string $code, string $message = '', string $zipPath = '')
     {
-        $this->deleteIfExists($zipPath);
+        $this->filesystem->deleteIfExists($zipPath);
         error_log('Downloader: '.$code.' '.$message);
         throw new \RuntimeException($code);
-    }
-
-    protected function deleteIfExists(string $path)
-    {
-        if ($path != '' && is_file($path)) {
-            unlink($path);
-        }
-    }
-
-    // Empty a directory but leave the folder itself
-    protected function wipeDirectory(string $dir)
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($iterator as $fileInfo) {
-            $fileInfo->isDir() ? rmdir($fileInfo->getPathname()) : unlink($fileInfo->getPathname());
-        }
     }
 }
