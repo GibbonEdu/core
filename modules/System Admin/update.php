@@ -70,6 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     // Only check for a new release if the codebase is up to date with the database.
     if ($updateRequired <= 0) {
         $nextRelease = $versionCatalog->getNextRelease($updater->versionCode, $cuttingEdge);
+    } else {
+        $thisRelease = $versionCatalog->getRelease($updater->versionCode);
     }
 
     $filesystem = $container->get(Filesystem::class);
