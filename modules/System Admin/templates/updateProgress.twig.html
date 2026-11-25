@@ -1,0 +1,161 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div id="updateProgressRegion"
+    x-data="{
+        updateProgressOpen: {{ isDormant ? 'false' : 'true' }},
+        isPolling: {{ isPolling ? 'true' : 'false' }},
+        state: {{ (isPolling ? 'active' : (isFailure ? 'failed' : 'unavailable'))|json_encode|e('html_attr') }},
+        pollUrl: {{ pollUrl|json_encode|e('html_attr') }},
+        lifecycleLabel: {{ lifecycleLabel|json_encode|e('html_attr') }},
+        typeLabel: {{ typeLabel|json_encode|e('html_attr') }},
+        stageLabel: {{ stageLabel|json_encode|e('html_attr') }},
+        message: {{ message|json_encode|e('html_attr') }},
+        progress: {{ progress|json_encode|e('html_attr') }},
+        unavailableMessage: {{ unavailableMessage|json_encode|e('html_attr') }},
+        pollTimer: null,
+        init() {
+            if (this.isPolling) {
+                this.poll();
+            }
+        },
+        start(gibbonLogID) {
+            if (gibbonLogID) {
+                this.pollUrl = this.pollUrl.split('?')[0] + '?gibbonLogID=' + encodeURIComponent(gibbonLogID);
+            }
+
+            this.progress = 0;
+            this.updateProgressOpen = true;
+            this.isPolling = true;
+            this.poll();
+        },
+        poll() {
+            if (!this.isPolling || !this.pollUrl) {
+                return;
+            }
+
+            window.clearTimeout(this.pollTimer);
+            fetch(this.pollUrl, { headers: { Accept: 'application/json' } })
+                .then((response) => response.ok ? response.json() : Promise.reject())
+                .then((snapshot) => this.applySnapshot(snapshot))
+                .catch(() => this.applyUnavailable());
+        },
+        applySnapshot(snapshot) {
+            if (!snapshot || !['active', 'complete', 'failed', 'unavailable'].includes(snapshot.state)) {
+                this.applyUnavailable();
+                return;
+            }
+
+            this.state = snapshot.state;
+            this.lifecycleLabel = snapshot.lifecycleLabel || '';
+            this.typeLabel = snapshot.typeLabel || '';
+            this.stageLabel = snapshot.stageLabel || '';
+            this.message = snapshot.message || '';
+            this.progress = Number.isInteger(snapshot.progress) ? snapshot.progress : 0;
+
+            if (snapshot.state === 'complete') {
+                this.stopPolling();
+                window.location.reload();
+                return;
+            }
+
+            if (snapshot.state === 'failed' || snapshot.state === 'unavailable') {
+                this.stopPolling();
+                return;
+            }
+
+            this.pollTimer = window.setTimeout(() => this.poll(), 1000);
+        },
+        applyUnavailable() {
+            this.state = 'unavailable';
+            this.lifecycleLabel = '{{ __('Unavailable')|e('js') }}';
+            this.typeLabel = '';
+            this.stageLabel = '';
+            this.message = this.unavailableMessage;
+            this.progress = 0;
+            this.stopPolling();
+        },
+        stopPolling() {
+            this.isPolling = false;
+            window.clearTimeout(this.pollTimer);
+            this.pollTimer = null;
+        }
+    }"
+    x-init="init()"
+    x-on:background-update-started.window="start($event.detail.gibbonLogID)"
+>
+    <div id="updateProgress"
+        x-cloak
+        x-show="updateProgressOpen"
+        x-trap.inert.noscroll.noreturn="updateProgressOpen"
+        @keydown.escape.window="updateProgressOpen = false"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        {% if isDormant %}style="display: none;"{% endif %}
+        aria-labelledby="update-progress-title"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div class="flex items-center content-center justify-center min-h-screen px-4 text-center sm:block sm:p-0 overflow-hidden">
+            <div x-cloak
+                @click="updateProgressOpen = false"
+                x-show="updateProgressOpen"
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 transition bg-black bg-opacity-40 backdrop-blur-sm"
+                aria-hidden="true"
+            ></div>
+
+            <div x-cloak
+                x-show="updateProgressOpen"
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative inline-block w-full max-w-2xl overflow-y-auto p-6 my-20 overflow-x-hidden text-left transition-all transform bg-white rounded-lg shadow-xl"
+                style="min-height: 20vh; max-height: 80vh"
+            >
+                <div class="flex w-full -mt-4 ml-4 justify-end">
+                    <button @click="updateProgressOpen = false" class="bg-white text-gray-600 focus:outline-none hover:text-gray-700" aria-label="{{ __('Close') }}">
+                        {{ icon('basic', 'x-mark', 'size-6') }}
+                    </button>
+                </div>
+
+                <div class="px-3 pb-3 font-sans">
+                    <div class="flex items-end justify-between gap-4">
+                        <div>
+                            <h2 id="update-progress-title" class="text-base font-semibold" :class="state === 'failed' || state === 'unavailable' ? 'text-red-800' : 'text-gray-800'">
+                                {{ __('System Update') }}
+                            </h2>
+                            <p class="mt-4 mb-0 text-sm" :class="state === 'failed' || state === 'unavailable' ? 'text-red-700' : 'text-gray-700'" role="status" aria-live="polite" x-text="message || [typeLabel, stageLabel].filter(Boolean).join(' ')">
+                                {% if message %}
+                                    {{ message }}
+                                {% else %}
+                                    {{ typeLabel }} {{ stageLabel }}
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <span class="text-sm font-semibold" :class="state === 'failed' || state === 'unavailable' ? 'text-red-800' : 'text-gray-800'" x-show="progress !== null" x-text="progress + '%'"></span>
+                    </div>
+
+                    <div class="mt-4 h-6 w-full overflow-hidden rounded-full bg-gray-200" role="progressbar" aria-label="{{ __('Progress') }}" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
+                        <div class="h-full rounded-full transition-transform duration-300 ease-in-out bg-stripe-overlay " :class="state === 'failed' || state === 'unavailable' ? 'bg-red-600' : 'bg-purple-500 animate-bg-slide'" :style="'width: ' + progress + '%'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

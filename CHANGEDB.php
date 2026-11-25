@@ -420,7 +420,11 @@ $sql[$count][1] = "";
 //v30.0.04
 ++$count;
 $sql[$count][0] = '30.0.04';
-$sql[$count][1] = "";
+$sql[$count][1] = "
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdater', 'File Updater Status', 'Tracks the current stage of the file updater.', 'idle');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdaterBackup', 'File Updater Backup', 'Version number of the previous installed version.', '30.0.03');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'backgroundUpdateProgress', 'Background Update Progress', '', '');end
+";
 
 //v30.0.05
 ++$count;
@@ -475,5 +479,8 @@ ALTER TABLE `gibbonNotificationListener` ADD `scopeContext` VARCHAR(255) NULL AF
 ALTER TABLE `gibbonNotificationEvent` ADD `contextName` VARCHAR(255) NULL AFTER `scopes`;end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Role Category', `scopes`='All,context' WHERE `event`='Flagged Field Data Updates' AND `moduleName`='Data Updater' AND `actionName`='Personal Data Updates';end
 UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,context,gibbonPersonIDStudent,gibbonYearGroupID' WHERE `event` LIKE '% Record' AND `moduleName`='Behaviour';end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdater', 'File Updater Status', 'Tracks the current stage of the file updater.', 'idle');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdaterBackup', 'File Updater Backup', 'Version number of the previous installed version.', '30.0.03');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'backgroundUpdateProgress', 'Background Update Progress', '', '');end
 
 ";

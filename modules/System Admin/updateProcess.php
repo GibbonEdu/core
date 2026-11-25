@@ -19,10 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Database\Updater;
-use Gibbon\Database\Migrations\EngineUpdate;
-use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Database\Migrations\EngineUpdate;
+use Gibbon\Database\Updater;
+use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
+use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
+use Gibbon\Services\BackgroundProcessor;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -32,80 +35,80 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 require_once __DIR__ . '/moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/update.php';
-$partialFail = false;
 $session->set('systemUpdateError', '');
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
-} else {
-    // Proceed!
-    $type = $_REQUEST['type'] ?? '';
+    exit;
+}
 
-    // Validate Inputs
-    if ($type != 'regularRelease' && $type != 'cuttingEdge' && $type != 'InnoDB') {
+$type = $_REQUEST['type'] ?? '';
+
+// Validate Inputs
+if ($type != 'regularRelease' && $type != 'cuttingEdge' && $type != 'InnoDB') {
+    $URL .= '&return=error3';
+    header("Location: {$URL}");
+    exit;
+}
+
+$updater = $container->get(Updater::class);
+
+if ($type == 'regularRelease' || $type == 'cuttingEdge') {
+    if (!$updater->isVersionValid()) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
         exit;
     }
 
-    $updater = $container->get(Updater::class);
-
-    if ($type == 'regularRelease' || $type == 'cuttingEdge') {
-        if (!$updater->isVersionValid()) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
-            exit;
-        }
-    
-        if (!$updater->isUpdateRequired()) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
-            exit;
-        }
-
-        // Do the update
-        $errors = $updater->update();
-
-        if (!empty($errors)) {
-            $session->set('systemUpdateError', $errors);
-
-            $URL .= '&return=warning1';
-            header("Location: {$URL}");
-        } else {
-            // Update DB version for existing languages
-            i18nCheckAndUpdateVersion($container, $updater->versionDB);
-
-            // Clear the templates cache folder
-            removeDirectoryContents($session->get('absolutePath').'/uploads/cache');
-
-            // Clear the var/log folder
-            removeDirectoryContents($session->get('absolutePath').'/var', true);
-
-            // Reset cache to force top-menu reload
-            $session->forget('pageLoads');
-
-            // Insert/update current session record to attach it to this user (prevent logout after update)
-            // TODO: This can likely be removed in v24+
-            $data = [
-                'gibbonSessionID' => session_id(),
-                'gibbonPersonID' => $session->get('gibbonPersonID'),
-                'sessionStatus' => 'Logged In',
-                'timestampModified' => date('Y-m-d H:i:s'),
-            ];
-            $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
-
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-        }
-        
-    } elseif ($type == 'InnoDB') {
-        // Do InnoDB migration work
-        $success = $container->get(EngineUpdate::class)->migrate();
-
-        $URL .= !$success
-            ? '&return=error2'
-            : '&return=success0';
+    if (!$updater->isUpdateRequired()) {
+        $URL .= '&return=error3';
         header("Location: {$URL}");
+        exit;
     }
+
+    $backgroundProcessor = $container->get(BackgroundProcessor::class);
+    $processID = $backgroundProcessor->getProcessIDByName('SystemUpdateProcess');
+    $process = !empty($processID) ? $backgroundProcessor->getProcess($processID) : [];
+    if (in_array($process['status'] ?? '', ['Ready', 'Running'], true)) {
+        $URL .= '&return=errorUpdateBusy';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    try {
+        $container->get(SystemUpdateProgress::class)->begin('database');
+        $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', [$type]);
+    } catch (\Throwable $error) {
+        error_log('updateProcess background start failed: '.$error->getMessage());
+
+        try {
+            $container->get(SystemUpdateProgress::class)->fail('preparing');
+        } catch (\Throwable $progressError) {
+            error_log('updateProcess progress failure-state error: '.$progressError->getMessage());
+        }
+
+        $URL .= '&return=errorBackgroundUpdateUnavailable';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {
+        header('HX-Trigger: '.json_encode([
+            'background-update-started' => ['gibbonLogID' => $gibbonLogID],
+        ]));
+        http_response_code(204);
+        exit;
+    }
+
+    header("Location: {$URL}");
+    exit;
 }
+
+// Do InnoDB migration work synchronously.
+$success = $container->get(EngineUpdate::class)->migrate();
+
+$URL .= !$success
+    ? '&return=error2'
+    : '&return=success0';
+header("Location: {$URL}");
