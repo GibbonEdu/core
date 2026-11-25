@@ -159,7 +159,28 @@ class BackgroundUpdateProgressCest
         ]);
     }
 
-    public function updateAndRestoreFormTargetsRemainUnchanged(AcceptanceTester $I): void
+    public function restoreSnapshotActivatesTheExistingProgressModal(AcceptanceTester $I): void
+    {
+        $this->setProgress($I, 'restore', 'restoring', 'working', 70);
+        $gibbonLogID = $this->createGibbonLog($I);
+
+        $I->loginAsAdmin();
+        $I->amOnModulePage('System Admin', 'update.php');
+        $I->see('System restore in progress.', '#updateProgress');
+        $I->see('Restoring files…', '#updateProgress');
+        $I->seeElement('#updateProgress', [
+            'x-show' => 'updateProgressOpen',
+            'role' => 'dialog',
+        ]);
+
+        $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
+        $I->assertSame('active', $snapshot['state']);
+        $I->assertSame('System restore in progress.', $snapshot['typeLabel']);
+        $I->assertSame('Restoring files…', $snapshot['stageLabel']);
+        $I->assertSame(70, $snapshot['progress']);
+    }
+
+    public function updateAndRestoreFormSubmissionsUseBackgroundContracts(AcceptanceTester $I): void
     {
         $I->loginAsAdmin();
         $I->amOnModulePage('System Admin', 'update.php');
@@ -188,30 +209,38 @@ class BackgroundUpdateProgressCest
         $I->assertStringNotContainsString('hx-swap="outerHTML"', $source);
 
         // These controls depend on the current updater state and catalog. When
-        // the configured fixture exposes them, assert their synchronous targets.
+        // the configured fixture exposes them, assert their expected submission mode.
         if (str_contains($source, 'updateProcess.php?type=InnoDB')) {
             $I->assertStringContainsString('updateProcess.php?type=InnoDB', $source);
         }
         if (str_contains($source, 'updateRestoreProcess.php')) {
-            $I->assertStringContainsString('updateRestoreProcess.php', $source);
+            $I->assertMatchesRegularExpression(
+                '/hx-post="[^\"]+\/modules\/System Admin\/updateRestoreProcess\.php"/',
+                $source,
+                'Restore submissions use the shared HTMX background contract.'
+            );
         }
     }
 
     /**
      * PhpBrowser does not execute HTMX or Alpine. Assert the complete event
-     * contract so the dormant modal receives the trigger emitted by both real
-     * background-update form actions.
+     * contract so the dormant modal receives the trigger emitted by every real
+     * background update or restore action.
      */
     private function assertBackgroundStartEventWiring(AcceptanceTester $I): void
     {
         $projectRoot = dirname(__DIR__, 3);
         $eventPayload = "'background-update-started' => ['gibbonLogID' => \$gibbonLogID]";
 
-        foreach (['updateFilesProcess.php', 'updateProcess.php'] as $action) {
+        foreach (['updateFilesProcess.php', 'updateProcess.php', 'updateRestoreProcess.php'] as $action) {
             $actionSource = file_get_contents($projectRoot.'/modules/System Admin/'.$action);
             $I->assertNotFalse($actionSource, 'The background update action is readable.');
             $I->assertStringContainsString($eventPayload, $actionSource);
         }
+
+        $restoreSource = file_get_contents($projectRoot.'/modules/System Admin/updateRestoreProcess.php');
+        $I->assertNotFalse($restoreSource, 'The restore action is readable.');
+        $I->assertStringContainsString("SystemUpdateProcess::class, 'run', ['restore'], false", $restoreSource);
     }
 
     /**

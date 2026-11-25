@@ -161,6 +161,74 @@ class SystemUpdateProcessTest extends TestCase
         $this->assertFileLockWasReleased();
     }
 
+    public function testRestoreUsesTheExistingFileUpdaterAndSafeSnapshotLifecycle(): void
+    {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+        $state->values['System Admin/fileUpdaterBackup'] = '29.0.00';
+        file_put_contents($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt', 'temporary');
+        file_put_contents($this->fixturePath.'/backups/fileUpdate/package.zip', 'package');
+        file_put_contents($this->fixturePath.'/uploads/cache/cached.txt', 'cache');
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->expects($this->once())
+            ->method('getRelease')
+            ->with('29.0.00')
+            ->willReturnCallback(function () use (&$events): array {
+                $events[] = 'catalog:backup';
+
+                return ['filePath' => 'previous-version-backup'];
+            });
+
+        $downloader = $this->createMock(Downloader::class);
+        $downloader->expects($this->never())->method('run');
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->expects($this->once())
+            ->method('restore')
+            ->willReturnCallback(function () use (&$events): void {
+                $events[] = 'file-updater:restore';
+            });
+
+        $process = $this->createProcess(
+            $settings,
+            $this->createMock(Updater::class),
+            $versionCatalog,
+            $downloader,
+            $fileUpdater,
+            $events
+        );
+        $process->run('restore');
+
+        $this->assertSame([
+            'progress::working',
+            'progress:preparing:working',
+            'setting:maintenanceMode:Y',
+            'setting:fileUpdater:running',
+            'catalog:backup',
+            'progress:restoring:working',
+            'file-updater:restore',
+            'progress:finalizing:working',
+            'session:forget:pageLoads',
+            'setting:fileUpdater:idle',
+            'setting:fileUpdaterBackup:',
+            'setting:maintenanceMode:N',
+            'progress:finalizing:complete',
+        ], $events);
+        $this->assertSame([
+            [null, 'working', null],
+            ['preparing', 'working', 10],
+            ['restoring', 'working', 70],
+            ['finalizing', 'working', 90],
+            ['finalizing', 'complete', 100],
+        ], $state->snapshots);
+        $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
+        $this->assertSame('', $state->values['System Admin/fileUpdaterBackup']);
+        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt');
+        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/package.zip');
+        $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
+        $this->assertFileLockWasReleased();
+    }
+
     /**
      * @dataProvider databaseModeProvider
      */

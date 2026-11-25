@@ -66,6 +66,11 @@ class UpdateFormTest extends TestCase
 
         $this->assertStringContainsString('updateFilesProcess.php', $output);
         $this->assertStringContainsString('Downgrade to 29.0.00', $output);
+        $this->assertStringContainsString('updateRestoreProcess.php', $output);
+        $this->assertMatchesRegularExpression(
+            '/hx-post="https:\/\/example\.test\/modules\/System Admin\/updateRestoreProcess\.php"/',
+            $output
+        );
         $this->assertStringContainsString('Installed', $output);
         $this->assertStringContainsString('Update to 31.0.00', $output);
         $this->assertStringContainsString('Update earlier versions first', $output);
@@ -102,8 +107,8 @@ class UpdateFormTest extends TestCase
 
         $this->assertStringNotContainsString('Update to 31.0.00', $output);
         $this->assertStringContainsString('Update in Progress', $output);
-        $this->assertStringContainsString('Downgrade to 29.0.00', $output);
-        $this->assertStringContainsString('updateRestoreProcess.php', $output);
+        $this->assertStringNotContainsString('Downgrade to 29.0.00', $output);
+        $this->assertStringNotContainsString('updateRestoreProcess.php', $output);
     }
 
     public function testSuppressesDatabaseUpdateSubmissionWhileBackgroundUpdateIsActive(): void

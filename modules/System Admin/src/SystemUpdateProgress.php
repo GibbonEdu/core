@@ -36,8 +36,8 @@ final class SystemUpdateProgress
     private const SCOPE = 'System Admin';
     private const NAME = 'backgroundUpdateProgress';
 
-    private const TYPES = ['file', 'database'];
-    private const STAGES = ['preparing', 'downloading', 'installing', 'finalizing'];
+    private const TYPES = ['file', 'database', 'restore'];
+    private const STAGES = ['preparing', 'downloading', 'installing', 'restoring', 'finalizing'];
     private const STATUSES = ['idle', 'working', 'failed', 'complete'];
 
     private const DEFAULT_SNAPSHOT = [
@@ -63,13 +63,15 @@ final class SystemUpdateProgress
             'failed'  => __('Failed'),
         ];
         $this->typeLabels = [
-            'file'     => __('System update in progress.'),
+            'file'     => __('File system update in progress.'),
             'database' => __('Database update in progress.'),
+            'restore'  => __('System restore in progress.'),
         ];
         $this->stageLabels = [
             'preparing'   => __('Preparing update…'),
             'downloading' => __('Downloading update…'),
             'installing'  => __('Installing update…'),
+            'restoring'   => __('Restoring files…'),
             'finalizing'  => __('Finalizing update…'),
         ];
     }

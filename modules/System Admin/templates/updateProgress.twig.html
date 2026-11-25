@@ -31,6 +31,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 this.pollUrl = this.pollUrl.split('?')[0] + '?gibbonLogID=' + encodeURIComponent(gibbonLogID);
             }
 
+            this.progress = 0;
             this.updateProgressOpen = true;
             this.isPolling = true;
             this.poll();
@@ -57,7 +58,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             this.typeLabel = snapshot.typeLabel || '';
             this.stageLabel = snapshot.stageLabel || '';
             this.message = snapshot.message || '';
-            this.progress = Number.isInteger(snapshot.progress) ? snapshot.progress : null;
+            this.progress = Number.isInteger(snapshot.progress) ? snapshot.progress : 0;
 
             if (snapshot.state === 'complete') {
                 this.stopPolling();
@@ -70,7 +71,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 return;
             }
 
-            this.pollTimer = window.setTimeout(() => this.poll(), 2000);
+            this.pollTimer = window.setTimeout(() => this.poll(), 1000);
         },
         applyUnavailable() {
             this.state = 'unavailable';
@@ -78,7 +79,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             this.typeLabel = '';
             this.stageLabel = '';
             this.message = this.unavailableMessage;
-            this.progress = null;
+            this.progress = 0;
             this.stopPolling();
         },
         stopPolling() {
@@ -138,11 +139,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             <h2 id="update-progress-title" class="text-base font-semibold" :class="state === 'failed' || state === 'unavailable' ? 'text-red-800' : 'text-gray-800'">
                                 {{ __('System Update') }}
                             </h2>
-                            <p class="mt-4 mb-0 text-sm" :class="state === 'failed' || state === 'unavailable' ? 'text-red-700' : 'text-gray-700'" role="status" aria-live="polite" x-text="message || [lifecycleLabel, typeLabel, stageLabel].filter(Boolean).join(' ')">
+                            <p class="mt-4 mb-0 text-sm" :class="state === 'failed' || state === 'unavailable' ? 'text-red-700' : 'text-gray-700'" role="status" aria-live="polite" x-text="message || [typeLabel, stageLabel].filter(Boolean).join(' ')">
                                 {% if message %}
                                     {{ message }}
                                 {% else %}
-                                    {{ lifecycleLabel }} {{ typeLabel }} {{ stageLabel }}
+                                    {{ typeLabel }} {{ stageLabel }}
                                 {% endif %}
                             </p>
                         </div>
@@ -150,7 +151,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         <span class="text-sm font-semibold" :class="state === 'failed' || state === 'unavailable' ? 'text-red-800' : 'text-gray-800'" x-show="progress !== null" x-text="progress + '%'"></span>
                     </div>
 
-                    <div class="mt-4 h-6 w-full overflow-hidden rounded-full bg-gray-200" x-show="progress !== null" role="progressbar" aria-label="{{ __('Update progress') }}" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
+                    <div class="mt-4 h-6 w-full overflow-hidden rounded-full bg-gray-200" role="progressbar" aria-label="{{ __('Progress') }}" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
                         <div class="h-full rounded-full transition-transform duration-300 ease-in-out bg-stripe-overlay animate-bg-slide" :class="state === 'failed' || state === 'unavailable' ? 'bg-red-600' : 'bg-purple-500'" :style="'width: ' + progress + '%'"></div>
                     </div>
                 </div>

@@ -34,7 +34,7 @@ use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 
 /**
- * Runs core file and database updates in a background process.
+ * Runs core file updates, restores, and database updates in a background process.
  *
  * @version v30
  * @since   v30
@@ -60,7 +60,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
      */
     public function run(string $mode): void
     {
-        if (!in_array($mode, ['file', 'regularRelease', 'cuttingEdge'], true)) {
+        if (!in_array($mode, ['file', 'regularRelease', 'cuttingEdge', 'restore'], true)) {
             throw new \InvalidArgumentException('Unsupported system update mode.');
         }
 
@@ -69,6 +69,13 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         if ($mode === 'file') {
             $this->progress->begin('file');
             $this->runFileUpdate();
+
+            return;
+        }
+
+        if ($mode === 'restore') {
+            $this->progress->begin('restore');
+            $this->runRestore();
 
             return;
         }
@@ -166,6 +173,88 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'failed');
             } catch (\Throwable $settingError) {
                 error_log('SystemUpdateProcess file update failure-state error: '.$settingError->getMessage());
+            }
+
+            throw $error;
+        }
+    }
+
+    /**
+     * Preserve the previous-version restore workflow, including its lock and cleanup.
+     */
+    private function runRestore(): void
+    {
+        $stage = 'preparing';
+        $this->progress->update($stage, 'working', 10);
+
+        $absolutePath = (string) $this->session->get('absolutePath');
+        $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
+        $lockPath = $baseDir.'/fileUpdate.lock';
+
+        $directoryReady = $absolutePath !== '' && is_dir($absolutePath);
+        if ($directoryReady && !is_dir($baseDir)) {
+            $directoryReady = mkdir($baseDir, 0755, true) || is_dir($baseDir);
+        }
+
+        if (!$directoryReady || !is_writable($baseDir)) {
+            $this->fail($stage, new \RuntimeException('File restore directory is unavailable.'));
+            throw new \RuntimeException('File restore directory is unavailable.');
+        }
+
+        $lock = @fopen($lockPath, 'c');
+        if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
+            if ($lock !== false) {
+                fclose($lock);
+            }
+
+            $this->fail($stage, new \RuntimeException('File restore is already running.'));
+            throw new \RuntimeException('File restore is already running.');
+        }
+
+        ignore_user_abort(true);
+        @set_time_limit(3000);
+
+        try {
+            try {
+                $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');
+                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'running');
+
+                $backupVersion = (string) $this->settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
+                $release = $this->versionCatalog->getRelease($backupVersion);
+                if (empty($release) || empty($release['filePath'])) {
+                    throw new \RuntimeException(Downloader::ERROR_INVALID);
+                }
+
+                $stage = 'restoring';
+                $this->progress->update($stage, 'working', 70);
+                $this->fileUpdater->restore();
+
+                $stage = 'finalizing';
+                $this->progress->update($stage, 'working', 90);
+                removeDirectoryContents($absolutePath.'/uploads/cache');
+                $this->session->forget('pageLoads');
+
+                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
+                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', '');
+            } finally {
+                removeDirectoryContents($baseDir.'/staging');
+                if (is_file($baseDir.'/package.zip')) {
+                    unlink($baseDir.'/package.zip');
+                }
+
+                $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'N');
+                flock($lock, LOCK_UN);
+                fclose($lock);
+            }
+
+            $this->progress->update($stage, 'complete', 100);
+        } catch (\Throwable $error) {
+            $this->fail($stage, $error);
+
+            try {
+                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'failed');
+            } catch (\Throwable $settingError) {
+                error_log('SystemUpdateProcess restore failure-state error: '.$settingError->getMessage());
             }
 
             throw $error;

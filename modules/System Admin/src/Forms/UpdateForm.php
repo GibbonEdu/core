@@ -171,8 +171,9 @@ class UpdateForm
     {
         $isBackgroundEligible = $this->isDatabaseUpdateRelease($version, $updateRequired)
             || $this->isNextRelease($version, $nextRelease);
+        $isRestoreRelease = $version === $this->backupVersion;
 
-        if ($this->isUpdateActive && $isBackgroundEligible) {
+        if ($this->isUpdateActive && ($isBackgroundEligible || $isRestoreRelease)) {
             $row->addButton(__('Update in Progress'))
                 ->addClass('text-sm text-gray-600')
                 ->setAttribute('disabled', 'disabled');
@@ -209,12 +210,13 @@ class UpdateForm
             return;
         }
 
-        if ($version === $this->backupVersion) {
+        if ($isRestoreRelease) {
             $restorePath = $this->session->get('absoluteURL').'/modules/System Admin/updateRestoreProcess.php';
-            $row->addSubmit(__('Downgrade to {version}', ['version' => $version]))
+            $submit = $row->addSubmit(__('Downgrade to {version}', ['version' => $version]))
                 ->addClass('rounded-md')
                 ->setAttribute('formaction', $restorePath)
                 ->setColor('gray');
+            $this->enableBackgroundSubmission($submit, $restorePath);
         }
     }
 
@@ -250,9 +252,9 @@ class UpdateForm
     }
 
     /**
-     * Configure only background-eligible update buttons for an HTMX submission.
+     * Configure a background update or restore button for an HTMX submission.
      *
-     * Restore and InnoDB controls keep their synchronous native form behavior.
+     * InnoDB controls keep their synchronous native form behavior.
      *
      * @param object $submit
      */
