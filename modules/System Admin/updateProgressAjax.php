@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
-use Gibbon\View\View;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -30,15 +29,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
-$view = $container->get(View::class);
 $unavailableMessage = __('Background updates are unavailable on this system.');
 
-$renderUnavailable = static function () use ($view, $unavailableMessage): void {
-    echo $view->fetchFromTemplate('updateProgress.twig.html', [
-        'isDormant'      => false,
-        'isPolling'      => false,
-        'isFailure'      => true,
-        'lifecycleLabel' => '',
+/**
+ * @param array{state: string, lifecycleLabel: string, typeLabel: string, stageLabel: string, message: string, progress: ?int} $response
+ */
+$respond = static function (array $response): void {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($response, JSON_THROW_ON_ERROR);
+};
+
+$respondUnavailable = static function () use ($respond, $unavailableMessage): void {
+    $respond([
+        'state'          => 'unavailable',
+        'lifecycleLabel' => __('Unavailable'),
         'typeLabel'      => '',
         'stageLabel'     => '',
         'message'        => $unavailableMessage,
@@ -48,7 +52,7 @@ $renderUnavailable = static function () use ($view, $unavailableMessage): void {
 
 $gibbonLogID = $_GET['gibbonLogID'] ?? '';
 if (!is_string($gibbonLogID) || preg_match('/^[0-9]+$/D', $gibbonLogID) !== 1) {
-    $renderUnavailable();
+    $respondUnavailable();
     exit;
 }
 
@@ -56,48 +60,64 @@ if (!is_string($gibbonLogID) || preg_match('/^[0-9]+$/D', $gibbonLogID) !== 1) {
 // the page-emitted value before its direct, exact gibbonLog lookup.
 $gibbonLogID = ltrim($gibbonLogID, '0');
 if (empty($gibbonLogID) || !ctype_digit($gibbonLogID)) {
-    $renderUnavailable();
+    $respondUnavailable();
     exit;
 }
 
+// Presence and title establish that this is a SystemUpdateProcess record. Do
+// not inspect serialised process data: it may contain implementation details.
 $gibbonLog = $container->get(LogGateway::class)->getByID($gibbonLogID, ['gibbonLogID', 'title']);
 if (empty($gibbonLog) || $gibbonLog['gibbonLogID'] != $gibbonLogID || $gibbonLog['title'] !== 'Background Process - SystemUpdateProcess') {
-    $renderUnavailable();
+    $respondUnavailable();
     exit;
 }
 
 $progressService = $container->get(SystemUpdateProgress::class);
 $progressSnapshot = $progressService->get();
-$snapshotStatus = $progressSnapshot['status'];
-
-if ($snapshotStatus === 'complete') {
-    header('HX-Refresh: true');
-    exit;
-}
-
-if (!in_array($snapshotStatus, ['working', 'failed'], true)) {
-    $renderUnavailable();
-    exit;
-}
-
-$isPolling = $snapshotStatus === 'working';
-$isFailure = $snapshotStatus === 'failed';
 $progress = $progressSnapshot['progress'];
 
 if (!is_int($progress) || $progress < 0 || $progress > 100) {
     $progress = null;
 }
 
-echo $view->fetchFromTemplate('updateProgress.twig.html', [
-    'isDormant'      => false,
-    'isPolling'      => $isPolling,
-    'pollUrl'        => $session->get('absoluteURL').'/modules/System Admin/updateProgressAjax.php?gibbonLogID=' . rawurlencode($gibbonLogID),
-    'isFailure'      => $isFailure,
-    'lifecycleLabel' => $progressService->getStatusLabel($snapshotStatus) ?? '',
-    'typeLabel'      => $progressService->getTypeLabel($progressSnapshot['type']) ?? '',
-    'stageLabel'     => $progressService->getStageLabel($progressSnapshot['stage']) ?? '',
-    'message'        => $isFailure
-        ? __('Update failed. Check the server logs and try again.')
-        : '',
-    'progress'      => $progress,
-]);
+$typeLabel = $progressService->getTypeLabel($progressSnapshot['type']) ?? '';
+$stageLabel = $progressService->getStageLabel($progressSnapshot['stage']) ?? '';
+
+switch ($progressSnapshot['status']) {
+    case 'working':
+        $respond([
+            'state'          => 'active',
+            'lifecycleLabel' => $progressService->getStatusLabel('working') ?? '',
+            'typeLabel'      => $typeLabel,
+            'stageLabel'     => $stageLabel,
+            'message'        => '',
+            'progress'       => $progress,
+        ]);
+        break;
+
+    case 'complete':
+        $respond([
+            'state'          => 'complete',
+            'lifecycleLabel' => __('Complete'),
+            'typeLabel'      => $typeLabel,
+            'stageLabel'     => $stageLabel,
+            'message'        => '',
+            'progress'       => $progress,
+        ]);
+        break;
+
+    case 'failed':
+        $respond([
+            'state'          => 'failed',
+            'lifecycleLabel' => $progressService->getStatusLabel('failed') ?? '',
+            'typeLabel'      => $typeLabel,
+            'stageLabel'     => $stageLabel,
+            'message'        => __('Update failed. Check the server logs and try again.'),
+            'progress'       => $progress,
+        ]);
+        break;
+
+    default:
+        $respondUnavailable();
+        break;
+}

@@ -102,8 +102,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $progress = null;
     }
 
-    $progress = 72;
-
     $progressEndpoint = $session->get('absoluteURL').'/modules/System Admin/updateProgressAjax.php';
     $pollUrl = $isUpdateActive
         ? $progressEndpoint.'?gibbonLogID='.rawurlencode((string) $processID)
@@ -120,7 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'message'        => $hasUpdateFailure
             ? __('Update failed. Check the server logs and try again.')
             : '',
-        'progress'      => $progress,
+        'progress'           => $progress,
+        'unavailableMessage' => __('Background updates are unavailable on this system.'),
     ]);
 
     if (!$isUpdateActive && !$hasUpdateFailure) {

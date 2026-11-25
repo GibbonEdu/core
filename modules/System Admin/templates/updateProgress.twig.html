@@ -9,20 +9,86 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 <div id="updateProgressRegion"
-    x-data="{ updateProgressOpen: {{ isDormant ? 'false' : 'true' }} }"
-    {% if isDormant %}
-        x-on:backgroundUpdateStarted.window="updateProgressOpen = true"
-        hx-get="{{ pollUrl }}"
-        hx-trigger="backgroundUpdateStarted from:body"
-        hx-vals='js:{gibbonLogID: event.detail.gibbonLogID}'
-        hx-target="#updateProgressRegion"
-        hx-swap="outerHTML"
-    {% elseif isPolling %}
-        hx-get="{{ pollUrl }}"
-        hx-trigger="every 1s"
-        hx-target="#updateProgressRegion"
-        hx-swap="outerHTML"
-    {% endif %}
+    x-data="{
+        updateProgressOpen: {{ isDormant ? 'false' : 'true' }},
+        isPolling: {{ isPolling ? 'true' : 'false' }},
+        state: {{ (isPolling ? 'active' : (isFailure ? 'failed' : 'unavailable'))|json_encode|e('html_attr') }},
+        pollUrl: {{ pollUrl|json_encode|e('html_attr') }},
+        lifecycleLabel: {{ lifecycleLabel|json_encode|e('html_attr') }},
+        typeLabel: {{ typeLabel|json_encode|e('html_attr') }},
+        stageLabel: {{ stageLabel|json_encode|e('html_attr') }},
+        message: {{ message|json_encode|e('html_attr') }},
+        progress: {{ progress|json_encode|e('html_attr') }},
+        unavailableMessage: {{ unavailableMessage|json_encode|e('html_attr') }},
+        pollTimer: null,
+        init() {
+            if (this.isPolling) {
+                this.poll();
+            }
+        },
+        start(gibbonLogID) {
+            if (gibbonLogID) {
+                this.pollUrl = this.pollUrl.split('?')[0] + '?gibbonLogID=' + encodeURIComponent(gibbonLogID);
+            }
+
+            this.updateProgressOpen = true;
+            this.isPolling = true;
+            this.poll();
+        },
+        poll() {
+            if (!this.isPolling || !this.pollUrl) {
+                return;
+            }
+
+            window.clearTimeout(this.pollTimer);
+            fetch(this.pollUrl, { headers: { Accept: 'application/json' } })
+                .then((response) => response.ok ? response.json() : Promise.reject())
+                .then((snapshot) => this.applySnapshot(snapshot))
+                .catch(() => this.applyUnavailable());
+        },
+        applySnapshot(snapshot) {
+            if (!snapshot || !['active', 'complete', 'failed', 'unavailable'].includes(snapshot.state)) {
+                this.applyUnavailable();
+                return;
+            }
+
+            this.state = snapshot.state;
+            this.lifecycleLabel = snapshot.lifecycleLabel || '';
+            this.typeLabel = snapshot.typeLabel || '';
+            this.stageLabel = snapshot.stageLabel || '';
+            this.message = snapshot.message || '';
+            this.progress = Number.isInteger(snapshot.progress) ? snapshot.progress : null;
+
+            if (snapshot.state === 'complete') {
+                this.stopPolling();
+                window.location.reload();
+                return;
+            }
+
+            if (snapshot.state === 'failed' || snapshot.state === 'unavailable') {
+                this.stopPolling();
+                return;
+            }
+
+            this.pollTimer = window.setTimeout(() => this.poll(), 2000);
+        },
+        applyUnavailable() {
+            this.state = 'unavailable';
+            this.lifecycleLabel = '{{ __('Unavailable')|e('js') }}';
+            this.typeLabel = '';
+            this.stageLabel = '';
+            this.message = this.unavailableMessage;
+            this.progress = null;
+            this.stopPolling();
+        },
+        stopPolling() {
+            this.isPolling = false;
+            window.clearTimeout(this.pollTimer);
+            this.pollTimer = null;
+        }
+    }"
+    x-init="init()"
+    x-on:background-update-started.window="start($event.detail.gibbonLogID)"
 >
     <div id="updateProgress"
         x-cloak
@@ -66,33 +132,27 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     </button>
                 </div>
 
-                <div class="px-3 pb-3 font-sans ">
+                <div class="px-3 pb-3 font-sans">
                     <div class="flex items-end justify-between gap-4">
                         <div>
-                            <h2 id="update-progress-title" class="text-base font-semibold {{ isFailure ? 'text-red-800' : 'text-gray-800' }}">
+                            <h2 id="update-progress-title" class="text-base font-semibold" :class="state === 'failed' || state === 'unavailable' ? 'text-red-800' : 'text-gray-800'">
                                 {{ __('System Update') }}
                             </h2>
-                            <p class="mt-4 mb-0 text-sm {{ isFailure ? 'text-red-700' : 'text-gray-700' }}" role="status" aria-live="polite">
+                            <p class="mt-4 mb-0 text-sm" :class="state === 'failed' || state === 'unavailable' ? 'text-red-700' : 'text-gray-700'" role="status" aria-live="polite" x-text="message || [lifecycleLabel, typeLabel, stageLabel].filter(Boolean).join(' ')">
                                 {% if message %}
                                     {{ message }}
                                 {% else %}
-                                    {{ typeLabel }}
-                                {% endif %}
-
-                                {% if stageLabel %}
-                                    {{ stageLabel }}
+                                    {{ lifecycleLabel }} {{ typeLabel }} {{ stageLabel }}
                                 {% endif %}
                             </p>
                         </div>
 
-                        <span class="text-sm font-semibold {{ isFailure ? 'text-red-800' : 'text-gray-800' }}">{{ progress|default(0) }}%</span>
+                        <span class="text-sm font-semibold" :class="state === 'failed' || state === 'unavailable' ? 'text-red-800' : 'text-gray-800'" x-show="progress !== null" x-text="progress + '%'"></span>
                     </div>
 
-                   
-                    <div class="mt-4 h-6 w-full overflow-hidden rounded-full bg-gray-200" role="progressbar" aria-label="{{ progress|default(0) }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress|default(0) }}">
-                        <div class="h-full rounded-full transition-transform duration-300 ease-in-out {{ isFailure ? 'bg-red-600' : 'bg-purple-500' }} bg-stripe-overlay animate-bg-slide" style="width: {{ progress|default(0) }}%"></div>
+                    <div class="mt-4 h-6 w-full overflow-hidden rounded-full bg-gray-200" x-show="progress !== null" role="progressbar" aria-label="{{ __('Update progress') }}" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
+                        <div class="h-full rounded-full transition-transform duration-300 ease-in-out bg-stripe-overlay animate-bg-slide" :class="state === 'failed' || state === 'unavailable' ? 'bg-red-600' : 'bg-purple-500'" :style="'width: ' + progress + '%'"></div>
                     </div>
-             
                 </div>
             </div>
         </div>

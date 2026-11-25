@@ -108,7 +108,7 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
 
     if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {
         header('HX-Trigger: '.json_encode([
-            'backgroundUpdateStarted' => ['gibbonLogID' => $gibbonLogID],
+            'background-update-started' => ['gibbonLogID' => $gibbonLogID],
         ]));
         http_response_code(204);
         exit;

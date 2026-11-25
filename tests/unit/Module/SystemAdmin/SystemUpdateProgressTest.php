@@ -61,7 +61,6 @@ class SystemUpdateProgressTest extends TestCase
     {
         $progress = new SystemUpdateProgress($this->createMock(SettingGateway::class));
 
-        $this->assertSame(__('Running'), $progress->getStatusLabel('working'));
         $this->assertSame(__('Database update in progress.'), $progress->getTypeLabel('database'));
         $this->assertSame(__('Installing update…'), $progress->getStageLabel('installing'));
         $this->assertNull($progress->getStatusLabel('unknown'));

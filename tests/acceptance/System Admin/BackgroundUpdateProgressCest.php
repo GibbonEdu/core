@@ -19,27 +19,14 @@ class BackgroundUpdateProgressCest
         $I->deleteFromDatabase('gibbonLog', ['title' => self::OTHER_PROCESS_TITLE]);
     }
 
-    public function activeProgressAppearsAfterOverviewAndSnapshotChangesPollResponse(AcceptanceTester $I): void
+    public function activeProgressAppearsAfterOverviewAndPollsJsonInPlace(AcceptanceTester $I): void
     {
         $this->setProgress($I, 'database', 'installing', 'working', 70);
         $gibbonLogID = $this->createGibbonLog($I);
-        $displayGibbonLogID = str_pad((string) $gibbonLogID, 16, '0', STR_PAD_LEFT);
 
         $I->loginAsAdmin();
         $I->amOnModulePage('System Admin', 'update.php');
-        $I->seeElement(sprintf(
-            '#updateProgressRegion[hx-get*="updateProgressAjax.php?gibbonLogID=%s"]',
-            $displayGibbonLogID
-        ));
-        $I->seeElement('#updateProgressRegion', [
-            'hx-target' => '#updateProgressRegion',
-            'hx-swap' => 'outerHTML',
-            'hx-trigger' => 'every 1s',
-        ]);
-        $I->see('Running', '#updateProgress');
-        $I->see('Database update', '#updateProgress');
         $I->see('Installing update…', '#updateProgress');
-        $I->see('70%', '#updateProgress');
         $I->seeElement('#updateProgress', [
             'x-show' => 'updateProgressOpen',
             'role' => 'dialog',
@@ -49,25 +36,41 @@ class BackgroundUpdateProgressCest
         $source = $I->grabPageSource();
         $I->assertStringContainsString('x-trap.inert.noscroll.noreturn="updateProgressOpen"', $source);
         $I->assertStringContainsString('@click="updateProgressOpen = false"', $source);
+        $I->assertStringContainsString('fetch(this.pollUrl', $source);
+        $I->assertStringContainsString('applySnapshot(snapshot)', $source);
+        $I->assertStringContainsString('window.setTimeout(() => this.poll(), 2000)', $source);
+        $I->assertStringContainsString('progress: 70', $source);
+        $I->assertStringContainsString(":style=\"'width: ' + progress + '%'\"", $source);
+        $I->assertStringContainsString("x-on:background-update-started.window=\"start(\$event.detail.gibbonLogID)\"", $source);
+        $I->assertStringNotContainsString('hx-trigger="every', $source);
+        $I->assertStringNotContainsString('hx-swap="outerHTML"', $source);
         $progressPosition = strpos($source, 'id="updateProgress"');
         $overviewPosition = strpos($source, 'id="versionUpdate"');
         $I->assertNotFalse($progressPosition, 'The update progress component was rendered.');
         $I->assertNotFalse($overviewPosition, 'The update overview was rendered.');
         $I->assertLessThan($progressPosition, $overviewPosition, 'Overview is rendered before the update progress component.');
 
-        // The worker only changes the shared snapshot. The same existing log
-        // record then produces an updated HTMX fragment without payload data.
+        // The worker only changes the shared snapshot. The fixed modal DOM
+        // consumes the safe JSON response and applies the new values in place.
         $this->setProgress($I, 'database', 'finalizing', 'working', 90);
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$gibbonLogID);
-        $I->see('Finalizing update…', '#updateProgress');
-        $I->see('90%', '#updateProgress');
-        $I->seeElement('#updateProgressRegion', ['hx-trigger' => 'every 1s']);
+        $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
+        $I->assertSame([
+            'state',
+            'lifecycleLabel',
+            'typeLabel',
+            'stageLabel',
+            'message',
+            'progress',
+        ], array_keys($snapshot));
+        $I->assertSame('active', $snapshot['state']);
+        $I->assertSame('Finalizing update…', $snapshot['stageLabel']);
+        $I->assertSame('', $snapshot['message']);
+        $I->assertSame(90, $snapshot['progress']);
+        $I->assertStringNotContainsString('serialisedArray', $I->grabPageSource());
 
         // A normal full-page reload uses the same current snapshot.
         $I->amOnModulePage('System Admin', 'update.php');
-        $I->seeElement('#updateProgressRegion', ['hx-trigger' => 'every 1s']);
         $I->see('Finalizing update…', '#updateProgress');
-        $I->see('90%', '#updateProgress');
     }
 
     public function zeroPaddedGibbonLogIDIsAcceptedAndNormalized(AcceptanceTester $I): void
@@ -77,15 +80,10 @@ class BackgroundUpdateProgressCest
         $zeroPaddedGibbonLogID = str_pad((string) $gibbonLogID, 16, '0', STR_PAD_LEFT);
 
         $I->loginAsAdmin();
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$zeroPaddedGibbonLogID);
-        $I->seeResponseCodeIsSuccessful();
-        $I->see('Running', '#updateProgress');
-        $I->see('Installing update…', '#updateProgress');
-        $I->seeElement(sprintf(
-            '#updateProgressRegion[hx-get*="updateProgressAjax.php?gibbonLogID=%s"]',
-            (string) ((int) $gibbonLogID)
-        ));
-        $I->seeElement('#updateProgressRegion', ['hx-trigger' => 'every 1s']);
+        $snapshot = $this->getProgressSnapshot($I, $zeroPaddedGibbonLogID);
+        $I->assertSame('active', $snapshot['state']);
+        $I->assertSame('Running', $snapshot['lifecycleLabel']);
+        $I->assertSame('Installing update…', $snapshot['stageLabel']);
     }
 
     public function completionRefreshesAndTheReloadedPageUsesCurrentVersionData(AcceptanceTester $I): void
@@ -94,48 +92,41 @@ class BackgroundUpdateProgressCest
         $gibbonLogID = $this->createGibbonLog($I);
 
         $I->loginAsAdmin();
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$gibbonLogID);
-        $I->seeResponseCodeIsSuccessful();
-        $I->seeResponseHeader('HX-Refresh', 'true');
-        $I->assertSame('', $I->grabPageSource());
+        $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
+        $I->assertSame('complete', $snapshot['state']);
+        $I->assertSame('Complete', $snapshot['lifecycleLabel']);
+        $I->assertSame(100, $snapshot['progress']);
 
-        // PhpBrowser does not execute HTMX. Request the contractually refreshed
-        // document and assert that it recalculates normal overview data.
+        // PhpBrowser does not execute Alpine. Request the document that the
+        // component reloads after a complete response and check normal overview data.
         $I->amOnModulePage('System Admin', 'update.php');
         $I->seeElement('#updateProgress[x-cloak][style="display: none;"]');
-        $I->dontSeeElement('#updateProgressRegion[hx-trigger="every 1s"]');
+        $I->assertStringContainsString('isPolling: false', $I->grabPageSource());
         $I->see('Codebase Version');
         $I->see('v30.0.04');
     }
 
-    public function failedInvalidAndNonUpdateRecordsRenderOnlySafeTranslatedOutput(AcceptanceTester $I): void
+    public function failedInvalidAndNonUpdateRecordsReturnOnlySafeJson(AcceptanceTester $I): void
     {
         $this->setProgress($I, 'file', 'installing', 'failed', 70);
         $gibbonLogID = $this->createGibbonLog($I);
         $otherGibbonLogID = $this->createGibbonLog($I, self::OTHER_PROCESS_TITLE);
 
         $I->loginAsAdmin();
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$gibbonLogID);
-        $I->see('Update failed. Check the server logs and try again.', '#updateProgress');
-        $I->see('Failed', '#updateProgress');
-        $I->see('Installing update…', '#updateProgress');
-        $I->dontSeeInSource('hx-trigger="every 1s"');
+        $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
+        $I->assertSame('failed', $snapshot['state']);
+        $I->assertSame('Failed', $snapshot['lifecycleLabel']);
+        $I->assertSame('Installing update…', $snapshot['stageLabel']);
+        $I->assertSame('Update failed. Check the server logs and try again.', $snapshot['message']);
+        $I->assertSame(70, $snapshot['progress']);
 
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID=0');
-        $I->see('Background updates are unavailable on this system.', '#updateProgress');
-
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID=0000000000000000');
-        $I->see('Background updates are unavailable on this system.', '#updateProgress');
-
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID=0000000000000596invalid');
-        $I->see('Background updates are unavailable on this system.', '#updateProgress');
-
-        // A canonical but unknown ID must be treated exactly like an invalid ID.
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID=999999999');
-        $I->see('Background updates are unavailable on this system.', '#updateProgress');
-
-        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$otherGibbonLogID);
-        $I->see('Background updates are unavailable on this system.', '#updateProgress');
+        foreach (['0', '0000000000000000', '0000000000000596invalid', '999999999', (string) $otherGibbonLogID] as $invalidID) {
+            $snapshot = $this->getProgressSnapshot($I, $invalidID);
+            $I->assertSame('unavailable', $snapshot['state']);
+            $I->assertSame('Unavailable', $snapshot['lifecycleLabel']);
+            $I->assertSame('Background updates are unavailable on this system.', $snapshot['message']);
+            $I->assertNull($snapshot['progress']);
+        }
     }
 
     public function authorizationAndDuplicateSubmissionSuppressionKeepRequestsSafe(AcceptanceTester $I): void
@@ -184,23 +175,17 @@ class BackgroundUpdateProgressCest
             'Background-eligible update submissions use their real HTMX process action.'
         );
         $I->assertStringContainsString('hx-swap="none"', $source);
-        $I->seeElement('#updateProgressRegion', [
-            'hx-trigger' => 'backgroundUpdateStarted from:body',
-            'hx-target' => '#updateProgressRegion',
-            'hx-swap' => 'outerHTML',
-        ]);
         $I->assertStringContainsString(
-            'x-on:backgroundUpdateStarted.window="updateProgressOpen = true"',
+            "x-on:background-update-started.window=\"start(\$event.detail.gibbonLogID)\"",
             $source
         );
+        $this->assertBackgroundStartEventWiring($I);
         $I->seeElement('#updateProgress', [
             'x-show' => 'updateProgressOpen',
             'style' => 'display: none;',
         ]);
-        $I->assertStringContainsString(
-            "hx-vals='js:{gibbonLogID: event.detail.gibbonLogID}'",
-            $source
-        );
+        $I->assertStringContainsString('fetch(this.pollUrl', $source);
+        $I->assertStringNotContainsString('hx-swap="outerHTML"', $source);
 
         // These controls depend on the current updater state and catalog. When
         // the configured fixture exposes them, assert their synchronous targets.
@@ -210,6 +195,37 @@ class BackgroundUpdateProgressCest
         if (str_contains($source, 'updateRestoreProcess.php')) {
             $I->assertStringContainsString('updateRestoreProcess.php', $source);
         }
+    }
+
+    /**
+     * PhpBrowser does not execute HTMX or Alpine. Assert the complete event
+     * contract so the dormant modal receives the trigger emitted by both real
+     * background-update form actions.
+     */
+    private function assertBackgroundStartEventWiring(AcceptanceTester $I): void
+    {
+        $projectRoot = dirname(__DIR__, 3);
+        $eventPayload = "'background-update-started' => ['gibbonLogID' => \$gibbonLogID]";
+
+        foreach (['updateFilesProcess.php', 'updateProcess.php'] as $action) {
+            $actionSource = file_get_contents($projectRoot.'/modules/System Admin/'.$action);
+            $I->assertNotFalse($actionSource, 'The background update action is readable.');
+            $I->assertStringContainsString($eventPayload, $actionSource);
+        }
+    }
+
+    /**
+     * @return array{state: string, lifecycleLabel: string, typeLabel: string, stageLabel: string, message: string, progress: ?int}
+     */
+    private function getProgressSnapshot(AcceptanceTester $I, string $gibbonLogID): array
+    {
+        $I->amOnPage('/modules/System Admin/updateProgressAjax.php?gibbonLogID='.$gibbonLogID);
+        $I->seeResponseCodeIsSuccessful();
+
+        $snapshot = json_decode($I->grabPageSource(), true, 512, JSON_THROW_ON_ERROR);
+        $I->assertIsArray($snapshot);
+
+        return $snapshot;
     }
 
     private function setProgress(AcceptanceTester $I, string $type, string $stage, string $status, int $progress): void
