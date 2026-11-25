@@ -49,6 +49,46 @@ class DownloaderTest extends TestCase
         parent::tearDown();
     }
 
+    public function testSelectsBackupDirectoryOutsideWebRootWhenParentIsUsable(): void
+    {
+        $webRoot = $this->fixturePath.'/web';
+        mkdir($webRoot, 0755, true);
+        $session = $this->createMock(Session::class);
+        $session->method('get')->with('absolutePath')->willReturn($webRoot);
+
+        $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new Filesystem());
+
+        $this->assertSame(dirname(realpath($webRoot)).'/backups/fileUpdate', $downloader->getBaseDirectory());
+    }
+
+    public function testFallsBackInsideWebRootWhenParentIsUnavailable(): void
+    {
+        $webRoot = $this->fixturePath.'/web';
+        mkdir($webRoot, 0755, true);
+        $session = $this->createMock(Session::class);
+        $session->method('get')->with('absolutePath')->willReturn($webRoot);
+        $filesystem = new DownloaderFilesystem();
+        $filesystem->parentDirectoryAvailable = false;
+
+        $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), $filesystem);
+
+        $this->assertSame($webRoot.'/'.Downloader::BASE_DIR, $downloader->getBaseDirectory());
+    }
+
+    public function testExplicitBaseDirectoryIsNotOverridden(): void
+    {
+        $webRoot = $this->fixturePath.'/web';
+        mkdir($webRoot, 0755, true);
+        $session = $this->createMock(Session::class);
+        $session->method('get')->with('absolutePath')->willReturn($webRoot);
+        $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new Filesystem());
+        $explicit = $this->fixturePath.'/explicit-backup';
+
+        $downloader->setBaseDirectory($explicit);
+
+        $this->assertSame($explicit, $downloader->getBaseDirectory());
+    }
+
     public function testExtractReportsByteAndFileProgress(): void
     {
         $zipPath = $this->fixturePath.'/backups/fileUpdate/package.zip';
@@ -65,6 +105,7 @@ class DownloaderTest extends TestCase
         $progress = [];
         $filesystem = new DownloaderFilesystem();
         $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), $filesystem);
+        $downloader->setBaseDirectory($this->fixturePath.'/backups/fileUpdate');
         $downloader->setProgressCallback(function (int $percent) use (&$progress): void {
             $progress[] = $percent;
         });
@@ -99,6 +140,7 @@ class DownloaderTest extends TestCase
         $session = $this->createMock(Session::class);
         $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
         $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new DownloaderFilesystem());
+        $downloader->setBaseDirectory($this->fixturePath.'/backups/fileUpdate');
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(Downloader::ERROR_INVALID);
@@ -134,6 +176,12 @@ class DownloaderFilesystem extends Filesystem
      * @var array<int, array{path: string, root: string}>
      */
     public array $containedPaths = [];
+    public bool $parentDirectoryAvailable = true;
+
+    public function checkParentDirectory(string $root): bool
+    {
+        return $this->parentDirectoryAvailable && parent::checkParentDirectory($root);
+    }
 
     public function isSafeRelativePath(string $relative): bool
     {

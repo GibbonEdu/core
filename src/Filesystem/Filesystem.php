@@ -34,6 +34,98 @@ class Filesystem
     public const DEFAULT_OPERATIONS = ['read', 'write', 'create', 'rename', 'delete', 'mkdir', 'rmdir'];
 
     /**
+     * Check whether a safe sibling location outside an application root can be used.
+     *
+     * The root must be an existing, non-symlink directory with an existing,
+     * non-symlink parent. The parent is probed for read, write, create, rename,
+     * delete, mkdir, and rmdir support. Probe entries are randomized and are
+     * removed by probeDirectory() before this method returns.
+     *
+     * @param string $root
+     * @return bool
+     */
+    public function checkParentDirectory(string $root): bool
+    {
+        $root = rtrim(str_replace('\\', '/', $root), '/');
+        if ($root === '' || !is_dir($root) || is_link($root)) {
+            return false;
+        }
+
+        $rootReal = realpath($root);
+        $parent = dirname($root);
+        $parentReal = realpath($parent);
+
+        if ($rootReal === false
+            || $parent === $root
+            || $parentReal === false
+            || $parentReal === DIRECTORY_SEPARATOR
+            || !is_dir($parentReal)
+            || is_link($parent)
+            || $this->isInside($parentReal, $rootReal, true)) {
+            return false;
+        }
+
+        return $this->probeDirectory($parentReal, self::DEFAULT_OPERATIONS);
+    }
+
+    /**
+     * Return a preferred directory below the parent of a root when that
+     * location is usable, otherwise return the existing in-root fallback.
+     *
+     * This method performs no filesystem mutation beyond the temporary probe
+     * performed by checkParentDirectory().
+     *
+     * @param string $root
+     * @param string $relativePath
+     * @return string
+     */
+    public function getSecureDirectory(string $root, string $relativePath): string
+    {
+        $root = rtrim(str_replace('\\', '/', $root), '/');
+        $relativePath = trim(str_replace('\\', '/', $relativePath), '/');
+        $fallback = $root.'/'.$relativePath;
+
+        if (!$this->checkParentDirectory($root)) {
+            return $fallback;
+        }
+
+        $preferredRoot = dirname(realpath($root));
+        $preferred = $preferredRoot.'/'.$relativePath;
+        if ($this->containsSymlink($preferredRoot, $relativePath)) {
+            return $fallback;
+        }
+
+        return $preferred;
+    }
+
+    /**
+     * Return whether a path component below a trusted directory is a symlink.
+     *
+     * @param string $root
+     * @param string $relativePath
+     * @return bool
+     */
+    private function containsSymlink(string $root, string $relativePath): bool
+    {
+        $current = rtrim($root, '/');
+        foreach (explode('/', trim($relativePath, '/')) as $component) {
+            if ($component === '' || $component === '.') {
+                continue;
+            }
+            if ($component === '..' || strpos($component, "\0") !== false) {
+                return true;
+            }
+
+            $current .= '/'.$component;
+            if (is_link($current)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check that each supplied directory supports the requested operations.
      * Missing directories are created when the create operation is requested.
      *

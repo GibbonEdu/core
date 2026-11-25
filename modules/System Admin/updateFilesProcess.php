@@ -54,7 +54,8 @@ if ($updater->isUpdateRequired() > 0 || ($_POST['confirm'] ?? '') != 'Y') {
 
 // Working folder for zip, staging, backup, and lock
 $absolutePath = $session->get('absolutePath');
-$baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
+$filesystem = $container->get(Filesystem::class);
+$baseDir = $filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
 $lockPath = $baseDir.'/fileUpdate.lock';
 
 $directoryReady = !empty($absolutePath) && is_dir($absolutePath);
@@ -68,7 +69,6 @@ if (!$directoryReady || !is_writable($baseDir)) {
     exit;
 }
 
-$filesystem = $container->get(Filesystem::class);
 if (!$filesystem->checkPermissions([
     $absolutePath,
     $baseDir,

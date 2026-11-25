@@ -49,6 +49,7 @@ class FileUpdater
     protected $progressEnd = 100;
     protected $trackCopyProgress = false;
     private Filesystem $filesystem;
+    private ?string $baseDirectory = null;
 
     /**
      * @param Session $session
@@ -59,6 +60,28 @@ class FileUpdater
     {
         $this->absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
         $this->filesystem = $filesystem;
+    }
+
+    /**
+     * Set an explicit backup base directory for compatibility with callers
+     * that manage their own update fixture or storage location.
+     *
+     * @param string $baseDirectory
+     * @return void
+     */
+    public function setBaseDirectory(string $baseDirectory): void
+    {
+        $this->baseDirectory = rtrim(str_replace('\\', '/', $baseDirectory), '/');
+    }
+
+    /**
+     * Resolve the same preferred base directory used by Downloader.
+     *
+     * @return string
+     */
+    protected function getBaseDirectory(): string
+    {
+        return $this->baseDirectory ?? $this->filesystem->getSecureDirectory($this->absolutePath, Downloader::BASE_DIR);
     }
 
     /**
@@ -88,11 +111,13 @@ class FileUpdater
             return false;
         }
 
-        $baseDir = $this->absolutePath.'/'.Downloader::BASE_DIR;
+        $baseDir = $this->getBaseDirectory();
         if (!is_dir($baseDir) && !$this->filesystem->probeDirectory($this->absolutePath)) {
             return false;
         }
-        if (!$this->filesystem->ensureDirectory($baseDir) || !$this->filesystem->probeDirectory($baseDir)) {
+        if (is_link($baseDir)
+            || !$this->filesystem->ensureDirectory($baseDir)
+            || !$this->filesystem->probeDirectory($baseDir)) {
             return false;
         }
 
@@ -207,7 +232,7 @@ class FileUpdater
      */
     public function backup(array $files)
     {
-        $backupDir = $this->absolutePath.'/'.Downloader::BASE_DIR.'/'.$this->backupDir;
+        $backupDir = $this->getBaseDirectory().'/'.$this->backupDir;
         $this->filesystem->wipeDirectory($backupDir);
 
         if (!$this->filesystem->ensureDirectory($backupDir) || !is_writable($backupDir)) {
@@ -261,11 +286,11 @@ class FileUpdater
      */
     public function replace(array $files)
     {
-        $stagingReal = realpath($this->absolutePath.'/'.Downloader::BASE_DIR.'/staging');
+        $stagingReal = realpath($this->getBaseDirectory().'/staging');
         $absoluteReal = realpath($this->absolutePath);
 
         if ($stagingReal === false || $absoluteReal === false) {
-            $this->fail($stagingReal === false ? self::ERROR_REPLACE : self::ERROR_INVALID, 'Failed to resolve real path: '.($stagingReal === false ? $this->absolutePath.'/'.Downloader::BASE_DIR.'/staging' : $this->absolutePath));
+            $this->fail($stagingReal === false ? self::ERROR_REPLACE : self::ERROR_INVALID, 'Failed to resolve real path: '.($stagingReal === false ? $this->getBaseDirectory().'/staging' : $this->absolutePath));
         }
 
         $stagingRoot = str_replace('\\', '/', $stagingReal);
@@ -317,7 +342,7 @@ class FileUpdater
      */
     public function rollback(array $files)
     {
-        $backupDir = $this->absolutePath.'/'.Downloader::BASE_DIR.'/'.$this->backupDir;
+        $backupDir = $this->getBaseDirectory().'/'.$this->backupDir;
         $added = array_fill_keys($this->added, true);
 
         foreach ($files as $relative) {
@@ -352,7 +377,7 @@ class FileUpdater
      */
     public function restore()
     {
-        $backupDir = $this->absolutePath.'/'.Downloader::BASE_DIR.'/'.$this->backupDir;
+        $backupDir = $this->getBaseDirectory().'/'.$this->backupDir;
         if (!is_dir($backupDir)) {
             $this->fail(self::ERROR_ROLLBACK, 'Backup directory does not exist: '.$backupDir);
         }

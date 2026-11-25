@@ -49,6 +49,7 @@ class Downloader
     protected $progressCallback;
     protected $lastProgress;
     private Filesystem $filesystem;
+    private ?string $baseDirectory = null;
 
     /**
      * @param Session $session
@@ -62,6 +63,30 @@ class Downloader
         $this->versionCatalog = $versionCatalog;
         $this->absolutePath = rtrim(str_replace('\\', '/', $session->get('absolutePath')), '/');
         $this->filesystem = $filesystem;
+    }
+
+    /**
+     * Set an explicit backup base directory.
+     *
+     * Explicit paths are retained and are never replaced by the preferred
+     * directory selected from the application root.
+     *
+     * @param string $baseDirectory
+     * @return void
+     */
+    public function setBaseDirectory(string $baseDirectory): void
+    {
+        $this->baseDirectory = rtrim(str_replace('\\', '/', $baseDirectory), '/');
+    }
+
+    /**
+     * Return the backup base directory selected for this downloader.
+     *
+     * @return string
+     */
+    public function getBaseDirectory(): string
+    {
+        return $this->baseDirectory ?? $this->filesystem->getSecureDirectory($this->absolutePath, self::BASE_DIR);
     }
 
     /**
@@ -83,10 +108,12 @@ class Downloader
      */
     public function getPermissionPaths()
     {
+        $baseDir = $this->getBaseDirectory();
+
         return [
-            $this->absolutePath.'/'.self::BASE_DIR,
-            $this->absolutePath.'/'.self::BASE_DIR.'/staging',
-            $this->absolutePath.'/'.self::BASE_DIR.'/previousVersionBackup',
+            $baseDir,
+            $baseDir.'/staging',
+            $baseDir.'/previousVersionBackup',
         ];
     }
 
@@ -205,7 +232,7 @@ class Downloader
      */
     public function extract(string $zipPath) : array
     {
-        $staging = $this->absolutePath.'/'.self::BASE_DIR.'/staging';
+        $staging = $this->getBaseDirectory().'/staging';
         $this->filesystem->wipeDirectory($staging);
 
         if (!$this->filesystem->ensureDirectory($staging) || ($stagingReal = realpath($staging)) === false) {
@@ -382,21 +409,22 @@ class Downloader
      */
     protected function ensureBaseDirectory() : string
     {
-        $baseDir = $this->absolutePath.'/'.self::BASE_DIR;
+        $baseDir = $this->getBaseDirectory();
 
         if (empty($this->absolutePath)
             || !is_dir($this->absolutePath)
+            || is_link($baseDir)
             || !$this->filesystem->ensureDirectory($baseDir)
             || !is_writable($baseDir)) {
-            $this->fail(self::ERROR_WRITE, 'Failed to create or write to base directory: '.$baseDir);
+            $this->fail(self::ERROR_WRITE, 'Failed to create or write to the backup directory.');
         }
 
         // Block web access: .htaccess for Apache, empty index.html if listing is enabled
-        if (!is_file($baseDir.'/.htaccess')) {
-            file_put_contents($baseDir.'/.htaccess', "Deny from all\n");
+        if (!is_file($baseDir.'/.htaccess') && @file_put_contents($baseDir.'/.htaccess', "Deny from all\n") === false) {
+            $this->fail(self::ERROR_WRITE, 'Failed to protect the backup directory.');
         }
-        if (!is_file($baseDir.'/index.html')) {
-            file_put_contents($baseDir.'/index.html', '');
+        if (!is_file($baseDir.'/index.html') && @file_put_contents($baseDir.'/index.html', '') === false) {
+            $this->fail(self::ERROR_WRITE, 'Failed to protect the backup directory.');
         }
 
         return $baseDir;

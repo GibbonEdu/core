@@ -23,6 +23,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
+use Gibbon\Filesystem\Filesystem;
 use Gibbon\Filesystem\VersionCatalog;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
@@ -45,7 +46,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
 $settingGateway = $container->get(SettingGateway::class);
 $absolutePath = $session->get('absolutePath');
-$baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
+$filesystem = $container->get(Filesystem::class);
+$baseDir = $filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
 $lockPath = $baseDir.'/fileUpdate.lock';
 
 $directoryReady = !empty($absolutePath) && is_dir($absolutePath);

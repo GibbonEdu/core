@@ -113,7 +113,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         $this->progress->update($stage, 'working', 5);
 
         $absolutePath = (string) $this->session->get('absolutePath');
-        $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
+        $baseDir = $this->filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
         $lockPath = $baseDir.'/fileUpdate.lock';
 
         if ($absolutePath === ''
@@ -213,7 +213,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         $this->progress->update($stage, 'working', 10);
 
         $absolutePath = (string) $this->session->get('absolutePath');
-        $baseDir = $absolutePath.'/'.Downloader::BASE_DIR;
+        $baseDir = $this->filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
         $lockPath = $baseDir.'/fileUpdate.lock';
 
         if ($absolutePath === ''

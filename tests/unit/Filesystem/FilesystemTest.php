@@ -115,6 +115,53 @@ class FilesystemTest extends TestCase
         $this->assertFalse($validator->probeDirectory($probePath, ['unknown-operation']));
     }
 
+    public function testParentCapabilityChecksAndCleansAUsableSiblingProbe(): void
+    {
+        $root = $this->fixturePath.'/web';
+        mkdir($root, 0755, true);
+        $filesystem = new Filesystem();
+
+        $this->assertTrue($filesystem->checkParentDirectory($root));
+        $this->assertSame(dirname(realpath($root)).'/backups/fileUpdate', $filesystem->getSecureDirectory($root, 'backups/fileUpdate'));
+        $this->assertSame([], glob($this->fixturePath.'/.gibbon-filesystem-probe-*') ?: []);
+    }
+
+    public function testParentCapabilityFallsBackForMissingRootRootAndInaccessibleParent(): void
+    {
+        $filesystem = new Filesystem();
+        $this->assertFalse($filesystem->checkParentDirectory($this->fixturePath.'/missing'));
+        $this->assertFalse($filesystem->checkParentDirectory('/'));
+
+        $root = $this->fixturePath.'/web';
+        mkdir($root, 0755, true);
+        $inaccessible = new FilesystemParentProbe(false);
+        $this->assertFalse($inaccessible->checkParentDirectory($root));
+        $this->assertSame($root.'/backups/fileUpdate', $inaccessible->getSecureDirectory($root, 'backups/fileUpdate'));
+    }
+
+    public function testPreferredDirectoryFallsBackWhenAParentLocationIsASymlink(): void
+    {
+        $root = $this->fixturePath.'/web';
+        $outside = $this->fixturePath.'/outside';
+        mkdir($root, 0755, true);
+        mkdir($outside, 0755, true);
+        $this->assertTrue(symlink($outside, $this->fixturePath.'/backups'));
+
+        $filesystem = new Filesystem();
+
+        $this->assertSame($root.'/backups/fileUpdate', $filesystem->getSecureDirectory($root, 'backups/fileUpdate'));
+    }
+
+    public function testParentCapabilityRejectsASymlinkRoot(): void
+    {
+        $root = $this->fixturePath.'/web';
+        mkdir($root, 0755, true);
+        $link = $this->fixturePath.'/web-link';
+        $this->assertTrue(symlink($root, $link));
+
+        $this->assertFalse((new Filesystem())->checkParentDirectory($link));
+    }
+
     public function testWipeDirectoryRemovesNestedContentsWithoutFollowingSymlinks(): void
     {
         $directory = $this->fixturePath.'/wipe';
@@ -205,5 +252,17 @@ class FilesystemTest extends TestCase
         }
 
         rmdir($path);
+    }
+}
+
+class FilesystemParentProbe extends Filesystem
+{
+    public function __construct(private bool $available)
+    {
+    }
+
+    public function probeDirectory(string $directory, array $operations = self::DEFAULT_OPERATIONS): bool
+    {
+        return $this->available && parent::probeDirectory($directory, $operations);
     }
 }

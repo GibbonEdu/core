@@ -43,6 +43,7 @@ require_once dirname(__DIR__, 4).'/modules/System Admin/src/SystemUpdateProcess.
 class SystemUpdateProcessTest extends TestCase
 {
     private string $fixturePath;
+    private string $baseDirectory;
 
     protected function setUp(): void
     {
@@ -50,11 +51,13 @@ class SystemUpdateProcessTest extends TestCase
 
         $this->fixturePath = sys_get_temp_dir().'/SystemUpdateProcessTest-'.bin2hex(random_bytes(8));
         mkdir($this->fixturePath.'/uploads/cache', 0755, true);
-        mkdir($this->fixturePath.'/backups/fileUpdate/staging', 0755, true);
+        $this->baseDirectory = (new Filesystem())->getSecureDirectory($this->fixturePath, Downloader::BASE_DIR);
+        mkdir($this->baseDirectory.'/staging', 0755, true);
     }
 
     protected function tearDown(): void
     {
+        (new Filesystem())->deleteDirectory($this->baseDirectory);
         $this->removeFixtureDirectory($this->fixturePath);
 
         parent::tearDown();
@@ -66,8 +69,8 @@ class SystemUpdateProcessTest extends TestCase
         $downloadProgress = null;
         $installProgress = null;
         [$settings, $state] = $this->createSettingGateway($events);
-        file_put_contents($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt', 'temporary');
-        file_put_contents($this->fixturePath.'/backups/fileUpdate/package.zip', 'package');
+        file_put_contents($this->baseDirectory.'/staging/temporary.txt', 'temporary');
+        file_put_contents($this->baseDirectory.'/package.zip', 'package');
         file_put_contents($this->fixturePath.'/uploads/cache/cached.txt', 'cache');
 
         $updater = $this->createMock(Updater::class);
@@ -153,8 +156,8 @@ class SystemUpdateProcessTest extends TestCase
             ['finalizing', 'complete', 100],
         ], $state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
-        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt');
-        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/package.zip');
+        $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
+        $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
         $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
         $this->assertFileLockWasReleased();
     }
@@ -164,8 +167,8 @@ class SystemUpdateProcessTest extends TestCase
         $events = [];
         [$settings, $state] = $this->createSettingGateway($events);
         $state->values['System Admin/fileUpdaterBackup'] = '29.0.00';
-        file_put_contents($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt', 'temporary');
-        file_put_contents($this->fixturePath.'/backups/fileUpdate/package.zip', 'package');
+        file_put_contents($this->baseDirectory.'/staging/temporary.txt', 'temporary');
+        file_put_contents($this->baseDirectory.'/package.zip', 'package');
         file_put_contents($this->fixturePath.'/uploads/cache/cached.txt', 'cache');
 
         $versionCatalog = $this->createMock(VersionCatalog::class);
@@ -221,8 +224,8 @@ class SystemUpdateProcessTest extends TestCase
         ], $state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
         $this->assertSame('', $state->values['System Admin/fileUpdaterBackup']);
-        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt');
-        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/package.zip');
+        $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
+        $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
         $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
         $this->assertFileLockWasReleased();
     }
@@ -293,8 +296,8 @@ class SystemUpdateProcessTest extends TestCase
     {
         $events = [];
         [$settings, $state] = $this->createSettingGateway($events);
-        file_put_contents($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt', 'temporary');
-        file_put_contents($this->fixturePath.'/backups/fileUpdate/package.zip', 'package');
+        file_put_contents($this->baseDirectory.'/staging/temporary.txt', 'temporary');
+        file_put_contents($this->baseDirectory.'/package.zip', 'package');
 
         $updater = $this->createMock(Updater::class);
         $updater->versionCode = '30.0.00';
@@ -327,8 +330,8 @@ class SystemUpdateProcessTest extends TestCase
         ], $state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
         $this->assertSame('failed', $state->values['System Admin/fileUpdater']);
-        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/staging/temporary.txt');
-        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/package.zip');
+        $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
+        $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
         $this->assertFileLockWasReleased();
     }
 
@@ -453,7 +456,7 @@ class SystemUpdateProcessTest extends TestCase
 
     private function assertFileLockWasReleased(): void
     {
-        $lock = fopen($this->fixturePath.'/backups/fileUpdate/fileUpdate.lock', 'c');
+        $lock = fopen($this->baseDirectory.'/fileUpdate.lock', 'c');
         $this->assertNotFalse($lock);
         $this->assertTrue(flock($lock, LOCK_EX | LOCK_NB));
         flock($lock, LOCK_UN);

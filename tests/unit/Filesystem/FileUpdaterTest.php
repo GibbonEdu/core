@@ -215,7 +215,10 @@ class FileUpdaterTest extends TestCase
         $session = $this->createMock(Session::class);
         $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
 
-        return new FileUpdater($session, $filesystem);
+        $updater = new FileUpdater($session, $filesystem);
+        $updater->setBaseDirectory($this->fixturePath.'/backups/fileUpdate');
+
+        return $updater;
     }
 
     private function writeFile(string $relativePath, string $contents): void
