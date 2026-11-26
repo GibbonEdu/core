@@ -217,7 +217,32 @@ final class SystemUpdateProgress
     }
 
     /**
-     * Write the snapshot to the database.
+     * Get the Unix time of the last snapshot write, which acts as the update
+     * heartbeat. Returns null when no valid timestamp has been recorded.
+     *
+     * @return int|null
+     */
+    public function getUpdatedAt(): ?int
+    {
+        $value = $this->settingGateway->getSettingByScope(self::SCOPE, self::NAME);
+        if (!is_string($value)) {
+            return null;
+        }
+
+        try {
+            $snapshot = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            return null;
+        }
+
+        $updated = is_array($snapshot) ? ($snapshot['updated'] ?? null) : null;
+
+        return is_int($updated) && $updated > 0 ? $updated : null;
+    }
+
+    /**
+     * Write the snapshot to the database, stamped with the current time so
+     * that every write also records a heartbeat.
      *
      * @param array{type: ?string, stage: ?string, status: string, progress: ?int} $snapshot
      * @return void
@@ -227,7 +252,7 @@ final class SystemUpdateProgress
         $this->settingGateway->updateSettingByScope(
             self::SCOPE,
             self::NAME,
-            json_encode($snapshot, JSON_THROW_ON_ERROR)
+            json_encode($snapshot + ['updated' => time()], JSON_THROW_ON_ERROR)
         );
     }
 

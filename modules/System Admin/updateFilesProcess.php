@@ -24,6 +24,7 @@ use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
 use Gibbon\Filesystem\Filesystem;
+use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\Services\BackgroundProcessor;
@@ -75,14 +76,14 @@ if (!$filesystem->checkPermissions([
     exit;
 }
 
-$backgroundProcessor = $container->get(BackgroundProcessor::class);
-$processID = $backgroundProcessor->getProcessIDByName('SystemUpdateProcess');
-$process = !empty($processID) ? $backgroundProcessor->getProcess($processID) : [];
-if (in_array($process['status'] ?? '', ['Ready', 'Running'], true)) {
+// Stale updates left behind by a crashed process are cleared by the monitor
+if ($container->get(SystemUpdateMonitor::class)->isBusy()) {
     $URL .= '&return=errorUpdateBusy';
     header("Location: {$URL}");
     exit;
 }
+
+$backgroundProcessor = $container->get(BackgroundProcessor::class);
 
 // Start the background process
 try {

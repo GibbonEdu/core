@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 
 require_once __DIR__ . '/../../gibbon.php';
@@ -71,6 +72,10 @@ if (empty($gibbonLog) || $gibbonLog['gibbonLogID'] != $gibbonLogID || $gibbonLog
     $respondUnavailable();
     exit;
 }
+
+// Clear an update left behind by a crashed process, so polling ends in a failed
+// state instead of reporting that the update is still working.
+$container->get(SystemUpdateMonitor::class)->isBusy();
 
 $progressService = $container->get(SystemUpdateProgress::class);
 $progressSnapshot = $progressService->get();

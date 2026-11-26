@@ -26,8 +26,8 @@ use Gibbon\Filesystem\Filesystem;
 use Gibbon\Filesystem\VersionCatalog;
 use Gibbon\Module\SystemAdmin\Forms\EngineUpdateForm;
 use Gibbon\Module\SystemAdmin\Forms\UpdateForm;
+use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
-use Gibbon\Services\BackgroundProcessor;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
@@ -91,12 +91,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // The latest SystemUpdateProcess log identifies the poll target. The shared
     // progress snapshot is the sole source for displayed state and polling.
-    $processID = $container->get(BackgroundProcessor::class)->getProcessIDByName('SystemUpdateProcess');
+    // The monitor first clears any update left behind by a crashed process, so
+    // the snapshot read below never reports a dead update as running.
+    $updateMonitor = $container->get(SystemUpdateMonitor::class);
+    $isUpdateBusy = $updateMonitor->isBusy();
+    $processID = $updateMonitor->getProcessID();
 
     $updateProgressService = $container->get(SystemUpdateProgress::class);
     $updateProgress = $updateProgressService->get();
 
-    $isUpdateActive = !empty($processID) && $updateProgress['status'] === 'working';
+    $isUpdateActive = $isUpdateBusy && !empty($processID) && $updateProgress['status'] === 'working';
     $hasUpdateFailure = !empty($processID) && $updateProgress['status'] === 'failed';
 
     $progress = $updateProgress['progress'];

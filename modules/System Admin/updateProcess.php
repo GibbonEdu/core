@@ -23,6 +23,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\Services\BackgroundProcessor;
@@ -67,14 +68,14 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
         exit;
     }
 
-    $backgroundProcessor = $container->get(BackgroundProcessor::class);
-    $processID = $backgroundProcessor->getProcessIDByName('SystemUpdateProcess');
-    $process = !empty($processID) ? $backgroundProcessor->getProcess($processID) : [];
-    if (in_array($process['status'] ?? '', ['Ready', 'Running'], true)) {
+    // Stale updates left behind by a crashed process are cleared by the monitor
+    if ($container->get(SystemUpdateMonitor::class)->isBusy()) {
         $URL .= '&return=errorUpdateBusy';
         header("Location: {$URL}");
         exit;
     }
+
+    $backgroundProcessor = $container->get(BackgroundProcessor::class);
 
     try {
         $container->get(SystemUpdateProgress::class)->begin('database');
