@@ -139,6 +139,8 @@ class FileUpdaterTest extends TestCase
         try {
             $updater->restore('30.0.00');
             $this->fail('Restoring from an empty backup must not report success.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
         }
@@ -161,6 +163,8 @@ class FileUpdaterTest extends TestCase
         try {
             $updater->restore('30.0.00');
             $this->fail('A backup of another version must not be restored.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
         }
@@ -225,6 +229,8 @@ class FileUpdaterTest extends TestCase
         try {
             $this->createFileUpdater($filesystem)->run(['version.php']);
             $this->fail('A stale backup must not be mixed into a new one.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(FileUpdater::ERROR_BACKUP, $error->getMessage());
         }
@@ -277,6 +283,8 @@ class FileUpdaterTest extends TestCase
         try {
             $updater->restore('30.0.00');
             $this->fail('An incomplete backup must not be restored.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
         }
@@ -296,6 +304,8 @@ class FileUpdaterTest extends TestCase
         try {
             $this->createFileUpdater($filesystem)->restore('30.0.00');
             $this->fail('A backup that is missing a file must not be partly restored.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
         }
@@ -346,6 +356,48 @@ class FileUpdaterTest extends TestCase
             $this->assertFileDoesNotExist($this->fixturePath.'/vendor/new.php');
             $this->assertSame('old module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
         }
+    }
+
+    public function testAFileIsNotInstalledThroughAFolderThatLeadsOutsideTheInstall(): void
+    {
+        // The folder must sit outside the install, which is the fixture folder itself
+        $outside = sys_get_temp_dir().'/FileUpdaterTest-outside-'.bin2hex(random_bytes(8));
+        mkdir($outside, 0755, true);
+        rmdir($this->fixturePath.'/modules/Example');
+        symlink($outside, $this->fixturePath.'/modules/Example');
+        $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new file');
+
+        try {
+            $this->createFileUpdater(new FileUpdaterFilesystem())->run(['modules/Example/update.php']);
+            $this->fail('A file must not be written outside the install.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
+        } finally {
+            $this->assertFileDoesNotExist($outside.'/update.php');
+            (new Filesystem())->deleteDirectory($outside);
+        }
+    }
+
+    public function testAStagedFileThatLinksOutsideStagingIsNotInstalled(): void
+    {
+        $secret = $this->fixturePath.'/secret.php';
+        file_put_contents($secret, 'not from the package');
+        mkdir($this->fixturePath.'/backups/fileUpdate/staging/modules/Example', 0755, true);
+        symlink($secret, $this->fixturePath.'/backups/fileUpdate/staging/modules/Example/update.php');
+
+        try {
+            $this->createFileUpdater(new FileUpdaterFilesystem())->run(['modules/Example/update.php']);
+            $this->fail('Only files inside the staging folder may be installed.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertFileDoesNotExist($this->fixturePath.'/modules/Example/update.php');
+        $this->assertSame('not from the package', file_get_contents($secret));
     }
 
     public function testChecksManagedDirectoriesLockAndExactUpdatePaths(): void

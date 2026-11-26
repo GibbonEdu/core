@@ -233,12 +233,13 @@ class Downloader
         $this->filesystem->deleteIfExists($zipPath);
 
         $tooLarge = false;
+        $refusedRedirect = null;
 
         try {
-            $response = (new Client([
+            $response = $this->createClient([
                 'connect_timeout' => 10,
                 'timeout'         => 300,
-            ]))->request('GET', $filePath, [
+            ])->request('GET', $filePath, [
                 'headers'     => ['Referer' => $this->session->get('absoluteURL').'/index.php'],
                 'sink'        => $zipPath, // write straight to disk
                 // Refuse a package that declares itself too large before any of it is written
@@ -258,26 +259,28 @@ class Downloader
                     'max'       => 5,
                     'protocols' => ['https'],
                     // Redirects must stay on the hosts the version catalog allows
-                    'on_redirect' => function ($request, $response, $uri) {
+                    'on_redirect' => function ($request, $response, $uri) use (&$refusedRedirect) {
                         if (!$this->versionCatalog->isHostAllowed((string) $uri, true)) {
-                            $this->fail(self::ERROR_INVALID, 'Redirect to disallowed host: '.$uri);
+                            $refusedRedirect = (string) $uri;
+                            throw new \RuntimeException('Redirect to disallowed host.');
                         }
                     },
                 ],
             ]);
 
-            if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                $this->fail(self::ERROR_DOWNLOAD, 'HTTP status '.$response->getStatusCode().' from '.$filePath, $zipPath);
-            }
-        } catch (\RuntimeException $e) {
+        } catch (\Throwable $e) {
+            // The callbacks above record why they refused a response, so the reason is known here
             if ($tooLarge) {
                 $this->fail(self::ERROR_INVALID, 'Content-Length exceeds max size of '.self::MAX_PACKAGE_BYTES.' bytes', $zipPath);
             }
-
-            $this->filesystem->deleteIfExists($zipPath);
-            throw $e;
-        } catch (\Throwable $e) {
+            if ($refusedRedirect !== null) {
+                $this->fail(self::ERROR_INVALID, 'Redirect to disallowed host: '.$refusedRedirect, $zipPath);
+            }
             $this->fail(self::ERROR_DOWNLOAD, 'Download failed: '.$e->getMessage(), $zipPath);
+        }
+
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
+            $this->fail(self::ERROR_DOWNLOAD, 'HTTP status '.$response->getStatusCode().' from '.$filePath, $zipPath);
         }
 
         $size = is_file($zipPath) ? filesize($zipPath) : false;
