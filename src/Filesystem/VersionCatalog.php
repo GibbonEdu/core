@@ -66,6 +66,17 @@ class VersionCatalog
     }
 
     /**
+     * Create the HTTP client used to fetch the catalog.
+     *
+     * @param array $options
+     * @return Client
+     */
+    protected function createClient(array $options) : Client
+    {
+        return new Client($options);
+    }
+
+    /**
      * Get all versions stored in the catalog.
      *
      * @return array
@@ -105,7 +116,7 @@ class VersionCatalog
         }
 
         try {
-            $client = new Client([
+            $client = $this->createClient([
                 'connect_timeout' => 10,
                 'timeout'         => 30,
             ]);

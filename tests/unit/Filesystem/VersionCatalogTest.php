@@ -24,6 +24,12 @@ declare(strict_types=1);
 namespace Gibbon\Filesystem;
 
 use Gibbon\Contracts\Services\Session;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -110,8 +116,211 @@ class VersionCatalogTest extends TestCase
         $this->assertFalse($catalog->isHostAllowed('https://codeload.github.com/attacker/core/zip/refs/tags/v30.0.04', true));
     }
 
+    public function testNextReleaseIsTheLowestVersionAboveTheCurrentOne(): void
+    {
+        $catalog = $this->createStubbedCatalog([
+            '30.0.02' => $this->release('30.0.02', 'Current', 'b1', $this->gibbonPackage('30.0.02')),
+            '30.0.01' => $this->release('30.0.01', 'Current', 'a1', $this->gibbonPackage('30.0.01')),
+            '30.0.00' => $this->release('30.0.00', 'Current', 'c0', $this->gibbonPackage('30.0.00')),
+        ]);
+
+        $this->assertSame('30.0.01', $catalog->getNextRelease('30.0.00')['version']);
+    }
+
+    public function testVersionsAreComparedAsNumbers(): void
+    {
+        $catalog = $this->createStubbedCatalog([
+            '30.0.9' => $this->release('30.0.9', 'Current', 'a0', $this->gibbonPackage('30.0.9')),
+            '30.0.10' => $this->release('30.0.10', 'Current', 'a1', $this->gibbonPackage('30.0.10')),
+        ]);
+
+        // As text, "30.0.10" would sort before "30.0.9"
+        $this->assertSame('30.0.10', $catalog->getNextRelease('30.0.9')['version']);
+    }
+
+    public function testDevelopmentReleasesAreOnlyOfferedToCuttingEdge(): void
+    {
+        $catalog = $this->createStubbedCatalog([
+            '30.0.01' => $this->release('30.0.01', 'Development', null, 'https://github.com/GibbonEdu/core/archive/refs/heads/v30.0.01.zip'),
+            '30.0.02' => $this->release('30.0.02', 'Current', 'b1', $this->gibbonPackage('30.0.02')),
+        ]);
+
+        $this->assertSame('30.0.02', $catalog->getNextRelease('30.0.00', false)['version']);
+        $this->assertSame('30.0.01', $catalog->getNextRelease('30.0.00', true)['version']);
+    }
+
+    public function testNextReleaseStopsAtAVersionWithoutAPackage(): void
+    {
+        $catalog = $this->createStubbedCatalog([
+            '30.0.01' => $this->release('30.0.01', 'Current', '', $this->gibbonPackage('30.0.01')),
+            '30.0.02' => $this->release('30.0.02', 'Current', 'b1', $this->gibbonPackage('30.0.02')),
+        ]);
+
+        $this->assertNull($catalog->getNextRelease('30.0.00'));
+    }
+
+    public function testNothingIsOfferedWhenNoNewerReleaseExists(): void
+    {
+        $catalog = $this->createStubbedCatalog([
+            '30.0.00' => $this->release('30.0.00', 'Current', 'a0', $this->gibbonPackage('30.0.00')),
+        ]);
+
+        $this->assertNull($catalog->getNextRelease('30.0.00'));
+    }
+
+    public function testAReleaseFromAnUnlistedHostIsNotOffered(): void
+    {
+        $catalog = $this->createStubbedCatalog([
+            '30.0.01' => $this->release('30.0.01', 'Current', 'a1', 'https://example.com/gibbon-30.0.01.zip'),
+        ]);
+
+        $this->assertNull($catalog->getNextRelease('30.0.00'));
+    }
+
+    public function testGetReleaseReturnsAReleaseThatCanBeVerified(): void
+    {
+        $catalog = $this->createStubbedCatalog([
+            '30.0.01' => $this->release('30.0.01', 'Current', ' A1 ', $this->gibbonPackage('30.0.01')),
+        ]);
+
+        $release = $catalog->getRelease('30.0.01');
+
+        $this->assertSame('30.0.01', $release['version']);
+        $this->assertSame('current', $release['status'], 'The status is normalised to lower case.');
+        $this->assertSame('A1', $release['checksum'], 'The checksum is trimmed.');
+        $this->assertSame($this->gibbonPackage('30.0.01'), $release['filePath']);
+    }
+
+    /**
+     * @dataProvider unusableReleaseProvider
+     */
+    public function testGetReleaseRefusesAReleaseThatCannotBeInstalled(string $requestedVersion, array $entry): void
+    {
+        $catalog = $this->createStubbedCatalog(['30.0.01' => $entry]);
+
+        $this->assertNull($catalog->getRelease($requestedVersion));
+    }
+
+    public static function unusableReleaseProvider(): array
+    {
+        $package = 'https://gibbonedu.org/download/gibbon-30.0.01.zip';
+
+        return [
+            'not in the catalog' => ['30.0.02', ['version' => '30.0.01', 'status' => 'Current', 'checksum' => 'a1', 'filePath' => $package]],
+            'unknown status' => ['30.0.01', ['version' => '30.0.01', 'status' => 'Unreleased', 'checksum' => 'a1', 'filePath' => $package]],
+            'no checksum' => ['30.0.01', ['version' => '30.0.01', 'status' => 'Current', 'checksum' => '', 'filePath' => $package]],
+            'unlisted host' => ['30.0.01', ['version' => '30.0.01', 'status' => 'Current', 'checksum' => 'a1', 'filePath' => 'https://example.com/x.zip']],
+        ];
+    }
+
+    /**
+     * @dataProvider unusableCatalogReplyProvider
+     */
+    public function testAFailedOrMalformedCatalogGivesNoReleases(Response|\Throwable $reply): void
+    {
+        $catalog = $this->createStubbedCatalogFromReplies([$reply]);
+
+        $this->assertSame([], $catalog->fetch('30.0.00'));
+        $this->assertNull($catalog->getNextRelease('30.0.00'));
+    }
+
+    public static function unusableCatalogReplyProvider(): array
+    {
+        return [
+            'server error' => [new Response(500, [], 'Error')],
+            'not JSON' => [new Response(200, [], 'not json')],
+            'a list instead of a version map' => [new Response(200, [], json_encode([['version' => '30.0.01']]))],
+            'connection failure' => [new ConnectException('timed out', new Request('GET', VersionCatalog::CATALOG_URL))],
+        ];
+    }
+
+    public function testTheCatalogIsRequestedOncePerVersion(): void
+    {
+        // Only one reply is queued. A second request would fail, and the catalog would come back empty.
+        $catalog = $this->createStubbedCatalog([
+            '30.0.01' => $this->release('30.0.01', 'Current', 'a1', $this->gibbonPackage('30.0.01')),
+        ]);
+
+        $first = $catalog->fetch('30.0.00');
+        $second = $catalog->fetch('30.0.00');
+
+        $this->assertNotEmpty($first);
+        $this->assertSame($first, $second);
+    }
+
+    public function testChangelogTextIsGroupedByVersionAndCategory(): void
+    {
+        $text = "v30.0.03\n--------\n\n    Security\n        System: improved POST referrer check\n\n    Bug Fixes\n        Calendar: fixed attendance\n";
+        $catalog = new VersionCatalog($this->createMock(Session::class));
+
+        $parsed = $catalog->getChangeLogFromString($text);
+
+        $this->assertSame([
+            'Security' => ['System: improved POST referrer check'],
+            'Bug Fixes' => ['Calendar: fixed attendance'],
+        ], $parsed['30.0.03']['changelog']);
+    }
+
+    public function testMergedChangelogsAreNewestFirstAndKeepEveryEntry(): void
+    {
+        $catalog = new VersionCatalog($this->createMock(Session::class));
+
+        $catalog->mergeCatalog([
+            '30.0.00' => ['changelog' => ['Security' => ['A fix.']]],
+            '31.0.00' => ['changelog' => []],
+        ]);
+        $catalog->mergeCatalog(['30.0.00' => ['status' => 'Current']]);
+
+        $merged = $catalog->getCatalog();
+        $this->assertSame(['31.0.00', '30.0.00'], array_keys($merged));
+        $this->assertSame(['Security' => ['A fix.']], $merged['30.0.00']['changelog']);
+        $this->assertSame('Current', $merged['30.0.00']['status']);
+    }
+
+    /**
+     * @param array<string, array<string, mixed>> $entries The catalog, keyed by version.
+     */
+    private function createStubbedCatalog(array $entries): StubbedVersionCatalog
+    {
+        return $this->createStubbedCatalogFromReplies([new Response(200, [], json_encode($entries))]);
+    }
+
+    /**
+     * @param array<int, Response|\Throwable> $replies
+     */
+    private function createStubbedCatalogFromReplies(array $replies): StubbedVersionCatalog
+    {
+        $catalog = new StubbedVersionCatalog($this->createMock(Session::class));
+        $catalog->client = new Client(['handler' => HandlerStack::create(new MockHandler($replies))]);
+
+        return $catalog;
+    }
+
+    private function release(string $version, string $status, ?string $checksum, string $filePath): array
+    {
+        return ['version' => $version, 'status' => $status, 'checksum' => $checksum, 'filePath' => $filePath, 'phpVersion' => '8.2'];
+    }
+
+    private function gibbonPackage(string $version): string
+    {
+        return 'https://gibbonedu.org/download/gibbon-'.$version.'.zip';
+    }
+
     private function createCatalog(): VersionCatalog
     {
         return new VersionCatalog($this->createMock(Session::class));
+    }
+}
+
+/**
+ * Sends the catalog request through a supplied client, so tests can answer it from a script.
+ */
+class StubbedVersionCatalog extends VersionCatalog
+{
+    public ?Client $client = null;
+
+    protected function createClient(array $options) : Client
+    {
+        return $this->client ?? parent::createClient($options);
     }
 }
