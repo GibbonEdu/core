@@ -120,7 +120,7 @@ class Downloader
     }
 
     /**
-     * Download, verify, and extract. Returns relative file paths.
+     * Verify, download, check and extract a release. Returns the relative paths of the files to install.
      *
      * @param array $release
      * @return array
@@ -129,6 +129,7 @@ class Downloader
     {
         $this->lastProgress = null;
         $this->reportProgress(0);
+        $this->verifyGithubDigest($release);
         $zipPath = $this->download($release);
         $this->verify($zipPath, $release['checksum'] ?? '');
         $files = $this->extract($zipPath);
@@ -159,7 +160,61 @@ class Downloader
     }
 
     /**
-     * Download the zip into backups/fileUpdate/package.zip.
+     * A released version hosted as a GitHub release file must have the checksum GitHub
+     * reports for that file, so the catalog on gibbonedu.org cannot be the only source for it.
+     * Runs before the download, so a package that does not verify is never fetched. Other
+     * downloads, and Development versions, are left to the catalog checksum alone.
+     *
+     * @param array $release
+     * @return void
+     */
+    protected function verifyGithubDigest(array $release) : void
+    {
+        $url = parse_url((string) ($release['filePath'] ?? ''));
+        if (strtolower($release['status'] ?? '') === 'development'
+            || strtolower($url['host'] ?? '') !== 'github.com'
+            || preg_match('#^/(GibbonEdu/[^/]+)/releases/download/([^/]+)/([^/]+)$#i', $url['path'] ?? '', $match) !== 1) {
+            return;
+        }
+
+        $releaseInfo = null;
+        try {
+            $response = $this->createClient(['connect_timeout' => 10, 'timeout' => 30])->request(
+                'GET',
+                'https://api.github.com/repos/'.$match[1].'/releases/tags/'.rawurlencode(rawurldecode($match[2])),
+                ['headers' => ['Accept' => 'application/vnd.github+json'], 'http_errors' => false]
+            );
+            $releaseInfo = $response->getStatusCode() === 200 ? json_decode((string) $response->getBody(), true) : null;
+        } catch (\Throwable $e) {
+            $this->fail(self::ERROR_VERIFY, 'Could not ask GitHub for the release checksum: '.$e->getMessage());
+        }
+
+        $digest = '';
+        foreach ((is_array($releaseInfo) ? $releaseInfo['assets'] ?? [] : []) as $asset) {
+            if (($asset['name'] ?? '') === rawurldecode($match[3])) {
+                $digest = strtolower((string) ($asset['digest'] ?? ''));
+            }
+        }
+
+        $checksum = strtolower(trim((string) ($release['checksum'] ?? '')));
+        if ($checksum === '' || !hash_equals('sha256:'.$checksum, $digest)) {
+            $this->fail(self::ERROR_VERIFY, 'GitHub checksum "'.$digest.'" does not match the catalog checksum "'.$checksum.'" for '.($release['filePath'] ?? ''));
+        }
+    }
+
+    /**
+     * Create the HTTP client used to ask GitHub for a release checksum.
+     *
+     * @param array $options
+     * @return Client
+     */
+    protected function createClient(array $options) : Client
+    {
+        return new Client($options);
+    }
+
+    /**
+     * Download the zip into the backup directory as package.zip.
      *
      * @param array $release
      * @return string
@@ -470,7 +525,7 @@ class Downloader
         }
 
         // Block web access: .htaccess for Apache, empty index.html if listing is enabled
-        if (!is_file($baseDir.'/.htaccess') && @file_put_contents($baseDir.'/.htaccess', "Deny from all\n") === false) {
+        if (!is_file($baseDir.'/.htaccess') && @file_put_contents($baseDir.'/.htaccess', $this->getHtaccessDefaults()) === false) {
             $this->fail(self::ERROR_WRITE, 'Failed to protect the backup directory.');
         }
         if (!is_file($baseDir.'/index.html') && @file_put_contents($baseDir.'/index.html', '') === false) {
@@ -481,14 +536,26 @@ class Downloader
     }
 
     /**
+     * The .htaccess contents that keep the backup directory closed to the web: Require all
+     * denied on Apache 2.4 (mod_authz_core), and Deny from all on Apache 2.2.
+     *
+     * @return string
+     */
+    private function getHtaccessDefaults() : string
+    {
+        return "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>\n";
+    }
+
+    /**
      * Remove a partial zip, log the error, and throw.
      *
      * @param string $code
      * @param string $message
      * @param string $zipPath
-     * @return void
+     * @return never
+     * @throws \RuntimeException
      */
-    protected function fail(string $code, string $message = '', string $zipPath = '')
+    protected function fail(string $code, string $message = '', string $zipPath = ''): never
     {
         $this->filesystem->deleteIfExists($zipPath);
         error_log('Downloader: '.$code.' '.$message);

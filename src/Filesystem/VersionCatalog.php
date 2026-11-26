@@ -54,6 +54,12 @@ class VersionCatalog
     protected $catalogVersion = '';
     protected $catalog = [];
 
+    /**
+     * Create a catalog reader for the current install.
+     *
+     * @param Session $session
+     * @return void
+     */
     public function __construct(Session $session)
     {
         $this->session = $session;
@@ -212,7 +218,7 @@ class VersionCatalog
             ? ['legacy', 'current', 'development']
             : ['legacy', 'current'];
 
-        // Walk versions in order so version numbers stay sequential
+        // Check versions oldest first, so the next release after the current one is found
         $versions = array_keys($catalog);
         usort($versions, 'version_compare');
 
@@ -284,6 +290,12 @@ class VersionCatalog
         return stripos($path, $requiredPath) === 0;
     }
 
+    /**
+     * Merge changelog entries into the catalog, newest version first.
+     *
+     * @param array $catalog
+     * @return void
+     */
     public function mergeCatalog(array $catalog) : void
     {
         foreach ($catalog as $version => $entry) {
@@ -304,6 +316,7 @@ class VersionCatalog
      * Parse the root CHANGELOG.txt file into version and category entries.
      *
      * @param string|null $filePath
+     * @param int $limit The maximum number of versions to return.
      * @return array<string, array<string, string[]>>
      */
     public function getChangeLogFromFile($filePath = null, int $limit = 10) : array
@@ -324,6 +337,12 @@ class VersionCatalog
         return array_slice($this->parseChangeLog($lines), 0, $limit, true);
     }
 
+    /**
+     * Parse changelog text in the same format as CHANGELOG.txt.
+     *
+     * @param string $content
+     * @return array
+     */
     public function getChangeLogFromString(string $content) : array
     {
         if (empty($content)) {
@@ -335,6 +354,12 @@ class VersionCatalog
         return $this->parseChangeLog($lines);
     }
 
+    /**
+     * Parse changelog lines into versions, categories and entries.
+     *
+     * @param array $lines
+     * @return array
+     */
     protected function parseChangeLog(array $lines): array
     {
         $changelog = [];

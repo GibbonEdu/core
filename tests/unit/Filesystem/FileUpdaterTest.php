@@ -129,7 +129,7 @@ class FileUpdaterTest extends TestCase
 
     public function testRestoreFailsWithoutChangingFilesWhenTheBackupDirectoryIsEmpty(): void
     {
-        // checkPermissions() creates an empty backup directory on every update page view.
+        // An empty backup directory can exist, for example one made by an update that stopped early.
         $this->writeFile('/modules/Example/update.php', 'live module file');
         mkdir($this->fixturePath.'/backups/fileUpdate/previousVersionBackup', 0755, true);
 
@@ -357,6 +357,26 @@ class FileUpdaterTest extends TestCase
         $this->assertTrue($updater->checkPermissions(['modules/Example/update.php']));
         $this->assertFileExists($this->fixturePath.'/backups/fileUpdate/fileUpdate.lock');
         $this->assertDirectoryExists($this->fixturePath.'/backups/fileUpdate/previousVersionBackup');
+    }
+
+    public function testPermissionCheckDoesNotCreateDirectoriesInTheLiveInstall(): void
+    {
+        $this->writeFile('/backups/fileUpdate/staging/modules/NewModule/src/New.php', 'new file');
+        $updater = $this->createFileUpdater(new FileUpdaterFilesystem());
+
+        $this->assertTrue($updater->checkPermissions(['modules/NewModule/src/New.php']));
+
+        $this->assertDirectoryDoesNotExist($this->fixturePath.'/modules/NewModule');
+    }
+
+    public function testPermissionCheckChecksTheExistingDirectoryAboveANewOne(): void
+    {
+        $this->writeFile('/backups/fileUpdate/staging/modules/NewModule/New.php', 'new file');
+        $filesystem = new FileUpdaterFilesystem();
+        $filesystem->blockedDirectory = $this->fixturePath.'/modules';
+
+        $this->assertFalse($this->createFileUpdater($filesystem)->checkPermissions(['modules/NewModule/New.php']));
+        $this->assertDirectoryDoesNotExist($this->fixturePath.'/modules/NewModule');
     }
 
     public function testRejectsAnUnwritableTargetDirectoryInsteadOfCheckingOnlyTheApplicationRoot(): void

@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
 use Gibbon\Filesystem\FileUpdater;
 use Gibbon\Filesystem\Filesystem;
@@ -46,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
-// Require explicit POST values to ensure CSRF checking
+// Two POST fields make gibbon.php check the CSRF token, so require confirm and address.
 if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
     $URL .= '&return=error3';
     header("Location: {$URL}");
@@ -57,7 +56,6 @@ $settingGateway = $container->get(SettingGateway::class);
 $absolutePath = $session->get('absolutePath');
 $filesystem = $container->get(Filesystem::class);
 $baseDir = $filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
-$lockPath = $baseDir.'/fileUpdate.lock';
 
 if (!$filesystem->ensureDirectory($baseDir)) {
     $URL .= '&return=errorFilePermissions';
@@ -89,7 +87,6 @@ if ($container->get(SystemUpdateMonitor::class)->isBusy()) {
 
 $backgroundProcessor = $container->get(BackgroundProcessor::class);
 
-// Start the background process
 try {
     $container->get(SystemUpdateProgress::class)->begin('restore');
     $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', ['restore']);
@@ -105,19 +102,6 @@ try {
     $URL .= '&return=errorUpdateFailed';
     header("Location: {$URL}");
     exit;
-}
-
-// Keep the initiating administrator's browser session valid after files change.
-try {
-    $data = [
-        'gibbonSessionID' => session_id(),
-        'gibbonPersonID' => $session->get('gibbonPersonID'),
-        'sessionStatus' => 'Logged In',
-        'timestampModified' => date('Y-m-d H:i:s'),
-    ];
-    $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
-} catch (\Throwable $error) {
-    error_log('updateRestoreProcess session refresh failed: '.$error->getMessage());
 }
 
 if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {

@@ -117,6 +117,7 @@ final class SystemUpdateProgress
      * Replace the current snapshot when an accepted update starts.
      *
      * @param string $type
+     * @throws \InvalidArgumentException When the type is not allowed.
      * @return void
      */
     public function begin(string $type): void
@@ -137,6 +138,7 @@ final class SystemUpdateProgress
      * @param string $stage
      * @param string $status
      * @param int|null $progress
+     * @throws \InvalidArgumentException When the stage, status or progress is not allowed.
      * @return void
      */
     public function update(string $stage, string $status, ?int $progress): void
@@ -158,6 +160,7 @@ final class SystemUpdateProgress
      * Record a failure without storing technical error details.
      *
      * @param string $stage
+     * @throws \InvalidArgumentException When the stage is not allowed.
      * @return void
      */
     public function fail(string $stage): void

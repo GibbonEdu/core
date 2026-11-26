@@ -49,6 +49,12 @@ class BackgroundProcessor implements ContainerAwareInterface
     const OS_NIX     = 2;
     const OS_OTHER   = 3;
 
+    // Seconds allowed for a process that has to run in the web request (as in the CLI runner)
+    const SYNCHRONOUS_TIME_LIMIT = 1800;
+
+    // The kinds of PHP error that end the script
+    const FATAL_ERRORS = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR;
+
     protected $session;
     protected $logGateway;
 
@@ -67,12 +73,19 @@ class BackgroundProcessor implements ContainerAwareInterface
 
     /**
      * Starts a new background process with a given class name. If the exec command
-     * fails, it can fall back to running the process immediately in the current runtime.
+     * fails, or background processing is turned off, it runs the process immediately in
+     * the current request instead.
+     *
+     * This fallback is deliberate: many hosts block exec() or turn background processing
+     * off, and mail, reports and system updates still need to work there. The request then
+     * waits for the process, so callers that must never run in a web request can pass false
+     * to get an exception instead.
      *
      * @param   string  $processClassName
      * @param   string  $processMethodName
      * @param   array   $arguments
-     * @param   bool    $allowSynchronousFallback
+     * @param   bool    $allowSynchronousFallback Run in this request when it cannot run in the background.
+     * @throws \RuntimeException When the process file is missing, or it cannot start and the fallback is turned off.
      * @return  int     The process ID.
      */
     public function startProcess(
@@ -115,9 +128,9 @@ class BackgroundProcessor implements ContainerAwareInterface
             'serialisedArray'    => serialize($processData),
         ]);
 
-        // Allow systems to disable background processing
+        // Background processing is turned off: run the process in this request instead
         if ($this->session->get('backgroundProcessing') == 'N') {
-            $this->runProcess($processID, $processData['key']);
+            $this->runInThisRequest($processID, $processData['key']);
             return $processID;
         }
 
@@ -146,17 +159,39 @@ class BackgroundProcessor implements ContainerAwareInterface
             $this->updateProcess($processID, [
                 'pID' => $pID ?? 0,
             ] + $processData);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            // Includes \Error: PHP 8 throws one when exec() is disabled on the server
             if (!$allowSynchronousFallback) {
                 $this->handleException($processID, $processData, $e);
                 throw $e;
             }
 
-            // If we can't run the process in the background, still try to run it in this thread.
-            $this->runProcess($processID, $processData['key']);
+            // If the process cannot be started in the background, run it in this request.
+            $this->runInThisRequest($processID, $processData['key']);
         }
 
         return $processID;
+    }
+
+    /**
+     * Runs the process in the current request, for when it cannot be started in the background.
+     * The browser may disconnect and the web server's time limit is usually short, so, like the
+     * command line runner, keep going and allow enough time. A longer or unlimited limit is kept.
+     *
+     * @param string    $processID
+     * @param string    $processKey
+     * @return bool     Process was successfully run.
+     */
+    protected function runInThisRequest($processID, $processKey) : bool
+    {
+        ignore_user_abort(true);
+
+        $timeLimit = (int) ini_get('max_execution_time');
+        if ($timeLimit > 0 && $timeLimit < self::SYNCHRONOUS_TIME_LIMIT) {
+            @set_time_limit(self::SYNCHRONOUS_TIME_LIMIT);
+        }
+
+        return $this->runProcess($processID, $processKey);
     }
 
     /**
@@ -165,6 +200,8 @@ class BackgroundProcessor implements ContainerAwareInterface
      *
      * @param string    $processID
      * @param string    $processKey
+     * @throws \InvalidArgumentException When the process data is missing.
+     * @throws \RuntimeException When the key does not match.
      * @return bool     Process was successfully run.
      */
     public function runProcess($processID, $processKey) : bool
@@ -180,21 +217,16 @@ class BackgroundProcessor implements ContainerAwareInterface
             throw new \RuntimeException('You do not have access to this action.');
         }
 
-        // Handle PHP fatal errors which are not caught by a try-catch
-        register_shutdown_function(function () use ($processID, $processData) {
-            $this->handleShutdown($processID, $processData);
-        });
-        set_exception_handler(function ($e) use ($processID, $processData) {
-            $this->handleException($processID, $processData, $e);
-        });
+        $this->registerHandlers($processID, $processData);
 
-        // Create the process via the DI container
+        // Create the process via the DI container. Errors such as a TypeError are recorded
+        // like exceptions, so the process never stays marked as running after a failure.
         try {
             $process = $this->getContainer()->get($processData['class']);
             $this->updateProcess($processID, [
                 'status' => 'Running',
             ] + $processData);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->handleException($processID, $processData, $e);
         }
 
@@ -205,9 +237,26 @@ class BackgroundProcessor implements ContainerAwareInterface
                 'status' => 'Complete',
                 'output' => $output,
             ] + $processData);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->handleException($processID, $processData, $e);
         }
+    }
+
+    /**
+     * Register handlers for fatal errors, and for exceptions that escape runProcess().
+     *
+     * @param string $processID
+     * @param array $processData
+     * @return void
+     */
+    protected function registerHandlers($processID, $processData)
+    {
+        register_shutdown_function(function () use ($processID, $processData) {
+            $this->handleShutdown($processID, $processData);
+        });
+        set_exception_handler(function ($e) use ($processID, $processData) {
+            $this->handleException($processID, $processData, $e);
+        });
     }
 
     /**
@@ -221,29 +270,6 @@ class BackgroundProcessor implements ContainerAwareInterface
         $log = $this->logGateway->getByID($processID);
 
         $processData = $this->logGateway->getLogData(is_array($log) ? ($log['serialisedArray'] ?? '') : '');
-
-        if (empty($processData)) return [];
-        if (empty($processData['class'])) return [];
-
-        return $processData;
-    }
-
-    /**
-     * Gets the stored process data from the database using its name.
-     *
-     * @param string $processName
-     * @return array
-     */
-    public function getProcessByName(string $processName) : array
-    {
-        $log = $this->logGateway
-            ->selectLogsByModuleAndTitle(null, 'Background Process - '.$processName)
-            ->fetch();
-
-        if (empty($log)) return [];
-
-        $processData = $this->logGateway->getLogData($log['serialisedArray'] ?? '');
-        $processData['gibbonLogID'] = $log['gibbonLogID'] ?? null;
 
         if (empty($processData)) return [];
         if (empty($processData['class'])) return [];
@@ -282,8 +308,8 @@ class BackgroundProcessor implements ContainerAwareInterface
     }
 
     /**
-     * Ends a process by clearing the pID and updating it's data. Returns true if
-     * the process was successfull.
+     * Ends a process by clearing its pID and saving its data. Returns false when the
+     * process failed or errored.
      *
      * @param string $processID
      * @param array $processData
@@ -295,7 +321,8 @@ class BackgroundProcessor implements ContainerAwareInterface
             'serialisedArray' => serialize(['pID' => 0] + $processData),
         ]);
 
-        return $processData['status'] != 'Failed';
+        // Error is the status recorded when a process throws or hits a fatal error
+        return !in_array($processData['status'], ['Failed', 'Error'], true);
     }
 
     /**
@@ -356,16 +383,18 @@ class BackgroundProcessor implements ContainerAwareInterface
     }
 
     /**
-     * Handle a fatal error during background process execution.
+     * Handle a fatal error during background process execution. Runs when the script
+     * ends, and records an error if it ended because of a fatal error.
      *
      * @param string $processID
      * @param array $processData
+     * @param array|null $lastError The last PHP error, as error_get_last() returns it. Read when not given.
      * @return void
      */
-    protected function handleShutdown($processID, $processData)
+    protected function handleShutdown($processID, $processData, ?array $lastError = null)
     {
-        $lastError = error_get_last();
-        if ($lastError && $lastError['type'] === E_ERROR) {
+        $lastError ??= error_get_last();
+        if ($lastError && ($lastError['type'] & self::FATAL_ERRORS)) {
             $this->endProcess($processID, [
                 'status' => 'Error',
                 'output' => $lastError['message'],
@@ -378,8 +407,8 @@ class BackgroundProcessor implements ContainerAwareInterface
      *
      * @param string $processID
      * @param array $processData
-     * @param \Exception $e
-     * @return array
+     * @param \Throwable $e
+     * @return bool
      */
     protected function handleException($processID, $processData, $e)
     {

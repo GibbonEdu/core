@@ -34,24 +34,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
     $page->breadcrumbs->add(__('Update'));
 
-    // Include the file-update stage in the error message when present
-    $errorFiles = __('Your request failed because the file update could not be completed. Check the version catalog, package checksum, disk space, file permissions, and that the PHP Zip extension is enabled.');
-    if ($session->has('fileUpdateStage')) {
-        $errorFiles .= ' ('.$session->get('fileUpdateStage').')';
-        $session->forget('fileUpdateStage');
-    }
     $page->return->addReturns([
         'warning1'             => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3'               => __('Your request failed because your inputs were invalid, or no update was required.'),
-        'errorFiles'           => $errorFiles,
+        'errorFiles'           => __('Your request failed because the file update could not be completed. Check the version catalog, package checksum, disk space, file permissions, and that the PHP Zip extension is enabled.'),
         'errorRestoreDatabase' => __('The restore was refused because your database has already been updated beyond the backed-up files. Restoring them would leave your database newer than your code. Restore a database backup first, or update manually.'),
         'errorNoBackup'        => __('The restore could not start because there is no backup of the previous version. Backups are created each time the updater installs a new version.'),
         'errorFilePermissions' => __('Automatic updates are unavailable because the application does not have the required file permissions. Check the file permissions on your server or update manually.'),
         'errorUpdateBusy'      => __('A system update is already in progress. Please wait a few minutes and try again.'),
         'errorUpdateFailed'    => __('Update failed. Check the server logs and try again, or update manually.'),
+        'errorBackgroundUpdateUnavailable' => __('The database update could not be started in the background. Check that PHP is allowed to run background processes on your server, or update manually.'),
     ]);
 
     // Get and display SQL errors
@@ -73,11 +67,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     if ($updateRequired <= 0) {
         $nextRelease = $versionCatalog->getNextRelease($updater->versionCode, $cuttingEdge);
     } else {
-        $thisRelease = $versionCatalog->getRelease($updater->versionCode);
+        $versionCatalog->fetch($updater->versionCode);
     }
 
     $filesystem = $container->get(Filesystem::class);
-    $canRunAutomaticFileUpdate = empty($nextRelease) || $filesystem->checkPermissions($downloader->getPermissionPaths());
+    // Only report whether the updater could run: viewing this page must not create its folders
+    $canRunAutomaticFileUpdate = empty($nextRelease)
+        || $filesystem->checkPermissions($downloader->getPermissionPaths(), Filesystem::DEFAULT_OPERATIONS, false);
 
     // Updater version number and status overview
     echo $page->fetchFromTemplate('updateOverview.twig.html', [
@@ -91,10 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'cuttingEdgeUpdate' => $updater->cuttingEdgeMaxLine - $updater->cuttingEdgeCodeLine,
     ]);
 
-    // The latest SystemUpdateProcess log identifies the poll target. The shared
-    // progress snapshot is the sole source for displayed state and polling.
-    // The monitor first clears any update left behind by a crashed process, so
-    // the snapshot read below never reports a dead update as running.
+    // Clear any dead update first, so the snapshot below is never shown as running.
     $updateMonitor = $container->get(SystemUpdateMonitor::class);
     $isUpdateBusy = $updateMonitor->isBusy();
     $processID = $updateMonitor->getProcessID();
@@ -165,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     );
     echo $form->getOutput();
 
-    // INNODB UPGRADE - only displays if an update is required
+    // INNODB MIGRATION - only shown when some tables are not InnoDB
     if (version_compare($updater->versionCode, '16.0.00', '>=')) {
         $engineUpdate = $container->get(EngineUpdate::class);
 

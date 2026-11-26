@@ -57,6 +57,8 @@ class UpdateForm
     }
 
     /**
+     * Build the update form: a section for each release, with its changelog and the action for it.
+     *
      * @param Updater $updater
      * @param VersionCatalog $versionCatalog
      * @param bool $isUpdateActive Whether a background file or database update is active.
@@ -293,8 +295,6 @@ class UpdateForm
     /**
      * Configure a background update or restore button for an HTMX submission.
      *
-     * InnoDB controls keep their synchronous native form behavior.
-     *
      * @param object $submit
      * @param string $action
      * @return void
@@ -370,6 +370,8 @@ class UpdateForm
     }
 
     /**
+     * Whether a Development release is hidden from users who are not on cutting edge.
+     *
      * @param array $release
      * @param bool $cuttingEdge
      * @return bool
@@ -380,6 +382,8 @@ class UpdateForm
     }
 
     /**
+     * Whether a release is the installed version, and a database update is pending.
+     *
      * @param string $version
      * @param bool $updateRequired
      * @return bool
@@ -390,6 +394,8 @@ class UpdateForm
     }
 
     /**
+     * Whether a release is the next version offered by a file update.
+     *
      * @param string $version
      * @param array|null $nextRelease
      * @return bool

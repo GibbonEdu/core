@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Database\Updater;
-use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
@@ -44,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
-// Require explicit POST values to ensure CSRF checking
+// Two POST fields make gibbon.php check the CSRF token, so require confirm and address.
 if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
     $URL .= '&return=error3';
     header("Location: {$URL}");
@@ -53,7 +52,6 @@ if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
 
 $type = $_REQUEST['type'] ?? '';
 
-// Validate Inputs
 if ($type != 'regularRelease' && $type != 'cuttingEdge' && $type != 'InnoDB') {
     $URL .= '&return=error3';
     header("Location: {$URL}");

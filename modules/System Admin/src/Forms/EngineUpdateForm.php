@@ -51,8 +51,6 @@ class EngineUpdateForm
      *
      * @param EngineUpdate $engineUpdate
      * @param Updater $updater
-     * @param array<string, array<string, mixed>> $remoteVersions
-     * @param array<string, mixed>|null $nextRelease
      * @return Form
      */
     public function createForm(EngineUpdate $engineUpdate, Updater $updater): Form

@@ -65,8 +65,7 @@ class FileUpdater
     }
 
     /**
-     * Set an explicit backup base directory for compatibility with callers
-     * that manage their own update fixture or storage location.
+     * Set an explicit backup base directory, instead of the preferred one. Used by tests.
      *
      * @param string $baseDirectory
      * @return void
@@ -87,6 +86,8 @@ class FileUpdater
     }
 
     /**
+     * Set a callback to receive progress notifications.
+     *
      * @param callable|null $progressCallback
      * @return void
      */
@@ -131,7 +132,7 @@ class FileUpdater
         }
 
         // A held lock means another update is running, not that the
-        // application lacks permission. The action performs the authoritative
+        // application lacks permission. The calling script performs the authoritative
         // non-blocking busy check before dispatch.
         if (!$this->probeLock($baseDir.'/fileUpdate.lock')) {
             return false;
@@ -147,9 +148,10 @@ class FileUpdater
             }
             $relative = str_replace('\\', '/', $relative);
 
+            // A new directory is created when the file is installed, not by this check
             $livePath = $this->absolutePath.'/'.$relative;
             $parent = dirname($livePath);
-            if (!$this->filesystem->ensureDirectory($parent) || !$this->filesystem->probeDirectory($parent)) {
+            if (!$this->filesystem->checkPermissions([$parent], Filesystem::DEFAULT_OPERATIONS, false)) {
                 return false;
             }
 
@@ -180,6 +182,9 @@ class FileUpdater
      * A held lock confirms that the filesystem supports locking. It represents
      * an active update rather than a permission failure, so this probe does
      * not retain the lock.
+     *
+     * @param string $path
+     * @return bool
      */
     protected function probeLock(string $path): bool
     {
@@ -203,6 +208,8 @@ class FileUpdater
      * Backup existing files, then replace from staging. Roll back on failure.
      *
      * @param array $relativeFiles
+     * @return void
+     * @throws \RuntimeException When the backup, replacement or rollback fails.
      */
     public function run(array $relativeFiles)
     {
@@ -231,6 +238,8 @@ class FileUpdater
      * Copy existing live files into previousVersionBackup/.
      *
      * @param array $files
+     * @return void
+     * @throws \RuntimeException When a live file cannot be backed up.
      */
     public function backup(array $files)
     {
@@ -327,6 +336,8 @@ class FileUpdater
      * Copy staging files onto the live install.
      *
      * @param array $files
+     * @return void
+     * @throws \RuntimeException When a file cannot be replaced.
      */
     public function replace(array $files)
     {
@@ -383,6 +394,8 @@ class FileUpdater
      * Restore from previousVersionBackup/; remove files that were newly added.
      *
      * @param array $files
+     * @return void
+     * @throws \RuntimeException When a file cannot be restored.
      */
     public function rollback(array $files)
     {
@@ -441,6 +454,8 @@ class FileUpdater
      * A failure after that point throws ERROR_ROLLBACK: the install may be half restored.
      *
      * @param string $expectedVersion The version the backup must contain.
+     * @return void
+     * @throws \RuntimeException When the backup is incomplete, or a file cannot be restored.
      */
     public function restore(string $expectedVersion)
     {
@@ -507,6 +522,7 @@ class FileUpdater
      * @param string $stagingRoot
      * @param string $absoluteReal
      * @param string $relative
+     * @return void
      */
     protected function assertCanReplace(string $stagingRoot, string $absoluteReal, string $relative)
     {
@@ -534,6 +550,7 @@ class FileUpdater
      * @param string $stagingRoot
      * @param string $absoluteReal
      * @param string $relative
+     * @return void
      */
     protected function assertCanReplaceDirectory(string $stagingRoot, string $absoluteReal, string $relative)
     {
@@ -613,6 +630,8 @@ class FileUpdater
      * Calculate update work from the staged or live file list.
      *
      * @param array<int, string> $files
+     * @param string $root The directory the paths are relative to.
+     * @return int
      */
     protected function calculateWork(array $files, string $root): int
     {
@@ -724,9 +743,10 @@ class FileUpdater
      *
      * @param string $code
      * @param string $message
+     * @return never
      * @throws \RuntimeException
      */
-    protected function fail(string $code, string $message = '')
+    protected function fail(string $code, string $message = ''): never
     {
         error_log('FileUpdater: '.$code.' '.$message);
         throw new \RuntimeException($code);

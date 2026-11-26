@@ -32,6 +32,9 @@ use ZipArchive;
  */
 class DownloaderTest extends TestCase
 {
+    // What the updater should write to keep the backup folder closed to the web, on Apache 2.4 and 2.2
+    private const HTACCESS = "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>\n";
+
     private string $fixturePath;
 
     protected function setUp(): void
@@ -58,7 +61,10 @@ class DownloaderTest extends TestCase
 
         $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new Filesystem());
 
-        $this->assertSame(dirname(realpath($webRoot)).'/backups/fileUpdate', $downloader->getBaseDirectory());
+        $this->assertSame(
+            dirname(realpath($webRoot)).'/backups/fileUpdate-'.substr(hash('sha256', realpath($webRoot)), 0, 8),
+            $downloader->getBaseDirectory()
+        );
     }
 
     public function testFallsBackInsideWebRootWhenParentIsUnavailable(): void
@@ -279,6 +285,185 @@ class DownloaderTest extends TestCase
         ];
     }
 
+    public function testTheBackupFolderIsClosedToTheWebOnApache24AndApache22(): void
+    {
+        $baseDir = $this->fixturePath.'/backups/fileUpdate';
+
+        $this->createDownloader(new DownloaderFilesystem())->protectBaseDirectory();
+
+        $htaccess = file_get_contents($baseDir.'/.htaccess');
+        $this->assertSame(self::HTACCESS, $htaccess);
+        $this->assertStringContainsString("<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>", $htaccess);
+        $this->assertStringContainsString("<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>", $htaccess);
+        $this->assertFileExists($baseDir.'/index.html');
+    }
+
+    /**
+     * @dataProvider existingHtaccessProvider
+     */
+    public function testAnExistingHtaccessFileIsNeverOverwritten(string $contents): void
+    {
+        $baseDir = $this->fixturePath.'/backups/fileUpdate';
+        file_put_contents($baseDir.'/.htaccess', $contents);
+
+        $this->createDownloader(new DownloaderFilesystem())->protectBaseDirectory();
+
+        $this->assertSame($contents, file_get_contents($baseDir.'/.htaccess'));
+    }
+
+    public static function existingHtaccessProvider(): array
+    {
+        return [
+            'the same rules' => [self::HTACCESS],
+            'a custom rule' => ["Require ip 10.0.0.0/8\n"],
+            'a single rule' => ["Deny from all\n"],
+            'an empty file' => [''],
+        ];
+    }
+
+    public function testReleasedGithubFileMustHaveTheChecksumGithubReports(): void
+    {
+        $requests = [];
+        $downloader = null;
+
+        $files = $this->runReleased([], [$this->githubResponse('"sha256:{checksum}"')], $requests, $downloader);
+
+        $this->assertSame(['version.php'], $files);
+        $this->assertCount(1, $requests);
+        $this->assertSame('https://api.github.com/repos/GibbonEdu/core/releases/tags/v30.0.03', (string) $requests[0]->getUri());
+        $this->assertSame('application/vnd.github+json', $requests[0]->getHeaderLine('Accept'));
+        $this->assertSame(1, $downloader->downloads);
+    }
+
+    public function testTheGithubChecksumIsComparedIgnoringCase(): void
+    {
+        $files = $this->runReleased([], [$this->githubResponse('strtoupper')]);
+
+        $this->assertSame(['version.php'], $files);
+    }
+
+    /**
+     * @dataProvider unverifiedGithubReleaseProvider
+     */
+    public function testAGithubReleaseThatCannotBeVerifiedIsNotDownloaded(array $responses, array $release = []): void
+    {
+        $downloader = null;
+
+        try {
+            $this->runReleased($release, $responses, $requests, $downloader);
+            $this->fail('A GitHub release that does not verify must not be installed.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_VERIFY, $error->getMessage());
+        }
+
+        $this->assertSame(0, $downloader->downloads, 'The package is not fetched when it cannot be verified.');
+    }
+
+    public static function unverifiedGithubReleaseProvider(): array
+    {
+        $notFound = new \GuzzleHttp\Psr7\Response(404, [], '{"message":"Not Found"}');
+
+        return [
+            'checksums differ' => [[self::githubResponse('"sha256:'.str_repeat('0', 64).'"')]],
+            'file has no checksum on GitHub' => [[self::githubResponse('null')]],
+            'file is not in the release' => [[new \GuzzleHttp\Psr7\Response(200, [], '{"assets":[{"name":"Other.zip","digest":"sha256:abc"}]}')]],
+            'release has no files' => [[new \GuzzleHttp\Psr7\Response(200, [], '{"assets":[]}')]],
+            'reply is not JSON' => [[new \GuzzleHttp\Psr7\Response(200, [], 'not json')]],
+            'release not found' => [[$notFound]],
+            'rate limited' => [[new \GuzzleHttp\Psr7\Response(403, [], '{"message":"API rate limit exceeded"}')]],
+            'GitHub is down' => [[new \GuzzleHttp\Psr7\Response(503)]],
+            'GitHub cannot be reached' => [[new \GuzzleHttp\Exception\ConnectException('timed out', new \GuzzleHttp\Psr7\Request('GET', 'x'))]],
+            'catalog has no checksum' => [[self::githubResponse('"sha256:abc"')], ['checksum' => '']],
+        ];
+    }
+
+    /**
+     * @dataProvider notCheckedWithGithubProvider
+     */
+    public function testOtherDownloadsAreLeftToTheCatalogChecksum(array $release): void
+    {
+        // No API reply is queued: asking GitHub would fail the test
+        $requests = [];
+
+        $files = $this->runReleased($release, [], $requests);
+
+        $this->assertSame(['version.php'], $files);
+        $this->assertSame([], $requests);
+    }
+
+    public static function notCheckedWithGithubProvider(): array
+    {
+        return [
+            'Development version' => [['status' => 'development']],
+            'Development version in capitals' => [['status' => 'Development']],
+            'download from gibbonedu.org' => [['filePath' => 'https://gibbonedu.org/download/gibbon-30.0.03.zip']],
+            'branch archive on GitHub' => [['filePath' => 'https://github.com/GibbonEdu/core/archive/refs/heads/v31.0.00.zip']],
+            'no download address' => [['filePath' => '']],
+        ];
+    }
+
+    /**
+     * A GitHub API reply for the release file, whose digest is $digest, with {checksum}
+     * standing for the checksum of the test package. 'strtoupper' gives the right digest in capitals.
+     */
+    private static function githubResponse(string $digest): \GuzzleHttp\Psr7\Response
+    {
+        $body = json_encode(['assets' => [
+            ['name' => 'Other.tar.gz', 'digest' => 'sha256:'.str_repeat('f', 64)],
+            ['name' => 'GibbonEduCore-InstallBundle.zip', 'digest' => '{digest}'],
+        ]]);
+
+        return new \GuzzleHttp\Psr7\Response(200, [], str_replace('"{digest}"', $digest === 'strtoupper' ? '"{upper}"' : $digest, $body));
+    }
+
+    /**
+     * Run a download of a released GitHub file, with the GitHub API answering from $apiResponses.
+     *
+     * @param array<string, mixed> $release Changes to the release the catalog would hold.
+     * @param array<int, mixed> $apiResponses Replies, in order, for requests to the GitHub API.
+     * @param array $requests Set to the requests made to the GitHub API.
+     * @param LimitedDownloader|null $downloader Set to the downloader used.
+     * @return array<int, string>
+     */
+    private function runReleased(array $release, array $apiResponses, ?array &$requests = [], ?LimitedDownloader &$downloader = null): array
+    {
+        $zipPath = $this->createZip(['version.php' => "<?php\n\$version = '30.0.03';\n"]);
+        $checksum = hash_file('sha256', $zipPath);
+        $release += [
+            'version' => '30.0.03',
+            'status' => 'current',
+            'checksum' => $checksum,
+            'filePath' => 'https://github.com/GibbonEdu/core/releases/download/v30.0.03/GibbonEduCore-InstallBundle.zip',
+        ];
+
+        // Fill in the checksum the test package really has
+        $apiResponses = array_map(function ($response) use ($checksum) {
+            if (!$response instanceof \GuzzleHttp\Psr7\Response) {
+                return $response;
+            }
+
+            return $response->withBody(\GuzzleHttp\Psr7\Utils::streamFor(str_replace(
+                ['{checksum}', '{upper}'],
+                [$checksum, 'sha256:'.strtoupper($checksum)],
+                (string) $response->getBody()
+            )));
+        }, $apiResponses);
+
+        $history = [];
+        $stack = \GuzzleHttp\HandlerStack::create(new \GuzzleHttp\Handler\MockHandler($apiResponses));
+        $stack->push(\GuzzleHttp\Middleware::history($history));
+
+        $downloader = $this->createDownloader(new DownloaderFilesystem());
+        $downloader->fixtureZip = $zipPath;
+        $downloader->client = new \GuzzleHttp\Client(['handler' => $stack]);
+
+        try {
+            return $downloader->run($release);
+        } finally {
+            $requests = array_column($history, 'request');
+        }
+    }
+
     /**
      * Run a full download using a local zip, with the checksum the catalog would hold.
      *
@@ -353,9 +538,26 @@ class LimitedDownloader extends Downloader
     /** Use a local zip instead of downloading one when set. */
     public ?string $fixtureZip = null;
 
+    /** Use this client, with a mocked GitHub API, when set. */
+    public ?\GuzzleHttp\Client $client = null;
+
+    public int $downloads = 0;
+
     public function download(array $release) : string
     {
+        ++$this->downloads;
+
         return $this->fixtureZip ?? parent::download($release);
+    }
+
+    protected function createClient(array $options) : \GuzzleHttp\Client
+    {
+        return $this->client ?? parent::createClient($options);
+    }
+
+    public function protectBaseDirectory() : string
+    {
+        return $this->ensureBaseDirectory();
     }
 
     public function setMaxExtractedBytes(int $bytes): void

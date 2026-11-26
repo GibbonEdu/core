@@ -33,6 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 $unavailableMessage = __('Update failed. Check the server logs and try again, or update manually.');
 
 /**
+ * Send a progress snapshot to the update page as JSON.
+ *
  * @param array{state: string, lifecycleLabel: string, typeLabel: string, stageLabel: string, message: string, progress: ?int} $response
  */
 $respond = static function (array $response): void {
@@ -57,8 +59,7 @@ if (!is_string($gibbonLogID) || preg_match('/^[0-9]+$/D', $gibbonLogID) !== 1) {
     exit;
 }
 
-// gibbonLogID is an UNSIGNED INT with a ZEROFILL display width. Normalize
-// the page-emitted value before its direct, exact gibbonLog lookup.
+// The page may zero-pad gibbonLogID (ZEROFILL), so strip leading zeros before the exact lookup.
 $gibbonLogID = ltrim($gibbonLogID, '0');
 if (empty($gibbonLogID) || !ctype_digit($gibbonLogID)) {
     $respondUnavailable();
@@ -73,8 +74,7 @@ if (empty($gibbonLog) || $gibbonLog['gibbonLogID'] != $gibbonLogID || $gibbonLog
     exit;
 }
 
-// Clear an update left behind by a crashed process, so polling ends in a failed
-// state instead of reporting that the update is still working.
+// Clear an update left by a crashed process, so polling reports it as failed.
 $container->get(SystemUpdateMonitor::class)->isBusy();
 
 $progressService = $container->get(SystemUpdateProgress::class);

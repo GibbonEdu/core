@@ -103,7 +103,9 @@ final class SystemUpdateMonitor
     }
 
     /**
-     * An update is dead when its heartbeat has gone quiet and its process has ended.
+     * An update is dead when its heartbeat has been quiet too long. An ended process
+     * is dead after ENDED_GRACE seconds. A process the log still shows as active is
+     * dead after MAX_RUNTIME seconds, or sooner when its PID no longer exists.
      *
      * @param string $processID
      * @param array $process
