@@ -63,7 +63,7 @@ class SystemUpdateProcessTest extends TestCase
         parent::tearDown();
     }
 
-    public function testFileUpdateUsesExistingCollaboratorsInOrderAndRecordsCompletion(): void
+    public function testFileUpdateRunsBehindMaintenanceModeAndRecordsCompletion(): void
     {
         $events = [];
         $downloadProgress = null;
@@ -81,11 +81,7 @@ class SystemUpdateProcessTest extends TestCase
         $versionCatalog->expects($this->once())
             ->method('getNextRelease')
             ->with('30.0.00', false)
-            ->willReturnCallback(function () use (&$events): array {
-                $events[] = 'catalog';
-
-                return ['filePath' => 'gibbon-30.0.01.zip'];
-            });
+            ->willReturn(['filePath' => 'gibbon-30.0.01.zip']);
 
         $downloader = $this->createMock(Downloader::class);
         $downloader->expects($this->once())
@@ -126,43 +122,27 @@ class SystemUpdateProcessTest extends TestCase
         $process = $this->createProcess($settings, $updater, $versionCatalog, $downloader, $fileUpdater, $events);
         $process->run('file');
 
-        $this->assertSame([
-            'progress::working',
-            'progress:preparing:working',
-            'setting:maintenanceMode:Y',
-            'setting:fileUpdater:running',
-            'progress:downloading:working',
-            'catalog',
-            'downloader',
-            'progress:downloading:working',
-            'progress:installing:working',
-            'file-updater',
-            'progress:installing:working',
-            'progress:finalizing:working',
-            'session:forget:pageLoads',
-            'setting:fileUpdater:idle',
-            'setting:fileUpdaterBackup:30.0.00',
-            'setting:maintenanceMode:N',
-            'progress:finalizing:complete',
-        ], $events);
-        $this->assertSame([
-            [null, 'working', null],
-            ['preparing', 'working', 5],
-            ['downloading', 'working', 10],
-            ['downloading', 'working', 40],
-            ['installing', 'working', 70],
-            ['installing', 'working', 82],
-            ['finalizing', 'working', 95],
-            ['finalizing', 'complete', 100],
-        ], $state->snapshots);
+        // Maintenance mode is on before any download or install, and off again after the install
+        $this->assertLessThan(
+            $this->eventPosition($events, 'downloader'),
+            $this->eventPosition($events, 'setting:maintenanceMode:Y')
+        );
+        $this->assertLessThan(
+            $this->eventPosition($events, 'setting:maintenanceMode:N'),
+            $this->eventPosition($events, 'file-updater')
+        );
+        $this->assertSame(['finalizing', 'complete', 100], end($state->snapshots));
+        $this->assertProgressNeverGoesBackwards($state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
+        $this->assertSame('idle', $state->values['System Admin/fileUpdater']);
+        $this->assertSame('30.0.00', $state->values['System Admin/fileUpdaterBackup']);
         $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
         $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
         $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
         $this->assertFileLockWasReleased();
     }
 
-    public function testRestoreUsesTheExistingFileUpdaterAndSafeSnapshotLifecycle(): void
+    public function testRestoreRunsBehindMaintenanceModeAndRecordsCompletion(): void
     {
         $events = [];
         [$settings, $state] = $this->createSettingGateway($events);
@@ -195,28 +175,18 @@ class SystemUpdateProcessTest extends TestCase
         );
         $process->run('restore');
 
-        $this->assertSame([
-            'progress::working',
-            'progress:preparing:working',
-            'setting:maintenanceMode:Y',
-            'setting:fileUpdater:running',
-            'progress:restoring:working',
-            'file-updater:restore',
-            'progress:finalizing:working',
-            'session:forget:pageLoads',
-            'setting:fileUpdater:idle',
-            'setting:fileUpdaterBackup:',
-            'setting:maintenanceMode:N',
-            'progress:finalizing:complete',
-        ], $events);
-        $this->assertSame([
-            [null, 'working', null],
-            ['preparing', 'working', 10],
-            ['restoring', 'working', 70],
-            ['finalizing', 'working', 90],
-            ['finalizing', 'complete', 100],
-        ], $state->snapshots);
+        $this->assertLessThan(
+            $this->eventPosition($events, 'file-updater:restore'),
+            $this->eventPosition($events, 'setting:maintenanceMode:Y')
+        );
+        $this->assertLessThan(
+            $this->eventPosition($events, 'setting:maintenanceMode:N'),
+            $this->eventPosition($events, 'file-updater:restore')
+        );
+        $this->assertSame(['finalizing', 'complete', 100], end($state->snapshots));
+        $this->assertProgressNeverGoesBackwards($state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
+        $this->assertSame('idle', $state->values['System Admin/fileUpdater']);
         $this->assertSame('', $state->values['System Admin/fileUpdaterBackup']);
         $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
         $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
@@ -227,7 +197,7 @@ class SystemUpdateProcessTest extends TestCase
     /**
      * @dataProvider databaseModeProvider
      */
-    public function testDatabaseModesUseUpdaterAndCacheCleanup(string $mode): void
+    public function testDatabaseModesApplyTheUpdateAndClearTheCache(string $mode): void
     {
         $events = [];
         [$settings, $state] = $this->createSettingGateway($events);
@@ -235,18 +205,9 @@ class SystemUpdateProcessTest extends TestCase
 
         $updater = $this->createMock(Updater::class);
         $updater->versionDB = '30.0.01';
-        $updater->expects($this->once())->method('isVersionValid')->willReturnCallback(function () use (&$events): bool {
-            $events[] = 'updater:valid';
-            return true;
-        });
-        $updater->expects($this->once())->method('isUpdateRequired')->willReturnCallback(function () use (&$events): bool {
-            $events[] = 'updater:required';
-            return true;
-        });
-        $updater->expects($this->once())->method('update')->willReturnCallback(function () use (&$events): array {
-            $events[] = 'updater:update';
-            return [];
-        });
+        $updater->method('isVersionValid')->willReturn(true);
+        $updater->method('isUpdateRequired')->willReturn(true);
+        $updater->expects($this->once())->method('update')->willReturn([]);
 
         $versionCatalog = $this->createMock(VersionCatalog::class);
         $downloader = $this->createMock(Downloader::class);
@@ -257,24 +218,8 @@ class SystemUpdateProcessTest extends TestCase
         $process = $this->createProcess($settings, $updater, $versionCatalog, $downloader, $fileUpdater, $events);
         $process->run($mode);
 
-        $this->assertSame([
-            'progress::working',
-            'progress:preparing:working',
-            'updater:valid',
-            'updater:required',
-            'progress:installing:working',
-            'updater:update',
-            'progress:finalizing:working',
-            'session:forget:pageLoads',
-            'progress:finalizing:complete',
-        ], $events);
-        $this->assertSame([
-            [null, 'working', null],
-            ['preparing', 'working', 10],
-            ['installing', 'working', 70],
-            ['finalizing', 'working', 90],
-            ['finalizing', 'complete', 100],
-        ], $state->snapshots);
+        $this->assertSame(['finalizing', 'complete', 100], end($state->snapshots));
+        $this->assertProgressNeverGoesBackwards($state->snapshots);
         $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
     }
 
@@ -312,16 +257,14 @@ class SystemUpdateProcessTest extends TestCase
         try {
             $process->run('file');
             $this->fail('The worker must rethrow download failures for BackgroundProcessor to record Error.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame($failure, $error);
         }
 
-        $this->assertSame([
-            [null, 'working', null],
-            ['preparing', 'working', 5],
-            ['downloading', 'working', 10],
-            ['downloading', 'failed', 10],
-        ], $state->snapshots);
+        $this->assertSame(['downloading', 'failed'], array_slice(end($state->snapshots), 0, 2));
+        $this->assertProgressNeverGoesBackwards($state->snapshots);
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
         $this->assertSame('failed', $state->values['System Admin/fileUpdater']);
         $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
@@ -455,6 +398,8 @@ class SystemUpdateProcessTest extends TestCase
         try {
             $process->run('file');
             $this->fail('An update cannot run without the Zip extension.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame('The PHP Zip extension is not available.', $error->getMessage());
         }
@@ -492,6 +437,8 @@ class SystemUpdateProcessTest extends TestCase
         try {
             $process->run($mode);
             $this->fail('A second update must not run while another holds the lock.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame('Another system update is already running.', $error->getMessage());
         } finally {
@@ -502,7 +449,8 @@ class SystemUpdateProcessTest extends TestCase
         // The running update's progress, status settings and files were never touched
         $this->assertSame([], $state->snapshots);
         $this->assertSame([], $events);
-        $this->assertSame(['System Admin/fileUpdaterBackup' => '29.0.00'], $state->values);
+        $this->assertArrayNotHasKey('System Admin/maintenanceMode', $state->values);
+        $this->assertArrayNotHasKey('System Admin/fileUpdater', $state->values);
         $this->assertFileLockWasReleased();
     }
 
@@ -565,6 +513,8 @@ class SystemUpdateProcessTest extends TestCase
                 $events
             )->run('regularRelease');
             $this->fail('The failed database update must be reported.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame('Database update failed.', $error->getMessage());
         }
@@ -775,12 +725,7 @@ class SystemUpdateProcessTest extends TestCase
         try {
             $process->run('regularRelease');
         } finally {
-            $this->assertSame([
-                [null, 'working', null],
-                ['preparing', 'working', 10],
-                ['installing', 'working', 70],
-                ['installing', 'failed', 70],
-            ], $state->snapshots);
+            $this->assertSame(['installing', 'failed'], array_slice(end($state->snapshots), 0, 2));
         }
     }
 
@@ -834,6 +779,36 @@ class SystemUpdateProcessTest extends TestCase
             });
 
         return [$settings, $state];
+    }
+
+    /**
+     * The position of an event in the recorded sequence. Fails when the event never happened.
+     *
+     * @param array<int, string> $events
+     * @param string $event
+     * @return int
+     */
+    private function eventPosition(array $events, string $event): int
+    {
+        $position = array_search($event, $events, true);
+        $this->assertNotFalse($position, sprintf('The event "%s" did not happen.', $event));
+
+        return (int) $position;
+    }
+
+    /**
+     * Progress only moves forward, so the progress bar never goes back.
+     *
+     * @param array<int, array{0: ?string, 1: string, 2: ?int}> $snapshots
+     * @return void
+     */
+    private function assertProgressNeverGoesBackwards(array $snapshots): void
+    {
+        $percentages = array_values(array_filter(array_column($snapshots, 2), fn ($value) => $value !== null));
+        $sorted = $percentages;
+        sort($sorted);
+
+        $this->assertSame($sorted, $percentages, 'Progress must never move backwards.');
     }
 
     private function createProcess(

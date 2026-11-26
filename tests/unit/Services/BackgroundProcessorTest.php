@@ -79,6 +79,8 @@ class BackgroundProcessorTest extends TestCase
         try {
             $processor->startProcess('ExampleProcess', 'run', ['file'], false);
             $this->fail('A dispatch failure must be returned to the initiating request.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $exception) {
             $this->assertSame([], $processor->runProcessCalls);
         }
@@ -155,6 +157,8 @@ class BackgroundProcessorTest extends TestCase
         try {
             $processor->startProcess('ExampleProcess', 'run', ['file'], false);
             $this->fail('A dispatch failure must be returned when the fallback is turned off.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $exception) {
             $this->assertSame([], $processor->runProcessCalls);
         }

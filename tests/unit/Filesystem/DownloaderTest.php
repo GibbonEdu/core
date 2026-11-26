@@ -33,6 +33,8 @@ use ZipArchive;
 class DownloaderTest extends TestCase
 {
     // What the updater should write to keep the backup folder closed to the web, on Apache 2.4 and 2.2
+    private const RELEASE_URL = 'https://github.com/GibbonEdu/core/releases/download/v30.0.03/GibbonEduCore-InstallBundle.zip';
+
     private const HTACCESS = "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>\n";
 
     private string $fixturePath;
@@ -161,6 +163,8 @@ class DownloaderTest extends TestCase
         try {
             $downloader->extract($zipPath);
             $this->fail('A package larger than the extraction limit must be refused.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(Downloader::ERROR_INVALID, $error->getMessage());
         }
@@ -187,6 +191,8 @@ class DownloaderTest extends TestCase
         try {
             $this->createDownloader($filesystem)->extract($zipPath);
             $this->fail('A package that cannot fit on disk must be refused before extraction.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(Downloader::ERROR_WRITE, $error->getMessage());
         }
@@ -228,6 +234,8 @@ class DownloaderTest extends TestCase
         try {
             $this->createDownloader($filesystem)->extract($zipPath);
             $this->fail('Extraction must not continue when staging cannot be cleared.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(Downloader::ERROR_WRITE, $error->getMessage());
         }
@@ -266,6 +274,8 @@ class DownloaderTest extends TestCase
         try {
             $this->runWithPackage(['version.php' => $versionFile, 'src/Example.php' => 'example'], $catalogVersion);
             $this->fail('A package that is not the catalog version must not be installed.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(Downloader::ERROR_INVALID, $error->getMessage());
         }
@@ -321,6 +331,108 @@ class DownloaderTest extends TestCase
         ];
     }
 
+    public function testDownloadSavesThePackageAsTheBackupZip(): void
+    {
+        $bytes = $this->zipBytes(['version.php' => "<?php\n\$version = '30.0.03';\n"]);
+        [$downloader] = $this->createScriptedDownloader([new \GuzzleHttp\Psr7\Response(200, [], $bytes)]);
+
+        $zipPath = $downloader->download(['filePath' => self::RELEASE_URL]);
+
+        $this->assertSame($this->fixturePath.'/backups/fileUpdate/package.zip', $zipPath);
+        $this->assertSame($bytes, file_get_contents($zipPath));
+    }
+
+    public function testDownloadFollowsARedirectToGithubsReleaseStorage(): void
+    {
+        $bytes = $this->zipBytes(['version.php' => "<?php\n\$version = '30.0.03';\n"]);
+        [$downloader] = $this->createScriptedDownloader([
+            new \GuzzleHttp\Psr7\Response(302, ['Location' => 'https://release-assets.githubusercontent.com/asset/1/package.zip']),
+            new \GuzzleHttp\Psr7\Response(200, [], $bytes),
+        ]);
+
+        // The package only arrives if the redirect was followed, since the redirect itself is not a 2xx
+        $zipPath = $downloader->download(['filePath' => self::RELEASE_URL]);
+
+        $this->assertSame($bytes, file_get_contents($zipPath));
+    }
+
+    /**
+     * @dataProvider refusedDownloadProvider
+     */
+    public function testDownloadRefusesAPackageThatIsNotSafeToInstall(array $replies, string $expectedCode): void
+    {
+        [$downloader] = $this->createScriptedDownloader($replies);
+
+        try {
+            $downloader->download(['filePath' => self::RELEASE_URL]);
+            $this->fail('The download must be refused.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame($expectedCode, $error->getMessage());
+        }
+
+        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/package.zip');
+    }
+
+    public static function refusedDownloadProvider(): array
+    {
+        $request = new \GuzzleHttp\Psr7\Request('GET', self::RELEASE_URL);
+
+        return [
+            'declared larger than the limit' => [
+                [new \GuzzleHttp\Psr7\Response(200, ['Content-Length' => (string) (Downloader::MAX_PACKAGE_BYTES + 1)], 'x')],
+                Downloader::ERROR_INVALID,
+            ],
+            'not found' => [[new \GuzzleHttp\Psr7\Response(404, [], 'Not Found')], Downloader::ERROR_DOWNLOAD],
+            'server error' => [[new \GuzzleHttp\Psr7\Response(500, [], 'Error')], Downloader::ERROR_DOWNLOAD],
+            'empty body' => [[new \GuzzleHttp\Psr7\Response(200, [], '')], Downloader::ERROR_DOWNLOAD],
+            'not a zip archive' => [[new \GuzzleHttp\Psr7\Response(200, [], '<html>Sorry</html>')], Downloader::ERROR_DOWNLOAD],
+            'connection failure' => [[new \GuzzleHttp\Exception\ConnectException('timed out', $request)], Downloader::ERROR_DOWNLOAD],
+            'redirect to an unlisted host' => [
+                [new \GuzzleHttp\Psr7\Response(302, ['Location' => 'https://example.com/package.zip'])],
+                Downloader::ERROR_INVALID,
+            ],
+            'redirect to plain http' => [
+                [new \GuzzleHttp\Psr7\Response(302, ['Location' => 'http://release-assets.githubusercontent.com/asset/1/package.zip'])],
+                Downloader::ERROR_DOWNLOAD,
+            ],
+        ];
+    }
+
+    public function testDownloadNeverContactsAnUnsafeAddress(): void
+    {
+        // No replies are queued: any request would fail, so the refusal must come before the request
+        [$downloader, $mock] = $this->createScriptedDownloader([]);
+
+        try {
+            $downloader->download(['filePath' => 'http://github.com/GibbonEdu/core/releases/download/v30.0.03/package.zip']);
+            $this->fail('A plain http address must be refused.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertSame(0, $mock->count(), 'No request was made.');
+    }
+
+    public function testALeftoverSymlinkInStagingIsRemovedWithoutTouchingItsTarget(): void
+    {
+        $outside = $this->fixturePath.'/outside';
+        mkdir($outside, 0755, true);
+        file_put_contents($outside.'/keep.txt', 'not part of the update');
+        mkdir($this->fixturePath.'/backups/fileUpdate/staging', 0755, true);
+        symlink($outside, $this->fixturePath.'/backups/fileUpdate/staging/leftover');
+        $zipPath = $this->createZip(['version.php' => "<?php\n\$version = '30.0.01';\n"]);
+
+        $files = $this->createDownloader(new DownloaderFilesystem())->extract($zipPath);
+
+        $this->assertSame(['version.php'], $files);
+        $this->assertFileExists($outside.'/keep.txt');
+        $this->assertFalse(is_link($this->fixturePath.'/backups/fileUpdate/staging/leftover'));
+    }
+
     public function testReleasedGithubFileMustHaveTheChecksumGithubReports(): void
     {
         $requests = [];
@@ -352,6 +464,8 @@ class DownloaderTest extends TestCase
         try {
             $this->runReleased($release, $responses, $requests, $downloader);
             $this->fail('A GitHub release that does not verify must not be installed.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
         } catch (\RuntimeException $error) {
             $this->assertSame(Downloader::ERROR_VERIFY, $error->getMessage());
         }
@@ -515,6 +629,44 @@ class DownloaderTest extends TestCase
         return $downloader;
     }
 
+    /**
+     * A downloader whose HTTP requests are answered by $replies, in order.
+     *
+     * @param array<int, mixed> $replies Responses or exceptions for the mock server.
+     * @return array{0: ScriptedDownloader, 1: \GuzzleHttp\Handler\MockHandler}
+     */
+    private function createScriptedDownloader(array $replies): array
+    {
+        $session = $this->createMock(Session::class);
+        $session->method('get')->willReturnCallback(fn (string $key) => [
+            'absolutePath' => $this->fixturePath,
+            'absoluteURL' => 'https://school.example',
+        ][$key] ?? null);
+
+        $mock = new \GuzzleHttp\Handler\MockHandler($replies);
+        $downloader = new ScriptedDownloader($session, new VersionCatalog($session), new DownloaderFilesystem());
+        $downloader->client = new \GuzzleHttp\Client(['handler' => \GuzzleHttp\HandlerStack::create($mock)]);
+        $downloader->setBaseDirectory($this->fixturePath.'/backups/fileUpdate');
+
+        return [$downloader, $mock];
+    }
+
+    /**
+     * @param array<string, string> $files
+     */
+    private function zipBytes(array $files): string
+    {
+        $path = $this->fixturePath.'/source.zip';
+        $zip = new ZipArchive();
+        $this->assertTrue($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true);
+        foreach ($files as $name => $contents) {
+            $zip->addFromString($name, $contents);
+        }
+        $zip->close();
+
+        return (string) file_get_contents($path);
+    }
+
     private function removeFixtureDirectory(string $path): void
     {
         if (!is_dir($path)) {
@@ -563,6 +715,19 @@ class LimitedDownloader extends Downloader
     public function setMaxExtractedBytes(int $bytes): void
     {
         $this->maxExtractedBytes = $bytes;
+    }
+}
+
+/**
+ * Sends HTTP requests through a supplied client, so tests can answer them from a script.
+ */
+class ScriptedDownloader extends Downloader
+{
+    public ?\GuzzleHttp\Client $client = null;
+
+    protected function createClient(array $options) : \GuzzleHttp\Client
+    {
+        return $this->client ?? parent::createClient($options);
     }
 }
 
