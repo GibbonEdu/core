@@ -83,6 +83,91 @@ class UpdateFormTest extends TestCase
         $this->assertStringNotContainsString('v33.0.00', $output);
     }
 
+    /**
+     * @dataProvider phpRequirementProvider
+     */
+    public function testUpdateButtonFollowsThePhpVersionTheReleaseRequires(array $release, bool $canUpdate): void
+    {
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '30.0.00';
+        $updater->cuttingEdgeCodeLine = 0;
+        $updater->cuttingEdgeMaxLine = 0;
+        $updater->method('isCuttingEdge')->willReturn(false);
+        $updater->method('isUpdateRequired')->willReturn(0);
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('fetch')->willReturn([
+            '30.0.00' => ['status' => 'Current'],
+            '31.0.00' => ['status' => 'Current'],
+        ]);
+        $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
+        $versionCatalog->method('getNextRelease')->willReturn(['version' => '31.0.00'] + $release);
+        $versionCatalog->method('getCatalog')->willReturn([
+            '30.0.00' => ['status' => 'Current', 'changelog' => []],
+            '31.0.00' => ['status' => 'Current', 'changelog' => []],
+        ]);
+        $versionCatalog->method('getCatalogVersion')->willReturn('30.0.00');
+
+        // PHPUnit turns warnings into failures, so a missing phpVersion key must not warn.
+        $output = $this->createUpdateForm($updater, $versionCatalog, '')
+            ->createForm($updater, $versionCatalog)
+            ->getOutput();
+
+        $this->assertSame($canUpdate, str_contains($output, 'Update to 31.0.00'));
+        $this->assertSame(!$canUpdate, str_contains($output, 'Requires PHP 99.0 or higher'));
+    }
+
+    public static function phpRequirementProvider(): array
+    {
+        return [
+            'newer PHP required' => [['phpVersion' => '99.0'], false],
+            'older PHP required' => [['phpVersion' => '8.0'], true],
+            'empty requirement' => [['phpVersion' => ''], true],
+            'no requirement in the catalog' => [[], true],
+        ];
+    }
+
+    /**
+     * @dataProvider restoreDatabaseVersionProvider
+     */
+    public function testDowngradeIsOnlyOfferedWhenTheDatabaseIsNotAheadOfTheBackup(?string $databaseVersion, bool $offered): void
+    {
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '30.0.00';
+        $updater->versionDB = $databaseVersion;
+        $updater->cuttingEdgeCodeLine = 0;
+        $updater->cuttingEdgeMaxLine = 0;
+        $updater->method('isCuttingEdge')->willReturn(false);
+        $updater->method('isUpdateRequired')->willReturn(0);
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('fetch')->willReturn(['30.0.00' => ['status' => 'Current']]);
+        $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
+        $versionCatalog->method('getNextRelease')->willReturn(null);
+        $versionCatalog->method('getCatalog')->willReturn([
+            '29.0.00' => ['changelog' => []],
+            '30.0.00' => ['status' => 'Current', 'changelog' => []],
+        ]);
+        $versionCatalog->method('getCatalogVersion')->willReturn('30.0.00');
+
+        $output = $this->createUpdateForm($updater, $versionCatalog, '29.0.00')
+            ->createForm($updater, $versionCatalog)
+            ->getOutput();
+
+        $this->assertSame($offered, str_contains($output, 'Downgrade to 29.0.00'));
+        $this->assertSame($offered, str_contains($output, 'hx-confirm='));
+    }
+
+    public static function restoreDatabaseVersionProvider(): array
+    {
+        return [
+            'database is newer than the backup' => ['30.0.00', false],
+            'database is the same version as the backup' => ['29.0.00', true],
+            'database is older than the backup' => ['28.0.00', true],
+            'database version is unknown' => [null, true],
+        ];
+    }
+
     public function testSuppressesFileUpdateSubmissionWhileBackgroundUpdateIsActive(): void
     {
         $updater = $this->createMock(Updater::class);

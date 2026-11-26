@@ -26,6 +26,7 @@ namespace Gibbon\Module\SystemAdmin;
 use Gibbon\Domain\System\SettingGateway;
 use PHPUnit\Framework\TestCase;
 
+require_once dirname(__DIR__, 4).'/functions.php';
 require_once dirname(__DIR__, 4).'/modules/System Admin/src/SystemUpdateProgress.php';
 
 /**
@@ -42,12 +43,15 @@ class SystemUpdateProgressTest extends TestCase
                 'System Admin',
                 'backgroundUpdateProgress',
                 $this->callback(function (string $value): bool {
+                    $snapshot = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+                    $this->assertIsInt($snapshot['updated']);
+                    unset($snapshot['updated']);
                     $this->assertSame([
                         'type' => 'file',
                         'stage' => null,
                         'status' => 'working',
                         'progress' => null,
-                    ], json_decode($value, true, 512, JSON_THROW_ON_ERROR));
+                    ], $snapshot);
 
                     return true;
                 })
@@ -55,6 +59,79 @@ class SystemUpdateProgressTest extends TestCase
             ->willReturn(true);
 
         (new SystemUpdateProgress($settingGateway))->begin('file');
+    }
+
+    public function testEveryWriteRecordsTheCurrentTimeAsAHeartbeat(): void
+    {
+        $written = null;
+        $settingGateway = $this->createMock(SettingGateway::class);
+        $settingGateway->method('getSettingByScope')->willReturnCallback(function () use (&$written) {
+            return $written;
+        });
+        $settingGateway->method('updateSettingByScope')->willReturnCallback(function ($scope, $name, $value) use (&$written) {
+            $written = $value;
+
+            return true;
+        });
+
+        $progress = new SystemUpdateProgress($settingGateway);
+        $this->assertNull($progress->getUpdatedAt());
+
+        $before = time();
+        $progress->begin('file');
+        $this->assertGreaterThanOrEqual($before, $progress->getUpdatedAt());
+        $this->assertLessThanOrEqual(time(), $progress->getUpdatedAt());
+
+        $written = json_encode(['type' => 'file', 'stage' => null, 'status' => 'working', 'progress' => null, 'updated' => 1]);
+        $progress->update('installing', 'working', 70);
+        $this->assertGreaterThanOrEqual($before, $progress->getUpdatedAt());
+
+        $written = json_encode(['type' => 'file', 'stage' => null, 'status' => 'working', 'progress' => null, 'updated' => 1]);
+        $progress->fail('installing');
+        $this->assertGreaterThanOrEqual($before, $progress->getUpdatedAt());
+    }
+
+    /**
+     * @dataProvider invalidHeartbeatProvider
+     */
+    public function testGetUpdatedAtIgnoresMissingOrInvalidTimestamps(mixed $value): void
+    {
+        $settingGateway = $this->createMock(SettingGateway::class);
+        $settingGateway->method('getSettingByScope')->willReturn($value);
+
+        $this->assertNull((new SystemUpdateProgress($settingGateway))->getUpdatedAt());
+    }
+
+    public static function invalidHeartbeatProvider(): array
+    {
+        return [
+            'missing setting' => [false],
+            'malformed JSON' => ['{'],
+            'non-object JSON' => ['"working"'],
+            'legacy snapshot without a timestamp' => [json_encode(['status' => 'working'])],
+            'string timestamp' => [json_encode(['updated' => '1700000000'])],
+            'zero timestamp' => [json_encode(['updated' => 0])],
+            'negative timestamp' => [json_encode(['updated' => -5])],
+        ];
+    }
+
+    public function testGetKeepsTheFourFieldShapeAndHidesTheHeartbeat(): void
+    {
+        $settingGateway = $this->createMock(SettingGateway::class);
+        $settingGateway->method('getSettingByScope')->willReturn(json_encode([
+            'type' => 'file',
+            'stage' => 'installing',
+            'status' => 'working',
+            'progress' => 70,
+            'updated' => 1700000000,
+        ], JSON_THROW_ON_ERROR));
+
+        $this->assertSame([
+            'type' => 'file',
+            'stage' => 'installing',
+            'status' => 'working',
+            'progress' => 70,
+        ], (new SystemUpdateProgress($settingGateway))->get());
     }
 
     public function testLabelAccessorsReturnTranslatedLabelsAndNullForUnknownCodes(): void
@@ -85,12 +162,15 @@ class SystemUpdateProgressTest extends TestCase
                 'System Admin',
                 'backgroundUpdateProgress',
                 $this->callback(function (string $value): bool {
+                    $snapshot = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+                    $this->assertIsInt($snapshot['updated']);
+                    unset($snapshot['updated']);
                     $this->assertSame([
                         'type' => 'database',
                         'stage' => 'installing',
                         'status' => 'working',
                         'progress' => 70,
-                    ], json_decode($value, true, 512, JSON_THROW_ON_ERROR));
+                    ], $snapshot);
 
                     return true;
                 })

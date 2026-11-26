@@ -35,6 +35,7 @@ class Downloader
 {
     public const BASE_DIR = 'backups/fileUpdate';
     public const MAX_PACKAGE_BYTES = 209715200; // 200 MB
+    public const MAX_EXTRACTED_BYTES = 1073741824; // 1 GiB, total size of all files in the package
 
     // Short stage codes shown on the update page when something fails
     public const ERROR_INVALID = 'invalid';
@@ -48,6 +49,7 @@ class Downloader
     protected $absolutePath;
     protected $progressCallback;
     protected $lastProgress;
+    protected int $maxExtractedBytes = self::MAX_EXTRACTED_BYTES;
     private Filesystem $filesystem;
     private ?string $baseDirectory = null;
 
@@ -118,7 +120,7 @@ class Downloader
     }
 
     /**
-     * Download, verify, and extract. Returns relative file paths.
+     * Verify, download, check and extract a release. Returns the relative paths of the files to install.
      *
      * @param array $release
      * @return array
@@ -127,9 +129,11 @@ class Downloader
     {
         $this->lastProgress = null;
         $this->reportProgress(0);
+        $this->verifyGithubDigest($release);
         $zipPath = $this->download($release);
         $this->verify($zipPath, $release['checksum'] ?? '');
         $files = $this->extract($zipPath);
+        $this->checkVersion((string) ($release['version'] ?? ''), $zipPath);
         $this->filesystem->deleteIfExists($zipPath);
         $this->reportProgress(100);
 
@@ -137,7 +141,80 @@ class Downloader
     }
 
     /**
-     * Download the zip into backups/fileUpdate/package.zip.
+     * Check the package is the version the catalog promised, so a wrong or stale
+     * package is not installed. Clears staging and the zip when it is not.
+     *
+     * @param string $expected The version from the catalog.
+     * @param string $zipPath
+     * @return void
+     */
+    protected function checkVersion(string $expected, string $zipPath) : void
+    {
+        $staging = $this->getBaseDirectory().'/staging';
+        $found = $this->filesystem->readVersion($staging.'/version.php');
+
+        if ($expected === '' || $found !== $expected) {
+            $this->filesystem->wipeDirectory($staging);
+            $this->fail(self::ERROR_INVALID, 'Package version '.($found ?? 'unknown').' does not match the catalog version '.($expected ?: 'unknown'), $zipPath);
+        }
+    }
+
+    /**
+     * A released version hosted as a GitHub release file must have the checksum GitHub
+     * reports for that file, so the catalog on gibbonedu.org cannot be the only source for it.
+     * Runs before the download, so a package that does not verify is never fetched. Other
+     * downloads, and Development versions, are left to the catalog checksum alone.
+     *
+     * @param array $release
+     * @return void
+     */
+    protected function verifyGithubDigest(array $release) : void
+    {
+        $url = parse_url((string) ($release['filePath'] ?? ''));
+        if (strtolower($release['status'] ?? '') === 'development'
+            || strtolower($url['host'] ?? '') !== 'github.com'
+            || preg_match('#^/(GibbonEdu/[^/]+)/releases/download/([^/]+)/([^/]+)$#i', $url['path'] ?? '', $match) !== 1) {
+            return;
+        }
+
+        $releaseInfo = null;
+        try {
+            $response = $this->createClient(['connect_timeout' => 10, 'timeout' => 30])->request(
+                'GET',
+                'https://api.github.com/repos/'.$match[1].'/releases/tags/'.rawurlencode(rawurldecode($match[2])),
+                ['headers' => ['Accept' => 'application/vnd.github+json'], 'http_errors' => false]
+            );
+            $releaseInfo = $response->getStatusCode() === 200 ? json_decode((string) $response->getBody(), true) : null;
+        } catch (\Throwable $e) {
+            $this->fail(self::ERROR_VERIFY, 'Could not ask GitHub for the release checksum: '.$e->getMessage());
+        }
+
+        $digest = '';
+        foreach ((is_array($releaseInfo) ? $releaseInfo['assets'] ?? [] : []) as $asset) {
+            if (($asset['name'] ?? '') === rawurldecode($match[3])) {
+                $digest = strtolower((string) ($asset['digest'] ?? ''));
+            }
+        }
+
+        $checksum = strtolower(trim((string) ($release['checksum'] ?? '')));
+        if ($checksum === '' || !hash_equals('sha256:'.$checksum, $digest)) {
+            $this->fail(self::ERROR_VERIFY, 'GitHub checksum "'.$digest.'" does not match the catalog checksum "'.$checksum.'" for '.($release['filePath'] ?? ''));
+        }
+    }
+
+    /**
+     * Create the HTTP client used to ask GitHub for a release checksum.
+     *
+     * @param array $options
+     * @return Client
+     */
+    protected function createClient(array $options) : Client
+    {
+        return new Client($options);
+    }
+
+    /**
+     * Download the zip into the backup directory as package.zip.
      *
      * @param array $release
      * @return string
@@ -155,6 +232,8 @@ class Downloader
         $zipPath = $this->ensureBaseDirectory().'/package.zip';
         $this->filesystem->deleteIfExists($zipPath);
 
+        $tooLarge = false;
+
         try {
             $response = (new Client([
                 'connect_timeout' => 10,
@@ -162,6 +241,13 @@ class Downloader
             ]))->request('GET', $filePath, [
                 'headers'     => ['Referer' => $this->session->get('absoluteURL').'/index.php'],
                 'sink'        => $zipPath, // write straight to disk
+                // Refuse a package that declares itself too large before any of it is written
+                'on_headers'  => function ($response) use (&$tooLarge) {
+                    if ((int) $response->getHeaderLine('Content-Length') > self::MAX_PACKAGE_BYTES) {
+                        $tooLarge = true;
+                        throw new \RuntimeException('Package is too large');
+                    }
+                },
                 'progress'    => function ($downloadTotal, $downloadedBytes) {
                     if ($downloadTotal > 0) {
                         $this->reportProgressRange((int) $downloadedBytes, (int) $downloadTotal, 0, 55);
@@ -170,10 +256,10 @@ class Downloader
                 'http_errors' => false,
                 'allow_redirects' => [
                     'max'       => 5,
-                    'protocols' => ['http', 'https'],
-                    // Redirects must stay on gibbonedu.org
+                    'protocols' => ['https'],
+                    // Redirects must stay on the hosts the version catalog allows
                     'on_redirect' => function ($request, $response, $uri) {
-                        if (!$this->versionCatalog->isHostAllowed((string) $uri)) {
+                        if (!$this->versionCatalog->isHostAllowed((string) $uri, true)) {
                             $this->fail(self::ERROR_INVALID, 'Redirect to disallowed host: '.$uri);
                         }
                     },
@@ -184,6 +270,10 @@ class Downloader
                 $this->fail(self::ERROR_DOWNLOAD, 'HTTP status '.$response->getStatusCode().' from '.$filePath, $zipPath);
             }
         } catch (\RuntimeException $e) {
+            if ($tooLarge) {
+                $this->fail(self::ERROR_INVALID, 'Content-Length exceeds max size of '.self::MAX_PACKAGE_BYTES.' bytes', $zipPath);
+            }
+
             $this->filesystem->deleteIfExists($zipPath);
             throw $e;
         } catch (\Throwable $e) {
@@ -233,7 +323,11 @@ class Downloader
     public function extract(string $zipPath) : array
     {
         $staging = $this->getBaseDirectory().'/staging';
-        $this->filesystem->wipeDirectory($staging);
+
+        // Anything left in staging by an earlier run would be installed along with this package
+        if (!$this->filesystem->wipeDirectory($staging)) {
+            $this->fail(self::ERROR_WRITE, 'Failed to clear the staging directory: '.$staging, $zipPath);
+        }
 
         if (!$this->filesystem->ensureDirectory($staging) || ($stagingReal = realpath($staging)) === false) {
             $this->fail(self::ERROR_WRITE, 'Failed to create staging directory: '.$staging, $zipPath);
@@ -255,6 +349,17 @@ class Downloader
             $stat = $zip->statIndex($i);
             $entryWork[$i] = max(1, (int) ($stat === false ? 0 : ($stat['size'] ?? 0)));
             $totalWork += $entryWork[$i];
+        }
+
+        // The update needs room for the staged files plus a backup of the files they replace
+        $freeSpace = $this->filesystem->getFreeSpace($stagingReal);
+        if ($totalWork > $this->maxExtractedBytes || ($freeSpace !== null && $freeSpace < $totalWork * 2)) {
+            $zip->close();
+            $this->fail(
+                $totalWork > $this->maxExtractedBytes ? self::ERROR_INVALID : self::ERROR_WRITE,
+                'Package expands to '.$totalWork.' bytes, limit '.$this->maxExtractedBytes.', free space '.($freeSpace ?? 'unknown'),
+                $zipPath
+            );
         }
 
         $completedWork = 0;
@@ -420,7 +525,7 @@ class Downloader
         }
 
         // Block web access: .htaccess for Apache, empty index.html if listing is enabled
-        if (!is_file($baseDir.'/.htaccess') && @file_put_contents($baseDir.'/.htaccess', "Deny from all\n") === false) {
+        if (!is_file($baseDir.'/.htaccess') && @file_put_contents($baseDir.'/.htaccess', $this->getHtaccessDefaults()) === false) {
             $this->fail(self::ERROR_WRITE, 'Failed to protect the backup directory.');
         }
         if (!is_file($baseDir.'/index.html') && @file_put_contents($baseDir.'/index.html', '') === false) {
@@ -431,14 +536,26 @@ class Downloader
     }
 
     /**
+     * The .htaccess contents that keep the backup directory closed to the web: Require all
+     * denied on Apache 2.4 (mod_authz_core), and Deny from all on Apache 2.2.
+     *
+     * @return string
+     */
+    private function getHtaccessDefaults() : string
+    {
+        return "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>\n";
+    }
+
+    /**
      * Remove a partial zip, log the error, and throw.
      *
      * @param string $code
      * @param string $message
      * @param string $zipPath
-     * @return void
+     * @return never
+     * @throws \RuntimeException
      */
-    protected function fail(string $code, string $message = '', string $zipPath = '')
+    protected function fail(string $code, string $message = '', string $zipPath = ''): never
     {
         $this->filesystem->deleteIfExists($zipPath);
         error_log('Downloader: '.$code.' '.$message);

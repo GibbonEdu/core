@@ -20,11 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
+use Gibbon\Filesystem\FileUpdater;
 use Gibbon\Filesystem\Filesystem;
-use Gibbon\Filesystem\VersionCatalog;
+use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\Services\BackgroundProcessor;
@@ -44,11 +45,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
+// Two POST fields make gibbon.php check the CSRF token, so require confirm and address.
+if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
+    $URL .= '&return=error3';
+    header("Location: {$URL}");
+    exit;
+}
+
 $settingGateway = $container->get(SettingGateway::class);
 $absolutePath = $session->get('absolutePath');
 $filesystem = $container->get(Filesystem::class);
 $baseDir = $filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
-$lockPath = $baseDir.'/fileUpdate.lock';
 
 if (!$filesystem->ensureDirectory($baseDir)) {
     $URL .= '&return=errorFilePermissions';
@@ -56,31 +63,30 @@ if (!$filesystem->ensureDirectory($baseDir)) {
     exit;
 }
 
-// Validate the selected backup before accepting a background restore request.
+// Check the local backup holds the recorded version before accepting a restore request.
 $backupVersion = (string) $settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
-try {
-    $release = $container->get(VersionCatalog::class)->getRelease($backupVersion);
-} catch (\Throwable $error) {
-    error_log('updateRestoreProcess backup validation failed: '.$error->getMessage());
-    $release = [];
-}
-
-if (empty($release) || empty($release['filePath'])) {
-    $URL .= '&return=errorFiles';
+if (!$container->get(FileUpdater::class)->hasBackup($backupVersion)) {
+    $URL .= '&return=errorNoBackup';
     header("Location: {$URL}");
     exit;
 }
 
-$backgroundProcessor = $container->get(BackgroundProcessor::class);
-$processID = $backgroundProcessor->getProcessIDByName('SystemUpdateProcess');
-$process = !empty($processID) ? $backgroundProcessor->getProcess($processID) : [];
-if (in_array($process['status'] ?? '', ['Ready', 'Running'], true)) {
+// The restored files must not be older than the database, or the schema would be ahead of the code
+if (version_compare($backupVersion, (string) $container->get(Updater::class)->versionDB, '<')) {
+    $URL .= '&return=errorRestoreDatabase';
+    header("Location: {$URL}");
+    exit;
+}
+
+// Stale updates left behind by a crashed process are cleared by the monitor
+if ($container->get(SystemUpdateMonitor::class)->isBusy()) {
     $URL .= '&return=errorUpdateBusy';
     header("Location: {$URL}");
     exit;
 }
 
-// Start the background process
+$backgroundProcessor = $container->get(BackgroundProcessor::class);
+
 try {
     $container->get(SystemUpdateProgress::class)->begin('restore');
     $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', ['restore']);
@@ -96,19 +102,6 @@ try {
     $URL .= '&return=errorUpdateFailed';
     header("Location: {$URL}");
     exit;
-}
-
-// Keep the initiating administrator's browser session valid after files change.
-try {
-    $data = [
-        'gibbonSessionID' => session_id(),
-        'gibbonPersonID' => $session->get('gibbonPersonID'),
-        'sessionStatus' => 'Logged In',
-        'timestampModified' => date('Y-m-d H:i:s'),
-    ];
-    $container->get(SessionGateway::class)->insertAndUpdate($data, $data);
-} catch (\Throwable $error) {
-    error_log('updateRestoreProcess session refresh failed: '.$error->getMessage());
 }
 
 if (($_SERVER['HTTP_HX_REQUEST'] ?? '') === 'true') {

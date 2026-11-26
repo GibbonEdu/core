@@ -128,6 +128,89 @@ class BackgroundUpdateProgressCest
         }
     }
 
+    public function updateThatStoppedReportingIsReclaimedAsFailed(AcceptanceTester $I): void
+    {
+        // A process killed mid-update leaves a "working" snapshot behind. Its heartbeat
+        // is hours old and no process log is active, so it must not lock the updater.
+        $this->setProgress($I, 'file', 'installing', 'working', 40, time() - 7200);
+        $gibbonLogID = $this->createGibbonLog($I);
+
+        $I->loginAsAdmin();
+        $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
+        $I->assertSame('failed', $snapshot['state']);
+        $I->assertSame('Installing update…', $snapshot['stageLabel']);
+
+        // The update page no longer shows an active update, so actions are available again.
+        $I->amOnModulePage('System Admin', 'update.php');
+        $I->seeElement('#updateProgress[x-cloak][style="display: none;"]');
+        $I->assertStringContainsString('isPolling: false', $I->grabPageSource());
+        $I->dontSee('Update in Progress');
+    }
+
+    public function snapshotWithoutAHeartbeatIsNotTreatedAsRunning(AcceptanceTester $I): void
+    {
+        // Snapshots written before heartbeats existed carry no timestamp.
+        $this->setProgress($I, 'database', 'installing', 'working', 70, 0);
+        $gibbonLogID = $this->createGibbonLog($I);
+
+        $I->loginAsAdmin();
+        $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
+        $I->assertSame('failed', $snapshot['state']);
+
+        $I->amOnModulePage('System Admin', 'update.php');
+        $I->assertStringContainsString('isPolling: false', $I->grabPageSource());
+    }
+
+    public function updateWithARecentHeartbeatStaysActive(AcceptanceTester $I): void
+    {
+        $this->setProgress($I, 'file', 'downloading', 'working', 30, time() - 20);
+        $gibbonLogID = $this->createGibbonLog($I);
+
+        $I->loginAsAdmin();
+        $snapshot = $this->getProgressSnapshot($I, (string) $gibbonLogID);
+        $I->assertSame('active', $snapshot['state']);
+
+        $I->amOnModulePage('System Admin', 'update.php');
+        $I->assertStringContainsString('isPolling: true', $I->grabPageSource());
+    }
+
+    public function updateActionsRejectRequestsThatCouldSkipTheCsrfCheck(AcceptanceTester $I): void
+    {
+        $actions = ['updateFilesProcess.php', 'updateProcess.php', 'updateRestoreProcess.php'];
+        $progressBefore = $I->grabFromDatabase('gibbonSetting', 'value', [
+            'scope' => 'System Admin',
+            'name' => 'backgroundUpdateProgress',
+        ]);
+
+        $I->loginAsAdmin();
+
+        foreach ($actions as $action) {
+            $url = '/modules/System Admin/'.$action;
+
+            // A plain GET has no form fields at all.
+            $I->amOnPage($url.'?type=regularRelease');
+            $I->seeInCurrentUrl('return=error3');
+
+            // A single field passes gibbon.php without a token check, so the action itself refuses it.
+            $I->amOnModulePage('System Admin', 'update.php');
+            $I->sendAjaxPostRequest($url, ['confirm' => 'Y']);
+            $I->seeInCurrentUrl('return=error3');
+
+            // The form fields without a token reach the shared CSRF check and are refused there.
+            $I->amOnModulePage('System Admin', 'update.php');
+            $I->sendAjaxPostRequest($url, ['confirm' => 'Y', 'address' => '/modules/System Admin/update.php', 'type' => 'regularRelease']);
+            $I->seeInCurrentUrl('return=error9');
+        }
+
+        // None of the rejected requests started an update or changed the progress snapshot.
+        $I->dontSeeInDatabase('gibbonLog', ['title' => self::SYSTEM_UPDATE_TITLE]);
+        $I->seeInDatabase('gibbonSetting', [
+            'scope' => 'System Admin',
+            'name' => 'backgroundUpdateProgress',
+            'value' => $progressBefore,
+        ]);
+    }
+
     public function authorizationAndDuplicateSubmissionSuppressionKeepRequestsSafe(AcceptanceTester $I): void
     {
         $this->setProgress($I, 'database', 'preparing', 'working', 10);
@@ -256,15 +339,26 @@ class BackgroundUpdateProgressCest
         return $snapshot;
     }
 
-    private function setProgress(AcceptanceTester $I, string $type, string $stage, string $status, int $progress): void
+    /**
+     * @param int|null $updated Heartbeat Unix time. Defaults to now; pass null-like 0 to omit it.
+     */
+    private function setProgress(AcceptanceTester $I, string $type, string $stage, string $status, int $progress, ?int $updated = null): void
     {
+        $snapshot = [
+            'type' => $type,
+            'stage' => $stage,
+            'status' => $status,
+            'progress' => $progress,
+        ];
+
+        // Fixtures stand in for a live update, so they carry a fresh heartbeat
+        // unless a test deliberately simulates an update that stopped reporting.
+        if ($updated !== 0) {
+            $snapshot['updated'] = $updated ?? time();
+        }
+
         $I->updateFromDatabase('gibbonSetting', [
-            'value' => json_encode([
-                'type' => $type,
-                'stage' => $stage,
-                'status' => $status,
-                'progress' => $progress,
-            ], JSON_THROW_ON_ERROR),
+            'value' => json_encode($snapshot, JSON_THROW_ON_ERROR),
         ], [
             'scope' => 'System Admin',
             'name' => 'backgroundUpdateProgress',

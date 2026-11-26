@@ -45,6 +45,41 @@ class FilesystemTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * @dataProvider versionFileProvider
+     */
+    public function testReadsTheVersionFromAVersionFileWithoutRunningIt(?string $contents, ?string $expected): void
+    {
+        $path = $this->fixturePath.'/version.php';
+        if ($contents !== null) {
+            file_put_contents($path, $contents);
+        }
+
+        $this->assertSame($expected, (new Filesystem())->readVersion($path));
+    }
+
+    public static function versionFileProvider(): array
+    {
+        return [
+            'single quotes' => ["<?php\n\$version = '30.0.03';\n", '30.0.03'],
+            'double quotes' => ["<?php\n\$version = \"30.0.03\";\n", '30.0.03'],
+            'extra spacing' => ["<?php\n\$version   =   '30.0.03'  ;\n", '30.0.03'],
+            'a comment first' => ["<?php\n/** Sets version. */\n\$version = '31.0.00';\n\$other = 'x';\n", '31.0.00'],
+            'not run as code' => ["<?php\ndie('executed');\n\$version = '30.0.03';\n", '30.0.03'],
+            'no version' => ["<?php\n\$other = '30.0.03';\n", null],
+            'empty version' => ["<?php\n\$version = '';\n", null],
+            'missing file' => [null, null],
+        ];
+    }
+
+    public function testFreeSpaceIsReportedForADirectoryAndNullWhenItCannotBeRead(): void
+    {
+        $filesystem = new Filesystem();
+
+        $this->assertGreaterThan(0, $filesystem->getFreeSpace($this->fixturePath));
+        $this->assertNull($filesystem->getFreeSpace($this->fixturePath.'/missing'));
+    }
+
     public function testContainmentAllowsDescendantsAndCanAllowRootItself(): void
     {
         $validator = new Filesystem();
@@ -115,6 +150,51 @@ class FilesystemTest extends TestCase
         $this->assertFalse($validator->probeDirectory($probePath, ['unknown-operation']));
     }
 
+    public function testPermissionCheckCanReportWithoutCreatingMissingDirectories(): void
+    {
+        $filesystem = new Filesystem();
+        $missing = $this->fixturePath.'/not/yet/created';
+
+        $this->assertTrue($filesystem->checkPermissions([$missing], Filesystem::DEFAULT_OPERATIONS, false));
+
+        $this->assertDirectoryDoesNotExist($this->fixturePath.'/not');
+        $this->assertSame([], glob($this->fixturePath.'/.gibbon-filesystem-probe-*') ?: [], 'The probe is cleaned up.');
+    }
+
+    public function testPermissionCheckStillCreatesMissingDirectoriesByDefault(): void
+    {
+        $missing = $this->fixturePath.'/to/be/created';
+
+        $this->assertTrue((new Filesystem())->checkPermissions([$missing]));
+
+        $this->assertDirectoryExists($missing);
+    }
+
+    public function testNonCreatingPermissionCheckFailsWhenTheDirectoryAboveCannotBeUsed(): void
+    {
+        $filesystem = new FilesystemParentProbe(false);
+
+        $this->assertFalse($filesystem->checkPermissions([$this->fixturePath.'/new/directory'], Filesystem::DEFAULT_OPERATIONS, false));
+        $this->assertDirectoryDoesNotExist($this->fixturePath.'/new');
+    }
+
+    public function testNonCreatingPermissionCheckFailsWhenAFileIsInTheWay(): void
+    {
+        file_put_contents($this->fixturePath.'/in-the-way', 'a file, not a directory');
+
+        $this->assertFalse((new Filesystem())->checkPermissions(
+            [$this->fixturePath.'/in-the-way/new'],
+            Filesystem::DEFAULT_OPERATIONS,
+            false
+        ));
+    }
+
+    public function testNonCreatingPermissionCheckProbesAnExistingDirectoryItself(): void
+    {
+        $this->assertTrue((new Filesystem())->checkPermissions([$this->fixturePath], Filesystem::DEFAULT_OPERATIONS, false));
+        $this->assertFalse((new Filesystem())->checkPermissions([''], Filesystem::DEFAULT_OPERATIONS, false));
+    }
+
     public function testParentCapabilityChecksAndCleansAUsableSiblingProbe(): void
     {
         $root = $this->fixturePath.'/web';
@@ -122,8 +202,53 @@ class FilesystemTest extends TestCase
         $filesystem = new Filesystem();
 
         $this->assertTrue($filesystem->checkParentDirectory($root));
-        $this->assertSame(dirname(realpath($root)).'/backups/fileUpdate', $filesystem->getSecureDirectory($root, 'backups/fileUpdate'));
+        $this->assertSame(
+            dirname(realpath($root)).'/backups/fileUpdate-'.substr(hash('sha256', realpath($root)), 0, 8),
+            $filesystem->getSecureDirectory($root, 'backups/fileUpdate')
+        );
         $this->assertSame([], glob($this->fixturePath.'/.gibbon-filesystem-probe-*') ?: []);
+    }
+
+    public function testInstallsSharingAParentGetTheirOwnPreferredDirectory(): void
+    {
+        $first = $this->fixturePath.'/site-one';
+        $second = $this->fixturePath.'/site-two';
+        mkdir($first, 0755, true);
+        mkdir($second, 0755, true);
+        $filesystem = new Filesystem();
+
+        $firstDirectory = $filesystem->getSecureDirectory($first, 'backups/fileUpdate');
+        $secondDirectory = $filesystem->getSecureDirectory($second, 'backups/fileUpdate');
+
+        $this->assertNotSame($firstDirectory, $secondDirectory, 'Two installs must not share a lock, staging or backup folder.');
+        $this->assertSame(dirname($firstDirectory), dirname($secondDirectory), 'Both are in the shared parent folder.');
+        $this->assertMatchesRegularExpression('#/backups/fileUpdate-[0-9a-f]{8}$#', $firstDirectory);
+        $this->assertMatchesRegularExpression('#/backups/fileUpdate-[0-9a-f]{8}$#', $secondDirectory);
+    }
+
+    public function testAnInstallAlwaysGetsTheSamePreferredDirectory(): void
+    {
+        $root = $this->fixturePath.'/site-one';
+        mkdir($root, 0755, true);
+
+        $directory = (new Filesystem())->getSecureDirectory($root, 'backups/fileUpdate');
+
+        $this->assertSame($directory, (new Filesystem())->getSecureDirectory($root, 'backups/fileUpdate'));
+        $this->assertSame($directory, (new Filesystem())->getSecureDirectory($root.'/', 'backups/fileUpdate'), 'A trailing slash makes no difference.');
+        $this->assertSame($directory, (new Filesystem())->getSecureDirectory($root, '/backups/fileUpdate/'));
+    }
+
+    public function testPreferredDirectoryFallsBackWhenTheHashedDirectoryIsASymlink(): void
+    {
+        $root = $this->fixturePath.'/web';
+        $outside = $this->fixturePath.'/outside';
+        mkdir($root, 0755, true);
+        mkdir($outside, 0755, true);
+        mkdir($this->fixturePath.'/backups', 0755, true);
+        $hashed = (new Filesystem())->getSecureDirectory($root, 'backups/fileUpdate');
+        $this->assertTrue(symlink($outside, $hashed));
+
+        $this->assertSame($root.'/backups/fileUpdate', (new Filesystem())->getSecureDirectory($root, 'backups/fileUpdate'));
     }
 
     public function testParentCapabilityFallsBackForMissingRootRootAndInaccessibleParent(): void

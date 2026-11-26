@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Database\Updater;
-use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\Services\BackgroundProcessor;
@@ -34,7 +34,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/update.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
 $session->set('systemUpdateError', '');
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
@@ -43,9 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
+// Two POST fields make gibbon.php check the CSRF token, so require confirm and address.
+if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
+    $URL .= '&return=error3';
+    header("Location: {$URL}");
+    exit;
+}
+
 $type = $_REQUEST['type'] ?? '';
 
-// Validate Inputs
 if ($type != 'regularRelease' && $type != 'cuttingEdge' && $type != 'InnoDB') {
     $URL .= '&return=error3';
     header("Location: {$URL}");
@@ -67,14 +73,14 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
         exit;
     }
 
-    $backgroundProcessor = $container->get(BackgroundProcessor::class);
-    $processID = $backgroundProcessor->getProcessIDByName('SystemUpdateProcess');
-    $process = !empty($processID) ? $backgroundProcessor->getProcess($processID) : [];
-    if (in_array($process['status'] ?? '', ['Ready', 'Running'], true)) {
+    // Stale updates left behind by a crashed process are cleared by the monitor
+    if ($container->get(SystemUpdateMonitor::class)->isBusy()) {
         $URL .= '&return=errorUpdateBusy';
         header("Location: {$URL}");
         exit;
     }
+
+    $backgroundProcessor = $container->get(BackgroundProcessor::class);
 
     try {
         $container->get(SystemUpdateProgress::class)->begin('database');

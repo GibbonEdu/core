@@ -21,8 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
-
-$_POST['address'] = '/index.php?q=/modules/System Admin/update.php';
 use Gibbon\Data\Validator;
 
 require_once __DIR__ . '/../../gibbon.php';
@@ -42,6 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     // Proceed!
     $updater = $container->get(Updater::class);
     $settingGateway = $container->get(SettingGateway::class);
+    
+    if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
+        $URL .= '&return=error3';
+        header("Location: {$URL}");
+        exit;
+    }
     
     if (!$updater->isComposerUpdateRequired()) {
         $URL .= '&return=error3';

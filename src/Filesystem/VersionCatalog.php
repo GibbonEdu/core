@@ -34,13 +34,19 @@ class VersionCatalog
 {
     public const CATALOG_URL = 'https://gibbonedu.org/services/version/versionCheck.php';
 
-    // Only these hosts may appear in package URLs
+    // Only these hosts may appear in package URLs, each with the path it must start with.
+    // GitHub hosts everyone's code, so they are limited to the GibbonEdu organisation.
     protected $allowedHosts = [
-        'gibbonedu.org',
-        'www.gibbonedu.org',
-        'github.com',
-        'codeload.github.com',
-        'release-assets.githubusercontent.com',
+        'gibbonedu.org'       => '/',
+        'www.gibbonedu.org'   => '/',
+        'github.com'          => '/GibbonEdu/',
+        'codeload.github.com' => '/GibbonEdu/',
+    ];
+
+    // GitHub redirects release downloads here. Anyone can publish files on this host,
+    // so it is only accepted as a redirect from an allowed host, never as the first URL.
+    protected $redirectHosts = [
+        'release-assets.githubusercontent.com' => '/',
     ];
 
     protected $session;
@@ -48,6 +54,12 @@ class VersionCatalog
     protected $catalogVersion = '';
     protected $catalog = [];
 
+    /**
+     * Create a catalog reader for the current install.
+     *
+     * @param Session $session
+     * @return void
+     */
     public function __construct(Session $session)
     {
         $this->session = $session;
@@ -206,7 +218,7 @@ class VersionCatalog
             ? ['legacy', 'current', 'development']
             : ['legacy', 'current'];
 
-        // Walk versions in order so version numbers stay sequential
+        // Check versions oldest first, so the next release after the current one is found
         $versions = array_keys($catalog);
         usort($versions, 'version_compare');
 
@@ -228,7 +240,7 @@ class VersionCatalog
 
             $checksum = trim($entry['checksum'] ?? '');
             $filePath = trim($entry['filePath'] ?? '');
-            if ($checksum == '' || $filePath == '' || !$this->isHostAllowed($filePath)) {
+            if ((!$cuttingEdge && $checksum == '') || $filePath == '' || !$this->isHostAllowed($filePath)) {
                 // Next version has no package yet — stop here
                 return null;
             }
@@ -245,26 +257,45 @@ class VersionCatalog
     }
 
     /**
-     * Check the package URL is on an allowed gibbonedu.org host.
+     * Check the package URL is https, on an allowed host, and under the path allowed for that host.
      *
      * @param string $url
+     * @param bool $isRedirect Whether the URL is a redirect from an allowed URL, not the first one.
      * @return bool
      */
-    public function isHostAllowed(string $url) : bool
+    public function isHostAllowed(string $url, bool $isRedirect = false) : bool
     {
         $parts = parse_url($url);
-        if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
+        if ($parts === false
+            || strtolower($parts['scheme'] ?? '') !== 'https'
+            || empty($parts['host'])
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || (isset($parts['port']) && $parts['port'] !== 443)) {
             return false;
         }
 
-        $scheme = strtolower($parts['scheme']);
-        if ($scheme != 'http' && $scheme != 'https') {
+        $hosts = $isRedirect ? $this->allowedHosts + $this->redirectHosts : $this->allowedHosts;
+        $requiredPath = $hosts[strtolower($parts['host'])] ?? null;
+        if ($requiredPath === null) {
             return false;
         }
 
-        return in_array(strtolower($parts['host']), $this->allowedHosts);
+        // Dot segments, encoded dots and slashes, and backslashes could step out of the allowed path
+        $path = $parts['path'] ?? '/';
+        if (preg_match('#(^|/)\.\.?(/|$)|%2e|%2f|%5c|\\\\#i', $path) === 1) {
+            return false;
+        }
+
+        return stripos($path, $requiredPath) === 0;
     }
 
+    /**
+     * Merge changelog entries into the catalog, newest version first.
+     *
+     * @param array $catalog
+     * @return void
+     */
     public function mergeCatalog(array $catalog) : void
     {
         foreach ($catalog as $version => $entry) {
@@ -285,6 +316,7 @@ class VersionCatalog
      * Parse the root CHANGELOG.txt file into version and category entries.
      *
      * @param string|null $filePath
+     * @param int $limit The maximum number of versions to return.
      * @return array<string, array<string, string[]>>
      */
     public function getChangeLogFromFile($filePath = null, int $limit = 10) : array
@@ -305,6 +337,12 @@ class VersionCatalog
         return array_slice($this->parseChangeLog($lines), 0, $limit, true);
     }
 
+    /**
+     * Parse changelog text in the same format as CHANGELOG.txt.
+     *
+     * @param string $content
+     * @return array
+     */
     public function getChangeLogFromString(string $content) : array
     {
         if (empty($content)) {
@@ -316,6 +354,12 @@ class VersionCatalog
         return $this->parseChangeLog($lines);
     }
 
+    /**
+     * Parse changelog lines into versions, categories and entries.
+     *
+     * @param array $lines
+     * @return array
+     */
     protected function parseChangeLog(array $lines): array
     {
         $changelog = [];

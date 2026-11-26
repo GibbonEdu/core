@@ -41,6 +41,7 @@ abstract class BackgroundProcess
      * to be auto-wired by the container when instantiated by the BackgroundProcessor.
      *
      * @param BackgroundProcessor $processor
+     * @return void
      */
     public function setProcessor(BackgroundProcessor $processor)
     {

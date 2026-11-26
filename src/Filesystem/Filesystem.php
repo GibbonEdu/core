@@ -72,6 +72,10 @@ class Filesystem
      * Return a preferred directory below the parent of a root when that
      * location is usable, otherwise return the existing in-root fallback.
      *
+     * Installs that share a parent would share the preferred directory, so its name
+     * ends with a short hash of the root's real path, such as backups/fileUpdate-1a2b3c4d.
+     * The in-root fallback belongs to one install already and keeps its plain name.
+     *
      * This method performs no filesystem mutation beyond the temporary probe
      * performed by checkParentDirectory().
      *
@@ -90,12 +94,12 @@ class Filesystem
         }
 
         $preferredRoot = dirname(realpath($root));
-        $preferred = $preferredRoot.'/'.$relativePath;
-        if ($this->containsSymlink($preferredRoot, $relativePath)) {
+        $preferredPath = $relativePath.'-'.substr(hash('sha256', realpath($root)), 0, 8);
+        if ($this->containsSymlink($preferredRoot, $preferredPath)) {
             return $fallback;
         }
 
-        return $preferred;
+        return $preferredRoot.'/'.$preferredPath;
     }
 
     /**
@@ -127,20 +131,29 @@ class Filesystem
 
     /**
      * Check that each supplied directory supports the requested operations.
-     * Missing directories are created when the create operation is requested.
+     * Missing directories are created when the create operation is requested,
+     * unless $createMissing is false. Then nothing is created: a missing directory
+     * is checked through the nearest existing directory above it, which is where
+     * it would be created. Use this for checks that only report, such as a page view.
      *
      * @param array<int, string> $paths
      * @param array<int, string> $operations
+     * @param bool $createMissing
      * @return bool
      */
-    public function checkPermissions(array $paths, array $operations = self::DEFAULT_OPERATIONS): bool
+    public function checkPermissions(array $paths, array $operations = self::DEFAULT_OPERATIONS, bool $createMissing = true): bool
     {
         foreach ($paths as $path) {
             if (!is_string($path) || $path === '') {
                 return false;
             }
 
-            if (!is_dir($path) && in_array('create', $operations, true) && !$this->ensureDirectory($path)) {
+            if (!is_dir($path) && !$createMissing) {
+                $path = $this->getExistingParent($path);
+                if ($path === null) {
+                    return false;
+                }
+            } elseif (!is_dir($path) && in_array('create', $operations, true) && !$this->ensureDirectory($path)) {
                 return false;
             }
 
@@ -150,6 +163,32 @@ class Filesystem
         }
 
         return true;
+    }
+
+    /**
+     * Return the nearest existing directory above a path, or null when the path
+     * could not be created because something that is not a directory is in the way.
+     *
+     * @param string $path
+     * @return string|null
+     */
+    private function getExistingParent(string $path): ?string
+    {
+        $parent = dirname($path);
+
+        while ($parent !== dirname($parent)) {
+            if (is_dir($parent)) {
+                return $parent;
+            }
+
+            if (file_exists($parent)) {
+                return null;
+            }
+
+            $parent = dirname($parent);
+        }
+
+        return is_dir($parent) ? $parent : null;
     }
 
     /**
@@ -249,6 +288,38 @@ class Filesystem
                 $this->deleteDirectory($renamedDirectory);
             }
         }
+    }
+
+    /**
+     * Read the version number from a Gibbon version.php file without running it.
+     *
+     * @param string $versionFile
+     * @return string|null The version, or null when the file is missing or has none.
+     */
+    public function readVersion(string $versionFile): ?string
+    {
+        if (!is_file($versionFile) || is_link($versionFile)) {
+            return null;
+        }
+
+        $contents = (string) @file_get_contents($versionFile);
+
+        return preg_match('/\$version\s*=\s*([\'"])(.+?)\1\s*;/', $contents, $matches) === 1
+            ? $matches[2]
+            : null;
+    }
+
+    /**
+     * Return the free disk space in bytes for a directory, or null when it cannot be determined.
+     *
+     * @param string $directory
+     * @return float|null
+     */
+    public function getFreeSpace(string $directory): ?float
+    {
+        $free = @disk_free_space($directory);
+
+        return $free === false ? null : $free;
     }
 
     /**

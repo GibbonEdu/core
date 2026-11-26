@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Database\Updater;
-use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
 use Gibbon\Filesystem\Filesystem;
+use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
 use Gibbon\Services\BackgroundProcessor;
@@ -43,10 +43,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
+// Two POST fields make gibbon.php check the CSRF token, so require confirm and address.
+if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
+    $URL .= '&return=error3';
+    header("Location: {$URL}");
+    exit;
+}
+
 $updater = $container->get(Updater::class);
 
-// Need a valid install, DB already up to date, and confirm checked
-if ($updater->isUpdateRequired() > 0 || ($_POST['confirm'] ?? '') != 'Y') {
+// Need a valid install (code not older than the DB) and the DB already up to date
+if (!$updater->isVersionValid() || $updater->isUpdateRequired() > 0) {
     $URL .= '&return=error3';
     header("Location: {$URL}");
     exit;
@@ -56,7 +63,6 @@ if ($updater->isUpdateRequired() > 0 || ($_POST['confirm'] ?? '') != 'Y') {
 $absolutePath = $session->get('absolutePath');
 $filesystem = $container->get(Filesystem::class);
 $baseDir = $filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
-$lockPath = $baseDir.'/fileUpdate.lock';
 
 if (!$filesystem->ensureDirectory($baseDir)) {
     $URL .= '&return=errorFilePermissions';
@@ -75,16 +81,15 @@ if (!$filesystem->checkPermissions([
     exit;
 }
 
-$backgroundProcessor = $container->get(BackgroundProcessor::class);
-$processID = $backgroundProcessor->getProcessIDByName('SystemUpdateProcess');
-$process = !empty($processID) ? $backgroundProcessor->getProcess($processID) : [];
-if (in_array($process['status'] ?? '', ['Ready', 'Running'], true)) {
+// Stale updates left behind by a crashed process are cleared by the monitor
+if ($container->get(SystemUpdateMonitor::class)->isBusy()) {
     $URL .= '&return=errorUpdateBusy';
     header("Location: {$URL}");
     exit;
 }
 
-// Start the background process
+$backgroundProcessor = $container->get(BackgroundProcessor::class);
+
 try {
     $container->get(SystemUpdateProgress::class)->begin('file');
     $gibbonLogID = $backgroundProcessor->startProcess(SystemUpdateProcess::class, 'run', ['file']);

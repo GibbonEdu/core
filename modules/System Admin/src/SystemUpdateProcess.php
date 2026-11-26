@@ -82,93 +82,195 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             throw new \InvalidArgumentException('Unsupported system update mode.');
         }
 
+        // Each mode starts the shared progress itself, once it holds the update lock. A
+        // process that loses the lock must not reset or fail the update that is running.
         if ($mode === 'file') {
-            $this->progress->begin('file');
             $this->runFileUpdate();
 
             return;
         }
 
         if ($mode === 'restore') {
-            $this->progress->begin('restore');
             $this->runRestore();
 
             return;
         }
 
-        $this->progress->begin('database');
         $this->runDatabaseUpdate();
     }
 
     /**
-     * Run the file update process.
+     * Take the exclusive update lock without waiting. The lock is released by the
+     * system if the process dies, so a crash cannot leave it held.
      *
-     * @param string $stage
+     * @param string $lockPath
+     * @return resource|null The lock, or null when the lock file cannot be used.
+     * @throws \RuntimeException When another update holds the lock.
+     */
+    private function acquireLock(string $lockPath)
+    {
+        $lock = @fopen($lockPath, 'c');
+        if ($lock === false) {
+            return null;
+        }
+
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+            fclose($lock);
+
+            throw new \RuntimeException('Another system update is already running.');
+        }
+
+        return $lock;
+    }
+
+    /**
+     * Run a file update: download the next release and install it.
+     *
      * @return void
      * @throws \RuntimeException
      */
     private function runFileUpdate(): void
     {
+        $this->runLocked('file', 'File update', 5, true, function (string &$stage): void {
+            $absolutePath = (string) $this->session->get('absolutePath');
+
+            $stage = 'downloading';
+            $this->progress->update($stage, 'working', 10);
+            $release = $this->versionCatalog->getNextRelease(
+                $this->updater->versionCode,
+                $this->updater->isCuttingEdge()
+            );
+            if (empty($release) || empty($release['filePath'])) {
+                throw new \RuntimeException(Downloader::ERROR_INVALID);
+            }
+
+            // The update page also blocks this, but the page can be stale or bypassed
+            $requiredPhp = (string) ($release['phpVersion'] ?? '');
+            if ($requiredPhp !== '' && version_compare(PHP_VERSION, $requiredPhp, '<')) {
+                throw new \RuntimeException(sprintf(
+                    'Version %s requires PHP %s or higher, this server runs PHP %s.',
+                    $release['version'] ?? '',
+                    $requiredPhp,
+                    PHP_VERSION
+                ));
+            }
+
+            $this->downloader->setProgressCallback($this->createProgressCallback('downloading', 10, 70));
+            $files = $this->downloader->run($release);
+            if (!$this->fileUpdater->checkPermissions($files)) {
+                throw new \RuntimeException('File update permissions are unavailable.');
+            }
+
+            $stage = 'installing';
+            $this->progress->update($stage, 'working', 70);
+            $this->fileUpdater->setProgressCallback($this->createProgressCallback('installing', 70, 95));
+
+            // IMPORTANT: this replaces the code of the running process. Until the update ends, use only
+            // classes already loaded above, or a class loaded now would come from the new files.
+            // testNothingIsAutoloadedAfterTheFilesAreSwapped() guards this.
+            $this->fileUpdater->run($files);
+
+            $stage = 'finalizing';
+            $this->progress->update($stage, 'working', 95);
+            $this->filesystem->wipeDirectory($absolutePath.'/uploads/cache');
+            $this->session->forget('pageLoads');
+
+            $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
+            $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', $this->updater->versionCode);
+        });
+    }
+
+    /**
+     * Restore the files from the last backup.
+     *
+     * @return void
+     * @throws \RuntimeException
+     */
+    private function runRestore(): void
+    {
+        $this->runLocked('restore', 'File restore', 10, false, function (string &$stage): void {
+            $absolutePath = (string) $this->session->get('absolutePath');
+
+            $backupVersion = (string) $this->settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
+
+            // Restored files older than the database would leave the schema ahead of the code
+            if (version_compare($backupVersion, (string) $this->updater->versionDB, '<')) {
+                throw new \RuntimeException(sprintf(
+                    'The database is at version %s, newer than the backup at version %s.',
+                    $this->updater->versionDB,
+                    $backupVersion
+                ));
+            }
+
+            $stage = 'restoring';
+            $this->progress->update($stage, 'working', 70);
+            $this->fileUpdater->restore($backupVersion);
+
+            $stage = 'finalizing';
+            $this->progress->update($stage, 'working', 90);
+            $this->filesystem->wipeDirectory($absolutePath.'/uploads/cache');
+            $this->session->forget('pageLoads');
+
+            $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
+            $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', '');
+        });
+    }
+
+    /**
+     * Run a file update or restore under the update lock. This checks the folders, takes the
+     * lock, turns maintenance mode on, and records the outcome. Maintenance mode goes back to
+     * its previous value afterwards, and stays on when a rollback failed.
+     *
+     * @param string $type The progress type: 'file' or 'restore'.
+     * @param string $label The name used in messages, such as 'File update'.
+     * @param int $startPercent The progress shown once the update has started.
+     * @param bool $needsZip Whether the update unpacks a zip, which needs the PHP Zip extension.
+     * @param callable $work The update. It receives the current stage by reference and sets it as it moves on.
+     * @return void
+     * @throws \RuntimeException
+     */
+    private function runLocked(string $type, string $label, int $startPercent, bool $needsZip, callable $work): void
+    {
         $stage = 'preparing';
-        $this->progress->update($stage, 'working', 5);
 
         $absolutePath = (string) $this->session->get('absolutePath');
         $baseDir = $this->filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
-        $lockPath = $baseDir.'/fileUpdate.lock';
 
-        if ($absolutePath === ''
-            || !$this->filesystem->checkPermissions([$absolutePath, $baseDir])) {
-            $this->fail($stage, new \RuntimeException('File update directory is unavailable.'));
-            throw new \RuntimeException('File update directory is unavailable.');
+        if ($absolutePath === '' || !$this->filesystem->checkPermissions([$absolutePath, $baseDir])) {
+            $this->abort($stage, $label.' directory is unavailable.');
         }
 
-        $lock = @fopen($lockPath, 'c');
-        if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
-            if ($lock !== false) {
-                fclose($lock);
-            }
-
-            $this->fail($stage, new \RuntimeException('File update is already running.'));
-            throw new \RuntimeException('File update is already running.');
+        // Fail now, before maintenance mode is switched on, rather than during the download
+        if ($needsZip && !$this->hasZipSupport()) {
+            $this->abort($stage, 'The PHP Zip extension is not available.');
         }
 
-        // Keep the current updater timeout and maintenance-mode behavior.
+        $lock = $this->acquireLock($baseDir.'/fileUpdate.lock');
+        if ($lock === null) {
+            $this->abort($stage, 'The update lock file is unavailable.');
+        }
+
+        $this->progress->begin($type);
+        $this->progress->update($stage, 'working', $startPercent);
+
+        // Keep going if the browser disconnects, and allow time for the download and install.
         ignore_user_abort(true);
         @set_time_limit(3000);
 
+        $previousMaintenance = 'N';
+        $rollbackFailed = false;
+
         try {
             try {
+                $previousMaintenance = (string) $this->settingGateway->getSettingByScope('System Admin', 'maintenanceMode');
                 $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'running');
 
-                $stage = 'downloading';
-                $this->progress->update($stage, 'working', 10);
-                $release = $this->versionCatalog->getNextRelease(
-                    $this->updater->versionCode,
-                    $this->updater->isCuttingEdge()
-                );
-                if (empty($release) || empty($release['filePath'])) {
-                    throw new \RuntimeException(Downloader::ERROR_INVALID);
-                }
+                $work($stage);
+            } catch (\Throwable $error) {
+                $rollbackFailed = $error->getMessage() === FileUpdater::ERROR_ROLLBACK;
 
-                $this->downloader->setProgressCallback($this->createProgressCallback('downloading', 10, 70));
-                $files = $this->downloader->run($release);
-                if (!$this->fileUpdater->checkPermissions($files)) {
-                    throw new \RuntimeException('File update permissions are unavailable.');
-                }
-
-                $stage = 'installing';
-                $this->progress->update($stage, 'working', 70);
-                $this->fileUpdater->setProgressCallback($this->createProgressCallback('installing', 70, 95));
-                $this->fileUpdater->run($files);
-
-                $stage = 'finalizing';
-                $this->progress->update($stage, 'working', 95);
-                $this->filesystem->wipeDirectory($absolutePath.'/uploads/cache');
-                $this->session->forget('pageLoads');
-
-                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
-                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', $this->updater->versionCode);
+                throw $error;
             } finally {
                 try {
                     // Keep the backup folder, but remove staging and any downloaded package.
@@ -177,7 +279,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                         unlink($baseDir.'/package.zip');
                     }
 
-                    $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'N');
+                    $this->releaseMaintenanceMode($previousMaintenance, $rollbackFailed);
                 } finally {
                     flock($lock, LOCK_UN);
                     fclose($lock);
@@ -191,7 +293,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             try {
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'failed');
             } catch (\Throwable $settingError) {
-                error_log('SystemUpdateProcess file update failure-state error: '.$settingError->getMessage());
+                error_log('SystemUpdateProcess '.$type.' failure-state error: '.$settingError->getMessage());
             }
 
             throw $error;
@@ -199,87 +301,19 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     }
 
     /**
-     * Run the restore process.
+     * Record a failure before an update has started, then stop it.
      *
-     * @return void
+     * @param string $stage
+     * @param string $message
+     * @return never
      * @throws \RuntimeException
-     *
-     * @return void
      */
-
-    private function runRestore(): void
+    private function abort(string $stage, string $message): never
     {
-        $stage = 'preparing';
-        $this->progress->update($stage, 'working', 10);
+        $error = new \RuntimeException($message);
+        $this->fail($stage, $error);
 
-        $absolutePath = (string) $this->session->get('absolutePath');
-        $baseDir = $this->filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
-        $lockPath = $baseDir.'/fileUpdate.lock';
-
-        if ($absolutePath === ''
-            || !$this->filesystem->checkPermissions([$absolutePath, $baseDir])) {
-            $this->fail($stage, new \RuntimeException('File restore directory is unavailable.'));
-            throw new \RuntimeException('File restore directory is unavailable.');
-        }
-
-        $lock = @fopen($lockPath, 'c');
-        if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
-            if ($lock !== false) {
-                fclose($lock);
-            }
-
-            $this->fail($stage, new \RuntimeException('File restore is already running.'));
-            throw new \RuntimeException('File restore is already running.');
-        }
-
-        ignore_user_abort(true);
-        @set_time_limit(3000);
-
-        try {
-            try {
-                $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');
-                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'running');
-
-                $backupVersion = (string) $this->settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
-                $release = $this->versionCatalog->getRelease($backupVersion);
-                if (empty($release) || empty($release['filePath'])) {
-                    throw new \RuntimeException(Downloader::ERROR_INVALID);
-                }
-
-                $stage = 'restoring';
-                $this->progress->update($stage, 'working', 70);
-                $this->fileUpdater->restore();
-
-                $stage = 'finalizing';
-                $this->progress->update($stage, 'working', 90);
-                $this->filesystem->wipeDirectory($absolutePath.'/uploads/cache');
-                $this->session->forget('pageLoads');
-
-                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
-                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', '');
-            } finally {
-                $this->filesystem->wipeDirectory($baseDir.'/staging');
-                if (is_file($baseDir.'/package.zip')) {
-                    unlink($baseDir.'/package.zip');
-                }
-
-                $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'N');
-                flock($lock, LOCK_UN);
-                fclose($lock);
-            }
-
-            $this->progress->update($stage, 'complete', 100);
-        } catch (\Throwable $error) {
-            $this->fail($stage, $error);
-
-            try {
-                $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'failed');
-            } catch (\Throwable $settingError) {
-                error_log('SystemUpdateProcess restore failure-state error: '.$settingError->getMessage());
-            }
-
-            throw $error;
-        }
+        throw $error;
     }
 
     /**
@@ -287,12 +321,18 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
      *
      * @return void
      * @throws \RuntimeException
-     *
-     * @return void
      */
     private function runDatabaseUpdate(): void
     {
         $stage = 'preparing';
+
+        // Share the update lock with file updates and restores. If the lock cannot be used
+        // (for example, the folder is missing on a host where files are updated by hand),
+        // run without it: no file update can be running in that case.
+        $baseDir = $this->filesystem->getSecureDirectory((string) $this->session->get('absolutePath'), Downloader::BASE_DIR);
+        $lock = is_dir($baseDir) ? $this->acquireLock($baseDir.'/fileUpdate.lock') : null;
+
+        $this->progress->begin('database');
         $this->progress->update($stage, 'working', 10);
 
         try {
@@ -316,7 +356,41 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         } catch (\Throwable $error) {
             $this->fail($stage, $error);
             throw $error;
+        } finally {
+            if ($lock !== null) {
+                flock($lock, LOCK_UN);
+                fclose($lock);
+            }
         }
+    }
+
+    /**
+     * Whether the PHP Zip extension, needed to unpack the update, is available.
+     *
+     * @return bool
+     */
+    protected function hasZipSupport(): bool
+    {
+        return class_exists(\ZipArchive::class);
+    }
+
+    /**
+     * Put maintenance mode back to the value it had before the update started.
+     * It stays on after a failed rollback, because the install may be half replaced.
+     *
+     * @param string $previousMaintenance The maintenanceMode value before the update.
+     * @param bool $rollbackFailed Whether the file rollback or restore failed.
+     * @return void
+     */
+    private function releaseMaintenanceMode(string $previousMaintenance, bool $rollbackFailed): void
+    {
+        if ($rollbackFailed) {
+            error_log('SystemUpdateProcess: maintenance mode left on because the file rollback failed.');
+
+            return;
+        }
+
+        $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', $previousMaintenance === 'Y' ? 'Y' : 'N');
     }
 
     /**
@@ -349,10 +423,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
      * @param string $stage
      * @param \Throwable $error
      * @return void
-     *
-     * @return void
      */
-
     private function fail(string $stage, \Throwable $error): void
     {
         error_log(sprintf('SystemUpdateProcess %s update failed: %s', $stage, $error->getMessage()));

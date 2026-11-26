@@ -57,6 +57,8 @@ class UpdateForm
     }
 
     /**
+     * Build the update form: a section for each release, with its changelog and the action for it.
+     *
      * @param Updater $updater
      * @param VersionCatalog $versionCatalog
      * @param bool $isUpdateActive Whether a background file or database update is active.
@@ -184,7 +186,9 @@ class UpdateForm
     {
         $isBackgroundEligible = $this->isDatabaseUpdateRelease($version, $updateRequired)
             || $this->isNextRelease($version, $nextRelease);
-        $isRestoreRelease = $version === $this->backupVersion;
+        // Only offer a restore that would not leave the database ahead of the restored files
+        $isRestoreRelease = $version === $this->backupVersion
+            && version_compare($version, (string) $this->updater->versionDB, '>=');
         $isHigherVersion = version_compare($version, $this->updater->versionCode, '>');
 
         if ($this->isUpdateActive && ($isBackgroundEligible || $isRestoreRelease)) {
@@ -221,9 +225,9 @@ class UpdateForm
         }
 
         if ($this->isNextRelease($version, $nextRelease)) {
-            $phpVersion = phpversion();
-            if (version_compare($phpVersion, $nextRelease['phpVersion'], '<')) {
-                $row->addButton(__('Requires {version} or higher', ['version' => 'PHP '.$nextRelease['phpVersion']]))
+            $requiredPhp = (string) ($nextRelease['phpVersion'] ?? '');
+            if ($requiredPhp !== '' && version_compare(phpversion(), $requiredPhp, '<')) {
+                $row->addButton(__('Requires {version} or higher', ['version' => 'PHP '.$requiredPhp]))
                     ->addClass('text-sm text-gray-600')
                     ->setAttribute('disabled', 'disabled');
                 return;
@@ -251,6 +255,7 @@ class UpdateForm
             $submit = $row->addSubmit(__('Downgrade to {version}', ['version' => $version]))
                 ->addClass('rounded-md')
                 ->setAttribute('formaction', $restorePath)
+                ->setAttribute('hx-confirm', __('Replace your current files with the previous version? Your database will not be changed.'))
                 ->setColor('gray');
             $this->enableBackgroundSubmission($submit, $restorePath);
         }
@@ -289,8 +294,6 @@ class UpdateForm
 
     /**
      * Configure a background update or restore button for an HTMX submission.
-     *
-     * InnoDB controls keep their synchronous native form behavior.
      *
      * @param object $submit
      * @param string $action
@@ -367,6 +370,8 @@ class UpdateForm
     }
 
     /**
+     * Whether a Development release is hidden from users who are not on cutting edge.
+     *
      * @param array $release
      * @param bool $cuttingEdge
      * @return bool
@@ -377,6 +382,8 @@ class UpdateForm
     }
 
     /**
+     * Whether a release is the installed version, and a database update is pending.
+     *
      * @param string $version
      * @param bool $updateRequired
      * @return bool
@@ -387,6 +394,8 @@ class UpdateForm
     }
 
     /**
+     * Whether a release is the next version offered by a file update.
+     *
      * @param string $version
      * @param array|null $nextRelease
      * @return bool

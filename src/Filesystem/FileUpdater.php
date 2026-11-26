@@ -36,6 +36,8 @@ class FileUpdater
     public const ERROR_REPLACE = 'replace';
     public const ERROR_ROLLBACK = 'rollback';
 
+    public const MANIFEST = '.fileupdate-manifest.json';
+
     private const VENDOR_DIRECTORY = 'vendor';
 
     protected $absolutePath;
@@ -63,8 +65,7 @@ class FileUpdater
     }
 
     /**
-     * Set an explicit backup base directory for compatibility with callers
-     * that manage their own update fixture or storage location.
+     * Set an explicit backup base directory, instead of the preferred one. Used by tests.
      *
      * @param string $baseDirectory
      * @return void
@@ -85,6 +86,8 @@ class FileUpdater
     }
 
     /**
+     * Set a callback to receive progress notifications.
+     *
      * @param callable|null $progressCallback
      * @return void
      */
@@ -129,7 +132,7 @@ class FileUpdater
         }
 
         // A held lock means another update is running, not that the
-        // application lacks permission. The action performs the authoritative
+        // application lacks permission. The calling script performs the authoritative
         // non-blocking busy check before dispatch.
         if (!$this->probeLock($baseDir.'/fileUpdate.lock')) {
             return false;
@@ -145,9 +148,10 @@ class FileUpdater
             }
             $relative = str_replace('\\', '/', $relative);
 
+            // A new directory is created when the file is installed, not by this check
             $livePath = $this->absolutePath.'/'.$relative;
             $parent = dirname($livePath);
-            if (!$this->filesystem->ensureDirectory($parent) || !$this->filesystem->probeDirectory($parent)) {
+            if (!$this->filesystem->checkPermissions([$parent], Filesystem::DEFAULT_OPERATIONS, false)) {
                 return false;
             }
 
@@ -178,6 +182,9 @@ class FileUpdater
      * A held lock confirms that the filesystem supports locking. It represents
      * an active update rather than a permission failure, so this probe does
      * not retain the lock.
+     *
+     * @param string $path
+     * @return bool
      */
     protected function probeLock(string $path): bool
     {
@@ -201,6 +208,8 @@ class FileUpdater
      * Backup existing files, then replace from staging. Roll back on failure.
      *
      * @param array $relativeFiles
+     * @return void
+     * @throws \RuntimeException When the backup, replacement or rollback fails.
      */
     public function run(array $relativeFiles)
     {
@@ -229,11 +238,17 @@ class FileUpdater
      * Copy existing live files into previousVersionBackup/.
      *
      * @param array $files
+     * @return void
+     * @throws \RuntimeException When a live file cannot be backed up.
      */
     public function backup(array $files)
     {
         $backupDir = $this->getBaseDirectory().'/'.$this->backupDir;
-        $this->filesystem->wipeDirectory($backupDir);
+
+        // Leftovers from an older backup would otherwise be mixed into this one
+        if (!$this->filesystem->wipeDirectory($backupDir)) {
+            $this->fail(self::ERROR_BACKUP, 'Failed to clear the previous backup: '.$backupDir);
+        }
 
         if (!$this->filesystem->ensureDirectory($backupDir) || !is_writable($backupDir)) {
             $this->fail(self::ERROR_BACKUP, 'Failed to create writable backup directory: '.$backupDir);
@@ -276,13 +291,53 @@ class FileUpdater
             $this->trackCopyProgress = false;
         }
 
+        // Written last: a backup without a manifest is incomplete and cannot be restored.
+        $this->writeManifest($backupDir, $files);
+
         $this->reportProgress(45);
+    }
+
+    /**
+     * Record which paths were backed up and which did not exist before the update,
+     * so a later restore can undo the update exactly, in a separate process.
+     *
+     * @param string $backupDir
+     * @param array<int, string> $files
+     */
+    protected function writeManifest(string $backupDir, array $files): void
+    {
+        $manifest = json_encode(['files' => array_values($files), 'added' => array_values($this->added)], JSON_UNESCAPED_SLASHES);
+
+        if ($manifest === false || @file_put_contents($backupDir.'/'.self::MANIFEST, $manifest) === false) {
+            $this->fail(self::ERROR_BACKUP, 'Failed to write the backup manifest in: '.$backupDir);
+        }
+    }
+
+    /**
+     * Read the backup manifest. Returns null when it is missing or not valid.
+     *
+     * @return array{files: array<int, string>, added: array<int, string>}|null
+     */
+    protected function readManifest(): ?array
+    {
+        $path = $this->getBaseDirectory().'/'.$this->backupDir.'/'.self::MANIFEST;
+        if (!is_file($path) || is_link($path)) {
+            return null;
+        }
+
+        $manifest = json_decode((string) @file_get_contents($path), true);
+
+        return is_array($manifest) && !empty($manifest['files']) && is_array($manifest['files']) && is_array($manifest['added'] ?? null)
+            ? $manifest
+            : null;
     }
 
     /**
      * Copy staging files onto the live install.
      *
      * @param array $files
+     * @return void
+     * @throws \RuntimeException When a file cannot be replaced.
      */
     public function replace(array $files)
     {
@@ -339,6 +394,8 @@ class FileUpdater
      * Restore from previousVersionBackup/; remove files that were newly added.
      *
      * @param array $files
+     * @return void
+     * @throws \RuntimeException When a file cannot be restored.
      */
     public function rollback(array $files)
     {
@@ -354,8 +411,8 @@ class FileUpdater
                     if (!$this->filesystem->deleteDirectory($livePath)) {
                         $this->fail(self::ERROR_ROLLBACK, 'Failed to remove: '.$livePath);
                     }
-                } else {
-                    $this->filesystem->deleteIfExists($livePath);
+                } elseif (!$this->filesystem->deleteIfExists($livePath)) {
+                    $this->fail(self::ERROR_ROLLBACK, 'Failed to remove: '.$livePath);
                 }
                 continue;
             }
@@ -373,39 +430,52 @@ class FileUpdater
     }
 
     /**
-     * Restore from previousVersionBackup/; remove files that were newly added.
+     * Check that previousVersionBackup/ holds a complete backup of the expected version.
+     * A complete backup has a manifest, and its version.php identifies the version.
+     *
+     * @param string $version The version the backup should contain.
+     * @return bool
      */
-    public function restore()
+    public function hasBackup(string $version): bool
+    {
+        $version = trim($version);
+
+        return $version !== ''
+            && $this->readManifest() !== null
+            && $this->filesystem->readVersion($this->getBaseDirectory().'/'.$this->backupDir.'/version.php') === $version;
+    }
+
+    /**
+     * Undo the last update using the backup manifest: put back every backed-up
+     * file and delete the files the update added. Only manifest paths are touched.
+     *
+     * Everything the restore needs is checked before the first file changes, so a
+     * missing backup file fails with ERROR_INVALID and leaves the install as it was.
+     * A failure after that point throws ERROR_ROLLBACK: the install may be half restored.
+     *
+     * @param string $expectedVersion The version the backup must contain.
+     * @return void
+     * @throws \RuntimeException When the backup is incomplete, or a file cannot be restored.
+     */
+    public function restore(string $expectedVersion)
     {
         $backupDir = $this->getBaseDirectory().'/'.$this->backupDir;
-        if (!is_dir($backupDir)) {
-            $this->fail(self::ERROR_ROLLBACK, 'Backup directory does not exist: '.$backupDir);
+        $manifest = $this->hasBackup($expectedVersion) ? $this->readManifest() : null;
+        if ($manifest === null) {
+            $this->fail(self::ERROR_INVALID, 'No complete backup of version '.$expectedVersion.' found in: '.$backupDir);
         }
 
-        $vendorBackup = $backupDir.'/'.self::VENDOR_DIRECTORY;
-        if (is_dir($vendorBackup) && !$this->filesystem->replaceDirectory($vendorBackup, $this->absolutePath.'/'.self::VENDOR_DIRECTORY)) {
-            $this->fail(self::ERROR_ROLLBACK, 'Failed to restore: '.$this->absolutePath.'/'.self::VENDOR_DIRECTORY);
-        }
+        $files = $this->normalizeFileList($manifest['files']);
+        $this->added = array_values(array_filter($manifest['added'], 'is_string'));
 
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($backupDir, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($iterator as $fileInfo) {
-            $relative = substr(str_replace('\\', '/', $fileInfo->getPathname()), strlen($backupDir) + 1);
-            $livePath = $this->absolutePath.'/'.$relative;
-
-            if ($relative === self::VENDOR_DIRECTORY || strpos($relative, self::VENDOR_DIRECTORY.'/') === 0) {
-                continue;
-            }
-
-            if ($fileInfo->isFile()) {
-                if (!$this->filesystem->replaceFile($fileInfo->getPathname(), $livePath)) {
-                    $this->fail(self::ERROR_ROLLBACK, 'Failed to restore: '.$livePath);
-                }
+        foreach (array_diff($files, $this->added) as $relative) {
+            $backupPath = $backupDir.'/'.$relative;
+            if ($relative === self::VENDOR_DIRECTORY ? !is_dir($backupPath) : !is_file($backupPath)) {
+                $this->fail(self::ERROR_INVALID, 'Backup is missing: '.$backupPath);
             }
         }
+
+        $this->rollback($files);
     }
 
     /**
@@ -452,6 +522,7 @@ class FileUpdater
      * @param string $stagingRoot
      * @param string $absoluteReal
      * @param string $relative
+     * @return void
      */
     protected function assertCanReplace(string $stagingRoot, string $absoluteReal, string $relative)
     {
@@ -479,6 +550,7 @@ class FileUpdater
      * @param string $stagingRoot
      * @param string $absoluteReal
      * @param string $relative
+     * @return void
      */
     protected function assertCanReplaceDirectory(string $stagingRoot, string $absoluteReal, string $relative)
     {
@@ -558,6 +630,8 @@ class FileUpdater
      * Calculate update work from the staged or live file list.
      *
      * @param array<int, string> $files
+     * @param string $root The directory the paths are relative to.
+     * @return int
      */
     protected function calculateWork(array $files, string $root): int
     {
@@ -669,9 +743,10 @@ class FileUpdater
      *
      * @param string $code
      * @param string $message
+     * @return never
      * @throws \RuntimeException
      */
-    protected function fail(string $code, string $message = '')
+    protected function fail(string $code, string $message = ''): never
     {
         error_log('FileUpdater: '.$code.' '.$message);
         throw new \RuntimeException($code);
