@@ -252,6 +252,25 @@ class Filesystem
     }
 
     /**
+     * Read the version number from a Gibbon version.php file without running it.
+     *
+     * @param string $versionFile
+     * @return string|null The version, or null when the file is missing or has none.
+     */
+    public function readVersion(string $versionFile): ?string
+    {
+        if (!is_file($versionFile) || is_link($versionFile)) {
+            return null;
+        }
+
+        $contents = (string) @file_get_contents($versionFile);
+
+        return preg_match('/\$version\s*=\s*([\'"])(.+?)\1\s*;/', $contents, $matches) === 1
+            ? $matches[2]
+            : null;
+    }
+
+    /**
      * Return the free disk space in bytes for a directory, or null when it cannot be determined.
      *
      * @param string $directory

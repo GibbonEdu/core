@@ -426,15 +426,10 @@ class FileUpdater
     public function hasBackup(string $version): bool
     {
         $version = trim($version);
-        $versionFile = $this->getBaseDirectory().'/'.$this->backupDir.'/version.php';
-        if ($version === '' || $this->readManifest() === null || !is_file($versionFile) || is_link($versionFile)) {
-            return false;
-        }
 
-        $contents = (string) @file_get_contents($versionFile);
-
-        return preg_match('/\$version\s*=\s*([\'"])(.+?)\1\s*;/', $contents, $matches) === 1
-            && $matches[2] === $version;
+        return $version !== ''
+            && $this->readManifest() !== null
+            && $this->filesystem->readVersion($this->getBaseDirectory().'/'.$this->backupDir.'/version.php') === $version;
     }
 
     /**

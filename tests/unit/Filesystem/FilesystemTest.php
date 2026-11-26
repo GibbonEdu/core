@@ -45,6 +45,33 @@ class FilesystemTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * @dataProvider versionFileProvider
+     */
+    public function testReadsTheVersionFromAVersionFileWithoutRunningIt(?string $contents, ?string $expected): void
+    {
+        $path = $this->fixturePath.'/version.php';
+        if ($contents !== null) {
+            file_put_contents($path, $contents);
+        }
+
+        $this->assertSame($expected, (new Filesystem())->readVersion($path));
+    }
+
+    public static function versionFileProvider(): array
+    {
+        return [
+            'single quotes' => ["<?php\n\$version = '30.0.03';\n", '30.0.03'],
+            'double quotes' => ["<?php\n\$version = \"30.0.03\";\n", '30.0.03'],
+            'extra spacing' => ["<?php\n\$version   =   '30.0.03'  ;\n", '30.0.03'],
+            'a comment first' => ["<?php\n/** Sets version. */\n\$version = '31.0.00';\n\$other = 'x';\n", '31.0.00'],
+            'not run as code' => ["<?php\ndie('executed');\n\$version = '30.0.03';\n", '30.0.03'],
+            'no version' => ["<?php\n\$other = '30.0.03';\n", null],
+            'empty version' => ["<?php\n\$version = '';\n", null],
+            'missing file' => [null, null],
+        ];
+    }
+
     public function testFreeSpaceIsReportedForADirectoryAndNullWhenItCannotBeRead(): void
     {
         $filesystem = new Filesystem();

@@ -132,10 +132,30 @@ class Downloader
         $zipPath = $this->download($release);
         $this->verify($zipPath, $release['checksum'] ?? '');
         $files = $this->extract($zipPath);
+        $this->checkVersion((string) ($release['version'] ?? ''), $zipPath);
         $this->filesystem->deleteIfExists($zipPath);
         $this->reportProgress(100);
 
         return $files;
+    }
+
+    /**
+     * Check the package is the version the catalog promised, so a wrong or stale
+     * package is not installed. Clears staging and the zip when it is not.
+     *
+     * @param string $expected The version from the catalog.
+     * @param string $zipPath
+     * @return void
+     */
+    protected function checkVersion(string $expected, string $zipPath) : void
+    {
+        $staging = $this->getBaseDirectory().'/staging';
+        $found = $this->filesystem->readVersion($staging.'/version.php');
+
+        if ($expected === '' || $found !== $expected) {
+            $this->filesystem->wipeDirectory($staging);
+            $this->fail(self::ERROR_INVALID, 'Package version '.($found ?? 'unknown').' does not match the catalog version '.($expected ?: 'unknown'), $zipPath);
+        }
     }
 
     /**
@@ -181,10 +201,10 @@ class Downloader
                 'http_errors' => false,
                 'allow_redirects' => [
                     'max'       => 5,
-                    'protocols' => ['http', 'https'],
-                    // Redirects must stay on gibbonedu.org
+                    'protocols' => ['https'],
+                    // Redirects must stay on the hosts the version catalog allows
                     'on_redirect' => function ($request, $response, $uri) {
-                        if (!$this->versionCatalog->isHostAllowed((string) $uri)) {
+                        if (!$this->versionCatalog->isHostAllowed((string) $uri, true)) {
                             $this->fail(self::ERROR_INVALID, 'Redirect to disallowed host: '.$uri);
                         }
                     },
@@ -248,7 +268,11 @@ class Downloader
     public function extract(string $zipPath) : array
     {
         $staging = $this->getBaseDirectory().'/staging';
-        $this->filesystem->wipeDirectory($staging);
+
+        // Anything left in staging by an earlier run would be installed along with this package
+        if (!$this->filesystem->wipeDirectory($staging)) {
+            $this->fail(self::ERROR_WRITE, 'Failed to clear the staging directory: '.$staging, $zipPath);
+        }
 
         if (!$this->filesystem->ensureDirectory($staging) || ($stagingReal = realpath($staging)) === false) {
             $this->fail(self::ERROR_WRITE, 'Failed to create staging directory: '.$staging, $zipPath);

@@ -645,6 +645,59 @@ class SystemUpdateProcessTest extends TestCase
     }
 
     /**
+     * @dataProvider swapOutcomeProvider
+     */
+    public function testNothingIsAutoloadedAfterTheFilesAreSwapped(?string $failure): void
+    {
+        $events = [];
+        [$settings] = $this->createSettingGateway($events);
+        $autoloaded = [];
+        $spy = function (string $class) use (&$autoloaded): void {
+            $autoloaded[] = $class;
+        };
+
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '30.0.00';
+        $updater->method('isCuttingEdge')->willReturn(false);
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('getNextRelease')->willReturn(['filePath' => 'gibbon-30.0.01.zip']);
+        $downloader = $this->createMock(Downloader::class);
+        $downloader->method('run')->willReturn(['index.php']);
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->method('checkPermissions')->willReturn(true);
+
+        // From the moment the files are replaced, report any class that is loaded for the first time
+        $fileUpdater->method('run')->willReturnCallback(function () use ($spy, $failure): void {
+            spl_autoload_register($spy, true, true);
+
+            if ($failure !== null) {
+                throw new \RuntimeException($failure);
+            }
+        });
+
+        $process = $this->createProcess($settings, $updater, $versionCatalog, $downloader, $fileUpdater, $events);
+
+        try {
+            $process->run('file');
+        } catch (\RuntimeException $error) {
+            $this->assertSame($failure, $error->getMessage());
+        } finally {
+            spl_autoload_unregister($spy);
+        }
+
+        $this->assertSame([], $autoloaded, 'Classes loaded after the swap would come from the new files.');
+    }
+
+    public static function swapOutcomeProvider(): array
+    {
+        return [
+            'update succeeds' => [null],
+            'files cannot be replaced' => [FileUpdater::ERROR_REPLACE],
+            'rollback fails' => [FileUpdater::ERROR_ROLLBACK],
+        ];
+    }
+
+    /**
      * @dataProvider restoreMaintenanceModeProvider
      */
     public function testRestoreRestoresMaintenanceModeUnlessTheRestoreFailedPartWay(

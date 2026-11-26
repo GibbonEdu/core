@@ -211,6 +211,95 @@ class DownloaderTest extends TestCase
         ];
     }
 
+    public function testExtractFailsWhenLeftoversInStagingCannotBeCleared(): void
+    {
+        // Files left by an earlier run would otherwise be listed and installed with this package
+        $this->writeStagingFile('leftover.php');
+        $zipPath = $this->createZip(['version.php' => "<?php\n\$version = '30.0.01';\n"]);
+        $filesystem = new DownloaderFilesystem();
+        $filesystem->failWipe = true;
+
+        try {
+            $this->createDownloader($filesystem)->extract($zipPath);
+            $this->fail('Extraction must not continue when staging cannot be cleared.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_WRITE, $error->getMessage());
+        }
+
+        $this->assertFileDoesNotExist($zipPath);
+        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/staging/version.php');
+    }
+
+    public function testExtractDoesNotListLeftoversFromAnEarlierRun(): void
+    {
+        $this->writeStagingFile('leftover.php');
+        $zipPath = $this->createZip(['version.php' => "<?php\n\$version = '30.0.01';\n"]);
+
+        $files = $this->createDownloader(new DownloaderFilesystem())->extract($zipPath);
+
+        $this->assertSame(['version.php'], $files);
+        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/staging/leftover.php');
+    }
+
+    public function testRunReturnsThePackageWhenItsVersionMatchesTheCatalog(): void
+    {
+        $files = $this->runWithPackage(
+            ['version.php' => "<?php\n\$version = '30.0.01';\n", 'src/Example.php' => 'example'],
+            '30.0.01'
+        );
+
+        $this->assertEqualsCanonicalizing(['version.php', 'src/Example.php'], $files);
+        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/package.zip');
+    }
+
+    /**
+     * @dataProvider wrongVersionProvider
+     */
+    public function testRunRefusesAPackageThatIsNotTheCatalogVersion(string $versionFile, string $catalogVersion): void
+    {
+        try {
+            $this->runWithPackage(['version.php' => $versionFile, 'src/Example.php' => 'example'], $catalogVersion);
+            $this->fail('A package that is not the catalog version must not be installed.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertSame([], array_diff(scandir($this->fixturePath.'/backups/fileUpdate/staging'), ['.', '..']));
+        $this->assertFileDoesNotExist($this->fixturePath.'/backups/fileUpdate/package.zip');
+    }
+
+    public static function wrongVersionProvider(): array
+    {
+        return [
+            'older version' => ["<?php\n\$version = '30.0.00';\n", '30.0.01'],
+            'newer version' => ["<?php\n\$version = '30.0.02';\n", '30.0.01'],
+            'version only partly matches' => ["<?php\n\$version = '30.0.011';\n", '30.0.01'],
+            'no version in version.php' => ["<?php\n\$other = '30.0.01';\n", '30.0.01'],
+            'catalog has no version' => ["<?php\n\$version = '30.0.01';\n", ''],
+        ];
+    }
+
+    /**
+     * Run a full download using a local zip, with the checksum the catalog would hold.
+     *
+     * @param array<string, string> $files
+     * @return array<int, string>
+     */
+    private function runWithPackage(array $files, string $catalogVersion): array
+    {
+        $zipPath = $this->createZip($files);
+        $downloader = $this->createDownloader(new DownloaderFilesystem());
+        $downloader->fixtureZip = $zipPath;
+
+        return $downloader->run(['version' => $catalogVersion, 'checksum' => hash_file('sha256', $zipPath)]);
+    }
+
+    private function writeStagingFile(string $name): void
+    {
+        mkdir($this->fixturePath.'/backups/fileUpdate/staging', 0755, true);
+        file_put_contents($this->fixturePath.'/backups/fileUpdate/staging/'.$name, 'left behind');
+    }
+
     /**
      * @param array<string, string> $files
      */
@@ -227,7 +316,7 @@ class DownloaderTest extends TestCase
         return $zipPath;
     }
 
-    private function createDownloader(Filesystem $filesystem, ?int $maxExtractedBytes = null): Downloader
+    private function createDownloader(Filesystem $filesystem, ?int $maxExtractedBytes = null): LimitedDownloader
     {
         $session = $this->createMock(Session::class);
         $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
@@ -261,6 +350,14 @@ class DownloaderTest extends TestCase
 
 class LimitedDownloader extends Downloader
 {
+    /** Use a local zip instead of downloading one when set. */
+    public ?string $fixtureZip = null;
+
+    public function download(array $release) : string
+    {
+        return $this->fixtureZip ?? parent::download($release);
+    }
+
     public function setMaxExtractedBytes(int $bytes): void
     {
         $this->maxExtractedBytes = $bytes;
@@ -281,6 +378,12 @@ class DownloaderFilesystem extends Filesystem
     public bool $parentDirectoryAvailable = true;
     public bool $fakeFreeSpace = false;
     public ?float $freeSpace = null;
+    public bool $failWipe = false;
+
+    public function wipeDirectory(string $directory): bool
+    {
+        return $this->failWipe ? false : parent::wipeDirectory($directory);
+    }
 
     public function getFreeSpace(string $directory): ?float
     {

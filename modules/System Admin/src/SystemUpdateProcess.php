@@ -202,6 +202,12 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                 $stage = 'installing';
                 $this->progress->update($stage, 'working', 70);
                 $this->fileUpdater->setProgressCallback($this->createProgressCallback('installing', 70, 95));
+
+                // IMPORTANT NOTE:
+                // This replaces the code of the running process. From here until the update ends, only
+                // use classes that were already used above: a class loaded for the first time now would
+                // come from the new files and could be a different version from the classes already in
+                // memory. testNothingIsAutoloadedAfterTheFilesAreSwapped() guards this.
                 $this->fileUpdater->run($files);
 
                 $stage = 'finalizing';
