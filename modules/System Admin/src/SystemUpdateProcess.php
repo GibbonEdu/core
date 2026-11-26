@@ -136,8 +136,12 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         ignore_user_abort(true);
         @set_time_limit(3000);
 
+        $previousMaintenance = 'N';
+        $rollbackFailed = false;
+
         try {
             try {
+                $previousMaintenance = (string) $this->settingGateway->getSettingByScope('System Admin', 'maintenanceMode');
                 $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'running');
 
@@ -169,6 +173,10 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', $this->updater->versionCode);
+            } catch (\Throwable $error) {
+                $rollbackFailed = $error->getMessage() === FileUpdater::ERROR_ROLLBACK;
+
+                throw $error;
             } finally {
                 try {
                     // Keep the backup folder, but remove staging and any downloaded package.
@@ -177,7 +185,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                         unlink($baseDir.'/package.zip');
                     }
 
-                    $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'N');
+                    $this->releaseMaintenanceMode($previousMaintenance, $rollbackFailed);
                 } finally {
                     flock($lock, LOCK_UN);
                     fclose($lock);
@@ -235,20 +243,21 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         ignore_user_abort(true);
         @set_time_limit(3000);
 
+        $previousMaintenance = 'N';
+        $rollbackFailed = false;
+
         try {
             try {
+                $previousMaintenance = (string) $this->settingGateway->getSettingByScope('System Admin', 'maintenanceMode');
                 $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'Y');
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'running');
 
+                // The restore only needs the local backup, not the remote version catalog.
                 $backupVersion = (string) $this->settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
-                $release = $this->versionCatalog->getRelease($backupVersion);
-                if (empty($release) || empty($release['filePath'])) {
-                    throw new \RuntimeException(Downloader::ERROR_INVALID);
-                }
 
                 $stage = 'restoring';
                 $this->progress->update($stage, 'working', 70);
-                $this->fileUpdater->restore();
+                $this->fileUpdater->restore($backupVersion);
 
                 $stage = 'finalizing';
                 $this->progress->update($stage, 'working', 90);
@@ -257,13 +266,17 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
                 $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', '');
+            } catch (\Throwable $error) {
+                $rollbackFailed = $error->getMessage() === FileUpdater::ERROR_ROLLBACK;
+
+                throw $error;
             } finally {
                 $this->filesystem->wipeDirectory($baseDir.'/staging');
                 if (is_file($baseDir.'/package.zip')) {
                     unlink($baseDir.'/package.zip');
                 }
 
-                $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', 'N');
+                $this->releaseMaintenanceMode($previousMaintenance, $rollbackFailed);
                 flock($lock, LOCK_UN);
                 fclose($lock);
             }
@@ -317,6 +330,25 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             $this->fail($stage, $error);
             throw $error;
         }
+    }
+
+    /**
+     * Put maintenance mode back to the value it had before the update started.
+     * It stays on after a failed rollback, because the install may be half replaced.
+     *
+     * @param string $previousMaintenance The maintenanceMode value before the update.
+     * @param bool $rollbackFailed Whether the file rollback or restore failed.
+     * @return void
+     */
+    private function releaseMaintenanceMode(string $previousMaintenance, bool $rollbackFailed): void
+    {
+        if ($rollbackFailed) {
+            error_log('SystemUpdateProcess: maintenance mode left on because the file rollback failed.');
+
+            return;
+        }
+
+        $this->settingGateway->updateSettingByScope('System Admin', 'maintenanceMode', $previousMaintenance === 'Y' ? 'Y' : 'N');
     }
 
     /**

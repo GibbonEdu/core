@@ -147,6 +147,100 @@ class DownloaderTest extends TestCase
         $downloader->extract($zipPath);
     }
 
+    public function testExtractRefusesAPackageThatExpandsBeyondTheLimit(): void
+    {
+        $zipPath = $this->createZip(['version.php' => str_repeat('v', 600), 'src/Large.php' => str_repeat('x', 500)]);
+        $downloader = $this->createDownloader(new DownloaderFilesystem(), 1000);
+
+        try {
+            $downloader->extract($zipPath);
+            $this->fail('A package larger than the extraction limit must be refused.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertFileDoesNotExist($zipPath);
+        $this->assertSame([], glob($this->fixturePath.'/backups/fileUpdate/staging/*'));
+    }
+
+    public function testExtractAcceptsAPackageThatIsExactlyAtTheLimit(): void
+    {
+        $zipPath = $this->createZip(['version.php' => str_repeat('v', 600), 'src/Large.php' => str_repeat('x', 400)]);
+        $downloader = $this->createDownloader(new DownloaderFilesystem(), 1000);
+
+        $this->assertEqualsCanonicalizing(['version.php', 'src/Large.php'], $downloader->extract($zipPath));
+    }
+
+    public function testExtractRefusesAPackageThatDoesNotFitOnDiskWithItsBackup(): void
+    {
+        $zipPath = $this->createZip(['version.php' => str_repeat('v', 500), 'src/Large.php' => str_repeat('x', 500)]);
+        $filesystem = new DownloaderFilesystem();
+        $filesystem->fakeFreeSpace = true;
+        $filesystem->freeSpace = 1999.0; // The staged files and their backup need 2 x 1000 bytes
+
+        try {
+            $this->createDownloader($filesystem)->extract($zipPath);
+            $this->fail('A package that cannot fit on disk must be refused before extraction.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_WRITE, $error->getMessage());
+        }
+
+        $this->assertFileDoesNotExist($zipPath);
+        $this->assertSame([], glob($this->fixturePath.'/backups/fileUpdate/staging/*'));
+    }
+
+    /**
+     * @dataProvider enoughOrUnknownFreeSpaceProvider
+     */
+    public function testExtractContinuesWhenThereIsEnoughOrUnknownFreeSpace(?float $freeSpace): void
+    {
+        $zipPath = $this->createZip(['version.php' => str_repeat('v', 500), 'src/Large.php' => str_repeat('x', 500)]);
+        $filesystem = new DownloaderFilesystem();
+        $filesystem->fakeFreeSpace = true;
+        $filesystem->freeSpace = $freeSpace;
+
+        $this->assertEqualsCanonicalizing(['version.php', 'src/Large.php'], $this->createDownloader($filesystem)->extract($zipPath));
+    }
+
+    public static function enoughOrUnknownFreeSpaceProvider(): array
+    {
+        return [
+            'exactly twice the package size' => [2000.0],
+            'plenty of space' => [1.0e12],
+            'cannot be determined' => [null],
+        ];
+    }
+
+    /**
+     * @param array<string, string> $files
+     */
+    private function createZip(array $files): string
+    {
+        $zipPath = $this->fixturePath.'/backups/fileUpdate/package.zip';
+        $zip = new ZipArchive();
+        $this->assertTrue($zip->open($zipPath, ZipArchive::CREATE) === true);
+        foreach ($files as $name => $contents) {
+            $zip->addFromString($name, $contents);
+        }
+        $zip->close();
+
+        return $zipPath;
+    }
+
+    private function createDownloader(Filesystem $filesystem, ?int $maxExtractedBytes = null): Downloader
+    {
+        $session = $this->createMock(Session::class);
+        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
+
+        $downloader = new LimitedDownloader($session, $this->createMock(VersionCatalog::class), $filesystem);
+        $downloader->setBaseDirectory($this->fixturePath.'/backups/fileUpdate');
+        if ($maxExtractedBytes !== null) {
+            $downloader->setMaxExtractedBytes($maxExtractedBytes);
+        }
+
+        return $downloader;
+    }
+
     private function removeFixtureDirectory(string $path): void
     {
         if (!is_dir($path)) {
@@ -165,6 +259,14 @@ class DownloaderTest extends TestCase
     }
 }
 
+class LimitedDownloader extends Downloader
+{
+    public function setMaxExtractedBytes(int $bytes): void
+    {
+        $this->maxExtractedBytes = $bytes;
+    }
+}
+
 class DownloaderFilesystem extends Filesystem
 {
     /**
@@ -177,6 +279,13 @@ class DownloaderFilesystem extends Filesystem
      */
     public array $containedPaths = [];
     public bool $parentDirectoryAvailable = true;
+    public bool $fakeFreeSpace = false;
+    public ?float $freeSpace = null;
+
+    public function getFreeSpace(string $directory): ?float
+    {
+        return $this->fakeFreeSpace ? $this->freeSpace : parent::getFreeSpace($directory);
+    }
 
     public function checkParentDirectory(string $root): bool
     {

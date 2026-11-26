@@ -174,6 +174,43 @@ class BackgroundUpdateProgressCest
         $I->assertStringContainsString('isPolling: true', $I->grabPageSource());
     }
 
+    public function updateActionsRejectRequestsThatCouldSkipTheCsrfCheck(AcceptanceTester $I): void
+    {
+        $actions = ['updateFilesProcess.php', 'updateProcess.php', 'updateRestoreProcess.php'];
+        $progressBefore = $I->grabFromDatabase('gibbonSetting', 'value', [
+            'scope' => 'System Admin',
+            'name' => 'backgroundUpdateProgress',
+        ]);
+
+        $I->loginAsAdmin();
+
+        foreach ($actions as $action) {
+            $url = '/modules/System Admin/'.$action;
+
+            // A plain GET has no form fields at all.
+            $I->amOnPage($url.'?type=regularRelease');
+            $I->seeInCurrentUrl('return=error3');
+
+            // A single field passes gibbon.php without a token check, so the action itself refuses it.
+            $I->amOnModulePage('System Admin', 'update.php');
+            $I->sendAjaxPostRequest($url, ['confirm' => 'Y']);
+            $I->seeInCurrentUrl('return=error3');
+
+            // The form fields without a token reach the shared CSRF check and are refused there.
+            $I->amOnModulePage('System Admin', 'update.php');
+            $I->sendAjaxPostRequest($url, ['confirm' => 'Y', 'address' => '/modules/System Admin/update.php', 'type' => 'regularRelease']);
+            $I->seeInCurrentUrl('return=error9');
+        }
+
+        // None of the rejected requests started an update or changed the progress snapshot.
+        $I->dontSeeInDatabase('gibbonLog', ['title' => self::SYSTEM_UPDATE_TITLE]);
+        $I->seeInDatabase('gibbonSetting', [
+            'scope' => 'System Admin',
+            'name' => 'backgroundUpdateProgress',
+            'value' => $progressBefore,
+        ]);
+    }
+
     public function authorizationAndDuplicateSubmissionSuppressionKeepRequestsSafe(AcceptanceTester $I): void
     {
         $this->setProgress($I, 'database', 'preparing', 'working', 10);

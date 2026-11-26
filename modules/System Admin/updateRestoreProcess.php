@@ -23,8 +23,8 @@ use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
+use Gibbon\Filesystem\FileUpdater;
 use Gibbon\Filesystem\Filesystem;
-use Gibbon\Filesystem\VersionCatalog;
 use Gibbon\Module\SystemAdmin\SystemUpdateMonitor;
 use Gibbon\Module\SystemAdmin\SystemUpdateProcess;
 use Gibbon\Module\SystemAdmin\SystemUpdateProgress;
@@ -45,6 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
+// Require explicit POST values to ensure CSRF checking
+if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
+    $URL .= '&return=error3';
+    header("Location: {$URL}");
+    exit;
+}
+
 $settingGateway = $container->get(SettingGateway::class);
 $absolutePath = $session->get('absolutePath');
 $filesystem = $container->get(Filesystem::class);
@@ -57,17 +64,10 @@ if (!$filesystem->ensureDirectory($baseDir)) {
     exit;
 }
 
-// Validate the selected backup before accepting a background restore request.
+// Check the local backup holds the recorded version before accepting a restore request.
 $backupVersion = (string) $settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
-try {
-    $release = $container->get(VersionCatalog::class)->getRelease($backupVersion);
-} catch (\Throwable $error) {
-    error_log('updateRestoreProcess backup validation failed: '.$error->getMessage());
-    $release = [];
-}
-
-if (empty($release) || empty($release['filePath'])) {
-    $URL .= '&return=errorFiles';
+if (!$container->get(FileUpdater::class)->hasBackup($backupVersion)) {
+    $URL .= '&return=errorNoBackup';
     header("Location: {$URL}");
     exit;
 }

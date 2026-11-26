@@ -252,6 +252,19 @@ class Filesystem
     }
 
     /**
+     * Return the free disk space in bytes for a directory, or null when it cannot be determined.
+     *
+     * @param string $directory
+     * @return float|null
+     */
+    public function getFreeSpace(string $directory): ?float
+    {
+        $free = @disk_free_space($directory);
+
+        return $free === false ? null : $free;
+    }
+
+    /**
      * Ensure a directory exists.
      *
      * @param string $directory

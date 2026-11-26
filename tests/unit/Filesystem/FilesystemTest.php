@@ -45,6 +45,14 @@ class FilesystemTest extends TestCase
         parent::tearDown();
     }
 
+    public function testFreeSpaceIsReportedForADirectoryAndNullWhenItCannotBeRead(): void
+    {
+        $filesystem = new Filesystem();
+
+        $this->assertGreaterThan(0, $filesystem->getFreeSpace($this->fixturePath));
+        $this->assertNull($filesystem->getFreeSpace($this->fixturePath.'/missing'));
+    }
+
     public function testContainmentAllowsDescendantsAndCanAllowRootItself(): void
     {
         $validator = new Filesystem();

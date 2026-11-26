@@ -35,6 +35,7 @@ class Downloader
 {
     public const BASE_DIR = 'backups/fileUpdate';
     public const MAX_PACKAGE_BYTES = 209715200; // 200 MB
+    public const MAX_EXTRACTED_BYTES = 1073741824; // 1 GiB, total size of all files in the package
 
     // Short stage codes shown on the update page when something fails
     public const ERROR_INVALID = 'invalid';
@@ -48,6 +49,7 @@ class Downloader
     protected $absolutePath;
     protected $progressCallback;
     protected $lastProgress;
+    protected int $maxExtractedBytes = self::MAX_EXTRACTED_BYTES;
     private Filesystem $filesystem;
     private ?string $baseDirectory = null;
 
@@ -155,6 +157,8 @@ class Downloader
         $zipPath = $this->ensureBaseDirectory().'/package.zip';
         $this->filesystem->deleteIfExists($zipPath);
 
+        $tooLarge = false;
+
         try {
             $response = (new Client([
                 'connect_timeout' => 10,
@@ -162,6 +166,13 @@ class Downloader
             ]))->request('GET', $filePath, [
                 'headers'     => ['Referer' => $this->session->get('absoluteURL').'/index.php'],
                 'sink'        => $zipPath, // write straight to disk
+                // Refuse a package that declares itself too large before any of it is written
+                'on_headers'  => function ($response) use (&$tooLarge) {
+                    if ((int) $response->getHeaderLine('Content-Length') > self::MAX_PACKAGE_BYTES) {
+                        $tooLarge = true;
+                        throw new \RuntimeException('Package is too large');
+                    }
+                },
                 'progress'    => function ($downloadTotal, $downloadedBytes) {
                     if ($downloadTotal > 0) {
                         $this->reportProgressRange((int) $downloadedBytes, (int) $downloadTotal, 0, 55);
@@ -184,6 +195,10 @@ class Downloader
                 $this->fail(self::ERROR_DOWNLOAD, 'HTTP status '.$response->getStatusCode().' from '.$filePath, $zipPath);
             }
         } catch (\RuntimeException $e) {
+            if ($tooLarge) {
+                $this->fail(self::ERROR_INVALID, 'Content-Length exceeds max size of '.self::MAX_PACKAGE_BYTES.' bytes', $zipPath);
+            }
+
             $this->filesystem->deleteIfExists($zipPath);
             throw $e;
         } catch (\Throwable $e) {
@@ -255,6 +270,17 @@ class Downloader
             $stat = $zip->statIndex($i);
             $entryWork[$i] = max(1, (int) ($stat === false ? 0 : ($stat['size'] ?? 0)));
             $totalWork += $entryWork[$i];
+        }
+
+        // The update needs room for the staged files plus a backup of the files they replace
+        $freeSpace = $this->filesystem->getFreeSpace($stagingReal);
+        if ($totalWork > $this->maxExtractedBytes || ($freeSpace !== null && $freeSpace < $totalWork * 2)) {
+            $zip->close();
+            $this->fail(
+                $totalWork > $this->maxExtractedBytes ? self::ERROR_INVALID : self::ERROR_WRITE,
+                'Package expands to '.$totalWork.' bytes, limit '.$this->maxExtractedBytes.', free space '.($freeSpace ?? 'unknown'),
+                $zipPath
+            );
         }
 
         $completedWork = 0;

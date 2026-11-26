@@ -35,11 +35,18 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/update.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
 $session->set('systemUpdateError', '');
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
     $URL .= '&return=error0';
+    header("Location: {$URL}");
+    exit;
+}
+
+// Require explicit POST values to ensure CSRF checking
+if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
+    $URL .= '&return=error3';
     header("Location: {$URL}");
     exit;
 }

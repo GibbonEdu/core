@@ -59,6 +59,7 @@ class EngineUpdateForm
     {
         $form = Form::create('innoDB', $this->session->get('absoluteURL').'/modules/System Admin/updateProcess.php?type=InnoDB');
         $form->addHiddenValue('address', $this->session->get('address'));
+        $form->addHiddenValue('confirm', 'Y');
 
         $form->setTitle(__('Database Engine Migration'));
         $form->setDescription(__('Starting from v16, Gibbon is offering installations the option to migrate from MySQL\'s MyISAM engine to InnoDB, as a way to achieve greater reliability and performance.'));

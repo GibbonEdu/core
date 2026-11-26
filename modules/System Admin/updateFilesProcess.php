@@ -44,10 +44,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     exit;
 }
 
+// Require explicit POST values to ensure CSRF checking
+if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
+    $URL .= '&return=error3';
+    header("Location: {$URL}");
+    exit;
+}
+
 $updater = $container->get(Updater::class);
 
-// Need a valid install, DB already up to date, and confirm checked
-if ($updater->isUpdateRequired() > 0 || ($_POST['confirm'] ?? '') != 'Y') {
+// Need a valid install and the DB already up to date
+if ($updater->isUpdateRequired() > 0) {
     $URL .= '&return=error3';
     header("Location: {$URL}");
     exit;

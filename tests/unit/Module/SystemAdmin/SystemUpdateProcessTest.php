@@ -171,21 +171,16 @@ class SystemUpdateProcessTest extends TestCase
         file_put_contents($this->baseDirectory.'/package.zip', 'package');
         file_put_contents($this->fixturePath.'/uploads/cache/cached.txt', 'cache');
 
+        // A restore uses the local backup only, so it never asks the version catalog.
         $versionCatalog = $this->createMock(VersionCatalog::class);
-        $versionCatalog->expects($this->once())
-            ->method('getRelease')
-            ->with('29.0.00')
-            ->willReturnCallback(function () use (&$events): array {
-                $events[] = 'catalog:backup';
-
-                return ['filePath' => 'previous-version-backup'];
-            });
+        $versionCatalog->expects($this->never())->method('getRelease');
 
         $downloader = $this->createMock(Downloader::class);
         $downloader->expects($this->never())->method('run');
         $fileUpdater = $this->createMock(FileUpdater::class);
         $fileUpdater->expects($this->once())
             ->method('restore')
+            ->with('29.0.00')
             ->willReturnCallback(function () use (&$events): void {
                 $events[] = 'file-updater:restore';
             });
@@ -205,7 +200,6 @@ class SystemUpdateProcessTest extends TestCase
             'progress:preparing:working',
             'setting:maintenanceMode:Y',
             'setting:fileUpdater:running',
-            'catalog:backup',
             'progress:restoring:working',
             'file-updater:restore',
             'progress:finalizing:working',
@@ -333,6 +327,106 @@ class SystemUpdateProcessTest extends TestCase
         $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
         $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
         $this->assertFileLockWasReleased();
+    }
+
+    /**
+     * @dataProvider maintenanceModeProvider
+     */
+    public function testFileUpdateRestoresMaintenanceModeUnlessTheRollbackFailed(
+        ?string $previous,
+        ?string $failure,
+        string $expected
+    ): void {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+        if ($previous !== null) {
+            $state->values['System Admin/maintenanceMode'] = $previous;
+        }
+
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '30.0.00';
+        $updater->method('isCuttingEdge')->willReturn(false);
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('getNextRelease')->willReturn(['filePath' => 'gibbon-30.0.01.zip']);
+        $downloader = $this->createMock(Downloader::class);
+        $downloader->method('run')->willReturn(['index.php']);
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->method('checkPermissions')->willReturn(true);
+        if ($failure !== null) {
+            $fileUpdater->method('run')->willThrowException(new \RuntimeException($failure));
+        }
+
+        $process = $this->createProcess($settings, $updater, $versionCatalog, $downloader, $fileUpdater, $events);
+
+        try {
+            $process->run('file');
+            $this->assertNull($failure, 'The update should only succeed when no failure was simulated.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame($failure, $error->getMessage());
+        }
+
+        $this->assertSame($expected, $state->values['System Admin/maintenanceMode']);
+        $this->assertFileLockWasReleased();
+    }
+
+    public static function maintenanceModeProvider(): array
+    {
+        return [
+            'success, was off' => [null, null, 'N'],
+            'success, was already on' => ['Y', null, 'Y'],
+            'failure, was off' => ['N', FileUpdater::ERROR_REPLACE, 'N'],
+            'failure, was already on' => ['Y', FileUpdater::ERROR_REPLACE, 'Y'],
+            'rollback failed, was off' => ['N', FileUpdater::ERROR_ROLLBACK, 'Y'],
+            'rollback failed, was already on' => ['Y', FileUpdater::ERROR_ROLLBACK, 'Y'],
+        ];
+    }
+
+    /**
+     * @dataProvider restoreMaintenanceModeProvider
+     */
+    public function testRestoreRestoresMaintenanceModeUnlessTheRestoreFailedPartWay(
+        string $previous,
+        ?string $failure,
+        string $expected
+    ): void {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+        $state->values['System Admin/fileUpdaterBackup'] = '29.0.00';
+        $state->values['System Admin/maintenanceMode'] = $previous;
+
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        if ($failure !== null) {
+            $fileUpdater->method('restore')->willThrowException(new \RuntimeException($failure));
+        }
+
+        $process = $this->createProcess(
+            $settings,
+            $this->createMock(Updater::class),
+            $this->createMock(VersionCatalog::class),
+            $this->createMock(Downloader::class),
+            $fileUpdater,
+            $events
+        );
+
+        try {
+            $process->run('restore');
+            $this->assertNull($failure, 'The restore should only succeed when no failure was simulated.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame($failure, $error->getMessage());
+        }
+
+        $this->assertSame($expected, $state->values['System Admin/maintenanceMode']);
+        $this->assertFileLockWasReleased();
+    }
+
+    public static function restoreMaintenanceModeProvider(): array
+    {
+        return [
+            'success, was off' => ['N', null, 'N'],
+            'success, was already on' => ['Y', null, 'Y'],
+            'failure before any file changed' => ['N', Downloader::ERROR_INVALID, 'N'],
+            'restore failed part way' => ['N', FileUpdater::ERROR_ROLLBACK, 'Y'],
+        ];
     }
 
     public function testDatabaseUpdateErrorsRecordFailureAndAreRethrown(): void

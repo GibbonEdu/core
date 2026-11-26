@@ -100,28 +100,229 @@ class FileUpdaterTest extends TestCase
     {
         $this->writeFile('/vendor/old.php', 'old vendor file');
         $this->writeFile('/modules/Example/update.php', 'old module file');
+        $this->writeFile('/version.php', $this->versionFile('30.0.00'));
         $this->writeFile('/backups/fileUpdate/staging/vendor/new.php', 'new vendor file');
         $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
+        $this->writeFile('/backups/fileUpdate/staging/version.php', $this->versionFile('30.0.01'));
 
         $filesystem = new FileUpdaterFilesystem();
         $updater = $this->createFileUpdater($filesystem);
-        $updater->run(['vendor/new.php', 'modules/Example/update.php']);
+        $updater->run(['vendor/new.php', 'modules/Example/update.php', 'version.php']);
         $filesystem->replacedDirectories = [];
         $filesystem->replacedFiles = [];
 
-        $updater->restore();
+        $updater->restore('30.0.00');
 
         $this->assertCount(1, $filesystem->replacedDirectories);
         $this->assertSame($this->fixturePath.'/vendor', $filesystem->replacedDirectories[0][1]);
+        $restored = array_column($filesystem->replacedFiles, 1);
+        sort($restored);
         $this->assertSame([
-            [
-                $this->fixturePath.'/backups/fileUpdate/previousVersionBackup/modules/Example/update.php',
-                $this->fixturePath.'/modules/Example/update.php',
-            ],
-        ], $filesystem->replacedFiles);
+            $this->fixturePath.'/modules/Example/update.php',
+            $this->fixturePath.'/version.php',
+        ], $restored);
+        $this->assertStringContainsString("'30.0.00'", file_get_contents($this->fixturePath.'/version.php'));
         $this->assertFileExists($this->fixturePath.'/vendor/old.php');
         $this->assertFileDoesNotExist($this->fixturePath.'/vendor/new.php');
         $this->assertSame('old module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
+    }
+
+    public function testRestoreFailsWithoutChangingFilesWhenTheBackupDirectoryIsEmpty(): void
+    {
+        // checkPermissions() creates an empty backup directory on every update page view.
+        $this->writeFile('/modules/Example/update.php', 'live module file');
+        mkdir($this->fixturePath.'/backups/fileUpdate/previousVersionBackup', 0755, true);
+
+        $filesystem = new FileUpdaterFilesystem();
+        $updater = $this->createFileUpdater($filesystem);
+
+        try {
+            $updater->restore('30.0.00');
+            $this->fail('Restoring from an empty backup must not report success.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertSame([], $filesystem->replacedFiles);
+        $this->assertSame([], $filesystem->replacedDirectories);
+        $this->assertSame('live module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
+    }
+
+    public function testRestoreFailsWhenTheBackupIsForADifferentVersion(): void
+    {
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/version.php', $this->versionFile('29.0.00'));
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/modules/Example/update.php', 'backup module file');
+        $this->writeManifest(['version.php', 'modules/Example/update.php']);
+        $this->writeFile('/modules/Example/update.php', 'live module file');
+
+        $filesystem = new FileUpdaterFilesystem();
+        $updater = $this->createFileUpdater($filesystem);
+
+        try {
+            $updater->restore('30.0.00');
+            $this->fail('A backup of another version must not be restored.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertSame([], $filesystem->replacedFiles);
+        $this->assertSame('live module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
+    }
+
+    /**
+     * @dataProvider backupVersionFileProvider
+     */
+    public function testHasBackupMatchesTheVersionRecordedInTheBackup(?string $contents, string $version, bool $expected): void
+    {
+        if ($contents !== null) {
+            $this->writeFile('/backups/fileUpdate/previousVersionBackup/version.php', $contents);
+        } else {
+            mkdir($this->fixturePath.'/backups/fileUpdate/previousVersionBackup', 0755, true);
+        }
+        $this->writeManifest(['version.php']);
+
+        $updater = $this->createFileUpdater(new FileUpdaterFilesystem());
+
+        $this->assertSame($expected, $updater->hasBackup($version));
+    }
+
+    public static function backupVersionFileProvider(): array
+    {
+        return [
+            'matching version' => ["<?php\n\$version = '30.0.03';\n", '30.0.03', true],
+            'matching version with surrounding whitespace' => ["<?php\n\$version = '30.0.03';\n", ' 30.0.03 ', true],
+            'double quoted version' => ["<?php\n\$version = \"30.0.03\";\n", '30.0.03', true],
+            'different version' => ["<?php\n\$version = '30.0.02';\n", '30.0.03', false],
+            'version only partly matches' => ["<?php\n\$version = '30.0.031';\n", '30.0.03', false],
+            'empty expected version' => ["<?php\n\$version = '';\n", '', false],
+            'no version in the file' => ["<?php\n\$other = '30.0.03';\n", '30.0.03', false],
+            'no version file' => [null, '30.0.03', false],
+        ];
+    }
+
+    public function testBackupWritesAManifestOfFilesAndAddedFilesLast(): void
+    {
+        $this->writeFile('/version.php', $this->versionFile('30.0.00'));
+        $this->writeFile('/backups/fileUpdate/staging/version.php', $this->versionFile('30.0.01'));
+        $this->writeFile('/backups/fileUpdate/staging/modules/Example/new.php', 'new file');
+
+        $this->createFileUpdater(new FileUpdaterFilesystem())->run(['version.php', 'modules/Example/new.php']);
+
+        $manifest = json_decode(file_get_contents($this->backupPath().'/'.FileUpdater::MANIFEST), true);
+        $this->assertSame(['version.php', 'modules/Example/new.php'], $manifest['files']);
+        $this->assertSame(['modules/Example/new.php'], $manifest['added']);
+    }
+
+    public function testBackupFailsWhenThePreviousBackupCannotBeCleared(): void
+    {
+        $this->writeFile('/version.php', $this->versionFile('30.0.00'));
+        $this->writeFile('/backups/fileUpdate/staging/version.php', $this->versionFile('30.0.01'));
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/stale.php', 'stale');
+
+        $filesystem = new FileUpdaterFilesystem();
+        $filesystem->failWipe = true;
+
+        try {
+            $this->createFileUpdater($filesystem)->run(['version.php']);
+            $this->fail('A stale backup must not be mixed into a new one.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(FileUpdater::ERROR_BACKUP, $error->getMessage());
+        }
+
+        $this->assertStringContainsString("'30.0.00'", file_get_contents($this->fixturePath.'/version.php'));
+    }
+
+    public function testRestoreUndoesAnUpdateByRemovingAddedFilesAndRestoringTheRest(): void
+    {
+        $this->writeFile('/version.php', $this->versionFile('30.0.00'));
+        $this->writeFile('/modules/Example/update.php', 'old module file');
+        $this->writeFile('/backups/fileUpdate/staging/version.php', $this->versionFile('30.0.01'));
+        $this->writeFile('/backups/fileUpdate/staging/modules/Example/update.php', 'new module file');
+        $this->writeFile('/backups/fileUpdate/staging/modules/Example/added.php', 'added by the update');
+
+        $updater = $this->createFileUpdater(new FileUpdaterFilesystem());
+        $updater->run(['version.php', 'modules/Example/update.php', 'modules/Example/added.php']);
+        $this->assertFileExists($this->fixturePath.'/modules/Example/added.php');
+
+        // A fresh instance has no memory of the update, as in the restore background process.
+        $this->createFileUpdater(new FileUpdaterFilesystem())->restore('30.0.00');
+
+        $this->assertFileDoesNotExist($this->fixturePath.'/modules/Example/added.php');
+        $this->assertSame('old module file', file_get_contents($this->fixturePath.'/modules/Example/update.php'));
+        $this->assertStringContainsString("'30.0.00'", file_get_contents($this->fixturePath.'/version.php'));
+    }
+
+    public function testRestoreIgnoresFilesInTheBackupFolderThatAreNotInTheManifest(): void
+    {
+        $this->writeFile('/version.php', $this->versionFile('30.0.01'));
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/version.php', $this->versionFile('30.0.00'));
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/modules/Example/stale.php', 'left over from an older update');
+        $this->writeManifest(['version.php']);
+
+        $this->createFileUpdater(new FileUpdaterFilesystem())->restore('30.0.00');
+
+        $this->assertStringContainsString("'30.0.00'", file_get_contents($this->fixturePath.'/version.php'));
+        $this->assertFileDoesNotExist($this->fixturePath.'/modules/Example/stale.php');
+    }
+
+    public function testRestoreRefusesAnIncompleteBackupWithoutAManifest(): void
+    {
+        // An update that stopped part way through backing up never wrote its manifest.
+        $this->writeFile('/version.php', $this->versionFile('30.0.01'));
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/version.php', $this->versionFile('30.0.00'));
+
+        $updater = $this->createFileUpdater(new FileUpdaterFilesystem());
+        $this->assertFalse($updater->hasBackup('30.0.00'));
+
+        try {
+            $updater->restore('30.0.00');
+            $this->fail('An incomplete backup must not be restored.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertStringContainsString("'30.0.01'", file_get_contents($this->fixturePath.'/version.php'));
+    }
+
+    public function testRestoreChecksEveryBackupFileBeforeChangingAnything(): void
+    {
+        $this->writeFile('/version.php', $this->versionFile('30.0.01'));
+        $this->writeFile('/modules/Example/update.php', 'live module file');
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/version.php', $this->versionFile('30.0.00'));
+        $this->writeManifest(['version.php', 'modules/Example/update.php']);
+
+        $filesystem = new FileUpdaterFilesystem();
+
+        try {
+            $this->createFileUpdater($filesystem)->restore('30.0.00');
+            $this->fail('A backup that is missing a file must not be partly restored.');
+        } catch (\RuntimeException $error) {
+            $this->assertSame(FileUpdater::ERROR_INVALID, $error->getMessage());
+        }
+
+        $this->assertSame([], $filesystem->replacedFiles);
+        $this->assertStringContainsString("'30.0.01'", file_get_contents($this->fixturePath.'/version.php'));
+    }
+
+    public function testRestoreReportsARollbackFailureWhenAFileCannotBeRestored(): void
+    {
+        $this->writeFile('/version.php', $this->versionFile('30.0.01'));
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/version.php', $this->versionFile('30.0.00'));
+        $this->writeManifest(['version.php']);
+
+        $filesystem = new FileUpdaterFilesystem();
+        $filesystem->failReplaceFileDestination = $this->fixturePath.'/version.php';
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(FileUpdater::ERROR_ROLLBACK);
+        $this->createFileUpdater($filesystem)->restore('30.0.00');
+    }
+
+    public function testHasBackupIsFalseWhenThereIsNoBackupDirectory(): void
+    {
+        $updater = $this->createFileUpdater(new FileUpdaterFilesystem());
+
+        $this->assertFalse($updater->hasBackup('30.0.03'));
     }
 
     public function testFailedFileReplacementRollsBackVendorAsOneDirectory(): void
@@ -221,6 +422,30 @@ class FileUpdaterTest extends TestCase
         return $updater;
     }
 
+    private function backupPath(): string
+    {
+        return $this->fixturePath.'/backups/fileUpdate/previousVersionBackup';
+    }
+
+    /**
+     * Write the manifest that a completed backup leaves behind.
+     *
+     * @param array<int, string> $files
+     * @param array<int, string> $added
+     */
+    private function writeManifest(array $files, array $added = []): void
+    {
+        $this->writeFile('/backups/fileUpdate/previousVersionBackup/'.FileUpdater::MANIFEST, json_encode([
+            'files' => $files,
+            'added' => $added,
+        ]));
+    }
+
+    private function versionFile(string $version): string
+    {
+        return "<?php\n\$version = '".$version."';\n";
+    }
+
     private function writeFile(string $relativePath, string $contents): void
     {
         $path = $this->fixturePath.$relativePath;
@@ -238,8 +463,14 @@ class FileUpdaterFilesystem extends Filesystem
     public array $replacedFiles = [];
     public ?string $failReplaceFileDestination = null;
     public ?string $blockedDirectory = null;
+    public bool $failWipe = false;
 
     private bool $replaceFileFailed = false;
+
+    public function wipeDirectory(string $directory): bool
+    {
+        return $this->failWipe ? false : parent::wipeDirectory($directory);
+    }
 
     public function probeDirectory(string $directory, array $operations = self::DEFAULT_OPERATIONS): bool
     {

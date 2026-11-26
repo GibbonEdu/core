@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'warning1'             => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3'               => __('Your request failed because your inputs were invalid, or no update was required.'),
         'errorFiles'           => $errorFiles,
+        'errorNoBackup'        => __('The restore could not start because there is no backup of the previous version. Backups are created each time the updater installs a new version.'),
         'errorFilePermissions' => __('Automatic updates are unavailable because the application does not have the required file permissions. Check the file permissions on your server or update manually.'),
         'errorUpdateBusy'      => __('A system update is already in progress. Please wait a few minutes and try again.'),
         'errorUpdateFailed'    => __('Update failed. Check the server logs and try again, or update manually.'),
