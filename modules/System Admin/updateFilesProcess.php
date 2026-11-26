@@ -53,8 +53,8 @@ if (($_POST['confirm'] ?? '') !== 'Y' || empty($_POST['address'])) {
 
 $updater = $container->get(Updater::class);
 
-// Need a valid install and the DB already up to date
-if ($updater->isUpdateRequired() > 0) {
+// Need a valid install (code not older than the DB) and the DB already up to date
+if (!$updater->isVersionValid() || $updater->isUpdateRequired() > 0) {
     $URL .= '&return=error3';
     header("Location: {$URL}");
     exit;

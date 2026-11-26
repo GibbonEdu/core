@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'warning1'             => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3'               => __('Your request failed because your inputs were invalid, or no update was required.'),
         'errorFiles'           => $errorFiles,
+        'errorRestoreDatabase' => __('The restore was refused because your database has already been updated beyond the backed-up files. Restoring them would leave your database newer than your code. Restore a database backup first, or update manually.'),
         'errorNoBackup'        => __('The restore could not start because there is no backup of the previous version. Backups are created each time the updater installs a new version.'),
         'errorFilePermissions' => __('Automatic updates are unavailable because the application does not have the required file permissions. Check the file permissions on your server or update manually.'),
         'errorUpdateBusy'      => __('A system update is already in progress. Please wait a few minutes and try again.'),
@@ -80,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Updater version number and status overview
     echo $page->fetchFromTemplate('updateOverview.twig.html', [
-        'versionError'      => empty($versionCatalog->getCatalog()),
+        'versionError'      => empty($versionCatalog->getCatalogVersion()),
         'versionCode'       => $updater->versionCode,
         'versionUpdate'     => !empty($nextRelease),
         'versionDB'         => $updater->versionDB,

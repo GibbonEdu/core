@@ -228,7 +228,7 @@ class VersionCatalog
 
             $checksum = trim($entry['checksum'] ?? '');
             $filePath = trim($entry['filePath'] ?? '');
-            if ($checksum == '' || $filePath == '' || !$this->isHostAllowed($filePath)) {
+            if ((!$cuttingEdge && $checksum == '') || $filePath == '' || !$this->isHostAllowed($filePath)) {
                 // Next version has no package yet — stop here
                 return null;
             }

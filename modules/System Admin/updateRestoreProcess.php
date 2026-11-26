@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Filesystem\Downloader;
@@ -68,6 +69,13 @@ if (!$filesystem->ensureDirectory($baseDir)) {
 $backupVersion = (string) $settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
 if (!$container->get(FileUpdater::class)->hasBackup($backupVersion)) {
     $URL .= '&return=errorNoBackup';
+    header("Location: {$URL}");
+    exit;
+}
+
+// The restored files must not be older than the database, or the schema would be ahead of the code
+if (version_compare($backupVersion, (string) $container->get(Updater::class)->versionDB, '<')) {
+    $URL .= '&return=errorRestoreDatabase';
     header("Location: {$URL}");
     exit;
 }

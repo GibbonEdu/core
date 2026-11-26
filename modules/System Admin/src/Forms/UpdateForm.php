@@ -184,7 +184,9 @@ class UpdateForm
     {
         $isBackgroundEligible = $this->isDatabaseUpdateRelease($version, $updateRequired)
             || $this->isNextRelease($version, $nextRelease);
-        $isRestoreRelease = $version === $this->backupVersion;
+        // Only offer a restore that would not leave the database ahead of the restored files
+        $isRestoreRelease = $version === $this->backupVersion
+            && version_compare($version, (string) $this->updater->versionDB, '>=');
         $isHigherVersion = version_compare($version, $this->updater->versionCode, '>');
 
         if ($this->isUpdateActive && ($isBackgroundEligible || $isRestoreRelease)) {
@@ -221,9 +223,9 @@ class UpdateForm
         }
 
         if ($this->isNextRelease($version, $nextRelease)) {
-            $phpVersion = phpversion();
-            if (version_compare($phpVersion, $nextRelease['phpVersion'], '<')) {
-                $row->addButton(__('Requires {version} or higher', ['version' => 'PHP '.$nextRelease['phpVersion']]))
+            $requiredPhp = (string) ($nextRelease['phpVersion'] ?? '');
+            if ($requiredPhp !== '' && version_compare(phpversion(), $requiredPhp, '<')) {
+                $row->addButton(__('Requires {version} or higher', ['version' => 'PHP '.$requiredPhp]))
                     ->addClass('text-sm text-gray-600')
                     ->setAttribute('disabled', 'disabled');
                 return;
@@ -251,6 +253,7 @@ class UpdateForm
             $submit = $row->addSubmit(__('Downgrade to {version}', ['version' => $version]))
                 ->addClass('rounded-md')
                 ->setAttribute('formaction', $restorePath)
+                ->setAttribute('hx-confirm', __('Replace your current files with the previous version? Your database will not be changed.'))
                 ->setColor('gray');
             $this->enableBackgroundSubmission($submit, $restorePath);
         }

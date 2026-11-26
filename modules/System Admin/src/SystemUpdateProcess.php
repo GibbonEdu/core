@@ -82,22 +82,45 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             throw new \InvalidArgumentException('Unsupported system update mode.');
         }
 
+        // Each mode starts the shared progress itself, once it holds the update lock. A
+        // process that loses the lock must not reset or fail the update that is running.
         if ($mode === 'file') {
-            $this->progress->begin('file');
             $this->runFileUpdate();
 
             return;
         }
 
         if ($mode === 'restore') {
-            $this->progress->begin('restore');
             $this->runRestore();
 
             return;
         }
 
-        $this->progress->begin('database');
         $this->runDatabaseUpdate();
+    }
+
+    /**
+     * Take the exclusive update lock without waiting. The lock is released by the
+     * system if the process dies, so a crash cannot leave it held.
+     *
+     * @param string $lockPath
+     * @return resource|null The lock, or null when the lock file cannot be used.
+     * @throws \RuntimeException When another update holds the lock.
+     */
+    private function acquireLock(string $lockPath)
+    {
+        $lock = @fopen($lockPath, 'c');
+        if ($lock === false) {
+            return null;
+        }
+
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+            fclose($lock);
+
+            throw new \RuntimeException('Another system update is already running.');
+        }
+
+        return $lock;
     }
 
     /**
@@ -110,7 +133,6 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     private function runFileUpdate(): void
     {
         $stage = 'preparing';
-        $this->progress->update($stage, 'working', 5);
 
         $absolutePath = (string) $this->session->get('absolutePath');
         $baseDir = $this->filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
@@ -122,15 +144,20 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             throw new \RuntimeException('File update directory is unavailable.');
         }
 
-        $lock = @fopen($lockPath, 'c');
-        if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
-            if ($lock !== false) {
-                fclose($lock);
-            }
-
-            $this->fail($stage, new \RuntimeException('File update is already running.'));
-            throw new \RuntimeException('File update is already running.');
+        // Fail now, before maintenance mode is switched on, rather than during the download
+        if (!$this->hasZipSupport()) {
+            $this->fail($stage, new \RuntimeException('The PHP Zip extension is not available.'));
+            throw new \RuntimeException('The PHP Zip extension is not available.');
         }
+
+        $lock = $this->acquireLock($lockPath);
+        if ($lock === null) {
+            $this->fail($stage, new \RuntimeException('The update lock file is unavailable.'));
+            throw new \RuntimeException('The update lock file is unavailable.');
+        }
+
+        $this->progress->begin('file');
+        $this->progress->update($stage, 'working', 5);
 
         // Keep the current updater timeout and maintenance-mode behavior.
         ignore_user_abort(true);
@@ -153,6 +180,17 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                 );
                 if (empty($release) || empty($release['filePath'])) {
                     throw new \RuntimeException(Downloader::ERROR_INVALID);
+                }
+
+                // The update page also blocks this, but the page can be stale or bypassed
+                $requiredPhp = (string) ($release['phpVersion'] ?? '');
+                if ($requiredPhp !== '' && version_compare(PHP_VERSION, $requiredPhp, '<')) {
+                    throw new \RuntimeException(sprintf(
+                        'Version %s requires PHP %s or higher, this server runs PHP %s.',
+                        $release['version'] ?? '',
+                        $requiredPhp,
+                        PHP_VERSION
+                    ));
                 }
 
                 $this->downloader->setProgressCallback($this->createProgressCallback('downloading', 10, 70));
@@ -218,7 +256,6 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     private function runRestore(): void
     {
         $stage = 'preparing';
-        $this->progress->update($stage, 'working', 10);
 
         $absolutePath = (string) $this->session->get('absolutePath');
         $baseDir = $this->filesystem->getSecureDirectory($absolutePath, Downloader::BASE_DIR);
@@ -230,15 +267,14 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
             throw new \RuntimeException('File restore directory is unavailable.');
         }
 
-        $lock = @fopen($lockPath, 'c');
-        if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
-            if ($lock !== false) {
-                fclose($lock);
-            }
-
-            $this->fail($stage, new \RuntimeException('File restore is already running.'));
-            throw new \RuntimeException('File restore is already running.');
+        $lock = $this->acquireLock($lockPath);
+        if ($lock === null) {
+            $this->fail($stage, new \RuntimeException('The update lock file is unavailable.'));
+            throw new \RuntimeException('The update lock file is unavailable.');
         }
+
+        $this->progress->begin('restore');
+        $this->progress->update($stage, 'working', 10);
 
         ignore_user_abort(true);
         @set_time_limit(3000);
@@ -254,6 +290,15 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
                 // The restore only needs the local backup, not the remote version catalog.
                 $backupVersion = (string) $this->settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
+
+                // Restored files older than the database would leave the schema ahead of the code
+                if (version_compare($backupVersion, (string) $this->updater->versionDB, '<')) {
+                    throw new \RuntimeException(sprintf(
+                        'The database is at version %s, newer than the backup at version %s.',
+                        $this->updater->versionDB,
+                        $backupVersion
+                    ));
+                }
 
                 $stage = 'restoring';
                 $this->progress->update($stage, 'working', 70);
@@ -306,6 +351,14 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     private function runDatabaseUpdate(): void
     {
         $stage = 'preparing';
+
+        // Share the lock with file updates and restores. A database update must still run
+        // when the lock folder does not exist or cannot be used, as when files are updated
+        // by hand, and in that case no file update can be running either.
+        $baseDir = $this->filesystem->getSecureDirectory((string) $this->session->get('absolutePath'), Downloader::BASE_DIR);
+        $lock = is_dir($baseDir) ? $this->acquireLock($baseDir.'/fileUpdate.lock') : null;
+
+        $this->progress->begin('database');
         $this->progress->update($stage, 'working', 10);
 
         try {
@@ -329,7 +382,22 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
         } catch (\Throwable $error) {
             $this->fail($stage, $error);
             throw $error;
+        } finally {
+            if ($lock !== null) {
+                flock($lock, LOCK_UN);
+                fclose($lock);
+            }
         }
+    }
+
+    /**
+     * Whether the PHP Zip extension, needed to unpack the update, is available.
+     *
+     * @return bool
+     */
+    protected function hasZipSupport(): bool
+    {
+        return class_exists(\ZipArchive::class);
     }
 
     /**
