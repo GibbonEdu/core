@@ -94,14 +94,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Link the admissions account to new parent and family, if they were created during this acceptance process
     if ($formData->getStatus() == 'Accepted') {
-        if ($formData->hasResult('familyCreated') && $formData->hasResult('gibbonFamilyID') && empty($account['gibbonFamilyID'])) {
+        if ($formData->has('familyCreated') && $formData->has('gibbonFamilyID') && empty($account['gibbonFamilyID'])) {
             $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], [
-                'gibbonFamilyID' => $formData->getResult('gibbonFamilyID'),
+                'gibbonFamilyID' => $formData->get('gibbonFamilyID'),
             ]);
         }
-        if ($formData->hasResult('parent1created') && $formData->hasResult('gibbonPersonIDParent1') && empty($account['gibbonPersonID'])) {
+        if ($formData->has('parent1created') && $formData->has('gibbonPersonIDParent1') && empty($account['gibbonPersonID'])) {
             $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], [
-                'gibbonPersonID' => $formData->getResult('gibbonPersonIDParent1'),
+                'gibbonPersonID' => $formData->get('gibbonPersonIDParent1'),
             ]);
         }
     }
