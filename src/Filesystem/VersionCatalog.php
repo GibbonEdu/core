@@ -268,6 +268,77 @@ class VersionCatalog
     }
 
     /**
+     * The Development release for the installed version, used to check for newer commits on the same
+     * version. Returns null unless the catalog lists the version as Development with an allowed package URL.
+     *
+     * @param string $currentVersion
+     * @return array|null
+     */
+    public function getCuttingEdgeRelease(string $currentVersion): ?array
+    {
+        $currentVersion = trim($currentVersion);
+        if ($currentVersion === '') {
+            return null;
+        }
+
+        $entry = $this->fetch($currentVersion)[$currentVersion] ?? null;
+        if (!is_array($entry) || strtolower(trim($entry['status'] ?? '')) !== 'development') {
+            return null;
+        }
+
+        $filePath = trim($entry['filePath'] ?? '');
+        if ($filePath === '' || !$this->isHostAllowed($filePath)) {
+            return null;
+        }
+
+        $entry['version'] = $currentVersion;
+        $entry['checksum'] = '';
+        $entry['filePath'] = $filePath;
+        $entry['status'] = 'development';
+
+        return $entry;
+    }
+
+    /**
+     * Ask GitHub for the newest commit on the branch that a Development package is archived from.
+     *
+     * @param array $release A Development release, from getCuttingEdgeRelease() or getNextRelease().
+     * @return string The full commit SHA, in lower case.
+     * @throws \RuntimeException When the branch or its commit cannot be read.
+     */
+    public function getCuttingEdgeCommit(array $release): string
+    {
+        $url = parse_url((string) ($release['filePath'] ?? ''));
+        if (!is_array($url)
+            || strtolower($url['host'] ?? '') !== 'github.com'
+            || preg_match('#^/(GibbonEdu/[^/]+)/archive/refs/heads/([^/]+)\.zip$#i', $url['path'] ?? '', $match) !== 1) {
+            throw new \RuntimeException('The Development package is not a GibbonEdu branch archive.');
+        }
+
+        try {
+            $response = $this->createClient(['connect_timeout' => 10, 'timeout' => 30])->request(
+                'GET',
+                'https://api.github.com/repos/'.$match[1].'/commits/'.rawurlencode(rawurldecode($match[2])),
+                ['headers' => ['Accept' => 'application/vnd.github+json'], 'http_errors' => false]
+            );
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Could not ask GitHub for the latest commit: '.$e->getMessage(), 0, $e);
+        }
+
+        if ($response->getStatusCode() !== 200) {
+            throw new \RuntimeException('GitHub returned HTTP '.$response->getStatusCode().' for the branch commit.');
+        }
+
+        $body = json_decode((string) $response->getBody(), true);
+        $sha = strtolower((string) (is_array($body) ? ($body['sha'] ?? '') : ''));
+        if (preg_match('/^[0-9a-f]{40}$/', $sha) !== 1) {
+            throw new \RuntimeException('GitHub did not return a commit SHA for the branch.');
+        }
+
+        return $sha;
+    }
+
+    /**
      * Check the package URL is https, on an allowed host, and under the path allowed for that host.
      *
      * @param string $url

@@ -94,7 +94,7 @@ if ($type == 'regularRelease' || $type == 'cuttingEdge') {
             error_log('updateProcess progress failure-state error: '.$progressError->getMessage());
         }
 
-        $URL .= '&return=errorBackgroundUpdateUnavailable';
+        $URL .= '&return=errorUpdateFailed';
         header("Location: {$URL}");
         exit;
     }

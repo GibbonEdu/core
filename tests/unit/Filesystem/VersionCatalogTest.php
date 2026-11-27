@@ -248,6 +248,101 @@ class VersionCatalogTest extends TestCase
         $this->assertSame($first, $second);
     }
 
+    public function testCuttingEdgeReleaseIsTheInstalledDevelopmentBuild(): void
+    {
+        $branch = 'https://github.com/GibbonEdu/core/archive/refs/heads/v31.0.00.zip';
+        $catalog = $this->createStubbedCatalog([
+            '31.0.00' => $this->release('31.0.00', 'Development', null, $branch),
+        ]);
+
+        $release = $catalog->getCuttingEdgeRelease('31.0.00');
+
+        $this->assertSame('31.0.00', $release['version']);
+        $this->assertSame('development', $release['status']);
+        $this->assertSame('', $release['checksum'], 'A development build has no checksum.');
+        $this->assertSame($branch, $release['filePath']);
+    }
+
+    /**
+     * @dataProvider notCuttingEdgeReleaseProvider
+     */
+    public function testCuttingEdgeReleaseIsOnlyAnInstalledDevelopmentBuild(array $entry): void
+    {
+        $catalog = $this->createStubbedCatalog(['31.0.00' => $entry]);
+
+        $this->assertNull($catalog->getCuttingEdgeRelease('31.0.00'));
+    }
+
+    public static function notCuttingEdgeReleaseProvider(): array
+    {
+        return [
+            'released version' => [['version' => '31.0.00', 'status' => 'Current', 'checksum' => 'a1', 'filePath' => 'https://gibbonedu.org/download/gibbon-31.0.00.zip']],
+            'development without a package address' => [['version' => '31.0.00', 'status' => 'Development', 'checksum' => null, 'filePath' => '']],
+            'development from an unlisted host' => [['version' => '31.0.00', 'status' => 'Development', 'checksum' => null, 'filePath' => 'https://example.com/x.zip']],
+        ];
+    }
+
+    public function testCommitIsTheHeadOfTheBranchTheBuildIsArchivedFrom(): void
+    {
+        $sha = str_repeat('ab', 20);
+        $history = [];
+        $catalog = $this->createStubbedCatalogWithHistory(
+            [new Response(200, [], json_encode(['sha' => strtoupper($sha), 'commit' => []]))],
+            $history
+        );
+
+        $commit = $catalog->getCuttingEdgeCommit([
+            'filePath' => 'https://github.com/GibbonEdu/core/archive/refs/heads/v31.0.00.zip',
+        ]);
+
+        $this->assertSame($sha, $commit, 'The SHA is returned in lower case.');
+        $this->assertCount(1, $history);
+        $this->assertSame(
+            'https://api.github.com/repos/GibbonEdu/core/commits/v31.0.00',
+            (string) $history[0]['request']->getUri()
+        );
+    }
+
+    /**
+     * @dataProvider unreadableCommitReplyProvider
+     */
+    public function testACommitThatCannotBeReadIsRefused(Response|\Throwable $reply): void
+    {
+        $catalog = $this->createStubbedCatalogFromReplies([$reply]);
+
+        $this->expectException(\RuntimeException::class);
+        $catalog->getCuttingEdgeCommit([
+            'filePath' => 'https://github.com/GibbonEdu/core/archive/refs/heads/v31.0.00.zip',
+        ]);
+    }
+
+    public static function unreadableCommitReplyProvider(): array
+    {
+        return [
+            'branch not found' => [new Response(404, [], '{"message":"Not Found"}')],
+            'server error' => [new Response(500, [], 'Error')],
+            'not JSON' => [new Response(200, [], 'not json')],
+            'no SHA' => [new Response(200, [], json_encode(['message' => 'unexpected']))],
+            'SHA of the wrong length' => [new Response(200, [], json_encode(['sha' => 'abc123']))],
+            'connection failure' => [new ConnectException('timed out', new Request('GET', 'https://api.github.com/'))],
+        ];
+    }
+
+    public function testOnlyABranchArchiveCanBeLookedUpForACommit(): void
+    {
+        $history = [];
+        $catalog = $this->createStubbedCatalogWithHistory([], $history);
+
+        try {
+            $catalog->getCuttingEdgeCommit(['filePath' => 'https://gibbonedu.org/download/gibbon-31.0.00.zip']);
+            $this->fail('A release download is not a branch, so it has no commit to look up.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame([], $history, 'GitHub is not asked about a download that is not a branch archive.');
+        }
+    }
+
     public function testChangelogTextIsGroupedByVersionAndCategory(): void
     {
         $text = "v30.0.03\n--------\n\n    Security\n        System: improved POST referrer check\n\n    Bug Fixes\n        Calendar: fixed attendance\n";
@@ -275,6 +370,21 @@ class VersionCatalogTest extends TestCase
         $this->assertSame(['31.0.00', '30.0.00'], array_keys($merged));
         $this->assertSame(['Security' => ['A fix.']], $merged['30.0.00']['changelog']);
         $this->assertSame('Current', $merged['30.0.00']['status']);
+    }
+
+    /**
+     * @param array<int, Response|\Throwable> $replies
+     * @param array<int, array<string, mixed>> $history Filled with each request sent, in order.
+     */
+    private function createStubbedCatalogWithHistory(array $replies, array &$history): StubbedVersionCatalog
+    {
+        $stack = HandlerStack::create(new MockHandler($replies));
+        $stack->push(\GuzzleHttp\Middleware::history($history));
+
+        $catalog = new StubbedVersionCatalog($this->createMock(Session::class));
+        $catalog->client = new Client(['handler' => $stack]);
+
+        return $catalog;
     }
 
     /**

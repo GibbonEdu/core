@@ -78,12 +78,18 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
      */
     public function run(string $mode): void
     {
-        if (!in_array($mode, ['file', 'regularRelease', 'cuttingEdge', 'restore'], true)) {
+        if (!in_array($mode, ['file', 'regularRelease', 'cuttingEdge', 'restore', 'cuttingEdgeCheck'], true)) {
             throw new \InvalidArgumentException('Unsupported system update mode.');
         }
 
         // Each mode starts the shared progress itself, once it holds the update lock. A
         // process that loses the lock must not reset or fail the update that is running.
+        if ($mode === 'cuttingEdgeCheck') {
+            $this->runCuttingEdgeCheck();
+
+            return;
+        }
+
         if ($mode === 'file') {
             $this->runFileUpdate();
 
@@ -124,22 +130,62 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
     }
 
     /**
-     * Run a file update: download the next release and install it.
+     * Check GitHub for the newest commit of the installed Cutting Edge build. When the commit is
+     * blank or different from the installed one, install the build; otherwise report it as up to date.
      *
      * @return void
      * @throws \RuntimeException
      */
-    private function runFileUpdate(): void
+    private function runCuttingEdgeCheck(): void
     {
-        $this->runLocked('file', 'File update', 5, true, function (string &$stage): void {
+        $stage = 'checking';
+        $this->progress->begin('cuttingEdgeCheck');
+        $this->progress->update($stage, 'working', 10);
+
+        try {
+            $release = $this->versionCatalog->getCuttingEdgeRelease($this->updater->versionCode);
+            if ($release === null) {
+                throw new \RuntimeException(Downloader::ERROR_INVALID);
+            }
+
+            $commit = $this->versionCatalog->getCuttingEdgeCommit($release);
+            $installedCommit = strtolower(trim((string) $this->settingGateway->getSettingByScope('System Admin', 'cuttingEdgeCommit')));
+        } catch (\Throwable $error) {
+            $this->fail($stage, $error);
+            throw $error;
+        }
+
+        if ($installedCommit !== '' && $installedCommit === $commit) {
+            $this->progress->update('upToDate', 'complete', 100);
+
+            return;
+        }
+
+        $this->runFileUpdate($release, $commit);
+    }
+
+    /**
+     * Run a file update: install the given Development build, or download the next release and install it.
+     *
+     * @param array|null $release A release to install in place of the next release.
+     * @param string $commit The commit of $release. It is saved once the update is installed.
+     * @return void
+     * @throws \RuntimeException
+     */
+    private function runFileUpdate(?array $release = null, string $commit = ''): void
+    {
+        $this->runLocked('file', 'File update', 5, true, function (string &$stage) use (&$release, &$commit): void {
             $absolutePath = (string) $this->session->get('absolutePath');
 
             $stage = 'downloading';
             $this->progress->update($stage, 'working', 10);
-            $release = $this->versionCatalog->getNextRelease(
-                $this->updater->versionCode,
-                $this->updater->isCuttingEdge()
-            );
+            if ($release === null) {
+                $release = $this->versionCatalog->getNextRelease(
+                    $this->updater->versionCode,
+                    $this->updater->isCuttingEdge()
+                );
+                $commit = $this->findDevelopmentCommit($release);
+            }
             if (empty($release) || empty($release['filePath'])) {
                 throw new \RuntimeException(Downloader::ERROR_INVALID);
             }
@@ -177,6 +223,7 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
             $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
             $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', $this->updater->versionCode);
+            $this->settingGateway->updateSettingByScope('System Admin', 'cuttingEdgeCommit', $commit);
         });
     }
 
@@ -213,6 +260,8 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
 
             $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdater', 'idle');
             $this->settingGateway->updateSettingByScope('System Admin', 'fileUpdaterBackup', '');
+            // The restored files are not known to match the newest commit, so the next check installs again
+            $this->settingGateway->updateSettingByScope('System Admin', 'cuttingEdgeCommit', '');
         });
     }
 
@@ -361,6 +410,28 @@ class SystemUpdateProcess extends BackgroundProcess implements ContainerAwareInt
                 flock($lock, LOCK_UN);
                 fclose($lock);
             }
+        }
+    }
+
+    /**
+     * The commit of a Development release, saved so that the next check can tell whether it is still
+     * the newest. A failed lookup gives a blank commit, so the next check installs the build again.
+     *
+     * @param array|null $release
+     * @return string
+     */
+    private function findDevelopmentCommit(?array $release): string
+    {
+        if (strtolower((string) ($release['status'] ?? '')) !== 'development') {
+            return '';
+        }
+
+        try {
+            return $this->versionCatalog->getCuttingEdgeCommit($release);
+        } catch (\Throwable $error) {
+            error_log('SystemUpdateProcess could not read the Development commit: '.$error->getMessage());
+
+            return '';
         }
     }
 

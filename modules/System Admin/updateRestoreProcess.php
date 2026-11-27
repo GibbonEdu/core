@@ -66,14 +66,14 @@ if (!$filesystem->ensureDirectory($baseDir)) {
 // Check the local backup holds the recorded version before accepting a restore request.
 $backupVersion = (string) $settingGateway->getSettingByScope('System Admin', 'fileUpdaterBackup');
 if (!$container->get(FileUpdater::class)->hasBackup($backupVersion)) {
-    $URL .= '&return=errorNoBackup';
+    $URL .= '&return=errorRestore';
     header("Location: {$URL}");
     exit;
 }
 
 // The restored files must not be older than the database, or the schema would be ahead of the code
 if (version_compare($backupVersion, (string) $container->get(Updater::class)->versionDB, '<')) {
-    $URL .= '&return=errorRestoreDatabase';
+    $URL .= '&return=errorRestore';
     header("Location: {$URL}");
     exit;
 }

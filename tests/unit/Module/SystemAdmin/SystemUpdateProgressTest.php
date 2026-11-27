@@ -142,6 +142,9 @@ class SystemUpdateProgressTest extends TestCase
         $this->assertSame(__('File system restore in progress.'), $progress->getTypeLabel('restore'));
         $this->assertSame(__('Installing update…'), $progress->getStageLabel('installing'));
         $this->assertSame(__('Restoring files…'), $progress->getStageLabel('restoring'));
+        $this->assertSame(__('Cutting Edge update check in progress.'), $progress->getTypeLabel('cuttingEdgeCheck'));
+        $this->assertSame(__('Up to date'), $progress->getStageLabel('upToDate'));
+        $this->assertSame(__('Checking for updates…'), $progress->getStageLabel('checking'));
         $this->assertNull($progress->getStatusLabel('unknown'));
         $this->assertNull($progress->getTypeLabel(null));
         $this->assertNull($progress->getStageLabel('unknown'));

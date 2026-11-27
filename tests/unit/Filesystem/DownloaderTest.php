@@ -59,7 +59,7 @@ class DownloaderTest extends TestCase
         $webRoot = $this->fixturePath.'/web';
         mkdir($webRoot, 0755, true);
         $session = $this->createMock(Session::class);
-        $session->method('get')->with('absolutePath')->willReturn($webRoot);
+        $session->method('get')->willReturnCallback(fn (string $key) => $key === 'absolutePath' ? $webRoot : ($key === 'cuttingEdgeCode' ? 'Y' : null));
 
         $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new Filesystem());
 
@@ -74,7 +74,7 @@ class DownloaderTest extends TestCase
         $webRoot = $this->fixturePath.'/web';
         mkdir($webRoot, 0755, true);
         $session = $this->createMock(Session::class);
-        $session->method('get')->with('absolutePath')->willReturn($webRoot);
+        $session->method('get')->willReturnCallback(fn (string $key) => $key === 'absolutePath' ? $webRoot : ($key === 'cuttingEdgeCode' ? 'Y' : null));
         $filesystem = new DownloaderFilesystem();
         $filesystem->parentDirectoryAvailable = false;
 
@@ -88,7 +88,7 @@ class DownloaderTest extends TestCase
         $webRoot = $this->fixturePath.'/web';
         mkdir($webRoot, 0755, true);
         $session = $this->createMock(Session::class);
-        $session->method('get')->with('absolutePath')->willReturn($webRoot);
+        $session->method('get')->willReturnCallback(fn (string $key) => $key === 'absolutePath' ? $webRoot : ($key === 'cuttingEdgeCode' ? 'Y' : null));
         $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new Filesystem());
         $explicit = $this->fixturePath.'/explicit-backup';
 
@@ -108,7 +108,7 @@ class DownloaderTest extends TestCase
         $zip->close();
 
         $session = $this->createMock(Session::class);
-        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
+        $session->method('get')->willReturnCallback(fn (string $key) => $key === 'absolutePath' ? $this->fixturePath : ($key === 'cuttingEdgeCode' ? 'Y' : null));
 
         $progress = [];
         $filesystem = new DownloaderFilesystem();
@@ -146,7 +146,7 @@ class DownloaderTest extends TestCase
         $zip->close();
 
         $session = $this->createMock(Session::class);
-        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
+        $session->method('get')->willReturnCallback(fn (string $key) => $key === 'absolutePath' ? $this->fixturePath : ($key === 'cuttingEdgeCode' ? 'Y' : null));
         $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new DownloaderFilesystem());
         $downloader->setBaseDirectory($this->fixturePath.'/backups/fileUpdate');
 
@@ -433,6 +433,70 @@ class DownloaderTest extends TestCase
         $this->assertFalse(is_link($this->fixturePath.'/backups/fileUpdate/staging/leftover'));
     }
 
+    public function testADevelopmentWithoutCuttingEdgeGetsNoChecksumExemption(): void
+    {
+        $session = $this->createMock(Session::class);
+        $session->method('get')->willReturnCallback(fn (string $key) => $key === 'absolutePath' ? $this->fixturePath : ($key === 'cuttingEdgeCode' ? 'N' : null));
+        $downloader = new Downloader($session, $this->createMock(VersionCatalog::class), new Filesystem());
+        $zipPath = $this->createZip(['version.php' => "<?php\n\$version = '31.0.00';\n"]);
+
+        try {
+            $downloader->verify($zipPath, '', 'Development');
+            $this->fail('A Development build without a checksum is only exempt on cutting edge installs.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_VERIFY, $error->getMessage());
+        }
+    }
+
+    /**
+     * @dataProvider developmentStatusProvider
+     */
+    public function testADevelopmentBuildWithoutAChecksumIsCheckedByItsAddressOnly(string $status): void
+    {
+        $requests = [];
+        $downloader = null;
+
+        $files = $this->runReleased([
+            'status' => $status,
+            'checksum' => null,
+            'filePath' => 'https://github.com/GibbonEdu/core/archive/refs/heads/v31.0.00.zip',
+        ], [], $requests, $downloader);
+
+        $this->assertSame(['version.php'], $files);
+        $this->assertSame([], $requests, 'GitHub is not asked for a digest of a development build.');
+        $this->assertSame(1, $downloader->downloads);
+    }
+
+    public static function developmentStatusProvider(): array
+    {
+        // The catalog lower-cases status, so a real Development build arrives as 'development'
+        return [
+            'lower case, as the catalog sends it' => ['development'],
+            'capitalised, as the catalog lists it' => ['Development'],
+        ];
+    }
+
+    public function testAReleaseOtherThanDevelopmentStillNeedsItsChecksum(): void
+    {
+        $downloader = null;
+        $requests = [];
+
+        try {
+            $this->runReleased([
+                'status' => 'Current',
+                'checksum' => '',
+                'filePath' => 'https://gibbonedu.org/download/gibbon-30.0.03.zip',
+            ], [], $requests, $downloader);
+            $this->fail('A released package without a checksum must not be installed.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame(Downloader::ERROR_VERIFY, $error->getMessage());
+        }
+    }
+
     public function testReleasedGithubFileMustHaveTheChecksumGithubReports(): void
     {
         $requests = [];
@@ -618,7 +682,7 @@ class DownloaderTest extends TestCase
     private function createDownloader(Filesystem $filesystem, ?int $maxExtractedBytes = null): LimitedDownloader
     {
         $session = $this->createMock(Session::class);
-        $session->method('get')->with('absolutePath')->willReturn($this->fixturePath);
+        $session->method('get')->willReturnCallback(fn (string $key) => $key === 'absolutePath' ? $this->fixturePath : ($key === 'cuttingEdgeCode' ? 'Y' : null));
 
         $downloader = new LimitedDownloader($session, $this->createMock(VersionCatalog::class), $filesystem);
         $downloader->setBaseDirectory($this->fixturePath.'/backups/fileUpdate');

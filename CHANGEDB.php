@@ -1074,5 +1074,6 @@ $sql[$count][1] = "
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdater', 'File Updater Status', 'Tracks the current stage of the file updater.', 'idle');end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdaterBackup', 'File Updater Backup', 'Version number of the previous installed version.', '');end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'backgroundUpdateProgress', 'Background Update Progress', '', '');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'cuttingEdgeCommit', 'Cutting Edge Commit', 'The GitHub commit of the installed Cutting Edge code, used to check for newer commits on the same version. Blank means unknown.', '');end
 
 ";

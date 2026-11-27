@@ -190,8 +190,9 @@ class UpdateForm
         $isRestoreRelease = $version === $this->backupVersion
             && version_compare($version, (string) $this->updater->versionDB, '>=');
         $isHigherVersion = version_compare($version, $this->updater->versionCode, '>');
+        $isCuttingEdgeCheck = $this->isCheckForUpdatesAvailable($version, $nextRelease, $updateRequired, $cuttingEdge);
 
-        if ($this->isUpdateActive && ($isBackgroundEligible || $isRestoreRelease)) {
+        if ($this->isUpdateActive && ($isBackgroundEligible || $isRestoreRelease || $isCuttingEdgeCheck)) {
             $row->addButton(__('Update in Progress'))
                 ->addClass('text-sm text-gray-600')
                 ->setAttribute('disabled', 'disabled');
@@ -200,6 +201,15 @@ class UpdateForm
 
         if ($this->isDatabaseUpdateRelease($version, $updateRequired)) {
             $this->addDatabaseUpdateSubmit($row, $cuttingEdge);
+            return;
+        }
+
+        if ($isCuttingEdgeCheck) {
+            $submit = $row->addSubmit(__('Check for Updates'))->addClass('text-sm text-gray-600');
+            $this->enableBackgroundSubmission(
+                $submit,
+                $this->session->get('absoluteURL').'/modules/System Admin/updateCheckProcess.php'
+            );
             return;
         }
 
@@ -391,6 +401,27 @@ class UpdateForm
     private function isDatabaseUpdateRelease(string $version, bool $updateRequired): bool
     {
         return $updateRequired && $version === $this->updater->versionCode;
+    }
+
+    /**
+     * Whether the installed version can be checked for newer commits: a cutting edge install on a
+     * Development version, with no newer version to update to.
+     *
+     * @param string $version
+     * @param array|null $nextRelease
+     * @param bool $updateRequired
+     * @param bool $cuttingEdge
+     * @return bool
+     */
+    private function isCheckForUpdatesAvailable(string $version, ?array $nextRelease, bool $updateRequired, bool $cuttingEdge): bool
+    {
+        if (!$cuttingEdge || $updateRequired || $nextRelease !== null || $version !== $this->updater->versionCode) {
+            return false;
+        }
+
+        $status = $this->versionCatalog->getCatalog()[$version]['status'] ?? '';
+
+        return strtolower((string) $status) === 'development';
     }
 
     /**

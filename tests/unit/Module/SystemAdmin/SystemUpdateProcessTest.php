@@ -136,6 +136,7 @@ class SystemUpdateProcessTest extends TestCase
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
         $this->assertSame('idle', $state->values['System Admin/fileUpdater']);
         $this->assertSame('30.0.00', $state->values['System Admin/fileUpdaterBackup']);
+        $this->assertSame('', $state->values['System Admin/cuttingEdgeCommit'], 'A released version has no Cutting Edge commit.');
         $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
         $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
         $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
@@ -147,6 +148,7 @@ class SystemUpdateProcessTest extends TestCase
         $events = [];
         [$settings, $state] = $this->createSettingGateway($events);
         $state->values['System Admin/fileUpdaterBackup'] = '29.0.00';
+        $state->values['System Admin/cuttingEdgeCommit'] = str_repeat('a', 40);
         file_put_contents($this->baseDirectory.'/staging/temporary.txt', 'temporary');
         file_put_contents($this->baseDirectory.'/package.zip', 'package');
         file_put_contents($this->fixturePath.'/uploads/cache/cached.txt', 'cache');
@@ -188,6 +190,7 @@ class SystemUpdateProcessTest extends TestCase
         $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
         $this->assertSame('idle', $state->values['System Admin/fileUpdater']);
         $this->assertSame('', $state->values['System Admin/fileUpdaterBackup']);
+        $this->assertSame('', $state->values['System Admin/cuttingEdgeCommit'], 'The restored files are not known to match the newest commit.');
         $this->assertFileDoesNotExist($this->baseDirectory.'/staging/temporary.txt');
         $this->assertFileDoesNotExist($this->baseDirectory.'/package.zip');
         $this->assertFileDoesNotExist($this->fixturePath.'/uploads/cache/cached.txt');
@@ -727,6 +730,180 @@ class SystemUpdateProcessTest extends TestCase
         } finally {
             $this->assertSame(['installing', 'failed'], array_slice(end($state->snapshots), 0, 2));
         }
+    }
+
+    public function testCuttingEdgeCheckLeavesTheInstallAloneWhenTheCommitIsUnchanged(): void
+    {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+        $state->values['System Admin/cuttingEdgeCommit'] = $this->commit('a');
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('getCuttingEdgeRelease')->with('31.0.00')->willReturn($this->developmentRelease());
+        $versionCatalog->method('getCuttingEdgeCommit')->willReturn($this->commit('a'));
+        $versionCatalog->expects($this->never())->method('getNextRelease');
+
+        $downloader = $this->createMock(Downloader::class);
+        $downloader->expects($this->never())->method('run');
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->expects($this->never())->method('run');
+
+        $process = $this->createProcess($settings, $this->createDevelopmentUpdater(), $versionCatalog, $downloader, $fileUpdater, $events);
+        $process->run('cuttingEdgeCheck');
+
+        $this->assertSame(['upToDate', 'complete', 100], end($state->snapshots));
+        $this->assertSame([], array_filter($events, fn (string $event) => str_starts_with($event, 'setting:maintenanceMode')), 'Maintenance mode is not touched.');
+        $this->assertSame($this->commit('a'), $state->values['System Admin/cuttingEdgeCommit']);
+        $this->assertFileLockWasReleased();
+    }
+
+    /**
+     * @dataProvider staleCommitProvider
+     */
+    public function testCuttingEdgeCheckInstallsTheBuildWhenTheCommitIsBlankOrDifferent(string $installedCommit): void
+    {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+        $state->values['System Admin/cuttingEdgeCommit'] = $installedCommit;
+
+        $release = $this->developmentRelease();
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('getCuttingEdgeRelease')->willReturn($release);
+        $versionCatalog->method('getCuttingEdgeCommit')->willReturn($this->commit('b'));
+        $versionCatalog->expects($this->never())->method('getNextRelease');
+
+        $downloader = $this->createMock(Downloader::class);
+        $downloader->expects($this->once())
+            ->method('run')
+            ->with($release)
+            ->willReturn(['index.php']);
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->method('checkPermissions')->willReturn(true);
+        $fileUpdater->expects($this->once())->method('run')->with(['index.php']);
+
+        $process = $this->createProcess($settings, $this->createDevelopmentUpdater(), $versionCatalog, $downloader, $fileUpdater, $events);
+        $process->run('cuttingEdgeCheck');
+
+        $this->assertSame(['finalizing', 'complete', 100], end($state->snapshots));
+        $this->assertSame($this->commit('b'), $state->values['System Admin/cuttingEdgeCommit'], 'The installed commit is recorded.');
+        $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
+        $this->assertFileLockWasReleased();
+    }
+
+    public static function staleCommitProvider(): array
+    {
+        return [
+            'no commit recorded' => [''],
+            'an older commit' => [str_repeat('a', 40)],
+        ];
+    }
+
+    public function testCuttingEdgeCheckFailureIsRecordedWithoutTouchingTheInstall(): void
+    {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+        $state->values['System Admin/cuttingEdgeCommit'] = $this->commit('a');
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('getCuttingEdgeRelease')->willReturn($this->developmentRelease());
+        $versionCatalog->method('getCuttingEdgeCommit')->willThrowException(new \RuntimeException('GitHub is unreachable.'));
+
+        $downloader = $this->createMock(Downloader::class);
+        $downloader->expects($this->never())->method('run');
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->expects($this->never())->method('run');
+
+        $process = $this->createProcess($settings, $this->createDevelopmentUpdater(), $versionCatalog, $downloader, $fileUpdater, $events);
+
+        try {
+            $process->run('cuttingEdgeCheck');
+            $this->fail('A check that cannot reach GitHub must report a failure.');
+        } catch (\PHPUnit\Framework\AssertionFailedError $failure) {
+            throw $failure;
+        } catch (\RuntimeException $error) {
+            $this->assertSame('GitHub is unreachable.', $error->getMessage());
+        }
+
+        $this->assertSame(['checking', 'failed', 10], end($state->snapshots));
+        $this->assertSame([], array_filter($events, fn (string $event) => str_starts_with($event, 'setting:maintenanceMode')));
+        $this->assertSame($this->commit('a'), $state->values['System Admin/cuttingEdgeCommit']);
+        $this->assertFileLockWasReleased();
+    }
+
+    public function testADevelopmentUpdateRecordsTheCommitItInstalled(): void
+    {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('getNextRelease')->willReturn($this->developmentRelease('31.0.01'));
+        $versionCatalog->method('getCuttingEdgeCommit')->willReturn($this->commit('c'));
+
+        [$downloader, $fileUpdater] = $this->createInstallingDoubles();
+        $process = $this->createProcess($settings, $this->createDevelopmentUpdater(), $versionCatalog, $downloader, $fileUpdater, $events);
+        $process->run('file');
+
+        $this->assertSame($this->commit('c'), $state->values['System Admin/cuttingEdgeCommit']);
+        $this->assertSame(['finalizing', 'complete', 100], end($state->snapshots));
+    }
+
+    public function testADevelopmentUpdateStillInstallsWhenItsCommitCannotBeRead(): void
+    {
+        $events = [];
+        [$settings, $state] = $this->createSettingGateway($events);
+        $state->values['System Admin/cuttingEdgeCommit'] = $this->commit('a');
+
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('getNextRelease')->willReturn($this->developmentRelease('31.0.01'));
+        $versionCatalog->method('getCuttingEdgeCommit')->willThrowException(new \RuntimeException('GitHub is unreachable.'));
+
+        [$downloader, $fileUpdater] = $this->createInstallingDoubles();
+        $process = $this->createProcess($settings, $this->createDevelopmentUpdater(), $versionCatalog, $downloader, $fileUpdater, $events);
+        $process->run('file');
+
+        // A blank commit makes the next check install the build again, rather than trust an unknown commit
+        $this->assertSame('', $state->values['System Admin/cuttingEdgeCommit']);
+        $this->assertSame(['finalizing', 'complete', 100], end($state->snapshots));
+        $this->assertSame('N', $state->values['System Admin/maintenanceMode']);
+    }
+
+    private function commit(string $character): string
+    {
+        return str_repeat($character, 40);
+    }
+
+    private function developmentRelease(string $version = '31.0.00'): array
+    {
+        return [
+            'version' => $version,
+            'status' => 'development',
+            'checksum' => '',
+            'filePath' => 'https://github.com/GibbonEdu/core/archive/refs/heads/v'.$version.'.zip',
+            'phpVersion' => '8.2',
+        ];
+    }
+
+    private function createDevelopmentUpdater(): Updater
+    {
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '31.0.00';
+        $updater->method('isCuttingEdge')->willReturn(true);
+
+        return $updater;
+    }
+
+    /**
+     * @return array{0: Downloader, 1: FileUpdater}
+     */
+    private function createInstallingDoubles(): array
+    {
+        $downloader = $this->createMock(Downloader::class);
+        $downloader->method('run')->willReturn(['index.php']);
+
+        $fileUpdater = $this->createMock(FileUpdater::class);
+        $fileUpdater->method('checkPermissions')->willReturn(true);
+
+        return [$downloader, $fileUpdater];
     }
 
     public function testUnsupportedModeDoesNotStartAnUpdate(): void
