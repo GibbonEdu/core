@@ -208,14 +208,21 @@ class BackgroundUpdateProgressCest
         $I->click('Logout', 'a');
         $I->loginAsAdmin();
         $I->amOnModulePage('System Admin', 'update.php');
-        $I->see('Update in Progress');
 
-        // The active update makes the matching submit control a disabled button,
-        // preventing a normal browser submission before any update workflow starts.
+        // While an update is active, no background submit control is offered, so a second update cannot start
+        $I->dontSeeElement('[hx-post$="Process.php"]');
+
+        // A pending database update is shown as a disabled button while the update runs
+        $databaseVersion = (string) $I->grabFromDatabase('gibbonSetting', 'value', [
+            'scope' => 'System',
+            'name' => 'version',
+        ]);
         $processCount = $I->grabNumRecords('gibbonLog', [
             'title' => self::SYSTEM_UPDATE_TITLE,
         ]);
-        $I->seeElement('button[name="Update in Progress"][disabled="disabled"]');
+        if ($databaseVersion !== $this->currentVersion()) {
+            $I->seeElement('button[name="Update in Progress"][disabled="disabled"]');
+        }
         $I->assertSame($processCount, $I->grabNumRecords('gibbonLog', [
             'title' => self::SYSTEM_UPDATE_TITLE,
         ]));
@@ -255,11 +262,17 @@ class BackgroundUpdateProgressCest
         $I->seeElement('#updateProgressRegion');
         $I->seeElement('#updateProgress[style="display: none;"]');
 
-        // A background submission posts with HTMX and leaves the page in place
-        $I->seeElement('[hx-post][hx-swap="none"]');
+        // Background controls appear only when there is a database update, a release to install,
+        // or a backup to restore. When none applies, the page reports that the core is up to date.
+        $source = $I->grabPageSource();
+        if (preg_match('~hx-post="[^"]*/modules/System Admin/update(?:Files|Restore)?Process\.php"~', $source) === 1) {
+            // A background submission posts with HTMX to a process script and leaves the page in place
+            $I->seeElement('[hx-post$="Process.php"][hx-swap="none"]');
+        } else {
+            $I->see('Your Gibbon core is up to date.');
+        }
 
         // The restore and InnoDB controls only appear in some states, so check them when present
-        $source = $I->grabPageSource();
         if (str_contains($source, 'updateRestoreProcess.php')) {
             $I->seeElement('[hx-post$="/updateRestoreProcess.php"]');
         }
