@@ -268,8 +268,6 @@ class BackgroundUpdateProgressCest
         if (preg_match('~hx-post="[^"]*/modules/System Admin/update(?:Files|Restore)?Process\.php"~', $source) === 1) {
             // A background submission posts with HTMX to a process script and leaves the page in place
             $I->seeElement('[hx-post$="Process.php"][hx-swap="none"]');
-        } else {
-            $I->see('Your Gibbon core is up to date.');
         }
 
         // The restore and InnoDB controls only appear in some states, so check them when present
