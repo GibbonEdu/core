@@ -386,7 +386,7 @@ class VersionCatalog
             }
 
             $this->catalog[$version] = !empty($this->catalog[$version])
-                ? array_merge($this->catalog[$version], $entry)
+                ? array_merge($entry, $this->catalog[$version])
                 : $entry;
         }
 

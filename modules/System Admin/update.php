@@ -130,13 +130,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         echo Format::alert(__('Your Gibbon core is up to date.'), 'success');
     } elseif (empty($nextRelease) && empty($versionCatalog->getCatalogVersion())) {
         echo Format::alert(__('Version check failed').'. '.__('Could not connect to the GibbonEdu repository. Please wait a few minutes and try again, or update manually.'), 'error');
-    } else {
+    } elseif (!empty($nextRelease)) {
         echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.').'<br><br><b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
     }
 
     // Cutting edge warning and composer check
     if ($cuttingEdge) {
-        $updateMessage = empty($nextRelease) && !$updateRequired ? __('Check for updates to download the latest cutting edge code.') : '';
+        $updateMessage = empty($nextRelease) && !$updateRequired ? ' '.__('Check for updates to download the latest cutting edge code.') : '';
 
         echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.').$updateMessage, 'exception');
 
