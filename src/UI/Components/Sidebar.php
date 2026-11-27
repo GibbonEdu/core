@@ -85,7 +85,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         ob_start();
 
         $loginReturn = $_GET['loginReturn'] ?? '';
-
+        $loginWaitSeconds = max(0, $this->session->get('loginWaitUntil', 0) - time());
 
         if (!empty($loginReturn)) {
             $loginReturnMessage = '';
@@ -112,6 +112,12 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
                     break;
                 case 'fail11': $loginReturnMessage = __('Your MFA code is invalid or missing.');
+                    break;
+                case 'fail12':
+                    if ($loginWaitSeconds > 0) {
+                        $minutes = (int) ceil($loginWaitSeconds / 60);
+                        $loginReturnMessage = __('Too many failed logins: please wait {time} before trying again.', ['time' => __n('{count} minute', '{count} minutes', $minutes)]);
+                    }
                     break;
             }
             if ( $loginReturnMessage != ''){
@@ -324,7 +330,10 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $row = $form->addRow()->setClass('flex justify-end items-center');
                     $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('flex-1 mt-1')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
-                    $row->addSubmit(__('Login'))->addClass('flex-1 mt-1 text-right');
+                    $loginButton = $row->addSubmit(__('Login'))->addClass('flex-1 mt-1 text-right');
+                    if ($loginWaitSeconds > 0) {
+                        $loginButton->setAttribute('x-init', 'submitDisabled = true; $el.classList.add("opacity-50"); setTimeout(() => { submitDisabled = false; $el.classList.remove("opacity-50") }, '.($loginWaitSeconds * 1000).')');
+                    }
 
                 echo $form->getOutput();
                 echo '</div>';
