@@ -1,4 +1,19 @@
+Options -Indexes
+
 <FilesMatch "\.(js|htm|html|css|php|php3|php4|php5|php7|phtml|asp|jsp|py|DS_Store)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Route existing upload files through the auth gateway
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^(.*)$ ../file.php?path=$1 [L,QSA]
+</IfModule>
+
+# Fail closed: if mod_rewrite is not available, never serve uploads statically
+<IfModule !mod_rewrite.c>
+    Order Allow,Deny
+    Deny from all
+</IfModule>
