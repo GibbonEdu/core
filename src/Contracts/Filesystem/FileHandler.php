@@ -48,4 +48,14 @@ interface FileHandler
      * @return bool
      */
     public function deleteFile(string $foreignTable, int|string $foreignTableID, string $foreignColumn);
+
+    /**
+     * Resolve a stored upload path to a real file inside the installation uploads directory.
+     */
+    public function resolveStoredPath(string $root, string $filePath): ?string;
+
+    /**
+     * Real path when it is the directory itself or a file inside it, otherwise null.
+     */
+    public function realPathInside(string $path, string $directory): ?string;
 }

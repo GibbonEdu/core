@@ -26,6 +26,7 @@ use Gibbon\Contracts\Filesystem\FileHandler as FileHandlerInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\FileGateway;
 use Gibbon\Domain\System\FilePointerGateway;
+use Gibbon\FileUploader;
 
 /**
  * File Handler Class
@@ -49,19 +50,81 @@ class FileHandler implements FileHandlerInterface
     }
 
     /**
+     * Resolve a stored upload path to a real file inside the installation uploads directory.
+     */
+    public function resolveStoredPath(string $root, string $filePath): ?string
+    {
+        $filePath = str_replace('\\', '/', trim($filePath));
+        if ($filePath === '' || str_contains($filePath, "\0") || str_contains($filePath, ':')) {
+            return null;
+        }
+
+        $segments = explode('/', ltrim($filePath, '/'));
+        foreach ($segments as $segment) {
+            if ($segment === '' || $segment === '.' || $segment === '..' || str_starts_with($segment, '.')) {
+                return null;
+            }
+        }
+
+        if (($segments[0] ?? '') !== 'uploads') {
+            return null;
+        }
+
+        $extension = strtolower((string) pathinfo($filePath, PATHINFO_EXTENSION));
+        if ($extension === '' || in_array($extension, FileUploader::getIllegalFileExtensions(), true)) {
+            return null;
+        }
+
+        $root = rtrim(str_replace('\\', '/', $root), '/');
+        $realPath = $this->realPathInside($root.'/'.implode('/', $segments), $root.'/uploads');
+
+        return !empty($realPath) && is_file($realPath) ? $realPath : null;
+    }
+
+    /**
+     * Real path when it is the directory itself or a file inside it, otherwise null.
+     */
+    public function realPathInside(string $path, string $directory): ?string
+    {
+        $path = realpath(str_replace('\\', '/', $path));
+        $directory = realpath(str_replace('\\', '/', $directory));
+        if ($path === false || $directory === false) {
+            return null;
+        }
+
+        $pathCompare = rtrim(str_replace('\\', '/', $path), '/');
+        $directoryCompare = rtrim(str_replace('\\', '/', $directory), '/');
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $pathCompare = strtolower($pathCompare);
+            $directoryCompare = strtolower($directoryCompare);
+        }
+
+        if ($pathCompare !== $directoryCompare && !str_starts_with($pathCompare, $directoryCompare.'/')) {
+            return null;
+        }
+
+        return str_replace('\\', '/', $path);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function recordFileUpload(array $metaData, string $foreignTable, int|string $foreignTableID, string $foreignColumn)
     {
-        // Begin database transaction
-        $this->db->beginTransaction();
-
-        // Validate file exists at filePath
-        if (!file_exists($metaData['absolutePath'])) {
+        $relativePath = (string) ($metaData['filePath'] ?? '');
+        $realPath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), $relativePath);
+        if ($realPath === null) {
             return false;
         }
 
+        $metaData['filePath'] = str_replace('\\', '/', trim($relativePath));
+        $metaData['absolutePath'] = $realPath;
+
+        // Begin database transaction
+        $this->db->beginTransaction();
+
         $oldFile = $this->filePointerGateway->getFileAndPointerID($foreignTable, $foreignTableID, $foreignColumn);
+        $oldFilePath = null;
 
         if (empty($oldFile)) {
             // Insert record into gibbonFile table
@@ -98,14 +161,17 @@ class FileHandler implements FileHandlerInterface
             }
 
             // Store old file path for deletion after transaction commits
-            $oldFilePath = $this->session->get('absolutePath') . '/' . $oldFile['filePath'];
+            $oldFilePath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), (string) ($oldFile['filePath'] ?? ''));
+            if ($oldFilePath === $realPath) {
+                $oldFilePath = null;
+            }
         }
 
         // All operations succeeded, commit the transaction
         $this->db->commit();
 
         // Delete old file only after successful commit (for updates only)
-        if (!empty($oldFilePath) && file_exists($oldFilePath)) {
+        if (!empty($oldFilePath)) {
             unlink($oldFilePath);
         }
 
@@ -115,11 +181,19 @@ class FileHandler implements FileHandlerInterface
 
     protected function insertAndUpdateFile(array $metaData, $gibbonFileID = null)
     {
+        $relativePath = str_replace('\\', '/', trim((string) ($metaData['filePath'] ?? '')));
+        $realPath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), $relativePath);
+        if ($realPath === null) {
+            return false;
+        }
+
         // Calculate SHA-256 checksum
-        $checksum = hash_file('sha256', $metaData['absolutePath']);
+        $checksum = hash_file('sha256', $realPath);
         if ($checksum === false) {
             return false;
         }
+
+        $metaData['filePath'] = $relativePath;
 
         // Build data array with all fields
         $data = [
@@ -181,6 +255,7 @@ class FileHandler implements FileHandlerInterface
         // Check if the file has any other pointers
         $pointersExist = $this->filePointerGateway->countPointersByFileID($gibbonFileID)->fetch();
         $pointerCount = $pointersExist['count'];
+        $absolutePath = null;
 
         if ($pointerCount == 0) {
             // Delete the record from gibbonFile table
@@ -190,79 +265,17 @@ class FileHandler implements FileHandlerInterface
             }
                 
             // Store file path for deletion after transaction commits
-            $absolutePath = $this->session->get('absolutePath') . '/' . $filePath;
+            $absolutePath = $this->resolveStoredPath((string) $this->session->get('absolutePath'), (string) $filePath);
         }
 
         // All operations succeeded, commit the transaction
         $this->db->commit();
 
         // Delete physical file only after successful commit (if no other pointers existed)
-        if ($pointerCount == 0 &&!empty($absolutePath) && file_exists($absolutePath)) {
+        if ($pointerCount == 0 && !empty($absolutePath)) {
             unlink($absolutePath);
         }
         
         return true;
     }
-
-    ////-/-/--/-/-/-/-/ FOR PHASE-2 /-/-/-/--/--//
-
-    //  /**
-    //  * Verify file integrity by comparing stored checksum with recalculated checksum
-    //  *
-    //  * @param int $gibbonFileID The file record ID to verify
-    //  * @return bool True if checksums match, false if mismatch or file missing
-    //  */
-
-    // public function verifyFileIntegrity($gibbonFileID)
-    // {
-        
-    //     $file = $this->fileGateway->getByID($gibbonFileID);
-        
-    //     if (empty($file)) {
-    //         return false;
-    //     }
-
-    //     $storedChecksum = $file['checksum'];
-    //     $filePath = $file['filePath'];
-        
-    //     // Construct absolute path from stored relative filePath
-    //     $absolutePath = $this->session->get('absolutePath') . '/' . $filePath;
-        
-    //     // Check if file exists at absolute path
-    //     if (!file_exists($absolutePath)) {
-    //         return false;
-    //     }
-        
-    //     // Recalculate checksum from file at absolute path
-    //     $calculatedChecksum = hash_file('sha256', $absolutePath);
-        
-    //     if (empty($calculatedChecksum)) {
-    //         return false;
-    //     }
-        
-    //     // Compare stored and calculated checksums
-    //     return $storedChecksum === $calculatedChecksum;
-    // }
-
-    //  /**
-    //  * Query all file records where the file no longer exists on the filesystem
-    //  *
-    //  * @return array of records
-    //  */
-    // public function selectOrphanedFileRecords()
-    // {
-    //     // Query all records from gibbonFile
-    //     $allFiles = $this->fileGateway->selectAllFileRecords();
-
-    //     // Filter to records where file does not exist
-    //     $orphanedRecords = [];
-    //     foreach ($allFiles as $file) {
-    //         $fullPath = $this->session->get('absolutePath'). '/' . $file['filePath'];
-    //         if (!file_exists($fullPath)) {
-    //             $orphanedRecords[] = $file;
-    //         }
-    //     }
-
-    //     return $orphanedRecords;
-    // }
 }
