@@ -424,6 +424,7 @@ $sql[$count][1] = "
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdater', 'File Updater Status', 'Tracks the current stage of the file updater.', 'idle');end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdaterBackup', 'File Updater Backup', 'Version number of the previous installed version.', '');end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'backgroundUpdateProgress', 'Background Update Progress', '', '');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'cuttingEdgeCommit', 'Cutting Edge Commit', '', '');end
 ";
 
 //v30.0.05
@@ -482,5 +483,6 @@ UPDATE `gibbonNotificationEvent` SET `contextName`='Descriptor', `scopes`='All,c
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdater', 'File Updater Status', 'Tracks the current stage of the file updater.', 'idle');end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'fileUpdaterBackup', 'File Updater Backup', 'Version number of the previous installed version.', '30.0.03');end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'backgroundUpdateProgress', 'Background Update Progress', '', '');end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'cuttingEdgeCommit', 'Cutting Edge Commit', '', '');end
 
 ";

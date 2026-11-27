@@ -129,11 +129,16 @@ class Downloader
     {
         $this->lastProgress = null;
         $this->reportProgress(0);
+
         $this->verifyGithubDigest($release);
         $zipPath = $this->download($release);
-        $this->verify($zipPath, $release['checksum'] ?? '');
+
+        $cuttingEdge = $this->session->get('cuttingEdgeCode') == 'Y';
+        $this->verify($zipPath, $release['checksum'] ?? '', $release['status'] ?? '', $cuttingEdge);
+
         $files = $this->extract($zipPath);
         $this->checkVersion((string) ($release['version'] ?? ''), $zipPath);
+        
         $this->filesystem->deleteIfExists($zipPath);
         $this->reportProgress(100);
 
@@ -307,14 +312,19 @@ class Downloader
      * @param string $checksum
      * @return void
      */
-    public function verify(string $zipPath, string $checksum)
+    public function verify(string $zipPath, string $checksum, string $status)
     {
+        $this->reportProgress(60);
+
         $checksum = strtolower(trim($checksum));
+        if ($this->session->get('cuttingEdgeCode') == 'Y' && empty($checksum) && strtolower($status) == 'development') {
+            // Development packages are not signed, so the checksum is empty.
+            return;
+        }
+
         if (!is_file($zipPath) || $checksum == '' || !hash_equals($checksum, hash_file('sha256', $zipPath))) {
             $this->fail(self::ERROR_VERIFY, 'Checksum mismatch: expected '.$checksum.', got '.(is_file($zipPath) ? hash_file('sha256', $zipPath) : 'missing file'), $zipPath);
         }
-
-        $this->reportProgress(60);
     }
 
     /**

@@ -40,12 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         'warning1'             => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3'               => __('Your request failed because your inputs were invalid, or no update was required.'),
         'errorFiles'           => __('Your request failed because the file update could not be completed. Check the version catalog, package checksum, disk space, file permissions, and that the PHP Zip extension is enabled.'),
-        'errorRestoreDatabase' => __('The restore was refused because your database has already been updated beyond the backed-up files. Restoring them would leave your database newer than your code. Restore a database backup first, or update manually.'),
-        'errorNoBackup'        => __('The restore could not start because there is no backup of the previous version. Backups are created each time the updater installs a new version.'),
+        'errorRestore'        => __('The restore could not start because of a version mismatch or missing backup directory. Restore a prior database backup first, or update manually.'),
         'errorFilePermissions' => __('Automatic updates are unavailable because the application does not have the required file permissions. Check the file permissions on your server or update manually.'),
         'errorUpdateBusy'      => __('A system update is already in progress. Please wait a few minutes and try again.'),
         'errorUpdateFailed'    => __('Update failed. Check the server logs and try again, or update manually.'),
-        'errorBackgroundUpdateUnavailable' => __('The database update could not be started in the background. Check that PHP is allowed to run background processes on your server, or update manually.'),
     ]);
 
     // Get and display SQL errors
@@ -128,9 +126,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         echo Format::alert(__('Automatic updates are unavailable because the application does not have the required file permissions. Check the file permissions on your server or update manually.'), 'error');
     } elseif (empty($nextRelease) && !$cuttingEdge && $updateRequired === -1) {
         echo Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error');
-    } elseif (empty($nextRelease) && !empty($versionCatalog->getCatalog())) {
+    } elseif (empty($nextRelease) && !$cuttingEdge && !empty($versionCatalog->getCatalogVersion())) {
         echo Format::alert(__('Your Gibbon core is up to date.'), 'success');
-    } elseif (empty($nextRelease)) {
+    } elseif (empty($nextRelease) && empty($versionCatalog->getCatalogVersion())) {
         echo Format::alert(__('Version check failed').'. '.__('Could not connect to the GibbonEdu repository. Please wait a few minutes and try again, or update manually.'), 'error');
     } else {
         echo Format::alert(__('A new version of Gibbon is available. Please review the changelog below, backup before installing, and update your system.').'<br><br><b>'.__('Note').'</b>: '.__('The auto-updater may fail to update successfully depending on your system settings and file permissions. A failed auto-update will rollback to the previously installed version. When in doubt, please follow the documentation to update manually.'), 'message');
@@ -138,7 +136,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Cutting edge warning and composer check
     if ($cuttingEdge) {
-        echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.'), 'exception');
+        $updateMessage = empty($nextRelease) && !$updateRequired ? __('Check for updates to download the latest cutting edge code.') : '';
+
+        echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.').$updateMessage, 'exception');
 
         if ($updater->isComposerUpdateRequired()) {
             echo Format::alert('<b>'.__('Composer Update Required').'</b>: '.__('The updater has detected a change in the composer.lock file. In the command line, navigate to your Gibbon base path and run the {composer} command. Visit the {docsLink} page in the docs for more information about using composer.<br/><br/>Once you have updated composer, click {updateLink} to dismiss this message. ', [

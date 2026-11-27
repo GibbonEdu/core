@@ -168,6 +168,85 @@ class UpdateFormTest extends TestCase
         ];
     }
 
+    public function testCheckForUpdatesIsOfferedOnAnInstalledDevelopmentBuildWithNoNewerVersion(): void
+    {
+        $output = $this->renderCheckForm(true, 0, null, 'Development');
+
+        $this->assertStringContainsString('Check for Updates', $output);
+        $this->assertMatchesRegularExpression(
+            '/hx-post="https:\/\/example\.test\/modules\/System Admin\/updateCheckProcess\.php"/',
+            $output
+        );
+    }
+
+    /**
+     * @dataProvider checkNotOfferedProvider
+     */
+    public function testCheckForUpdatesIsNotOfferedWhenThereIsNothingToCheck(bool $cuttingEdge, int $updateRequired, ?array $nextRelease, string $status): void
+    {
+        $output = $this->renderCheckForm($cuttingEdge, $updateRequired, $nextRelease, $status);
+
+        $this->assertStringNotContainsString('updateCheckProcess.php', $output);
+        $this->assertStringNotContainsString('Check for Updates', $output);
+    }
+
+    public static function checkNotOfferedProvider(): array
+    {
+        return [
+            'not on cutting edge' => [false, 0, null, 'Development'],
+            'a newer version can be installed' => [true, 0, ['version' => '31.0.01', 'phpVersion' => '8.2'], 'Development'],
+            'a released version, not a development build' => [true, 0, null, 'Current'],
+            'the database needs an update first' => [true, 1, null, 'Development'],
+        ];
+    }
+
+    public function testCheckForUpdatesIsDisabledWhileAnotherUpdateIsRunning(): void
+    {
+        $updater = $this->createCheckUpdater(true, 0);
+        $versionCatalog = $this->createCheckCatalog(null, 'Development');
+
+        $output = $this->createUpdateForm($updater, $versionCatalog)
+            ->createForm($updater, $versionCatalog, true)
+            ->getOutput();
+
+        $this->assertStringNotContainsString('updateCheckProcess.php', $output);
+        $this->assertStringContainsString('Update in Progress', $output);
+    }
+
+    private function renderCheckForm(bool $cuttingEdge, int $updateRequired, ?array $nextRelease, string $status): string
+    {
+        $updater = $this->createCheckUpdater($cuttingEdge, $updateRequired);
+        $versionCatalog = $this->createCheckCatalog($nextRelease, $status);
+
+        return $this->createUpdateForm($updater, $versionCatalog)
+            ->createForm($updater, $versionCatalog)
+            ->getOutput();
+    }
+
+    private function createCheckUpdater(bool $cuttingEdge, int $updateRequired): Updater
+    {
+        $updater = $this->createMock(Updater::class);
+        $updater->versionCode = '31.0.00';
+        $updater->cuttingEdgeCodeLine = 0;
+        $updater->cuttingEdgeMaxLine = 0;
+        $updater->method('isCuttingEdge')->willReturn($cuttingEdge);
+        $updater->method('isUpdateRequired')->willReturn($updateRequired);
+
+        return $updater;
+    }
+
+    private function createCheckCatalog(?array $nextRelease, string $status): VersionCatalog
+    {
+        $versionCatalog = $this->createMock(VersionCatalog::class);
+        $versionCatalog->method('fetch')->willReturn(['31.0.00' => ['status' => $status]]);
+        $versionCatalog->method('getChangeLogFromFile')->willReturn([]);
+        $versionCatalog->method('getNextRelease')->willReturn($nextRelease);
+        $versionCatalog->method('getCatalog')->willReturn(['31.0.00' => ['status' => $status, 'changelog' => []]]);
+        $versionCatalog->method('getCatalogVersion')->willReturn('31.0.00');
+
+        return $versionCatalog;
+    }
+
     public function testSuppressesFileUpdateSubmissionWhileBackgroundUpdateIsActive(): void
     {
         $updater = $this->createMock(Updater::class);
