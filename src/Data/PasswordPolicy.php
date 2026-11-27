@@ -194,7 +194,7 @@ class PasswordPolicy
         do {
             $password = '';
             for ($i=0; $i<$length; ++$i) {
-                $password .= substr($chars, rand(0, $max), 1);
+                $password .= substr($chars, random_int(0, $max), 1);
             }
         } while (!empty($this->evaluate($password)) && --$c > 0);
 
