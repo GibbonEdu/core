@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\User;
 
+use Gibbon\Contracts\Database\Result;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
@@ -104,6 +105,37 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                     (username=:username OR (LOCATE('@', :username)>0 AND email=:username)) 
                     AND status='Full' 
                 )";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Gets basic user and role fields required for login, by person ID.
+     *
+     * @param int $gibbonPersonID
+     * @return Result
+     */
+    public function selectLoginDetailsByID(int $gibbonPersonID): Result
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT
+                    gibbonPerson.gibbonPersonID,
+                    gibbonPerson.username,
+                    gibbonPerson.passwordStrong,
+                    gibbonPerson.passwordStrongSalt,
+                    gibbonPerson.gibbonRoleIDPrimary,
+                    gibbonPerson.gibbonRoleIDAll,
+                    gibbonPerson.canLogin,
+                    gibbonPerson.failCount,
+                    gibbonRole.futureYearsLogin,
+                    gibbonRole.pastYearsLogin,
+                    gibbonRole.name as roleName,
+                    gibbonRole.category as roleCategory,
+                    gibbonPerson.gibboni18nIDPersonal,
+                    gibbonPerson.gibbonThemeIDPersonal
+                FROM gibbonPerson
+                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full'";
 
         return $this->db()->select($sql, $data);
     }

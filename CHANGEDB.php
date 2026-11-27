@@ -485,4 +485,17 @@ INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'backgroundUpdateProgress', 'Background Update Progress', '', '');end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'cuttingEdgeCommit', 'Cutting Edge Commit', '', '');end
 
+CREATE TABLE `gibbonPersonPasskey` (
+  `gibbonPersonPasskeyID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `label` VARCHAR(60) NOT NULL DEFAULT '',
+  `credentialId` VARCHAR(255) NOT NULL,
+  `credentialSource` TEXT NOT NULL,
+  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUsedAt` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`gibbonPersonPasskeyID`),
+  UNIQUE KEY `credentialId` (`credentialId`),
+  KEY `gibbonPersonID` (`gibbonPersonID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
+
 ";

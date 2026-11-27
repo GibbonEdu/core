@@ -4455,6 +4455,25 @@ CREATE TABLE `gibbonPersonPhoto` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonPersonPasskey`
+--
+
+CREATE TABLE `gibbonPersonPasskey` (
+  `gibbonPersonPasskeyID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `label` varchar(60) NOT NULL DEFAULT '',
+  `credentialId` varchar(255) NOT NULL,
+  `credentialSource` text NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUsedAt` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`gibbonPersonPasskeyID`),
+  UNIQUE KEY `credentialId` (`credentialId`),
+  KEY `gibbonPersonID` (`gibbonPersonID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonPersonReset`
 --
 
